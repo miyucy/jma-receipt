@@ -76,6 +76,12 @@
       *    前回検査日コメント区分
            03  TNSP-ZENKNSKBN              PIC  9(01).
       *
+      *    湿布薬関係
+           03  TNSP-SIPPURYO1           PIC  9(03).
+           03  TNSP-SIPPUIRISU1         PIC  9(03).
+           03  TNSP-SIPPURYO2           PIC  9(03).
+           03  TNSP-SIPPUIRISU2         PIC  9(03).
+      *
            03  TNSP-TERMID              PIC  X(16).
            03  TNSP-OPID                PIC  X(16).
            03  TNSP-CREYMD              PIC  X(08).

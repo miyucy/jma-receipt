@@ -189,5 +189,12 @@
                 04  Z04-NUMDATA PIC S9(3).
               03  Z04-SIPIRISU2.
                 04  Z04-NUMDATA PIC S9(3).
+              03  Z04-B03.
+                04  Z04-B03-STATE   PIC S9(9)   BINARY.
+              03  Z04-B12.
+                04  Z04-B12-STATE   PIC S9(9)   BINARY.
+              04  Z04-MIDASHI.
+                05  Z04-MIDASHI-STYLE  PIC X(20).
+                05  Z04-MIDASHI-DATA   PIC X(80).
 
 

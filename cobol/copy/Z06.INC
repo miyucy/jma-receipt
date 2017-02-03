@@ -85,4 +85,7 @@
               03  Z06-B09.
                 04  Z06-B09-STATE   PIC S9(9)   BINARY.
                 04  Z06-B09-LABEL   PIC X(10).
+              04  Z06-MIDASHI.
+                05  Z06-MIDASHI-STYLE  PIC X(20).
+                05  Z06-MIDASHI-DATA   PIC X(80).
 

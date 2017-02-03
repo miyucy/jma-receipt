@@ -529,6 +529,7 @@ RECORD_files = \
     stock1v2.rec \
 	okusurigetv2.rec \
 	okusuriputv2.rec \
+	Z010.rec \
 
 DEF_files = \
 
@@ -960,6 +961,9 @@ DB_files = \
 	xml_okusurigetv2res.db \
 	xml_okusuriputv2req.db \
 	xml_okusuriputv2res.db \
+	tbl_tensu_price.db \
+	tbl_tensu_master.db \
+	tbl_tensu_user.db \
 
 
 shell.db: shell.db.in

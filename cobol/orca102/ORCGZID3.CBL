@@ -76,26 +76,7 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "Z01.INC".
-           COPY    "Z02.INC".
-           COPY    "Z03.INC".
-           COPY    "Z04.INC".
-           COPY    "Z05.INC".
-           COPY    "Z06.INC".
-           COPY    "Z07.INC".
-           COPY    "Z08.INC".
-           COPY    "Z90.INC".
-           COPY    "Z91.INC".
-           COPY    "Z97.INC".
-           COPY    "Z98.INC".
-           COPY    "Z99.INC".
-           COPY    "ZERR.INC".
-           COPY    "ZID1.INC".
-           COPY    "ZID2.INC".
-           COPY    "ZID3.INC".
-           COPY    "Z100.INC".
-           COPY    "CPAPIMOD.INC".
-           COPY    "CPAPIMODV2.INC".
+           COPY    "ORCA102SCRAREA.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA

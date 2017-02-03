@@ -67,8 +67,6 @@
                 04  Z02-BUIKBNLST    PIC X(8)    OCCURS  9 TIMES.
               03  Z02-FORMALNAME.
                 04  Z02-VALUE   PIC X(200).
-              03  Z02-INPCHKKBN.
-                04  Z02-VALUE   PIC S9(1).
               03  Z02-LABEL1.
                 04  Z02-VALUE   PIC X(20).
               03  Z02-GAIJIBAIKBN-COMB.
@@ -96,5 +94,10 @@
               03  Z02-B09.
                 04  Z02-B09-STATE   PIC S9(9)   BINARY.
                 04  Z02-B09-LABEL   PIC X(10).
+              03  Z02-MIDASHI.
+                04  Z02-MIDASHI-STYLE   PIC X(20).
+                04  Z02-MIDASHI-DATA    PIC X(80).
+              03  Z02-B03.
+                04  Z02-B03-STATE   PIC S9(9)   BINARY.
 
 

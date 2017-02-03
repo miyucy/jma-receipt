@@ -251,4 +251,5 @@ db	{
 	tbl_access_key;
 	tbl_mstkanri_public;
 	tbl_mstkanri_master;
+        tbl_tensu_price;
 };

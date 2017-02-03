@@ -37,3 +37,6 @@
                         PIC X(30)   OCCURS  200 TIMES.
               03  Z08-MSGLBEL.
                 04  Z08-VALUE   PIC X(100).
+              04  Z08-MIDASHI.
+                05  Z08-MIDASHI-STYLE  PIC X(20).
+                05  Z08-MIDASHI-DATA   PIC X(80).

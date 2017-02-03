@@ -353,5 +353,15 @@ Z04 {
     SIPIRISU2 { #GtkNumberEntry
       numdata number(3);
     };
+    B03 {
+      state int;
+    };
+    B12 {
+      state int;
+    };
+    MIDASHI { #GtkLabel
+      style varchar(20);
+      textdata varchar(80);
+    };
   };
 };

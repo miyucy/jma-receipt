@@ -155,6 +155,7 @@ tbl_tensu {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
+	MASTER_CLASS		number(1,0);
 #-----> 主キー更新用項目
 	UPHOSPNUM			number(2,0),virtual;
 	UPSRYCD				char(9),virtual;

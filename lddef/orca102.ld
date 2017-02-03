@@ -12,6 +12,7 @@ bind	"Z05"		"OpenCOBOL"	"ORCGZ05";
 bind	"Z06"		"OpenCOBOL"	"ORCGZ06";
 bind	"Z07"		"OpenCOBOL"	"ORCGZ07";
 bind	"Z08"		"OpenCOBOL"	"ORCGZ08";
+bind	"Z010"		"OpenCOBOL"	"ORCGZ010";
 bind	"Z90"		"OpenCOBOL"	"ORCGZ90";
 bind	"Z91"		"OpenCOBOL"	"ORCGZ91";
 bind	"Z97"		"OpenCOBOL"	"ORCGZ97";
@@ -39,6 +40,7 @@ data	{
 		Z06;
 		Z07;
 		Z08;
+		Z010;
                 Z90;
                 Z91;
                 Z97;
@@ -61,6 +63,10 @@ db "xml" {
 db "xml2" {
  xml_medicationv2req;
  xml_medicationv2res;
+};
+db	{
+	tbl_tensu_user;
+	tbl_tensu_master;
 };
 
 #include "orcadb.inc"

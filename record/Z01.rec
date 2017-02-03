@@ -32,5 +32,17 @@ Z01 {
     NAME {
       textdata varchar(100);
     };
+    B08 {
+      state int;
+      label varchar(10);
+    };
+    B10 {
+      state int;
+      label varchar(10);
+    };
+    MIDASHI { #GtkLabel
+      style varchar(20);
+      textdata varchar(80);
+    };
   };
 };

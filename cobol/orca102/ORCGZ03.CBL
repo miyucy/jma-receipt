@@ -56,6 +56,7 @@
       *  04.07.00    NACL-多々納  14/03/XX  平成２６年４月改正対応
       *                                    （DPC区分、副鼻腔等加算等）
       *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
+      *  05.00.00    NACL-多々納  17/01/XX  ユーザー設定他GINBEE対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -83,7 +84,11 @@
       *    ＳＰＡエリア
            COPY    "Z03SCR-SPA".
       *
+      *    ユーザー設定ＳＰＡエリア
+           COPY    "Z010SCR-SPA".
       *
+      *    画面色等
+           COPY    "ENUM-VALUE".
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -153,6 +158,9 @@
            03  WRK-YUKOEDYMD       PIC X(08).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
+      *    更新テーブル名称
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME       PIC X(64).
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -220,7 +228,7 @@
       *    前回検査日区分
            03  FILLER          PIC X(32)  VALUE   "0 ZENKNSKBN".
       *    入力チェック区分
-           03  FILLER          PIC X(32)  VALUE   "0 INPCHKKBN".
+      **** 03  FILLER          PIC X(32)  VALUE   "0 INPCHKKBN".
       *    回数、年齢
            03  FILLER          PIC X(32)  VALUE   "1 JITUDAY".
            03  FILLER          PIC X(32)  VALUE   "1 DAYCNT".
@@ -343,7 +351,8 @@
       **** 03  TBL-GMN-OCC                 OCCURS  118
       **** 03  TBL-GMN-OCC                 OCCURS  119
       ***  03  TBL-GMN-OCC                 OCCURS  121
-           03  TBL-GMN-OCC                 OCCURS  130
+      **** 03  TBL-GMN-OCC                 OCCURS  130
+           03  TBL-GMN-OCC                 OCCURS  129
                                            INDEXED  IDX-GMN.
                05  TBL-PAGE                PIC 9(01).
                05  TBL-YOBI1               PIC X(01).
@@ -604,6 +613,10 @@
         01  SRYCDCHG-REC.
             COPY    "CPSRYCDCHG.INC".
       *
+      *    点数マスタ器材金額
+        01 TENSU-PRICE-REC.
+           COPY    "CPTENSU-PRICE.INC".
+      *
       *    ワーク点数マスタ
        01  WRK-TNS-TENSU-REC           PIC X(1290).
       *
@@ -645,26 +658,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "Z01.INC".
-           COPY    "Z02.INC".
-           COPY    "Z03.INC".
-           COPY    "Z04.INC".
-           COPY    "Z05.INC".
-           COPY    "Z06.INC".
-           COPY    "Z07.INC".
-           COPY    "Z08.INC".
-           COPY    "Z90.INC".
-           COPY    "Z91.INC".
-           COPY    "Z97.INC".
-           COPY    "Z98.INC".
-           COPY    "Z99.INC".
-           COPY    "ZERR.INC".
-           COPY    "ZID1.INC".
-           COPY    "ZID2.INC".
-           COPY    "ZID3.INC".
-           COPY    "Z100.INC".
-           COPY    "CPAPIMOD.INC".
-           COPY    "CPAPIMODV2.INC".
+           COPY    "ORCA102SCRAREA.INC".
+      *    COPY    "Z01.INC".
+      *    COPY    "Z02.INC".
+      *    COPY    "Z03.INC".
+      *    COPY    "Z04.INC".
+      *    COPY    "Z05.INC".
+      *    COPY    "Z06.INC".
+      *    COPY    "Z07.INC".
+      *    COPY    "Z08.INC".
+      *    COPY    "Z90.INC".
+      *    COPY    "Z91.INC".
+      *    COPY    "Z97.INC".
+      *    COPY    "Z98.INC".
+      *    COPY    "Z99.INC".
+      *    COPY    "ZERR.INC".
+      *    COPY    "ZID1.INC".
+      *    COPY    "ZID2.INC".
+      *    COPY    "ZID3.INC".
+      *    COPY    "Z100.INC".
+      *    COPY    "CPAPIMOD.INC".
+      *    COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -686,6 +700,7 @@
            MOVE    SPA-WORK                      TO  SPA-Z01KYOUTU
            MOVE    SPA-FREE                      TO  SPA-Z01FREE
            MOVE    SPA-Z01SONOTA                 TO  SPA-Z03
+           MOVE    SPA-Z010FREE                  TO  SPA-Z010
       *
            MOVE    SPACE                         TO  SPA-ERRCD.
            MOVE    ZERO                          TO  FLG-END.
@@ -713,6 +728,7 @@
            MOVE    SPA-Z01KYOUTU                 TO  SPA-WORK
            MOVE    SPA-AREA                      TO  SPA-COMMON
            MOVE    SPA-Z03                       TO  SPA-Z01SONOTA 
+           MOVE    SPA-Z010                      TO  SPA-Z010FREE
            MOVE    SPA-Z01FREE                   TO  SPA-FREE
       *
            EXIT    PROGRAM.
@@ -776,6 +792,11 @@
       *           入力ＣＤより
                WHEN    "Z99"
                WHEN    "Z90"
+                   MOVE    1                   TO  SPA-GMN-CUR
+      *H29.01
+      *        ユーザ設定画面
+               WHEN    "Z010"
+                   PERFORM 310-SPASET-SEC
                    MOVE    1                   TO  SPA-GMN-CUR
       *
                WHEN    OTHER
@@ -851,32 +872,78 @@
            PERFORM 30012-COB-HEN-SEC
       *
       *    点数マスタ付加情報検索
+      *    IF      FLG-TENSU           =   ZERO
+      *        MOVE    SPACE               TO  TENSUPLUS-REC
+      *        MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+      *        MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+      *        MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+      *        MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+      *        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+      *        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+      *        MOVE    "key"               TO  MCP-PATHNAME
+      *        PERFORM 910-DBSELECT-SEC
+      *        IF      MCP-RC               =   ZERO
+      *            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+      *            MOVE    "key"               TO  MCP-PATHNAME
+      *            PERFORM 990-TENSUPLUS-READ-SEC
+      *        ELSE
+      *            INITIALIZE                 TENSUPLUS-REC
+      *        END-IF
+      *        MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+      *        MOVE    "key"               TO  MCP-PATHNAME
+      *        PERFORM 990-DBLOSEC-SEC
+      *    ELSE
+      *        INITIALIZE                 TENSUPLUS-REC
+      **** END-IF
+      *
+      *H29.1
+           PERFORM  3003-TENSUPLUS-COMB-SEC
+           MOVE    ZERO                TO  FLG-OK
+      *
+      *    降順に検索　最終履歴を表示
            IF      FLG-TENSU           =   ZERO
+      *
                MOVE    SPACE               TO  TENSUPLUS-REC
                MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-               MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-               MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
                MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
                MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 910-DBSELECT-SEC
                IF      MCP-RC               =   ZERO
                    MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
+                   MOVE    "key4"              TO  MCP-PATHNAME
                    PERFORM 990-TENSUPLUS-READ-SEC
                ELSE
                    INITIALIZE                 TENSUPLUS-REC
+                   MOVE    1                  TO  FLG-TENSUPLUS
                END-IF
+               PERFORM UNTIL       FLG-TENSUPLUS  =   1
+                   IF     (TNSP-YUKOSTYMD      >   TNS-YUKOEDYMD )
+                       CONTINUE
+                   ELSE
+                       PERFORM 3002-SPASET-TENSUPLUS-SEC
+                       MOVE    1               TO  FLG-OK
+                       MOVE    1               TO  FLG-TENSUPLUS
+                   END-IF
+                   IF      FLG-TENSUPLUS       =   ZERO
+                       MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+                       MOVE    "key4"              TO  MCP-PATHNAME
+                       PERFORM 990-TENSUPLUS-READ-SEC
+                   END-IF
+               END-PERFORM
                MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 990-DBLOSEC-SEC
-           ELSE
-               INITIALIZE                 TENSUPLUS-REC
            END-IF
       *
-           PERFORM  3002-SPASET-TENSUPLUS-SEC
+           IF      FLG-OK              =   ZERO
+      *        初期表示
+               INITIALIZE                 TENSUPLUS-REC
+               PERFORM  3002-SPASET-TENSUPLUS-SEC
+           END-IF
       *
            MOVE    1                   TO  SPA-GMN-CUR
            .
@@ -1025,20 +1092,42 @@
       *****************************************************************
       *    ＤＢ情報をＳＰＡにセット（点数マスタ付加情報）
       *****************************************************************
-       3002-SPASET-TENSUPLUS-SEC       SECTION.
+       3003-TENSUPLUS-COMB-SEC       SECTION.
       *
-      *    入力チェック区分
-           MOVE    TNSP-INPCHKKBN      TO  SPA-GMN-INPCHKKBN
-      *    処方名
-           MOVE    TNSP-SHONAME        TO  SPA-GMN-SHONAME
-      *    採血区分
-           MOVE    TNSP-SAIKETUKBN     TO  SPA-GMN-SAIKETUKBN
       *    採血料区分一覧
            MOVE    "0:　　　　"        TO  SPA-GMN-SAIKETUCOMB (01)
            MOVE    "1:末梢採血"        TO  SPA-GMN-SAIKETUCOMB (02)
            MOVE    "2:静脈採血"        TO  SPA-GMN-SAIKETUCOMB (03)
            MOVE    "3:動脈採血"        TO  SPA-GMN-SAIKETUCOMB (04)
            MOVE    4                   TO  SPA-SAIKETUKBN-MAX
+      *    前回検査日区分
+           MOVE    "0 表示しない"      TO  SPA-GMN-ZENKNSKBN-COMB(1)
+           MOVE    "1 表示する（初回コメント）"
+                                       TO  SPA-GMN-ZENKNSKBN-COMB(2)
+           MOVE    "2 表示する（初回実施日）"
+                                       TO  SPA-GMN-ZENKNSKBN-COMB(3)
+           MOVE    3                   TO  SPA-ZENKNSKBN-MAX
+      *    上限回数
+           MOVE    "0 無効"            TO  SPA-GMN-PLUS-SANTEICOMB(1)
+           MOVE    "1 有効（算定履歴作成）"
+                                       TO  SPA-GMN-PLUS-SANTEICOMB(2)
+           MOVE    2                   TO  SPA-PLUS-SANTEI-MAX
+           .
+       3003-TENSUPLUS-COMB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ情報をＳＰＡにセット（点数マスタ付加情報）
+      *****************************************************************
+       3002-SPASET-TENSUPLUS-SEC       SECTION.
+      *
+      *    入力チェック区分
+      **** MOVE    TNSP-INPCHKKBN      TO  SPA-GMN-INPCHKKBN
+      *    処方名
+           MOVE    TNSP-SHONAME        TO  SPA-GMN-SHONAME
+      *    採血区分
+           MOVE    TNSP-SAIKETUKBN     TO  SPA-GMN-SAIKETUKBN
+      *    採血料区分一覧
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SAIKETUKBN-MAX
                IF      SPA-GMN-SAIKETUKBN  =   SPA-GMN-SAIKETUCOMB
@@ -1050,12 +1139,6 @@
            END-PERFORM
       *    前回検査日区分
            MOVE    TNSP-ZENKNSKBN      TO  SPA-GMN-ZENKNSKBN
-           MOVE    "0 表示しない"      TO  SPA-GMN-ZENKNSKBN-COMB(1)
-           MOVE    "1 表示する（初回コメント）"
-                                       TO  SPA-GMN-ZENKNSKBN-COMB(2)
-           MOVE    "2 表示する（初回実施日）"
-                                       TO  SPA-GMN-ZENKNSKBN-COMB(3)
-           MOVE    3                   TO  SPA-ZENKNSKBN-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-ZENKNSKBN-MAX
                IF      SPA-GMN-ZENKNSKBN   =   SPA-GMN-ZENKNSKBN-COMB
@@ -1067,10 +1150,6 @@
            END-PERFORM
       *
       *    上限回数
-           MOVE    "0 無効"            TO  SPA-GMN-PLUS-SANTEICOMB(1)
-           MOVE    "1 有効（算定履歴作成）"
-                                       TO  SPA-GMN-PLUS-SANTEICOMB(2)
-           MOVE    2                   TO  SPA-PLUS-SANTEI-MAX
            MOVE    TNSP-SANTEIRRKKBN   TO  SPA-GMN-PLUS-SANTEIRRK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-PLUS-SANTEI-MAX
@@ -1657,6 +1736,11 @@
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  412-TOUROKU-SEC
+      *ver.5.0
+      *H29.01
+      *        ユーザー項目登録
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM  407-B10-SYORI-SEC
       *ver.4.7 基本情報
       *        WHEN    "CLICKED"       ALSO    "BJ1"
       *            PERFORM 420-KIRIKAE-SEC
@@ -1756,6 +1840,15 @@
       *    画面ページ
            MOVE    Z03-PAGENO          TO  SPA-GMN-PAGENO
       *
+      *H29.1
+      *    ユーザー点数識別（2：ユーザーマスタ）のみ反映
+           IF     (SPA-MASTER-CLASS    =   2 )
+               OR (SPA-MENTE-OK        =   1 )
+               CONTINUE
+           ELSE
+               GO      TO      4101-GMN-SPA-SET-EXT
+           END-IF
+      *
            MOVE    Z03-YUKOSTYMD       TO  SPA-GMN-YUKOSTYMD
            MOVE    Z03-YUKOEDYMD       TO  SPA-GMN-YUKOEDYMD
       *    診療区分
@@ -1766,7 +1859,8 @@
            MOVE    Z03-KANANAME        TO  SPA-GMN-KANANAME
            MOVE    Z03-NAME            TO  SPA-GMN-NAME
            MOVE    Z03-FORMALNAME      TO  SPA-GMN-FORMALNAME
-           MOVE    Z03-SHONAME         TO  SPA-GMN-SHONAME
+      *H29.1  付加情報不可
+      **** MOVE    Z03-SHONAME         TO  SPA-GMN-SHONAME
            MOVE    Z03-TEN             TO  SPA-GMN-TEN
            MOVE    Z03-TENSIKIBETU     TO  SPA-GMN-TENSIKIBETU-G
            MOVE    Z03-OLDTEN          TO  SPA-GMN-OLDTEN
@@ -1789,9 +1883,10 @@
            MOVE    Z03-TSUSOKUAGE      TO  SPA-GMN-TSUSOKUAGE
            MOVE    Z03-KGNAGE          TO  SPA-GMN-KGNAGE
            MOVE    Z03-JGNAGE          TO  SPA-GMN-JGNAGE
-           MOVE    Z03-SAIKETUKBN      TO  SPA-GMN-SAIKETUKBN-G
-           MOVE    Z03-ZENKNSKBN       TO  SPA-GMN-ZENKNSKBN-G
-           MOVE    Z03-INPCHKKBN       TO  SPA-GMN-INPCHKKBN
+      *H29.1  付加情報不可
+      *    MOVE    Z03-SAIKETUKBN      TO  SPA-GMN-SAIKETUKBN-G
+      *    MOVE    Z03-ZENKNSKBN       TO  SPA-GMN-ZENKNSKBN-G
+      *    MOVE    Z03-INPCHKKBN       TO  SPA-GMN-INPCHKKBN
       *
            MOVE    Z03-JITUDAY         TO  SPA-GMN-JITUDAY
            MOVE    Z03-DAYCNT          TO  SPA-GMN-DAYCNT
@@ -1802,13 +1897,14 @@
            MOVE    Z03-JGNCNTETC       TO  SPA-GMN-JGNCNTETC 
            MOVE    Z03-JGNCNTERR       TO  SPA-GMN-JGNCNTERR
       *
-           MOVE    Z03-PLUS-SANTEIRRK  TO  SPA-GMN-PLUS-SANTEIRRK-G
-           MOVE    Z03-PLUS-JGNCNT     TO  SPA-GMN-PLUS-JGNCNT
-           MOVE    Z03-PLUS-JGNCNT1D   TO  SPA-GMN-PLUS-JGNCNT1D
-           MOVE    Z03-PLUS-JGNCNT1W   TO  SPA-GMN-PLUS-JGNCNT1W
-           MOVE    Z03-PLUS-JGNCNTETCM TO  SPA-GMN-PLUS-JGNCNTETCM
-           MOVE    Z03-PLUS-JGNCNTETC  TO  SPA-GMN-PLUS-JGNCNTETC
-           MOVE    Z03-PLUS-JGNCNTERR  TO  SPA-GMN-PLUS-JGNCNTERR
+      *H29.1  付加情報不可
+      *    MOVE    Z03-PLUS-SANTEIRRK  TO  SPA-GMN-PLUS-SANTEIRRK-G
+      *    MOVE    Z03-PLUS-JGNCNT     TO  SPA-GMN-PLUS-JGNCNT
+      *    MOVE    Z03-PLUS-JGNCNT1D   TO  SPA-GMN-PLUS-JGNCNT1D
+      *    MOVE    Z03-PLUS-JGNCNT1W   TO  SPA-GMN-PLUS-JGNCNT1W
+      *    MOVE    Z03-PLUS-JGNCNTETCM TO  SPA-GMN-PLUS-JGNCNTETCM
+      *    MOVE    Z03-PLUS-JGNCNTETC  TO  SPA-GMN-PLUS-JGNCNTETC
+      *    MOVE    Z03-PLUS-JGNCNTERR  TO  SPA-GMN-PLUS-JGNCNTERR
       *
            MOVE    Z03-KZMCOMPSIKIBETU TO  SPA-GMN-KZMCOMPSIKIBETU
            MOVE    Z03-KZMKGN          TO  SPA-GMN-KZMKGN
@@ -3420,6 +3516,28 @@
       *****************************************************************
        4031-DEL-SEC                              SECTION.
       *
+           IF      SPA-MASTER-CLASS    =   2
+      *        ユーザ点数設定分
+               PERFORM 40311-TENSU-USER-DEL-SEC
+           ELSE
+      *        点数マスタ削除
+               PERFORM 40312-TENSU-MAST-DEL-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD          =   SPACE
+               MOVE  "JOIN"               TO  MCP-PUTTYPE
+               PERFORM  401-BACK-SEC
+           END-IF
+      *
+           .
+       4031-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザ点数設定分削除処理
+      *****************************************************************
+       40311-TENSU-USER-DEL-SEC                 SECTION.
+      *
       *    点数マスタ削除
            MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
            MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
@@ -3430,7 +3548,37 @@
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "tbl_tensu_user"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "Z03 TENSU DEL ERR!!"   MCP-RC
+                       ",KEY:"   TNS-KEY
+               MOVE    "9001"                TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       40311-TENSU-USER-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスタ削除処理
+      *****************************************************************
+       40312-TENSU-MAST-DEL-SEC                  SECTION.
+      *
+      *    点数マスタ削除
+           MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOSTYMD
+           MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOEDYMD
+      *
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_tensu_master"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -3442,24 +3590,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    点数付加情報削除
-           MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
-           MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                       TO  TNSP-YUKOSTYMD
-           MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                       TO  TNSP-YUKOEDYMD
-           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
-           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "Z03 TENSUPLUS DEL ERR!!"   MCP-RC
-                       ",KEY:"   TNS-KEY
-               MOVE    "9001"                TO  SPA-ERRCD
-           END-IF
+      *    MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
+      *    MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
+      *                                TO  TNSP-YUKOSTYMD
+      *    MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
+      *                                TO  TNSP-YUKOEDYMD
+      *    MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+      *    MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+      *    MOVE    "DBDELETE"          TO  MCP-FUNC
+      *    MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+grpsys*    CALL    "ORCDBMAIN"         USING   MCPAREA
+      *                                        MCPDATA-REC
+      *                                        SPA-AREA
+      *    IF      MCP-RC          NOT =   ZERO
+      *        DISPLAY "Z03 TENSUPLUS DEL ERR!!"   MCP-RC
+      *                ",KEY:"   TNS-KEY
+      *        MOVE    "9001"                TO  SPA-ERRCD
+      ***  END-IF
       *
       *    入力コード削除
            IF     (SPA-Z01-SELNUM      =   1    )  AND
@@ -3474,6 +3622,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
+      *
+      *        点数付加情報削除
+               MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
+               MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+               MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "del1"              TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
       *        一般老人コード削除
                PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3492,13 +3651,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        SPA-AREA
                END-PERFORM
            END-IF
-      *
-           IF      SPA-ERRCD          =   SPACE
-               MOVE  "JOIN"               TO  MCP-PUTTYPE
-               PERFORM  401-BACK-SEC
-           END-IF
            .
-       4031-DEL-EXT.
+       40312-TENSU-MAST-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3624,6 +3778,83 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
        407-SRYCDCHG-EXT.
            EXIT.
+      *ver.5.0
+      *****************************************************************
+      *    ユーザー項目登録処理
+      *****************************************************************
+       407-B10-SYORI-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+      *    変更はエラーでも遷移する
+           IF      SPA-Z01-SYORIKBN    =   2
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-Z01-SRYCD(1:1)  NOT =   "1"
+               MOVE    "0050"              TO  SPA-ERRCD
+           END-IF
+      *    変更以外はエラー
+           IF      SPA-Z01-SYORIKBN    NOT =   2
+               MOVE    "0050"              TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      407-B10-SYORI-EXT
+           END-IF
+      *
+           MOVE    "Z010"              TO  SPA-SAKIPG
+           MOVE    "Z03"               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-Z01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *****MOVE    SPA-Z03             TO  SPA-Z01SONOTA
+           MOVE    SPA-Z01FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGZ010"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-Z01KYOUTU
+           MOVE    SPA-FREE            TO  SPA-Z01FREE
+           MOVE    SPA-Z01SONOTA       TO  SPA-Z03
+           MOVE    SPA-Z010FREE        TO  SPA-Z010
+      *    画面情報編集
+           MOVE    SPA-GMN-SRYKBN      TO  SPA-Z010-SRYKBN
+           MOVE    SPA-GMN-DATAKBN     TO  SPA-Z010-DATAKBN
+           MOVE    SPA-GMN-JGNCNT      TO  SPA-Z010-JGNCNT
+           MOVE    SPA-GMN-JGNCNT1D    TO  SPA-Z010-JGNCNT1D
+           MOVE    SPA-GMN-SANTEIRRKKBN    TO  SPA-Z010-SANTEIRRKKBN
+      *
+      *    初期カーソル
+           IF      SPA-Z010-RRKMAX     =   ZERO
+               MOVE    "YUKOSTYMD"         TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+           END-IF
+      *
+           MOVE    "Z010"              TO  SPA-SAKIPG
+           MOVE    "Z03"               TO  SPA-MOTOPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                             TO  FLG-END
+           .
+      *
+       407-B10-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    登録処理
       *****************************************************************
@@ -3669,6 +3900,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      4103-HENKOU-CHK-EXT
            END-IF
       *
+           IF      SPA-MASTER-CLASS    =   2
+      *        ユーザ点数設登録
+               MOVE    "tbl_tensu_user"    TO  WRK-MCP-TABLE
+           ELSE
+               MOVE    "tbl_tensu_master"  TO  WRK-MCP-TABLE
+           END-IF
+      *
            INITIALIZE                      TNS-TENSU-REC
       *
            MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
@@ -3679,18 +3917,21 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
+      ****     MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-TENSU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
                INITIALIZE                      TNS-TENSU-REC
            END-IF
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBLOSEC-SEC
       *
@@ -3701,27 +3942,28 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                IF      TNS-TENSU-REC(1:1290)   =   WRK-TNS-TENSU-REC
                    MOVE    SPACE           TO  SPA-ERRCD
+      *H29.1   チェックなし
       *            入力チェック区分はエラーとする
       *            採血料区分・前回検査日チェックは行う
-                   PERFORM 5030-SAIKETUKBN-CHK-SEC
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 5030-ZENKNSKBN-CHK-SEC
-                       IF      SPA-ERRCD       NOT =   SPACE
-                           MOVE    "ZENKNSKBN"     TO  WRK-MCP-WIDGET
-                       END-IF
-                   ELSE
-                       MOVE    "SAIKETUKBN"        TO  WRK-MCP-WIDGET
-                   END-IF
-                   IF      SPA-ERRCD       NOT =   SPACE
+      *            PERFORM 5030-SAIKETUKBN-CHK-SEC
+      *            IF      SPA-ERRCD           =   SPACE
+      *                PERFORM 5030-ZENKNSKBN-CHK-SEC
+      *                IF      SPA-ERRCD       NOT =   SPACE
+      *                    MOVE    "ZENKNSKBN"     TO  WRK-MCP-WIDGET
+      *                END-IF
+      *            ELSE
+      *                MOVE    "SAIKETUKBN"        TO  WRK-MCP-WIDGET
+      *            END-IF
+      *            IF      SPA-ERRCD       NOT =   SPACE
       *            エラーの次のカーソル設定
-                       SET     IDX-GMN             TO  1
-                       SEARCH      TBL-GMN-OCC     VARYING   IDX-GMN
-                       AT  END
-                           MOVE    ZERO            TO  SPA-GMN-CUR
-                       WHEN    WRK-MCP-WIDGET  =   TBL-WIDGET (IDX-GMN)
-                           MOVE    IDX-GMN         TO  SPA-GMN-CUR
-                       END-SEARCH 
-                   END-IF
+      *                SET     IDX-GMN             TO  1
+      *                SEARCH      TBL-GMN-OCC     VARYING   IDX-GMN
+      *                AT  END
+      *                    MOVE    ZERO            TO  SPA-GMN-CUR
+      *                WHEN    WRK-MCP-WIDGET  =   TBL-WIDGET (IDX-GMN)
+      *                    MOVE    IDX-GMN         TO  SPA-GMN-CUR
+      *                END-SEARCH 
+      ****         END-IF
                END-IF
            END-IF
       *
@@ -3777,6 +4019,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "K004"          TO  SPA-ERRCD
                        MOVE    1               TO  SPA-NAI-KEIFLGK
                        MOVE    1               TO  SPA-GMN-CUR
+      *H29.1
+      *               更新不可
+                       IF      (SPA-MASTER-CLASS   =   2  )
+                          OR   (SPA-MENTE-OK       =   1  )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0051"      TO  SPA-ERRCD
+                           MOVE    ZERO        TO  SPA-NAI-KEIFLGK
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -3788,6 +4039,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    7                   TO  SPA-GMN-CUR
                END-IF
            END-IF
+      *
+      *H29.1
+      *    点数付加情報はチェックなし
+           GO      TO      4109-TOUROKU-CHK-EXT
       *
       *    前回検査日と算定履歴作成有無判定
            IF      SPA-GMN-ZENKNSKBN   NOT =   ZERO
@@ -3904,6 +4159,31 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+           IF      SPA-MASTER-CLASS    =   2
+      *        ユーザ点数設登録
+               PERFORM 41211-TENSU-USER-UPD-SEC
+           ELSE
+      *        点数マスタ登録
+               PERFORM 41212-TENSU-MAST-UPD-SEC
+           END-IF
+      *
+      *    前画面に戻る
+           IF      SPA-ERRCD           =   SPACE
+               MOVE     "JOIN"            TO  MCP-PUTTYPE
+               PERFORM  401-BACK-SEC
+           END-IF
+      *
+           .
+       4121-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    登録処理
+      *****************************************************************
+       41211-TENSU-USER-UPD-SEC        SECTION.
+      *
+           MOVE    "tbl_tensu_user"    TO  WRK-MCP-TABLE
+           MOVE    "key"               TO  WRK-MCP-PATHNAME
            EVALUATE    SPA-Z01-SYORIKBN
       *        改正時処理
                WHEN    3
@@ -3918,10 +4198,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 41213-INSERT-SYORI-SEC
            END-EVALUATE
       *
+      *H29.1
       *    点数マスタ付加情報更新
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4129-TENSUPLUS-UPD-SEC
-           END-IF
+      *    IF      SPA-ERRCD           =   SPACE
+      *        PERFORM 4129-TENSUPLUS-UPD-SEC
+      *    END-IF
       *
       *    入力コード更新
            IF      SPA-ERRCD           =   SPACE
@@ -3935,14 +4216,55 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 41212-SRYCDCHG-UPD-SEC
            END-IF
       *
-      *    前画面に戻る
+           .
+       41211-TENSU-USER-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    登録処理
+      *****************************************************************
+       41212-TENSU-MAST-UPD-SEC        SECTION.
+      *
+           IF     (SPA-MENTE-OK        =   1 )
+      *    メンテナンスモードのみ、マスタ更新
+      *
+           MOVE    "tbl_tensu_master"  TO  WRK-MCP-TABLE
+           MOVE    "key"               TO  WRK-MCP-PATHNAME
+           EVALUATE    SPA-Z01-SYORIKBN
+      *        改正時処理
+               WHEN    3
+                   PERFORM 41211-KAISEI-SYORI-SEC
+      *　          新規処理
+                   PERFORM 41213-INSERT-SYORI-SEC
+      *　      更新処理
+               WHEN    2
+                   PERFORM 41212-UPDATE-SYORI-SEC
+      *　      新規処理
+               WHEN    1
+                   PERFORM 41213-INSERT-SYORI-SEC
+           END-EVALUATE
+      *
+           END-IF
+      *H29.1
+      *    点数マスタ付加情報更新
+      *    IF      SPA-ERRCD           =   SPACE
+      *        PERFORM 4129-TENSUPLUS-UPD-SEC
+      *    END-IF
+      *
+      *    入力コード更新
            IF      SPA-ERRCD           =   SPACE
-               MOVE     "JOIN"            TO  MCP-PUTTYPE
-               PERFORM  401-BACK-SEC
+               CALL    "ORCGZS01"          USING
+                                           MCPAREA
+                                           SPAAREA
+           END-IF
+      *
+      *    老人一般コード変換マスタ更新
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41212-SRYCDCHG-UPD-SEC
            END-IF
       *
            .
-       4121-TOUROKU-EXT.
+       41212-TENSU-MAST-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3979,11 +4301,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
+      *****    MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-TENSU-READ-SEC
            ELSE
@@ -3991,7 +4315,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                      TNS-TENSU-REC
            END-IF
       *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBLOSEC-SEC
       *
@@ -4004,22 +4329,23 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  TNSUP-YUKOSTYMD
                MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                            TO  TNSUP-YUKOEDYMD
+               MOVE    SPA-HOSPNUM         TO  TNSUP-HOSPNUM
       *
                MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  TNSUP-HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
+      *****    MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
                IF      MCP-RC              NOT =   ZERO
                    DISPLAY "Z02 TENSU UPD ERR:" MCP-RC
-                           ",KEY:" TNS-KEY
+                           ",KEY:" TNSUP-KEY
                    MOVE    1                     TO  SPA-GMN-CUR
                    MOVE    "9002"                TO  SPA-ERRCD
                END-IF
@@ -4042,14 +4368,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  TNS-YUKOSTYMD
            MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                        TO  TNS-YUKOEDYMD
-      *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+      *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
+      *****    MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-TENSU-READ-SEC
            ELSE
@@ -4057,12 +4385,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                      TNS-TENSU-REC
            END-IF
       *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBLOSEC-SEC
       *
            IF      FLG-TENSU           =   ZERO
       *        更新項目編集
+               MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
                MOVE    SPA-NAI-YUKOSTYMD   TO  TNS-YUKOSTYMD
                MOVE    SPA-NAI-YUKOEDYMD   TO  TNS-YUKOEDYMD
                MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
@@ -4073,15 +4403,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  TNSUP-YUKOSTYMD
                MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                            TO  TNSUP-YUKOEDYMD
+               MOVE    SPA-HOSPNUM         TO  TNSUP-HOSPNUM
       *
                MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  TNSUP-HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
+      ******   MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
@@ -4119,7 +4450,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -4332,54 +4664,54 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *     点数マスタ付加情報更新処理
       *****************************************************************
-       4129-TENSUPLUS-UPD-SEC                       SECTION.
+      *4129-TENSUPLUS-UPD-SEC                       SECTION.
       *
-           INITIALIZE                  ORCGZS02AREA
-           MOVE    SPA-NAI-YUKOSTYMD   TO  ZS02-NAI-YUKOSTYMD
-           MOVE    SPA-NAI-YUKOEDYMD   TO  ZS02-NAI-YUKOEDYMD
-           MOVE    WRK-YUKOEDYMD       TO  ZS02-YUKOEDYMD
+      *    INITIALIZE                  ORCGZS02AREA
+      *    MOVE    SPA-NAI-YUKOSTYMD   TO  ZS02-NAI-YUKOSTYMD
+      *    MOVE    SPA-NAI-YUKOEDYMD   TO  ZS02-NAI-YUKOEDYMD
+      *    MOVE    WRK-YUKOEDYMD       TO  ZS02-YUKOEDYMD
       *    採血料区分
-           INITIALIZE                  TENSUPLUS-REC
-           MOVE    SPA-GMN-SAIKETUKBN  TO  TNSP-SAIKETUKBN
-           MOVE    SPA-GMN-ZENKNSKBN   TO  TNSP-ZENKNSKBN
-           MOVE    SPA-GMN-INPCHKKBN   TO  TNSP-INPCHKKBN
-           MOVE    SPA-GMN-PLUS-SANTEIRRK
-                                       TO  TNSP-SANTEIRRKKBN
-           MOVE    SPA-GMN-PLUS-JGNCNT
-                                       TO  TNSP-JGNCNT
-           MOVE    SPA-GMN-PLUS-JGNCNT1D
-                                       TO  TNSP-JGNCNT1D
-           MOVE    SPA-GMN-PLUS-JGNCNT1W
-                                       TO  TNSP-JGNCNT1W
-           MOVE    SPA-GMN-PLUS-JGNCNTETCM
-                                       TO  TNSP-JGNCNTETCM
-           MOVE    SPA-GMN-PLUS-JGNCNTETC
-                                       TO  TNSP-JGNCNTETC
-           MOVE    SPA-GMN-PLUS-JGNCNTERR
-                                       TO  TNSP-JGNCNTERR
+      *    INITIALIZE                  TENSUPLUS-REC
+      *    MOVE    SPA-GMN-SAIKETUKBN  TO  TNSP-SAIKETUKBN
+      *    MOVE    SPA-GMN-ZENKNSKBN   TO  TNSP-ZENKNSKBN
+      *    MOVE    SPA-GMN-INPCHKKBN   TO  TNSP-INPCHKKBN
+      *    MOVE    SPA-GMN-PLUS-SANTEIRRK
+      *                                TO  TNSP-SANTEIRRKKBN
+      *    MOVE    SPA-GMN-PLUS-JGNCNT
+      *                                TO  TNSP-JGNCNT
+      *    MOVE    SPA-GMN-PLUS-JGNCNT1D
+      *                                TO  TNSP-JGNCNT1D
+      *    MOVE    SPA-GMN-PLUS-JGNCNT1W
+      *                                TO  TNSP-JGNCNT1W
+      *    MOVE    SPA-GMN-PLUS-JGNCNTETCM
+      *                                TO  TNSP-JGNCNTETCM
+      *    MOVE    SPA-GMN-PLUS-JGNCNTETC
+      *                                TO  TNSP-JGNCNTETC
+      *    MOVE    SPA-GMN-PLUS-JGNCNTERR
+      *                                TO  TNSP-JGNCNTERR
       *    他月数
-           MOVE    SPA-GMN-PLUS-JGNCNTETCM
-                                       TO  TNSP-JGNCNTETCM
+      *    MOVE    SPA-GMN-PLUS-JGNCNTETCM
+      *                                TO  TNSP-JGNCNTETCM
       *    他回数
-           MOVE    SPA-GMN-PLUS-JGNCNTETC
-                                       TO  TNSP-JGNCNTETC
+      *    MOVE    SPA-GMN-PLUS-JGNCNTETC
+      *                                TO  TNSP-JGNCNTETC
       *    処方名称
-           MOVE    SPA-GMN-SHONAME     TO  TNSP-SHONAME
-                                           WRK-STRINGTBL
-           MOVE    100                 TO  CNT-STRING
-           PERFORM 891-STRCOUNT-SEC
-           MOVE    CNT-STRING          TO  TNSP-SHOYUKOKETA
+      *    MOVE    SPA-GMN-SHONAME     TO  TNSP-SHONAME
+      *                                    WRK-STRINGTBL
+      *    MOVE    100                 TO  CNT-STRING
+      *    PERFORM 891-STRCOUNT-SEC
+      *    MOVE    CNT-STRING          TO  TNSP-SHOYUKOKETA
       *
       *    入力コード更新
-           CALL    "ORCGZS02"          USING
-                                       MCPAREA
-                                       SPAAREA
-                                       ORCGZS02AREA
-                                       TENSUPLUS-REC
+      *    CALL    "ORCGZS02"          USING
+      *                                MCPAREA
+      *                                SPAAREA
+      *                                ORCGZS02AREA
+      *                                TENSUPLUS-REC
       *
-           .
-       4129-TENSUPLUS-UPD-EXT.
-           EXIT.
+      *    .
+      *4129-TENSUPLUS-UPD-EXT.
+      **** EXIT.
       *
       *****************************************************************
       *  老人一般コード変換マスタ更新
@@ -4518,7 +4850,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE  SPA-GMN-FORMALNAME            TO  Z03-FORMALNAME
            MOVE  SPA-GMN-SHONAME               TO  Z03-SHONAME
-           MOVE  SPA-GMN-INPCHKKBN             TO  Z03-INPCHKKBN
+      *****MOVE  SPA-GMN-INPCHKKBN             TO  Z03-INPCHKKBN
       *    採血料区分
            MOVE  SPA-GMN-SAIKETUKBN-G          TO  Z03-SAIKETUKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -4797,8 +5129,25 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-FUKUBIKUKOTUKBN TO  Z03-FUKUBIKUKOTUKBN
       *    長時間麻酔管理加算
            MOVE    SPA-GMN-TIMEMASUIKBN    TO  Z03-TIMEMASUIKBN
+      *H29.1
+      *    ユーザー
+           IF      SPA-MASTER-CLASS    =   2
+               MOVE    "【ユーザー管理】"  TO  Z03-MIDASHI-DATA
+               MOVE    "red"               TO  Z03-MIDASHI-STYLE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
+      *H29.1
+      *    ユーザー点数識別（ユーザーマスタ）のみ更新
+           IF     (SPA-MASTER-CLASS    =   2 )
+               OR (SPA-MENTE-OK        =   1 )
+               MOVE    WIDGET-NORMAL           TO  Z03-B12-STATE
+               MOVE    WIDGET-NORMAL           TO  Z03-B03-STATE
+           ELSE
+      ****     MOVE    WIDGET-INSENSITIVE      TO  Z03-B12-STATE
+               MOVE    WIDGET-NORMAL           TO  Z03-B12-STATE
+               MOVE    WIDGET-INSENSITIVE      TO  Z03-B03-STATE
+           END-IF
       *
            MOVE  SPA-GMN-PAGENO                TO  Z03-PAGENO
       *
@@ -4946,6 +5295,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    DELIMITED BY  SIZE
                                                  INTO    SPA-ERRMSG
                    END-STRING
+      *H29.1
+               WHEN    "0050"
+                   STRING   "ユーザー設定はできません。"
+                                                   DELIMITED BY  SIZE
+                                                 INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0051"
+                   STRING    "厚生労働省から提供される範囲のコードです"
+                             "。有効年月日の変更はしないで下さい。"
+                                                   DELIMITED BY  SIZE
+                                                 INTO    SPA-ERRMSG
+                   END-STRING
       *
       *        以下共通
                WHEN    "1010"
@@ -5038,7 +5399,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    エラーメッセージ表示理
+      *    確認メッセージ表示理
       *****************************************************************
        520-ZIDSET-SEC              SECTION.
       *

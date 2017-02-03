@@ -53,5 +53,9 @@ Z08 {
     MSGLBEL {
       textdata varchar(100);
     };
+    MIDASHI { #GtkLabel
+      style varchar(20);
+      textdata varchar(80);
+    };
   };
 };

@@ -44,3 +44,12 @@
                 05  Z01-VALUE   PIC X(10).
               04  Z01-NAME.
                 05  Z01-VALUE   PIC X(100).
+              03  Z01-B08.
+                04  Z01-B08-STATE   PIC S9(9)   BINARY.
+                04  Z01-B08-LABEL   PIC X(10).
+              03  Z01-B10.
+                04  Z01-B10-STATE   PIC S9(9)   BINARY.
+                04  Z01-B10-LABEL   PIC X(10).
+              04  Z01-MIDASHI.
+                05  Z01-MIDASHI-STYLE  PIC X(20).
+                05  Z01-MIDASHI-DATA   PIC X(80).

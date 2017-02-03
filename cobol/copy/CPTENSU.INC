@@ -40,6 +40,7 @@
       *                                     点数表区分番号
       *                                     労災算定不可
       *                                     四肢加算（労災）
+      * 05.00.00     NACL-伊藤    17/01/05  マスター区分
       ************************************************************
        01  TNS-TENSU-REC.
       *(1)
@@ -204,6 +205,7 @@
            03  TNS-CREYMD              PIC  X(08).
            03  TNS-UPYMD               PIC  X(08).
            03  TNS-UPHMS               PIC  X(06).
+           03  TNS-MASTER-CLASS        PIC  9(01).
       *　　主キー更新用項目
            03  TNSUP-KEY.
                05  TNSUP-HOSPNUM       PIC 9(2).

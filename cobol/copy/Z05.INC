@@ -49,8 +49,6 @@
                 04  Z05-VALUE   PIC X(200).
               03  Z05-SHONAME.
                 04  Z05-VALUE   PIC X(200).
-              03  Z05-INPCHKKBN.
-                04  Z05-VALUE   PIC S9(1).
               03  Z05-TENSIKIBETUCOB.
                 04  Z05-TENSIKIBETU.
                   05  Z05-VALUE   PIC X(26).
@@ -111,3 +109,37 @@
               03  Z05-B09.
                 04  Z05-B09-STATE   PIC S9(9)   BINARY.
                 04  Z05-B09-LABEL   PIC X(10).
+              03  Z05-B03.
+                04  Z05-B03-STATE   PIC S9(9)   BINARY.
+              03  Z05-B12.
+                04  Z05-B12-STATE   PIC S9(9)   BINARY.
+              04  Z05-MIDASHI.
+                05  Z05-MIDASHI-STYLE  PIC X(20).
+                05  Z05-MIDASHI-DATA   PIC X(80).
+              03  Z05-SELNUM-G.
+                04  Z05-SELNUM         PIC S9(3).
+              03  Z05-SCROLLEDWINDOW1.
+                04  Z05-PRICELIST.
+                  05  Z05-PRICELIST-COUNT   PIC S9(9)   BINARY.
+                  05  Z05-ROW PIC S9(9)   BINARY.
+                  05  Z05-PRICELIST-SELECT
+                          PIC X       OCCURS  50 TIMES.
+                  05  Z05-FGCOLOR
+                          PIC X(20)   OCCURS  50 TIMES.
+                  05  Z05-BGCOLOR
+                          PIC X(20)   OCCURS  50 TIMES.
+                  05  Z05-ITEM        OCCURS  50 TIMES.
+                    06  Z05-TRENNUM       PIC X(3).
+                    06  Z05-TPRCYUKOSTYMD PIC X(10).
+                    06  Z05-TPRCYUKOEDYMD PIC X(10).
+                    06  Z05-TPRICE        PIC X(12).
+              03  Z05-PRCYUKOSTYMD.
+                04  Z05-TEXTDATA    PIC X(10).
+              03  Z05-PRCYUKOEDYMD.
+                04  Z05-TEXTDATA    PIC X(10).
+              03  Z05-PRICE.
+                04  Z05-TEXTDATA    PIC X(12).
+              03  Z05-BS03.
+                04  Z05-BS03-STATE   PIC S9(9)   BINARY.
+              03  Z05-BS12.
+                04  Z05-BS12-STATE   PIC S9(9)   BINARY.

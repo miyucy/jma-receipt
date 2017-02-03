@@ -76,6 +76,7 @@
       *  04.07.00    NACL-多々納  14/04/25  施設基準チェック対応
       *  04.08.00    NACL-多々納  16/03/XX  平成２８年４月改正対応
       *  04.08.00    NACL-多々納  16/04/20  向精神薬区分追加対応
+      *  05.00.00    NACL-多々納  17/01/XX  点数マスタユーザ対応
       *****************************************************************
       *
       *
@@ -107,6 +108,7 @@
       *H28.1
            03  FLG-GENERICNAME     PIC 9(01).
            03  FLG-PSYCHOTROPIC    PIC 9(01).
+           03  FLG-TENSUPRICE      PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-SST             PIC 9(01).
@@ -456,6 +458,10 @@
       *    向精神薬成分コード
        01  PSYCHOTROPIC-REC.
            COPY    "CPPSYCHOTROPIC.INC".
+      *v5.0
+      *    点数マスタ器材金額
+        01 TENSU-PRICE-REC.
+           COPY    "CPTENSU-PRICE.INC".
       *
       *    算定履歴
        01  HZN-SANTEI-REC.
@@ -2162,6 +2168,7 @@
       *    診療コードのみ対象
       *****IF      CHK-CD(1:1)         =   "1"
       *
+      *
                EVALUATE    CHK-CHKKBN
                    WHEN    "5"
       *            同月内チェック
@@ -3853,6 +3860,7 @@
       *    基礎点数
            MOVE    TNS-TEN             TO  SPA-COM-TEN      (IDX-T)
            MOVE    TNS-TEN             TO  SPA-COM-KISOTEN  (IDX-T)
+      *
       *H28.4
       *    薬剤　除算金額（１０で除す）
            IF     (TNS-SRYCD(1:1)      =   "6"  ) AND
@@ -4197,6 +4205,14 @@
                MOVE    "1"                 TO  SPA-COM-SIPPUKBN (IDX-T)
                MOVE    TNS-SSTKIJUNCD(2)   TO  SPA-COM-SIPRYO1 (IDX-T)
                MOVE    TNS-SSTKIJUNCD(4)   TO  SPA-COM-SIPRYO2 (IDX-T)
+      *H29.1   付加情報があれば優先
+               IF     (TNSP-SIPPURYO1      =   ZERO )
+                  AND (TNSP-SIPPURYO2      =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    TNSP-SIPPURYO1  TO  SPA-COM-SIPRYO1 (IDX-T)
+                   MOVE    TNSP-SIPPURYO2  TO  SPA-COM-SIPRYO2 (IDX-T)
+               END-IF
            END-IF
       *H28.4
       *    労災算定不可
@@ -4207,6 +4223,15 @@
       *    凍結保存同種組織加算
            MOVE    TNS-TOUKETUHOZONKSN TO  SPA-COM-TOUKETUHOZONKSN
                                                              (IDX-T)
+      *H29.1
+      *    ユーザー管理区分
+           IF     (TNS-MASTER-CLASS    =   2 )
+              AND (TNS-SRYCD(1:1)      =   "1"
+                                       OR  "6"
+                                       OR  "7" )
+               MOVE    "2"             TO  SPA-COM-MASTER-CLASS
+                                                             (IDX-T)
+           END-IF
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
@@ -5918,6 +5943,21 @@
                MOVE    SPACE               TO  TENSUPLUS-REC
                INITIALIZE                      TENSUPLUS-REC
            END-IF
+      *
+      *H29.1
+      *    器材ユーザー金額編集（酸素等）
+           IF     (TNS-SRYCD(1:1)      =   "7" )
+      *        酸素等、都道府県購入価格
+              AND ((TNS-TOKUKIZAISBT1  =   "2"
+                                       OR  "3"
+                                       OR  "4" )  OR
+                   (TNS-TENSIKIBETU    =   "2" ))
+               PERFORM 9103-TENSUPRICE-READ-SEC
+               IF    ( FLG-TENSUPRICE      =   ZERO )
+                 AND ( TNSPR-PRICE     NOT =   ZERO )
+                   MOVE    TNSPR-PRICE         TO  TNS-TEN
+               END-IF
+           END-IF
            .
        910-TENSU-READ-EXT.
            EXIT.
@@ -5930,8 +5970,10 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      **   MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+      **   MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
@@ -6000,6 +6042,45 @@
            .
        9102-TENSUPLUS2-READ-EXT.
            EXIT.
+      *H29.1
+      *****************************************************************
+      *    点数マスタ器材金額付加情報より編集処理
+      *****************************************************************
+       9103-TENSUPRICE-READ-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSU-PRICE-REC
+           INITIALIZE                  TENSU-PRICE-REC
+           MOVE    SPA-HOSPNUM         TO  TNSPR-HOSPNUM
+           MOVE    TNS-SRYCD           TO  TNSPR-SRYCD
+           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOEDYMD
+      *
+           MOVE    TENSU-PRICE-REC     TO  MCPDATA-REC
+           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu_price"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSU-PRICE-REC
+                   MOVE    ZERO                TO  FLG-TENSUPRICE
+               ELSE
+                   MOVE    1                   TO  FLG-TENSUPRICE
+                   INITIALIZE                      TENSU-PRICE-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPRICE
+               INITIALIZE                      TENSU-PRICE-REC
+           END-IF
+           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       9103-TENSUPRICE-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    点数マスター読込（算定履歴検索用）
       *****************************************************************
