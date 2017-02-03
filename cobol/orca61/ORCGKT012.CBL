@@ -4028,10 +4028,12 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+           MOVE    SPA-KT012NAI-RRKYMD(SPA-KT012-DOSELNUM)
+                                       TO  TNSP-YUKOSTYMD
+           MOVE    SPA-KT012NAI-RRKYMD(SPA-KT012-DOSELNUM)
+                                       TO  TNSP-YUKOEDYMD
+           MOVE    SPA-KT012-HOSPNUM   TO  TNSP-HOSPNUM
       *
-           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME

@@ -417,6 +417,8 @@
       *    商品名単位名称
            03  WRK-SYO-TANINAME        PIC X(12).
       *
+           03  WRK-YUKOSTYMD           PIC X(08).
+      *
       *    院内表示
        01  TBL-INNAI-AREA.
            03  TBL-INNAI-TBL           OCCURS   400.
@@ -5313,6 +5315,7 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
+           MOVE    TNS-YUKOSTYMD       TO  WRK-YUKOSTYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
@@ -5451,8 +5454,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
