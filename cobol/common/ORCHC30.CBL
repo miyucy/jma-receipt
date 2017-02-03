@@ -59,7 +59,6 @@
       *  04.08.01    NACL-森脇     14/08/08  画像イメージ作成機能追加
       *  04.08.02    NACL-森脇     16/09/06  API(GINBEE)対応
       *  04.08.03    NACL-森脇     16/11/22  服用方法コード対応
-      *  05.00.00    NACL-森脇     17/02/22  自費薬剤対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -150,7 +149,6 @@
            03  IDX-KEIJYO          PIC 9(04).
            03  IDX-KONO            PIC 9(04).
            03  IDX-CYUI            PIC 9(04).
-           03  IDXA                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -170,12 +168,6 @@
                05  WRK-HOSPADRS1   PIC X(50).
                05  WRK-HOSPADRS2   PIC X(50).
            03  WRK-HOSPTEL         PIC X(15).
-           03  WRK-API-HOSPNAME-G.
-               05  WRK-API-HOSPNAME    PIC X(120)
-                                       OCCURS 3.
-           03  WRK-API-HOSPADRS-G.
-               05  WRK-API-HOSPADRS    PIC X(120)
-                                       OCCURS 3.
       *----(04.08.02)--ADD-START---
            03  WRK-HOSPPOST        PIC X(07).
            03  WRK-DRNAME          PIC X(50).
@@ -410,14 +402,11 @@
       *    医療機関情報−基本情報
            PERFORM 900-1001-READ-SEC
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-HOSPNAME   TO  WRK-API-HOSPNAME(1)
       *
       *    医療機関情報−所在地、連絡先
            PERFORM 900-1002-READ-SEC
            MOVE    SYS-1002-ADRS   TO  WRK-HOSPADRS
-           MOVE    SYS-1002-ADRS   TO  WRK-API-HOSPADRS(1)
            MOVE    SYS-1002-TEL    TO  WRK-HOSPTEL
-           MOVE    SYS-1002-POST   TO  WRK-HOSPPOST
       *
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
@@ -426,6 +415,7 @@
            PERFORM 900-1010-READ-SEC
       *
       *----(04.08.02)--ADD-START---
+           MOVE    SYS-1002-POST   TO  WRK-HOSPPOST
            MOVE    SYS-1010-NAME   TO  WRK-DRNAME
            MOVE    SYS-1010-KANANAME
                                    TO  WRK-DRKANANAME
@@ -479,17 +469,14 @@
            IF    ( WRK-PARA(1:1)       =   "1" )
                MOVE    WRK-PARA(1:1)       TO  PARA-API-DATA
            END-IF
-           IF     (PARA-API-DATA       =   "1"       )
+      *    ginbeeのみ対応
+           IF     (SPA-MW              =   SPA-GINBEE)
+              AND (PARA-API-DATA       =   "1"       )
                CONTINUE
            ELSE
       *        API送信なし
                MOVE    "0"             TO  PARA-API-DATA
            END-IF
-      *    HAORI対応
-           IF      SPA-API-FLG         =   1
-               MOVE    "1"             TO  PARA-API-DATA
-           END-IF
-      *
       *    ＡＰＩカスタムＩＤ
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
@@ -511,20 +498,10 @@
                                        SPA-AREA
                                        ORCSPRGOPTIONAREA
            MOVE    SPACE           TO  WRK-PARA
-           EVALUATE    WRK-PARA-NAME
-           WHEN  "API_CUSTOM_ID"
-               MOVE    ORCSPRGOPTION-OT-PARA
-                                   TO  WRK-PARA
-           WHEN    OTHER
-               IF    ( ORCSPRGOPTION-OT-TYPE   =   1 )
-      *            半角で１文字目を値とする
-                   MOVE    ORCSPRGOPTION-OT-PARA(1:1)
-                                   TO  WRK-PARA(1:1)
-               ELSE
-                   MOVE    ORCSPRGOPTION-OT-PARA
-                                   TO  WRK-PARA
-               END-IF
-           END-EVALUATE
+           IF      ORCSPRGOPTION-OT-TYPE   =   1
+      *        半角で１文字目を値とする
+               MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
+           END-IF
       *
            .
        1001-OPTION-CALL-EXT.
@@ -1161,23 +1138,6 @@
                            "回分"              DELIMITED  BY  SIZE
                            INTO                WRK-HENSYUDATA
                    END-STRING
-      *----(05.00.00)--ADD-START---
-               WHEN    9
-                   IF      TNS-YKZKBN  =   1
-                       STRING  KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               DELIMITED  BY  SIZE
-                               "日分"          DELIMITED  BY  SIZE
-                               INTO            WRK-HENSYUDATA
-                       END-STRING
-                   END-IF
-                   IF      TNS-YKZKBN  =   6
-                       STRING  KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               DELIMITED  BY  SIZE
-                               "回分"          DELIMITED  BY  SIZE
-                               INTO            WRK-HENSYUDATA
-                       END-STRING
-                   END-IF
-      *----(05.00.00)--ADD-END-----
            END-EVALUATE
            PERFORM 250-HENSYU-SYORI-SEC
       *
@@ -2048,19 +2008,13 @@
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE    TO  FMYAKUJO-BIRTHDAY
       *
-           PERFORM VARYING IDXA    FROM    1   BY  1
-                   UNTIL ( IDXA    >   3 )
-               MOVE    WRK-API-HOSPNAME (IDXA)
-                                   TO  FMYAKUJO-HOSP-NAME (IDXA)
-           END-PERFORM
+           MOVE    WRK-HOSPNAME1   TO  FMYAKUJO-HOSP-NAME(1)
+           MOVE    WRK-HOSPNAME2   TO  FMYAKUJO-HOSP-NAME(2)
       *
            MOVE    WRK-HOSPPOST    TO  FMYAKUJO-HOSP-POST
       *
-           PERFORM VARYING IDXA    FROM    1   BY  1
-                   UNTIL ( IDXA    >   3 )
-               MOVE    WRK-API-HOSPADRS (IDXA)
-                                   TO  FMYAKUJO-HOSP-ADRS (IDXA)
-           END-PERFORM
+           MOVE    WRK-HOSPADRS1   TO  FMYAKUJO-HOSP-ADRS(1)
+           MOVE    WRK-HOSPADRS2   TO  FMYAKUJO-HOSP-ADRS(2)
       *
            MOVE    WRK-HOSPTEL     TO  FMYAKUJO-HOSP-TEL
       *
@@ -2275,9 +2229,9 @@
            MOVE    "okusuri_joho"  TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID
                                    TO  RPMAIN-CUSTOM-ID
-           MOVE    "お薬情報" 
+           MOVE    "薬剤情報提供書" 
                                    TO  RPMAIN-TITLE
-           MOVE    "fm_medicine_information"
+           MOVE    "fm_medichine_information"
                                    TO  MCP-TABLE
            MOVE    FMYAKUJO-DATA   TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
@@ -2633,13 +2587,6 @@
                                        TO  WRK-HOSPNAME1
                MOVE    SYS-1901-HOSPNAME2
                                        TO  WRK-HOSPNAME2
-      *
-               MOVE    SYS-1901-HOSPNAME1
-                                       TO  WRK-API-HOSPNAME(1)
-               MOVE    SYS-1901-HOSPNAME2
-                                       TO  WRK-API-HOSPNAME(2)
-               MOVE    SYS-1901-HOSPNAME3
-                                       TO  WRK-API-HOSPNAME(3)
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -2668,13 +2615,7 @@
                MOVE    MCPDATA-REC     TO  SYS-1902-REC
                MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
                MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
-      *
-               MOVE    SYS-1902-ADRS1  TO  WRK-API-HOSPADRS(1)
-               MOVE    SYS-1902-ADRS2  TO  WRK-API-HOSPADRS(2)
-               MOVE    SYS-1902-ADRS3  TO  WRK-API-HOSPADRS(3)
-      *
                MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
-               MOVE    SYS-1902-POST   TO  WRK-HOSPPOST
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF

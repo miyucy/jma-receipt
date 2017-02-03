@@ -528,41 +528,7 @@ RECORD_files = \
     stock1v2.rec \
 	okusurigetv2.rec \
 	okusuriputv2.rec \
-	Z010.rec \
     imagegetv2.rec \
-	medicalmodv36.rec \
-	diseasev2.rec \
-	incomev3.rec \
-	patientlst6v2.rec \
- 	Q05.rec \
- 	prescriptionv2.rec \
- 	medicinenotebookv2.rec \
-	diseasemasterlstv3.rec \
-	medicationmasterlstv3.rec \
-	tmedicalmodv2.rec \
- 	X08.rec \
-	diseasev3.rec \
-	receiptdatamakev3.rec \
-	subjectiveslstv2.rec \
-	medicalmodv37.rec \
-	hsfindv3.rec \
-	patientbasisallv3.rec \
-	hspmmv2.rec \
-	patientdiseaseallv3.rec \
-    masterlastupdatev3.rec \
-	system01dailyv2.rec \
-    hsconfroomchargev2.rec \
-	patientmedicalallv3.rec \
-	W93.rec \
-	medicalmodav31.rec \
-	medicalmodav32.rec \
-	medicalmodav33.rec \
-	medicalmodav34.rec \
-	receiptdatacheckmakev3.rec \
-    pusheventgetv2.rec \
-	addressmasterlstv3.rec \
-	XG04.rec \
-	tempmedicaladdv3.rec \
 
 DEF_files = \
 
@@ -905,12 +871,12 @@ DB_files = \
 	xml_claim_receivev2req.db \
 	xml_claim_receivev2res.db \
 	fm_karte_no1.db \
-    fm_medicine_notebook.db \
+	fm_medication_note.db \
 	xml_formdatagetv2req.db \
 	xml_contraindication_checkv2req.db \
 	xml_contraindication_checkv2res.db \
 	fm_prescription.db \
-	fm_medicine_information.db \
+	fm_medichine_information.db \
 	xml_patientmodv3req4.db \
 	xml_patientmodv3res4.db \
 	fm_appointment_form.db \
@@ -994,117 +960,9 @@ DB_files = \
 	xml_okusurigetv2res.db \
 	xml_okusuriputv2req.db \
 	xml_okusuriputv2res.db \
-	tbl_tensu_price.db \
-	tbl_tensu_master.db \
-	tbl_tensu_user.db \
 	push_print001.db \
     xml_imagegetv2req.db \
-	xml_medicalv3req6.db \
-	xml_medicalv3res6.db \
-	xml_diseasev2req.db \
-	xml_diseasev2res.db \
-	tbl_material_h.db \
-	tbl_material_k.db \
-	tbl_material_s.db \
-	tbl_material_h_m_master.db \
-	tbl_material_h_c_master.db \
-	tbl_material_h_k_master.db \
-	tbl_material_h_n_master.db \
-	tbl_material_k_master.db \
-	tbl_material_s_master.db \
-	xml_incomev3req.db \
-	xml_incomev3req01.db \
-	xml_incomev3req02.db \
-	xml_incomev3res01.db \
-	xml_incomev3res02.db \
-	xml_incomev3res03.db \
-	xml_patientlst6v2req.db \
-	xml_patientlst6v2res.db \
-	xml_prescriptionv2req.db \
-	fm_discharge_certificate.db \
-	fm_invoice_receipt_h.db \
-	fm_karte_no1_h.db \
-	fm_karte_no3.db \
-	fm_karte_no3_h.db \
-    fm_medicine_notebook_h.db \
-	fm_medicine_information_h.db \
-	fm_order_direction.db \
-	fm_order_injection.db \
-    fm_payment_certificate.db \
-    fm_prescription_h.db \
-    fm_statement_h.db \
-	xml_disease_masterlstv3req.db \
-	xml_disease_masterlstv3res.db \
-	xml_medication_masterlstv3req.db \
-	xml_medication_masterlstv3res.db \
-	push_batch01.db \
-	push_accept02.db \
-	push_patient01.db \
-	push_medical01.db \
-	xml_tmedicalmodv2req.db \
-	xml_tmedicalmodv2res.db \
-	tbl_srycdchg_user.db \
-	tbl_srycdchg_master.db \
-	tbl_chk_master.db \
-	tbl_chk_user.db \
-	xml_diseasev3req.db \
-	xml_diseasev3res.db \
-	tbl_adrs_master.db \
-	tbl_adrs_user.db \
-	xml_receiptdata_makev3req.db \
-	xml_receiptdata_makev3res.db \
-	xml_subjectiveslstv2req.db \
-	xml_subjectiveslstv2res.db \
-	xml_medicalv3req7.db \
-	xml_medicalv3res7.db \
-	xml_hsfindv3req.db \
-	xml_hsfindv3res.db \
-	monblob.db \
-	xml_stock1.db \
-	xml_disease_masterlst.db \
-	tbl_hknjainf_master.db \
-	tbl_hknjainf_user.db \
-	xml_medicine_notebookv2req.db \
-	xml_medication_masterlst.db \
-	xml_patient_basis_allv3req.db \
-	xml_patient_basis_allv3res.db \
-	xml_patient_basis_all.db \
-	xml_hspmmv2req.db \
-	xml_hspmmv2res.db \
-	xml_patient_disease_allv3req.db \
-	xml_patient_disease_allv3res.db \
-	xml_patient_disease_all.db \
-    xml_masterlastupdatev3req.db \
-    xml_masterlastupdatev3res.db \
-	xml_system01_dailyv2req.db \
-	xml_system01_dailyv2res.db \
-    xml_hsconfroomchargev2req.db \
-    xml_hsconfroomchargev2res.db \
-	xml_patient_medical_allv3req.db \
-	xml_patient_medical_allv3res.db \
-	xml_patient_medical_all.db \
-	tbl_receden_tmp.db \
-	xml_medicalav3req1.db \
-	xml_medicalav3req2.db \
-	xml_medicalav3req3.db \
-	xml_medicalav3req4.db \
-	xml_medicalav3res1.db \
-	xml_medicalav3res2.db \
-	xml_medicalav3res3.db \
-	xml_medicalav3res4.db \
-	xml_receiptdata_check_makev3req.db \
-	xml_receiptdata_check_makev3res.db \
-    monpushevent.db \
-    xml_pusheventgetv2err.db \
-    xml_pusheventgetv2req.db \
-    xml_pusheventgetv2res.db \
-	xml_address_masterlstv3req.db \
-	xml_address_masterlstv3res.db \
-	xml_address_masterlst.db \
-    push_hospital_stay.db \
-	tbl_file_mis.db \
-	xml_temp_medical_addv3req.db \
-	xml_temp_medical_addv3res.db \
+
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

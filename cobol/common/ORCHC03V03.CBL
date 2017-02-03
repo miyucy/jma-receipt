@@ -1185,26 +1185,19 @@
            MOVE    WRK-PARA        TO  TPARA-CHUI
       *
       *
-      *    API_DATA
-           IF    ( ORCHC03-SIZE    =   "V1" OR "V2" )
-            OR   ( ORCHC03-PRTKBN  =   "1" )
-               CONTINUE
-           ELSE
+           IF    ( SPA-MW              =   SPA-GINBEE )
+      *        API_DATA
                MOVE    "API_DATA"      TO  WRK-PARA-NAME
                PERFORM 1001-OPTION-CALL-SEC
                IF    ( WRK-PARA        =   "1" )
                    MOVE    WRK-PARA    TO  TPARA-API-DATA
                END-IF
-           END-IF
       *
-           IF     ( SPA-API-FLG    NOT =   ZERO )
-               MOVE    "1"         TO  TPARA-API-DATA
+      *        API_CUSTOM_ID
+               MOVE    "API_CUSTOM_ID" TO  WRK-PARA-NAME
+               PERFORM 1001-OPTION-CALL-SEC
+               MOVE    WRK-PARA        TO  TPARA-API-CUSTOM-ID
            END-IF
-      *
-      *    API_CUSTOM_ID
-           MOVE    "API_CUSTOM_ID" TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA        TO  TPARA-API-CUSTOM-ID
       *
       *    以下V5用
       *    合計単位
@@ -1904,9 +1897,7 @@
            MOVE    SYS-1031-PRTNM(3)   TO  FMSEIKYU-PRINTER
            MOVE    ORCHC03-MOTOID      TO  FMSEIKYU-MOTOID
            MOVE    HC03-KNJNO          TO  FMSEIKYU-PTNUM
-           IF    ( TPARA-KANANAME      =   "1" )
-               MOVE    PTINF-KANANAME  TO  FMSEIKYU-KANANAME
-           END-IF
+           MOVE    PTINF-KANANAME      TO  FMSEIKYU-KANANAME
            MOVE    SPA-NAME            TO  FMSEIKYU-NAME
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
@@ -1925,9 +1916,7 @@
            IF    ( ORCHC03-MOTOID      =   2 OR 5 )
                MOVE    WRK-JNISSU      TO  FMSEIKYU-JNISSU
            END-IF
-           IF    ( TPARA-SRYKA         =   "1" )
-               MOVE    WRK-SRYKA-MEI   TO  FMSEIKYU-SRYKANAME
-           END-IF
+           MOVE    WRK-SRYKA-MEI       TO  FMSEIKYU-SRYKANAME
       *
            MOVE    WRK-SRYKIKANKBN     TO  FMSEIKYU-SRYKIKANKBN
       *
@@ -2007,9 +1996,7 @@
                                        TO  FMSEIKYU-MEMO (IDXA)
            END-PERFORM
       *
-           IF    ( ORCHC03-SIZE    NOT =   "V5" )
-               MOVE    HC03-CHUI       TO  FMSEIKYU-SKY-CAUTION
-           ELSE
+           IF    ( ORCHC03-SIZE        =   "V5" )
       *
                MOVE    ZERO            TO  WRK-API-GRPNUM
       *
@@ -2237,11 +2224,9 @@
                                                      (IDX-API)
                END-IF
       *        円
-               IF    ( TPARA-GOKEITANI     =   "1" )
-                   MOVE    ORCHC04SUB-H-ENKBN (IDX)
+               MOVE    ORCHC04SUB-H-ENKBN (IDX)
                                            TO  FMSEIKYU-TENSU-MARK
                                                      (IDX-API)
-               END-IF
       *        回数
                MOVE    ORCHC04SUB-H-KAISU (IDX)
                                            TO  FMSEIKYU-KAISU
@@ -2252,14 +2237,6 @@
              END-IF
       *
            END-PERFORM
-      *
-           IF    ( TPARA-GOKEITANI     =   "1" )
-      *        点数表示
-               MOVE    "0"                TO  FMSEIKYU-YEN-FLG
-           ELSE
-      *        単価表示
-               MOVE    "1"                TO  FMSEIKYU-YEN-FLG
-           END-IF
       *
            IF    ( SMCNDATE-YMD        >=  TPARA-CHUI-YUKOSTYMD )
             AND  ( SMCNDATE-YMD        <=  TPARA-CHUI-YUKOEDYMD )

@@ -31,16 +31,10 @@ bindapi	"claimfrontv2"	"OpenCOBOL"	"ORAPICLAIMR1V2";
 bindapi	"claimaccountv2"	"OpenCOBOL"	"ORAPICLAIMR2V2";
 bindapi	"formdatagetv2"	"OpenCOBOL"	"ORAPI001R1V2";
 bindapi	"contraindicationcheckv2"	"OpenCOBOL"	"ORAPI021R4V2";
-bindapi	"okusurigetv2"	"OpenCOBOL"	"ORAPIRELR1V2";
-bindapi	"okusuriputv2"	"OpenCOBOL"	"ORAPIRELR2V2";
+bindapi	"stock1v2"	"OpenCOBOL"	"ORAPI052R1V2";
+bindapi	"okusuriputv2"	"OpenCOBOL"	"ORAPIRELR1V2";
+bindapi	"okusurigetv2"	"OpenCOBOL"	"ORAPIRELR2V2";
 bindapi	"imagegetv2"	"OpenCOBOL"	"ORAPI000R2V2";
-bindapi	"patientlst6v2"	"OpenCOBOL"	"ORAPI012R6V2";
-bindapi	"prescriptionv2"	"OpenCOBOL"	"ORAPI001R2V2";
-bindapi	"medicinenotebookv2"	"OpenCOBOL"	"ORAPI001R3V2";
-bindapi	"subjectiveslstv2"	"OpenCOBOL"	"ORAPI025R1V2";
-bindapi	"system01dailyv2"	"OpenCOBOL"	"ORAPI101R2V2";
-bindapi	"hsconfroomchargev2"	"OpenCOBOL"	"ORAPI031RC3V2";
-bindapi	"pusheventgetv2"	"OpenCOBOL"	"ORAPI000R3V2";
 
 multiplex_group	api01rv2;
 
@@ -75,16 +69,10 @@ data	{
 		claimaccountv2;
 		formdatagetv2;
 		contraindicationcheckv2;
-		okusurigetv2;
+		stock1v2;
 		okusuriputv2;
-	        imagegetv2;
-		patientlst6v2;
-		prescriptionv2;
-		medicinenotebookv2;
-		subjectiveslstv2;
-		system01dailyv2;
-        hsconfroomchargev2;
-        pusheventgetv2;
+		okusurigetv2;
+        imagegetv2;
 	};
 };
 db "xml2" {
@@ -148,35 +136,14 @@ db "xml2" {
  xml_formdatagetv2req;
  xml_contraindication_checkv2req;
  xml_contraindication_checkv2res;
- xml_okusurigetv2req;
- xml_okusurigetv2res;
+ xml_stock1v2req;
+ xml_stock1v2res;
  xml_okusuriputv2req;
  xml_okusuriputv2res;
+ xml_okusurigetv2req;
+ xml_okusurigetv2res;
  xml_imagegetv2req;
- xml_patientlst6v2req;
- xml_patientlst6v2res;
- xml_prescriptionv2req;
- fm_prescription;
- xml_medicine_notebookv2req;
- fm_medicine_notebook;
- xml_subjectiveslstv2req;
- xml_subjectiveslstv2res;
- xml_system01_dailyv2req;
- xml_system01_dailyv2res;
- xml_hsconfroomchargev2req;
- xml_hsconfroomchargev2res;
- xml_pusheventgetv2req;
- xml_pusheventgetv2err;
 };
 
 #include "orcadb.inc"
 #include "orcadbh.inc"
-
-db "push" {
-  push_print001;
-  push_batch01;
-};
-
-#db "msgarray" {
-#  xml_pusheventgetv2res;
-#};
