@@ -13404,6 +13404,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  K02-INPUTCD(IDX)
                    MOVE    SPA-GMN-MEISYO-G(WRK-IDX)
                                                TO  K02-MEISYO(IDX)
+      *H29.1
+      *!!          ユーザー管理
+                   IF      SPA-COM-MASTER-CLASS (WRK-IDX)  =   "2"
+                       MOVE    CL-GREEN        TO
+      *?                              K02-SRYKBN-FGCOLOR (IDX)
+                                      K02-INPUTCD-FGCOLOR(IDX)
+      *?                              K02-MEISYO-FGCOLOR(IDX)
+      *?                              K02-SURYO-FGCOLOR(IDX)
+                   END-IF
       *
                    PERFORM 5002-SURYO-HEN-SEC
       *H26.10
