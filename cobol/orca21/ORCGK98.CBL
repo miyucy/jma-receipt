@@ -55,6 +55,7 @@
       *  04.07.00    NACL-多々納  13/03/01  労災レセ電対応
       *  04.08.00    NACL-多々納  15/09/XX  セット内容展開対応他
       *  04.08.00    NACL-多々納  16/05/XX  一般名検索・向精神薬記載対応
+      *  05.00.00    NACL-多々納  17/02/XX  酸素等器材金額編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -106,6 +107,7 @@
            03  FLG-GENERICPRICE        PIC 9(01).
            03  FLG-TENSUPLUS           PIC 9(01).
            03  FLG-PSYCHOTROPIC        PIC 9(01).
+           03  FLG-TENSUPRICE          PIC 9(01).
       *H27.9
            03  FLG-SET-SEL             PIC 9(01).
            03  FLG-SETKBN              PIC 9(01).
@@ -396,6 +398,9 @@
                05  TBL-GRP-MEI     PIC X(40).
                05  TBL-GRP-RMEI    PIC X(20).
       *
+      *緑
+       01  CL-GREEN                PIC X(07)   VALUE   "#00B000".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -428,6 +433,10 @@
       *    向精神薬成分コード
        01  PSYCHOTROPIC-REC.
            COPY    "CPPSYCHOTROPIC.INC".
+      *v5.0
+      *    点数マスタ器材金額
+        01 TENSU-PRICE-REC.
+           COPY    "CPTENSU-PRICE.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2209,6 +2218,31 @@
                                                              (IDX)
            MOVE    TNS-TEN             TO  SPA-K98-GMN-KISOTEN
                                                             (IDX)
+      *H29.2
+      *    ユーザー
+           IF     (TNS-SRYCD(1:1)      =   "1"
+                                       OR  "6"
+                                       OR  "7" )
+              AND (TNS-MASTER-CLASS    =   2   )
+               MOVE    "2"                 TO  SPA-K98-NAI-MASTER
+                                                            (IDX)
+           END-IF
+      *H29.2
+      *    器材ユーザー金額編集（酸素等）
+           IF     (TNS-SRYCD(1:1)      =   "7" )
+      *        酸素等、都道府県購入価格
+              AND ((TNS-TOKUKIZAISBT1  =   "2"
+                                       OR  "3"
+                                       OR  "4" )  OR
+                   (TNS-TENSIKIBETU    =   "2" ))
+               PERFORM 9103-TENSUPRICE-READ-SEC
+               IF    ( FLG-TENSUPRICE      =   ZERO )
+                 AND ( TNSPR-PRICE     NOT =   ZERO )
+                   MOVE    TNSPR-PRICE         TO  SPA-K98-GMN-KISOTEN
+                                                            (IDX)
+               END-IF
+           END-IF
+      *
       *H28.4
       *    薬剤　除算金額（１０で除す）
            IF     (TNS-SRYCD(1:1)      =   "6"  ) AND
@@ -2252,58 +2286,6 @@
       *        薬剤名称編集
                PERFORM 310212-YAKUZAI-NAME-SEC
            END-IF
-      *
-      *    後発医薬品再編集
-      *    IF     (TNS-SRYCD(1:1)      =   "6") AND
-      *           (TNS-KOUHATUKBN      =   1  )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  "【後発】"    DELIMITED   BY  SIZE
-      *                 TNS-NAME      DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *    END-IF
-      *    後発医薬品再編集
-      *    IF     (TNS-SRYCD(1:1)      =   "6") AND
-      *           (TNS-KOUHATUKBN      =   2  )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  "【後発有】"  DELIMITED   BY  SIZE
-      *                 TNS-NAME      DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *    END-IF
-      *H24.4
-      *    後発医薬品再編集
-      *    IF     (TNS-SRYCD(1:1)      =   "6") AND
-      *           (TNS-KOUHATUKBN      =   7  )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  "【先発無】"  DELIMITED   BY  SIZE
-      *                 TNS-NAME      DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *    END-IF
-      *H24.4
-      *    薬価基準コード
-      *    IF      TNS-SRYCD (1:1)     =   "6"
-      *        MOVE    TNS-YAKKAKJNCD      TO  SPA-K98-GMN-INPUTCD(IDX)
-      *        一般名記載区分
-      *        PERFORM 9101-TENSUPLUS-READ-SEC
-      *
-      *        MOVE    SPACE                TO  WRK-MSG-2
-      *        EVALUATE    TNSP-IPN-KISAIKBN
-      *            WHEN    1
-      *                MOVE    "〔般〕"        TO  WRK-MSG-2
-      *            WHEN    2
-      *                MOVE    "〔２〕"        TO  WRK-MSG-2
-      *            WHEN    3
-      *                MOVE    "〔処〕"        TO  WRK-MSG-2
-      *        END-EVALUATE
-      *        MOVE    SPA-K98-GMN-NAME(IDX)   TO  WRK-NAME
-      *        MOVE    SPACE                   TO  SPA-K98-GMN-NAME(IDX)
-      *        STRING  WRK-MSG-2               DELIMITED   BY  SPACE
-      *                WRK-NAME                DELIMITED   BY  SPACE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *        END-STRING
-      *****END-IF
       *
       *    検査正式名称
            IF     (TNS-SRYCD(1:1)      =   "1") AND
@@ -2865,6 +2847,12 @@
                    END-IF
                END-IF
       *!!!
+      *H29.1
+      *        ユーザー
+      *        IF      SPA-K98-NAI-MASTER (IDX) =   "2"
+      *            MOVE    CL-GREEN        TO
+      *                               K98-FGCORLOR (IDX)
+      ****     END-IF
            END-PERFORM
       *
            MOVE    SPA-K98-GMN-MAX     TO  K98-COUNT
@@ -5837,6 +5825,45 @@
            .
        975-INPSET-READ-EXT.
            EXIT.
+      *H29.2
+      *****************************************************************
+      *    点数マスタ器材金額付加情報より編集処理
+      *****************************************************************
+       9103-TENSUPRICE-READ-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSU-PRICE-REC
+           INITIALIZE                  TENSU-PRICE-REC
+           MOVE    SPA-HOSPNUM         TO  TNSPR-HOSPNUM
+           MOVE    TNS-SRYCD           TO  TNSPR-SRYCD
+           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOEDYMD
+      *
+           MOVE    TENSU-PRICE-REC     TO  MCPDATA-REC
+           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu_price"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSU-PRICE-REC
+                   MOVE    ZERO                TO  FLG-TENSUPRICE
+               ELSE
+                   MOVE    1                   TO  FLG-TENSUPRICE
+                   INITIALIZE                      TENSU-PRICE-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPRICE
+               INITIALIZE                      TENSU-PRICE-REC
+           END-IF
+           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       9103-TENSUPRICE-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
