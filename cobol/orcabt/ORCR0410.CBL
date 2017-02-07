@@ -128,11 +128,6 @@
       *  04.08.03    NACL-門脇    16/03/28  平成２８年４月改正対応
       *  04.08.04    NACL-門脇    17/02/07  労災保険登録時の労働基準監督
       *                                     署コードの編集方法変更に伴う修正
-      *  04.08.05    NACL-藤原    17/04/10  患者単位での点数算定設定
-      *                                     （労災準拠又は健保準拠）対応
-      *  04.08.06    NACL-門脇    17/06/08  アフターケアの「前回の検査年月日」
-      *                                     の編集条件修正
-      *  04.08.07    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -268,7 +263,6 @@
            03  WRK-TAXKBN                              PIC  X(01).      
            03  WRK-KOTEIKBN                            PIC  X(01).
            03  WRK-JIBAIKBN                            PIC  X(01).
-           03  WRK-4001-JIBAIKBN                       PIC  X(01).
            03  WRK-SYUTENTANKA                         PIC  9(02).
            03  WRK-YKZTENTANKA                         PIC  9(02).
            03  WRK-KOMUKBN                             PIC  X(01).
@@ -322,6 +316,8 @@
            03  WRK-S3                                  PIC  9V99999.
            03  WRK-S4                                  PIC  9V99.
            03  WRK-S5                                  PIC  9V99.
+      *
+           03  WRK-PTRSI-CREYMD                        PIC  X(08).
       *
       *    手技点・薬剤等点数用領域
        01  TBL-TENSUG-JI.
@@ -447,8 +443,6 @@
                                PIC 9(06)   VALUE   200804.
            03  WRK-CONS-SRYYM-201109
                                PIC 9(06)   VALUE   201109.
-           03  WRK-CONS-SRYYM-201707
-                               PIC 9(06)   VALUE   201707.
       *
       *---------------------------------------------------------------
       *
@@ -777,7 +771,6 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                                                  TO    WRK-YKZTENTANKA
                       END-IF
                   END-IF
-                  MOVE   WRK-JIBAIKBN      TO  WRK-4001-JIBAIKBN
                   IF     SYS-4001-KOMUKBN  =    SPACE
                     MOVE "1"               TO    WRK-KOMUKBN
                   ELSE
@@ -805,8 +798,6 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                                            TO    WRK-KOMURSITANKAKBN
                   MOVE   SYS-4001-KOMURSITANKA-G
                                            TO    WRK-KOMURSITANKA-G
-      *
-                  DISPLAY "WRK-4001-JIBAIKBN=" WRK-4001-JIBAIKBN
               ELSE
                   MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                               TO  WRK-RECEERR
@@ -903,17 +894,6 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
-      *    自賠責区分（患者別設定）
-           IF      RECE40-SRYYM        >=  WRK-CONS-SRYYM-201707
-               IF     WRK-PARA-RECEKBN     =   "8"
-                   CONTINUE
-               ELSE
-                   DISPLAY "RECE40-JIBAIKBN=" RECE40-JIBAIKBN
-                   MOVE    RECE40-JIBAIKBN     TO  WRK-JIBAIKBN
-               END-IF
-           END-IF
-           DISPLAY "WRK-JIBAIKBN=" WRK-JIBAIKBN
-      *
       *    消費税計算の係数設定
            IF  RECE40-SRYYM >= "201404"
                MOVE       8      TO  WRK-S1
@@ -934,6 +914,8 @@ grpsys        PERFORM 900-DBSELECT-SEC
                WHEN      "3"
                  MOVE   0.99999  TO  WRK-S3
            END-EVALUATE
+      *
+           MOVE    SPACE                TO  WRK-PTRSI-CREYMD
       *
            MOVE    SPACE                TO  RECE41-REC
            INITIALIZE                       RECE41-REC
@@ -1085,6 +1067,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                         MOVE   PTRSI-JIBAISEIKBN
                                                 TO  RECE41-SEIKYUKBN
                         MOVE   PTRSI-SYOCD      TO  RECE41-SYOCD
+      *
+                        MOVE   PTRSI-CREYMD     TO  WRK-PTRSI-CREYMD
       *
                         IF     RECE41-SRYYM   >=  "201204"
       *                   現物給付対象とする
@@ -1332,7 +1316,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF    RECE41-SYOCD            =   SPACE
-           AND   PTRSI-RYOSTYMD(1:6)    <=  "201403"
+           AND   WRK-PTRSI-CREYMD(1:6)  <=  "201612"
              EVALUATE  RECE41-HKNKBN
                WHEN       "1"
                  MOVE    RECE41-KOFUNUM(1:5)
@@ -1870,10 +1854,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                               OR "113018410"
                                               OR "111012810"
-                                              OR "112017610"
-                                              OR "113024810"
-                                              OR "113025710"
-                                              OR "112023210"   )
+                                              OR "112017610"   )
                        OR  (( SRY-SRYCD(IDY) =  CONS-ROUSAI19 ) AND
                             ( RECE41-SRYYM  <=   "201306"     ))
                        OR  (( SRY-SRYCD(IDY) =  CONS-ROUSAI5
@@ -2935,14 +2916,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    RECE40-HOSPNUM       TO      ACCT-HOSPNUM
            MOVE    RECE40-NYUGAIKBN     TO      ACCT-NYUGAIKBN
            MOVE    RECE40-PTID          TO      ACCT-PTID
+           MOVE    RECE40-SRYKA(IDX)    TO      ACCT-SRYKA
            MOVE    RECE40-HKNCOMBI      TO      ACCT-HKNCOMBI
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "tbl_sryacct"        TO      MCP-TABLE
-           MOVE    "key69"              TO      MCP-PATHNAME
+           MOVE    "key25"              TO      MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key69"             TO  MCP-PATHNAME
+               MOVE    "key25"             TO  MCP-PATHNAME
                PERFORM  800-SRYACCT-READ-SEC
                PERFORM  UNTIL
                               FLG-SRYACCT        =    1
@@ -2959,13 +2941,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
       *                 
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key69"             TO  MCP-PATHNAME
+                   MOVE    "key25"             TO  MCP-PATHNAME
                    PERFORM   800-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key69"             TO  MCP-PATHNAME
+           MOVE    "key25"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .
@@ -3571,11 +3553,9 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    ADD     1     TO    CNT-IN
                                        CNT-IN-CANCEL
       *
-                   PERFORM 910-SYSKANRI-HENSYU-SEC
-      *
                    DISPLAY "RECE40  PTID=" RECE40-PTID
-                           " SRYYM="       RECE40-SRYYM
-                           " JIBAIKBN="    WRK-JIBAIKBN
+      *
+                   PERFORM 910-SYSKANRI-HENSYU-SEC
       *
            END-READ
            .
@@ -3588,7 +3568,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
        910-SYSKANRI-HENSYU-SEC         SECTION.
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-              MOVE    WRK-4001-JIBAIKBN  TO  WRK-JIBAIKBN
+              CONTINUE
            ELSE
       *       医療機関ＩＤ編集
               MOVE  ZERO           TO  FLG-SET
