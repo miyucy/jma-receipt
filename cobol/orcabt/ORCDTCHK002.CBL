@@ -292,7 +292,6 @@
            03  FLG-CHKMST                              PIC 9(01).
            03  FLG-CHKSND                              PIC 9(01).
            03  FLG-CHKREIGAI                           PIC 9(01).
-           03  FLG-MATERK                              PIC 9(01).
            03  FLG-TENSU                               PIC 9(01).
            03  FLG-PTBYOMEI                            PIC 9(01).
            03  FLG-NYUINACCT                           PIC 9(01).
@@ -561,8 +560,7 @@
            03  WRK-NYUGAIKBN                           PIC X(01).
            03  WRK-HKNID                               PIC 9(10).
            03  WRK-KOHID                               PIC 9(10).
-           03  WRK-ERRCD.
-               05  WRK-ERRCD-NUM                       PIC 9(06).
+           03  WRK-ERRCD                               PIC X(06).
            03  WRK-ERRMES                              PIC X(200).
            03  WRK-ERRMES-PLUS                         PIC X(200).
            03  WRK-PTBYOMES-PLUS                       PIC X(200).
@@ -869,8 +867,6 @@
                                                    VALUE   20.
            03  CONST-TKZI-MAX                      PIC 9(05)
                                                    VALUE   30.
-           03  CONST-TKZI-MICD-MAX                 PIC 9(05)
-                                                   VALUE   30.
            03  CONST-TRSIRECEDEN-MAX               PIC 9(05)
                                                    VALUE   20.
            03  CONST-TKAIGO-MAX                    PIC 9(05)
@@ -1006,7 +1002,6 @@
            03  CONST-H2603                 PIC X(06)   VALUE "201403".
            03  CONST-H2507                 PIC X(06)   VALUE "201307".
            03  CONST-H2804                 PIC X(06)   VALUE "201604".
-           03  CONST-H2904                 PIC X(06)   VALUE "201704".
            03  CONST-TEMP                      PIC X(04)   VALUE "TEMP".
            03  CONST-RSI-KATAKANA-G.
                05  CONST-RSI-KATAKANA-VAL.
@@ -1155,9 +1150,6 @@
        01  CHKTRD-REC.
            COPY    "CPCHKTRD.INC".
       *
-       01  MATERIAL-K-REC.
-           COPY    "CPMATERIAL-K.INC".
-      *
       *    チェックマスタ４
            COPY    "CPCHK004.INC".
            COPY    "CPCK1102.INC".
@@ -1267,8 +1259,6 @@
        01  LNK-SYUDAY-REC-T.
          02 LNK-SYUDAY-REC     OCCURS 10.
            COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
-      *
-           COPY    "CPORCS02MSG.INC".
       *
       *    文字列操作サブ
            COPY    "CPORCSSTRING.INC".
@@ -1705,14 +1695,12 @@
            END-IF
       *
       *    診療行為どうしの算定漏れ
-      *    MOVE    "7"                 TO  WRK-CHK-CHKKBN
-      *    MOVE    "2"                 TO  WRK-CHK-CDKBN
-      *    PERFORM 900-CHKTRD-KEY5-SEL-SEC
-      *    IF    ( FLG-CHKMST          =   ZERO )
-      *        MOVE    1               TO  FLG-SRYSNT
-      *    END-IF
-      *
-           MOVE    1                   TO  FLG-SRYSNT
+           MOVE    "7"                 TO  WRK-CHK-CHKKBN
+           MOVE    "2"                 TO  WRK-CHK-CDKBN
+           PERFORM 900-CHKTRD-KEY5-SEL-SEC
+           IF    ( FLG-CHKMST          =   ZERO )
+               MOVE    1               TO  FLG-SRYSNT
+           END-IF
       *
       *    病名と薬剤
            MOVE    "8"                 TO  WRK-CHK-CHKKBN
@@ -2570,11 +2558,13 @@
       *
                    IF    ( FLG-CHKSKIP          =   ZERO )
       *
-      *                データチェック処理（チェックマスタ）
-                       PERFORM 20011-DATA-CHK-CHKMST-SEC
+                       IF   ( DTCHK003-HKNKBN  NOT =   CONST-HOUKATU )
+      *                    データチェック処理（チェックマスタ）
+                           PERFORM 20011-DATA-CHK-CHKMST-SEC
       *
-      *                データチェック処理（電子点数表）
-                       PERFORM 20011-DATA-CHK-ETENSU-CHK-SEC
+      *                    データチェック処理（電子点数表）
+                           PERFORM 20011-DATA-CHK-ETENSU-CHK-SEC
+                       END-IF
       *
       *                禁忌チェック項目退避処理
                        PERFORM 20012-CHK-KINKI-TAIHI-SEC
@@ -2790,7 +2780,7 @@
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
       *
-           WHEN      ( WRK-ZAIHKNNUM   =   "HHH" )
+           WHEN      ( DTCHK003-HKNKBN =   CONST-HOUKATU )
                    MOVE    1           TO  FLG-TAISYO-HKN
            WHEN      OTHER
                IF    ( DTCHK003-HKNKBN =   CONST-SYAHO )
@@ -2816,14 +2806,7 @@
            IF    ( FLG-TAISYO-HKN      =   1 )
            AND   ( DCACCT-STS-NYUINDAY =   ZERO )
       *
-               IF    ( DCACCT-HKNCOMBI     =   9999 )
-                OR   ( DCACCT-JIHOKBN      =   "1" )
-                   CONTINUE
-               ELSE
-                   PERFORM 20011111-SRYINF-TAIHI-SEC
-               END-IF
-      *
-               PERFORM 20099999-SRYINF-TAIHI-SEC
+               PERFORM 20011111-SRYINF-TAIHI-SEC
       *
            END-IF
       *
@@ -2895,38 +2878,6 @@
        20011111-SRYINF-TAIHI-EXT.
            EXIT.
       *****************************************************************
-      *    診療情報情報退避処理
-      *****************************************************************
-       20099999-SRYINF-TAIHI-SEC        SECTION.
-      *
-           PERFORM VARYING IDX-SRY FROM    1   BY  1
-                   UNTIL ( IDX-SRY     >   PTSRY-MAX )
-      *
-               IF    ( DCACCT-ZAINUM   =   PTSRY-ZAINUM (IDX-SRY) )
-                AND  ( DCACCT-ACCTKBN  =   PTSRY-ACCTKBN(IDX-SRY) )
-      *
-                   MOVE    PTSRY-OCC (IDX-SRY)
-                                       TO  DCSRY-REC
-      *
-      *            点数マスタ検索処理
-                   MOVE    DCSRY-SRYCD     TO  WRK-SRYCD
-                   MOVE    DCACCT-SRYYMD   TO  WRK-TNS-YMD
-                   PERFORM 900-TENSU-KEY-SEL-SEC
-      *
-                   IF    ( ORCBSD01-SRYYM     >=  CONST-H2904 )
-                    AND  ( DCSRY-SRYCD (1:3)   =   "059" )
-                    AND  ( TNS-TEN         NOT =   ZERO )
-                       PERFORM 200111-TKZI-MICD-HEN-SEC
-                   END-IF
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       20099999-SRYINF-TAIHI-EXT.
-           EXIT.
-      *****************************************************************
       *    会計情報情報退避処理
       *****************************************************************
        200111-DCACCT-TAIHI-SEC         SECTION.
@@ -2973,12 +2924,7 @@
                    MOVE    DCACCT-NYUGAIKBN
                                            TO  PTZAI-NYUGAIKBN
                                                             (PTZAI-MAX)
-                   IF    ( DCACCT-HKNCOMBI =   9999 )
-                       MOVE    "HHH"       TO  PTZAI-HKNNUM (PTZAI-MAX)
-                   ELSE
-                       MOVE    DCACCT-HKNNUM
-                                           TO  PTZAI-HKNNUM (PTZAI-MAX)
-                   END-IF
+                   MOVE    DCACCT-HKNNUM   TO  PTZAI-HKNNUM (PTZAI-MAX)
                    MOVE    DCACCT-KOHNUM   TO  PTZAI-KOHNUM (PTZAI-MAX)
                    MOVE    DCACCT-DAYCNT   TO  PTZAI-DAY
                                                  (PTZAI-MAX DCACCT-DAY)
@@ -3446,7 +3392,7 @@
                                PERFORM 200111-TKAISU-HEN-SEC
                            END-IF
       *
-      *                    器材チェック退避ワーク編集処理
+      *                    器材単位チェック退避ワーク編集処理
                            IF    ( DCSRY-SRYCD (1:1)   =   "7" )
                                PERFORM 200111-TKZI-HEN-SEC
                            END-IF
@@ -4382,14 +4328,26 @@
        200111-TKAISU-SRYCD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    器材チェック退避ワーク編集処理
+      *    器材単位チェック退避ワーク編集処理
       *****************************************************************
        200111-TKZI-HEN-SEC             SECTION.
       *
            IF    ( TNS-TENSIKIBETU     =   0 OR 1 OR 2)
                IF   (  DCSRY-058-TANICD    =   SPACE  OR "000" )
                 AND (  TNS-TANICD          =   SPACE  OR "000" )
-                   PERFORM 2001111-TKZI-HEN-SEC
+                   MOVE    PTZAI-HKNNUM (IDX-ZAI)
+                                           TO   WRK-ZAIHKNNUM
+                   IF    ( PTZAI-KOHNUM (IDX-ZAI)  =   "970" )
+                       MOVE    PTZAI-KOHNUM (IDX-ZAI)
+                                           TO   WRK-ZAIHKNNUM
+                   END-IF
+                   PERFORM 2001111-TAISYO-HKN-CHK-SEC
+                   IF    ( FLG-TAISYO-HKN      =   1 )
+                       IF    ( PTZAI-NYUGAIKBN (IDX-ZAI)
+                                               =   ORCBSD01-NYUGAIKBN )
+                           PERFORM 2001111-TKZI-HEN-SEC
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -4397,28 +4355,7 @@
        200111-TKZI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    器材チェック退避ワーク編集処理
-      *****************************************************************
-       200111-TKZI-MICD-HEN-SEC             SECTION.
-      *
-           EVALUATE    TRUE
-           WHEN  ( DCACCT-HKNNUM           =   SPACE )
-           WHEN  ( DCACCT-HKNNUM           <   "100" )
-            AND  ( DCACCT-HKNNUM       NOT =   "040" )
-            AND  ( DCACCT-HKNNUM       NOT =   "068" )
-            AND  ( DCACCT-HKNNUM       NOT =   "069" )
-           WHEN  ( DCACCT-HKNNUM           =   "971" )
-            AND  ( DCACCT-RSI-HKNKBN       =   "1" OR "2" )
-      *
-               PERFORM 2001111-TKZI-MICD-HEN-SEC
-      *
-           END-EVALUATE
-      *
-           .
-       200111-TKZI-MICD-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    器材チェック退避ワーク編集処理
+      *    器材単位チェック退避ワーク編集処理
       *****************************************************************
        2001111-TKZI-HEN-SEC            SECTION.
       *
@@ -4463,49 +4400,6 @@
       *
            .
        2001111-TKZI-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    器材チェック退避ワーク編集処理
-      *****************************************************************
-       2001111-TKZI-MICD-HEN-SEC       SECTION.
-      *
-           MOVE    ZERO            TO  IDXA
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   TKZI-MICD-MAX )
-                    OR   ( IDX0    >   CONST-TKZI-MICD-MAX )
-                    OR   ( TKZI-MICD-SRYCD (IDX0)
-                                   =   DCSRY-SRYCD )
-      *
-               CONTINUE
-      *
-           END-PERFORM
-      *
-           IF    ( IDX0            >   TKZI-MICD-MAX )
-      *
-               IF    ( CONST-TKZI-MICD-MAX
-                                   >   TKZI-MICD-MAX )
-                   COMPUTE TKZI-MICD-MAX
-                       =   TKZI-MICD-MAX    +   1
-                   MOVE    TKZI-MICD-MAX    TO  IDXA
-      *
-                   MOVE    DCSRY-SRYCD TO  TKZI-MICD-SRYCD (IDXA)
-               END-IF
-           ELSE
-               MOVE    IDX0            TO  IDXA
-           END-IF
-      *
-           IF    ( IDXA            >   ZERO )
-               PERFORM VARYING IDX2    FROM    1   BY  1
-                       UNTIL ( IDX2    >   31 )
-                   IF    ( PTZAI-DAY (IDX-ZAI IDX2)   >   ZERO )
-                       MOVE    1   TO  TKZI-MICD-DAY (IDXA IDX2)
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-           .
-       2001111-TKZI-MICD-HEN-EXT.
            EXIT.
       *****************************************************************
       *    介護突合チェック退避領域編集処理
@@ -4769,12 +4663,11 @@
            PERFORM VARYING IDX-ZAI FROM    1   BY  1
                    UNTIL ( IDX-ZAI >   PTZAI-MAX )
       *
-      *
                MOVE    PTZAI-HKNNUM (IDX-ZAI)
                                   TO   WRK-ZAIHKNNUM
                IF    ( PTZAI-KOHNUM (IDX-ZAI)  =   "970" )
                    MOVE    PTZAI-KOHNUM (IDX-ZAI)
-                                  TO   WRK-ZAIHKNNUM
+                                   TO   WRK-ZAIHKNNUM
                END-IF
                PERFORM 2001111-TAISYO-HKN-CHK-SEC
                IF    ( FLG-TAISYO-HKN  =   ZERO )
@@ -4790,8 +4683,6 @@
                            MOVE    PTACCT-OCC (IDX-ACCT)
                                            TO  DCACCT-REC
                            IF    ( DCACCT-ACCTRENNUM   =   1 )
-                            AND  ( DCACCT-HKNCOMBI NOT =   9999 )
-                            AND  ( DCACCT-JIHOKBN  NOT =   "1" )
                                PERFORM 2001121-SRYINF-TAIHI-SEC
                            END-IF
                        END-IF
@@ -4961,6 +4852,7 @@
       *    基本チェック処理
            PERFORM 200111-KIHON-CHK-SEC
            IF    ( FLG-CHKSKIP     =   ZERO )
+            AND  ( DTCHK003-HKNKBN NOT =   CONST-HOUKATU )
                PERFORM 200111-DATA-CHK-SEC
            END-IF
       *
@@ -5110,12 +5002,7 @@
                                        =   PTACCT-ACCTKBN(IDX-ACCT))
                            MOVE    PTACCT-OCC (IDX-ACCT)
                                    TO  DCACCT-REC
-                           IF    ( DCACCT-HKNCOMBI     =   9999 )
-                            OR   ( DCACCT-JIHOKBN      =   "1" )
-                               CONTINUE
-                           ELSE
-                               PERFORM 2001111-SRYINF-TAIHI-SEC
-                           END-IF
+                           PERFORM 2001111-SRYINF-TAIHI-SEC
                        END-IF
                    END-PERFORM
                END-IF
@@ -8938,11 +8825,15 @@
                        PERFORM 200112111-HEIYOU-T-SET-CHK-SEC
                    END-IF
                END-PERFORM
+           ELSE
+               MOVE    ZERO        TO  FLG-THEIYOU-SET
            END-IF
       *
            IF    ( FLG-SRYHEI1-DAY-G       =   ZERO )
             OR   ( FLG-SRYHEI2-DAY-G       =   ZERO )
-               MOVE    ZERO        TO  FLG-THEIYOU-SET
+                MOVE    ZERO       TO  FLG-THEIYOU-SET
+           ELSE
+                MOVE    1          TO  FLG-THEIYOU-SET
            END-IF
       *
            .
@@ -8953,14 +8844,12 @@
       *****************************************************************
        200112111-HEIYOU-T-SET-CHK-SEC   SECTION.
       *
-           MOVE    1               TO  FLG-TARGET
-      *
            IF    ( IDX-TSRYCD  =   IDX0 )
                IF    ( TSRYCD-DENPNUM-KAISU (IDX0 IDXI)
                                    >   1 )
                    CONTINUE
                ELSE
-                   MOVE    ZERO    TO  FLG-TARGET
+                   MOVE    ZERO    TO  FLG-THEIYOU-SET
                END-IF
            ELSE
                IF    ( TSRYCD-DENPNUM-KAISU (IDX-TSRYCD IDXI)
@@ -8969,7 +8858,7 @@
                                    >   ZERO )
                            CONTINUE
                ELSE
-                   MOVE    ZERO    TO  FLG-TARGET
+                   MOVE    ZERO    TO  FLG-THEIYOU-SET
                END-IF
            END-IF
       *
@@ -8979,10 +8868,10 @@
                                            =   1 )
                     CONTINUE
            ELSE
-               MOVE    ZERO        TO  FLG-TARGET
+               MOVE    ZERO        TO  FLG-THEIYOU-SET
            END-IF
       *
-           IF    ( FLG-TARGET     =   1 )
+           IF    ( FLG-THEIYOU-SET     =   1 )
                MOVE    TSRYCD-DENPNUM-DAY (IDX-TSRYCD IDXI)
                                TO  IDX-DAY
                MOVE    1       TO  FLG-SRYHEI1-DAY (IDX-DAY)
@@ -9897,12 +9786,9 @@
            MOVE    WRK-KJNYMD          TO  TCHK-CHK-YMD
            MOVE    "2"                 TO  TCHK-CHK-CDKBN
            PERFORM 230-CHKTRD-GET-SEC
-           IF    ( TCHK-ACT-CD-MAX     =   ZERO )
-               IF    ( SYS-1101-SRYMATERKKBN   =   "1" )
-                   PERFORM 231-CHKTRD-GET-SEC
-               END-IF
-           END-IF
-           IF    ( TCHK-ACT-CD-MAX     =   ZERO )
+           IF    ( TCHK-ACT-CD-MAX     >   ZERO )
+               CONTINUE
+           ELSE
                MOVE    "7"             TO  WRK-CHK-CHKKBN
                MOVE    "2"             TO  WRK-CHK-CDKBN
                MOVE    TSRYCD-SRYCD (IDX6)
@@ -11154,10 +11040,6 @@
                PERFORM 200111-KIZAI-TANICD-CHK-SEC
            END-IF
       *
-           IF    ( ORCBSD01-SRYYM     >=  CONST-H2904 )
-               PERFORM 200111-KIZAI-MICD-CHK-SEC
-           END-IF
-      *
            PERFORM 200111-RSIRECEDEN-CHK-SEC
       *
            PERFORM 200111-PTCOM-CHK-SEC
@@ -11272,19 +11154,46 @@
       *
                PERFORM 900-DBCOMMIT-SEC
                PERFORM 900-DBSTART-SEC
-      *
-               INITIALIZE              S02MSG-AREA
-               MOVE    LNK-S02-RC  TO  S02MSG-S02-RC
-               CALL    "ORCS02MSG"     USING
-                                       S02MSG-AREA
-                                       SPA-AREA
-               IF    ( S02MSG-MSG (1)  =   SPACE )
-                   MOVE    "990500"    TO  WRK-ERRCD
-               ELSE
-                   COMPUTE WRK-ERRCD-NUM = 990500 + LNK-S02-RC
-                   MOVE    WRK-ERRCD   TO  WRK-ERRCD
-               END-IF
-      *
+               EVALUATE    LNK-S02-RC
+               WHEN    13
+                   MOVE    "990012"    TO  WRK-ERRCD
+               WHEN    14
+                   MOVE    "990002"    TO  WRK-ERRCD
+               WHEN    15
+                   MOVE    "990008"    TO  WRK-ERRCD
+               WHEN    16
+                   MOVE    "990007"    TO  WRK-ERRCD
+               WHEN    17
+                   MOVE    "990013"    TO  WRK-ERRCD
+               WHEN    19
+                   MOVE    "990014"    TO  WRK-ERRCD
+               WHEN    20
+                   MOVE    "990015"    TO  WRK-ERRCD
+               WHEN    21
+                   MOVE    "990016"    TO  WRK-ERRCD
+               WHEN    22
+                   MOVE    "990017"    TO  WRK-ERRCD
+               WHEN    23
+                   MOVE    "990020"    TO  WRK-ERRCD
+               WHEN    24
+                   MOVE    "990021"    TO  WRK-ERRCD
+               WHEN    25
+                   MOVE    "990022"    TO  WRK-ERRCD
+               WHEN    26
+                   MOVE    "990026"    TO  WRK-ERRCD
+               WHEN    27
+                   MOVE    "990027"    TO  WRK-ERRCD
+               WHEN    29
+                   MOVE    "990033"    TO  WRK-ERRCD
+               WHEN    30
+                   MOVE    "990035"    TO  WRK-ERRCD
+               WHEN    31
+                   MOVE    "990036"    TO  WRK-ERRCD
+               WHEN    101
+                   MOVE    "990034"    TO  WRK-ERRCD
+               WHEN    OTHER
+                   MOVE    "990018"    TO  WRK-ERRCD
+               END-EVALUATE
                INITIALIZE              TERRINF-AREA
                PERFORM 210-ERRMES-HEN-SEC
            END-IF
@@ -11351,51 +11260,6 @@
       *
            .
        200111-KIZAI-TANICD-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    器材単位コードチェック
-      *****************************************************************
-       200111-KIZAI-MICD-CHK-SEC       SECTION.
-      *
-           PERFORM VARYING IDX6    FROM    1   BY  1
-                   UNTIL ( IDX6    >   TKZI-MICD-MAX )
-      *
-               INITIALIZE  WRK-NISSU-DAY-G
-               PERFORM VARYING IDX-DAY FROM    1   BY  1
-                       UNTIL ( IDX-DAY >   31 )
-                   IF    ( TKZI-MICD-DAY (IDX6 IDX-DAY)  >   ZERO )
-                       MOVE    1   TO  WRK-NISSU-DAY (IDX-DAY)
-                   END-IF
-               END-PERFORM
-      *
-               IF    ( WRK-NISSU-DAY-G    NOT  =   ZERO )
-      *
-                   PERFORM 200111-NISSU-HEN-SEC
-      *
-                   MOVE    SPACE          TO  WRK-STR
-                   MOVE    SPACE          TO  WRK-ERRMES-PLUS
-                   MOVE    TKZI-MICD-SRYCD (IDX6)
-                                          TO  WRK-SRYCD
-                   MOVE    WRK-KJNYMD     TO  WRK-TNS-YMD
-                   PERFORM 900-TENSU-KEY-SEL-SEC
-      *
-                   MOVE    TKZI-MICD-SRYCD (IDX6)   TO  WRK-SRYCD
-                   MOVE    WRK-KJNYMD     TO  WRK-TNS-YMD
-                   PERFORM 900-TENSU-KEY-SEL-SEC
-                   STRING  TNS-NAME        DELIMITED   BY  SPACE
-                           WRK-NISSU-MES   DELIMITED   BY  SPACE
-                   INTO  WRK-ERRMES-PLUS
-                   END-STRING
-      *
-                   MOVE    "990037"    TO  WRK-ERRCD
-                   INITIALIZE              TERRINF-AREA
-                   PERFORM 215-ERRMES-HEN-SEC
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       200111-KIZAI-MICD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    労災レセ電チェック処理
@@ -12283,16 +12147,13 @@
            END-PERFORM
       *
            MOVE    DCACCT-HKNNUM   TO  WRK-ZAIHKNNUM
-           EVALUATE    TRUE
-           WHEN  ( DCACCT-KOHNUM   =   "970" )
+           IF    ( DCACCT-KOHNUM   =   "970" )
                MOVE    DCACCT-KOHNUM
                                    TO  WRK-ZAIHKNNUM
-           WHEN  ( DCACCT-HKNCOMBI =   9999 )
-               MOVE    "HHH"
-                                   TO  WRK-ZAIHKNNUM
-           END-EVALUATE
+           END-IF
            PERFORM 2001111-TAISYO-HKN-CHK-SEC
            IF    ( FLG-TAISYO-HKN  =   1 )
+            AND  ( DTCHK003-HKNKBN NOT =   CONST-HOUKATU )
                MOVE    ZERO        TO  IDXH
                MOVE    DCACCT-HKNNUM       TO  WRK-HKNNUM
                IF    ( WRK-HKNNUM      =   SPACE )
@@ -12960,6 +12821,8 @@
                MOVE    "8"             TO  WRK-SRTKBN
            WHEN  CONST-CHIKEN
                MOVE    "9"             TO  WRK-SRTKBN
+           WHEN  CONST-HOUKATU
+               MOVE    "H"             TO  WRK-SRTKBN
            END-EVALUATE
       *
            EVALUATE    ORCBSD01-PRTSRTKBN
@@ -13716,57 +13579,6 @@
        230-CHKTRD-GET-EXT.
            EXIT.
       *****************************************************************
-      *    チェックマスタ３情報取得処理（特定器材関連手技マスタより）
-      *****************************************************************
-       231-CHKTRD-GET-SEC              SECTION.
-      *
-           MOVE    ZERO                TO  FLG-MATERK
-      *
-           INITIALIZE                      TCHK-ACTIVE-G
-           MOVE    ZERO                TO  IDX-MAX
-      *
-           PERFORM 900-MATERIAL-K-KEY2-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-MATERK  NOT =   ZERO )
-                    OR   ( IDX-MAX        >=   CONST-TCHK-STK-CD-MAX )
-      *
-               COMPUTE IDX-MAX =   IDX-MAX +   1
-      *
-               IF    ( IDX-MAX     =   1 )
-                   MOVE    "7"                 TO  TCHK-ACT-CHKKBN
-                   MOVE    MATERK-SRYCD        TO  TCHK-ACT-SRYCD
-                   MOVE    "00000000"          TO  TCHK-ACT-YUKOSTYMD
-                   MOVE    "99999999"          TO  TCHK-ACT-YUKOEDYMD
-                   MOVE    "2"                 TO  TCHK-ACT-CDKBN
-               END-IF
-      *
-               MOVE    MATERK-SCD              TO  TCHK-ACT-CD (IDX-MAX)
-               MOVE    "1"                     TO  TCHK-ACT-DAYMONTHKBN
-                                                           (IDX-MAX)
-               MOVE    SPACE                   TO  TCHK-ACT-NYUGAIKBN
-                                                               (IDX-MAX)
-               MOVE    "1"                     TO  TCHK-ACT-NYUGAIBNDKBN
-                                                           (IDX-MAX)
-      *
-               PERFORM 900-MATERIAL-K-KEY2-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_material_k"    TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           IF    ( IDX-MAX         >   ZERO )
-               MOVE    IDX-MAX     TO  TCHK-ACT-CD-MAX
-               PERFORM 2301-TCHK-HEN-SEC
-           ELSE
-               MOVE    1           TO  FLG-MATERK
-           END-IF
-      *
-           .
-       231-CHKTRD-GET-EXT.
-           EXIT.
-      *****************************************************************
       *    チェックマスタ５情報取得処理
       *****************************************************************
        230-CHK005-GET-SEC              SECTION.
@@ -13921,8 +13733,6 @@
                                        DTCHK013-FILE
                                        DTCHK018-FILE
       *
-           INITIALIZE                  CHKSND-REC
-           MOVE    CHKSND-REC      TO  MCPDATA-REC
            MOVE    "tbl_chksnd"    TO  MCP-TABLE
            MOVE    "tmpkey"        TO  MCP-PATHNAME
            PERFORM 910-DBDROP-SEC
@@ -14930,6 +14740,11 @@
                            END-IF
       *
                            IF    ( DCACCT-ZAIKBN   =   1    OR 2 )
+                               MOVE   ZERO    TO   FLG-LOOP-END
+                           END-IF
+      *
+                           IF    ( DCACCT-HKNCOMBI =   9999 )
+                            OR   ( DCACCT-JIHOKBN  =   "1" )
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
       *
@@ -16073,9 +15888,6 @@
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  INPUTCD-REC
-               MOVE    ICD-DSPNAME     TO  WRK-MAE-INPUT
-               PERFORM 800-ZENKAKU-HEN-SEC
-               MOVE    WRK-OUT-INPUT   TO  ICD-DSPNAME
            ELSE
                INITIALIZE                  INPUTCD-REC
                MOVE    1               TO  FLG-INPUTCD
@@ -16499,52 +16311,6 @@
            .
       *
        900-PTCARE-NINTEI-KEY1-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    特定器材関連手技マスタ検索処理
-      *****************************************************************
-       900-MATERIAL-K-KEY2-SEL-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-MATERK
-      *
-           INITIALIZE                      MATERIAL-K-REC
-      *
-           MOVE    TCHK-CHK-SRYCD      TO  MATERK-SRYCD
-           MOVE    MATERIAL-K-REC      TO  MCPDATA-REC
-           MOVE    "tbl_material_k"    TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  MATERIAL-K-REC
-           ELSE
-               INITIALIZE                  MATERIAL-K-REC
-               MOVE    1               TO  FLG-MATERK
-           END-IF
-      *
-           .
-      *
-       900-MATERIAL-K-KEY2-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    特定器材関連手技マスタFETCH処理
-      *****************************************************************
-       900-MATERIAL-K-KEY2-FET-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-MATERK
-      *
-           MOVE    "tbl_material_k"    TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  MATERIAL-K-REC
-           ELSE
-               INITIALIZE                  MATERIAL-K-REC
-               MOVE    1               TO  FLG-MATERK
-           END-IF
-      *
-           .
-      *
-       900-MATERIAL-K-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
