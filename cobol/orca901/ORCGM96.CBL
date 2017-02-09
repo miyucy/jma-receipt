@@ -799,11 +799,9 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                    PERFORM 210-BACK
       *        情報削除
                WHEN    "CLICKED"       ALSO    "B02"
-                   IF      M96-B02-VISIBLE     =   "T"
-      **               PERFORM 211-JYOUKYOU-SEC
-                       MOVE   ZERO                 TO  SPA-NAI-CANCEL
-                       PERFORM 201-DELETE-SEC
-                   END-IF
+      **           PERFORM 211-JYOUKYOU-SEC
+                   MOVE   ZERO                 TO  SPA-NAI-CANCEL
+                   PERFORM 201-DELETE-SEC
       *        キー取得
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 221-GETKEY-SEC
@@ -816,22 +814,16 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *
       *        処理中止
                WHEN    "CLICKED"       ALSO    "B10"
-                   IF      M96-B10-VISIBLE     =   "T"
-                       PERFORM 210-CANCEL-SEC
-                   END-IF
+                   PERFORM 210-CANCEL-SEC
       *        情報
                WHEN    "CLICKED"   ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
-                   IF      M96-B11-VISIBLE     =   "T"
-                       PERFORM 211-JYOUKYOU-SEC
-                   END-IF
+                   PERFORM 211-JYOUKYOU-SEC
       *        更新
                WHEN    "CLICKED"       ALSO    "B12"
-                   IF      M96-B12-VISIBLE     =   "T"
-      **               PERFORM 211-JYOUKYOU-SEC
-                       MOVE   ZERO                 TO  SPA-NAI-CANCEL
-                       PERFORM 212-UPDATE-SEC
-                   END-IF
+      **           PERFORM 211-JYOUKYOU-SEC
+                   MOVE   ZERO                 TO  SPA-NAI-CANCEL
+                   PERFORM 212-UPDATE-SEC
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -896,11 +888,11 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                                    SPA-AREA
            IF    ( SJOBKANRI-RETURN    =   ZERO  )
       *
-      *        IF    ( FLG-RUNNING     =   1 )
-      *         AND  ( JOB-PGID        =   "ORCXRMST2" )
-      *         AND  ( JOB-STEPENDTIME =   SPACE OR ZERO )
-      *            MOVE    "1104"  TO  SPA-ERRCD
-      *        END-IF
+               IF    ( FLG-RUNNING     =   1 )
+                AND  ( JOB-PGID        =   "ORCXRMST2" )
+                AND  ( JOB-STEPENDTIME =   SPACE OR ZERO )
+                   MOVE    "1104"  TO  SPA-ERRCD
+               END-IF
       *
                IF    ( FLG-RUNNING     =   ZERO )
                    MOVE    2       TO  FLG-RUNNING
@@ -920,11 +912,11 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                                    SPA-AREA
            IF    ( SJOBKANRI-RETURN    =   ZERO  )
       *
-      *        IF    ( FLG-RUNNING     =   1 )
-      *         AND  ( JOB-PGID        =   "ORCXRMST4" )
-      *         AND  ( JOB-STEPENDTIME =   SPACE OR ZERO )
-      *            MOVE    "1104"  TO  SPA-ERRCD
-      *        END-IF
+               IF    ( FLG-RUNNING     =   1 )
+                AND  ( JOB-PGID        =   "ORCXRMST4" )
+                AND  ( JOB-STEPENDTIME =   SPACE OR ZERO )
+                   MOVE    "1104"  TO  SPA-ERRCD
+               END-IF
       *
                IF    ( FLG-RUNNING     =   ZERO )
                    MOVE    2       TO  FLG-RUNNING
@@ -1110,8 +1102,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *****************************************************************
        221-DELKEY-SEC              SECTION.
       *
-           IF     (SPA-HOSPID(4:2) NOT =   "50")       AND
-                  (SPA-MW              =   SPA-PANDA)  AND
+           IF     (SPA-HOSPID(4:2) NOT =   "50")   AND
                   (M96-B05-LABEL       =   SPACE)
                MOVE    "0404"              TO  SPA-MMID1CD
                MOVE    1                   TO  SPA-M96-CUR
@@ -1268,9 +1259,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "shell"         TO  MCP-TABLE
                    MOVE    LOW-VALUE       TO  MCP-PATHNAME
                    PERFORM 910-DBDELETE-SEC
-      *            IF    ( MCP-RC          NOT =   ZERO )
-      *                MOVE    "1103"      TO  SPA-ERRCD
-      *            END-IF
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "1103"      TO  SPA-ERRCD
+                   END-IF
                END-IF
       *
                PERFORM 900-MONBATCH-FET-SEC
@@ -1508,6 +1499,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WIDGET-INSENSITIVE      TO  M96-B10-STATE
       *
            MOVE    "T"                     TO  M96-B02-VISIBLE
+                                               M96-B09-VISIBLE
                                                M96-B10-VISIBLE
                                                M96-B11-VISIBLE
                                                M96-B12-VISIBLE
@@ -1523,8 +1515,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                M96-B12-VISIBLE
            END-IF
       *
-           IF    ( SPA-HOSPID(4:2)     =   "50" )  OR
-                 ( SPA-MW              =   SPA-GINBEE )
+           IF      SPA-HOSPID(4:2)     =   "50"
                MOVE    SPACE               TO  M96-B05-LABEL
            ELSE
                PERFORM 900-ACCESSKEY-READ-SEC
@@ -1549,11 +1540,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-M96-CUR
                WHEN    1
-                   IF    ( SPA-MW              NOT =   SPA-PANDA )
-                       MOVE    "B01"               TO  MCP-WIDGET
-                   ELSE
-                       MOVE    "B12"               TO  MCP-WIDGET
-                   END-IF
+                   MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
            .
       *
