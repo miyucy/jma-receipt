@@ -81,13 +81,11 @@ db	{
 	tbl_ptkinki;
 	tbl_ptsrh;
 	tbl_rrksrh;
-	tbl_seikyu;
 	tbl_seikyu_etc;
 	tbl_seikyu_koh;
 	tbl_seikyu_main;
 	tbl_seikyu_rsi;
 	tbl_skysrh;
-	tbl_sryacct;
 	tbl_sryacct_main;
 	tbl_sryacct_sub;
 	tbl_srycdchg;
@@ -96,7 +94,6 @@ db	{
 	tbl_syskanri;
 	tbl_sysuser;
 	tbl_syumei;
-	tbl_syunou;
 	tbl_syunou_main;
 	tbl_syunou_nyuin;
 	tbl_tensu;
