@@ -389,6 +389,10 @@
              IF      SPA-W01-KANRICD     NOT =   "9103"
                IF      SPA-GMN-CHKSYREC    =   "T"
                    MOVE    "F"                 TO  SPA-GMN-CHKSYREC
+      *----(05.00.00)--ADD-START---
+                   MOVE    "F"                 TO  SPA-GMN-CHKSYBYO
+                   MOVE    4                   TO  SPA-GMN-CUR
+      *----(05.00.00)--ADD-END-----
                ELSE
                    MOVE    "T"                 TO  SPA-GMN-CHKSYREC
                END-IF
