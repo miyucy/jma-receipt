@@ -65,9 +65,48 @@ db "xml2" {
  xml_medicationv2res;
 };
 db	{
-	tbl_tensu_user;
+	tbl_chk;
+	tbl_chk005;
+	tbl_chksnd;
+	tbl_chktrd;
+	tbl_dbcatalog;
+	tbl_file_info;
+	tbl_genericname;
+	tbl_inputcd;
+	tbl_inputset;
+	tbl_jobkanri;
+	tbl_lock;
+	tbl_passwd;
+	tbl_ptinf;
+	tbl_ptkinki;
+	tbl_ptsrh;
+	tbl_rrksrh;
+	tbl_seikyu;
+	tbl_seikyu_etc;
+	tbl_seikyu_koh;
+	tbl_seikyu_main;
+	tbl_seikyu_rsi;
+	tbl_skysrh;
+	tbl_sryacct;
+	tbl_sryacct_main;
+	tbl_sryacct_sub;
+	tbl_srycdchg;
+	tbl_srysrh;
+	tbl_sysbase;
+	tbl_syskanri;
+	tbl_sysuser;
+	tbl_syumei;
+	tbl_syunou;
+	tbl_syunou_main;
+	tbl_syunou_nyuin;
+	tbl_tensu;
 	tbl_tensu_master;
+	tbl_tensu_price;
+	tbl_tensu_user;
+	tbl_tensuplus;
+	tbl_tensuplus2;
+	tbl_yakujyo;
 };
 
-#include "orcadb.inc"
+/* #include "orcadb.inc" */
 #include "orcadbh.inc"

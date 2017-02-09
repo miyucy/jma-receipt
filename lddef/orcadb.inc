@@ -252,4 +252,6 @@ db	{
 	tbl_mstkanri_public;
 	tbl_mstkanri_master;
         tbl_tensu_price;
+	tbl_tensu_user;
+	tbl_tensu_master;
 };
