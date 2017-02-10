@@ -704,6 +704,9 @@
                                        OR  "21"
                                        OR  "22"
                                        OR  "23"
+      *H29.02
+                                       OR  "95"
+                                       OR  "96"
                MOVE    SRYACT-REC          TO  HZN-SRYACT-REC
                PERFORM
                    UNTIL   FLG-SRYACT      =   1
@@ -712,7 +715,11 @@
                                       (SRY-SRYCD (IDXA)   =   SPACE)
       *H26.10
                        MOVE    ZERO                TO  FLG-NO
-                       IF      SRY-SRYCD (IDXA)(1:1)      =   "6"
+                       IF     (SRY-SRYCD (IDXA)(1:1)      =   "6") OR
+                             ((SRY-SRYCD (IDXA)  >=   "095210001") AND
+                              (SRY-SRYCD (IDXA)  <=   "095279999")) OR
+                             ((SRY-SRYCD (IDXA)  >=   "096210001") AND
+                              (SRY-SRYCD (IDXA)  <=   "096279999"))
       *                    ÅÀ¿ô¥Þ¥¹¥¿¤ò¸¡º÷
                            MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
                            PERFORM 910-TENSU-READ-SEC
@@ -928,7 +935,11 @@
        20022-TBLSET-SEC         SECTION.
       *
       *    ÌôºÞÊÔ½¸
-           IF      TBL-SRY-SRYCD (IDXA)(1:1)   =   "6"
+           IF     (TBL-SRY-SRYCD (IDXA)(1:1)   =   "6")          OR
+                 ((TBL-SRY-SRYCD (IDXA)       >=   "095210001")  AND
+                  (TBL-SRY-SRYCD (IDXA)       <=   "095279999")) OR
+                 ((TBL-SRY-SRYCD (IDXA)       >=   "096210001")  AND
+                  (TBL-SRY-SRYCD (IDXA)       <=   "096279999"))
                ADD     1               TO  IDX-S
                IF      IDX-S           >   99
                    DISPLAY "ORCSHC30 TBL OVER !!"
