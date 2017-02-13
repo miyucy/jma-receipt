@@ -87,9 +87,6 @@
       * 04.08.00     NACL-多々納  16/09/XX  平成２８年１０月改正対応
       * 04.08.00     NACL-多々納  16/10/06  小児特例休日等変換対応
       * 04.08.00     NACL-多々納  16/12/XX  指導料等自動算定対応
-      * 04.08.00     NACL-多々納  17/02/XX  在宅実績加算２削除対応
-      * 04.08.00     NACL-多々納  17/03/XX  平成２９年４月改正対応
-      * 04.08.00     NACL-多々納  17/10/17  小児科外来診療料同日時間外加算対応
       *****************************************************************
       *
       *
@@ -428,9 +425,6 @@
       *H29.2
       *    在実績加算対応
            03  WRK-IDX-IN3             PIC 9(04).
-           03  WRK-IDX-IN4             PIC 9(04).
-           03  FLG-CHKEND              PIC 9(01).
-           03  IDKS                    PIC 9(04).
            03  WRK-ZKS-GRP             PIC X(02).
            03  WRK-ZKS-KBN             PIC X(01).
       *
@@ -3069,17 +3063,15 @@
                END-IF
       *H28.10
            ELSE
-      *H29.2
-      *        ６歳以上で夜間・早朝算定可
+      *        ６歳以上
                IF     (SPA-NENREI-YY       >=  6  )
-                AND   (SPA-YAKANKBN        =   1  )
-                AND   (SPA-HOSPSBT         =   2   )
                    EVALUATE    WRK-HZN-JIKANKBN
-      *                小児特例夜間・休日・深夜
-                       WHEN    "5"
+      *                小児特例休日　を休日
                        WHEN    "6"
+                           MOVE    2               TO  SPA-GAI-JIKANKBN
+      *                小児特例深夜　を深夜
                        WHEN    "7"
-                           MOVE    8               TO  SPA-GAI-JIKANKBN
+                           MOVE    3               TO  SPA-GAI-JIKANKBN
                    END-EVALUATE
                END-IF
            END-IF
@@ -5319,10 +5311,9 @@
                END-EVALUATE
       *        追加共通処理
                IF      WRK-SRYCD       NOT =   SPACE
-      *H29.2
+      *H29.1
       *            直下に実績加算２があればその下とする
                    PERFORM 33081-ZAIKANRI02-SET02-SEC
-      *
                    IF      WRK-IDX-IN3         =   ZERO
                        MOVE    WRK-IDX-IN          TO  IDX2
                        MOVE    WRK-IDX-IN          TO  SPA-GMN-IDX
@@ -5348,55 +5339,26 @@
       *****************************************************************
        33081-ZAIKANRI02-SET02-SEC         SECTION.
       *
-      *H29.4 改正対応
            MOVE    ZERO                TO  WRK-IDX-IN3
-           COMPUTE WRK-IDX-IN4         =   WRK-IDX-IN   +  1
-      *
-           MOVE    ZERO                TO  FLG-CHKEND
-           PERFORM VARYING     IDKS    FROM    WRK-IDX-IN4   BY  1
-                   UNTIL      (IDKS        >   SPA-MAX-LINE )
-                         OR  ((SPA-COM-INPUTCD (IDKS)  =   SPACE ) AND
-                              (SPA-GMN-INPUTCD (IDKS)  =   SPACE ))
-                         OR   (FLG-CHKEND      =   1    )
-               IF     (SPA-COM-INPUTCD(IDKS)(1:1)  =   "1" )
-                 AND  (SPA-COM-DATAKBN(IDKS)       =   "2" )
-                   IF      SPA-COM-AUTOKBN (IDKS)  =   SPACE
-      *                在宅実績加算のチェック
-                       PERFORM 330811-ZISOKSN-CHK-SEC
-                       IF     (WRK-ZKS-GRP(1:1)    =   "0"
-                                                   OR  "1"    )
-                           MOVE    IDKS            TO  WRK-IDX-IN3
-                       END-IF
-                   ELSE
-                       MOVE    IDKS             TO  WRK-IDX-IN3
-                   END-IF
-               END-IF
-               IF      SPA-COM-ZAIEND (IDKS)    =   "1"
-                   MOVE    1                    TO  FLG-CHKEND
-               END-IF
-           END-PERFORM
-           .
-       33081-ZAIKANRI02-SET02-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    在宅実績加算処理
-      *****************************************************************
-       330811-ZISOKSN-CHK-SEC         SECTION.
       *
            SET     TBL-ZKSIDX          TO  1
            SEARCH  TBL-ZISOKSN-OCC     VARYING   TBL-ZKSIDX
               AT   END
                    MOVE    SPACE                   TO  WRK-ZKS-KBN
                    MOVE    SPACE                   TO  WRK-ZKS-GRP
-              WHEN   (TBL-ZKS-SRYCD (TBL-ZKSIDX)
+               WHEN   (TBL-ZKS-SRYCD (TBL-ZKSIDX)
                                        =   SPA-COM-INPUTCD
-                                                        (IDKS))
+                                           (WRK-IDX-IN + 1))
                    MOVE    TBL-ZKS-GRP (TBL-ZKSIDX) TO  WRK-ZKS-GRP
                    MOVE    TBL-ZKS-KBN (TBL-ZKSIDX) TO  WRK-ZKS-KBN
            END-SEARCH
+           IF     (WRK-ZKS-KBN         =   "3"     )
+              AND (SPA-COM-AUTOKBN(WRK-IDX-IN + 1)   =   SPACE)
+               COMPUTE WRK-IDX-IN3         =   WRK-IDX-IN
+                                           +   1
+           END-IF
            .
-       330811-ZISOKSN-CHK-EXT.
+       33081-ZAIKANRI02-SET02-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5867,24 +5829,6 @@
                                                        =   "2" )
                                MOVE    1           TO  FLG-OK
                            END-IF
-      *TEST
-      *H29.10
-      *                    同日算定済みであれば、時間外加算のみOK
-                           IF     (SPA-COM-SRYKBN(IDX) =   "12" )
-                             AND  (SPA-COM-DATAKBN(IDX) =   "2" )
-                             AND  (SPA-COM-TIMEKSNKBN (IDX) NOT =  ZERO)
-                             AND ((SPA-SYONIKA-ARI2    =   1  ) OR
-                                  (SPA-SYONIKKR-ARI2   =   1  ))
-                               MOVE    1           TO  FLG-OK
-                           END-IF
-      *                    種別のみはＯＫ
-                           IF     (SPA-GMN-INPUTCD(IDX)(1:4) =  ".124")
-                             AND ((SPA-SYONIKA-ARI2    =   1  ) OR
-                                  (SPA-SYONIKKR-ARI2   =   1  ))
-                               MOVE    1           TO  FLG-OK
-                           END-IF
-      *TEST
-      *
                            IF      FLG-OK          =   1
                                CONTINUE
                            ELSE
