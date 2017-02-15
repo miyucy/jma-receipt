@@ -1941,8 +1941,6 @@
       *----(05.00.00)--ADD-START---
                            IF      SYS-9101-SYBYO      =   "T"
                                PERFORM 2002-BYOMEI-HENSYU-SEC
-                           ELSE
-                               GO  TO  900-RENKEI-TMP-READ-SEC
                            END-IF
       *                     CONTINUE
       *----(05.00.00)--ADD-END-----

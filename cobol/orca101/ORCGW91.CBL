@@ -422,10 +422,14 @@
            WHEN    "CLICKED"       ALSO    "CHKSYBYO"
       *    処方せんはなし
              IF      SPA-W01-KANRICD     NOT =   "9103"
-               IF      SPA-GMN-CHKSYBYO    =   "T"
-                   MOVE    "F"                 TO  SPA-GMN-CHKSYBYO
+               IF      SPA-GMN-CHKSYREC    =   "T"
+                   IF      SPA-GMN-CHKSYBYO    =   "T"
+                       MOVE    "F"                 TO  SPA-GMN-CHKSYBYO
+                   ELSE
+                       MOVE    "T"                 TO  SPA-GMN-CHKSYBYO
+                   END-IF
                ELSE
-                   MOVE    "T"                 TO  SPA-GMN-CHKSYBYO
+                   MOVE    "F"                 TO  SPA-GMN-CHKSYBYO
                END-IF
              END-IF
       *----(05.00.00)--ADD-END-----
