@@ -48,7 +48,8 @@ cleanup(){
         fi
 ##      MCP_WINDOW がAPI のとき、一時ディレクトリを削除
         if  [ "${MCP_WINDOW}" == "receiptmakev3" ]; then
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBDELTEMPDIR
+            echo "remove!! ${MCP_TEMPDIR}"
+            rm  -rf ${MCP_TEMPDIR}
         fi
 }
 trap cleanup EXIT
@@ -239,7 +240,7 @@ trap cleanup EXIT
                     if  [ -e ${MCP_TEMPDIR}/${4} ]; then
                         exit 
                     fi
-                    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0555 -parameter $1,$5,$6,${16},${9},${10},${18},${4} 
+                    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0555 -parameter $1,$5,$6,${16},${9},${10},${4} 
                 fi
             fi
         fi

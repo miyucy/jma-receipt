@@ -117,6 +117,8 @@
       *
            03  WRK-OPID                PIC X(16).
       *
+           03  WRK-PARAM               PIC X(256).
+      *
            03  WRK-X.
                05  WRK-9               PIC 9(05).
       *
@@ -718,10 +720,10 @@
                    END-IF
            END-EVALUATE
       *
-           MOVE    RECEMAKEQ-KARTE-UID
-                                   TO  SPA-R01-JOB-KARTE-UID
-           MOVE    RECEMAKEQ-ORCA-UID
-                                   TO  SPA-R01-JOB-ORCA-UID
+           STRING  RECEMAKEQ-KARTE-UID DELIMITED  BY  SPACE
+                   RECEMAKEQ-ORCA-UID  DELIMITED  BY  SPACE
+                                       INTO    SPA-R01-JOB-PARAM
+           END-STRING
       *
       *    更新前チェック
            MOVE    SPACE           TO  LINKAREA
@@ -761,11 +763,17 @@
                            PERFORM 900-CALL-ORCSJOB-SEC
                            IF      SJOBKANRI-RETURN
                                                    =   ZERO
+      *                        パラメータとカルテUID+オルカUID をチェック
+                               MOVE    SPACE           TO WRK-PARAM
+                               STRING  RECEMAKEQ-KARTE-UID
+                                                   DELIMITED   BY  SPACE
+                                       RECEMAKEQ-ORCA-UID
+                                                   DELIMITED   BY  SPACE
+                                                   INTO    WRK-PARAM
+                               END-STRING
       *
-                               IF    ( RECEMAKEQ-KARTE-UID
-                                               NOT =   JOB-KARTE-UID )
-                               OR    ( RECEMAKEQ-ORCA-UID
-                                               NOT =   JOB-ORCA-UID  )
+                               IF    ( WRK-PARAM
+                                               NOT =   JOB-PARAM     )
                                OR    ( SPA-R01-NYUGAIKBN
                                                NOT =   JOB-NYUGAIKBN )
                                OR    ( SPA-R01-FILEKBN
@@ -1011,11 +1019,10 @@
            DISPLAY "MAKE SPA-R01-RECEKBN=" SPA-R01-RECEKBN 
            DISPLAY "MAKE SPA-R01-FILEKBN=" SPA-R01-FILEKBN
       *??
-      *
-           MOVE    RECEMAKEQ-KARTE-UID
-                                   TO  SPA-R01-JOB-KARTE-UID
-           MOVE    RECEMAKEQ-ORCA-UID
-                                   TO  SPA-R01-JOB-ORCA-UID
+           STRING  RECEMAKEQ-KARTE-UID DELIMITED  BY  SPACE
+                   RECEMAKEQ-ORCA-UID  DELIMITED  BY  SPACE
+                                       INTO    SPA-R01-JOB-PARAM
+           END-STRING
       *
            PERFORM 800-TEMPDIR-SEC
            IF      WRK-ERRCD   NOT =   SPACE
@@ -1082,10 +1089,14 @@
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
-               IF    ( RECEMAKEQ-KARTE-UID
-                                   NOT =   JOB-KARTE-UID )
-               OR    ( RECEMAKEQ-ORCA-UID
-                                   NOT =   JOB-ORCA-UID  )
+      *        パラメータとカルテUID+オルカUID をチェック
+               MOVE    SPACE           TO WRK-PARAM
+               STRING  RECEMAKEQ-KARTE-UID DELIMITED   BY  SPACE
+                       RECEMAKEQ-ORCA-UID  DELIMITED   BY  SPACE
+                                           INTO    WRK-PARAM
+               END-STRING
+      *
+               IF    ( WRK-PARAM   NOT =   JOB-PARAM     )
                OR    ( SPA-R01-NYUGAIKBN
                                    NOT =   JOB-NYUGAIKBN )
                OR    ( SPA-R01-FILEKBN
@@ -1379,10 +1390,12 @@
            IF      SJOBKANRI-RETURN
                                    =   ZERO
       *        パラメータとカルテUID+オルカUID をチェック
-               IF    ( RECEMAKEQ-KARTE-UID
-                                   NOT =   JOB-KARTE-UID )
-               OR    ( RECEMAKEQ-ORCA-UID
-                                   NOT =   JOB-ORCA-UID  )
+               MOVE    SPACE           TO WRK-PARAM
+               STRING  RECEMAKEQ-KARTE-UID DELIMITED   BY  SPACE
+                       RECEMAKEQ-ORCA-UID  DELIMITED   BY  SPACE
+                                           INTO    WRK-PARAM
+               END-STRING
+               IF      WRK-PARAM   NOT =   JOB-PARAM
                    MOVE    "E41"           TO  WRK-ERRCD
                    GO  TO  2004-RECEIPT-CANCEL-EXT
                END-IF
@@ -1685,6 +1698,9 @@
        800-TEMPDIR-SEC             SECTION.
       *
            MOVE    SPA-TERMID      TO  WRK-SPA-TERMID
+      *
+           INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
+           MOVE    SPACE           TO  SPA-TERMID (37:)
       *
       *    一時ディレクトリのルートディレクトリ取得
            ACCEPT  WRK-TEMPDIR-ROOT

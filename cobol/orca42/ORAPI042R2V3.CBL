@@ -109,6 +109,8 @@
       *
            03  WRK-OPID                PIC X(16).
       *
+           03  WRK-PARAM               PIC X(256).
+      *
            03  WRK-X.
                05  WRK-9               PIC 9(05).
       *
@@ -175,8 +177,6 @@
            COPY    "MCPDATA2.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
-      *
-           COPY    "CPORCSTEMPDIR.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -467,11 +467,6 @@
                                        TO  RECEPRINTS-REQUEST-NUMBER
            MOVE    RECEPRINTQ-PERFORM-MONTH
                                        TO  RECEPRINTS-PERFORM-MONTH
-      *
-           IF      RECEPRINTQ-REQUEST-NUMBER
-                                       =   "01"
-               MOVE    SPA-R01-MONBLOB-ID   TO  RECEPRINTS-PRINT-ID (1)
-           END-IF
       *
            IF      APILST03-BODY   NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
@@ -1076,10 +1071,15 @@
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
-               IF    ( RECEPRINTQ-KARTE-UID
-                                   NOT =   JOB-KARTE-UID )
-               OR    ( RECEPRINTQ-ORCA-UID
-                                   NOT =   JOB-ORCA-UID  )
+      *        パラメータとカルテUID+オルカUID をチェック
+               MOVE    SPACE           TO  WRK-PARAM
+               STRING  RECEPRINTQ-KARTE-UID
+                                           DELIMITED   BY  SPACE
+                       RECEPRINTQ-ORCA-UID DELIMITED   BY  SPACE
+                                           INTO    WRK-PARAM
+               END-STRING
+      *
+               IF    ( WRK-PARAM   NOT =   JOB-PARAM     )
                OR    ( SPA-R01-NYUGAIKBN
                                    NOT =   JOB-NYUGAIKBN )
                OR    ( SPA-R01-FILEKBN
@@ -1187,10 +1187,10 @@
                GO  TO  2002-RECEIPT-PRINT-EXT
            END-IF
       *
-           MOVE    RECEPRINTQ-KARTE-UID
-                                   TO  SPA-R01-JOB-KARTE-UID
-           MOVE    RECEPRINTQ-ORCA-UID
-                                   TO  SPA-R01-JOB-ORCA-UID
+           STRING  RECEPRINTQ-KARTE-UID    DELIMITED  BY  SPACE
+                   RECEPRINTQ-ORCA-UID     DELIMITED  BY  SPACE
+                                          INTO    SPA-R01-JOB-PARAM
+           END-STRING
       *
            PERFORM 800-TEMPDIR-SEC
            IF      WRK-ERRCD   NOT =   SPACE
@@ -1232,25 +1232,25 @@
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
-               IF    ( RECEPRINTQ-KARTE-UID
-                                   NOT =   JOB-KARTE-UID )
-               OR    ( RECEPRINTQ-ORCA-UID
-                                   NOT =   JOB-ORCA-UID  )
+      *        パラメータとカルテUID+オルカUID をチェック
+               MOVE    SPACE           TO WRK-PARAM
+               STRING  RECEPRINTQ-KARTE-UID DELIMITED   BY  SPACE
+                       RECEPRINTQ-ORCA-UID  DELIMITED   BY  SPACE
+                                           INTO    WRK-PARAM
+               END-STRING
+      *
+               IF      WRK-PARAM   NOT =   JOB-PARAM
                    MOVE    "E43"           TO  WRK-ERRCD
                    GO  TO  2003-RECEIPT-CHECK-EXT
                END-IF
       *
       *??
-               DISPLAY "JOB-UPDCNT=" JOB-UPDCNT "#" JOB-ERRCD
+               DISPLAY "JOB-UPDCNT=" JOB-UPDCNT 
       *??
                IF      JOB-UPDCNT      >   ZERO
                    MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
                    MOVE    WRK-UPDCNT-X    TO
                                        RECEPRINTS-ALL-NUMBER-OF-SHEETS
-                   IF      JOB-ERRCD   NOT =   SPACE
-                       MOVE    "E31"           TO  WRK-ERRCD
-                       MOVE    JOB-YOBI        TO  WRK-ERRMSG
-                   END-IF
                ELSE
                    IF      JOB-ENDYMD      =   SPACE
                        MOVE    "E70"           TO  WRK-ERRCD
@@ -1452,10 +1452,23 @@
       *
            MOVE    SPA-TERMID      TO  WRK-SPA-TERMID
       *
-      *    一時ディレクトリ作成
-           INITIALIZE                  STEMPDIR-AREA
-           CALL    "ORCSTEMPDIR"   USING
-                                       STEMPDIR-AREA
+           INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
+           MOVE    SPACE           TO  SPA-TERMID (37:)
+      *
+      *    一時ディレクトリのルートディレクトリ取得
+           ACCEPT  WRK-TEMPDIR-ROOT
+                               FROM    ENVIRONMENT "MCP_TEMPDIR_ROOT"
+      *    一時ディレクトリ名組み立て
+           STRING  WRK-TEMPDIR-ROOT    DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   SPA-TERMID          DELIMITED   BY  SPACE
+                   LOW-VALUE           DELIMITED   BY  SIZE
+                                       INTO        MCP-TEMPDIR
+           END-STRING
+      *
+      *    環境変数［MCP_TEMPDIR］を生成（MCP-TEMPDIRの値を設定）
+           SET ENVIRONMENT "MCP_TEMPDIR"
+                                   TO  MCP-TEMPDIR
       *
            MOVE    WRK-SPA-TERMID  TO  SPA-TERMID
       *

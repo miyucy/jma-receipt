@@ -157,12 +157,8 @@
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.03    NACL-藤原    16/03/07  プリンタ設定の修正
       *  04.08.04    NACL-藤原    16/08/24  持参薬対応
-      *  04.08.05    NACL-藤原    17/02/14  編綴順指定時の特別療養費（国保）
-      *                                     のパラメタ設定の修正
-      *  04.08.06    NACL-藤原    17/08/29  一時保存テーブル削除対応
       *
       *  04.09.01    NACL-藤原    16/12/12  ＨＡＯＲＩ対応
-      *  05.00.00    NACL-森脇    17/12/05  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -490,12 +486,6 @@
       *    プリンタ名取得サブ
            COPY  "CPORCSPRTNMGET.INC".
       *
-           COPY    "MONBLOB".
-      *
-      *----(05.00.00)--ADD-START---
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -5265,6 +5255,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
        210-BACK-EXT.
            EXIT.
       *
+      *
       *****************************************************************
       *    戻る　処理
       *****************************************************************
@@ -5468,25 +5459,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
        440-PRINT-KENSU-GIDMSG-EXT.
            EXIT.
       *
-      *----(05.00.00)--UPD-START---
       *****************************************************************
       *    出力処理
       *****************************************************************
        440-PRINT-KENSU-SEC                SECTION.
       *
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"  USING   SPA-AREA
-           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-             OR  ( SPA-PRTCONF         =   "1" )
-               INITIALIZE                  ORCSPRTCTRLAREA
-               CALL    "ORCSPRTCTRL"       USING
-                                           SPA-AREA
-                                           ORCSPRTCTRLAREA
-                                           MCPAREA
-           END-IF
-      *
       *----(03.04.01)--UPD-START---
-           MOVE    "01"                TO  SPA-PRT-FLG
            EVALUATE   SPA-R01-RECE07-NYUGAIKBN
                WHEN   "1"
                    CALL    "ORCHCM35"  USING   SPA-AREA
@@ -5503,21 +5481,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *                                         SPA-GMN-FILEKBN
       *                                         SPA-GMN-TBL1
            END-EVALUATE
-           MOVE    SPACE               TO  SPA-PRT-FLG
       *----(03.04.01)--UPD-END-----
       *
-           IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *        印刷ダミー処理
-               MOVE    "99"                TO  SPA-PRT-FLG
-               CALL    "ORCHCDUMMY"    USING   SPA-AREA
-           END-IF
-      *
-           MOVE    SPACE               TO  SPA-PRT-FLG
            .
        440-PRINT-KENSU-EXT.
            EXIT.
       *
-      *----(05.00.00)--UPD-END-----
       *****************************************************************
       *    出力前処理
       *****************************************************************
@@ -5619,10 +5588,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
-           MOVE    SPA-R01-JOB-KARTE-UID
-                                   TO  JOB-KARTE-UID
-           MOVE    SPA-R01-JOB-ORCA-UID
-                                   TO  JOB-ORCA-UID
+           MOVE    SPA-R01-JOB-PARAM
+                                   TO  JOB-PARAM
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    帳票ファイル作成処理
@@ -5988,23 +5955,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG30
            IF      SPA-R01-JOB-PARAM
                                NOT =   SPACE
-               MOVE    SPA-R01-JOB-PARAM
-                                       TO  SHELLTBL-ARG31
-      *
-               MOVE    "MONBLOBNEW"    TO  MCP-FUNC
-               MOVE    "key"           TO  MCP-PATHNAME
-               MOVE    "monblob"       TO  MCP-TABLE
-               CALL    "MONFUNC"       USING
-                                           MCPAREA
-                                           MONBLOB
-               MOVE    MONBLOB-ID      TO  SHELLTBL-ARG32
-                                           SPA-R01-MONBLOB-ID
-      *
-               DISPLAY "SPA-R01-MONBLOB-ID=" SPA-R01-MONBLOB-ID "#"
-           ELSE
-               MOVE    "orca"          TO  SHELLTBL-ARG31
+               MOVE    SPA-R01-JOB-PARAM   TO  SHELLTBL-ARG31
            END-IF
-      *
+      *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -6325,21 +6278,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      WRK-RECE09-PRTJYUN  =   "06"
                EVALUATE    WRK-TEISYUTUSAKI
                    WHEN    "2"
-                       IF    ( IDW             =   1  )
-                       AND   ( IDX             =   34 )
-                           MOVE    "%%%%%%%%"  TO  WRK-RECE09-HKNJANUM
-                       ELSE
-                           MOVE    SPA-NAI-THKNJANUM (IDW IDX)
+                       MOVE    SPA-NAI-THKNJANUM (IDW IDX)
                                                TO  WRK-RECE09-HKNJANUM
-                           MOVE    WRK-CHOUKI  TO  WRK-RECE09-CHOUKI
-                           MOVE    WRK-ZAITAKU TO  WRK-RECE09-ZAITAKU
-                           MOVE    WRK-KOUGAKU TO  WRK-RECE09-KOUGAKU
-                           IF      WRK-KOUGAKU =   SPACE
+                       MOVE    WRK-CHOUKI      TO  WRK-RECE09-CHOUKI
+                       MOVE    WRK-ZAITAKU     TO  WRK-RECE09-ZAITAKU
+                       MOVE    WRK-KOUGAKU     TO  WRK-RECE09-KOUGAKU
+                       IF      WRK-KOUGAKU     =   SPACE
                                MOVE  "A"       TO  WRK-RECE09-KOUGAKU
-                           END-IF
-                           MOVE    WRK-SRT-LAST
-                                               TO  WRK-RECE09-SRT-LAST
                        END-IF
+                       MOVE    WRK-SRT-LAST    TO  WRK-RECE09-SRT-LAST
                    WHEN    "1"
                        IF      SPA-R01-NYUGAIKBN   =   "2"
                            IF      IDX                 =   1
@@ -8732,16 +8679,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            INITIALIZE                      SPATMP-REC
            MOVE    "R02"               TO  SPATMP-GYOUMUID
-           MOVE    SPA-TERMID          TO  SPATMP-TERMID
-           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
-      *
-           MOVE    SPATMP-REC          TO  MCPDATA2-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "del2"              TO  MCP-PATHNAME
-           PERFORM 900-SPATMP-CALL-SEC
-      *
-           INITIALIZE                      SPATMP-REC
-           MOVE    "R01"               TO  SPATMP-GYOUMUID
            MOVE    SPA-TERMID          TO  SPATMP-TERMID
            MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
       *
