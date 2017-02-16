@@ -98,7 +98,6 @@
                05  WRK-SKYYM           PIC X(06).
                05  WRK-SKYDD           PIC X(02).
            03  WRK-CREYMD              PIC X(08).
-           03  WRK-BASE-MONEY          PIC S9(08).
       *
        01  ITEM-AREA.
            03  ITEM-HKNNUM             PIC X(03).
@@ -1677,35 +1676,24 @@
                MOVE    "8017"          TO  ERRCD-ORDER
            END-IF
       *
-           MOVE    ZERO                TO  WRK-BASE-MONEY
-           IF    ( ITEM-RIYOUKBN        =   "1" )
-      *
-               EVALUATE    TRUE
-               WHEN  ( SYS-1001-SANKANUM    =   ZERO )
-               WHEN  ( ITEM-NUM-ZAIWEEK     <   22 )
-               WHEN  ( ITEM-SANKAKBN    =   "2" OR "3" )
+           IF    ( ITEM-RIYOUKBN               =   "1" )
+               IF    ( SYS-1001-SANKANUM   NOT =   ZERO )
+                AND  ( ITEM-NUM-ZAIWEEK       >=   22 )
+                   COMPUTE ITEM-NUM-DAIRI-MONEY
+                       =   420000      *   ITEM-NUM-BIRTHCNT
+               ELSE
                    IF    ( ITEM-BIRTHDAY   NOT =   SPACE )
-                       EVALUATE   TRUE
-                       WHEN    ( ITEM-BIRTHDAY
+                       EVALUATE    TRUE
+                       WHEN  ( ITEM-BIRTHDAY
                                           >= CONST-H270101 )
-                           MOVE    404000  TO  WRK-BASE-MONEY
+                           COMPUTE ITEM-NUM-DAIRI-MONEY
+                               =   404000  *   ITEM-NUM-BIRTHCNT
                        WHEN    OTHER
-                           MOVE    390000  TO  WRK-BASE-MONEY
+                           COMPUTE ITEM-NUM-DAIRI-MONEY
+                               =   390000  *   ITEM-NUM-BIRTHCNT
                        END-EVALUATE
                    END-IF
-               WHEN    OTHER
-                   MOVE    420000      TO  WRK-BASE-MONEY
-               END-EVALUATE
-      *
-               IF    ( ITEM-SANKAKBN    =   "3" )
-                   COMPUTE ITEM-NUM-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   ITEM-NUM-BIRTHCNT
-                       +   ITEM-NUM-SNK-MONEY
-               ELSE
-                   COMPUTE ITEM-NUM-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   ITEM-NUM-BIRTHCNT
                END-IF
-      *
            END-IF
       *
            IF  ( ITEM-NUM-DAIRI-MONEY >   ZERO )
