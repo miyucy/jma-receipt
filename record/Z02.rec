@@ -116,5 +116,19 @@ Z02 {
     B03 {
       state int;
     };
+    TANICD_COMBO { #GtkPandaCombo
+      count int;
+      item varchar(28)[200];
+      TANICD { #GtkPandaEntry
+        textdata varchar(28);
+      };
+    };
+    YKZKBN_COMBO { #GtkPandaCombo
+      count int;
+      item varchar(12)[5];
+      YKZKBN { #GtkPandaEntry
+        textdata varchar(12);
+      };
+    };
   };
 };

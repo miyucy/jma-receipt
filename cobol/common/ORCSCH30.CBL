@@ -46,6 +46,7 @@
       * 04.07.00     NACL-Â¿¡¹Ç¼  12/11/02  ÌôºÞËè¤Î¥³¥á¥ó¥ÈÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  16/10/XX  ÍÑË¡¥³¡¼¥ÉÉþÍÑ»þÅÀÂÐ±þ
+      * 04.08.00     NACL-Â¿¡¹Ç¼  17/02/XX  ¼«Èñ¥³¡¼¥ÉÌôºÞÂÐ±þ
       *****************************************************************
       *
       *
@@ -374,7 +375,7 @@
       *      DISPLAY "ORCHC30-COMMENT2:"  ORCHC30-COMMENT-CD (IDX 2)
       *                 "," ORCHC30-COMMENT-MEI (IDX 2)
       *      END-IF
-      *    END-PERFORM 
+           END-PERFORM 
       *TEST
       *
       *    °õºþ½èÍý¤Ø
@@ -715,11 +716,7 @@
                                       (SRY-SRYCD (IDXA)   =   SPACE)
       *H26.10
                        MOVE    ZERO                TO  FLG-NO
-                       IF     (SRY-SRYCD (IDXA)(1:1)      =   "6") OR
-                             ((SRY-SRYCD (IDXA)  >=   "095210001") AND
-                              (SRY-SRYCD (IDXA)  <=   "095279999")) OR
-                             ((SRY-SRYCD (IDXA)  >=   "096210001") AND
-                              (SRY-SRYCD (IDXA)  <=   "096279999"))
+                       IF     (SRY-SRYCD (IDXA)(1:1)      =   "6")
       *                    ÅÀ¿ô¥Þ¥¹¥¿¤ò¸¡º÷
                            MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
                            PERFORM 910-TENSU-READ-SEC
@@ -730,6 +727,22 @@
                                MOVE    1               TO  FLG-OK
                            END-IF
                        END-IF
+      *H29.2           ¼«ÈñÌôºÞ¤Î¤ßÂÐ¾Ý
+                       IF      SRY-SRYKBN          =   "95"
+                                                   OR  "96"
+                           IF     (SRY-SRYCD (IDXA)(1:3)   =   "095"
+                                                           OR  "096")
+      *                        ÅÀ¿ô¥Þ¥¹¥¿¤ò¸¡º÷
+                               MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
+                               PERFORM 910-TENSU-READ-SEC
+                               IF      TNS-YKZKBN          =   ZERO
+                                   MOVE    1               TO  FLG-NO
+                               ELSE
+                                   MOVE    1               TO  FLG-OK
+                               END-IF
+                           END-IF
+                       END-IF
+      *
                        IF     (SRY-SRYCD (IDXA)    =   "630010002"
                                                    OR  "630010004"
       *H25.4               ¡Ê¸º¡ËÂÐ¾Ý³°
@@ -902,6 +915,17 @@
                    END-IF
                END-IF
            END-IF
+      *H29.2
+      *    ¼«Èñ¤Ï±¡Æâ¤È¤¹¤ë
+           IF      WRK-SRYKBN          =   "95"
+                                       OR  "96"
+      *        ±¡Æâ
+               IF      FLG-INNAI           =   1
+                   MOVE    1               TO  FLG-HEN
+               ELSE
+                   MOVE    ZERO            TO  FLG-HEN
+               END-IF
+           END-IF
       *
            MOVE    SPACE               TO  WRK-TBL-AREA
            INITIALIZE                      WRK-TBL-AREA
@@ -935,11 +959,9 @@
        20022-TBLSET-SEC         SECTION.
       *
       *    ÌôºÞÊÔ½¸
-           IF     (TBL-SRY-SRYCD (IDXA)(1:1)   =   "6")          OR
-                 ((TBL-SRY-SRYCD (IDXA)       >=   "095210001")  AND
-                  (TBL-SRY-SRYCD (IDXA)       <=   "095279999")) OR
-                 ((TBL-SRY-SRYCD (IDXA)       >=   "096210001")  AND
-                  (TBL-SRY-SRYCD (IDXA)       <=   "096279999"))
+           IF     (TBL-SRY-SRYCD (IDXA)(1:1)   =   "6")
+             OR   (TBL-SRY-SRYCD (IDXA)(1:3)   =   "095"
+                                               OR  "096") 
                ADD     1               TO  IDX-S
                IF      IDX-S           >   99
                    DISPLAY "ORCSHC30 TBL OVER !!"
@@ -1366,6 +1388,10 @@
       *            ºßÂð
                    WHEN    "14"
                        MOVE    "4"         TO  ORCHC30-ZAIKBN(IDY)
+      *H29.2       ¼«Èñ
+                   WHEN    "95"
+                   WHEN    "96"
+                       MOVE    "9"         TO  ORCHC30-ZAIKBN(IDY)
                END-EVALUATE
            END-PERFORM
       *
@@ -1436,7 +1462,10 @@
                IF     (WKSRY-SRYKBN        =   "21"  OR
                                                "22"  OR
                                                "23"  OR
-                                               "14"    )
+                                               "14"
+      *H29.2
+                                           OR  "95"
+                                           OR  "96"    )
       *            Êñ³çÊÝ¸±¤ÏÂÐ¾Ý³°
                    IF    ((WRK-HKNCOMBINUM     =   "9999")
                    AND    (FLG-YKJOKUKBN       =   ZERO  ) )
@@ -1500,13 +1529,37 @@
                MOVE    ZERO            TO  FLG-NO
                IF     (WKSRY-SRYCD (IDXA)(1:1) =   "6" )
       *            ÅÀ¿ô¥Þ¥¹¥¿¤ò¸¡º÷
-                   MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
+                   MOVE    WKSRY-SRYCD (IDXA)   TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC
                    IF      TNS-TENSIKIBETU     =   7
       *                ¸ºÅÀ¤ÏÂÐ¾Ý³°
                        MOVE    1               TO  FLG-NO
                    END-IF
                END-IF
+      *H29.2
+      *        ¼«Èñ¥³¡¼¥É
+               IF     WKSRY-SRYKBN         =   "95"
+                                           OR  "96"
+                   IF    (WKSRY-SRYCD (IDXA)(1:4) =   "095"
+                                                  OR  "096" )
+      *                ÅÀ¿ô¥Þ¥¹¥¿¤ò¸¡º÷
+                       MOVE    WKSRY-SRYCD (IDXA)  TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+                       IF      TNS-YKZKBN          =   ZERO
+      *                    ÂÐ¾Ý³°
+                           MOVE    1               TO  FLG-NO
+                       END-IF
+                   END-IF
+      *            ÌôºÞ¡¦ÍÑË¡¡¦¥³¥á¥ó¥È¤Î¤ßÂÐ¾Ý
+                   IF     (WKSRY-SRYCD (IDXA)(1:1) =   "6"
+                                                   OR  "0"
+                                                   OR  "8" )
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-NO
+                   END-IF
+               END-IF
+      *
                IF     (WKSRY-SRYCD (IDXA)      =   "630010002" )
                  OR   (WKSRY-SRYCD (IDXA)(1:4)     =   "0086" )
       *          ¡Ê¸º¡Ë¤ÏÂÐ¾Ý³°
@@ -1550,6 +1603,14 @@
            IF      WKSRY-ZAIKAIKEI     >   ZERO
                MOVE    WKSRY-ZAITENKEI     TO  TBL-ACCT-ZAITEN
                MOVE    WKSRY-ZAIKAIKEI     TO  TBL-ACCT-KAISU
+           END-IF
+      *H29.2
+      *    ¼«Èñ
+           IF     (WKSRY-SRYKBN        =   "95"
+                                       OR  "96" )
+             AND  (WKSRY-JIHIMONEYTOTAL    >   ZERO )
+               MOVE    WKSRY-JIHIMONEYTOTAL    TO  TBL-ACCT-ZAITEN
+               MOVE    WKSRY-ZAIKAIKEI         TO  TBL-ACCT-KAISU
            END-IF
       *
            .
@@ -1599,7 +1660,10 @@
        3001-TBLSET-SEC         SECTION.
       *
       *    ÌôºÞÊÔ½¸
-           IF      ORCSCH30-SRYCD(IDT IDXA)(1:1)   =   "6"
+           IF     (ORCSCH30-SRYCD(IDT IDXA)(1:1)   =   "6" )
+      *H29.2
+             OR   (ORCSCH30-SRYCD(IDT IDXA)(1:3)   =   "095"
+                                                   OR  "096")
                ADD     1               TO  IDX-S
                IF      IDX-S           >   99
                    DISPLAY "ORCSHC30 TBL OVER !!"
