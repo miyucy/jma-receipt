@@ -375,7 +375,7 @@
       *      DISPLAY "ORCHC30-COMMENT2:"  ORCHC30-COMMENT-CD (IDX 2)
       *                 "," ORCHC30-COMMENT-MEI (IDX 2)
       *      END-IF
-           END-PERFORM 
+      *    END-PERFORM 
       *TEST
       *
       *    印刷処理へ
@@ -1540,7 +1540,7 @@
       *        自費コード
                IF     WKSRY-SRYKBN         =   "95"
                                            OR  "96"
-                   IF    (WKSRY-SRYCD (IDXA)(1:4) =   "095"
+                   IF    (WKSRY-SRYCD (IDXA)(1:3) =   "095"
                                                   OR  "096" )
       *                点数マスタを検索
                        MOVE    WKSRY-SRYCD (IDXA)  TO  TNS-SRYCD
