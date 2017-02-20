@@ -30,6 +30,8 @@
                05  OKUSURIGETRES-INFORMATION-TIME    PIC X(08).
                05  OKUSURIGETRES-API-RESULT          PIC X(04).
                05  OKUSURIGETRES-API-RESULT-MSG      PIC X(100).
+      *        基準日
+               05  OKUSURIGETRES-BASE-DATE           PIC X(10).
       *        患者情報
                05  OKUSURIGETRES-PTINF-AREA.
                  07  OKUSURIGETRES-PTNUM             PIC X(20).
@@ -39,17 +41,14 @@
                  07  OKUSURIGETRES-SEX               PIC X(1).
       *        お薬手帳管理データテーブル（１０件まで）
                05  OKUSURIGETRES-INFOMATION  OCCURS  10.
-                 07  OKUSURIGETRES-KEY-AREA.
-      *            連番
-                   09  OKUSURIGETRES-RENNUM          PIC X(04).
-      *            グループ
-                   09  OKUSURIGETRES-TBL-GROUP       PIC X(14).
-      *            UUID
-                   09  OKUSURIGETRES-TBL-UUID        PIC X(36).
-      *            処理内連番
-                   09  OKUSURIGETRES-SHORI-RENNUM    PIC X(04).
-      *          診療日
-                 07  OKUSURIGETRES-PERFORM-DATE      PIC X(10).
+      *        連番
+                 07  OKUSURIGETRES-RENNUM            PIC X(04).
+      *        グループ
+                 07  OKUSURIGETRES-TBL-GROUP         PIC X(14).
+      *        UUID
+                 07  OKUSURIGETRES-TBL-UUID          PIC X(36).
+      *        処理内連番
+                 07  OKUSURIGETRES-SHORI-RENNUM      PIC X(04).
       *        お薬手帳データ
                05  OKUSURIGETRES-DATA.
-                   07  OKUSURIGETRES-CSV-DATA        PIC X(30000).
+                   07  OKUSURIGETRES-CSV-DATA        PIC X(10000).
