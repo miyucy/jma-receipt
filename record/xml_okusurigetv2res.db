@@ -8,7 +8,6 @@ xml_okusurigetv2res {
 		Information_Time 		varchar(08);
 		Api_Result	     		varchar(04);
 		Api_Result_Message 		varchar(100);
-		Jma_Receipt_Version		varchar(64);
 		Base_Date			varchar(10);
 		Patient_Information{
 			Patient_ID			varchar(20);

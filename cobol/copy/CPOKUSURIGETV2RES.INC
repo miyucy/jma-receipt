@@ -30,7 +30,6 @@
                05  OKUSURIGETRES-INFORMATION-TIME    PIC X(08).
                05  OKUSURIGETRES-API-RESULT          PIC X(04).
                05  OKUSURIGETRES-API-RESULT-MSG      PIC X(100).
-               05  OKUSURIGETRES-JMA-VERSION         PIC X(64).
       *        基準日
                05  OKUSURIGETRES-BASE-DATE           PIC X(10).
       *        患者情報
