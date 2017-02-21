@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  11/12/20  商品名コード金額単位対応
+      *  05.01.00    NACL-多々納  17/02/XX  点数マスタ分離対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -1514,7 +1515,8 @@
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "tbl_tensu_user"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -1620,7 +1622,8 @@
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "tbl_tensu_user"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -1632,23 +1635,23 @@
            END-IF
       *
       *    点数付加情報削除
-           INITIALIZE                      TENSUPLUS-REC
-           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
-           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
-           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "TENSUPLUS DEL ERR!!"   MCP-RC
-                       ",KEY:"   TNS-KEY
-               MOVE    "53"                 TO  WRK-ERRCD
-           END-IF
+      *    INITIALIZE                      TENSUPLUS-REC
+      *    MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+      *    MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+      *    MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *    MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+      *    MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+      *    MOVE    "DBDELETE"          TO  MCP-FUNC
+      *    MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+      *    CALL    "ORCDBMAIN"         USING   MCPAREA
+      *                                        MCPDATA-REC
+      *                                        SPA-AREA
+      *    IF      MCP-RC          NOT =   ZERO
+      *        DISPLAY "TENSUPLUS DEL ERR!!"   MCP-RC
+      *                ",KEY:"   TNS-KEY
+      *        MOVE    "53"                 TO  WRK-ERRCD
+      **   END-IF
       *
            .
        20031-TENSU-DELETE-EXT.
@@ -1668,6 +1671,18 @@
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "del22"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    点数付加情報削除
+           INITIALIZE                  TENSUPLUS-REC
+           MOVE    WRK-SRYCD           TO  TNSP-SRYCD
+           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            .
@@ -1718,10 +1733,10 @@
                MOVE    WRK-YUKOEDYMD           TO  TNS-YUKOEDYMD
       *
                PERFORM 20041-TENSU-UPDATE-SEC
-      *        付加情報更新
-               IF      WRK-ERRCD           =   SPACE
-                   PERFORM 20042-TENSUPLUS-UPDATE-SEC
-               END-IF
+      ****     付加情報更新
+      *        IF      WRK-ERRCD           =   SPACE
+      *            PERFORM 20042-TENSUPLUS-UPDATE-SEC
+      ***      END-IF
            END-IF
            .
        2004-TENSU-END-EXT.
@@ -1739,7 +1754,8 @@
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "tbl_tensu_user"    TO  MCP-TABLE
            MOVE    "upd1"              TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -1869,10 +1885,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-MAE-YUKOEDYMD       TO  TNS-YUKOEDYMD
       *
                PERFORM 20041-TENSU-UPDATE-SEC
-      *        付加情報更新
-               IF      WRK-ERRCD           =   SPACE
-                   PERFORM 20042-TENSUPLUS-UPDATE-SEC
-               END-IF
+      ***      付加情報更新
+      *        IF      WRK-ERRCD           =   SPACE
+      *            PERFORM 20042-TENSUPLUS-UPDATE-SEC
+      ****     END-IF
            ELSE
                MOVE    "34"                TO  WRK-ERRCD
            END-IF
@@ -1885,11 +1901,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    登録処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20022-TENSU-INS-SEC
-      *        付加情報
-               IF     (WRK-ERRCD           =   SPACE )
-                  AND (FLG-TENSUPLUS-ARI   =   1     )
-                   PERFORM 20023-TENSUPLUS-INS-SEC
-               END-IF
+      ****     付加情報
+      *        IF     (WRK-ERRCD           =   SPACE )
+      *           AND (FLG-TENSUPLUS-ARI   =   1     )
+      *            PERFORM 20023-TENSUPLUS-INS-SEC
+      ****     END-IF
            END-IF
            .
        2005-TENSU-UPD-EXT.
