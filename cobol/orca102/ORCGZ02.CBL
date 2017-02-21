@@ -2188,6 +2188,35 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        ",KEY:" TNS-KEY
                MOVE    "9001"                TO  SPA-ERRCD
            END-IF
+      *
+      *    入力コード削除
+           IF     (SPA-Z01-SRYCD(1:1)  =   "0"  )  AND
+                  (SPA-Z01-SELNUM      =   1    )  AND
+                  (SPA-Z01-MAX         =   1    )
+               INITIALIZE                  INPUTCD-REC
+               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+               MOVE    SPA-Z01-SRYCD       TO  ICD-SRYCD
+               MOVE    INPUTCD-REC         TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "del22"             TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+      *
+      *        点数付加情報削除
+               INITIALIZE                  TENSUPLUS-REC
+               MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
+               MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+               MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "del1"              TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           END-IF
            .
        40311-TENSU-USER-DEL-EXT.
            EXIT.
@@ -2235,6 +2264,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    入力コード削除
            IF     (SPA-Z01-SELNUM      =   1    )  AND
                   (SPA-Z01-MAX         =   1    )
+               INITIALIZE                  INPUTCD-REC
                MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    SPA-Z01-SRYCD       TO  ICD-SRYCD
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
@@ -2244,6 +2274,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
+      *
+      *        点数付加情報削除
+               INITIALIZE                  TENSUPLUS-REC
+               MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
+               MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+               MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "del1"              TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
            END-IF
            .
        40312-TENSU-MAST-DEL-EXT.
