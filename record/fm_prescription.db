@@ -7,15 +7,12 @@ fm_prescription {
 		Form_ID				varchar(30);
 		Custom_ID				varchar(30);
 		Printer					varchar(20);
-		Order_Class			varchar(01);
+		Isuue_Class			varchar(01);
  		Perform_Date		varchar(10);
 		IssuedDate			varchar(10);
 		Department_Code			varchar(02);
 		Department_Name			varchar(40);
 		EditPageNumber_Flg 		varchar(01);
-#--　分割調剤
-		Split_Count	 		varchar(01);
-		Split_Number	 		varchar(01);
 		Patient	{
 			ID	 				    varchar(20);
 			Name 				    varchar(50);
@@ -46,6 +43,13 @@ fm_prescription {
 				Certificate_StartDate								varchar(10);
 				Certificate_ExpiredDate							varchar(10);
 			};
+			Accident_Insurance_Information	{
+				Accident_Insurance_Class		varchar(01);
+				Accident_Insurance_Number 	varchar(14);
+				Accident_StartDate					varchar(10);
+				Accident_ExpiredDate				varchar(10);
+				Disease_Date								varchar(10);
+			};
 			PublicInsurance_Information		{
 					PublicInsurance_Class			varchar(03);
 					PublicInsurance_Name			varchar(20);
@@ -54,13 +58,6 @@ fm_prescription {
 					Certificate_IssuedDate		varchar(10);
 					Certificate_ExpiredDate		varchar(10);
 			}[4];
-			Accident_Insurance_Information	{
-				Accident_Insurance_Class		varchar(01);
-				Accident_Insurance_Number 	varchar(14);
-				Accident_StartDate					varchar(10);
-				Accident_ExpiredDate				varchar(10);
-				Disease_Date								varchar(10);
-			};
 		};
 		Hospital	{
 			Prefectures_Number  varchar(2);
@@ -69,7 +66,6 @@ fm_prescription {
 			ZipCode         		varchar(7);
 			Address							varchar(200)[3];
 			PhoneNumber					varchar(15);
-			FaxNumber					varchar(15);
 		};
 		Doctor	{
 			Code								varchar(5);
@@ -80,12 +76,10 @@ fm_prescription {
 		Check_Leftover_Class	varchar(1);
 		IncludingNarcotic_Flg	varchar(1);
 		IncludingUnchangeable_Flg	varchar(1);
-		Rp	{
+		Prescription	{
 			Medical_Class		varchar(2);
-			Count				varchar(3);
+			Amount				varchar(3);
 			Unit_Name			varchar(4);
-#--　分割総投与日数
-			Split_Total_Count	varchar(3);
 			Medication	{
 				Name				varchar(210);
 				Amount			varchar(12);
@@ -98,7 +92,5 @@ fm_prescription {
 		}[50];
 		Memo2						varchar(40)[4];
 		Memo						varchar(100)[50];
-		Qr_ID   					varchar(80);
 	};
 };
-

@@ -16,9 +16,9 @@ fm_appointment_form {
 			Sex					    varchar(1);
 		};
 		Hospital	{
-			Name						varchar(120)[3];
+			Name						varchar(40)[2];
 			ZipCode         		varchar(7);
-			Address						varchar(200)[3];
+			Address						varchar(40)[2];
 			PhoneNumber					varchar(15);
 		};
 		Memo									varchar(100);
@@ -32,7 +32,7 @@ fm_appointment_form {
 				Name 							varchar(50);
 				KanaName 					varchar(50);
 			};
-			Note							varchar(80)[6];
+			Comment							varchar(80)[6];
 		}[50];
 	};
 };
