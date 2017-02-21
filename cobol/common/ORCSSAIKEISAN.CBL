@@ -80,8 +80,6 @@
       *  04.08.03    NACL-門脇    17/01/05  一括再計算該当者のリストアップ
       *                                     対応
       *  04.08.04    NACL-門脇    17/02/21  初診算定条件追加
-      *  04.08.05    NACL-門脇    17/12/15  第三者行為現物給付に関わる
-      *                                     負担金計算対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -420,8 +418,8 @@
       *
                MOVE     SYUNOU-REC        TO      WRK-SYUNOU-TAIHI-REC
       *
-               IF  (LNK-ORCSSKS-IKTGENKEIFLG  NOT = SPACE)
-               AND (WRK-GRP-DENPNUM           NOT = ZERO )
+               IF  (LNK-ORCSSKS-IKTGENKEIFLG = "1" )
+               AND (WRK-GRP-DENPNUM      NOT = ZERO)
                  PERFORM  4407-GRP-DATA-CHECK-SEC
                END-IF
                IF   FLG-GENBUTU  =  1
@@ -838,8 +836,6 @@
            END-IF
            MOVE    LNK-ORCSSKS-IKTJISSIFLG
                                  TO  LNK-S01-IKTJISSIFLG
-           MOVE    LNK-ORCSSKS-IKTCHECKFLG
-                                 TO  LNK-S01-IKTCHECKFLG
       *
            CALL    "ORCSGAIFTN"        USING
                                        MCPAREA
@@ -1281,17 +1277,6 @@
       *
            END-IF
       *
-           IF    (LNK-SYU-KOH1HKNNUM(IDY) =   "970"             )
-           AND   (ACCT-SRYKBN             =   "99"              )
-           AND   (ACCT-ZAITEN             =    ZERO             )
-           AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
-           AND   (ACCT-JIHOKBN            =    SPACE            )
-           AND   (LNK-S01-DAISANYUSENFLG  =    SPACE            )
-      *
-              PERFORM  44015-SRYACT-KENSAKU4-SEC
-      *
-           END-IF
-      *
            IF   ((ACCT-ZAITEN       NOT = ZERO                  ) AND
                  (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO) AND
                  (ACCT-JIHOKBN          = SPACE                 ))
@@ -1526,51 +1511,6 @@
            .
       *
        44014-SRYACT-KENSAKU3-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    診療行為情報検索
-      **************************************************************
-       44015-SRYACT-KENSAKU4-SEC           SECTION.
-      *
-           INITIALIZE                           SRYACT-REC
-           MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
-           MOVE    ACCT-PTID            TO      SRY-PTID
-           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
-           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
-           MOVE    "099999931"          TO      SRY-SRYCD(1)
-           MOVE    "099999931"          TO      SRY-SRYCD(2)
-           MOVE    "099999931"          TO      SRY-SRYCD(3)
-           MOVE    "099999931"          TO      SRY-SRYCD(4)
-           MOVE    "099999931"          TO      SRY-SRYCD(5)
-           MOVE    SRYACT-REC           TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "tbl_sryact"         TO      MCP-TABLE
-           MOVE    "key8"               TO      MCP-PATHNAME
-           CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"        TO      MCP-FUNC
-               MOVE    "tbl_sryact"     TO      MCP-TABLE
-               MOVE    "key8"           TO      MCP-PATHNAME
-               CALL    "ORCDBMAIN"      USING   MCPAREA
-                                                MCPDATA-REC
-                                                SPA-AREA
-               IF      MCP-RC          =   ZERO
-                   MOVE   MCPDATA-REC   TO      SRYACT-REC
-                   MOVE   "1"           TO      LNK-S01-DAISANYUSENFLG
-               END-IF
-           END-IF
-      *
-           MOVE     "tbl_sryact"        TO      MCP-TABLE
-           MOVE     "key8"              TO      MCP-PATHNAME
-           PERFORM   DB-CLOSE-SEC
-      *
-           .
-      *
-       44015-SRYACT-KENSAKU4-EXT.
            EXIT.
       *
       ******************************************************************
@@ -3467,12 +3407,7 @@
       *入返金額
            MOVE    ZERO                 TO  SMEI-NYUHEN-MONEY
       *入返金日
-           IF    ( LNK-ORCSSKS-SYSYMD   IS  NUMERIC )
-               MOVE    LNK-ORCSSKS-SYSYMD
-                                        TO  SMEI-NYUHEN-YMD
-           ELSE
-               MOVE    SPA-SYSYMD       TO  SMEI-NYUHEN-YMD
-           END-IF
+           MOVE    SPA-SYSYMD           TO  SMEI-NYUHEN-YMD
       *入金方法
            MOVE    "00"                 TO  SMEI-NYUKIN-HOHO
       *状態区分
@@ -3491,12 +3426,6 @@
            MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
            MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
            MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
-           IF    ( LNK-ORCSSKS-SYSHMS  IS  NUMERIC )
-               MOVE    SMEI-NYUHEN-YMD TO  SDAILYKEY-CREYMD
-               MOVE    LNK-ORCSSKS-SYSHMS
-                                       TO  SDAILYKEY-CREHMS
-               MOVE    "FORCE"         TO  SDAILYKEY-BASEYMD
-           END-IF
            PERFORM 800-DAILYKEY-SEC
            MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
