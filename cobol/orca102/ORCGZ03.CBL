@@ -3612,6 +3612,7 @@ grpsys*    CALL    "ORCDBMAIN"         USING   MCPAREA
       *    入力コード削除
            IF     (SPA-Z01-SELNUM      =   1    )  AND
                   (SPA-Z01-MAX         =   1    )
+               INITIALIZE                  INPUTCD-REC
                MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
                MOVE    SPA-Z01-SRYCD       TO  ICD-SRYCD
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
@@ -3624,6 +3625,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
       *
       *        点数付加情報削除
+               INITIALIZE                  TENSUPLUS-REC
                MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
                MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
                MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
