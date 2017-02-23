@@ -50,8 +50,6 @@
            COPY    "CPRECEERR.INC" REPLACING   //RECEERR//
                                    BY          //ERRPARA//.
       *
-           COPY    ENUM-VALUE.
-      *
       *    ステータス領域
        01  STS-AREA.
            03  STS-ORCBS01ERR                  PIC X(02).
@@ -59,7 +57,6 @@
       *    フラグ
        01  FLG-AREA.
            03  FLG-END                         PIC 9(01).
-           03  FLG-API                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -97,8 +94,6 @@
            03  WRK-PRTTITLE                    PIC X(100).
            03  WRK-ERRMSG                      PIC X(200).
            03  WRK-UPDCNT                      PIC 9(06).
-           03  WRK-PRT-FLG-X.
-               05  WRK-PRT-FLG                 PIC 9(02).
       *
            COPY    "MCPAREA".
       *
@@ -107,9 +102,6 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
-      *
-      *    システム管理
-           COPY    "CPSK1010.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -127,17 +119,9 @@
       *    サブプロ用領域
       *****************************************************************
       *
-           COPY    "CPORCSCOMMON.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *    COPY    "ORCA-DBPATH".
-      *
-      *    プログラムオプション編集パラメタ
-           COPY    "CPORCSPRGOPTION.INC".
-      *
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
       *
       *    支払証明書
            COPY    "CPORCHCM31.INC".
@@ -231,9 +215,6 @@
            MOVE    SPACE           TO  WRK-JOBTITLE
                                        WRK-PRTTITLE
       *
-      *    WRK-PRTTITLEの内容はPUSH時に置き換えている。
-      *    値を変更した場合、ORCBPRT1とORCSAPIFMTERMの条件追加が
-      *    必要となるので注意
            EVALUATE    WRK-PARA-PGTYPE
            WHEN    "HC31"
                STRING  "支払日別："        DELIMITED   BY  SIZE
@@ -286,11 +267,6 @@
                                        SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAME
                                    TO  ERRPARA
-           MOVE    SGETTEMP-MW     TO  SPA-MW
-      *
-           IF    ( WRK-PARA-PGNAME =   "ORCHCM31" OR "ORCHCM32" )
-               PERFORM 1001-PRGOPTION-SEC
-           END-IF
       *
            PERFORM 1001-ORCSPRTAREA-SEC
       *
@@ -321,53 +297,15 @@
       *
            INITIALIZE                  SPA-AREA
       *
-      *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SPA-SYSYMD
-                                           SPA-SRYYMD
-           MOVE    MCP-USER            TO  SPA-OPID
-      *
-      *    ＳＰＡ共通設定
-           INITIALIZE              SYS-1010-REC
-           INITIALIZE              ORCSCOMMONAREA
-           MOVE    "M00"       TO  ORCSCOMMON-PG
-           CALL    "ORCSCOMMON"    USING
-                                   MCPAREA
-                                   SPA-AREA
-                                   ORCSCOMMONAREA
-                                   SYS-1010-REC
-      *
            MOVE    ORCHCM31-PTID       TO  SPA-PTID
            MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SPA-SYSYMD
            MOVE    LNK-PRTKANRI-TERMID TO  SPA-TERMID
-           MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  SPA-PRT-GROUP
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  WRK-PRT-FLG
-           MOVE    WRK-PRT-FLG-X       TO  SPA-PRT-FLG
       *
            .
        1001-SPA-AREA-SET-EXT.
            EXIT.
-      *****************************************************************
-      *    プログラムオプション取込み処理
-      *****************************************************************
-       1001-PRGOPTION-SEC              SECTION.
-      *
-           INITIALIZE                      ORCSPRGOPTIONAREA
-           MOVE    WRK-PARA-PGNAME     TO  ORCSPRGOPTION-PRGID
-           MOVE    "API_DATA"          TO  ORCSPRGOPTION-IN-DATA
-           CALL    "ORCSPRGOPTION"     USING   SPA-AREA
-                                               ORCSPRGOPTIONAREA
-           IF    ( ORCSPRGOPTION-OT-PARA
-                                       =    "1" )
-               MOVE    1               TO  FLG-API
-           END-IF
-      *
-           .
-       1001-PRGOPTION-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    印刷ＤＢ制御情報領域設定処理
       *****************************************************************
@@ -404,20 +342,6 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           IF    ( FLG-API             =   1 )
-      *
-      *        ORCSONPRTSETは使わない（UUIDが入るとXA01で選択不可になる）
-      *        CALL    "ORCSONPRTSET"      USING
-      *                                    SPA-AREA
-      *
-               INITIALIZE                  ORCSPRTCTRLAREA
-               CALL    "ORCSPRTCTRL"       USING
-                                           SPA-AREA
-                                           ORCSPRTCTRLAREA
-                                           MCPAREA
-           END-IF
-      *
-      *
            IF    ( WRK-PARA-PGTYPE     =   "HC50" )
       *
                INITIALIZE                      ORCHCM50AREA
@@ -436,13 +360,6 @@
                                                ORCSPRTAREA
                                                ORCHCM31AREA
                MOVE    ORCHCM31-OT-CNT     TO  WRK-UPDCNT
-           END-IF
-      *
-           IF    ( FLG-API             =   1 )
-      *        印刷ダミー処理
-               MOVE    "99"                TO  SPA-PRT-FLG
-               CALL    "ORCHCDUMMY"        USING
-                                           SPA-AREA
            END-IF
       *
            .
@@ -502,9 +419,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           IF    ( FLG-API     =   ZERO )
-               MOVE    WRK-UPDCNT  TO  JOB-UPDCNT
-           END-IF
+           MOVE    WRK-UPDCNT      TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
