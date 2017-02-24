@@ -131,12 +131,8 @@
       *  04.08.05    NACL-門脇    16/03/28  平成２８年４月改正対応
       *  04.08.06    NACL-門脇    16/08/23  持参薬対応
       *  04.08.07    NACL-門脇    16/11/12  徳島県地方公費対応
-      *  04.08.08    NACL-門脇    17/02/23  茨城県地方公費対応（システム管理
+      *  04.08.08    NACL-門脇    15/02/23  茨城県地方公費対応（システム管理
       *                                     ２０１０のデフォルト設定修正）
-      *  04.08.09    NACL-門脇    17/12/12  愛媛県地方公費対応（システム管理
-      *                                     ２０１０のデフォルト設定修正）
-      *  04.08.10    NACL-門脇    18/03/01  平成３０年４月改正対応
-      *  04.08.11    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
       *
       *
@@ -376,17 +372,8 @@
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
            03  WRK-KHNTEN                              PIC 9(08). 
-           03  WRK-KHNTEN-MOTO                         PIC 9(08).
-           03  WRK-KHNTEN-GEN                          PIC 9(08).
-           03  WRK-KHN-ZAITEN                          PIC 9(08).
-           03  WRK-KHN-ZAITEN-MOTO                     PIC 9(08).
-           03  WRK-KHN-ZAITEN-GEN                      PIC 9(08).
            03  WRK-SENTEI-KHNTEN                       PIC 9(08).
-           03  WRK-SENTEI-KHNTEN-MOTO                  PIC 9(08).
-           03  WRK-SENTEI-KHNTEN-GEN                   PIC 9(08).
            03  WRK-SENTEI-ZAITEN                       PIC 9(08).
-           03  WRK-SENTEI-ZAITEN-MOTO                  PIC 9(08).
-           03  WRK-SENTEI-ZAITEN-GEN                   PIC 9(08).
            03  WRK-KSNTEN                              PIC S9(08).
            03  WRK-NYUTENTTLKBN                        PIC 9(03).
            03  WRK-NYUKHNRYO                           PIC 9(09).
@@ -484,9 +471,6 @@
            COPY    "CPORCSEIYOUKKS.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
-      *
-      *    夜間看護体制特定日減算取得サブ
-           COPY    "CPORCSKANGOGEN.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1057,23 +1041,6 @@
               PERFORM  200119-SEIHO-HKNCOMBI-CHECK-SEC
            END-IF
       *
-      *    夜間看護体制特定日減算取得
-           IF   RECE62-SRYYM        >=  "201804"
-             INITIALIZE                 ORCSKANGOGEN-AREA
-             MOVE  RECE62-HOSPNUM   TO  LNK-KANGOGEN-HOSPNUM
-             MOVE  RECE62-PTID      TO  LNK-KANGOGEN-PTID
-             MOVE  RECE62-SRYYM     TO  LNK-KANGOGEN-SANTEIYM
-             CALL  "ORCSKANGOGEN"   USING  ORCSKANGOGEN-AREA
-                                           SPA-AREA
-             IF    LNK-KANGOGEN-RC  =   ZERO
-               PERFORM  VARYING  IDY  FROM  1  BY  1
-                         UNTIL   IDY   >   31
-                 MOVE  LNK-KANGOGEN-SRYCD(IDY)
-                                    TO  RECE62-KANGOGEN-SRYCD(IDY)
-               END-PERFORM
-             END-IF
-           END-IF
-      *
       ***  PERFORM    VARYING    IDX    FROM   1   BY   1
       ***             UNTIL     (IDX      >   10)  OR
       ***                       (RECE62-SRYKA(IDX)   =   SPACE)
@@ -1142,11 +1109,10 @@
                           OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
                  IF        WRK-DAY5(IDY)   =   RECE62-HKNCOMBI (IDX1)
-                      MOVE    ZERO    TO    FLG-SHOSAISIN
+                      MOVE    ZERO            TO    FLG-SHOSAISIN
                       IF  (WRK-DAY1(IDY)   NOT =    ZERO )
                       OR  (RECE62-NYUINDAY-KBN(IDY) = "1")
-                         MOVE   1     TO    FLG-SHOSAISIN
-                         MOVE  "1"    TO    RECE62-EF-NYUINDAY-KBN(IDY)
+                               MOVE    1      TO    FLG-SHOSAISIN
                       END-IF
       *
                       PERFORM   500-KUMIAWASE-HANBETU-SEC
@@ -1177,11 +1143,9 @@
                         MOVE  SPACE   TO    RECE62-NYUINRYOFLG
                       END-IF
       *
-                      MOVE    ZERO    TO    FLG-SHOSAISIN
-                      IF  (WRK-DAY1(IDY)   NOT =    ZERO )
-                      OR  (RECE62-NYUINDAY-KBN(IDY) = "1")
-                         MOVE   1     TO    FLG-SHOSAISIN
-      *****              MOVE  "1"    TO    RECE62-EF-NYUINDAY-KBN(IDY)
+                      MOVE    ZERO            TO    FLG-SHOSAISIN
+                      IF   WRK-DAY1(IDY)   NOT =    ZERO
+                               MOVE    1      TO    FLG-SHOSAISIN
                       END-IF
       *
                       PERFORM   500-KUMIAWASE-HANBETU-SEC
@@ -1917,18 +1881,6 @@
       **************************************************************
        20011241-NYUINACCT-GET-SEC           SECTION.
       *
-           IF    RECE62-KANGOGEN-SRYCD(IDY)  =  SPACE
-             MOVE  WRK-KHNTEN-MOTO         TO  WRK-KHNTEN
-             MOVE  WRK-KHN-ZAITEN-MOTO     TO  WRK-KHN-ZAITEN
-             MOVE  WRK-SENTEI-KHNTEN-MOTO  TO  WRK-SENTEI-KHNTEN
-             MOVE  WRK-SENTEI-ZAITEN-MOTO  TO  WRK-SENTEI-ZAITEN
-           ELSE
-             MOVE  WRK-KHNTEN-GEN          TO  WRK-KHNTEN
-             MOVE  WRK-KHN-ZAITEN-GEN      TO  WRK-KHN-ZAITEN
-             MOVE  WRK-SENTEI-KHNTEN-GEN   TO  WRK-SENTEI-KHNTEN
-             MOVE  WRK-SENTEI-ZAITEN-GEN   TO  WRK-SENTEI-ZAITEN
-           END-IF
-      *
       *    入院料と外泊を比較して点数算定
       *
            EVALUATE   WRK-NYUTENTTLKBN
@@ -1987,9 +1939,6 @@
                        WHEN   5
                        WHEN   6
                        WHEN   7
-                       WHEN  14
-                       WHEN  15
-                       WHEN  16
                          EVALUATE  WRK-DAY2(IDY)
                            WHEN       5
                             IF    RECE62-SRYYM  >=  "201604"
@@ -2019,18 +1968,6 @@
                                      (WRK-SENTEI-KHNTEN  *  0.85)
                                                          +  0.5
                             END-IF
-                           WHEN      14
-                             COMPUTE  WRK-NYUKHNRYO =
-                                     (WRK-SENTEI-KHNTEN  *  0.95)
-                                                         +  0.5
-                           WHEN      15
-                             COMPUTE  WRK-NYUKHNRYO =
-                                     (WRK-SENTEI-KHNTEN  *  0.65)
-                                                         +  0.5
-                           WHEN      16
-                             COMPUTE  WRK-NYUKHNRYO =
-                                     (WRK-SENTEI-KHNTEN  *  0.85)
-                                                         +  0.5
                          END-EVALUATE
                          COMPUTE  WRK-NYUKHNRYO =
                                   WRK-NYUKHNRYO +
@@ -2044,9 +1981,10 @@
                          END-IF
                        WHEN   8
                        WHEN   9
+      ***              WHEN  10
       ***              WHEN  11
+      ***              WHEN  12
                        WHEN  13
-                       WHEN  17
                          EVALUATE  WRK-DAY2(IDY)
                            WHEN       8
                              COMPUTE  WRK-NYUKHNRYO =
@@ -2056,12 +1994,26 @@
                              COMPUTE  WRK-NYUKHNRYO =
                                      (WRK-SENTEI-KHNTEN  *  0.92)
                                                          +  0.5
+      ***                  WHEN      10
+      ***                    COMPUTE  WRK-NYUKHNRYO =
+      ***                            (WRK-SENTEI-KHNTEN  *  0.92)
+      ***                                                +  0.5
+      ***                    COMPUTE  WRK-NYUKHNRYO =
+      ***                            (WRK-NYUKHNRYO      *  0.3 )
+      ***                                                +  0.5
       ***                  WHEN      11
       ***                    COMPUTE  WRK-NYUKHNRYO =
       ***                            (WRK-SENTEI-KHNTEN  *  0.92)
       ***                                                +  0.5
       ***                    COMPUTE  WRK-NYUKHNRYO =
       ***                            (WRK-NYUKHNRYO      *  0.7 )
+      ***                                                +  0.5
+      ***                  WHEN      12
+      ***                    COMPUTE  WRK-NYUKHNRYO =
+      ***                            (WRK-SENTEI-KHNTEN  *  0.92)
+      ***                                                +  0.5
+      ***                    COMPUTE  WRK-NYUKHNRYO =
+      ***                            (WRK-NYUKHNRYO      *  0.3 )
       ***                                                +  0.5
                            WHEN      13
                             IF    RECE62-SRYYM  >=  "201604"
@@ -2079,13 +2031,6 @@
                                      (WRK-NYUKHNRYO      *  0.7 )
                                                          +  0.5
                             END-IF
-                           WHEN      17
-                             COMPUTE  WRK-NYUKHNRYO =
-                                     (WRK-SENTEI-KHNTEN  *  0.92)
-                                                         +  0.5
-                             COMPUTE  WRK-NYUKHNRYO =
-                                     (WRK-NYUKHNRYO      *  0.95)
-                                                         +  0.5
                          END-EVALUATE
                          COMPUTE  WRK-NYUKHNRYO =
                                   WRK-NYUKHNRYO +
@@ -2101,7 +2046,7 @@
                   ELSE
                     EVALUATE   WRK-DAY2(IDY)
                        WHEN   ZERO
-                         MOVE     WRK-KHN-ZAITEN  TO
+                         MOVE     NACCT-ZAITEN   TO  
                                        WRK-NYUKHNRYO
                        WHEN   1
                          COMPUTE  WRK-NYUKHNRYO =
@@ -2115,9 +2060,6 @@
                        WHEN   5
                        WHEN   6
                        WHEN   7
-                       WHEN  14
-                       WHEN  15
-                       WHEN  16
                          EVALUATE  WRK-DAY2(IDY)
                            WHEN       4
                             IF    RECE62-SRYYM  >=  "201604"
@@ -2163,18 +2105,6 @@
                                        (WRK-KHNTEN    *  0.85)
                                                       +  0.5
                             END-IF
-                           WHEN      14
-                               COMPUTE  WRK-NYUKHNRYO =
-                                       (WRK-KHNTEN    *  0.95)
-                                                      +  0.5
-                           WHEN      15
-                               COMPUTE  WRK-NYUKHNRYO =
-                                       (WRK-KHNTEN    *  0.65)
-                                                      +  0.5
-                           WHEN      16
-                               COMPUTE  WRK-NYUKHNRYO =
-                                       (WRK-KHNTEN    *  0.85)
-                                                      +  0.5
                          END-EVALUATE
                          COMPUTE  WRK-NYUKHNRYO =
                                   WRK-NYUKHNRYO +
@@ -2188,9 +2118,10 @@
                          END-IF
                        WHEN   8
                        WHEN   9
+      ***              WHEN  10
       ***              WHEN  11
+      ***              WHEN  12
                        WHEN  13
-                       WHEN  17
                          EVALUATE  WRK-DAY2(IDY)
                            WHEN       8
                              COMPUTE  WRK-NYUKHNRYO =
@@ -2200,12 +2131,26 @@
                              COMPUTE  WRK-NYUKHNRYO =
                                      (WRK-KHNTEN    *  0.92)
                                                     +  0.5
+      ***                  WHEN      10
+      ***                    COMPUTE  WRK-NYUKHNRYO =
+      ***                            (WRK-KHNTEN    *  0.92)
+      ***                                           +  0.5
+      ***                    COMPUTE  WRK-NYUKHNRYO =
+      ***                            (WRK-NYUKHNRYO *  0.3 )
+      ***                                           +  0.5
       ***                  WHEN      11
       ***                    COMPUTE  WRK-NYUKHNRYO =
       ***                            (WRK-KHNTEN    *  0.92)
       ***                                           +  0.5
       ***                    COMPUTE  WRK-NYUKHNRYO =
       ***                            (WRK-NYUKHNRYO *  0.7 )
+      ***                                           +  0.5
+      ***                  WHEN      12
+      ***                    COMPUTE  WRK-NYUKHNRYO =
+      ***                            (WRK-KHNTEN    *  0.92)
+      ***                                           +  0.5
+      ***                    COMPUTE  WRK-NYUKHNRYO =
+      ***                            (WRK-NYUKHNRYO *  0.3 )
       ***                                           +  0.5
                            WHEN      13
                             IF    RECE62-SRYYM  >=  "201604"
@@ -2223,13 +2168,6 @@
                                      (WRK-NYUKHNRYO *  0.7 )
                                                     +  0.5
                             END-IF
-                           WHEN      17
-                             COMPUTE  WRK-NYUKHNRYO =
-                                     (WRK-KHNTEN    *  0.92)
-                                                    +  0.5
-                             COMPUTE  WRK-NYUKHNRYO =
-                                     (WRK-NYUKHNRYO *  0.95)
-                                                    +  0.5
                          END-EVALUATE
                          COMPUTE  WRK-NYUKHNRYO =
                                   WRK-NYUKHNRYO +
@@ -2368,9 +2306,6 @@
                        WHEN   5
                        WHEN   6
                        WHEN   7
-                       WHEN  14
-                       WHEN  15
-                       WHEN  16
                          EVALUATE  WRK-DAY2(IDY)
                            WHEN       5
                             IF    RECE62-SRYYM  >=  "201604"
@@ -2400,18 +2335,6 @@
                                      (WRK-SENTEI-KHNTEN  *  0.85)
                                                          +  0.5
                             END-IF
-                           WHEN      14
-                             COMPUTE  WRK-NYUTOKRYO =
-                                     (WRK-SENTEI-KHNTEN  *  0.95)
-                                                         +  0.5
-                           WHEN      15
-                             COMPUTE  WRK-NYUTOKRYO =
-                                     (WRK-SENTEI-KHNTEN  *  0.65)
-                                                         +  0.5
-                           WHEN      16
-                             COMPUTE  WRK-NYUTOKRYO =
-                                     (WRK-SENTEI-KHNTEN  *  0.85)
-                                                         +  0.5
                          END-EVALUATE
                          COMPUTE  WRK-NYUTOKRYO =
                                   WRK-NYUTOKRYO +
@@ -2426,9 +2349,10 @@
                          MOVE   1   TO   FLG-GAIHAKU
                        WHEN   8
                        WHEN   9
+      ***              WHEN  10
       ***              WHEN  11
+      ***              WHEN  12
                        WHEN  13
-                       WHEN  17
                          EVALUATE  WRK-DAY2(IDY)
                            WHEN       8
                              COMPUTE  WRK-NYUTOKRYO =
@@ -2438,12 +2362,26 @@
                              COMPUTE  WRK-NYUTOKRYO =
                                      (WRK-SENTEI-KHNTEN  *  0.92)
                                                          +  0.5
+      ***                  WHEN      10
+      ***                    COMPUTE  WRK-NYUTOKRYO =
+      ***                            (WRK-SENTEI-KHNTEN  *  0.92)
+      ***                                                +  0.5
+      ***                    COMPUTE  WRK-NYUTOKRYO =
+      ***                            (WRK-NYUTOKRYO      *  0.3 )
+      ***                                                +  0.5
       ***                  WHEN      11
       ***                    COMPUTE  WRK-NYUTOKRYO =
       ***                            (WRK-SENTEI-KHNTEN  *  0.92)
       ***                                                +  0.5
       ***                    COMPUTE  WRK-NYUTOKRYO =
       ***                            (WRK-NYUTOKRYO      *  0.7 )
+      ***                                                +  0.5
+      ***                  WHEN      12
+      ***                    COMPUTE  WRK-NYUTOKRYO =
+      ***                            (WRK-SENTEI-KHNTEN  *  0.92)
+      ***                                                +  0.5
+      ***                    COMPUTE  WRK-NYUTOKRYO =
+      ***                            (WRK-NYUTOKRYO      *  0.3 )
       ***                                                +  0.5
                            WHEN      13
                             IF    RECE62-SRYYM  >=  "201604"
@@ -2461,13 +2399,6 @@
                                      (WRK-NYUTOKRYO      *  0.7 )
                                                          +  0.5
                             END-IF
-                           WHEN      17
-                             COMPUTE  WRK-NYUTOKRYO =
-                                     (WRK-SENTEI-KHNTEN  *  0.92)
-                                                         +  0.5
-                             COMPUTE  WRK-NYUTOKRYO =
-                                     (WRK-NYUTOKRYO      *  0.95)
-                                                         +  0.5
                          END-EVALUATE
                          COMPUTE  WRK-NYUTOKRYO =
                                   WRK-NYUTOKRYO +
@@ -2484,7 +2415,7 @@
                   ELSE
                     EVALUATE   WRK-DAY2(IDY)
                        WHEN   ZERO
-                         MOVE     WRK-KHN-ZAITEN  TO
+                         MOVE     NACCT-ZAITEN   TO  
                                        WRK-NYUTOKRYO
                        WHEN   1
                          COMPUTE  WRK-NYUTOKRYO =
@@ -2500,9 +2431,6 @@
                        WHEN   5
                        WHEN   6
                        WHEN   7
-                       WHEN  14
-                       WHEN  15
-                       WHEN  16
                          EVALUATE  WRK-DAY2(IDY)
                            WHEN       4
                             IF    RECE62-SRYYM  >=  "201604"
@@ -2548,18 +2476,6 @@
                                        (WRK-KHNTEN    *  0.85)
                                                       +  0.5
                             END-IF
-                           WHEN      14
-                               COMPUTE  WRK-NYUTOKRYO =
-                                       (WRK-KHNTEN    *  0.95)
-                                                      +  0.5
-                           WHEN      15
-                               COMPUTE  WRK-NYUTOKRYO =
-                                       (WRK-KHNTEN    *  0.65)
-                                                      +  0.5
-                           WHEN      16
-                               COMPUTE  WRK-NYUTOKRYO =
-                                       (WRK-KHNTEN    *  0.85)
-                                                      +  0.5
                          END-EVALUATE
                          COMPUTE  WRK-NYUTOKRYO =
                                   WRK-NYUTOKRYO +
@@ -2574,9 +2490,10 @@
                          MOVE   1   TO   FLG-GAIHAKU
                        WHEN   8
                        WHEN   9
+      ***              WHEN  10
       ***              WHEN  11
+      ***              WHEN  12
                        WHEN  13
-                       WHEN  17
                          EVALUATE  WRK-DAY2(IDY)
                            WHEN       8
                              COMPUTE  WRK-NYUTOKRYO =
@@ -2586,12 +2503,26 @@
                              COMPUTE  WRK-NYUTOKRYO =
                                      (WRK-KHNTEN    *  0.92)
                                                     +  0.5
+      ***                  WHEN      10
+      ***                    COMPUTE  WRK-NYUTOKRYO =
+      ***                            (WRK-KHNTEN    *  0.92)
+      ***                                           +  0.5
+      ***                    COMPUTE  WRK-NYUTOKRYO =
+      ***                            (WRK-NYUTOKRYO *  0.3 )
+      ***                                           +  0.5
       ***                  WHEN      11
       ***                    COMPUTE  WRK-NYUTOKRYO =
       ***                            (WRK-KHNTEN    *  0.92)
       ***                                           +  0.5
       ***                    COMPUTE  WRK-NYUTOKRYO =
       ***                            (WRK-NYUTOKRYO *  0.7 )
+      ***                                           +  0.5
+      ***                  WHEN      12
+      ***                    COMPUTE  WRK-NYUTOKRYO =
+      ***                            (WRK-KHNTEN    *  0.92)
+      ***                                           +  0.5
+      ***                    COMPUTE  WRK-NYUTOKRYO =
+      ***                            (WRK-NYUTOKRYO *  0.3 )
       ***                                           +  0.5
                            WHEN      13
                             IF    RECE62-SRYYM  >=  "201604"
@@ -2609,13 +2540,6 @@
                                      (WRK-NYUTOKRYO *  0.7 )
                                                     +  0.5
                             END-IF
-                           WHEN      17
-                             COMPUTE  WRK-NYUTOKRYO =
-                                     (WRK-KHNTEN    *  0.92)
-                                                    +  0.5
-                             COMPUTE  WRK-NYUTOKRYO =
-                                     (WRK-NYUTOKRYO *  0.95)
-                                                    +  0.5
                          END-EVALUATE
                          COMPUTE  WRK-NYUTOKRYO =
                                   WRK-NYUTOKRYO +
@@ -2973,20 +2897,11 @@
            END-IF                                                       
       *
            MOVE    ZERO               TO   WRK-KHNTEN
-           MOVE    ZERO               TO   WRK-KHNTEN-MOTO
-           MOVE    ZERO               TO   WRK-KHNTEN-GEN
-           MOVE    ZERO               TO   WRK-KHN-ZAITEN
-           MOVE    ZERO               TO   WRK-KHN-ZAITEN-MOTO
-           MOVE    ZERO               TO   WRK-KHN-ZAITEN-GEN
-           MOVE    ZERO               TO   WRK-SENTEI-KHNTEN
-           MOVE    ZERO               TO   WRK-SENTEI-KHNTEN-MOTO
-           MOVE    ZERO               TO   WRK-SENTEI-KHNTEN-GEN
-           MOVE    ZERO               TO   WRK-SENTEI-ZAITEN
-           MOVE    ZERO               TO   WRK-SENTEI-ZAITEN-MOTO
-           MOVE    ZERO               TO   WRK-SENTEI-ZAITEN-GEN
            MOVE    SPACE              TO   WRK-RYAKUSHO
            MOVE    ZERO               TO   NYUINACT-IDX2
            MOVE    ZERO               TO   WRK-KSNTEN
+           MOVE    ZERO               TO   WRK-SENTEI-KHNTEN
+           MOVE    ZERO               TO   WRK-SENTEI-ZAITEN
            MOVE    SPACE              TO   WRK-GAIHAKU-SRYCD
            MOVE    ZERO               TO   WRK-GAIHAKU-KHNTEN
            MOVE    ZERO               TO   WRK-HYOKETU-TEN
@@ -3026,17 +2941,17 @@
                      PERFORM  900-TENSU-READ-SEC
                      IF       FLG-TENSU      =    ZERO
                          IF   TNS-DATAKBN    =    1
-                              MOVE   TNS-TEN   TO   WRK-KHNTEN-MOTO
-      *                       夜間看護体制特定日減算
-                              COMPUTE  WRK-KHNTEN-GEN   =
-                                      (WRK-KHNTEN-MOTO  * 0.95) +  0.5
+                              MOVE   TNS-TEN   TO   WRK-KHNTEN
+      *                       初期加算（及び長期減算）の点数取得
+      ***                     COMPUTE   WRK-KSNTEN  =  NACCT-ZAITEN
+      ***                                           -  WRK-KHNTEN
       *                       看護比率基準未達時の入院基本点数の取得
                               IF    RECE62-SRYYM  <=  "201203"
                                PERFORM 20011231-GAIHAKU-NYUINKHN-SEC
                               END-IF
                               IF   WRK-GAIHAKU-KHNTEN  NOT =  ZERO
                                  MOVE   WRK-GAIHAKU-KHNTEN
-                                               TO   WRK-KHNTEN-MOTO
+                                               TO   WRK-KHNTEN
                               END-IF
                               MOVE   NYUINACT-IDX
                                                TO   NYUINACT-IDX2
@@ -3053,19 +2968,6 @@
                          END-IF
                      END-IF                  
                END-PERFORM
-      *
-               COMPUTE  WRK-KHN-ZAITEN-MOTO     =
-                        NACCT-ZAITEN
-               COMPUTE  WRK-KHN-ZAITEN-GEN      =
-                        WRK-KHNTEN-GEN          +
-                        WRK-KSNTEN
-               IF     WRK-HYOKETU-TEN    NOT =   ZERO
-      *          標欠：％減算
-                 COMPUTE    WRK-KHN-ZAITEN-GEN      =
-                          ( WRK-KHN-ZAITEN-GEN      -
-                           (WRK-KHN-ZAITEN-GEN      *
-                            (WRK-HYOKETU-TEN   /  100))) + 0.5
-               END-IF
       *
                IF    WRK-NYUTENTTLKBN     =   920  
                AND   NYUINACT-IDX2    NOT =   ZERO
@@ -3133,27 +3035,16 @@
       *             夜勤時間経過減算の選定対応
       *             "190131410","190165810","190165910","190131310"
                     IF   RECE62-SRYYM >= "201404"
-                       COMPUTE  WRK-SENTEI-KHNTEN-MOTO  =
-                               (WRK-KHNTEN-MOTO * 0.85) +  0.5
-      *                夜間看護体制特定日減算
-                       COMPUTE  WRK-SENTEI-KHNTEN-GEN   =
-                               (WRK-SENTEI-KHNTEN-MOTO  * 0.95) +  0.5
-                       COMPUTE  WRK-SENTEI-ZAITEN-MOTO  =
-                                WRK-SENTEI-KHNTEN-MOTO  +
-                                WRK-KSNTEN
-                       COMPUTE  WRK-SENTEI-ZAITEN-GEN   =
-                                WRK-SENTEI-KHNTEN-GEN   +
-                                WRK-KSNTEN
+                       COMPUTE  WRK-SENTEI-KHNTEN  =
+                               (WRK-KHNTEN * 0.85) +  0.5
+                       COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
+                                                   +  WRK-KSNTEN
                        IF     WRK-HYOKETU-TEN    NOT =   ZERO
       *                  標欠：％減算
-                         COMPUTE    WRK-SENTEI-ZAITEN-MOTO  =
-                                  ( WRK-SENTEI-ZAITEN-MOTO  -
-                                   (WRK-SENTEI-ZAITEN-MOTO  *
-                                    (WRK-HYOKETU-TEN   /  100))) + 0.5
-                         COMPUTE    WRK-SENTEI-ZAITEN-GEN   =
-                                  ( WRK-SENTEI-ZAITEN-GEN   -
-                                   (WRK-SENTEI-ZAITEN-GEN   *
-                                    (WRK-HYOKETU-TEN   /  100))) + 0.5
+                         COMPUTE    WRK-SENTEI-ZAITEN  =
+                                  ( WRK-SENTEI-ZAITEN  -
+                                   (WRK-SENTEI-ZAITEN  *
+                                    (WRK-HYOKETU-TEN   /  100)))  +  0.5
                        END-IF
                     END-IF
                   ELSE
@@ -3165,26 +3056,15 @@
                     MOVE    TNS-YUKOSTYMD       TO    TNS-YUKOEDYMD
                     PERFORM  900-TENSU-READ-SEC
                     IF       FLG-TENSU      =    ZERO
-                       MOVE   TNS-TEN   TO   WRK-SENTEI-KHNTEN-MOTO
-      *                夜間看護体制特定日減算
-                       COMPUTE  WRK-SENTEI-KHNTEN-GEN   =
-                               (WRK-SENTEI-KHNTEN-MOTO  * 0.95) +  0.5
-                       COMPUTE  WRK-SENTEI-ZAITEN-MOTO  =
-                                WRK-SENTEI-KHNTEN-MOTO  +
-                                WRK-KSNTEN
-                       COMPUTE  WRK-SENTEI-ZAITEN-GEN   =
-                                WRK-SENTEI-KHNTEN-GEN   +
-                                WRK-KSNTEN
+                       MOVE     TNS-TEN         TO    WRK-SENTEI-KHNTEN
+                       COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
+                                                   +  WRK-KSNTEN
                        IF     WRK-HYOKETU-TEN    NOT =   ZERO
       *                  標欠：％減算
-                         COMPUTE    WRK-SENTEI-ZAITEN-MOTO  =
-                                  ( WRK-SENTEI-ZAITEN-MOTO  -
-                                   (WRK-SENTEI-ZAITEN-MOTO  *
-                                    (WRK-HYOKETU-TEN   /  100))) + 0.5
-                         COMPUTE    WRK-SENTEI-ZAITEN-GEN   =
-                                  ( WRK-SENTEI-ZAITEN-GEN   -
-                                   (WRK-SENTEI-ZAITEN-GEN   *
-                                    (WRK-HYOKETU-TEN   /  100))) + 0.5
+                         COMPUTE    WRK-SENTEI-ZAITEN  =
+                                  ( WRK-SENTEI-ZAITEN  -
+                                   (WRK-SENTEI-ZAITEN  *
+                                    (WRK-HYOKETU-TEN   /  100)))  +  0.5
                        END-IF
                     END-IF  
                   END-IF
@@ -3201,6 +3081,14 @@
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
+      ***  IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      *      標欠：％減算
+      ***    COMPUTE    WRK-KHNTEN  =
+      ***             ( WRK-KHNTEN  -
+      ***              (WRK-KHNTEN  *
+      ***               (WRK-HYOKETU-TEN   /  100)))  +  0.5
+      ***  END-IF
       *
            .
        2001123-NYUINKHN-GET-EXT.
@@ -3683,35 +3571,14 @@
            MOVE    "key7"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    入院略称の取得（夜間看護体制特定日減算）
            PERFORM  VARYING  IDY    FROM    1   BY  1
                      UNTIL   IDY     >     31
               PERFORM  VARYING  IDX1    FROM    1   BY  1
                         UNTIL  (IDX1                  >  10 )
                          OR    (RECE62-HKNCOMBI(IDX1) = ZERO)
-                IF   (WRK-DAY1(IDY)               NOT = ZERO )
-                AND  (RECE62-KANGOGEN-SRYCD(IDY)  NOT = SPACE)
-                  IF  WRK-DAY5(IDY) =  RECE62-HKNCOMBI(IDX1)
-                     MOVE      RECE62-KANGOGEN-SRYCD(IDY)
-                                 TO    WRK-SRYCD
-                     PERFORM   2001134-YAGEN-GET3-SEC
-                     MOVE  10    TO    IDX1
-                  END-IF
-                ELSE
-                  MOVE     10    TO    IDX1
-                END-IF
-              END-PERFORM
-           END-PERFORM
-      *
-      *    入院略称の取得（特定時間退院減算・特定曜日入退院減算）
-           PERFORM  VARYING  IDY    FROM    1   BY  1
-                     UNTIL   IDY     >     31
-              PERFORM  VARYING  IDX1    FROM    1   BY  1
-                        UNTIL  (IDX1                  >  10 )
-                         OR    (RECE62-HKNCOMBI(IDX1) = ZERO)
-                IF   (WRK-DAY1(IDY)   NOT  =  ZERO                    )
-      ***       AND  (WRK-DAY2(IDY)        =  8 OR 9 OR 11 OR 13 OR 17)
-                AND  (WRK-DAY2(IDY)        =  8 OR 9 OR 13 OR 17      )
+                IF   (WRK-DAY1(IDY)   NOT  =  ZERO              )
+                AND  (WRK-DAY2(IDY)        =  8 OR 9 OR 10 OR 11
+                                                     OR 12 OR 13)
                   IF  WRK-DAY5(IDY) =  RECE62-HKNCOMBI(IDX1)
                      PERFORM   2001133-GENSAN-GET3-SEC
                      MOVE  10    TO    IDX1
@@ -4002,7 +3869,8 @@
       *
            EVALUATE    WRK-DAY2(IDY)
               WHEN          8
-      ***     WHEN         11
+              WHEN         10
+              WHEN         11
                  MOVE     ZERO     TO    FLG-ARI
                  PERFORM  VARYING  ID1    FROM    1   BY  1
                            UNTIL  (ID1                    >  20  )
@@ -4016,8 +3884,8 @@
                      MOVE  "午前減"  TO   RECE62-NYUSYUBETU(ID1)(1:6)
                  END-IF
               WHEN          9
+              WHEN         12
               WHEN         13
-              WHEN         17
                  MOVE     ZERO     TO    FLG-ARI
                  PERFORM  VARYING  ID1    FROM    1   BY  1
                            UNTIL  (ID1                    >  20  )
@@ -4034,98 +3902,6 @@
       *
            .
        2001133-GENSAN-GET3-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    入院略称の取得（夜間看護体制特定日減算）
-      **************************************************************
-       2001134-YAGEN-GET3-SEC           SECTION.
-      *
-           MOVE     ZERO     TO    FLG-ARI
-           PERFORM  VARYING  ID1    FROM    1   BY  1
-                     UNTIL  (ID1                    >  20  )
-                      OR    (RECE62-NYUSYUBETU(ID1) = SPACE)
-                      OR    (FLG-ARI                =   1  )
-             EVALUATE   WRK-SRYCD
-      *        夜間看護体制特定日減算（一般病棟入院基本料）
-               WHEN     "190200970"
-                 IF  RECE62-NYUSYUBETU(ID1)(1:14)
-                                             = "一般夜看特定減"
-                          MOVE  1   TO   FLG-ARI
-                 END-IF
-      *        療養病棟・夜間看護体制特定日減算（一般病棟入院基本料）
-               WHEN     "190214470"
-                 IF  RECE62-NYUSYUBETU(ID1)(1:14)
-                                             = "一般夜看特定減"
-                          MOVE  1   TO   FLG-ARI
-                 END-IF
-      *        夜間看護体制特定日減算（結核病棟入院基本料）
-               WHEN     "190205270"
-                 IF  RECE62-NYUSYUBETU(ID1)(1:12)
-                                             = "結夜看特定減"
-                          MOVE  1   TO   FLG-ARI
-                 END-IF
-      *        夜間看護体制特定日減算（精神病棟入院基本料）
-               WHEN     "190205370"
-                 IF  RECE62-NYUSYUBETU(ID1)(1:12)
-                                             = "精夜看特定減"
-                          MOVE  1   TO   FLG-ARI
-                 END-IF
-      *        夜間看護体制特定日減算（専門病院入院基本料）
-               WHEN     "190205470"
-                 IF  RECE62-NYUSYUBETU(ID1)(1:12)
-                                             = "専夜看特定減"
-                          MOVE  1   TO   FLG-ARI
-                 END-IF
-      *        夜間看護体制特定日減算（障害者施設等入院基本料）
-               WHEN     "190205870"
-                 IF  RECE62-NYUSYUBETU(ID1)(1:12)
-                                             = "障夜看特定減"
-                          MOVE  1   TO   FLG-ARI
-                 END-IF
-      *        夜間看護体制特定日減算（地域包括ケア病棟入院料）
-               WHEN     "190212670"
-                 IF  RECE62-NYUSYUBETU(ID1)(1:12)
-                                             = "包夜看特定減"
-                          MOVE  1   TO   FLG-ARI
-                 END-IF
-             END-EVALUATE
-           END-PERFORM
-           IF    FLG-ARI  =  ZERO
-             EVALUATE   WRK-SRYCD
-      *        夜間看護体制特定日減算（一般病棟入院基本料）
-               WHEN     "190200970"
-                 MOVE   "一般夜看特定減"
-                            TO   RECE62-NYUSYUBETU(ID1)(1:14)
-      *        療養病棟・夜間看護体制特定日減算（一般病棟入院基本料）
-               WHEN     "190214470"
-                 MOVE   "一般夜看特定減"
-                            TO   RECE62-NYUSYUBETU(ID1)(1:14)
-      *        夜間看護体制特定日減算（結核病棟入院基本料）
-               WHEN     "190205270"
-                 MOVE   "結夜看特定減"
-                            TO   RECE62-NYUSYUBETU(ID1)(1:12)
-      *        夜間看護体制特定日減算（精神病棟入院基本料）
-               WHEN     "190205370"
-                 MOVE   "精夜看特定減"
-                            TO   RECE62-NYUSYUBETU(ID1)(1:12)
-      *        夜間看護体制特定日減算（専門病院入院基本料）
-               WHEN     "190205470"
-                 MOVE   "専夜看特定減"
-                            TO   RECE62-NYUSYUBETU(ID1)(1:12)
-      *        夜間看護体制特定日減算（障害者施設等入院基本料）
-               WHEN     "190205870"
-                 MOVE   "障夜看特定減"
-                            TO   RECE62-NYUSYUBETU(ID1)(1:12)
-      *        夜間看護体制特定日減算（地域包括ケア病棟入院料）
-               WHEN     "190212670"
-                 MOVE   "包夜看特定減"
-                            TO   RECE62-NYUSYUBETU(ID1)(1:12)
-             END-EVALUATE
-           END-IF
-      *
-           .
-       2001134-YAGEN-GET3-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4938,16 +4714,21 @@
                       WHEN     "32"
                       WHEN     "13"
                       WHEN     "26"
+      ***                 MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
                           MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                           MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                       WHEN     "30"
                       WHEN     "38"
+      ***                 MOVE "1" TO RECE62-SYUKEIKBN(IDX11 2)
                           MOVE "3" TO RECE62-SYUKEIKBN(IDX11 2)
                           MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                       WHEN     "36"
+      ***                 MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
+      ***                 MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                           MOVE "3" TO RECE62-SYUKEIKBN(IDX11 2)
                           MOVE "0" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                       WHEN     "10"
+      ***                 MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
                           MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                           MOVE "4" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                     END-EVALUATE
@@ -4989,31 +4770,37 @@
                  EVALUATE   WRK-PREFNUM
                    WHEN     "32"
                    WHEN     "13"
+      ***              MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                    WHEN     "36"
+      ***              MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
+      ***              MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "3" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "0" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                    WHEN     "10"
+      ***              MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "4" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
-      ***          WHEN     "38"
-      ***            IF  RECE62-SRYYM  <=  "201711"
-      ***              MOVE "3" TO RECE62-SYUKEIKBN(IDX11 2)
-      ***              MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
-      ***            END-IF
+                   WHEN     "38"
+      ***              MOVE "1" TO RECE62-SYUKEIKBN(IDX11 2)
+                       MOVE "3" TO RECE62-SYUKEIKBN(IDX11 2)
+                       MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                    WHEN     "08"
                      IF  RECE62-SRYYM  <=  "201002"
+      ***              MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                      END-IF
                    WHEN     "26"
                      IF  RECE62-SRYYM  <=  "201103"
+      ***              MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                      END-IF
                    WHEN     "30"
                      IF  RECE62-SRYYM  <=  "201003"
+      ***              MOVE "1" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "3" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                      END-IF
@@ -5024,23 +4811,21 @@
                  MOVE   SYS-2010-SYUKEI-TAIKBN
                                     TO   RECE62-SYUKEI-TAIKBN(IDX11 2)
                  EVALUATE   WRK-PREFNUM
-      ***          WHEN     "38"
-      ***            IF  RECE62-SRYYM  <=  "201711"
-      ***              MOVE "3" TO RECE62-SYUKEIKBN(IDX11 2)
-      ***              MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
-      ***            END-IF
                    WHEN     "08"
                      IF  RECE62-SRYYM  <=  "201002"
+      ***              MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                      END-IF
                    WHEN     "26"
                      IF  RECE62-SRYYM  <=  "201103"
+      ***              MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "4" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                      END-IF
                    WHEN     "30"
                      IF  RECE62-SRYYM  <=  "201003"
+      ***              MOVE "1" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "3" TO RECE62-SYUKEIKBN(IDX11 2)
                        MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                      END-IF

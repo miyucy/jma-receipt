@@ -757,14 +757,6 @@
                        09  SPA-GMN-ZENKEI2TAIKBNG           PIC X(01).
                        09  SPA-GMN-ZENKEI2TAIKBNGF          PIC X(01).
                        09  SPA-GMN-ZENKEI2TAIKBNGMEI        PIC X(38).
-                   07  SPA-GMN-ZENDAY2KBNN-G.
-                       09  SPA-GMN-ZENDAY2KBNN              PIC X(01).
-                       09  SPA-GMN-ZENDAY2KBNNF             PIC X(01).
-                       09  SPA-GMN-ZENDAY2KBNNMEI           PIC X(78).
-                   07  SPA-GMN-ZENDAY2TAIKBNN-G.
-                       09  SPA-GMN-ZENDAY2TAIKBNN           PIC X(01).
-                       09  SPA-GMN-ZENDAY2TAIKBNNF          PIC X(01).
-                       09  SPA-GMN-ZENDAY2TAIKBNNMEI        PIC X(38).
                05  SPA-GMN-CMB-AREA.
                    07  SPA-GMN-KOHNUMLST-G.
                        09  SPA-GMN-KOHNUM-MAX              PIC 9(03).
@@ -939,7 +931,7 @@
                            11  SPA-GMN-JYUHENKBNMEIL       PIC X(78).
                    07  SPA-GMN-JYUHENTAIKBNLST-G.
                        09  SPA-GMN-JYUHENTAIKBN-MAX        PIC 9(03).
-                       09  SPA-GMN-JYUHENTAIKBNLST         OCCURS 15.
+                       09  SPA-GMN-JYUHENTAIKBNLST         OCCURS 10.
                            11  SPA-GMN-JYUHENTAIKBNL       PIC X(01).
                            11  SPA-GMN-JYUHENTAIKBNFL      PIC X(01).
                            11  SPA-GMN-JYUHENTAIKBNMEIL    PIC X(38).
@@ -1280,20 +1272,6 @@
                            11  SPA-GMN-ZENKEI2TAIKBNGL       PIC X(01).
                            11  SPA-GMN-ZENKEI2TAIKBNGFL      PIC X(01).
                            11  SPA-GMN-ZENKEI2TAIKBNGMEIL    PIC X(38).
-      *
-                   07  SPA-GMN-ZENDAY2KBNNLST-G.
-                       09  SPA-GMN-ZENDAY2KBNN-MAX           PIC 9(03).
-                       09  SPA-GMN-ZENDAY2KBNNLST            OCCURS 10.
-                           11  SPA-GMN-ZENDAY2KBNNL          PIC X(01).
-                           11  SPA-GMN-ZENDAY2KBNNFL         PIC X(01).
-                           11  SPA-GMN-ZENDAY2KBNNMEIL       PIC X(78).
-      *
-                   07  SPA-GMN-ZENDAY2TAIKBNNLST-G.
-                       09  SPA-GMN-ZENDAY2TAIKBNN-MAX        PIC 9(03).
-                       09  SPA-GMN-ZENDAY2TAIKBNNLST         OCCURS 10.
-                           11  SPA-GMN-ZENDAY2TAIKBNNL       PIC X(01).
-                           11  SPA-GMN-ZENDAY2TAIKBNNFL      PIC X(01).
-                           11  SPA-GMN-ZENDAY2TAIKBNNMEIL    PIC X(38).
                05  SPA-GMN-KOHLST-AREA.
                    07  SPA-GMN-KOHLST-MAX                  PIC 9(5).
                    07  SPA-GMN-KOHLST-SEL                  PIC 9(5).
@@ -1902,12 +1880,6 @@
       *    全国公費併用時の特別計算２（外来）対象区分コンボ編集処理
            PERFORM 3110-ZENKEI2TAIKBNGLST-SEC
       *
-      *    全国公費併用時の日の負担金計算２（入院）コンボ編集処理
-           PERFORM 3110-ZENDAY2KBNNLST-SEC
-      *
-      *    全国公費併用時の日の負担金計算２（入院）対象区分コンボ編集処理
-           PERFORM 3110-ZENDAY2TAIKBNNLST-SEC
-      *
            .
        311-COMBO-EDIT-EXT.
            EXIT.
@@ -2161,15 +2133,7 @@
            MOVE    "負担上限未満記載あり"
                                    TO  SPA-GMN-RECEKSIKBNMEIL (3)
       *
-           MOVE    "3"             TO  SPA-GMN-RECEKSIKBNL    (4)
-           STRING    "設定額以上記載なし（設定額未満・以上で異なる"
-                                       DELIMITED BY SIZE
-                     "負担金計算）"
-                                       DELIMITED BY SIZE
-           INTO                        SPA-GMN-RECEKSIKBNMEIL (4)
-           END-STRING
-      *
-           MOVE    4               TO  SPA-GMN-RECEKSIKBN-MAX
+           MOVE    3               TO  SPA-GMN-RECEKSIKBN-MAX
       *
            .
        3110-RECEKSIKBNLST-EXT.
@@ -3196,42 +3160,6 @@
        3110-ZENDAYTAIKBNNLST-EXT.
            EXIT.
       *****************************************************************
-      *    全国公費併用時の日の負担金計算２（入院）区分コンボ編集処理
-      *****************************************************************
-       3110-ZENDAY2KBNNLST-SEC        SECTION.
-      *
-           INITIALIZE                  SPA-GMN-ZENDAY2KBNNLST-G
-      *
-           MOVE    "0"             TO  SPA-GMN-ZENDAY2KBNNL    (1)
-           MOVE    "全国公費の日の一部負担金と比較しない"
-                                   TO  SPA-GMN-ZENDAY2KBNNMEIL (1)
-      *
-           MOVE    "1"             TO  SPA-GMN-ZENDAY2KBNNL    (2)
-           MOVE    "全国公費の日の一部負担金と比較する"
-                                   TO  SPA-GMN-ZENDAY2KBNNMEIL (2)
-      *
-           MOVE    2               TO  SPA-GMN-ZENDAY2KBNN-MAX
-      *
-           .
-       3110-ZENDAY2KBNNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    全国公費併用時の日の負担金計算２（入院）対象区分コンボ編集処理
-      *****************************************************************
-       3110-ZENDAY2TAIKBNNLST-SEC        SECTION.
-      *
-           INITIALIZE                  SPA-GMN-ZENDAY2TAIKBNNLST-G
-      *
-           MOVE    "0"             TO  SPA-GMN-ZENDAY2TAIKBNNL    (1)
-           MOVE    "日上限額設定のある公費"
-                                   TO  SPA-GMN-ZENDAY2TAIKBNNMEIL (1)
-      *
-           MOVE    1               TO  SPA-GMN-ZENDAY2TAIKBNN-MAX
-      *
-           .
-       3110-ZENDAY2TAIKBNNLST-EXT.
-           EXIT.
-      *****************************************************************
       *    日・月上限負担金計算コンボ編集処理
       *****************************************************************
        3110-JGNFTNKBNLST-SEC           SECTION.
@@ -3357,31 +3285,7 @@
            MOVE    "＜未満＞患者負担なし＜以上＞患者負担あり（全額）"
                                    TO  SPA-GMN-IRYOKEIKBNMEIL (2)
       *
-           MOVE    "2"             TO  SPA-GMN-IRYOKEIKBNL    (3)
-           STRING  "＜未満＞患者負担なし＜以上＞患者負担あり（全額）"
-                                       DELIMITED BY SIZE
-                   "【点数対応】"
-                                       DELIMITED BY SIZE
-           INTO    SPA-GMN-IRYOKEIKBNMEIL (3)
-           END-STRING
-      *
-           MOVE    "3"             TO  SPA-GMN-IRYOKEIKBNL    (4)
-           STRING  "＜未満＞通常計算＜以上＞患者負担あり（全額）"
-                                       DELIMITED BY SIZE
-                   "【設定額 21,000円】"
-                                       DELIMITED BY SIZE
-           INTO    SPA-GMN-IRYOKEIKBNMEIL (4)
-           END-STRING
-      *
-           MOVE    "4"             TO  SPA-GMN-IRYOKEIKBNL    (5)
-           STRING  "＜未満＞通常計算＜以上＞患者負担あり（全額）"
-                                       DELIMITED BY SIZE
-                   "【設定額 20,000円】"
-                                       DELIMITED BY SIZE
-           INTO    SPA-GMN-IRYOKEIKBNMEIL (5)
-           END-STRING
-      *
-           MOVE    5               TO  SPA-GMN-IRYOKEIKBN-MAX
+           MOVE    2               TO  SPA-GMN-IRYOKEIKBN-MAX
       *
            .
        3110-IRYOKEIKBNLST-EXT.
@@ -3708,47 +3612,7 @@
            MOVE    "1"             TO  SPA-GMN-JYUHENTAIKBNL    (2)
            MOVE    "同一法別番号"  TO SPA-GMN-JYUHENTAIKBNMEIL  (2)
       *
-           MOVE    "A"             TO  SPA-GMN-JYUHENTAIKBNL    (3)
-           MOVE    "グループ（Ａ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (3)
-      *
-           MOVE    "B"             TO  SPA-GMN-JYUHENTAIKBNL    (4)
-           MOVE    "グループ（Ｂ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (4)
-      *
-           MOVE    "C"             TO  SPA-GMN-JYUHENTAIKBNL    (5)
-           MOVE    "グループ（Ｃ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (5)
-      *
-           MOVE    "D"             TO  SPA-GMN-JYUHENTAIKBNL    (6)
-           MOVE    "グループ（Ｄ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (6)
-      *
-           MOVE    "E"             TO  SPA-GMN-JYUHENTAIKBNL    (7)
-           MOVE    "グループ（Ｅ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (7)
-      *
-           MOVE    "F"             TO  SPA-GMN-JYUHENTAIKBNL    (8)
-           MOVE    "グループ（Ｆ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (8)
-      *
-           MOVE    "G"             TO  SPA-GMN-JYUHENTAIKBNL    (9)
-           MOVE    "グループ（Ｇ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (9)
-      *
-           MOVE    "H"             TO  SPA-GMN-JYUHENTAIKBNL    (10)
-           MOVE    "グループ（Ｈ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (10)
-      *
-           MOVE    "I"             TO  SPA-GMN-JYUHENTAIKBNL    (11)
-           MOVE    "グループ（Ｉ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (11)
-      *
-           MOVE    "J"             TO  SPA-GMN-JYUHENTAIKBNL    (12)
-           MOVE    "グループ（Ｊ）設定"
-                                   TO SPA-GMN-JYUHENTAIKBNMEIL  (12)
-      *
-           MOVE    12              TO  SPA-GMN-JYUHENTAIKBN-MAX
+           MOVE    2               TO  SPA-GMN-JYUHENTAIKBN-MAX
       *
            .
        3110-JYUHENTAIKBNLST-EXT.
@@ -4276,8 +4140,6 @@
            MOVE    W65-CYOKEITAIKBNN        TO  SPA-GMN-CYOKEITAIKBNN-G
            MOVE    W65-ZENDAYKBNN        TO  SPA-GMN-ZENDAYKBNN-G
            MOVE    W65-ZENDAYTAIKBNN        TO  SPA-GMN-ZENDAYTAIKBNN-G
-           MOVE    W65-ZENDAY2KBNN      TO  SPA-GMN-ZENDAY2KBNN-G
-           MOVE    W65-ZENDAY2TAIKBNN   TO  SPA-GMN-ZENDAY2TAIKBNN-G
            MOVE    W65-ZENKEI2KBNG      TO  SPA-GMN-ZENKEI2KBNG-G
            MOVE    W65-ZENKEI2TAIKBNG   TO  SPA-GMN-ZENKEI2TAIKBNG-G
       *
@@ -5151,6 +5013,14 @@
                PERFORM 4101-TANKITAIKBN-CHK-SEC
            END-IF
       *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-ZENKEI2KBNG-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-ZENKEI2TAIKBNG-CHK-SEC
+           END-IF
+      *
            IF    ( SPA-ERRCD   NOT =   SPACE )
                MOVE    7           TO  SPA-GMN-PAGENO
            END-IF
@@ -5186,22 +5056,6 @@
       *
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-ZENDAYTAIKBNN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-ZENKEI2KBNG-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-ZENKEI2TAIKBNG-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-ZENDAY2KBNN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-ZENDAY2TAIKBNN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -5836,8 +5690,6 @@
            MOVE    SPA-GMN-ZENKEI2TAIKBNG   TO SYS-2010-ZENKEI2-TAIKBN-G
            MOVE    SPA-GMN-ZENDAYKBNN      TO SYS-2010-ZENDAYKBN-N
            MOVE    SPA-GMN-ZENDAYTAIKBNN   TO SYS-2010-ZENDAY-TAIKBN-N
-           MOVE    SPA-GMN-ZENDAY2KBNN      TO SYS-2010-ZENDAY2KBN-N
-           MOVE    SPA-GMN-ZENDAY2TAIKBNN   TO SYS-2010-ZENDAY2-TAIKBN-N
       ***
            .
        4201-KOHINF-EDIT-EXT.
@@ -7222,14 +7074,6 @@
            PERFORM 4200-ZENKEI2TAIKBNGLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENKEI2TAIKBNG-G
       *
-           MOVE    SYS-2010-ZENDAY2KBN-N  TO  WRK-CMB-CD
-           PERFORM 4200-ZENDAY2KBNNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENDAY2KBNN-G
-      *
-           MOVE    SYS-2010-ZENDAY2-TAIKBN-N
-                                       TO  WRK-CMB-CD
-           PERFORM 4200-ZENDAY2TAIKBNNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENDAY2TAIKBNN-G
       **
       *
            MOVE    SYS-2010-STYUKYMD   TO  SEL-STYMD
@@ -9879,35 +9723,6 @@
        4101-ZENDAYTAIKBNN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    全国公費併用時の日の負担金計算２（入院）区分チェック処理
-      *****************************************************************
-       4101-ZENDAY2KBNN-CHK-SEC      SECTION.
-      *
-           MOVE    SPA-GMN-ZENDAY2KBNN  TO  WRK-CMB-CD
-           PERFORM 4200-ZENDAY2KBNNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENDAY2KBNN-G
-      *
-           IF    ( SPA-GMN-ZENDAY2KBNN   =   "0" )
-               MOVE    "0"             TO  SPA-GMN-ZENDAY2TAIKBNN
-           END-IF
-      *
-           .
-       4101-ZENDAY2KBNN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    全国公費併用時の日の負担金計算２（入院）対象区分チェック処理
-      *****************************************************************
-       4101-ZENDAY2TAIKBNN-CHK-SEC      SECTION.
-      *
-           MOVE    SPA-GMN-ZENDAY2TAIKBNN
-                                       TO  WRK-CMB-CD
-           PERFORM 4200-ZENDAY2TAIKBNNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENDAY2TAIKBNN-G
-      *
-           .
-       4101-ZENDAY2TAIKBNN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    全国公費併用時の特別計算２（外来）チェック処理
       *****************************************************************
        4101-ZENKEI2KBNG-CHK-SEC      SECTION.
@@ -10657,16 +10472,6 @@
            MOVE    "0"             TO  WRK-CMB-CD
            PERFORM 4200-ZENDAYTAIKBNNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENDAYTAIKBNN-G
-      *
-      *    全国公費併用時の日の負担金計算２（入院）区分
-           MOVE    "0"             TO  WRK-CMB-CD
-           PERFORM 4200-ZENDAY2KBNNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENDAY2KBNN-G
-      *
-      *    全国公費併用時の日の負担金計算２（入院）対象区分
-           MOVE    "0"             TO  WRK-CMB-CD
-           PERFORM 4200-ZENDAY2TAIKBNNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENDAY2TAIKBNN-G
       *
       *    全国公費併用時の特別計算２（外来）
            MOVE    "0"             TO  WRK-CMB-CD
@@ -11563,8 +11368,6 @@
            MOVE    SPA-GMN-CYOKEITAIKBNN-G     TO  W65-CYOKEITAIKBNN
            MOVE    SPA-GMN-ZENDAYKBNN-G        TO  W65-ZENDAYKBNN
            MOVE    SPA-GMN-ZENDAYTAIKBNN-G     TO  W65-ZENDAYTAIKBNN
-           MOVE    SPA-GMN-ZENDAY2KBNN-G       TO  W65-ZENDAY2KBNN
-           MOVE    SPA-GMN-ZENDAY2TAIKBNN-G    TO  W65-ZENDAY2TAIKBNN
            MOVE    SPA-GMN-ZENKEI2KBNG-G       TO  W65-ZENKEI2KBNG
            MOVE    SPA-GMN-ZENKEI2TAIKBNG-G    TO  W65-ZENKEI2TAIKBNG
       *
@@ -12383,24 +12186,6 @@
                                    TO  W65-ZENDAYTAIKBNN-ITEM (IDX-CMB)
            END-PERFORM
       *
-      *    全国公費併用時の日の負担金計算２（入院）区分
-           MOVE    SPA-GMN-ZENDAY2KBNN-MAX
-                                   TO  W65-ZENDAY2KBNN-COUNT
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-ZENDAY2KBNN-MAX )
-               MOVE    SPA-GMN-ZENDAY2KBNNLST (IDX-CMB)
-                                   TO  W65-ZENDAY2KBNN-ITEM (IDX-CMB)
-           END-PERFORM
-      *
-      *    全国公費併用時の日の負担金計算２（入院）対象区分
-           MOVE    SPA-GMN-ZENDAY2TAIKBNN-MAX
-                                   TO  W65-ZENDAY2TAIKBNN-COUNT
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-ZENDAY2TAIKBNN-MAX )
-               MOVE    SPA-GMN-ZENDAY2TAIKBNNLST (IDX-CMB)
-                                   TO  W65-ZENDAY2TAIKBNN-ITEM (IDX-CMB)
-           END-PERFORM
-      *
       *    全国公費併用時の特別計算２（外来）
            MOVE    SPA-GMN-ZENKEI2KBNG-MAX
                                    TO  W65-ZENKEI2KBNG-COUNT
@@ -13134,11 +12919,6 @@
                                    TO  W65-ZENDAYTAIKBNN-STATE
                                        W65-ZENDAYTAIKBNN-ITEM-STATE
            END-IF
-           IF    ( SPA-GMN-ZENDAY2KBNN   =  "0" )
-               MOVE    WIDGET-INSENSITIVE
-                                   TO  W65-ZENDAY2TAIKBNN-STATE
-                                       W65-ZENDAY2TAIKBNN-ITEM-STATE
-           END-IF
            IF    ( SPA-GMN-ZENKEI2KBNG  =  "0" )
                MOVE    WIDGET-INSENSITIVE
                                    TO  W65-ZENKEI2TAIKBNG-STATE
@@ -13522,10 +13302,6 @@
               MOVE    "ZENKEI2KBNG"         TO  MCP-WIDGET
            WHEN    908
               MOVE    "ZENKEI2TAIKBNG"      TO  MCP-WIDGET
-           WHEN    909
-              MOVE    "ZENDAY2KBNN"         TO  MCP-WIDGET
-           WHEN    910
-              MOVE    "ZENDAY2TAIKBNN"      TO  MCP-WIDGET
            WHEN    003
                MOVE    "SELNUM2"           TO  MCP-WIDGET
            WHEN    004
@@ -13905,10 +13681,6 @@
            WHEN    "ZENKEI2KBNG"
                MOVE    908                 TO  SPA-GMN-CUR
            WHEN    "ZENKEI2TAIKBNG"
-               MOVE    909                 TO  SPA-GMN-CUR
-           WHEN    "ZENDAY2KBNN"
-               MOVE    910                 TO  SPA-GMN-CUR
-           WHEN    "ZENDAY2TAIKBNN"
                MOVE    004                 TO  SPA-GMN-CUR
            WHEN    "SELNUM2"
                MOVE    002                 TO  SPA-GMN-CUR
@@ -14506,13 +14278,6 @@
            IF    ( SPA-GMN-CUR     =   908 )
                IF    ( W65-ZENKEI2TAIKBNG-STATE
                                        =   WIDGET-INSENSITIVE )
-                   MOVE    909         TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   910 )
-               IF    ( W65-ZENDAY2TAIKBNN-STATE
-                                       =   WIDGET-INSENSITIVE )
                    MOVE    004         TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -14817,6 +14582,12 @@
                WHEN    CONST-SHIMANE
       *            MOVE    SPA-GMN-SYUKEIKBNLST (3)
                    MOVE    SPA-GMN-SYUKEIKBNLST (5)
+                                   TO  WRK-CMB-ITM
+                   MOVE    "1"     TO  WRK-CMB-ITM2
+               WHEN    CONST-EHIME
+      *        WHEN    CONST-WAKAYAMA
+      *            MOVE    SPA-GMN-SYUKEIKBNLST (2)
+                   MOVE    SPA-GMN-SYUKEIKBNLST (4)
                                    TO  WRK-CMB-ITM
                    MOVE    "1"     TO  WRK-CMB-ITM2
                WHEN    CONST-GUNMA
@@ -16927,64 +16698,6 @@
       *
            .
        4200-ZENDAYTAIKBNNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    全国公費併用時の日の負担金計算２（入院）区分コンボチェック処理
-      *****************************************************************
-       4200-ZENDAY2KBNNLST-CHK-SEC          SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-ZENDAY2KBNN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-ZENDAY2KBNNL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-ZENDAY2KBNNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-ZENDAY2KBNNLST (1)
-                                   TO  WRK-CMB-ITM
-           END-IF
-      *
-           .
-       4200-ZENDAY2KBNNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    全国公費併用時の日の負担金計算２（入院）対象区分コンボチェック処理
-      *****************************************************************
-       4200-ZENDAY2TAIKBNNLST-CHK-SEC          SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-ZENDAY2TAIKBNN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-ZENDAY2TAIKBNNL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-ZENDAY2TAIKBNNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-ZENDAY2TAIKBNNLST (1)
-                                   TO  WRK-CMB-ITM
-           END-IF
-      *
-           .
-       4200-ZENDAY2TAIKBNNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    全国公費併用時の特別計算２（外来）コンボチェック処理
