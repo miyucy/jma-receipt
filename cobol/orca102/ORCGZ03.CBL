@@ -56,7 +56,7 @@
       *  04.07.00    NACL-多々納  14/03/XX  平成２６年４月改正対応
       *                                    （DPC区分、副鼻腔等加算等）
       *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
-      *  05.00.00    NACL-多々納  17/01/XX  ユーザー設定他GINBEE対応
+      *  05.01.00    NACL-多々納  17/02/XX  ユーザー設定他GINBEE対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -358,7 +358,7 @@
                05  TBL-YOBI1               PIC X(01).
                05  TBL-WIDGET              PIC X(30).
       *
-       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   130.
+       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   129.
       *
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
