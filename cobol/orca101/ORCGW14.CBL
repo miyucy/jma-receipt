@@ -276,9 +276,6 @@
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
-               WHEN    "W141"
-               WHEN    "W142"
-                   GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -404,8 +401,6 @@
                MOVE    SYS-3004-PRTNM      TO  SPA-GMN-PRTNM   (IDX)
                MOVE    SYS-3004-PARAKBN    TO  SPA-GMN-PARAKBN (IDX)
                MOVE    SYS-3004-NAME       TO  SPA-GMN-NAME    (IDX)
-                                               SPA-GMN-NAME-BACK
-                                                               (IDX)
                PERFORM VARYING IDZ FROM    1   BY  1
                        UNTIL   IDZ >       SPA-GMN-PARAKBN-MAX
                    IF      SPA-GMN-PARAKBN (IDX)
@@ -1085,6 +1080,15 @@
       *****************************************************************
        460-DOCER-SEC               SECTION.
       *
+      *    シェル名等が未入力の場合は遷移しない
+           IF    ( SPA-GMN-SHORIMSG (SPA-NAI-SELCD) 
+                                   =   SPACE )
+           OR    ( SPA-GMN-SHELLID  (SPA-NAI-SELCD) 
+                                   =   SPACE )
+               MOVE    ZERO            TO  SPA-NAI-SELCD
+               GO  TO  460-DOCER-EXT
+           END-IF
+      *
       *    入力チェック処理
            MOVE    ZERO            TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
@@ -1093,21 +1097,7 @@
                GO  TO  460-DOCER-EXT
            END-IF
       *
-      *    シェル名等が未入力の場合は遷移しない
-           IF    ( SPA-GMN-SHORIMSG (SPA-NAI-SELCD) 
-                                   =   SPACE )
-           OR    ( SPA-GMN-SHELLID  (SPA-NAI-SELCD) 
-                                   =   SPACE )
-               IF      SPA-GMN-NAME (SPA-NAI-SELCD)    =   SPACE
-                   MOVE    ZERO            TO  SPA-NAI-SELCD
-                   GO  TO  460-DOCER-EXT
-               END-IF
-           END-IF
-      *
            MOVE    SPACE           TO  SPA-MOTOPG
-      *
-           MOVE    SPA-GMN-NAME (SPA-NAI-SELCD)
-                                   TO  SPA-GMN-NAME-BACK (SPA-NAI-SELCD)
       *
            MOVE    SPA-W14FREE     TO  SPA-FREE
            MOVE    SPA-W01KYOUTU   TO  SPA-WORK
