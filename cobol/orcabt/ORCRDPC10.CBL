@@ -144,44 +144,9 @@
       *              NACL-¾®Æ¦Âô  16/09/05  Âà±¡»þ½èÊý¡ÊÊ£¿ôÌôºÞÆþÎÏ»þ¡Ë
       *                                     ¤Îµ­Ï¿½¤Àµ
       *              NACL-°ËÆ£    16/10/18  ÊÄËã·×»»¸«Ä¾¤·
-      *  05.00.00    NACL-¾®Æ¦Âô  17/03/06  Ì¤¥³¡¼¥É²½ÆÃÄê´ïºà¥³¡¼¥ÉÇÑ»ßÂÐ±þ
-      *                                     Ê¿À®£²£¹Ç¯£´·î¿ÇÎÅÊ¬¤«¤éÊñ³çÊÝ¸±¤Ç
-      *                                     £°£µ£¹£ø£ø£ø£ø£ø£ø¤ÎÆþÎÏ¤Ï¥¨¥é¡¼¤È¤¹¤ë¡£
-      *                                     ¡ÊÅÀ¿ô¤¬¥¼¥íÅÀ°Ê³°¤Î¾ì¹ç¤Î¤ß¡Ë
-      *              NACL-¾®Æ¦Âô  17/03/16  °åÊÝ°Ê³°¤ÇÆÃÄêÆþ±¡ÎÁ¤ò»»Äê¤·¤¿¾ì¹ç¤Ë
-      *                                     Æþ±¡²ñ·×¤«¤é»»ÄêÆþ±¡ÎÁ¤ò¼èÆÀ¤·¡¢
+      *  04.08.01    NACL-¾®Æ¦Âô  17/02/28  °åÊÝ°Ê³°¤ÇÆÃÄêÆþ±¡ÎÁ¤ò»»Äê¤·¤¿¾ì¹ç¤Ë
       *                                     F-19¡Ê¹Ô°ÙÌÀºÙ¶èÊ¬¾ðÊó¡Ë£²·åÌÜ¤Î
-      *                                     Æþ±¡ÎÁÊñ³ç¹àÌÜ¶èÊ¬¤òºÆ¥»¥Ã¥È¤¹¤ë
-      *              NACL-¾®Æ¦Âô  17/03/21  ÆÃÄêÆþ±¡ÎÁ¤ò»»Äê¤·¤¿ÊÝ¸±°Ê³°¤Ç¿ÇÎÅ¹Ô°Ù
-      *                                     ÆþÎÏ¤¬¤¢¤ëÆü¤Ë¡¢Êñ³çÆþÎÏÊ¬¤ÎÆþ±¡ÎÁ¤¬
-      *                                     £Æ¥Õ¥¡¥¤¥ë¤Ë¸í¤Ã¤Æµ­Ï¿¤µ¤ì¤Æ¤¤¤¿¤Î¤ò½¤Àµ
-      *              NACL-¾®Æ¦Âô  17/03/29  ¾åµ­£³·î£²£±Æü¤Î½¤Àµ¤ÈÆ±ÍÍ¤ÎÆþÎÏ¥Ñ¥¿¡¼¥ó
-      *                                     ¤Ç»»ÄêÆþ±¡ÎÁ¤¬Ã»´üÂÚºß¤Î¾ì¹ç¤ËÊñ³çÆþÎÏÊ¬
-      *                                     ¤ÎÆþ±¡ÎÁ¤¬£Å¥Õ¥¡¥¤¥ë¤È£Æ¥Õ¥¡¥¤¥ë¤Ë¸í¤Ã¤Æ
-      *                                     µ­Ï¿¤µ¤ì¤Æ¤¤¤¿¤Î¤ò½¤Àµ¡ÊÆþ±¡ÎÁÌ¤»»ÄêÆü¡Ë
-      *              NACL-¾®Æ¦Âô  17/04/10  ¾åµ­£³·î£²£¹Æü½¤ÀµÊ¬¤Ï°ìÃ¶ÊÝÎ±¤È¤¹¤ë
-      *              NACL-¾®Æ¦Âô  17/04/12  ¾åµ­£³·î£²£¹Æü½¤ÀµÊ¬¤òºÆ½¤Àµ
-      *              NACL-¾®Æ¦Âô  17/04/13  ÀÁµáÅÀ£°ÅÀ½ÐÎÏÂÐ±þ
-      *              NACL-¾®Æ¦Âô  17/04/13  ÀÁµáÅÀ£°ÅÀ½ÐÎÏÂÐ±þ¡Ê¥·¥¹¥Æ¥àÍ½Ìó¥³¡¼¥É
-      *                                     ¤ÎÆþÎÏ¤¬Ìµ¤¯¤Æ¤âºîÀ®¤Ç¤­¤ë¤è¤¦½¤Àµ¡Ë
-      *              NACL-¾®Æ¦Âô  17/04/21  ÉÔÍ×¤Ê»ý»²Ìô¶èÊ¬¤¬µ­Ï¿¤µ¤ì¤Ê¤¤¤è¤¦ÂÐ½è
-      *              NACL-¾®Æ¦Âô  17/05/02  ¾åµ­£´·î£²£±Æü½¤Àµ¤òÊÑ¹¹
-      *              NACL-¾®Æ¦Âô  17/05/09  °åÊÝ°Ê³°¤ÇÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¤ò»»Äê¤·¤¿
-      *                                     ¾ì¹ç¤ËÆþ±¡²ñ·×¤«¤é»»ÄêÆþ±¡ÎÁ¤ò¼èÆÀ¤·¡¢
-      *                                     F-19¡Ê¹Ô°ÙÌÀºÙ¶èÊ¬¾ðÊó¡Ë£²·åÌÜ¤Î
-      *                                     Æþ±¡ÎÁÊñ³ç¹àÌÜ¶èÊ¬¤òºÆ¥»¥Ã¥È¤¹¤ë
-      *                                     ¡Ê17/03/16¤Î½¤Àµ¤ËÄÉ²Ã¡Ë
-      *              NACL-¾®Æ¦Âô  17/06/12  ÆÃÄêÆþ±¡ÎÁ¤ò»»Äê¤·¤Ê¤¤¤È¤·¤¿¾ì¹ç¤Î
-      *                                     Æþ±¡ÎÁ¡ÊÊñ³çÆþÎÏÊ¬¡Ë¤Îµ­Ï¿ÊýË¡ÊÑ¹¹
-      *              NACL-¾®Æ¦Âô  17/07/25  Æ±ÆüºÆÆþ±¡Æü¤ÎÆþÂà±¡Æüµ­Ï¿½¤Àµ
-      *              NACL-¾®Æ¦Âô  17/07/27  ºÆ¿Ç¤Î»þ´Ö³°²Ã»»ÂÐ±þ
-      *                                     RECE641-NYUSAIFLG="1"¤Î»þ¡¢
-      *                                     ½ç½øÈÖ¹æ(E-6,F-6)¤Î¿¶¤êÄ¾¤·ÄÉ²Ã
-      *              NACL-¾®Æ¦Âô  17/08/17  À¸³èÎÅÍÜÉ¸½àÉéÃ´³Û¥³¡¼¥ÉÄÉ²ÃÂÐ±þ
-      *              NACL-¾®Æ¦Âô  17/09/07  Æ±ÆüºÆÆþ±¡Æü¤ÎÆþÂà±¡Æüµ­Ï¿½¤Àµ»þ¤Î
-      *                                     ÉÔ¶ñ¹ç½¤Àµ
-      *              NACL-¾®Æ¦Âô  17/09/08  ¤­¤¶¤ß·×»»¤Î½ÐÍè¹â¼ÂÀÓÅÀ¿ôÃ¼¿ô½èÍýÄÉ²Ã
-      *              NACL-¾®Æ¦Âô  17/12/07  Æ±ÆüºÆÆþ±¡¤Î¿©»öµ­Ï¿½¤Àµ
+      *                                     Æþ±¡ÎÁÊñ³ç¹àÌÜ¶èÊ¬¤ò»ÃÄê¥»¥Ã¥È¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -348,9 +313,6 @@
            03  FLG-TOKUTEINYUIN-SET    PIC 9(01).
            03  FLG-ETENSU1             PIC 9(01).
            03  FLG-ETENSU2             PIC 9(01).
-           03  FLG-NYUINACCT           PIC 9(01).
-           03  FLG-NYUINACT            PIC 9(01).
-           03  FLG-HOUKATU-SET         PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -503,11 +465,6 @@
            03  WRK-SJ-KBN              PIC X(02).
            03  WRK-RECECOM-SJKBN       PIC X(02).
            03  WRK-SJ-CHK              PIC 9(01).
-           03  WRK-TOTALTEN-X.
-               05  WRK-SRYYMD-X        PIC X(04).
-               05  WRK-RENNUM-X        PIC 9(04).
-           03  WRK-TOTALTEN            REDEFINES  WRK-TOTALTEN-X
-                                       PIC 9(08).
       *
       *    1·åÌÜ:À¸ÊÝ 2·åÌÜ:·ë³Ë 3·åÌÜ:Àº¿À
            03  WRK-3SYU-KBN.
@@ -519,9 +476,9 @@
       *    ·ë³Ë
            03  KEKIDX                  PIC 9(01).
       *
-           03  IDX1                    PIC 9(02).
-           03  IDX2                    PIC 9(02).
-           03  IDX3                    PIC 9(02).
+           03  IDX1                    PIC 9(01).
+           03  IDX2                    PIC 9(01).
+           03  IDX3                    PIC 9(01).
       *
       *    Å¦Í×¥ì¥³¡¼¥ÉÊÔ½¸ÍÑ
            03  WRK-ZAIWMAX             PIC 9(03).
@@ -638,10 +595,6 @@
       *    ÅÅ»ÒÅÀ¿ôÉ½¤ÎÂàÈòÍÑ
            03  WRK-ETENSU-TBL.
                05  WRK-ETENSU1-H-GROUP1        PIC X(07)  OCCURS  31.
-      *
-      *    °åÊÝ°Ê³°¤ÎÆÃÄêÆþ±¡ÎÁ»»ÄêÈ½ÄêÍÑ
-           03  WRK-IHO-IGAI-TOKNYUINCD-TBL.
-               05  WRK-IHO-IGAI-TOKNYUINCD     PIC X(09)  OCCURS  31.
       *
       *    °åÌôÉÊ¡¦ÆÃÄê´ïºàÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-ZAIW-AREA.
@@ -1143,102 +1096,52 @@
       *        É¸½àÉéÃ´³Û¡ÊÄã½êÆÀ£²¡¦£¹£°ÆüÄ¶¡Ë
                05  WRK-CONS-HYOJYUN-FUTAN4
                                       PIC X(09)   VALUE   "197001010".
-      *        ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û
                05  WRK-CONS-HYOJYUN-FUTAN5
-                                      PIC X(09)   VALUE   "197001210".
-      *        À¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÉ¸½àÉéÃ´³Û
-               05  WRK-CONS-HYOJYUN-FUTAN6
                                       PIC X(09)   VALUE   "197001910".
-      *        À¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN7
+      *        À¸³èÎÅÍÜ¡Ê£±¡Ë¡¦É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN6
                                       PIC X(09)   VALUE   "197002010".
-      *        À¸³èÎÅÍÜ¡Ê£²¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN8
+      *        À¸³èÎÅÍÜ¡Ê£²¡Ë¡¦É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN7
                                       PIC X(09)   VALUE   "197002110".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN9
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡ÊÄã£²¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN8
                                       PIC X(09)   VALUE   "197002210".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN10
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN9
                                       PIC X(09)   VALUE   "197002310".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÏ·¿ÍÄã£±¡ÊÏ·Ê¡°Ê³°¡Ë¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN11
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡ÊÏ·¿ÍÄã£±¡ÊÏ·Ê¡°Ê³°¡Ë¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN10
                                       PIC X(09)   VALUE   "197002410".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÏ·¿ÍÄã£±¡ÊÏ·Ê¡¡Ë¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN12
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡ÊÏ·¿ÍÄã£±¡ÊÏ·Ê¡¡Ë¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN11
                                       PIC X(09)   VALUE   "197002510".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN13
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN12
                                       PIC X(09)   VALUE   "197002710".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN14
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN13
                                       PIC X(09)   VALUE   "197002810".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN15
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN14
                                       PIC X(09)   VALUE   "197002910".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN16
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN15
                                       PIC X(09)   VALUE   "197003010".
       *        Ê¿À®£²£¸Ç¯ÅÙ²þÄê¤ÎÄÉ²ÃÊ¬
       *        ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡¦¾®»ùËýÀ­ÆÃÄê¼ÀÉÂ´µ¼Ô¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN17
+               05  WRK-CONS-HYOJYUN-FUTAN16
                                       PIC X(09)   VALUE   "197003310".
       *        ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÀº¿À£±Ç¯Ä¶¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN18
+               05  WRK-CONS-HYOJYUN-FUTAN17
                                       PIC X(09)   VALUE   "197003410".
       *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN19
+               05  WRK-CONS-HYOJYUN-FUTAN18
                                       PIC X(09)   VALUE   "197003610".
       *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÀº¿À£±Ç¯Ä¶¡¦°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN20
+               05  WRK-CONS-HYOJYUN-FUTAN19
                                       PIC X(09)   VALUE   "197003710".
-      *        Ê¿À®£²£¹Ç¯£±£°·î²þÄê¤ÎÄÉ²ÃÊ¬
-      *        À¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN21
-                                      PIC X(09)   VALUE   "197003810".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN22
-                                      PIC X(09)   VALUE   "197003910".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡ÊÄã¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN23
-                                      PIC X(09)   VALUE   "197004010".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN24
-                                      PIC X(09)   VALUE   "197004110".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN25
-                                      PIC X(09)   VALUE   "197004210".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN26
-                                      PIC X(09)   VALUE   "197004310".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN27
-                                      PIC X(09)   VALUE   "197004410".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN28
-                                      PIC X(09)   VALUE   "197004510".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN29
-                                      PIC X(09)   VALUE   "197004610".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN30
-                                      PIC X(09)   VALUE   "197004710".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN31
-                                      PIC X(09)   VALUE   "197004810".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN32
-                                      PIC X(09)   VALUE   "197004910".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN33
-                                      PIC X(09)   VALUE   "197005010".
-      *        Ê¿À®£³£°Ç¯£´·î²þÄê¤ÎÄÉ²ÃÊ¬
-      *        À¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN34
-                                      PIC X(09)   VALUE   "197005110".
-      *        À¸³èÎÅÍÜ¡Ê£²¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN35
-                                      PIC X(09)   VALUE   "197005210".
       *
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.
       *
@@ -1289,7 +1192,6 @@
            03  WRK-FEDT-PREV-TEN50     PIC 9(08).
            03  WRK-FEDT-PREV-TEN54     PIC 9(08).
            03  WRK-FEDT-PREV-TEN721    PIC 9(08).
-           03  WRK-FEDT-JISANYAKKBN    PIC X(01).
            03  WRK-FEDT-KOUI-MEISAI.
              05  WRK-FEDT-KOUI-MEISAI1   PIC 9(01).
              05  WRK-FEDT-KOUI-MEISAI2   PIC 9(01).
@@ -1392,14 +1294,6 @@
       *    ÅÅ»ÒÅÀ¿ôÉ½¡¡Êñ³ç¡¦ÈïÊñ³ç¥Þ¥¹¥¿¡¼
        01  ETENSU2-REC.
            COPY    "CPETENSU2.INC".
-      *
-      *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
-       01  NYUINACCT-REC.
-           COPY    "CPNYUINACCT.INC".
-      *
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼
-       01  NYUINACT-REC.
-           COPY    "CPNYUINACT.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -1874,9 +1768,6 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
       *
-      **     DISPLAY "============== ORCRDPC10 ===================="
-      **     DISPLAY "RECE62-PTNUM = " RECE62-PTNUM
-           
       *    ´µ¼ÔÊÝ¸±ÁÈ¤ß¹ç¤ï¤»¼èÆÀ½èÍý
            PERFORM 2001-HKNCOMBI-GET-SEC
       *
@@ -1887,15 +1778,13 @@
                                                    NOT =   KEY-OLD1
       *
       *        Æþ±¡²ñ·×¼èÆÀ½èÍý¡ÊÄó½ÐÀèÊÌ¡Ë
-      ****         PERFORM 2001-NYUINRYO-GET-SEC
+               PERFORM 2001-NYUINRYO-GET-SEC
       *
       *        ¿ÇÎÅÇ¯·î¡¦´µ¼ÔID¡¦¥ì¥»²Ê¡¦Äó½ÐÀèÊÌ½èÍý
                MOVE    KEY-NEW         TO  KEY-OLD
                PERFORM                 UNTIL   FLG-END     =   1
                                        OR      KEY-NEW NOT =   KEY-OLD
       *
-      *            Æþ±¡²ñ·×¼èÆÀ½èÍý¡ÊÄó½ÐÀèÊÌ¡Ë
-                   PERFORM 2001-NYUINRYO-GET-SEC
                    MOVE    ZERO                TO  WRK-RENNUM
                    MOVE    ZERO                TO  WRK-MEISAI-RENNUM
                    MOVE    SPACE               TO  WRK-FEDT-SRYKBN-SAVE
@@ -2171,30 +2060,10 @@
       *****************************************************************
        2001-NYUINRYO-GET-SEC           SECTION.
       *
-           INITIALIZE                      WRK-HOUKATU-TBL
-           INITIALIZE                      WRK-ETENSU-TBL
-           INITIALIZE                      WRK-IHO-IGAI-TOKNYUINCD-TBL
-      *
            INITIALIZE                      ORCSDPCNYUIN-AREA
            MOVE    RECE62-HOSPNUM      TO  LNK-DPCNYUIN-HOSPNUM
            MOVE    RECE62-PTID         TO  LNK-DPCNYUIN-PTID
            MOVE    RECE62-SRYYM        TO  LNK-DPCNYUIN-SANTEIYM
-           IF      RECE62-TEISYUTUSAKI =   "6"
-               MOVE    "3"                 TO  LNK-DPCNYUIN-HKNKBN
-           ELSE
-               MOVE    RECE62-TEISYUTUSAKI TO  LNK-DPCNYUIN-HKNKBN
-           END-IF
-           PERFORM VARYING IDX FROM    1   BY  1
-             UNTIL (IDX   >    10)    OR
-                     (RECE62-HKNCOMBI (IDX)  =   ZERO)
-               MOVE    RECE62-HKNCOMBI(IDX)   TO
-                                        LNK-DPCNYUIN-SET-HKNCOMBI(IDX)
-           END-PERFORM
-      *     DISPLAY "=========   ORCSDPCNYUIN CALL ========="
-      *     DISPLAY "LNK-DPCNYUIN-SET-HKNCOMBI(1) ="
-      *              LNK-DPCNYUIN-SET-HKNCOMBI(1)
-      *     DISPLAY "LNK-DPCNYUIN-SET-HKNCOMBI(2) ="
-      *              LNK-DPCNYUIN-SET-HKNCOMBI(2)
            CALL    "ORCSDPCNYUIN"      USING   ORCSDPCNYUIN-AREA
                                                SPA-AREA
            IF      LNK-DPCNYUIN-RC     NOT =   ZERO
@@ -2225,28 +2094,48 @@
                                                TO  TNS-SRYCD
                        PERFORM 900-TENSU-READ-SEC
                        IF   TNS-CDKBN-KBN     =   "A"
-                         IF ((TNS-CDKBN-KBNNUM      =  300)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  3))    OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  4))    OR
-                            ((TNS-CDKBN-KBNNUM      =  302)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  303)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  303)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                            ((TNS-CDKBN-KBNNUM      =  305)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  307)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  400)   AND
-                             (TNS-CDKBN-KOUBAN      =  3))
+                         IF  (TNS-CDKBN-KBNNUM      =  300)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  301)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  301)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  2)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  301)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  3)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  301)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  4)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  302)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  303)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  303)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  2)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  305)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  307)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)
+                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         END-IF
+                         IF  (TNS-CDKBN-KBNNUM      =  400)   AND
+                             (TNS-CDKBN-KBNNUM-EDA  =  3)
                             MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
                          END-IF
                        END-IF
@@ -2257,102 +2146,6 @@
                         MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
                     END-IF
                 END-IF
-      *
-      *--- AZU-ADD START 2017.03.16
-      *         °åÊÝ°Ê³°¤ÇÆÃÄêÆþ±¡ÎÁ¡ÊËô¤ÏÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ë¤ò»»Äê¤·¤Æ
-      *         ¤¤¤ë¾ì¹ç¤ò¹ÍÎ¸¤·¤ÆWRK-HOUKATU-KBN(IDX)¤¬Ì¤¥»¥Ã¥ÈÆü¤ÏÆþ±¡
-      *         ²ñ·×¤òºÆ¼èÆÀ¤·¤ÆºÆ¥»¥Ã¥È
-                IF    WRK-HOUKATU-KBN(IDX)          =   SPACE
-                   INITIALIZE                           NYUINACCT-REC
-                   MOVE  RECE62-HOSPNUM             TO  NACCT-HOSPNUM
-                   MOVE  RECE62-PTID                TO  NACCT-PTID
-                   MOVE  RECE62-SRYYM               TO  NACCT-SRYYM
-                   MOVE  "1"                        TO  NACCT-ZAISKBKBN
-                   MOVE  "tbl_nyuinacct"            TO  MCP-TABLE
-                   MOVE  "key35"                    TO  MCP-PATHNAME
-                   PERFORM 910-NYUINACCT-SELECT-SEC
-                   IF      FLG-NYUINACCT            =   ZERO
-                      MOVE    "tbl_nyuinacct"       TO  MCP-TABLE
-                      MOVE    "key35"               TO  MCP-PATHNAME
-                      PERFORM   910-NYUINACCT-READ-SEC
-                      PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
-                         IF   (NACCT-SRYKBN         =   "92")  AND
-                              (NACCT-DAY(IDX)       =   1)
-      *                     ³ºÅöÆþ±¡¹Ô°Ù¥Æ¡¼¥Ö¥ë¤ÎÆÉ¤ß¹þ¤ß
-                            PERFORM    210-NYUINACT-GET-SEC
-                            INITIALIZE                  TNS-TENSU-REC
-                            MOVE    NSRY-SRYCD(1)   TO  TNS-SRYCD
-                            PERFORM 900-TENSU-READ-SEC
-                            IF   TNS-CDKBN-KBN     =   "A"
-                              IF ((TNS-CDKBN-KBNNUM      =  300)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  3))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  4))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  302)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  303)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  303)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  305)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  307)   AND
-                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                                 ((TNS-CDKBN-KBNNUM      =  400)   AND
-                                  (TNS-CDKBN-KOUBAN      =  3))
-                                     MOVE  "1" TO  WRK-HOUKATU-KBN(IDX)
-                              ELSE
-                                     MOVE  "2" TO  WRK-HOUKATU-KBN(IDX)
-                              END-IF
-                              MOVE  NSRY-SRYCD(1)   TO
-                                           WRK-IHO-IGAI-TOKNYUINCD(IDX)
-                            END-IF
-                         END-IF
-      *--- AZU-ADD START 2017.05.09
-                         IF   (NACCT-SRYKBN         =   "90")  AND
-                              (NACCT-DAY(IDX)       =   1)
-      *                     ³ºÅöÆþ±¡¹Ô°Ù¥Æ¡¼¥Ö¥ë¤ÎÆÉ¤ß¹þ¤ß
-                            PERFORM    210-NYUINACT-GET-SEC
-                            INITIALIZE                  TNS-TENSU-REC
-                            MOVE    NSRY-SRYCD(1)   TO  TNS-SRYCD
-                            PERFORM 900-TENSU-READ-SEC
-                            IF   TNS-CDKBN-KBN     =   "A"
-                              IF ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  1))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  2))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  3))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  9))    OR
-                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
-                                  (TNS-CDKBN-KOUBAN      =  10))   OR
-                                 ((TNS-CDKBN-KBNNUM      =  100)   AND
-                                  (TNS-CDKBN-KOUBAN      =  16))
-                                     MOVE  "2" TO  WRK-HOUKATU-KBN(IDX)
-                              END-IF
-                              MOVE  NSRY-SRYCD(1)   TO
-                                           WRK-IHO-IGAI-TOKNYUINCD(IDX)
-                            END-IF
-                         END-IF
-      *--- AZU-ADD END   2017.05.09
-                         MOVE    "tbl_nyuinacct"   TO  MCP-TABLE
-                         MOVE    "key35"           TO  MCP-PATHNAME
-                         PERFORM 910-NYUINACCT-READ-SEC
-                      END-PERFORM
-                   END-IF
-      *            Æþ±¡²ñ·×¥¯¥í¡¼¥º
-                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-                   MOVE    "key35"                 TO  MCP-PATHNAME
-                   PERFORM   900-CLOSE-SEC
-                END-IF
-      *--- AZU-ADD END   2017.03.16
       *
       *         Æþ±¡ÎÁ¤ÎÊñ³ç¥°¥ë¡¼¥×ÈÖ¹æ¼èÆÀ
                 IF    LNK-DPCNYUIN-SRYCD(1 IDX 1)  NOT = SPACE
@@ -2482,44 +2275,6 @@
                     MOVE    "key"               TO  MCP-PATHNAME
                     PERFORM 900-CLOSE-SEC
                 END-IF
-      *
-      *--- AZU-ADD START 2017.03.16
-      *         ÆÃÄêÆþ±¡ÎÁ¡Ê°åÊÝ°Ê³°¤ÇÆÃÄêÆþ±¡ÎÁ»»Äê»þ¡Ë¤Î
-      *         Êñ³ç¥°¥ë¡¼¥×ÈÖ¹æ¼èÆÀ
-                IF   (LNK-DPCNYUIN-SRYCD(1 IDX 1)   = SPACE)  AND
-                     (LNK-DPCNYUIN-SRYCD(2 IDX 1)   = SPACE)  AND
-                     (LNK-NYUINDAY-TANKI-KBN(IDX)   = SPACE)  AND
-                     (WRK-IHO-IGAI-TOKNYUINCD(IDX)  NOT = SPACE)
-                    MOVE    SPACE           TO  ETENSU1-REC
-                    INITIALIZE                  ETENSU1-REC
-                    MOVE    WRK-IHO-IGAI-TOKNYUINCD(IDX)
-                                            TO  ETENSU1-SRYCD
-                    MOVE    RECE62-SRYYM    TO  ETENSU1-YUKOSTYMD(1:6)
-                    MOVE    "01"            TO  ETENSU1-YUKOSTYMD(7:2)
-                    MOVE    ETENSU1-YUKOSTYMD
-                                            TO  ETENSU1-YUKOEDYMD
-                    MOVE    ETENSU1-REC     TO  MCPDATA-REC
-                    MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                    MOVE    "key"           TO  MCP-PATHNAME
-                    PERFORM 900-DBSELECT-SEC
-                    IF      MCP-RC              =   ZERO
-                        MOVE    "tbl_etensu_1"  TO  MCP-TABLE
-                        MOVE    "key"           TO  MCP-PATHNAME
-                        PERFORM 900-ETENSU1-READ-SEC
-                        IF   FLG-ETENSU1        =   ZERO
-                            MOVE  ETENSU1-H-GROUP(1)
-                                                TO  WRK-ETENSU1-H-GROUP1
-                                                                 (IDX)
-                        END-IF
-                    ELSE
-                        MOVE    1               TO  FLG-ETENSU1
-                        INITIALIZE                  ETENSU1-REC
-                    END-IF
-                    MOVE    "tbl_etensu_1"      TO  MCP-TABLE
-                    MOVE    "key"               TO  MCP-PATHNAME
-                    PERFORM 900-CLOSE-SEC
-                END-IF
-      *--- AZU-ADD END   2017.03.16
       *
            END-PERFORM
       *--- AZU-ADD END   2016.07.04
@@ -2654,17 +2409,9 @@
                        PERFORM 20074-ZAI-KOUI-SORT-SEC
                        PERFORM 20072-ZAI-HENSYU-SEC
       *                Êñ³çÆþ±¡Ê¬
-      *                //Æþ±¡ÎÁÆþÎÏÊ¬¤ÎÊñ³çµ­Ï¿¤Ï¡¢Ê¿À®£²£¹Ç¯£³·îÊ¬¤Þ¤Ç¤Ï
-      *                //ÆÃÄêÆþ±¡ÎÁ¤Î²¼¤Ëµ­Ï¿¤À¤¬¡¢Ê¿À®£²£¹Ç¯£´·îÊ¬¤«¤é¤Ï
-      *                //Ã»´üÂÚºßÌ¤»»ÄêÆü¤ÈÆ±ÍÍ¤Îµ­Ï¿¤È¤¹¤ë
-                       IF     RECE62-SRYYM   <=   "201703"
-                           PERFORM 20073-ZAI-HENSYU-SEC
-                       END-IF
+                       PERFORM 20073-ZAI-HENSYU-SEC
                    END-IF
                END-IF
-      *   AZU-DEL START 2017.5.2
-      ****         MOVE    RECE641-REC      TO   WRK-RECE641-REC
-      *   AZU-DEL END   2017.5.2
                PERFORM 990-RECE641-NEXT-SEC
                IF      FLG-RECE64    =   1
                    MOVE   1     TO   FLG-END
@@ -2673,9 +2420,6 @@
       *   AZU-ADD END 2015.6.9
       *
       *    Æþ±¡²ñ·×ÊÔ½¸½èÍý¡ÊÆþ±¡ÎÁ¡Ë
-      *   AZU-DEL START 2017.5.2
-      ***     MOVE    WRK-RECE641-REC    TO   RECE641-REC
-      *   AZU-DEL END 2017.5.2
            PERFORM 20077-NYUIN-HENSYU-SEC
       *
       *   AZU-ADD START 2015.6.9
@@ -3025,30 +2769,6 @@
                        MOVE    RECE65-SRYCD (IDX)
                                                 TO  WRK-KIZAI-SRYCD
                        MOVE    "777770000"      TO  RECE65-SRYCD (IDX)
-                       IF      RECE65-SRYYM     >=  "201704"
-                           INITIALIZE                      TNS-TENSU-REC
-                           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-                           MOVE    WRK-KIZAI-SRYCD     TO  TNS-SRYCD
-                           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-                           PERFORM 900-TENSU-READ-SEC
-                           IF      FLG-TENSU     =   ZERO
-                             IF    TNS-TEN       =   ZERO
-                               CONTINUE
-                             ELSE
-                               STRING
-                                 "£°£µ£¹¤Ç»Ï¤Þ¤ë¡Ö¤½¤ÎÂ¾ºàÎÁ¡×¥³¡¼¥É"
-                                                    DELIMITED  BY  SIZE
-                                 "¤¬»ÈÍÑ¤µ¤ì¤Æ¤¤¤Þ¤¹¡¡´µ¼ÔÈÖ¹æ¡á"
-                                                    DELIMITED  BY  SIZE
-                                 RECE62-PTNUM       DELIMITED  BY  SIZE
-                                              INTO  WRK-RECEERR
-                               END-STRING
-                               PERFORM 500-ERR-HENSYU-SEC
-                               MOVE   "tokutei-kizai err" TO  WRK-ERRMSG
-                               PERFORM 500-COBABORT-SEC
-                             END-IF
-                           END-IF
-                       END-IF
                    END-IF
       *
                    EVALUATE    RECE65-SRYCD (IDX) (1:1)
@@ -3588,8 +3308,7 @@
               GO  TO   20072-ZAI-HENSYU-EXT
            END-IF
       *
-           IF     (RECE641-SRYKBN  NOT =   WRK-FEDT-SRYKBN-SAVE) OR
-                  (RECE641-NYUSAIFLG   =   "1")
+           IF      RECE641-SRYKBN  NOT =   WRK-FEDT-SRYKBN-SAVE
       *    ½ç½øÈÖ¹æ¥ê¥»¥Ã¥È
       *            ½ç½øÈÖ¹æ¤Î¼è¤ê¹þ¤ß
                    INITIALIZE                        RECE900-REC
@@ -3730,7 +3449,7 @@
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       31
       *    ½ç½øÈÖ¹æ
-      ****             ADD     1           TO  WRK-RENNUM
+                   ADD     1           TO  WRK-RENNUM
       *    ¹Ô°ÙÌÀºÙÈÖ¹æ¥ê¥»¥Ã¥È
                    MOVE    ZERO        TO  WRK-MEISAI-RENNUM
                    MOVE    IDXX        TO  WRK-FEDT-DD
@@ -3799,15 +3518,6 @@
               GO  TO   200731-ZAI-HENSYU-EXT
            END-IF
       *
-      *--- AZU-ADD START 2017.04.12
-      *    Ã»´üÂÚºß¤ò»»Äê¤·¤¿RECE62-FILE½èÍý»þ¤À¤±½èÍý¤ò¹Ô¤¦
-           IF      RECE62-EF-NYUINDAY-TBL   NOT =   SPACE
-              CONTINUE
-           ELSE
-              GO  TO   200731-ZAI-HENSYU-EXT
-           END-IF
-      *--- AZU-ADD END   2017.04.12
-      *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       31
       *    ½ç½øÈÖ¹æ
@@ -3825,16 +3535,11 @@
                            WHEN    "8"
                                CONTINUE
                            WHEN    OTHER
-      *--- AZU-ADD END   2017.06.12
-      *                //Æþ±¡ÎÁÆþÎÏÊ¬¤ÎÊñ³çµ­Ï¿¤Ï¡¢Ê¿À®£²£¹Ç¯£³·îÊ¬¤Þ¤Ç¤Ï
-      *                //ÆÃÄêÆþ±¡ÎÁ¤Î²¼¤Ëµ­Ï¿¤À¤¬¡¢Ê¿À®£²£¹Ç¯£´·îÊ¬¤«¤é¤Ï
-      *                //Ã»´üÂÚºßÌ¤»»ÄêÆü¤ÈÆ±ÍÍ¤Îµ­Ï¿¤È¤¹¤ë
-                             IF    RECE62-SRYYM   <=   "201703"
                                IF   LNK-NYUINDAY-TANKI2-KBN(IDXX) =
                                                             "1" OR "2"
       ****                         ADD       1     TO   WRK-RENNUM
-                                  IF     (IDX               =  1)  AND
-                                         (WRK-FEDT-1ST-FLG  =  ZERO)
+                               IF     (IDX               =  1)
+                                AND   (WRK-FEDT-1ST-FLG  =  ZERO)
                                       MOVE    1    TO   WRK-FEDT-1ST-FLG
                                       MOVE    "92"  TO  RECE641-SRYKBN
                                       IF     FLG-TOKUTEINYUIN-SET  =  0
@@ -3856,81 +3561,9 @@
                                ELSE
                                   CONTINUE
                                END-IF
-                             ELSE
-                                  MOVE      1     TO   FLG-HOUKATU-SET
-      ****                        ADD       1     TO   WRK-RENNUM
-      *                           ½ç½øÈÖ¹æ¤Î¼è¤ê¹þ¤ß
-                                  INITIALIZE        RECE900-REC
-                                  MOVE    RECE62-HOSPNUM   TO
-                                                       RECE900-HOSPNUM
-                                  MOVE    RECE62-SRYYM  TO
-                                                       RECE900-SRYYM
-                                  MOVE    RECE62-PTID      TO
-                                                       RECE900-PTID
-                                  MOVE    "90"     TO  RECE900-SRYKBN
-                                  PERFORM   900-RECE900-READ-SEC
-                                  IF      FLG-RECE900         =   1
-                                      MOVE    ZERO      TO  WRK-RENNUM
-                                  ELSE
-                                      MOVE    RECE900-RENNUM
-                                                        TO  WRK-RENNUM
-                                  END-IF
-                                  IF     (IDX               =  1)  AND
-                                         (WRK-FEDT-1ST-FLG  =  ZERO)
-                                      MOVE    1    TO   WRK-FEDT-1ST-FLG
-                                      MOVE    "90"  TO  RECE641-SRYKBN
-                                      IF     FLG-TOKUTEINYUIN-SET  =  0
-                                          MOVE    1    TO   WRK-RENNUM
-                                          MOVE    1    TO   
-                                                  FLG-TOKUTEINYUIN-SET
-                                      ELSE
-                                          ADD     1    TO   WRK-RENNUM
-                                      END-IF
-      *                                ADD   1  TO   WRK-RENNUM-E
-                                      PERFORM 200721-ZAI-E-HENSYU-SEC
-                                      PERFORM 5001-FILE-WRITE-SEC
-                                  END-IF
-      *                            DISPLAY  "###  F-SET"
-      *                            DISPLAY  "WRK-RENNUM = " WRK-RENNUM
-                                  MOVE   "90"   TO   WRK-FEDT-SRYKBN
-                                  PERFORM 200721-ZAI-F-HENSYU-SEC
-                                  PERFORM 5001-FILE-F-WRITE-SEC
-      *
-                                  MOVE    ZERO   TO   FLG-HOUKATU-SET
-      *
-      *                           ½ç½øÈÖ¹æ¥Õ¥¡¥¤¥ë¤Î¹¹¿·
-                                  INITIALIZE               RECE900-REC
-                                  MOVE    RECE62-HOSPNUM   TO
-                                                       RECE900-HOSPNUM
-                                  MOVE    RECE62-SRYYM     TO
-                                                       RECE900-SRYYM
-                                  MOVE    RECE62-PTID  TO 
-                                                       RECE900-PTID
-                                  MOVE    "90"     TO  RECE900-SRYKBN
-                                  PERFORM   900-RECE900-READ-SEC
-                                  IF      FLG-RECE900         =   1
-                                    MOVE    RECE62-HOSPNUM   TO
-                                                        RECE900-HOSPNUM
-                                    MOVE    RECE62-SRYYM  TO
-                                                        RECE900-SRYYM
-                                    MOVE    RECE62-PTID   TO
-                                                        RECE900-PTID
-                                    MOVE    "90"    TO  RECE900-SRYKBN
-                                    MOVE    WRK-RENNUM TO RECE900-RENNUM
-                                    WRITE      RECE900-REC
-                                  ELSE
-                                    MOVE    WRK-RENNUM TO RECE900-RENNUM
-                                    REWRITE    RECE900-REC
-                                  END-IF
-                             END-IF
                        END-EVALUATE
                      END-IF
                    END-PERFORM
-      *
-      *--- AZU-ADD START 2017.03.29
-      *            °ìÅÙ¥»¥Ã¥È¤·¤¿Æü¤ÏºÆ¥»¥Ã¥È¤ò¹Ô¤ï¤Ê¤¤¤è¤¦¶èÊ¬¤ò½é´ü²½
-      ****         MOVE   SPACE  TO  LNK-NYUINDAY-TANKI2-KBN(IDXX)
-      *--- AZU-ADD END 2017.03.29
       *
            END-PERFORM
            .
@@ -3979,8 +3612,6 @@
            MOVE    RECE641-ZAITEN      TO  WRK-FEDT-ZAITEN
       *¹Ô°ÙÌôºÞÎÁ
            MOVE    RECE641-YKZTEN      TO  WRK-FEDT-YKZTEN
-      *»ý»²Ìô¶èÊ¬
-           MOVE    RECE641-JISANYAKKBN TO  WRK-FEDT-JISANYAKKBN
       *¹Ô°ÙºàÎÁÎÁ
            MOVE    RECE641-KIZAITEN    TO  WRK-FEDT-KIZAITEN
            IF      RECE641-SRYKBN      =   "70"
@@ -4467,27 +4098,44 @@
              MOVE    TBL-HEIMA-30M-IDX (IDZ3)
                                            TO  WRK-HEIMA-IDX
              IF      WRK-HEIMA-IDX   NOT =   ZERO
-                 PERFORM VARYING IDXW FROM 1 BY 1
-                         UNTIL ( IDXW > TBL-HEIMA-MAX )
-                     MOVE    TBL-HEIMA-30M-IDX (IDXW)
-                                           TO  IDW
-                     IF      IDW           NOT =   ZERO
-                         COMPUTE WRK-KZM-SURYO =   WRK-KZM-SURYO
-                                               +   TBL-HEIMA-ZAN-SURYO
-                                                   (IDW)
-                         IF      WRK-KZM-SURYO >=  30
-                             COMPUTE TBL-HEIMA-ZAN-SURYO (IDW) =
-                                     WRK-KZM-SURYO -   30
-                             MOVE    30        TO  WRK-KZM-SURYO
-                         ELSE 
-                             MOVE    ZERO      TO  TBL-HEIMA-ZAN-SURYO
-                                                   (IDW)
-                             MOVE    ZERO      TO  TBL-HEIMA-30M-SURYO
-                                                   (IDW)
-                         END-IF
-                     END-IF
-                 END-PERFORM
+                   MOVE    TBL-HEIMA-ZAN-SURYO (WRK-HEIMA-IDX)
+                                          TO  WRK-KZM-SURYO
+                   MOVE    ZERO  TO  TBL-HEIMA-ZAN-SURYO (WRK-HEIMA-IDX)
+                   MOVE    ZERO  TO  TBL-HEIMA-30M-SURYO (WRK-HEIMA-IDX)
              END-IF
+      **     DISPLAY " "
+      **     DISPLAY "WRK-HEIMA-IDX = " WRK-HEIMA-IDX
+             PERFORM VARYING IDXW FROM 1  BY  1
+                     UNTIL   ( IDXW > TBL-HEIMA-MAX )
+                        OR   ( WRK-HEIMA-IDX = ZERO )
+               IF      IDXW          NOT =   WRK-HEIMA-IDX
+                   MOVE    IDXW            TO  IDW
+                   PERFORM VARYING IDW0 FROM TBL-HEIMA-MAX  BY  -1
+                           UNTIL   ( IDW0 = 0 )
+                     IF    ( IDW0      NOT =   WRK-HEIMA-IDX ) AND
+                           ( IDW0      NOT =   IDXW )
+                       IF      TBL-HEIMA-ZAN-SURYO (IDW0)
+                                       =   TBL-HEIMA-ZAN-SURYO (IDXW)
+                         MOVE  IDW0        TO  IDW
+                         MOVE  1           TO  IDW0
+                       END-IF
+                     END-IF
+                   END-PERFORM
+      **     DISPLAY "IDW = " IDW
+                   COMPUTE WRK-HEIMA-SURYO =  30  -  WRK-KZM-SURYO
+                   IF      TBL-HEIMA-ZAN-SURYO (IDW) < WRK-HEIMA-SURYO
+                       COMPUTE WRK-KZM-SURYO =  WRK-KZM-SURYO
+                                         +  TBL-HEIMA-ZAN-SURYO (IDW)
+                       MOVE    ZERO      TO TBL-HEIMA-ZAN-SURYO (IDW)
+                   ELSE
+                       COMPUTE TBL-HEIMA-ZAN-SURYO (IDW)
+                                         =  TBL-HEIMA-ZAN-SURYO (IDW)
+                                         -  WRK-HEIMA-SURYO
+                       MOVE    30            TO WRK-KZM-SURYO
+                       MOVE    TBL-HEIMA-MAX TO IDXW
+                   END-IF
+               END-IF
+             END-PERFORM
              COMPUTE TBL-HEIMA-COM-SURYO (WRK-HEIMA-IDX)
                                  =  TBL-HEIMA-COM-SURYO (WRK-HEIMA-IDX)
                                  +  WRK-KZM-SURYO
@@ -4682,8 +4330,6 @@
            END-IF
       *¹Ô°ÙÌôºÞÎÁ
            MOVE    RECE641-YKZTEN      TO  WRK-FEDT-YKZTEN
-      *»ý»²Ìô¶èÊ¬
-           MOVE    RECE641-JISANYAKKBN TO  WRK-FEDT-JISANYAKKBN
       *¹Ô°ÙºàÎÁÎÁ
            MOVE    RECE641-KIZAITEN    TO  WRK-FEDT-KIZAITEN
       *±ß¡¦ÅÀ¶èÊ¬
@@ -4873,8 +4519,6 @@
            END-IF
       *¹Ô°ÙÌôºÞÎÁ
            MOVE    RECE641-YKZTEN      TO  WRK-FEDT-YKZTEN
-      *»ý»²Ìô¶èÊ¬
-           MOVE    RECE641-JISANYAKKBN TO  WRK-FEDT-JISANYAKKBN
       *¹Ô°ÙºàÎÁÎÁ
            MOVE    WRK-FEDT-ZAITEN     TO  WRK-FEDT-KIZAITEN
       *****MOVE    RECE641-KIZAITEN    TO  WRK-FEDT-KIZAITEN
@@ -5071,41 +4715,25 @@
                            WHEN    OTHER
                                IF    (  LNK-DPCNYUIN-SRYCD
                                                        (IDZ1 IDZ2 IDXZ)
-                                         =   WRK-CONS-HYOJYUN-FUTAN1
-                                         OR  WRK-CONS-HYOJYUN-FUTAN2
-                                         OR  WRK-CONS-HYOJYUN-FUTAN3
-                                         OR  WRK-CONS-HYOJYUN-FUTAN4
-                                         OR  WRK-CONS-HYOJYUN-FUTAN5
-                                         OR  WRK-CONS-HYOJYUN-FUTAN6
-                                         OR  WRK-CONS-HYOJYUN-FUTAN7
-                                         OR  WRK-CONS-HYOJYUN-FUTAN8
-                                         OR  WRK-CONS-HYOJYUN-FUTAN9
-                                         OR  WRK-CONS-HYOJYUN-FUTAN10
-                                         OR  WRK-CONS-HYOJYUN-FUTAN11
-                                         OR  WRK-CONS-HYOJYUN-FUTAN12
-                                         OR  WRK-CONS-HYOJYUN-FUTAN13
-                                         OR  WRK-CONS-HYOJYUN-FUTAN14
-                                         OR  WRK-CONS-HYOJYUN-FUTAN15
-                                         OR  WRK-CONS-HYOJYUN-FUTAN16
-                                         OR  WRK-CONS-HYOJYUN-FUTAN17
-                                         OR  WRK-CONS-HYOJYUN-FUTAN18
-                                         OR  WRK-CONS-HYOJYUN-FUTAN19
-                                         OR  WRK-CONS-HYOJYUN-FUTAN20
-                                         OR  WRK-CONS-HYOJYUN-FUTAN21
-                                         OR  WRK-CONS-HYOJYUN-FUTAN22
-                                         OR  WRK-CONS-HYOJYUN-FUTAN23
-                                         OR  WRK-CONS-HYOJYUN-FUTAN24
-                                         OR  WRK-CONS-HYOJYUN-FUTAN25
-                                         OR  WRK-CONS-HYOJYUN-FUTAN26
-                                         OR  WRK-CONS-HYOJYUN-FUTAN27
-                                         OR  WRK-CONS-HYOJYUN-FUTAN28
-                                         OR  WRK-CONS-HYOJYUN-FUTAN29
-                                         OR  WRK-CONS-HYOJYUN-FUTAN30
-                                         OR  WRK-CONS-HYOJYUN-FUTAN31
-                                         OR  WRK-CONS-HYOJYUN-FUTAN32
-                                         OR  WRK-CONS-HYOJYUN-FUTAN33
-                                         OR  WRK-CONS-HYOJYUN-FUTAN34
-                                         OR  WRK-CONS-HYOJYUN-FUTAN35 )
+                                           =   WRK-CONS-HYOJYUN-FUTAN1
+                                           OR  WRK-CONS-HYOJYUN-FUTAN2
+                                           OR  WRK-CONS-HYOJYUN-FUTAN3
+                                           OR  WRK-CONS-HYOJYUN-FUTAN4
+                                           OR  WRK-CONS-HYOJYUN-FUTAN5
+                                           OR  WRK-CONS-HYOJYUN-FUTAN6
+                                           OR  WRK-CONS-HYOJYUN-FUTAN7
+                                           OR  WRK-CONS-HYOJYUN-FUTAN8
+                                           OR  WRK-CONS-HYOJYUN-FUTAN9
+                                           OR  WRK-CONS-HYOJYUN-FUTAN10
+                                           OR  WRK-CONS-HYOJYUN-FUTAN11
+                                           OR  WRK-CONS-HYOJYUN-FUTAN12
+                                           OR  WRK-CONS-HYOJYUN-FUTAN13
+                                           OR  WRK-CONS-HYOJYUN-FUTAN14
+                                           OR  WRK-CONS-HYOJYUN-FUTAN15
+                                           OR  WRK-CONS-HYOJYUN-FUTAN16
+                                           OR  WRK-CONS-HYOJYUN-FUTAN17
+                                           OR  WRK-CONS-HYOJYUN-FUTAN18
+                                           OR  WRK-CONS-HYOJYUN-FUTAN19)
                                    CONTINUE
                                ELSE
                                     IF    IDXZ       =  1
@@ -5154,24 +4782,22 @@
                         PERFORM   VARYING   IDZ7  FROM  1  BY  1
                           UNTIL   (IDZ7     >   10)   OR
                                 (WRK-REC-LENGTH-XX(IDZ2 IDZ7)  =  ZERO)
-                           IF    WRK-TAIHI-RENNUM(IDZ2)  NOT =  ZERO
-                             MOVE    WRK-REC-XX(IDZ2 IDZ7) 
+                           MOVE    WRK-REC-XX(IDZ2 IDZ7) 
                                                TO   WRK-REC
-      *                      ½ç½øÈÖ¹æ
-                             MOVE  WRK-TAIHI-RENNUM-X(IDZ2)
+      *                    ½ç½øÈÖ¹æ
+                           MOVE  WRK-TAIHI-RENNUM-X(IDZ1)
                                                TO   WRK-REC(43:4)
-      *                      ¹Ô°ÙÌÀºÙÈÖ¹æ
-                             ADD   1             TO
+      *                    ¹Ô°ÙÌÀºÙÈÖ¹æ
+                           ADD   1             TO
                                           WRK-TAIHI-MEISAI-RENNUM(IDZ1)
-                             MOVE    WRK-TAIHI-MEISAI-RENNUM-X(IDZ1)
+                           MOVE    WRK-TAIHI-MEISAI-RENNUM-X(IDZ1)
                                                TO   WRK-REC(48:3)
       *
-                             MOVE    WRK-REC-LENGTH-XX(IDZ2 IDZ7)
+                           MOVE    WRK-REC-LENGTH-XX(IDZ2 IDZ7)
                                                TO  WRK-REC-LENGTH
-                             MOVE    WRK-FEDT-XX(IDZ2 IDZ7)
+                           MOVE    WRK-FEDT-XX(IDZ2 IDZ7)
                                                TO   WRK-FEDT-AREA
-                             PERFORM 5001-FILE-F-WRITE-SEC
-                           END-IF
+                           PERFORM 5001-FILE-F-WRITE-SEC
                         END-PERFORM
                      END-IF
                    END-IF
@@ -5197,7 +4823,7 @@
            PERFORM VARYING IDZ1    FROM    3   BY  1
                    UNTIL   IDZ1    >       5
                PERFORM VARYING IDZ2    FROM    1   BY  1
-                       UNTIL   IDZ2    >       40
+                       UNTIL   IDZ2    >       31
       *
                    MOVE    ZERO                    TO  FLG-CHK
       *
@@ -5225,39 +4851,25 @@
                            WHEN    OTHER
                                IF    (  LNK-DPCNYUIN-SRYCD
                                                        (IDZ1 IDZ2 IDXZ)
-                                         =   WRK-CONS-HYOJYUN-FUTAN1
-                                         OR  WRK-CONS-HYOJYUN-FUTAN2
-                                         OR  WRK-CONS-HYOJYUN-FUTAN3
-                                         OR  WRK-CONS-HYOJYUN-FUTAN4
-                                         OR  WRK-CONS-HYOJYUN-FUTAN5
-                                         OR  WRK-CONS-HYOJYUN-FUTAN6
-                                         OR  WRK-CONS-HYOJYUN-FUTAN7
-                                         OR  WRK-CONS-HYOJYUN-FUTAN8
-                                         OR  WRK-CONS-HYOJYUN-FUTAN9
-                                         OR  WRK-CONS-HYOJYUN-FUTAN10
-                                         OR  WRK-CONS-HYOJYUN-FUTAN11
-                                         OR  WRK-CONS-HYOJYUN-FUTAN12
-                                         OR  WRK-CONS-HYOJYUN-FUTAN13
-                                         OR  WRK-CONS-HYOJYUN-FUTAN14
-                                         OR  WRK-CONS-HYOJYUN-FUTAN15
-                                         OR  WRK-CONS-HYOJYUN-FUTAN16
-                                         OR  WRK-CONS-HYOJYUN-FUTAN17
-                                         OR  WRK-CONS-HYOJYUN-FUTAN18
-                                         OR  WRK-CONS-HYOJYUN-FUTAN19
-                                         OR  WRK-CONS-HYOJYUN-FUTAN20
-                                         OR  WRK-CONS-HYOJYUN-FUTAN21
-                                         OR  WRK-CONS-HYOJYUN-FUTAN22
-                                         OR  WRK-CONS-HYOJYUN-FUTAN23
-                                         OR  WRK-CONS-HYOJYUN-FUTAN24
-                                         OR  WRK-CONS-HYOJYUN-FUTAN25
-                                         OR  WRK-CONS-HYOJYUN-FUTAN26
-                                         OR  WRK-CONS-HYOJYUN-FUTAN27
-                                         OR  WRK-CONS-HYOJYUN-FUTAN28
-                                         OR  WRK-CONS-HYOJYUN-FUTAN29
-                                         OR  WRK-CONS-HYOJYUN-FUTAN30
-                                         OR  WRK-CONS-HYOJYUN-FUTAN31
-                                         OR  WRK-CONS-HYOJYUN-FUTAN32
-                                         OR  WRK-CONS-HYOJYUN-FUTAN33 )
+                                           =   WRK-CONS-HYOJYUN-FUTAN1
+                                           OR  WRK-CONS-HYOJYUN-FUTAN2
+                                           OR  WRK-CONS-HYOJYUN-FUTAN3
+                                           OR  WRK-CONS-HYOJYUN-FUTAN4
+                                           OR  WRK-CONS-HYOJYUN-FUTAN5
+                                           OR  WRK-CONS-HYOJYUN-FUTAN6
+                                           OR  WRK-CONS-HYOJYUN-FUTAN7
+                                           OR  WRK-CONS-HYOJYUN-FUTAN8
+                                           OR  WRK-CONS-HYOJYUN-FUTAN9
+                                           OR  WRK-CONS-HYOJYUN-FUTAN10
+                                           OR  WRK-CONS-HYOJYUN-FUTAN11
+                                           OR  WRK-CONS-HYOJYUN-FUTAN12
+                                           OR  WRK-CONS-HYOJYUN-FUTAN13
+                                           OR  WRK-CONS-HYOJYUN-FUTAN14
+                                           OR  WRK-CONS-HYOJYUN-FUTAN15
+                                           OR  WRK-CONS-HYOJYUN-FUTAN16
+                                           OR  WRK-CONS-HYOJYUN-FUTAN17
+                                           OR  WRK-CONS-HYOJYUN-FUTAN18
+                                           OR  WRK-CONS-HYOJYUN-FUTAN19)
                                    CONTINUE
                                ELSE
                                     IF    IDXZ       =  1
@@ -5280,25 +4892,12 @@
                                          END-IF
                                        END-IF
                                        MOVE  IDZ2  TO  WRK-FEDT-DD
-      *                                Ê¿À®£²£¹Ç¯£±£°·î°Ê¹ß¤Î¿©»ö¤Ï°ú¿ô
-      *                                ¤ÇÊÖµÑ¤µ¤ì¤¿ÆüÉÕ¤ò¥»¥Ã¥È
-                                       IF (LNK-DPCNYUIN-SANTEIYM >=
-                                                          "201710")  AND
-                                          (IDZ1   =   3  OR  4)      AND
-                                          (LNK-DPCNYUIN-DD
-                                                     (IDZ1 IDZ2)
-                                                     NOT =   ZERO)
-                                          MOVE  LNK-DPCNYUIN-DD
-                                                       (IDZ1 IDZ2)
-                                                        TO  WRK-FEDT-DD
-                                       END-IF
                                        PERFORM
                                          200771-NYUIN-ZAI-E-HENSYU-SEC
                                        IF  WRK-REC-LENGTH  >  ZERO
                                          PERFORM 5001-FILE-WRITE-SEC
                                        END-IF
                                     END-IF
-      *
                                     PERFORM
                                          200771-NYUIN-ZAI-F-HENSYU-SEC
                                     IF   WRK-REC-LENGTH  >  ZERO
@@ -5476,8 +5075,6 @@
            END-IF
       *¹Ô°ÙÌôºÞÎÁ
            MOVE    ZERO                TO  WRK-FEDT-YKZTEN
-      *»ý»²Ìô¶èÊ¬
-           MOVE    SPACE               TO  WRK-FEDT-JISANYAKKBN
       *¹Ô°ÙºàÎÁÎÁ
            MOVE    ZERO                TO  WRK-FEDT-KIZAITEN
       *±ß¡¦ÅÀ¶èÊ¬
@@ -5540,37 +5137,6 @@
                MOVE    "0"             TO  WRK-FEDT-BYOTOKBN
            ELSE
                MOVE    "1"             TO  WRK-FEDT-BYOTOKBN
-           END-IF
-      *Ê¿À®£²£¹Ç¯£±£°·î°Ê¹ß¤Î¿©»ö¤ÇÆ±ÆüºÆÆþ±¡Ê¬¤ÎºÆ¥»¥Ã¥È
-           IF (LNK-DPCNYUIN-SANTEIYM >= "201710")  AND
-              (IDZ1   =   3  OR  4)   AND
-              (LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 1)  =  "1")
-      *       ¥ì¥»¥×¥È²Ê¶èÊ¬
-               MOVE    SPACE               TO  WRK-FEDT-RECESRYKA
-               PERFORM VARYING SYSKAN-IDX2 FROM  1  BY  1
-                 UNTIL   SYSKAN-IDX2 >   TBL-SRYKA-MAX
-                   IF    LNK-DPCNYUIN-SRYKA2(IDZ1 IDZ2)
-                                       =   TBL-SRYKA (SYSKAN-IDX2)
-                      MOVE    TBL-RECESRYKA (SYSKAN-IDX2)
-                                       TO  WRK-FEDT-RECESRYKA
-                     MOVE    TBL-SRYKA-MAX   TO  SYSKAN-IDX2
-                   END-IF
-               END-PERFORM
-      *        ¿ÇÎÅ²Ê¶èÊ¬
-               PERFORM 200721-SRYKAKBN-HENSYU-SEC
-      *        °å»Õ¥³¡¼¥É
-               MOVE    LNK-DPCNYUIN-DRCD2 (IDZ1 IDZ2)
-                                       TO  WRK-FEDT-DRCD
-      *        ÉÂÅï¥³¡¼¥É
-               MOVE    LNK-DPCNYUIN-BTUNUM2 (IDZ1 IDZ2)
-                                       TO  WRK-FEDT-BYOTOCD
-      *        ÉÂÅï¶èÊ¬
-               IF      LNK-DPCNYUIN-BTUKBN2 (IDZ1 IDZ2)
-                                           =   "01"
-                   MOVE    "0"             TO  WRK-FEDT-BYOTOKBN
-               ELSE
-                   MOVE    "1"             TO  WRK-FEDT-BYOTOKBN
-               END-IF
            END-IF
       *Æþ³°¶èÊ¬
            MOVE    RECE62-NYUGAIKBN   TO  WRK-FEDT-NYUGAIKBN
@@ -5800,33 +5366,6 @@
                                        <=  WRK-EDYMD
               AND  WRK-NYUIN-RIREKI-TAIINYMD (IDW)
                                        >=  WRK-EDYMD
-      *Æ±ÆüºÆÆþ±¡Æü¤Î¿ÇÎÅ¹Ô°Ù¤Ï¼¡¤ÎÆþ±¡ÍúÎò¤ËÊÑ¹¹¤¹¤ë
-             IF (RECE62-PTID       =    RECE641-PTID)    AND
-                (RECE641-SRYSYUKBN   NOT =  SPACE)       AND
-                (RECE641-SRYSYUKBN   NOT =  "900")       AND
-                (RECE641-SRYSYUKBN   NOT =  "920")       AND
-                (RECE641-SRYSYUKBN   NOT =  "970")       AND
-                (RECE641-KAISU(1 WRK-EDDD)   NOT =  ZERO)  AND
-                (RECE641-KAISU(1 WRK-EDDD) = RECE641-KAISU(3 WRK-EDDD))
-                  IF  WRK-NYUIN-RIREKI-NYUINYMD (IDW + 1) NOT = SPACE
-                      ADD    1     TO   IDW
-                  END-IF
-             END-IF
-      *Æ±ÆüºÆÆþ±¡Æü¤ÎºÆÆþ±¡»þ¤Ë»»Äê¤·¤¿¿©»ö¤Ï¼¡¤ÎÆþ±¡ÍúÎò¤ËÊÑ¹¹¤¹¤ë
-      **       DISPLAY "LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ) = "
-      **                LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ)
-      **       DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ) = "
-      **                LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ)
-      **       DISPLAY "RECE641-SRYSYUKBN = " RECE641-SRYSYUKBN
-             IF (IDZ1              =    3  OR  4)        AND
-                (RECE62-PTID       =    RECE641-PTID)    AND
-                (LNK-DPCNYUIN-SANTEIYM  >=  "201710")    AND
-                (LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ)(1:3) = "197")  AND
-                (LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 1)  =  "1")
-                  IF  WRK-NYUIN-RIREKI-NYUINYMD (IDW + 1) NOT = SPACE
-                      ADD    1     TO   IDW
-                  END-IF
-             END-IF
       *Âà±¡Ç¯·îÆü
                IF (WRK-NYUIN-RIREKI-TAIINYMD (IDW)
                                        =   "99999999")  OR
@@ -5910,12 +5449,7 @@
            PERFORM 5004-MOJI-HENSYU-SEC
       *½ç½øÈÖ¹æ
       *AZU-ADD START 2015.6.10
-           IF    (RECE62-SRYYM <=     "201703")  AND
-                 (IDZ1        =       2)      AND
-                 (IDZ2        NOT =   ZERO)   AND
-                 (WRK-RENNUM  NOT =   ZERO)
-               MOVE  WRK-RENNUM        TO  WRK-TAIHI-RENNUM(IDZ2)
-           END-IF
+           MOVE  WRK-RENNUM            TO  WRK-TAIHI-RENNUM(IDZ1)
       *AZU-ADD END 2015.6.10
            MOVE    WRK-RENNUM          TO  WRK-DATA
            MOVE    4                   TO  WRK-NAGASA
@@ -6001,7 +5535,7 @@
            END-IF
       *--- AZU-ADD START 2016.08.23
       *    »ý»²Ìô¤Ï¹Ô°ÙÅÀ¿ô¤Ë¥¼¥í¤ò¥»¥Ã¥È
-           IF    WRK-FEDT-JISANYAKKBN  = "1" OR "2" OR "3" OR "4" OR
+           IF    RECE641-JISANYAKKBN  =  "1" OR "2" OR "3" OR "4" OR
                                          "5" OR "6" OR "7" OR "8"
                  MOVE     ZERO         TO  WRK-TENSU
            END-IF
@@ -6017,7 +5551,7 @@
            END-IF
       *--- AZU-ADD START 2016.08.23
       *    »ý»²Ìô¤Ï¹Ô°ÙÌôºÞÎÁ¤Ë¥¼¥í¤ò¥»¥Ã¥È
-           IF    WRK-FEDT-JISANYAKKBN =  "1" OR "2" OR "3" OR "4" OR
+           IF    RECE641-JISANYAKKBN  =  "1" OR "2" OR "3" OR "4" OR
                                          "5" OR "6" OR "7" OR "8"
                  MOVE     ZERO         TO  WRK-TENSU
            END-IF
@@ -6106,7 +5640,7 @@
              MOVE  WRK-FEDT-SRYSURYO   TO  WRK-SRYSURYO
       *--- AZU-ADD START 2016.08.23
       *      »ý»²Ìô¤Ç»ÈÍÑÎÌÉÔÌÀ¤Ï¥¼¥í¤ò¥»¥Ã¥È
-             IF    WRK-FEDT-JISANYAKKBN  =    "5" OR "6" OR "7" OR "8"
+             IF    RECE641-JISANYAKKBN  =    "5" OR "6" OR "7" OR "8"
                  MOVE     ZERO         TO  WRK-SRYSURYO
              END-IF
       *--- AZU-ADD END 2016.08.23
@@ -6144,10 +5678,9 @@
                    MOVE    ZERO        TO  WRK-FEDT-DEKIDAKA-TEN
                 END-IF
            END-IF
-      *
       *--- AZU-ADD START 2016.08.23
       *    »ý»²Ìô¤Ç»ÈÍÑÎÌÉÔÌÀ¤Ï¥¼¥í¤ò¥»¥Ã¥È
-           IF    WRK-FEDT-JISANYAKKBN  =    "5" OR "6" OR "7" OR "8"
+           IF    RECE641-JISANYAKKBN  =    "5" OR "6" OR "7" OR "8"
                MOVE     ZERO         TO  WRK-FEDT-DEKIDAKA-TEN
            END-IF
       *--- AZU-ADD END 2016.08.23
@@ -6183,6 +5716,12 @@
                   IF   WRK-HOUKATU-KBN(WRK-FEDT-DD)   =   "2"
                      MOVE    2             TO  WRK-FEDT-KOUI-MEISAI2
                   END-IF
+      *--- AZU-ADD START 2017.02.28
+      *     ¡Ê»ÃÄê¡ËÊñ³ç¸µ¤È¤Ê¤ëÆþ±¡ÎÁ¤¬È½Äê¤Ç¤­¤Ê¤¤¾ì¹ç¤Ï£²¤ò¥»¥Ã¥È¤¹¤ë
+                  IF   WRK-HOUKATU-KBN(WRK-FEDT-DD)  NOT =  "1" AND "2"
+                     MOVE    2             TO  WRK-FEDT-KOUI-MEISAI2
+                  END-IF
+      *--- AZU-ADD END   2017.02.28
                ELSE
                   MOVE    ZERO             TO  WRK-FEDT-KOUI-MEISAI2
                   IF   WRK-TAIIN-SHOHOU    =    "1"
@@ -6191,15 +5730,15 @@
                END-IF
       *--- AZU-ADD START 2016.08.23
       *        »ý»²Ìô¶èÊ¬
-               IF     WRK-FEDT-JISANYAKKBN       =   "1" OR "2" OR
+               IF     RECE641-JISANYAKKBN        =   "1" OR "2" OR
                                                      "3" OR "4" OR
                                                      "5" OR "6" OR
                                                      "7" OR "8"
-                  IF     WRK-FEDT-JISANYAKKBN       =   "1" OR "2" OR
+                  IF     RECE641-JISANYAKKBN        =   "1" OR "2" OR
                                                         "5" OR "6"
                      MOVE    1             TO  WRK-FEDT-KOUI-MEISAI3
                   END-IF
-                  IF     WRK-FEDT-JISANYAKKBN       =   "3" OR "4" OR
+                  IF     RECE641-JISANYAKKBN        =   "3" OR "4" OR
                                                         "7" OR "8"
                      MOVE    2             TO  WRK-FEDT-KOUI-MEISAI3
                   END-IF
@@ -6207,15 +5746,15 @@
                   MOVE   ZERO              TO  WRK-FEDT-KOUI-MEISAI3
                END-IF
       *        »ý»²Ìô½èÊý¶èÊ¬
-               IF     WRK-FEDT-JISANYAKKBN       =   "1" OR "2" OR
+               IF     RECE641-JISANYAKKBN        =   "1" OR "2" OR
                                                      "3" OR "4" OR
                                                      "5" OR "6" OR
                                                      "7" OR "8"
-                  IF     WRK-FEDT-JISANYAKKBN       =   "1" OR "3" OR
+                  IF     RECE641-JISANYAKKBN        =   "1" OR "3" OR
                                                         "5" OR "7"
                      MOVE    1             TO  WRK-FEDT-KOUI-MEISAI4
                   END-IF
-                  IF     WRK-FEDT-JISANYAKKBN       =   "2" OR "4" OR
+                  IF     RECE641-JISANYAKKBN        =   "2" OR "4" OR
                                                         "6" OR "8"
                      MOVE    2             TO  WRK-FEDT-KOUI-MEISAI4
                   END-IF
@@ -6315,7 +5854,7 @@
                   (WRK-KZM-TEN2        >   ZERO )
                MOVE    WRK-KZM-TEN2    TO  WRK-FEDT-DEKIDAKA-TEN
            ELSE
-               COMPUTE    WRK-FEDT-DEKIDAKA-TEN   =  TNS-TEN  + 0.5
+               MOVE    TNS-TEN         TO  WRK-FEDT-DEKIDAKA-TEN
            END-IF
            .
        200799-KZM-DEKIDAKA-EXT.
@@ -6477,36 +6016,6 @@
            MOVE    WRK-RENNUM-E        TO  RECEDEN-RENNUM
            MOVE    WRK-REC             TO  RECEDEN-RECEDATA
       *
-      *    Êñ³çÊ¬È½ÄêÍÑ
-           MOVE    WRK-FEDT-SRYKBN     TO  RECEDEN-SJKBN
-           MOVE    WRK-FEDT-YMD (5:4)  TO  WRK-TOTALTEN-X (1:4)
-           MOVE    WRK-RENNUM          TO  WRK-TOTALTEN-X (5:4)
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    WRK-TOTALTEN        TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-           IF    ( SNUM-RC             =   ZERO  )
-           AND   ( SNUM-MINKBN         =   SPACE )
-           AND   ( SNUM-SYOKBN         =   SPACE )
-               MOVE    SNUM-OUTNUM         TO  RECEDEN-TOTALTEN
-           ELSE
-               DISPLAY "WRK-TOTALTEN-X=" WRK-TOTALTEN-X
-      *
-               STRING   "¥Ç¡¼¥¿¤ÎºîÀ®¤¬¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡¡´µ¼ÔÈÖ¹æ¡á"
-                                       DELIMITED  BY  SIZE
-                        RECE62-PTNUM   DELIMITED  BY  SIZE
-                                       INTO  WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-               STRING  "ORCRDPC10 "    DELIMITED   BY  SIZE
-                       WRK-RECEERR     DELIMITED   BY  SPACE
-                       LOW-VALUE       DELIMITED   BY  SIZE
-                                       INTO    WRK-ERRMSG
-               END-STRING
-               PERFORM 500-COBABORT-SEC
-           END-IF
-      *
-      *
            PERFORM 50012-DBINSERT-SEC
       *
            ADD     1                   TO  CNT-OUT-E
@@ -6534,35 +6043,6 @@
            MOVE    "F"                 TO  RECEDEN-RECKBN
            MOVE    WRK-RENNUM-F        TO  RECEDEN-RENNUM
            MOVE    WRK-REC             TO  RECEDEN-RECEDATA
-      *
-      *    Êñ³çÊ¬È½ÄêÍÑ
-           MOVE    WRK-FEDT-SRYKBN     TO  RECEDEN-SJKBN
-           MOVE    WRK-FEDT-YMD (5:4)  TO  WRK-TOTALTEN-X (1:4)
-           MOVE    WRK-RENNUM          TO  WRK-TOTALTEN-X (5:4)
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    WRK-TOTALTEN        TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-           IF    ( SNUM-RC             =   ZERO  )
-           AND   ( SNUM-MINKBN         =   SPACE )
-           AND   ( SNUM-SYOKBN         =   SPACE )
-               MOVE    SNUM-OUTNUM         TO  RECEDEN-TOTALTEN
-           ELSE
-               DISPLAY "WRK-TOTALTEN-X=" WRK-TOTALTEN-X
-      *
-               STRING   "¥Ç¡¼¥¿¤ÎºîÀ®¤¬¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡¡´µ¼ÔÈÖ¹æ¡á"
-                                       DELIMITED  BY  SIZE
-                        RECE62-PTNUM   DELIMITED  BY  SIZE
-                                       INTO  WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-               STRING  "ORCRDPC10 "    DELIMITED   BY  SIZE
-                       WRK-RECEERR     DELIMITED   BY  SPACE
-                       LOW-VALUE       DELIMITED   BY  SIZE
-                                       INTO    WRK-ERRMSG
-               END-STRING
-               PERFORM 500-COBABORT-SEC
-           END-IF
       *
            PERFORM 50012-DBINSERT-SEC
       *
@@ -7016,6 +6496,16 @@
                                                        8888   OR 
                                                        6666        )
       *??              OR  (   RECE62-SRYYM    NOT =   WRK-PARA-SRYYM)
+                       OR  (   RECE62-TOTALTEN (1) =   ZERO   AND
+                               RECE62-TOTALTEN (2) =   ZERO   AND
+                               RECE62-TOTALTEN (3) =   ZERO   AND
+                               RECE62-TOTALTEN (4) =   ZERO   AND
+                               RECE62-TOTALTEN (5) =   ZERO   AND
+                               RECE62-SHOKUJIRYOYOHI (1) = ZERO  AND
+                               RECE62-SHOKUJIRYOYOHI (2) = ZERO  AND
+                               RECE62-SHOKUJIRYOYOHI (3) = ZERO  AND
+                               RECE62-SHOKUJIRYOYOHI (4) = ZERO  AND
+                               RECE62-SHOKUJIRYOYOHI (5) = ZERO     )
                            MOVE    2               TO  FLG-READ
                        ELSE
       *                    ¼ç²ÊÀßÄê¤Î¤È¤­Ì¤ÀßÄê¤Ê¤é¹¹¿·¤·¤Ê¤¤
@@ -7484,7 +6974,7 @@
       *
            PERFORM VARYING IJ  FROM  1  BY  1
                    UNTIL   IJ  >  31
-               IF      RECE62-EF-NYUINDAY-KBN(IJ)    =   SPACE
+               IF      RECE62-JNISSUTBL(IJ)    =   SPACE
                    COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
                                                -   ACCT-DAY(1 IJ)
                    MOVE    ZERO                TO  ACCT-DAY(1 IJ)
@@ -7972,105 +7462,6 @@
            END-IF
            .
        900-ETENSU2-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷
-      *****************************************************************
-       910-NYUINACCT-SELECT-SEC        SECTION.
-      *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-NYUINACCT
-           ELSE
-               MOVE    1                  TO  FLG-NYUINACCT
-           END-IF
-      *
-           .
-       910-NYUINACCT-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
-      *****************************************************************
-       910-NYUINACCT-READ-SEC        SECTION.
-      *
-           PERFORM   900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  NYUINACCT-REC
-               MOVE    ZERO               TO  FLG-NYUINACCT
-           ELSE
-               INITIALIZE                     NYUINACCT-REC
-               MOVE    1                  TO  FLG-NYUINACCT
-           END-IF
-      *
-           .
-       910-NYUINACCT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¼èÆÀ
-      *****************************************************************
-       210-NYUINACT-GET-SEC            SECTION.
-      *
-           INITIALIZE                      NYUINACT-REC
-           MOVE    NACCT-HOSPNUM       TO  NSRY-HOSPNUM
-           MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
-           MOVE    NACCT-PTID          TO  NSRY-PTID
-           MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
-           MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
-           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-NYUINACT-SELECT-SEC
-           IF      FLG-NYUINACT        =   ZERO
-               MOVE    "tbl_nyuinact"  TO  MCP-TABLE
-               MOVE    "key9"          TO  MCP-PATHNAME
-               PERFORM   910-NYUINACT-READ-SEC
-           END-IF
-      *
-      *    Æþ±¡¹Ô°Ù¥¯¥í¡¼¥º
-           MOVE     "tbl_nyuinact"     TO  MCP-TABLE
-           MOVE     "key9"             TO  MCP-PATHNAME
-           PERFORM   900-CLOSE-SEC
-      *
-           .
-       210-NYUINACT-GET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¸¡º÷
-      *****************************************************************
-       910-NYUINACT-SELECT-SEC        SECTION.
-      *
-           MOVE    NYUINACT-REC        TO  MCPDATA-REC
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-NYUINACT
-           ELSE
-               MOVE    1                  TO  FLG-NYUINACT
-           END-IF
-      *
-           .
-       910-NYUINACT-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¹þ
-      *****************************************************************
-       910-NYUINACT-READ-SEC         SECTION.
-      *
-           PERFORM   900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  NYUINACT-REC
-               MOVE    ZERO                TO  FLG-NYUINACT
-           ELSE
-               INITIALIZE                      NYUINACT-REC
-               MOVE    1                   TO  FLG-NYUINACT
-           END-IF
-      *
-           .
-       910-NYUINACT-READ-EXT.
            EXIT.
       *
       *****************************************************************
