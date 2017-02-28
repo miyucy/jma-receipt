@@ -20,6 +20,7 @@ utf8_shell_sources = \
 	allways/orcbsf03.sh.in \
 	allways/orhcml09.sh.in \
 	allways/print.sh.in \
+	allways/print_prv.sh.in \
 	allways/print_stop.sh.in \
 	allways/preprint.sh.in \
 	allways/orc_file_del.sh.in \
@@ -32,6 +33,7 @@ utf8_shell_sources = \
 	daily/HCALL.sh.in \
 	daily/HC01.sh.in \
 	daily/HCALL2.sh.in \
+	daily/HCALL_prv.sh.in \
 	daily/toukei2.sh.in \
 	monthly/recept1.sh.in \
 	monthly/recept2.sh.in \
@@ -74,6 +76,7 @@ utf8_shell_sources = \
 	monthly/teiki3.sh.in \
 	allways/ykjmst.sh.in \
 	allways/ORCBQ02.sh.in \
+	daily/online-reprint.sh.in \
 	monthly/prtdbdel.sh.in \
 	allways/ykjchk.sh.in \
 	allways/chkmst2.sh.in \
@@ -89,6 +92,7 @@ utf8_shell_sources = \
 	daily/infectionagree.sh.in \
 	allways/orcbs02.sh.in \
 	tools/orcred2conv.sh.in \
+	allways/orc_print_dmy.sh.in \
 	allways/orcbi202.sh.in \
 	allways/log_shell.sh.in \
 	monthly/recept42.sh.in \
@@ -97,17 +101,9 @@ utf8_shell_sources = \
 	monthly/upload_jibai_receipt.sh.in \
 	monthly/recept43.sh.in \
 	execshell_main.sh.in \
+	daily/red2pdf.sh.in \
 	allways/zaiko01.sh.in \
-	allways/client_print.sh.in \
-	allways/disease_masterlst.sh.in \
-	allways/medication_masterlst.sh.in \
-	allways/patient_basis_all.sh.in \
-	allways/patient_disease_all.sh.in \
-	monthly/recept4_renkei2.sh.in \
-	allways/patient_medical_all.sh.in \
-	allways/address_masterlst.sh.in \
-	allways/haori_monblobapi.sh.in \
-
+	allways/convert_image.sh.in \
 
 shell_sources = \
 	allways/master_standard_upgrade.sh.in \
@@ -126,31 +122,12 @@ shell_sources = \
 	allways/store_mnote.sh.in \
 	tools/run_renkei_data_2.sh.in \
 	allways/jmamr.sh.in \
+	allways/client_print.sh.in \
 	daily/execoprg.sh.in \
 	allways/HL04.sh.in \
 	allways/HL05.sh.in \
 	allways/mask.sh.in \
 	allways/get_license_access_key.sh.in \
-	allways/convert_image.sh.in \
-	allways/orc_print_dmy.sh.in \
-	allways/print_prv.sh.in \
-	daily/HCALL_prv.sh.in \
-	daily/online-reprint.sh.in \
-	daily/red2pdf.sh.in \
-	daily/import_blob.sh.in \
-	daily/export_blob.sh.in \
-	daily/rpmain1.sh.in \
-	monthly/recept1_mis.sh.in \
-	monthly/recept4_mis.sh.in \
-	monthly/recept41_mis.sh.in \
-	monthly/recept6_mis.sh.in \
-	monthly/recept9_mis.sh.in \
-	monthly/recept10_mis.sh.in \
-	tools/run_mis.sh.in \
-	tools/run_receipt_mis_ika.sh.in \
-	tools/run_receipt_mis_rou.sh.in \
-	allways/export_monblob.sh.in \
-	tools/run_jmamr_mis.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \
@@ -183,7 +160,6 @@ ruby_sources = \
 	monthly/rosai_receden_error.rb.in \
 	daily/shrink_rp.rb.in \
 	allways/get_license_access_key.rb.in \
-	allways/tru8.rb.in \
 
 claim_sources = \
 	claim/rb/clm_rcv.rb.in \

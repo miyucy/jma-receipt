@@ -114,7 +114,6 @@
       *
            03  WRK-API-HOSPNAME        PIC X(120)  OCCURS 3.
            03  WRK-API-HOSPADRS        PIC X(200)  OCCURS 3.
-           03  WRK-API-POST            PIC X(07).
       *
            03  WRK-YYKYMD              PIC X(08).
            03  WRK-SYSYMD              PIC X(08).
@@ -334,22 +333,20 @@
                MOVE    "99999999"          TO  PARA-YUKOEDYMD
            END-IF
       *H28.10
-      *API対応
+      *API ginbee対応
       *    ＡＰＩ返却データ（1:作成する 帳票印刷なし）
            MOVE    "API_DATA"          TO  WRK-PARA-NAME
            MOVE    1                   TO  WRK-PARA-MAX
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:WRK-PARA-MAX)
                                        TO  PARA-API-DATA
-           IF     (PARA-API-DATA       =   "1"       )
+      *    ginbeeのみ対応
+           IF     (SPA-MW              =   SPA-GINBEE)
+              AND (PARA-API-DATA       =   "1"       )
                CONTINUE
            ELSE
       *        API送信なし
                MOVE    "0"             TO  PARA-API-DATA
-           END-IF
-      *    HAORI対応
-           IF      SPA-API-FLG         =   1
-               MOVE    "1"             TO  PARA-API-DATA
            END-IF
       *    ＡＰＩカスタムＩＤ
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
@@ -450,7 +447,6 @@
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
                                            WRK-API-HOSPADRS (1)
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
-           MOVE    SYS-1002-POST       TO  WRK-API-POST
       *    医療機関編集
            PERFORM 1010-HOSPHENSYU-SEC
       *
@@ -884,7 +880,7 @@
            MOVE    WRK-API-HOSPADRS(2) TO  FMYH-HOSP-ADRS (2)
            MOVE    WRK-API-HOSPADRS(3) TO  FMYH-HOSP-ADRS (3)
       *
-           MOVE    WRK-API-POST        TO  FMYH-HOSP-POST
+           MOVE    SYS-1002-POST       TO  FMYH-HOSP-POST
            MOVE    WRK-HOSPTEL         TO  FMYH-HOSP-TEL
       *    プログラムオプション編集
            IF     (PARA-YUKOSTYMD      <=  SPA-SYSYMD )
@@ -1079,7 +1075,6 @@
                MOVE    SYS-1902-ADRS1      TO  WRK-API-HOSPADRS(1)
                MOVE    SYS-1902-ADRS2      TO  WRK-API-HOSPADRS(2)
                MOVE    SYS-1902-ADRS3      TO  WRK-API-HOSPADRS(3)
-               MOVE    SYS-1902-POST       TO  WRK-API-POST
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
