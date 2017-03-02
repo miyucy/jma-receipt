@@ -819,6 +819,12 @@
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "patientinfores"    TO  PTRES-RECORDNAME
            MOVE    1                   TO  PTRES-MODE
+      *ver.5.0
+           IF      APIPTA-FORMAT      =   "json"
+               MOVE    3                   TO  PTRES-MODE
+               MOVE    "application/json"  TO  APIPTA-CONTENT-TYPE
+           END-IF
+      *
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTINFORES
