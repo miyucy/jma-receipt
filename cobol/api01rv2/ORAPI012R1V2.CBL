@@ -818,7 +818,9 @@
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "patientinfores"    TO  PTRES-RECORDNAME
-           MOVE    1                   TO  PTRES-MODE
+      *ver.5.0
+      **** MOVE    1                   TO  PTRES-MODE
+           MOVE    2                   TO  PTRES-MODE
       *ver.5.0
            IF      APIPTA-FORMAT      =   "json"
                MOVE    3                   TO  PTRES-MODE
