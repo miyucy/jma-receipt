@@ -530,6 +530,7 @@ RECORD_files = \
 	okusuriputv2.rec \
 	Z010.rec \
     imagegetv2.rec \
+	medicalmodv36.rec \
 
 DEF_files = \
 
@@ -966,6 +967,8 @@ DB_files = \
 	tbl_tensu_user.db \
 	push_print001.db \
     xml_imagegetv2req.db \
+	xml_medicalv3req6.db \
+	xml_medicalv3res6.db \
 
 
 shell.db: shell.db.in

@@ -1406,3 +1406,22 @@ path	key66	{
 		;
 	};
 };
+
+path	key67	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key67_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYKA       =   :SRYKA
+                        AND  (SRYYMD      >=  :SRYYMD
+                        AND   SRYYMD      <=  :UPSRYYMD)
+			AND   HKNCOMBINUM <>  '9999'
+                        AND   EDANUM      =    1
+			ORDER   BY      SRYYMD,
+					DENPNUM
+		;
+	};
+};
