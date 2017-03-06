@@ -104,13 +104,6 @@
       *  00.00.00    NACL-¾®Æ¦Âô  14/02/27  Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±
       *                                     Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²
       *                                     Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³ÄÉ²ÃÂÐ±þ
-      *  05.00.00    NACL-ÂÀÅÄ    17/12/08  ¼¼ÎÁº¹³ÛºÇÂç·ï¿ôÊÑ¹¹(30 -> 99)
-      *Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
-      *  05.00.00    NACL-¾®Æ¦Âô  18/02/28  Â¾°å¼õ¿Ç¤ÎÄÉ²Ã
-      *  05.00.00    NACL-¾®Æ¦Âô  18/03/05  ÎÅÍÜÉÂÅï¤ÎÆÉ¤ßÂØ¤¨¥³¡¼¥ÉÄÉ²Ã
-      *  05.00.00    NACL-¾®Æ¦Âô  18/03/07  Ã»´üÂÚºß¼ê½ÑÅù´ðËÜÎÁ¤ÎÈ½ÄêÊÑ¹¹
-      *  05.00.00    NACL-¾®Æ¦Âô  18/03/08  ÎÅÍÜÉÂÅïÆþ±¡ÎÁ¤ÎÌ¾¾ÎÆÉ¤ßÂØ¤¨¤Ï
-      *                                     Ê¿À®£³£°Ç¯£³·î¤Þ¤Ç
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -372,7 +365,7 @@
                05  WRK-KEI         PIC Z(07).
       *
            03  WRK-MEISYO          PIC X(40).
-           03  WRK-TUSAN           PIC S9(08).
+           03  WRK-TUSAN           PIC 9(08).
            03  WRK-MEISYO-G        PIC X(100).
       *    ¿ÇÎÅÆü
            03  WRK-SRYYM.
@@ -444,18 +437,6 @@
                05  WRK-NYUINKAMEI3     PIC X(08).
                05  WRK-NYUINKA-ETC     PIC X(01).
                05  WRK-NYUINKAMEI      PIC X(08).
-      *
-      *    £¹£±ÆüÄ¶É½¼¨ÍÑ
-           03  WRK-STUSAN-RRK-CNT              PIC 9(05).
-           03  WRK-STUSAN-RRK-OCC              OCCURS  50.
-               05  WRK-STUSAN-RRK-JTIKBN       PIC X(01).
-               05  WRK-STUSAN-RRK-TAINRELKBN   PIC X(01).
-               05  WRK-STUSAN-RRK-NYUINYMD     PIC X(08).
-               05  WRK-STUSAN-RRK-TAIINYMD     PIC X(08).
-               05  WRK-STUSAN-RRK-DJKBN        PIC X(01).
-      *        °ìÈÌÆþ±¡ÎÁ¤ÇÆþ±¡¤·¤Æ¤¤¤¿Æü¿ô
-      *        ¡ÊÎòºîÀ®¥Ç¡¼¥¿¤Î¾ì¹ç¤ÏÂÐ¾ÝÆü¿ô¡Ë
-               05  WRK-STUSAN-RRK-NISSU        PIC 9(08).
       *
       *    ²ó¿ô°ì³çÊÑ¹¹ÍÑ
        01  WRK-DAY-AREA.
@@ -693,9 +674,6 @@
       *
       *    ÄÌ»»Æü¿ô¼èÆÀ¥µ¥Ö
            COPY "CPORCSTUSAN.INC".
-      *
-      *    ÄÌ»»Æü¿ô¥Á¥§¥Ã¥¯¥µ¥Ö
-           COPY "CPORCSTUSANCHK.INC".
       *
       *    ÇÓÂ¾À©¸æ¥Ñ¥é¥á¥¿
            COPY    "CPORCSLOCK.INC".
@@ -1220,7 +1198,7 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM
-                   UNTIL       (IDX            >=  99)  OR
+                   UNTIL       (IDX            >=  30)  OR
                                (FLG-SYSKANRI   =   1)
                MOVE    MCPDATA-REC             TO  SYS-5113-REC
                ADD     1                       TO  IDX
@@ -1349,36 +1327,21 @@
            IF       SPA-NAI-SRYYM      >=  "201604"
                MOVE    "05"                TO  SPA-GMN-SAGAKUNO-41 (5)
                MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£°¡ó¸º"
-                                           TO  SPA-GMN-SAGAKU-41   (5)
+                                       TO  SPA-GMN-SAGAKU-41   (5)
                MOVE    "06"                TO  SPA-GMN-SAGAKUNO-41 (6)
                MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£²£°¡ó¸º"
-                                           TO  SPA-GMN-SAGAKU-41   (6)
+                                       TO  SPA-GMN-SAGAKU-41   (6)
                MOVE    "08"                TO  SPA-GMN-SAGAKUNO-41 (7)
-               MOVE    "ÆÃÄê»þ´ÖÂà±¡¸º»»"  TO  SPA-GMN-SAGAKU-41   (7)
+               MOVE    "ÆÃÄê»þ´ÖÂà±¡¸º»»"
+                                       TO  SPA-GMN-SAGAKU-41   (7)
                MOVE    "09"                TO  SPA-GMN-SAGAKUNO-41 (8)
                MOVE    "ÆÃÄêÍËÆüÆþÂà±¡¸º»»"
-                                           TO  SPA-GMN-SAGAKU-41   (8)
+                                       TO  SPA-GMN-SAGAKU-41   (8)
                MOVE    "13"                TO  SPA-GMN-SAGAKUNO-41 (9)
                MOVE    "ÆÃÄêÍËÆü¡ÜÂ¾¼õ£±£°¡ó¸º"
-                                           TO  SPA-GMN-SAGAKU-41   (9)
+                                       TO  SPA-GMN-SAGAKU-41   (9)
       *
                MOVE    9                   TO  SPA-SAGAKU-MAX-41
-               IF       SPA-NAI-SRYYM      >=  "201804"
-                   MOVE    "14"            TO  SPA-GMN-SAGAKUNO-41 (10)
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£µ¡ó¸º"
-                                           TO  SPA-GMN-SAGAKU-41   (10)
-                   MOVE    "15"            TO  SPA-GMN-SAGAKUNO-41 (11)
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£³£µ¡ó¸º"
-                                           TO  SPA-GMN-SAGAKU-41   (11)
-                   MOVE    "16"            TO  SPA-GMN-SAGAKUNO-41 (12)
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£µ¡ó¸º"
-                                           TO  SPA-GMN-SAGAKU-41   (12)
-                   MOVE    "17"            TO  SPA-GMN-SAGAKUNO-41 (13)
-                   MOVE    "ÆÃÄêÍËÆü¡ÜÂ¾¼õ£µ¡ó¸º"
-                                           TO  SPA-GMN-SAGAKU-41   (13)
-      *
-                   MOVE    13              TO  SPA-SAGAKU-MAX-41
-               END-IF
            ELSE
              IF       SPA-NAI-SRYYM      >=  "201204"
                MOVE    "05"                TO  SPA-GMN-SAGAKUNO-41 (5)
@@ -1649,88 +1612,66 @@
        3103-PTNYUINRRK-HEN-EXT.
            EXIT.
       *
+      *
       *****************************************************************
       *   £¹£±ÆüÊÔ½¸½èÍý
       *****************************************************************
        3103-91DAYS-EDIT-SEC            SECTION.
       *
-      **     DISPLAY "3103-91DAYS-EDIT-SEC"
            MOVE  "black"    TO   SPA-GMN-IJYOU91-STYLE
            IF    ( STUSAN-RRK-FLG-OVER NOT =   ZERO )
                MOVE    "********"  TO  SPA-GMN-IJYOU91
                GO  TO  3103-91DAYS-EDIT-EXT
            END-IF
       *
-      **     DISPLAY "STUSAN-KJNYMD = " STUSAN-KJNYMD
            MOVE    STUSAN-NISSU03  TO  WRK-TUSAN
-      **     DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
-      **     DISPLAY "STUSAN-RRK-CNT = " STUSAN-RRK-CNT
       *
-           MOVE    STUSAN-RRK-CNT  TO  WRK-STUSAN-RRK-CNT
            PERFORM VARYING IDX10   FROM    1   BY  1
                    UNTIL ( IDX10   >   STUSAN-RRK-CNT )
-               MOVE  STUSAN-RRK-OCC(IDX10)  TO WRK-STUSAN-RRK-OCC(IDX10)
-           END-PERFORM
-      *
-           PERFORM VARYING IDX10   FROM    1   BY  1
-                   UNTIL ( IDX10   >   WRK-STUSAN-RRK-CNT )
-      **         DISPLAY "IDX10 = " IDX10
-      **         DISPLAY "WRK-STUSAN-RRK-JTIKBN (IDX10) = "
-      **                  WRK-STUSAN-RRK-JTIKBN (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-TAINRELKBN (IDX10) = "
-      **                  WRK-STUSAN-RRK-TAINRELKBN (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-NYUINYMD (IDX10) = "
-      **                  WRK-STUSAN-RRK-NYUINYMD (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-TAIINYMD (IDX10) = "
-      **                  WRK-STUSAN-RRK-TAIINYMD (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-DJKBN (IDX10) = "
-      **                  WRK-STUSAN-RRK-DJKBN (IDX10)
-      **         DISPLAY "WRK-STUSAN-RRK-NISSU (IDX10) = "
-      **                  WRK-STUSAN-RRK-NISSU (IDX10)
-               IF    ( WRK-STUSAN-RRK-JTIKBN (IDX10)
+               IF    ( STUSAN-RRK-JTIKBN (IDX10)
                                            NOT = "5" )
-                   IF (WRK-STUSAN-RRK-NYUINYMD (IDX10)  NOT =  SPACE)
-                        INITIALIZE                  ORCSTUSANAREA
-                        MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
-                        MOVE    SPA-PTID        TO  STUSAN-PTID
-                        MOVE    WRK-STUSAN-RRK-NYUINYMD (IDX10)
-                                                TO  STUSAN-KJNYMD
-                        CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                                        SPA-AREA
-      **                  DISPLAY "STUSAN-RC = " STUSAN-RC
-      **                  DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
+                   IF (STUSAN-RRK-NYUINYMD (IDX10)  NOT =  SPACE)  AND
+                      (STUSAN-RRK-NISSU (IDX10)    =   ZERO)   AND
+                      (STUSAN-RRK-DJKBN (IDX10)    =   SPACE)
+                           ADD   1    TO   STUSAN-RRK-NISSU (IDX10)
+                   END-IF
+                   IF   STUSAN-RRK-NISSU (IDX10)  =   ZERO
+                        ADD   1    TO   STUSAN-RRK-NISSU (IDX10)
                    END-IF
       *
-                   IF    ( STUSAN-NISSU03  <    91 )
+                   IF   (STUSAN-RRK-TAIINYMD(IDX10)  NOT = "99999999")
+                    IF (STUSAN-RRK-NISSU (IDX10)    =   ZERO  OR  1)
+                      CONTINUE
+                    ELSE
+                     INITIALIZE                  STS-AREA-DAY
+                     INITIALIZE                  LNK-DAY5-AREA
+                     MOVE    "51"            TO  LNK-DAY5-IRAI
+                     MOVE    STUSAN-RRK-NYUINYMD (IDX10)
+                                             TO  LNK-DAY5-START
+                     MOVE    STUSAN-RRK-TAIINYMD (IDX10)
+                                             TO  LNK-DAY5-END
+                     CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                                 LNK-DAY5-AREA
+                     MOVE    LNK-DAY5-NISSU2 TO  STUSAN-RRK-NISSU(IDX10)
+                    END-IF
+                   END-IF
+      *
+                   COMPUTE WRK-TUSAN
+                       =   WRK-TUSAN   -   STUSAN-RRK-NISSU (IDX10)
+                   IF    ( WRK-TUSAN  <    91 )
                        INITIALIZE                  STS-AREA-DAY
                        INITIALIZE                  LNK-DAY6-AREA
                        MOVE    "61"            TO  LNK-DAY6-IRAI
-                       MOVE    WRK-STUSAN-RRK-NYUINYMD (IDX10)
+                       MOVE    STUSAN-RRK-NYUINYMD (IDX10)
                                                TO  LNK-DAY6-KIJUN
                        MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
                        IF    ( STUSAN-RRK-DJKBN (IDX10) = SPACE OR "2" )
-      **                     DISPLAY "92 - STUSAN-NISSU03"
                            COMPUTE LNK-DAY6-ZOGEN
-                               =   92   -          STUSAN-NISSU03
+                               =   91   -          WRK-TUSAN
                        ELSE
-      **                     DISPLAY "92 - STUSAN-NISSU03"
                            COMPUTE LNK-DAY6-ZOGEN
-                               =   92   -          STUSAN-NISSU03
+                               =   92   -          WRK-TUSAN
                        END-IF
-      **                 DISPLAY "LNK-DAY6-KIJUN = " LNK-DAY6-KIJUN
-      **                 DISPLAY "LNK-DAY6-ZOGEN = " LNK-DAY6-ZOGEN
-      *AZU-ADD START
-                       IF     STUSAN-NISSU03   <=    ZERO
-                            MOVE   91     TO    LNK-DAY6-ZOGEN
-                       END-IF
-      *AZU-ADD END
-      *
-      *AZU-ADD START
-                       IF (STUSAN-RRK-CNT     =   1 )   AND
-                          (WRK-STUSAN-RRK-TAIINYMD (IDX10) = "99999999")
-                            MOVE   91     TO    LNK-DAY6-ZOGEN
-                       END-IF
-      *AZU-ADD END
                        CALL    "ORCSDAY"   USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                        MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU91
@@ -1742,40 +1683,10 @@
                        END-IF
                        PERFORM 41012-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
-                       MOVE    WRK-STUSAN-RRK-CNT  TO  IDX10
+                       MOVE    STUSAN-RRK-CNT  TO  IDX10
                    END-IF
                END-IF
            END-PERFORM
-      *    ÄÌ»»Æü¿ô¥Á¥§¥Ã¥¯¥µ¥Ö¸Æ½Ð
-           INITIALIZE                      ORCSTUSANCHKAREA
-grpsys     MOVE    SPA-HOSPNUM         TO  STUSANCHK-HOSPNUM
-           MOVE    PTNYUINRRK-PTID     TO  STUSANCHK-PTID
-           MOVE    PTNYUINRRK-NYUINYMD TO  STUSANCHK-NYUINYMD
-           IF    ( PTNYUINRRK-TAIINYMD >=  SPA-SYSYMD )
-               MOVE    SPA-SYSYMD      TO  STUSANCHK-KJNYMD
-           ELSE
-               MOVE    PTNYUINRRK-TAIINYMD
-                                       TO  STUSANCHK-KJNYMD
-           END-IF
-      *
-           MOVE    PTNYUINRRK-RRKNUM   TO  STUSANCHK-RRKNUM
-      *
-           CALL    "ORCSTUSANCHK"          USING
-                                           ORCSTUSANCHKAREA
-grpsys                                     SPA-AREA
-           IF    ( STUSANCHK-DAY-91   NOT =   SPACE )
-               DISPLAY "STUSANCHK-DAY-91 = " STUSANCHK-DAY-91
-               MOVE    STUSANCHK-DAY-91 TO  SPA-GMN-IJYOU91
-               MOVE    STUSANCHK-DAY-91 TO  WRK-SYMD
-               IF      SPA-SYSYMD   >=   SPA-GMN-IJYOU91
-                  MOVE  "red"      TO   SPA-GMN-IJYOU91-STYLE
-               ELSE
-                  MOVE  "black"    TO   SPA-GMN-IJYOU91-STYLE
-               END-IF
-               PERFORM 41012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
-           END-IF
-      *
       **     DISPLAY "3103-91DAYS-EDIT-EXT"
       *
            .
@@ -1786,30 +1697,16 @@ grpsys                                     SPA-AREA
       *****************************************************************
        3103-180DAYS-EDIT-SEC           SECTION.
       *
-           DISPLAY "3103-180DAYS-EDIT-SEC"
            IF    ( STUSAN-RRK-FLG-OVER NOT =   ZERO )
                MOVE    "********"  TO  SPA-GMN-IJYOU180
                GO  TO  3103-180DAYS-EDIT-EXT
            END-IF
       *
-      **     MOVE    STUSAN-NISSU04  TO  WRK-TUSAN
-      **     DISPLAY "STUSAN-NISSU01 = " STUSAN-NISSU01
-      **     DISPLAY "STUSAN-NISSU04 = " STUSAN-NISSU04
-           MOVE    STUSAN-NISSU02  TO  WRK-TUSAN
-           COMPUTE   WRK-TUSAN  =  WRK-TUSAN -   1
-      **     DISPLAY "STUSAN-NISSU02 = " STUSAN-NISSU02
-      **     DISPLAY "WRK-TUSAN = " WRK-TUSAN
+           MOVE    STUSAN-NISSU04  TO  WRK-TUSAN
       *
            PERFORM VARYING IDX10   FROM    1   BY  1
                    UNTIL ( IDX10   >   STUSAN-RRK-CNT )
                IF    WRK-TUSAN     NOT =    ZERO
-      **            DISPLAY "STUSAN-RRK-NISSU (IDX10) = "
-      **                     STUSAN-RRK-NISSU (IDX10)
-      *AZU-ADD START(2018/01/17)
-                  IF   STUSAN-RRK-NISSU (IDX10) =  ZERO
-                      MOVE  STUSAN-NISSU01 TO  STUSAN-RRK-NISSU (IDX10)
-                  END-IF
-      *AZU-ADD END(2018/01/17)
                   COMPUTE WRK-TUSAN
                        =   WRK-TUSAN   -   STUSAN-RRK-NISSU (IDX10)
                END-IF
@@ -1825,19 +1722,11 @@ grpsys                                     SPA-AREA
                        MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
                        IF    ( STUSAN-RRK-DJKBN (IDX10) = SPACE OR "2")
                            COMPUTE LNK-DAY6-ZOGEN
-                               =   179   -         WRK-TUSAN
+                               =   180   -         WRK-TUSAN
                        ELSE
                            COMPUTE LNK-DAY6-ZOGEN
-                               =   180   -         WRK-TUSAN
+                               =   181   -         WRK-TUSAN
                        END-IF
-      **                 DISPLAY "MAE WRK-TUSAN = " WRK-TUSAN
-      *AZU-ADD START
-                       IF     WRK-TUSAN   <=    ZERO
-                            MOVE   180      TO    LNK-DAY6-ZOGEN
-                       END-IF
-      *AZU-ADD END
-      **                 DISPLAY "ATO WRK-TUSAN = " WRK-TUSAN
-      **                 DISPLAY "LNK-DAY6-ZOGEN = "  LNK-DAY6-ZOGEN
                        CALL    "ORCSDAY"   USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                        MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU180
@@ -1848,36 +1737,6 @@ grpsys                                     SPA-AREA
                    MOVE    STUSAN-RRK-CNT      TO  IDX10
                END-IF
            END-PERFORM
-           DISPLAY "3103-180DAYS-EDIT-EXT"
-      *
-      *    ÄÌ»»Æü¿ô¥Á¥§¥Ã¥¯¥µ¥Ö¸Æ½Ð
-           INITIALIZE                      ORCSTUSANCHKAREA
-grpsys     MOVE    SPA-HOSPNUM         TO  STUSANCHK-HOSPNUM
-           MOVE    PTNYUINRRK-PTID     TO  STUSANCHK-PTID
-           MOVE    PTNYUINRRK-NYUINYMD TO  STUSANCHK-NYUINYMD
-           IF    ( PTNYUINRRK-TAIINYMD >=  SPA-SYSYMD )
-               MOVE    SPA-SYSYMD      TO  STUSANCHK-KJNYMD
-           ELSE
-               MOVE    PTNYUINRRK-TAIINYMD
-                                       TO  STUSANCHK-KJNYMD
-           END-IF
-      *
-           MOVE    PTNYUINRRK-RRKNUM   TO  STUSANCHK-RRKNUM
-      *
-           CALL    "ORCSTUSANCHK"          USING
-                                           ORCSTUSANCHKAREA
-grpsys                                     SPA-AREA
-           IF    ( STUSANCHK-DAY-180   NOT =   SPACE )
-             IF  ( STUSANCHK-DAY-180-STS   =   ZERO OR "2"  )
-               DISPLAY "STUSANCHK-DAY-180 = " STUSANCHK-DAY-180
-               MOVE    STUSANCHK-DAY-180 TO  SPA-GMN-IJYOU180
-               MOVE    STUSANCHK-DAY-180 TO  WRK-SYMD
-               PERFORM 41012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU180
-             ELSE
-               MOVE    "********"  TO  SPA-GMN-IJYOU180
-             END-IF
-           END-IF
       *
            .
        3103-180DAYS-EDIT-EXT.
@@ -2338,9 +2197,6 @@ grpsys                                     SPA-AREA
            MOVE    ZERO                TO  FLG-NYUINKHNRYO
            MOVE    ZERO                TO  SPA-TAIHI-HKN
            MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-ASA
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-HIRU
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-YORU
       *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDG
@@ -2509,10 +2365,6 @@ grpsys                                     SPA-AREA
       *
            MOVE    SPACE               TO  SPA-GMN-UPYMD
       *
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-ASA
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-HIRU
-           MOVE    ZERO                TO  SPA-TAIHI-SHOKUJI-YORU
-      *
            PERFORM UNTIL      (FLG-NYUINACCT     =   1)
       *
                ADD     1                   TO  IDX
@@ -2528,18 +2380,6 @@ grpsys                                     SPA-AREA
                                                         099999920
                                MOVE   NACCT-DAY(WRK-MATSUDD)
                                                   TO  SPA-TAIHI-SHOKUJI
-                           END-IF
-                           IF    NACCT-SRYCDTOTAL   =   099999918
-                               MOVE   NACCT-DAY(WRK-MATSUDD)
-                                             TO  SPA-TAIHI-SHOKUJI-ASA
-                           END-IF
-                           IF    NACCT-SRYCDTOTAL   =   099999919
-                               MOVE   NACCT-DAY(WRK-MATSUDD)
-                                             TO  SPA-TAIHI-SHOKUJI-HIRU
-                           END-IF
-                           IF    NACCT-SRYCDTOTAL   =   099999920
-                               MOVE   NACCT-DAY(WRK-MATSUDD)
-                                             TO  SPA-TAIHI-SHOKUJI-YORU
                            END-IF
       *                    ¿©»öºÞ¤Î¹¹¿·Æü¤òÂàÈò
                            IF    NACCT-SRYCDTOTAL   =   099999918  OR
@@ -4639,8 +4479,7 @@ grpsys                                     SPA-AREA
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
                       END-IF
-                      IF  (SPA-NAI-SRYYM         >=    "201604") AND
-                          (SPA-NAI-SRYYM         <=    "201803")
+                      IF      SPA-NAI-SRYYM         >=    "201604"
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
@@ -4651,26 +4490,6 @@ grpsys                                     SPA-AREA
                                                            OR  8
                                                            OR  9
                                                            OR 13
-                               CONTINUE
-                           ELSE
-                               MOVE    "0035"         TO  SPA-ERRCD
-                           END-IF
-                      END-IF
-                      IF      SPA-NAI-SRYYM         >=    "201804"
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  1
-                                                           OR  2
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                                                           OR  6
-                                                           OR  8
-                                                           OR  9
-                                                           OR 13
-                                                           OR 14
-                                                           OR 15
-                                                           OR 16
-                                                           OR 17
                                CONTINUE
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
@@ -4727,8 +4546,7 @@ grpsys                                     SPA-AREA
                                MOVE    "0036"         TO  SPA-ERRCD
                            END-IF
                       END-IF
-                      IF  (SPA-NAI-SRYYM         >=    "201604") AND
-                          (SPA-NAI-SRYYM         <=    "201803")
+                      IF   SPA-NAI-SRYYM         >=    "201604"
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  3
                                                            OR  4
@@ -4737,24 +4555,6 @@ grpsys                                     SPA-AREA
                                                            OR  8
                                                            OR  9
                                                            OR 13
-                               CONTINUE
-                           ELSE
-                               MOVE    "0036"         TO  SPA-ERRCD
-                           END-IF
-                      END-IF
-                      IF   SPA-NAI-SRYYM         >=    "201804"
-                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                           OR  3
-                                                           OR  4
-                                                           OR  5
-                                                           OR  6
-                                                           OR  8
-                                                           OR  9
-                                                           OR 13
-                                                           OR 14
-                                                           OR 15
-                                                           OR 16
-                                                           OR 17
                                CONTINUE
                            ELSE
                                MOVE    "0036"         TO  SPA-ERRCD
@@ -4765,15 +4565,6 @@ grpsys                                     SPA-AREA
       *            ÆÃÄêÍËÆüÆþÂà±¡¸º»»¤ÎÅÚÆüÍËÆü¥Á¥§¥Ã¥¯
                    IF     SPA-NAI-SRYYM      >=    "201210"
                      IF  SPA-GMN-DAY-41 (IDX-D)   =   9   OR  13
-                       IF   SPA-NAI-YOBI(IDX-D)   =  "6"  OR  "7"
-                           CONTINUE
-                       ELSE
-                           MOVE  "0055"           TO  SPA-ERRCD
-                       END-IF
-                     END-IF
-                   END-IF
-                   IF     SPA-NAI-SRYYM      >=    "201804"
-                     IF  SPA-GMN-DAY-41 (IDX-D)   =   17
                        IF   SPA-NAI-YOBI(IDX-D)   =  "6"  OR  "7"
                            CONTINUE
                        ELSE
@@ -5534,13 +5325,12 @@ grpsys                                     SPA-AREA
            MOVE    "key"                   TO   MCP-PATHNAME
            PERFORM    990-DBCLOSE-SEC
       *
-      *    ÁªÄêÆþ±¡ÎÁ¡Ê¥·¥¹¥Æ¥àÍ½Ìó¥³¡¼¥É)
            IF     (SPA-GMN-TSRYCD (IDG)    =  "099999916")
-      *    Ã»´üÂÚºß£²¡ÊÀ¸³èÎÅÍÜ´Þ¤à¡Ë
-      *    Ã»´üÂÚºß£³¡ÊÀ¸³èÎÅÍÜ´Þ¤à¡Ë
-           OR    ((TNS-CDKBN-KBN     =   "A")   AND
-                  (TNS-CDKBN-KBNNUM  =   400)   AND
-                  (TNS-CDKBN-KOUBAN  =   2  OR 3))
+           OR     (TNS-NYUKHNKSNKBN        =
+      *                                        Ã»´üÂÚºß£²¡ÊÀ¸³èÎÅÍÜ´Þ¤à¡Ë
+                                                  226   OR
+      *                                        Ã»´üÂÚºß£³¡ÊÀ¸³èÎÅÍÜ´Þ¤à¡Ë
+                                                  240 )
       *    ÎÅÍÜÉÂ¾²¤ÎÈ½Äê
            OR     ((SPA-5000-RYOYODSPKBN    =    "1")
                                            AND
@@ -6822,13 +6612,6 @@ grpsys                                     SPA-AREA
       *        ¡¦ÎÅÍÜÉÂÅï¡¦°ìÈÌÉÂÅï£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ
       *        ¡¦ÎÅÍÜÉÂÅï¡¦°ìÈÌÉÂÅï£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ
       *        ¡¦ÎÅÍÜÉÂÅï¡¦°ìÈÌÉÂÅï£±£µÂÐ£±Æþ±¡´ðËÜÎÁ
-      *        °Ê²¼Æþ±¡ÎÁ¤òÄÉ²Ã¡ÊÊ¿À®£³£°Ç¯²þÀµ¤ÇÂÐ±þ¡Ë
-      *        ¡¦ÎÅÍÜÉÂÅï¡¦µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£²
-      *        ¡¦ÎÅÍÜÉÂÅï¡¦µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£³
-      *        ¡¦ÎÅÍÜÉÂÅï¡¦µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£´
-      *        ¡¦ÎÅÍÜÉÂÅï¡¦µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£µ
-      *        ¡¦ÎÅÍÜÉÂÅï¡¦µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£¶
-      *        ¡¦ÎÅÍÜÉÂÅï¡¦ÃÏ°è°ìÈÌÆþ±¡ÎÁ£±
                IF    SYOKIKSN-IN-KHNSRYCD   =   "190151910"   OR
                                                 "190152010"   OR
                                                 "099999950"   OR
@@ -6845,14 +6628,7 @@ grpsys                                     SPA-AREA
                                                 "190198110"   OR
                                                 "190198210"   OR
                                                 "190198310"   OR
-                                                "190198410"   OR
-      *                                         Ê¿À®£³£°Ç¯²þÀµÂÐ±þ
-                                                "190201910"   OR
-                                                "190202010"   OR
-                                                "190202110"   OR
-                                                "190202210"   OR
-                                                "190202310"   OR
-                                                "190202410"
+                                                "190198410"
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                                                    SPA-AREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
@@ -7098,15 +6874,6 @@ grpsys                                     SPA-AREA
       *    ¿©»ö¶èÊ¬
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE   SPA-TAIHI-SHOKUJI    TO  LNK-SCNYUACCT-SHOKUJIKBN
-           IF     SYS-5000-SKJ-CREATEKBN   =   "1"
-               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-               MOVE   SPA-TAIHI-SHOKUJI-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-               MOVE   SPA-TAIHI-SHOKUJI-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-               MOVE   SPA-TAIHI-SHOKUJI-YORU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-           END-IF
       *    ¿©Æ²²Ã»»
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI        =    ZERO
@@ -7463,15 +7230,6 @@ grpsys                                     SPA-AREA
       *    ¿©»ö¶èÊ¬
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE    SPA-TAIHI-SHOKUJI   TO  LNK-SCNYUACCT-SHOKUJIKBN
-           IF     SYS-5000-SKJ-CREATEKBN   =   "1"
-               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-               MOVE   SPA-TAIHI-SHOKUJI-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-               MOVE   SPA-TAIHI-SHOKUJI-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-               MOVE   SPA-TAIHI-SHOKUJI-YORU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-           END-IF
       *    ¿©Æ²²Ã»»
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI           =    ZERO
@@ -9119,18 +8877,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                      MOVE  "¤«¤Ç¤¹¡£"
                                        TO  WRK-ERRMSG(43:8)
                  END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201604")  AND
-                     (SPA-NAI-SRYYM     <=    "201803")
+                 IF   SPA-NAI-SRYYM     >=    "201604"
                      MOVE  "³°Çñ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡Á£¶¡¢£¸¡¢£¹¡¢£±£³"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE  "¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
                                        TO  WRK-ERRMSG(43:16)
-                 END-IF
-                 IF   SPA-NAI-SRYYM     >=    "201804"
-                     MOVE  "³°Çñ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡Á£¶¡¢£¸¡¢£¹¡¢£±£³"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "¡Á£±£·¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
-                                       TO  WRK-ERRMSG(43:22)
                  END-IF
                WHEN    "0036"
                  IF   SPA-NAI-SRYYM     <=    "201003"
@@ -9160,18 +8911,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                      MOVE    "£³¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
                                        TO  WRK-ERRMSG(43:18)
                  END-IF
-                 IF  (SPA-NAI-SRYYM     >=    "201604")  AND
-                     (SPA-NAI-SRYYM     <=    "201803")
-                     MOVE  "ÁªÄêÆþ±¡ÎÁ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡¢£³¡Á£¶¡¢£¸"
+                 IF   SPA-NAI-SRYYM     >=    "201604"
+                     MOVE  "³°Çñ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡¢£³¡Á£¶¡¢£¸¡¢£¹¡¢"
                                        TO  WRK-ERRMSG(1:42)
-                     MOVE  "¡¢£¹¡¢£±£³¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
-                                       TO  WRK-ERRMSG(43:26)
-                 END-IF
-                 IF   SPA-NAI-SRYYM     >=    "201804"
-                     MOVE  "ÁªÄêÆþ±¡ÎÁ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡¢£³¡Á£¶¡¢£¸"
-                                       TO  WRK-ERRMSG(1:42)
-                     MOVE  "¡¢£¹¡¢£±£³¡Á£±£·¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
-                                       TO  WRK-ERRMSG(43:32)
+                     MOVE  "£±£³¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
+                                       TO  WRK-ERRMSG(43:20)
                  END-IF
                WHEN    "0037"
                    MOVE    "ÆþÎÏ¤µ¤ì¤¿¿ô»ú¤Ï¼¼ÎÁº¹³ÛÈÖ¹æ¤È¤·¤ÆÀßÄê¤µ¤ì"
@@ -9646,8 +9390,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                           "¿©Æ²²Ã»»"           TO  TNS-NAME
                        END-EVALUATE
                      ELSE
-                       IF   WRK-SRYYMD(1:6)      <=  "201803"
-                        EVALUATE   TNS-SRYCD
+                       EVALUATE   TNS-SRYCD
                          WHEN   "190121310"
                            MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Á¡Ë"
                                                TO  TNS-NAME
@@ -9803,14 +9546,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                          WHEN   "197000570"
                            MOVE
                           "¿©Æ²²Ã»»"           TO  TNS-NAME
-                        END-EVALUATE
-                       ELSE
-                        EVALUATE   TNS-SRYCD
-                         WHEN   "197000570"
-                           MOVE
-                          "¿©Æ²²Ã»»"           TO  TNS-NAME
-                        END-EVALUATE
-                       END-IF
+                       END-EVALUATE
                      END-IF
                    END-IF
                    MOVE    ZERO                TO  FLG-TENSU
