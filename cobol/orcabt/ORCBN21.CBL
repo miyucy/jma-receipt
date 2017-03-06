@@ -32,7 +32,7 @@
       *  04.01.01    NACL-森脇    08/01/16  文字数増
       *  04.08.01    NACL-森脇    14/07/30  一時ファイルディレクトリ設定
       *  04.08.02    NACL-森脇    14/08/08  画像イメージ作成機能追加
-      *  05.00.00    NACL-森脇    17/02/22  自費薬剤対応
+      *  05.00.00    NACL-森脇    17/03/06  自費薬剤対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -983,6 +983,7 @@ grpsys                                     SPA-AREA
            .
        900-TENSU-READ-EXT.
            EXIT.
+      *
       *****************************************************************
       *    薬剤情報読み込み処理
       *****************************************************************
@@ -997,10 +998,10 @@ grpsys                                     SPA-AREA
                WHEN    "1"
                    EVALUATE    WRK-PARA-SYU
                        WHEN    "1"
-      *                     MOVE    "key5s"         TO  WRK-PATHNAME
+      *                     MOVE    "key5s"        TO  WRK-PATHNAME
                            MOVE    "key5js"        TO  WRK-PATHNAME
                        WHEN    "2"
-      *                     MOVE    "key5k"         TO  WRK-PATHNAME
+      *                     MOVE    "key5k"        TO  WRK-PATHNAME
                            MOVE    "key5jk"        TO  WRK-PATHNAME
                    END-EVALUATE
                WHEN    "2"

@@ -28,7 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       *  04.08.01    NACL-森脇     14/08/21  一時ファイルディレクトリ設定
-      *  05.00.00    NACL-森脇     17/02/22  自費薬剤対応
+      *  05.00.00    NACL-森脇     17/03/06  自費薬剤対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -953,10 +953,10 @@
            MOVE    "tbl_yakujyo"   TO  WRK-TABLE
            EVALUATE    WRK-PARA-SYU
                WHEN    "1"
-      *            MOVE    "key5s"     TO  WRK-PATHNAME
+      *             MOVE    "key5s"    TO  WRK-PATHNAME
                    MOVE    "key5js"    TO  WRK-PATHNAME
                WHEN    "2"
-      *            MOVE    "key5k"     TO  WRK-PATHNAME
+      *             MOVE    "key5k"    TO  WRK-PATHNAME
                    MOVE    "key5jk"    TO  WRK-PATHNAME
            END-EVALUATE
       *----(05.00.00)--UPD-END-----
