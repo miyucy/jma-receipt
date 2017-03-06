@@ -11355,8 +11355,7 @@
                    MOVE    TKZI-MICD-SRYCD (IDX6)   TO  WRK-SRYCD
                    MOVE    WRK-KJNYMD     TO  WRK-TNS-YMD
                    PERFORM 900-TENSU-KEY-SEL-SEC
-                   STRING  "¾¦ÉÊÌ¾¾Î¡§"    DELIMITED   BY  SIZE
-                           TNS-NAME        DELIMITED   BY  SPACE
+                   STRING  TNS-NAME        DELIMITED   BY  SPACE
                            WRK-NISSU-MES   DELIMITED   BY  SPACE
                    INTO  WRK-ERRMES-PLUS
                    END-STRING
