@@ -867,6 +867,8 @@
                                                    VALUE   20.
            03  CONST-TKZI-MAX                      PIC 9(05)
                                                    VALUE   30.
+           03  CONST-TKZI-MICD-MAX                 PIC 9(05)
+                                                   VALUE   30.
            03  CONST-TRSIRECEDEN-MAX               PIC 9(05)
                                                    VALUE   20.
            03  CONST-TKAIGO-MAX                    PIC 9(05)
@@ -1002,6 +1004,7 @@
            03  CONST-H2603                 PIC X(06)   VALUE "201403".
            03  CONST-H2507                 PIC X(06)   VALUE "201307".
            03  CONST-H2804                 PIC X(06)   VALUE "201604".
+           03  CONST-H2904                 PIC X(06)   VALUE "201704".
            03  CONST-TEMP                      PIC X(04)   VALUE "TEMP".
            03  CONST-RSI-KATAKANA-G.
                05  CONST-RSI-KATAKANA-VAL.
@@ -3392,9 +3395,14 @@
                                PERFORM 200111-TKAISU-HEN-SEC
                            END-IF
       *
-      *                    器材単位チェック退避ワーク編集処理
+      *                    器材チェック退避ワーク編集処理
                            IF    ( DCSRY-SRYCD (1:1)   =   "7" )
                                PERFORM 200111-TKZI-HEN-SEC
+                           END-IF
+                           IF    ( ORCBSD01-SRYYM     >=  CONST-H2904 )
+                            AND  ( DCSRY-SRYCD (1:3)   =   "059" )
+                            AND  ( TNS-TEN         NOT =   ZERO )
+                               PERFORM 200111-TKZI-MICD-HEN-SEC
                            END-IF
       *
       *                    介護突合チェック退避領域編集処理
@@ -4328,26 +4336,14 @@
        200111-TKAISU-SRYCD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    器材単位チェック退避ワーク編集処理
+      *    器材チェック退避ワーク編集処理
       *****************************************************************
        200111-TKZI-HEN-SEC             SECTION.
       *
            IF    ( TNS-TENSIKIBETU     =   0 OR 1 OR 2)
                IF   (  DCSRY-058-TANICD    =   SPACE  OR "000" )
                 AND (  TNS-TANICD          =   SPACE  OR "000" )
-                   MOVE    PTZAI-HKNNUM (IDX-ZAI)
-                                           TO   WRK-ZAIHKNNUM
-                   IF    ( PTZAI-KOHNUM (IDX-ZAI)  =   "970" )
-                       MOVE    PTZAI-KOHNUM (IDX-ZAI)
-                                           TO   WRK-ZAIHKNNUM
-                   END-IF
-                   PERFORM 2001111-TAISYO-HKN-CHK-SEC
-                   IF    ( FLG-TAISYO-HKN      =   1 )
-                       IF    ( PTZAI-NYUGAIKBN (IDX-ZAI)
-                                               =   ORCBSD01-NYUGAIKBN )
-                           PERFORM 2001111-TKZI-HEN-SEC
-                       END-IF
-                   END-IF
+                   PERFORM 2001111-TKZI-HEN-SEC
                END-IF
            END-IF
       *
@@ -4355,7 +4351,28 @@
        200111-TKZI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    器材単位チェック退避ワーク編集処理
+      *    器材チェック退避ワーク編集処理
+      *****************************************************************
+       200111-TKZI-MICD-HEN-SEC             SECTION.
+      *
+           EVALUATE    TRUE
+           WHEN  ( DCACCT-HKNNUM           =   SPACE )
+           WHEN  ( DCACCT-HKNNUM           <   "100" )
+            AND  ( DCACCT-HKNNUM       NOT =   "040" )
+            AND  ( DCACCT-HKNNUM       NOT =   "068" )
+            AND  ( DCACCT-HKNNUM       NOT =   "069" )
+           WHEN  ( DCACCT-HKNNUM           =   "971" )
+            AND  ( DCACCT-RSI-HKNKBN       =   "1" OR "2" )
+      *
+               PERFORM 2001111-TKZI-MICD-HEN-SEC
+      *
+           END-EVALUATE
+      *
+           .
+       200111-TKZI-MICD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    器材チェック退避ワーク編集処理
       *****************************************************************
        2001111-TKZI-HEN-SEC            SECTION.
       *
@@ -4400,6 +4417,49 @@
       *
            .
        2001111-TKZI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    器材チェック退避ワーク編集処理
+      *****************************************************************
+       2001111-TKZI-MICD-HEN-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  IDXA
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   TKZI-MICD-MAX )
+                    OR   ( IDX0    >   CONST-TKZI-MICD-MAX )
+                    OR   ( TKZI-MICD-SRYCD (IDX0)
+                                   =   DCSRY-SRYCD )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX0            >   TKZI-MICD-MAX )
+      *
+               IF    ( CONST-TKZI-MICD-MAX
+                                   >   TKZI-MICD-MAX )
+                   COMPUTE TKZI-MICD-MAX
+                       =   TKZI-MICD-MAX    +   1
+                   MOVE    TKZI-MICD-MAX    TO  IDXA
+      *
+                   MOVE    DCSRY-SRYCD TO  TKZI-MICD-SRYCD (IDXA)
+               END-IF
+           ELSE
+               MOVE    IDX0            TO  IDXA
+           END-IF
+      *
+           IF    ( IDXA            >   ZERO )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL ( IDX2    >   31 )
+                   IF    ( PTZAI-DAY (IDX-ZAI IDX2)   >   ZERO )
+                       MOVE    1   TO  TKZI-MICD-DAY (IDXA IDX2)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       2001111-TKZI-MICD-HEN-EXT.
            EXIT.
       *****************************************************************
       *    介護突合チェック退避領域編集処理
@@ -11040,6 +11100,10 @@
                PERFORM 200111-KIZAI-TANICD-CHK-SEC
            END-IF
       *
+           IF    ( ORCBSD01-SRYYM     >=  CONST-H2904 )
+               PERFORM 200111-KIZAI-MICD-CHK-SEC
+           END-IF
+      *
            PERFORM 200111-RSIRECEDEN-CHK-SEC
       *
            PERFORM 200111-PTCOM-CHK-SEC
@@ -11260,6 +11324,52 @@
       *
            .
        200111-KIZAI-TANICD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    器材単位コードチェック
+      *****************************************************************
+       200111-KIZAI-MICD-CHK-SEC       SECTION.
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   TKZI-MICD-MAX )
+      *
+               INITIALIZE  WRK-NISSU-DAY-G
+               PERFORM VARYING IDX-DAY FROM    1   BY  1
+                       UNTIL ( IDX-DAY >   31 )
+                   IF    ( TKZI-MICD-DAY (IDX6 IDX-DAY)  >   ZERO )
+                       MOVE    1   TO  WRK-NISSU-DAY (IDX-DAY)
+                   END-IF
+               END-PERFORM
+      *
+               IF    ( WRK-NISSU-DAY-G    NOT  =   ZERO )
+      *
+                   PERFORM 200111-NISSU-HEN-SEC
+      *
+                   MOVE    SPACE          TO  WRK-STR
+                   MOVE    SPACE          TO  WRK-ERRMES-PLUS
+                   MOVE    TKZI-MICD-SRYCD (IDX6)
+                                          TO  WRK-SRYCD
+                   MOVE    WRK-KJNYMD     TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+      *
+                   MOVE    TKZI-MICD-SRYCD (IDX6)   TO  WRK-SRYCD
+                   MOVE    WRK-KJNYMD     TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   STRING  "商品名称："    DELIMITED   BY  SIZE
+                           TNS-NAME        DELIMITED   BY  SPACE
+                           WRK-NISSU-MES   DELIMITED   BY  SPACE
+                   INTO  WRK-ERRMES-PLUS
+                   END-STRING
+      *
+                   MOVE    "990037"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
+                   PERFORM 215-ERRMES-HEN-SEC
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200111-KIZAI-MICD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    労災レセ電チェック処理
@@ -15888,6 +15998,9 @@
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  INPUTCD-REC
+               MOVE    ICD-DSPNAME     TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  ICD-DSPNAME
            ELSE
                INITIALIZE                  INPUTCD-REC
                MOVE    1               TO  FLG-INPUTCD
