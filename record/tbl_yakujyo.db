@@ -219,7 +219,6 @@ path	key5k 	{
 	};
 };
 
-
 path	key2js 	{
 	DBSELECT	{
 		DECLARE tbl_yakujyo_key2js_csr CURSOR FOR
