@@ -74,6 +74,9 @@ Z02 {
     FORMALNAME {
       textdata varchar(200);
     };
+    INPCHKKBN {
+      numdata number(1);
+    };
     LABEL1 {
       textdata varchar(20);
     };
@@ -108,13 +111,6 @@ Z02 {
     B09 {
       state int;
       label varchar(10);
-    };
-    MIDASHI { #GtkLabel
-      style varchar(20);
-      textdata varchar(80);
-    };
-    B03 {
-      state int;
     };
     TANICD_COMBO { #GtkPandaCombo
       count int;

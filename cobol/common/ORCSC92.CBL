@@ -76,8 +76,6 @@
       *  04.07.00    NACL-多々納  14/04/25  施設基準チェック対応
       *  04.08.00    NACL-多々納  16/03/XX  平成２８年４月改正対応
       *  04.08.00    NACL-多々納  16/04/20  向精神薬区分追加対応
-      *  05.00.00    NACL-多々納  17/01/XX  点数マスタユーザ対応
-      *  04.08.00    NACL-多々納  18/03/XX  平成３０年４月改正対応
       *****************************************************************
       *
       *
@@ -109,7 +107,6 @@
       *H28.1
            03  FLG-GENERICNAME     PIC 9(01).
            03  FLG-PSYCHOTROPIC    PIC 9(01).
-           03  FLG-TENSUPRICE      PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-SST             PIC 9(01).
@@ -357,7 +354,7 @@
       *
       *    施設規準テーブル
        01  WRK-TBL-SSTKIJUN-AREA.
-           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  9999.
+           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  8500.
                05  WRK-TBL-SSTKIJUN       PIC 9(01).
       *
       *   日本語数字
@@ -459,10 +456,6 @@
       *    向精神薬成分コード
        01  PSYCHOTROPIC-REC.
            COPY    "CPPSYCHOTROPIC.INC".
-      *v5.0
-      *    点数マスタ器材金額
-        01 TENSU-PRICE-REC.
-           COPY    "CPTENSU-PRICE.INC".
       *
       *    算定履歴
        01  HZN-SANTEI-REC.
@@ -1008,9 +1001,6 @@
                   (LNK-SC92-SRYCD  (1:3)   =   "008"  )
             OR    (LNK-SC92-SRYCD  (1:1)   =   "6"    )
             OR    (LNK-SC92-SRYCD  (1:1)   =   "7"    )
-      *H30.4
-      *     分割調剤
-            OR    (LNK-SC92-SRYCD  (1:7)   =   "0992081")
       ******OR    (TNS-SSTKIJUNCD(01)      =   ZERO   )
                CONTINUE
            ELSE
@@ -1438,8 +1428,6 @@
            IF     (LNK-SC92-SRYCD (1:2)    =   "84") 
              OR   (LNK-SC92-SRYCD (1:4)    =   "0084")
              OR   (LNK-SC92-SRYCD (1:3)    =   "001" )
-      *H30.4
-             OR   (LNK-SC92-SRYCD (1:7)    =   "0992081" )
                IF     (LNK-SC97-MCNT1      >   8   )
                   OR  (LNK-SC97-MCNT2      >   8   )
                   OR  (LNK-SC97-MCNT3      >   8   )
@@ -1745,8 +1733,7 @@
                    END-EVALUATE
       *H24.4
                PERFORM VARYING IDY         FROM    1   BY  1
-                       UNTIL  (IDY         >       500 )
-                           OR (IDX         >=      9999)
+                       UNTIL   IDY         >       500
                    ADD     1               TO  IDX
                    MOVE    SYS-1006-SSTKIJUN  (IDY)
                                            TO  WRK-TBL-SSTKIJUN (IDX)
@@ -3866,7 +3853,6 @@
       *    基礎点数
            MOVE    TNS-TEN             TO  SPA-COM-TEN      (IDX-T)
            MOVE    TNS-TEN             TO  SPA-COM-KISOTEN  (IDX-T)
-      *
       *H28.4
       *    薬剤　除算金額（１０で除す）
            IF     (TNS-SRYCD(1:1)      =   "6"  ) AND
@@ -3959,12 +3945,6 @@
                 PERFORM 3005-INPUT-MEISYO3-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
            END-IF
-      *H30.4
-      *    分割調剤など
-           IF     (SPA-COM-INPUTCD(IDX-T)(1:7) =   "0992081" )
-                PERFORM 3002-INPUT-MEISYO-SEC
-                MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
-           END-IF
       *!
       *    器材商品名コードの発生分
            IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "7"   )  AND
@@ -4013,7 +3993,7 @@
       *H25.2
       *    自賠責特定コードの単位
       **** IF     (SPA-COM-INPUTCD (IDX-T)(1:5)    =   "09593" )
-      *H29.2   自費の薬剤のみ
+      *H29.3   自費の薬剤のみ
            IF     (SPA-COM-INPUTCD (IDX-T)(1:3)    =   "095"
                                                    OR  "096" )
               AND (TNS-TANICD              NOT =   ZERO   )
@@ -4221,14 +4201,6 @@
                MOVE    "1"                 TO  SPA-COM-SIPPUKBN (IDX-T)
                MOVE    TNS-SSTKIJUNCD(2)   TO  SPA-COM-SIPRYO1 (IDX-T)
                MOVE    TNS-SSTKIJUNCD(4)   TO  SPA-COM-SIPRYO2 (IDX-T)
-      *H29.1   付加情報があれば優先
-               IF     (TNSP-SIPPURYO1      =   ZERO )
-                  AND (TNSP-SIPPURYO2      =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    TNSP-SIPPURYO1  TO  SPA-COM-SIPRYO1 (IDX-T)
-                   MOVE    TNSP-SIPPURYO2  TO  SPA-COM-SIPRYO2 (IDX-T)
-               END-IF
            END-IF
       *H28.4
       *    労災算定不可
@@ -4239,19 +4211,6 @@
       *    凍結保存同種組織加算
            MOVE    TNS-TOUKETUHOZONKSN TO  SPA-COM-TOUKETUHOZONKSN
                                                              (IDX-T)
-      *H30.4
-      *    悪性腫瘍病理組織標本加算
-           MOVE    TNS-AKUSEIBYORIKSN  TO  SPA-COM-AKUSEIBYORIKSN
-                                                             (IDX-T)
-      *H29.1
-      *    ユーザー管理区分
-           IF     (TNS-MASTER-CLASS    =   2 )
-              AND (TNS-SRYCD(1:1)      =   "1"
-                                       OR  "6"
-                                       OR  "7" )
-               MOVE    "2"             TO  SPA-COM-MASTER-CLASS
-                                                             (IDX-T)
-           END-IF
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
@@ -4271,10 +4230,7 @@
       *    処方箋一般名記載区分
            IF      SPA-SRYYMD          >=  "20120401"
                IF     (TNS-SRYCD(1:1)      =   "6"  )
-                 AND ((TNS-KOUHATUKBN      =   1  OR  2
-      *29.3    先発なし後発医薬品（加算対象）追加
-                                           OR  3
-                                           OR  4    )  OR
+                 AND ((TNS-KOUHATUKBN      =   1  OR  2 )  OR
                       (TNSP-IPN-KISAIKBN   =   3    )  OR
                       (TNSP-IPN-KISAIKBN   =   1    ))
       *            後発品・後発のある先発品の最低薬価
@@ -4564,33 +4520,12 @@
                    END-IF
       *
                WHEN    7
-      *            先発品のない後発品（加算非対象）
+      *            先発品のない後発品
                    MOVE    SPACE                TO  WRK-MEISYO
                    STRING      "【"             DELIMITED   BY  SIZE
                                WRK-PSY-MEI      DELIMITED   BY  SPACE
                                WRK-MSG1         DELIMITED   BY  SPACE
                                "無】"           DELIMITED   BY  SIZE
-                               TNS-NAME         DELIMITED   BY  SIZE
-                               INTO             WRK-MEISYO
-                   END-STRING
-      *H29.3
-               WHEN    3
-      *            先発品のない後発品（加算対象）
-                   MOVE    SPACE                TO  WRK-MEISYO
-                   STRING      "【"             DELIMITED   BY  SIZE
-                               WRK-PSY-MEI      DELIMITED   BY  SPACE
-                               WRK-MSG1         DELIMITED   BY  SPACE
-                               "加】"           DELIMITED   BY  SIZE
-                               TNS-NAME         DELIMITED   BY  SIZE
-                               INTO             WRK-MEISYO
-                   END-STRING
-               WHEN    4
-      *            後発医薬品でない（加算対象）
-                   MOVE    SPACE                TO  WRK-MEISYO
-                   STRING      "【"             DELIMITED   BY  SIZE
-                               WRK-PSY-MEI      DELIMITED   BY  SPACE
-                               WRK-MSG1         DELIMITED   BY  SPACE
-                               "加】"           DELIMITED   BY  SIZE
                                TNS-NAME         DELIMITED   BY  SIZE
                                INTO             WRK-MEISYO
                    END-STRING
@@ -4727,8 +4662,7 @@
            END-PERFORM
       *    ユーザコメントで位置のみ指定
            IF     (FLG-KCHK            =   1    )  AND
-                 ((SPA-COM-INPUTCD (IDX-T)(1:4)  =  "0084" )
-               OR (SPA-COM-INPUTCD (IDX-T)(1:7) =   "0992081"))
+                  (SPA-COM-INPUTCD (IDX-T)(1:4)  =  "0084" )
                PERFORM 30011-FUKYO-MEIHEN02-SEC
                GO      TO  3002-INPUT-MEISYO-EXT
            END-IF
@@ -5295,11 +5229,6 @@
                    IF      SPA-COM-KZMERR (IDX-T)  =   2  OR  3
                        MOVE    "0021"          TO  SPA-ERRCD
                    END-IF
-      *H29.12
-      *            数量ゼロはエラーなし
-                   IF      (WRK-SURYO          =   ZERO )
-                       MOVE    SPACE           TO  SPA-ERRCD
-                   END-IF
       *
       *            下限値＜データ≦上限値
                WHEN     (SPA-COM-KZMKGN (IDX-T)    <   WRK-SURYO )   AND
@@ -5721,8 +5650,6 @@
       *    入力値のある時、再編集
            IF     (SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84" )  OR
                   (SPA-COM-INPUTCD (IDX-T)(1:4)    =   "0084")
-      *H30.4
-              OR  (SPA-COM-INPUTCD (IDX-T)(1:7)    =   "0992081")
                MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU           =   ZERO
@@ -5970,26 +5897,6 @@
                END-STRING
                MOVE    WRK-MEISYO          TO  TNS-NAME
            END-IF
-      *
-      *H29.3
-      *    器材別表区分編集
-           IF     (TNS-SRYCD(1:1)      =   "7" )
-             AND  (TNS-CDKBN-BU        =   "01"
-                                       OR  "08" )
-               MOVE    SPACE               TO  WRK-MEISYO
-               IF      TNS-CDKBN-BU        =   "01"
-                   STRING  "【在】"            DELIMITED   BY  SIZE
-                          TNS-NAME             DELIMITED   BY  SPACE
-                          INTO                 WRK-MEISYO
-                   END-STRING
-               ELSE
-                   STRING  "【調】"            DELIMITED   BY  SIZE
-                          TNS-NAME             DELIMITED   BY  SPACE
-                          INTO                 WRK-MEISYO
-                   END-STRING
-               END-IF
-               MOVE    WRK-MEISYO          TO  TNS-NAME
-           END-IF
       *!!
       *!
       *    附加情報の上限回数設定
@@ -6015,21 +5922,6 @@
                MOVE    SPACE               TO  TENSUPLUS-REC
                INITIALIZE                      TENSUPLUS-REC
            END-IF
-      *
-      *H29.1
-      *    器材ユーザー金額編集（酸素等）
-      *    IF     (TNS-SRYCD(1:1)      =   "7" )
-      *        酸素等、都道府県購入価格
-      *       AND ((TNS-TOKUKIZAISBT1  =   "2"
-      *                                OR  "3"
-      *                                OR  "4" )  OR
-      *            (TNS-TENSIKIBETU    =   "2" ))
-      *        PERFORM 9103-TENSUPRICE-READ-SEC
-      *        IF    ( FLG-TENSUPRICE      =   ZERO )
-      *          AND ( TNSPR-PRICE     NOT =   ZERO )
-      *            MOVE    TNSPR-PRICE         TO  TNS-TEN
-      *        END-IF
-      *****END-IF
            .
        910-TENSU-READ-EXT.
            EXIT.
@@ -6042,10 +5934,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-      **   MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-      **   MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
@@ -6114,45 +6004,6 @@
            .
        9102-TENSUPLUS2-READ-EXT.
            EXIT.
-      *H29.1
-      *****************************************************************
-      *    点数マスタ器材金額付加情報より編集処理
-      *****************************************************************
-       9103-TENSUPRICE-READ-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  TENSU-PRICE-REC
-           INITIALIZE                  TENSU-PRICE-REC
-           MOVE    SPA-HOSPNUM         TO  TNSPR-HOSPNUM
-           MOVE    TNS-SRYCD           TO  TNSPR-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOEDYMD
-      *
-           MOVE    TENSU-PRICE-REC     TO  MCPDATA-REC
-           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TENSU-PRICE-REC
-                   MOVE    ZERO                TO  FLG-TENSUPRICE
-               ELSE
-                   MOVE    1                   TO  FLG-TENSUPRICE
-                   INITIALIZE                      TENSU-PRICE-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-TENSUPRICE
-               INITIALIZE                      TENSU-PRICE-REC
-           END-IF
-           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       9103-TENSUPRICE-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    点数マスター読込（算定履歴検索用）
       *****************************************************************
