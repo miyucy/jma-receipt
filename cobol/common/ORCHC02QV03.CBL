@@ -4251,7 +4251,7 @@
                MOVE    WRK-SRY-SRYCD (IDXA - 1)  TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU           =   ZERO
-                   MOVE    TNS-NAME        TO  WRK-TNS-NAME
+                   MOVE    TNS-FORMALNAME      TO  WRK-TNS-NAME
                    IF      TNS-TANINAME    =   SPACE
                        MOVE    WRK-TANINAME-7  TO  TNS-TANINAME
                    END-IF
