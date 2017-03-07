@@ -4001,7 +4001,7 @@
       *H25.2
       *    ¼«ÇåÀÕÆÃÄê¥³¡¼¥É¤ÎÃ±°Ì
       **** IF     (SPA-COM-INPUTCD (IDX-T)(1:5)    =   "09593" )
-      *H29.2   ¼«Èñ¤ÎÌôºÞ¤Î¤ß
+      *H29.3   ¼«Èñ¤ÎÌôºÞ¤Î¤ß
            IF     (SPA-COM-INPUTCD (IDX-T)(1:3)    =   "095"
                                                    OR  "096" )
               AND (TNS-TANICD              NOT =   ZERO   )
