@@ -39,7 +39,6 @@
       *  04.08.00    NACL-多々納  16/07/XX  API(GINBEE)対応
       *  04.08.00    NACL-多々納  16/11/XX  ＱＲコードver.2.1対応
       *  05.00.00    NACL-多々納  16/12/05  再印刷対応
-      *  05.00.00    NACL-太田    17/06/09  API印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -266,12 +265,9 @@
            03  QR-FILE-TERMID      PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
            03  QR-FILE-SYOHMS      PIC 9(08)   VALUE   ZERO.
-           03  QR-FILE-SUFFIX.
-               05  QR-FILE-TYPE    PIC X(04)   VALUE   SPACE.
-               05  QR-FILE-ID      PIC 9(02)   VALUE   ZERO.
-               05  QR-FILE-EXT     PIC X(24)   VALUE   SPACE.
-           03  QR-FILE-SUFFIX-R    REDEFINES   QR-FILE-SUFFIX.
-               05  QR-FILE-REGEX   PIC X(30).
+           03  FILLER              PIC X(04)   VALUE   ".qr_".
+           03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
+           03  FILLER              PIC X(04)   VALUE   ".png".
       *v4.8
        01  QR-FILE-NAME            PIC X(1024).
       *
@@ -312,9 +308,6 @@
       * API対応
       *    お薬手帳情報構造体
            COPY    "CPFMMNOTE.INC".
-      *
-           COPY    "CPORCSQRCSV62.INC" REPLACING   //ORCSQRCSV62//
-                                       BY          //WQRCSV62//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -395,7 +388,6 @@
       *H28.6
       *    API対応
            COPY    "CPORCRPMAIN.INC".
-           COPY    "CPORCSBLOBIMPORT.INC".
       *    画面色等
            COPY    "ENUM-VALUE".
       *
@@ -443,9 +435,6 @@
            MOVE    ZERO                TO  IDX-QRB
       *
            ACCEPT  SYS-TIME    FROM    TIME
-      *    時間
-           COMPUTE WRK-SYS-TIME        =   SYS-TIME
-                                       +   ORCHC62-CNT
       *
       *    出力先プリンタ名割り当て情報
            PERFORM 900-1031-READ-SEC
@@ -495,17 +484,6 @@
            PERFORM 1001-OPTION-CALL-SEC
            IF    ( WRK-PARA(1:1)   =   "1" )
                MOVE    WRK-PARA(1:1)   TO  PARA-API-DATA
-           END-IF
-      *H28.6
-           IF     (PARA-API-DATA       =   "1"       )
-               CONTINUE
-           ELSE
-      *        API送信なし
-               MOVE    "0"             TO  PARA-API-DATA
-           END-IF
-      *    HAORI対応
-           IF      SPA-API-FLG     NOT =   ZERO
-               MOVE    "1"             TO  PARA-API-DATA
            END-IF
       *
       *    ＡＰＩカスタムＩＤ
@@ -558,6 +536,15 @@
                IF      ORCHC62-QRKBN       =   "2"
                    MOVE    "2"             TO  WRK-QRKBN
                END-IF
+           END-IF
+      *H28.6
+      *    ginbee対応
+           IF     (SPA-MW              =   SPA-GINBEE)
+              AND (PARA-API-DATA       =   "1"       )
+               CONTINUE
+           ELSE
+      *        API送信なし
+               MOVE    "0"             TO  PARA-API-DATA
            END-IF
       *
            .
@@ -622,16 +609,6 @@
            END-IF
       *----(04.08.02)--ADD-END-----
       *
-      *H24.9
-      *    ＱＲ印刷
-           MOVE    ORCSQRCSV62AREA     TO  WQRCSV62AREA
-      *
-           MOVE    ZERO                TO  FLG-QROK
-           IF     (WRK-QRKBN           =   "1"
-                                       OR  "2"  )
-              OR  (ORCHC62-CSVKBN  NOT =   SPACE )
-               PERFORM 500-QR-SYORI-SEC
-           END-IF
       *H28.5
            IF     (PARA-API-DATA       =   "1"  )
             AND   (ORCHC62-PRTKBN  NOT =   "1"  )
@@ -639,6 +616,13 @@
                PERFORM 600-API-SYORI-SEC
            END-IF
       *
+      *H24.9
+      *    ＱＲ印刷
+           IF     (WRK-QRKBN           =   "1"
+                                       OR  "2"  )
+              OR  (ORCHC62-CSVKBN  NOT =   SPACE )
+               PERFORM 500-QR-SYORI-SEC
+           END-IF
            .
        200-MAIN-EXT.
            EXIT.
@@ -1587,6 +1571,9 @@
            MOVE    SPA-KANANAME        TO  ORCSQRCSV62-KANANAME
            MOVE    SPA-SEX             TO  ORCSQRCSV62-SEX
            MOVE    SPA-BIRTHDAY        TO  ORCSQRCSV62-BIRTHDAY
+      *    時間
+           COMPUTE WRK-SYS-TIME        =   SYS-TIME
+                                       +   ORCHC62-CNT
       *    ファイル名
            MOVE    CONS-FORM-ID        TO  ORCSQRCSV62-FORM-ID
       *    ファイル名組み立て項目
@@ -1619,6 +1606,8 @@
              AND  (WRK-QRKBN               =   "1"
                                            OR  "2" )
              AND  (ORCHC62-PRTKBN          =   SPACE)
+      *!API
+             AND  (PARA-API-DATA           =   "0"  )
                PERFORM 5003-QRIMAGE-HEN-SEC
            END-IF
            .
@@ -1637,6 +1626,7 @@
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01        TO  KUHAKU-FILE-NAME
       *
+           MOVE    ZERO                TO  FLG-QROK
            MOVE    SPACE               TO  HCM62Q
            MOVE    ZERO                TO  CNT-LINE
       *
@@ -1650,9 +1640,7 @@
                    MOVE    CONS-FORM-ID        TO  QR-FILE-FORM-ID
                    MOVE    SPA-TERMID          TO  QR-FILE-TERMID
                    MOVE    WRK-SYS-TIME        TO  QR-FILE-SYOHMS
-                   MOVE    ".qr_"              TO  QR-FILE-TYPE
                    MOVE    WRK-FILE-CNT        TO  QR-FILE-ID
-                   MOVE    ".png"              TO  QR-FILE-EXT
       *
       *v4.8
       *            一時ファイル名取得
@@ -1679,13 +1667,9 @@
                END-IF
            END-PERFORM
       *
-           IF      PARA-API-DATA       =   "1"
-               CONTINUE
-           ELSE
-               IF  FLG-QROK            =   1
-      *            帳票出力処理
-                   PERFORM 50031-QRPRT-WRITE-SEC
-               END-IF
+           IF      FLG-QROK            =   1
+      *        帳票出力処理
+               PERFORM 50031-QRPRT-WRITE-SEC
            END-IF
            .
        5003-QRIMAGE-HEN-EXT.
@@ -1866,7 +1850,7 @@
            MOVE    "okusuri_techo"     TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "お薬手帳"          TO  RPMAIN-TITLE
-           MOVE    "fm_medicine_notebook"
+           MOVE    "fm_medication_note"
                                        TO  MCP-TABLE
            MOVE    FMMNOTE-DATA        TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING
@@ -1929,7 +1913,6 @@
            MOVE    ORCHC62-DRCD        TO  FMMNOTE-DR-CODE
       *
       *    明細
-           MOVE    WQRCSV62AREA        TO  ORCSQRCSV62AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   50   )
                            OR (ORCSQRCSV62-SRYKBN (IDX)  =   SPACE )
@@ -2003,23 +1986,6 @@
                MOVE    ORCSQRCSV62-BIKOU (IDX)
                                        TO  FMMNOTE-MEMO (IDX)
            END-PERFORM
-      *
-      *    QR
-           IF    ( FLG-QROK            =   1 )
-                INITIALIZE                      SBI-AREA
-                MOVE    SPA-HOSPNUM         TO  QR-FILE-HOSPNUM
-                MOVE    CONS-FORM-ID        TO  QR-FILE-FORM-ID
-                MOVE    SPA-TERMID          TO  QR-FILE-TERMID
-                MOVE    WRK-SYS-TIME        TO  QR-FILE-SYOHMS
-                MOVE    "\.qr(.*[0-9][0-9]\.png|\.dat)$"
-                                            TO  QR-FILE-REGEX
-                MOVE    QR-FILE-NAME-PARA   TO  SBI-AREA
-                CALL    "ORCSBLOBIMPORT"    USING
-                                            SBI-AREA
-                                            SPA-AREA
-                MOVE    SBI-BLOB-ID         TO  FMMNOTE-QR-ID
-           END-IF
-      *
            .
        600-API-SYORI-EXT.
            EXIT.
