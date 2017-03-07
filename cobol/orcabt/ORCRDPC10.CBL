@@ -2770,16 +2770,28 @@
                                                 TO  WRK-KIZAI-SRYCD
                        MOVE    "777770000"      TO  RECE65-SRYCD (IDX)
                        IF      RECE65-SRYYM     >=  "201704"
-                          STRING "０５９で始まる「その他材料」コード"
+                           INITIALIZE                      TNS-TENSU-REC
+                           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+                           MOVE    WRK-KIZAI-SRYCD     TO  TNS-SRYCD
+                           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+                           PERFORM 900-TENSU-READ-SEC
+                           IF      FLG-TENSU     =   ZERO
+                             IF    TNS-TEN       =   ZERO
+                               CONTINUE
+                             ELSE
+                               STRING
+                                 "０５９で始まる「その他材料」コード"
                                                     DELIMITED  BY  SIZE
                                  "が使用されています　患者番号＝"
                                                     DELIMITED  BY  SIZE
                                  RECE62-PTNUM       DELIMITED  BY  SIZE
                                               INTO  WRK-RECEERR
-                          END-STRING
-                          PERFORM 500-ERR-HENSYU-SEC
-                          MOVE   "tokutei-kizai err"  TO  WRK-ERRMSG
-                          PERFORM 500-COBABORT-SEC
+                               END-STRING
+                               PERFORM 500-ERR-HENSYU-SEC
+                               MOVE   "tokutei-kizai err" TO  WRK-ERRMSG
+                               PERFORM 500-COBABORT-SEC
+                             END-IF
+                           END-IF
                        END-IF
                    END-IF
       *
