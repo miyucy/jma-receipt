@@ -409,35 +409,10 @@ SRCS = ORCBD001.CBL \
        ORCBM400.CBL \
        ORCBG029.CBL \
        ORCBGSKLST.CBL \
+       ORCBSTC001.CBL \
        ORCMUP0033.CBL \
        ORCBG030.CBL \
        ORCBG028.CBL \
-       ORCMUP0311.CBL \
-       ORCBGSETLST.CBL \
-       ORCBG031.CBL \
-       ORCBAPIFMTERM.CBL \
-       ORCBG027.CBL \
-       ORAPI052BR1V3.CBL \
-       ORCBGKNSCHK.CBL \
-       ORAPI052BR2V3.CBL \
-       ORCBBLOBIMPORT.CBL \
-       ORAPI052BR3V3.CBL \
-       ORCBUPMAIN.CBL \
-       ORAPI052BR4V3.CBL \
-       ORAPI052BR5V3.CBL \
-       ORCBJOBCHK1.CBL \
-       ORCBDELTEMPDIR.CBL \
-       ORAPI052BR7V3.CBL \
-       ORCBM501.CBL \
-       ORCBM701.CBL \
-       ORAPI052BR8V3.CBL \
-       ORCBPUSH.CBL \
-       ORCBFILEMIS.CBL \
-       ORCBMRCSV09.CBL \
-       ORCBMRCSV10B.CBL \
-       ORCBMRCSV10L.CBL \
-       ORCBG032.CBL \
-       ORCMUP0006.CBL \
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
