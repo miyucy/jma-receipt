@@ -2781,7 +2781,7 @@
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
       *
-           WHEN      ( WRK-HKNNUM      =   "HHH" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "HHH" )
                    MOVE    1           TO  FLG-TAISYO-HKN
            WHEN      OTHER
                IF    ( DTCHK003-HKNKBN =   CONST-SYAHO )
@@ -2804,6 +2804,9 @@
                                    TO   WRK-ZAIHKNNUM
            END-IF
            PERFORM 2001111-TAISYO-HKN-CHK-SEC
+           DISPLAY "PTNUM-PTNUM  =" PTNUM-PTNUM
+           DISPLAY "WRK-ZAIHKNNUM=" WRK-ZAIHKNNUM
+           DISPLAY "FLG-TAISYO-HKN=" FLG-TAISYO-HKN
            IF    ( FLG-TAISYO-HKN      =   1 )
            AND   ( DCACCT-STS-NYUINDAY =   ZERO )
       *
