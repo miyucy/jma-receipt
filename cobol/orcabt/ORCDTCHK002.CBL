@@ -2899,6 +2899,11 @@
                    MOVE    PTSRY-OCC (IDX-SRY)
                                        TO  DCSRY-REC
       *
+      *            点数マスタ検索処理
+                   MOVE    DCSRY-SRYCD     TO  WRK-SRYCD
+                   MOVE    DCACCT-SRYYMD   TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+      *
                    IF    ( ORCBSD01-SRYYM     >=  CONST-H2904 )
                     AND  ( DCSRY-SRYCD (1:3)   =   "059" )
                     AND  ( TNS-TEN         NOT =   ZERO )
