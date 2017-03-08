@@ -47,7 +47,6 @@ T01 {
       state int;
     };
     SRYYMKBN_COMBO {
-      state int;
       visible bool;
       SRYYMKBN {
         textdata varchar(18);
