@@ -4484,6 +4484,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    CONTINUE
                  ELSE
                    MOVE     15      TO  RECE41-ERR-ERRKBN
+                   DISPLAY "059 ERR:SRYCD=" SRY-SRYCD(IDX2)
                  END-IF
                END-IF
       *
