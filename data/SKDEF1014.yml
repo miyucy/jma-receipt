@@ -1,0 +1,113 @@
+kanri_cd    : "1014"
+name        : " Ò≥Áø«Œ≈π‘∞Ÿ¥…Õ˝"
+class_cd    : "*"
+item_max    : 18
+item_list   :
+- item_no   : 1
+  item      : "SANTEI-HOU"
+  item_jp   : " Ò≥ÁªªƒÍ ˝À°"
+  type      : "X"
+  start     : 1
+  length    : 1
+- item_no   : 2
+  item      : "SANTEI-KBN"
+  item_jp   : " Ò≥ÁªªƒÍ∂Ë ¨"
+  type      : "X"
+  start     : 2
+  length    : 1
+- item_no   : 3
+  item      : "NYUGAIKBN"
+  item_jp   : "∆˛≥∞∂Ë ¨"
+  type      : "X"
+  start     : 3
+  length    : 1
+- item_no   : 4
+  item      : "HKNCOMBI-KBN"
+  item_jp   : " ›∏±¡»πÁ§ª∂Ë ¨"
+  type      : "X"
+  start     : 4
+  length    : 1
+- item_no   : 5
+  item      : "SRYKBN-KBN1"
+  item_jp   : "ø«Œ≈∂Ë ¨°›≈ÍÃÙ"
+  type      : "X"
+  start     : 5
+  length    : 1
+- item_no   : 6
+  item      : "SRYKBN-KBN2"
+  item_jp   : "ø«Œ≈∂Ë ¨°›√ÌºÕ"
+  type      : "X"
+  start     : 6
+  length    : 1
+- item_no   : 7
+  item      : "SRYKBN-KBN3"
+  item_jp   : "ø«Œ≈∂Ë ¨°›ΩË√÷"
+  type      : "X"
+  start     : 7
+  length    : 1
+- item_no   : 8
+  item      : "SRYKBN-KBN4"
+  item_jp   : "ø«Œ≈∂Ë ¨°›ºÍΩ—"
+  type      : "X"
+  start     : 8
+  length    : 1
+- item_no   : 9
+  item      : "SRYKBN-KBN5"
+  item_jp   : "ø«Œ≈∂Ë ¨°›∏°∫∫"
+  type      : "X"
+  start     : 9
+  length    : 1
+- item_no   : 10
+  item      : "SRYKBN-KBN6"
+  item_jp   : "ø«Œ≈∂Ë ¨°›≤Ë¡¸ø«√«"
+  type      : "X"
+  start     : 10
+  length    : 1
+- item_no   : 11
+  item      : "SRYKBN-KBN7"
+  item_jp   : "ø«Œ≈∂Ë ¨°›•Í•œ•”•Í° ¬æ°À"
+  type      : "X"
+  start     : 11
+  length    : 1
+- item_no   : 12
+  item      : "SRYKBN-KBN8"
+  item_jp   : "ø«Œ≈∂Ë ¨°›¿∫ø¿≤ ¿ÏÃÁ"
+  type      : "X"
+  start     : 12
+  length    : 1
+- item_no   : 13
+  item      : "SRYKBN-KBN9"
+  item_jp   : "ø«Œ≈∂Ë ¨°› ¸ºÕ¿˛º£Œ≈"
+  type      : "X"
+  start     : 13
+  length    : 1
+- item_no   : 14
+  item      : "SRYKBN-KBN10"
+  item_jp   : "ø«Œ≈∂Ë ¨°›…¬Õ˝ø«√«"
+  type      : "X"
+  start     : 14
+  length    : 1
+- item_no   : 15
+  item      : "SRYKBN-KBN11"
+  item_jp   : "ø«Œ≈∂Ë ¨°›∞Â≥ÿ¥…Õ˝Œ¡"
+  type      : "X"
+  start     : 15
+  length    : 1
+- item_no   : 16
+  item      : "SRYKBN-KBN12"
+  item_jp   : "ø«Œ≈∂Ë ¨°›∫ﬂ¬∞ÂŒ≈"
+  type      : "X"
+  start     : 16
+  length    : 1
+- item_no   : 17
+  item      : "SRYKBN-KBN13"
+  item_jp   : "ø«Œ≈∂Ë ¨°›¥À‹ø«ª°Œ¡"
+  type      : "X"
+  start     : 17
+  length    : 1
+- item_no   : 18
+  item      : "YOBI"
+  item_jp   : "ÕΩ»˜"
+  type      : "X"
+  start     : 55
+  length    : 446
