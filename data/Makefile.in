@@ -33,6 +33,10 @@ ORCADATA_files = \
 	SKDEF1013.yml \
 	SKDEF1014.yml \
 	SKDEF1016.yml \
+	SKDEF1900.yml \
+	SKDEF1901.yml \
+	SKDEF1902.yml \
+	SKDEF1903.yml \
 
 all:   
 
