@@ -2139,7 +2139,7 @@
                             MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
                          END-IF
                          IF  (TNS-CDKBN-KBNNUM      =  400)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  3)
+                             (TNS-CDKBN-KOUBAN      =  3)
                             MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
                          END-IF
                        END-IF
