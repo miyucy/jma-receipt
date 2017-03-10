@@ -37,8 +37,6 @@
       * 04.08.00     NACL-多々納  15/03/XX  平成２７年４月改正対応
       * 04.08.00     NACL-多々納  16/08/XX  相互作用チェック区分追加
       * 04.08.00     NACL-多々納  16/10/04  要介護状態表示対応
-      * 04.08.00     NACL-多々納  17/07/XX  心身療法２０未満加算区分追加
-      * 04.08.00     NACL-多々納  17/09/XX  自費コード端数処理区分追加
       *****************************************************************
       *
       *
@@ -246,19 +244,8 @@
                END-IF
       *        消費税端数設定
                MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
-      *H29.9
-      *        自費コード端数設定
-               MOVE    SYS-1001-JIHI-HASU-KBN  TO  SPA-JIHI-HASU-KBN
            END-IF
       *
-      *H29.9
-      *    端数切上げが初期
-           IF      SPA-JIHI-HASU-KBN   =   SPACE
-               MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
-           END-IF
-           IF      SPA-SRYYMD          <   "20170901"
-               MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
-           END-IF
       *
       *    職員情報より発行フラグ再設定
            IF     (LNK-SC95-PG         =   "K02" )
@@ -327,18 +314,7 @@
                ELSE
                    MOVE    SYS-1008-JIKANTOKU-NYU-FLG
                                            TO  SPA-JIKANTOKU-NYU
-      *H30.4
-      *            H30.4から産婦人科特例対応
-                   IF     (SPA-SRYYMD          <   "20180401" )
-                       IF      SPA-JIKANTOKU-NYU   =   "2"
-                           MOVE    "1"             TO  SPA-JIKANTOKU-NYU
-                       END-IF
-                       IF      SPA-JIKANTOKU-NYU   =   "3"
-                           MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
-                       END-IF
-                   END-IF
                END-IF
-      *
       *        画像診断管理加算１（写真診断）
                IF      SYS-1008-GAZOUKSN1-FLG  =   SPACE
                    MOVE    "1"             TO  SPA-GAZOUKSN1
@@ -513,14 +489,6 @@
                IF      SPA-SRYYMD          <   "20160401"
                    MOVE    "0"             TO  SPA-TEISHOHOU-FLG
                END-IF
-      *H29.4
-      *        投薬３０日超チェック
-               IF      SYS-1008-SHOHOU30CHK    =   SPACE
-                   MOVE    "0"             TO  SPA-SHOHOU30CHK
-               ELSE
-                   MOVE    SYS-1008-SHOHOU30CHK
-                                           TO  SPA-SHOHOU30CHK
-               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -561,8 +529,6 @@
       *H29.3
       *        訂正時の展開（処方料）
                MOVE    "0"                 TO  SPA-TEISHOHOU-FLG
-      *        投薬３０日超チェック
-               MOVE    "0"                 TO  SPA-SHOHOU30CHK
            END-IF
       *    診察料自動発生なしは、時間外加算なし
            IF      SPA-INITAUTO-FLG    =   "0"
@@ -739,8 +705,6 @@
                MOVE    SYS-1038-HAIKIKBN       TO  SPA-HAIKIKBN-FLG
       *        精神療法２０未満加算区分
                MOVE    SYS-1038-SEI20KSNKBN    TO  SPA-SEI20KSNKBN
-      *        心身療法２０未満加算区分
-               MOVE    SYS-1038-SIN20KSNKBN    TO  SPA-SIN20KSNKBN
       *H28.10
       *        リハビリ・患者情報・介護表示区分
       ****     MOVE    SYS-1038-GMNHYOKBN-G    TO  SPA-GMNHYOKBN-G
@@ -798,13 +762,6 @@
       *       Ｈ２２年４月から反映
               OR  (SPA-SRYYMD          <   "20100401")
                MOVE    "0"                 TO  SPA-SEI20KSNKBN
-           END-IF
-      *H29.7
-      *    心身療法２０未満加算区分
-           IF     (SPA-SIN20KSNKBN     =   SPACE )
-      *       Ｈ２９年７月から反映
-              OR  (SPA-SRYYMD          <   "20170701")
-               MOVE    "0"                 TO  SPA-SIN20KSNKBN
            END-IF
       *    リハビリ・患者情報表示区分
            IF     (SYS-1038-GMNHYOKBN-G    =   SPACE )
@@ -907,9 +864,6 @@
       *****************************************************************
        1009-SISETU-KIJUN-SEC            SECTION.
       *
-           MOVE    ZERO                TO  SPA-CHKHTKKSN
-           MOVE    ZERO                TO  SPA-NNCHIHKJN
-      *
            MOVE    SPACE               TO  SYS-1006-REC
            INITIALIZE                      SYS-1006-REC
            MOVE    "1006"              TO  SYS-1006-KANRICD
@@ -1003,8 +957,8 @@
       *                地域包括診療加算（3195)
                        IF      SYS-1006-SSTKIJUN (195) =   1
                            MOVE    1               TO  SPA-CHKHTKKSN
-      **               ELSE
-      **                   MOVE    ZERO            TO  SPA-CHKHTKKSN
+                       ELSE
+                           MOVE    ZERO            TO  SPA-CHKHTKKSN
                        END-IF
                    END-IF
       *H28.4
@@ -1012,8 +966,8 @@
       *                認知症地域包括診療加算（3339)
                        IF      SYS-1006-SSTKIJUN (339) =   1
                            MOVE    1               TO  SPA-NNCHIHKJN
-      **               ELSE
-      **                   MOVE    ZERO            TO  SPA-NNCHIHKJN
+                       ELSE
+                           MOVE    ZERO            TO  SPA-NNCHIHKJN
                        END-IF
       *                小児かかりつけ（3467)
                        IF      SYS-1006-SSTKIJUN (467) =   1
@@ -1023,32 +977,6 @@
                        END-IF
                    END-IF
                END-IF
-      *H30.4
-               IF      SYS-1006-KBNCD      =   "8"
-                   IF      SPA-SRYYMD      >=  "20180401"
-      *                地域包括診療加算１(3523）
-                       IF     (SYS-1006-SSTKIJUN (023) =   1 )
-                           MOVE    1               TO  SPA-CHKHTKKSN
-                       END-IF
-      *                認知症地域包括診療料１（3585)
-                       IF     (SYS-1006-SSTKIJUN (085) =   1 )
-                           MOVE    1               TO  SPA-NNCHIHKJN
-                       END-IF
-                   END-IF
-               END-IF
-      *
-      *H30.4
-      *        IF      SYS-1006-KBNCD      =   "1"
-      *            IF      SPA-SRYYMD      >=  "20180401"
-      *                機能強化加算（初診）（????)
-      *                IF      SYS-1006-SSTKIJUN (001) =   1
-      *                    MOVE    1               TO  SPA-KYOUKAKSN
-      *                ELSE
-      *                    MOVE    ZERO            TO  SPA-KYOUKAKSN
-      *                END-IF
-      *            END-IF
-      ******   END-IF
-      *
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
@@ -1351,21 +1279,8 @@
                END-IF
       *        消費税端数設定
                MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
-      *H29.9
-      *        自費コード端数設定
-               MOVE    SYS-1001-JIHI-HASU-KBN  TO  SPA-JIHI-HASU-KBN
            ELSE
                MOVE    SPACE                   TO  SPA-TAX-HASU-KBN
-               MOVE    "2"                     TO  SPA-JIHI-HASU-KBN
-           END-IF
-      *
-      *H29.9
-      *    端数切上げが初期
-           IF      SPA-JIHI-HASU-KBN   =   SPACE
-               MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
-           END-IF
-           IF      SPA-SRYYMD          <   "20170901"
-               MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
            END-IF
       *
       *    診療科
@@ -1471,18 +1386,7 @@
                ELSE
                    MOVE    SYS-1008-JIKANTOKU-NYU-FLG
                                            TO  SPA-JIKANTOKU-NYU
-      *H30.4
-      *            H30.4から産婦人科特例対応
-                   IF     (SPA-SRYYMD          <   "20180401" )
-                       IF      SPA-JIKANTOKU-NYU   =   "2"
-                           MOVE    "1"             TO  SPA-JIKANTOKU-NYU
-                       END-IF
-                       IF      SPA-JIKANTOKU-NYU   =   "3"
-                           MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
-                       END-IF
-                   END-IF
                END-IF
-      *
       *        画像診断管理加算１（写真診断）
                IF      SYS-1008-GAZOUKSN1-FLG  =   SPACE
                    MOVE    "1"             TO  SPA-GAZOUKSN1
@@ -1576,14 +1480,6 @@
                IF      SPA-SRYYMD          <   "20160401"
                    MOVE    "0"             TO  SPA-TEISHOHOU-FLG
                END-IF
-      *H29.4
-      *        投薬３０日超チェック
-               IF      SYS-1008-SHOHOU30CHK    =   SPACE
-                   MOVE    "0"             TO  SPA-SHOHOU30CHK
-               ELSE
-                   MOVE    SYS-1008-SHOHOU30CHK
-                                           TO  SPA-SHOHOU30CHK
-               END-IF
            ELSE
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
       *        検体検査加算自動発生
@@ -1595,7 +1491,6 @@
       *H29.3
       *        訂正時の展開（処方料）
                MOVE    "0"                 TO  SPA-TEISHOHOU-FLG
-               MOVE    "0"                 TO  SPA-SHOHOU30CHK
            END-IF
       *
            .

@@ -122,10 +122,10 @@ W07 {
         };
         JIKANTOKUNYU_COMB {
           JIKANTOKUNYU {
-            textdata varchar(30);
+            textdata varchar(12);
           };
           count int;
-            item varchar(30)[9];
+            item varchar(12)[2];
         };
         GAZOUKSN1_COMB {
           GAZOUKSN1 {
@@ -322,13 +322,6 @@ W07 {
         };
         TOUYOCHK_COMBO {
           TOUYOCHK {
-            textdata varchar(40);
-          };
-          count int;
-            item varchar(40)[5];
-        };
-        SHOHOU30CHK_COMB  {
-          SHOHOU30CHK {
             textdata varchar(40);
           };
           count int;
@@ -599,13 +592,6 @@ W07 {
           count int;
             item varchar(40)[5];
         };
-        SIN20KSNKBN_COMB {
-          SIN20KSNKBN {
-            textdata varchar(40);
-          };
-          count int;
-            item varchar(40)[5];
-        };
         YMDHENKBN_COMB {
           YMDHENKBN {
             textdata varchar(60);
@@ -852,7 +838,7 @@ W07 {
             state int;
           };
           count int;
-            item varchar(20)[4];
+            item varchar(20)[3];
           state int;
         };
         S04SUMKBN_COMBO {

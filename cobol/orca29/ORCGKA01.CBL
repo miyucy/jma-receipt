@@ -1930,8 +1930,6 @@
                                                OR  "008" )
       *                用量割合・粉砕
                    OR  (SRY-SRYCD (IDX)(1:5)   =   "09920")
-      *H30.4
-                   OR  (SRY-SRYCD (IDX)(1:7)   =   "0992081")
                    MOVE    1                   TO  FLG-OK
       *
                    ADD     1                   TO  IDY
@@ -2354,14 +2352,6 @@
            IF    ((LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
                   (LNK-WKSRY-SRYCD   (IDX IDZ)(1:3)  =   "008" ))  AND
                   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
-               MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
-                                           TO  SPA-GMN-TMEISYO2(IDG)
-               MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
-                                           TO  WRK-MEISYO
-           END-IF
-      *H30.4
-           IF     (LNK-WKSRY-SRYCD   (IDX IDZ)(1:7)  =   "0992081" )
-            AND   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
                                            TO  SPA-GMN-TMEISYO2(IDG)
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
@@ -4306,12 +4296,8 @@
       *            前回処方（内容変更）
                    MOVE    "A"                 TO  ORCHC19-KBN
                    MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-                   IF      SPA-GMN-DRCD        =   SPACE
-                       MOVE    SPACE               TO  SPA-DRCD
-                   ELSE
-                       MOVE    "1"                 TO  SPA-DRCD(1:1)
-                       MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
-                   END-IF
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
                    MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
                                                TO  SPA-SRYKA
                    PERFORM 41021-ORCHC19-HENSYU-SEC
@@ -4341,24 +4327,16 @@
                                                TO  ORCHC19-DENPNUM
       *
                    MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-                   IF      SPA-GMN-DRCD        =   SPACE
-                       MOVE    SPACE               TO  SPA-DRCD
-                   ELSE
-                       MOVE    "1"                 TO  SPA-DRCD(1:1)
-                       MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
-                   END-IF
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
                    MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
                                                TO  SPA-SRYKA
                WHEN    4
       *            前回処方（日数なし）（選択分）
                    MOVE    "D"                 TO  ORCHC19-KBN
                    MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-                   IF      SPA-GMN-DRCD        =   SPACE
-                       MOVE    SPACE               TO  SPA-DRCD
-                   ELSE
-                       MOVE    "1"                 TO  SPA-DRCD(1:1)
-                       MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
-                   END-IF
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
                    MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
                                                TO  SPA-SRYKA
                    PERFORM 41021-ORCHC19-HENSYU-SEC
@@ -4458,10 +4436,6 @@
                            MOVE    SPA-WKSRY-INPUTCOMENT (IDX-W IDX-W2)
                                            TO  ORCHC19-INPUTCOMENT
                                                              (IDX1 IDX2)
-      *H30.4
-                           MOVE    SPA-WKSRY-INPUTCHI-G (IDX-W IDX-W2)
-                                           TO  ORCHC19-INPUTCHI-G
-                                                             (IDX1 IDX2)
                        END-IF
                        END-IF
                    END-PERFORM
@@ -4505,12 +4479,8 @@
       *            前回処方（内容変更）
                    MOVE    "5"                 TO  ORCSCH30-KBN
                    MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-                   IF      SPA-GMN-DRCD        =   SPACE
-                       MOVE    SPACE               TO  SPA-DRCD
-                   ELSE
-                       MOVE    "1"                 TO  SPA-DRCD(1:1)
-                       MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
-                   END-IF
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
                    MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
                                                TO  SPA-SRYKA
                    PERFORM 41031-ORCSCH30-HENSYU-SEC
@@ -4672,12 +4642,8 @@
       *            前回処方（内容変更）
                    MOVE    "5"                 TO  ORCSCH62-KBN
                    MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-                   IF      SPA-GMN-DRCD        =   SPACE
-                       MOVE    SPACE               TO  SPA-DRCD
-                   ELSE
-                       MOVE    "1"                 TO  SPA-DRCD(1:1)
-                       MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
-                   END-IF
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
                    MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
                                                TO  SPA-SRYKA
                    PERFORM 41041-ORCSCH62-HENSYU-SEC
@@ -4686,12 +4652,8 @@
                    MOVE    "5"                 TO  ORCSCH62-KBN
                    MOVE    "1"                 TO  ORCSCH62-KBN2
                    MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-                   IF      SPA-GMN-DRCD        =   SPACE
-                       MOVE    SPACE               TO  SPA-DRCD
-                   ELSE
-                       MOVE    "1"                 TO  SPA-DRCD(1:1)
-                       MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
-                   END-IF
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
                    MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
                                                TO  SPA-SRYKA
                    PERFORM 41041-ORCSCH62-HENSYU-SEC
