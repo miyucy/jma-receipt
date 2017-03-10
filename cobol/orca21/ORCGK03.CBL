@@ -75,9 +75,7 @@
       *  04.07.01    NACL-多々納  12/01/05  クライアント印刷対応
       *  04.07.01    NACL-多々納  13/07/23  お薬手帳ＣＳＶ患者毎対応
       *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
-      *  04.08.00    NACL-多々納  15/08/05  領収・明細　請求書不要対応
-      *  05.00.00    NACL-多々納  17/07/XX  HAORI対応
-      *  05.00.00    NACL-多々納  17/07/XX  PUSH通信対応
+      * 04.08.00     NACL-多々納  15/08/05  領収・明細　請求書不要対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -356,59 +354,6 @@
            03  WRK-NAI-HAKYMD          PIC X(08).
            03  WRK-MAE-HAKYMD          PIC X(08).
       *
-      *HAORI
-           03  WRK-HAORI-AREA.
-               05  WRK-NYUKIN-JYOTAI       PIC X(01).
-               05  WRK-NYUKIN-HOHO         PIC X(02).
-               05  WRK-NYUKINKBN           PIC X(01).
-               05  WRK-HR-NYUKIN           PIC S9(07).
-               05  WRK-HR-HENKIN           PIC S9(07).
-               05  FLG-HAORI-NYU           PIC 9(01).
-               05  FLG-HAORI-HEN           PIC 9(01).
-               05  FLG-HAORI-IKT           PIC 9(01).
-               05  WRK-CHOSEI1-X           PIC X(11).
-               05  WRK-CHOSEI2-X           PIC X(11).
-      *
-      *H29.7
-      *PUSH通信用
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY          PIC X(04).
-               05  WRK-HEN-H1          PIC X(01).
-               05  WRK-HEN-MM          PIC X(02).
-               05  WRK-HEN-H2          PIC X(01).
-               05  WRK-HEN-DD          PIC X(02).
-      *    時間編集
-           03  WRK-THMS.
-               05  WRK-THHH             PIC X(02).
-               05  WRK-THMM             PIC X(02).
-               05  WRK-THSS             PIC X(02).
-           03  WRK-HEN-TIME.
-               05  WRK-HEN-THH         PIC X(02).
-               05  WRK-HEN-T1          PIC X(01).
-               05  WRK-HEN-TMM         PIC X(02).
-               05  WRK-HEN-T2          PIC X(01).
-               05  WRK-HEN-TSS         PIC X(02).
-      *
-      *ORCAサーベイランス一時退避
-           03  WRK-INF-AREA.
-               05  WRK-INF-HOSPNUM     PIC 9(02).
-               05  WRK-INF-HOSPID      PIC X(24).
-               05  WRK-INF-SYORIFLG    PIC 9(01).
-               05  WRK-INF-NYUGAIKBN   PIC X(01).
-               05  WRK-INF-PTID        PIC 9(10).
-               05  WRK-INF-SRYYMD      PIC X(08).
-               05  WRK-INF-SRYKA       PIC X(02).
-               05  WRK-INF-BEDFLG      PIC 9(01).
-      *
-      *診療情報フォーマット一時退避
-           03  WRK-JMR-AREA.
-               05  WRK-JMR-HOSPNUM     PIC 9(02).
-               05  WRK-JMR-NYUGAIKBN   PIC X(01).
-               05  WRK-JMR-PTID        PIC 9(10).
-               05  WRK-JMR-SRYYMD      PIC X(08).
-               05  WRK-JMR-DRCD        PIC X(05).
-               05  WRK-JMR-OPID        PIC X(16).
-      *
       *    剤テーブル領域
        01  WRK-TBL-ZAINUM-AREA.
            03  WRK-TBL-ZAINUM-G            OCCURS   100.
@@ -587,10 +532,6 @@
       *****COPY    "ORCA-DBPATH".
       *===> For Claim End
       *
-      *H29.7
-      *PUSH通信
-           COPY    "CPPUSHMEDICAL01.INC".
-      *
       *
       *****************************************************************
       *    連絡　領域
@@ -634,11 +575,6 @@
       *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *H29.6
-      *HAORI
-               WHEN     "HAOR"           ALSO   SPACE
-                   PERFORM 300-HAORI-SYORI-SEC
-      *
       *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
@@ -859,8 +795,7 @@
                MOVE    SPA-SRYKA           TO  SPA-GMN-TSRYKA (02)
            END-IF
            PERFORM VARYING     IDX2    FROM    2   BY  1
-      ***           UNTIL     (IDX2    >   10  )  OR
-                    UNTIL     (IDX2    >   40  )  OR
+                    UNTIL     (IDX2    >   10  )  OR
                               (SPA-GMN-TSRYKA (IDX2)   =   SPACE)
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL       IDY     >   SPA-SRYKA-MAX
@@ -882,6 +817,7 @@
                ADD     1                   TO  SPA-GMN-SRYKA-MAX
                MOVE    SPA-GMN-SRYKA-LIST(1)   TO  SPA-GMN-SRYKA-G
            END-IF
+      *
            .
        3004-SRYKAMEI-HEN-EXT.
            EXIT.
@@ -1258,11 +1194,11 @@
       *    ユーザプログラム起動初期
       *v4.8
       *    ginbee対応
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        INITIALIZE                  SPA-NAI-GYOUMU-FLG
-      *        INITIALIZE                  SPA-NAI-GYOUMU-ARI
-      *        GO      TO      310-SPA-SET-EXT
-      *    END-IF
+           IF      SPA-MW              =   SPA-GINBEE
+               INITIALIZE                  SPA-NAI-GYOUMU-FLG
+               INITIALIZE                  SPA-NAI-GYOUMU-ARI
+               GO      TO      310-SPA-SET-EXT
+           END-IF
       *
            INITIALIZE                      ORCSUSERCHKAREA
            MOVE    "K03"               TO  ORCSUSERCHK-GMNPG
@@ -1289,7 +1225,7 @@
                MOVE    SPA-GMN-USERPG-LIST(1)  TO  SPA-GMN-USERPG-G
            END-IF
       *
-           .
+            .
        310-SPA-SET-EXT.
            EXIT.
       *
@@ -1545,7 +1481,7 @@
                    UNTIL       IDX     >   16
                MOVE    SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (IDX)
                ADD     SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (17)
-      *        保険適用外
+      *    保険適用外
                COMPUTE SPA-GMN-TGMONEY (IDX)   =   SYU-TGMONEY (IDX)
                                                +   SYU-TGMONEY-TAX(IDX)
       *    保険適用外
@@ -1779,7 +1715,7 @@
                                            -   SPA-MAE-SKYMONEY-TAX-SAI
                                                                 (IDX)
       *            今回請求額
-                   IF      SYU-SKYMONEY    <=  SYU-CHOSEI
+                   IF      SYU-SKYMONEY    <   SYU-CHOSEI
                        MOVE    ZERO        TO  SPA-TEIKEI-SKYMONEY (IDX)
                    ELSE
                        COMPUTE SPA-TEIKEI-SKYMONEY (IDX)
@@ -1818,7 +1754,7 @@
                                            -   SPA-MAE-SKYMONEY-TAX-SAI
                                                                 (IDX)
       *            今回請求額
-                   IF      SYU-SKYMONEY    <=   SYU-CHOSEI
+                   IF      SYU-SKYMONEY    <   SYU-CHOSEI
                        MOVE    ZERO        TO  SPA-TEIKEI-SKYMONEY (IDX)
                    ELSE
                        COMPUTE SPA-TEIKEI-SKYMONEY (IDX)
@@ -3633,11 +3569,11 @@
            MOVE    WIDGET-NORMAL       TO  K03-B03-STATE
       *v4.8
       *    ginbee対応
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        MOVE    WIDGET-INSENSITIVE  TO  K03-USERPG-STATE
-      *    ELSE
-      *        MOVE    WIDGET-NORMAL       TO  K03-USERPG-STATE
-      *    END-IF
+           IF      SPA-MW              =   SPA-GINBEE
+               MOVE    WIDGET-INSENSITIVE  TO  K03-USERPG-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  K03-USERPG-STATE
+           END-IF
       *
            .
        51O-GSRAUTH-EXT.
@@ -4032,13 +3968,6 @@
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
-      *HAORI
-           IF      SPA-API-FLG       =   1
-               PERFORM 4102-HAORI-KIHON-CHK-SEC
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *HAORI
-      *
       *    発行日
            IF      SPA-HAKYMD-FLG      =   1
                PERFORM 410-HAKYMD-CHK-SEC
@@ -4157,18 +4086,7 @@
                ELSE
                    COMPUTE WRK-HENKIN          =   SPA-GMN-SEIKYU
                                                *   -1
-      *H30.1
-      *            前回入金額以上であること
-                   IF      SPA-NAI-NYUKIN      >=  WRK-HENKIN
-                       MOVE    WRK-HENKIN          TO  SPA-GMN-HENKIN-X
-                   ELSE
-      *                前回入金額以下
-                       MOVE    SPACE           TO  SPA-GMN-HENKIN-X
-                       MOVE    "0114"          TO  SPA-ERRCD
-                       MOVE    07              TO  SPA-GMN-CUR
-                       GO      TO      450-HENKIN-CHK-EXT
-                   END-IF
-      *
+                   MOVE    WRK-HENKIN          TO  SPA-GMN-HENKIN-X
                END-IF
            END-IF
            INITIALIZE                      ORCSNUMAREA
@@ -4205,13 +4123,6 @@
                            CONTINUE
                        ELSE
                            MOVE    "0108"              TO  SPA-ERRCD
-                           MOVE    07                  TO  SPA-GMN-CUR
-                       END-IF
-      *H30.1
-      *                前回入金額以下であること
-                       IF     (SPA-NAI-NYUKIN      <   SPA-GMN-HENKIN)
-                          AND (SPA-ERRCD           =   SPACE         )
-                           MOVE    "0114"              TO  SPA-ERRCD
                            MOVE    07                  TO  SPA-GMN-CUR
                        END-IF
                    ELSE
@@ -4629,7 +4540,7 @@
                IF     (LNK-SCNYUKIN-HENKINZAN  >=  WRK-SEIKYU)
                    IF      LNK-SCNYUKIN-FURIWAKEZAN   >   ZERO
                        MOVE    "0014"              TO  SPA-ERRCD
-                       MOVE    2                   TO  SPA-GMN-CUR
+                       MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
                ELSE
                    IF     (LNK-SCNYUKIN-FURIWAKEZAN
@@ -4990,9 +4901,8 @@
                    COMPUTE WRK-SEIKYU      =   SPA-GMN-CHOSEI1
                                            +   SPA-GMN-CHOSEI2
                                            +   SPA-NAI-SEIKYU
-                   IF     (WRK-SEIKYU          <   ZERO )
-      *H29.7  請求額がなくてもマイナスはエラー
-      *****           AND (SPA-NAI-SEIKYU      >   ZERO )
+                   IF     (WRK-SEIKYU          <   ZERO )  AND
+                          (SPA-NAI-SEIKYU      >   ZERO )
                        MOVE    "0004"                  TO  SPA-ERRCD
                        MOVE    06                      TO  SPA-GMN-CUR
                    END-IF
@@ -5002,17 +4912,8 @@
                COMPUTE SPA-GMN-CHOSEI      =   SPA-GMN-CHOSEI1
                                            +   SPA-GMN-CHOSEI2
                IF      (SPA-GMN-CHOSEI NOT =   SPA-MAE-CHOSEI)
-      *H29.7
-      *    HAORI対応
-                 IF      SPA-API-FLG       =   1
-      *            HAORI対応
-      *            変更があった時、入金額等を再編集
-                   PERFORM 3OO29-HAORICHOSEI-HENKOU-SEC
-                 ELSE
-      *
       *            変更があった時、入金額等を再編集
                    PERFORM 4101-CHOSEI-HENKOU-SEC
-                 END-IF
                END-IF
            END-IF
            .
@@ -5037,7 +4938,6 @@
            IF     (SPA-NAI-NYUKIN-JYOTAI   =   "2" ) 
                MOVE    ZERO            TO  SPA-GMN-NYUKIN
            END-IF
-      *
       *    訂正時入金可能へ
            IF      SPA-SYORIFLG        =   1
                IF      SPA-GMN-SEIKYU      <   ZERO
@@ -6174,50 +6074,26 @@
       *    各帳票印刷
            PERFORM 45009-PRINT-SEC
       *
+      *    感染症送信
+           IF      SPA-DATAINFECTIONKBN    =   1
+               MOVE    ZERO                TO  FLG-INFEC-DLT
+               PERFORM 4904-INFECTION-SEND-SEC
+           END-IF
+      *
       *    ＣＬＡＩＭ送信
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-CLAIM       =   1     )
                PERFORM 4906-CLAIM-SOUSIN-SEC
-               PERFORM 49061-API-CLAIM-SEC
+               PERFORM 49061-API-CLMAI-SEC
            END-IF
       *!!!!
       *H28.6
       *    ginbee対応
-           IF     (SPA-MW              =   SPA-GINBEE)
-             AND  (SPA-ERRCD           =   SPACE     )
+      *    IF     (SPA-MW              =   SPA-GINBEE)
+      *      AND  (SPA-ERRCD           =   SPACE     )
       *        AIP CLAIM送信処理
-               PERFORM 49061-API-CLAIM-SEC
-           END-IF
-      *
-      *H29.7
-      *PUSH通信
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 600-PUSH-SYORI-SEC
-           END-IF
-      *
-      *    感染症送信一時退避（ユーザプログラムの後で起動）
-           IF      SPA-DATAINFECTIONKBN    =   1
-               INITIALIZE  WRK-INF-AREA
-               MOVE    SPA-HOSPNUM         TO  WRK-INF-HOSPNUM
-               MOVE    SPA-HOSPID          TO  WRK-INF-HOSPID
-               MOVE    SPA-SYORIFLG        TO  WRK-INF-SYORIFLG
-               MOVE    SPA-NYUGAIKBN       TO  WRK-INF-NYUGAIKBN
-               MOVE    SPA-PTID            TO  WRK-INF-PTID
-               MOVE    SPA-SRYYMD          TO  WRK-INF-SRYYMD
-               MOVE    SPA-SRYKA           TO  WRK-INF-SRYKA
-               MOVE    SPA-BEDFLG          TO  WRK-INF-BEDFLG
-           END-IF
-      *
-      *    診療情報フォーマット一時退避（ユーザプログラムの後で起動）
-           IF      SPA-NAI-CSVKBN2 NOT =   SPACE
-               INITIALIZE  WRK-JMR-AREA
-               MOVE    SPA-HOSPNUM         TO  WRK-JMR-HOSPNUM
-               MOVE    SPA-NYUGAIKBN       TO  WRK-JMR-NYUGAIKBN
-               MOVE    SPA-PTID            TO  WRK-JMR-PTID
-               MOVE    SPA-SRYYMD          TO  WRK-JMR-SRYYMD
-               MOVE    SPA-DRCD            TO  WRK-JMR-DRCD
-               MOVE    SPA-OPID            TO  WRK-JMR-OPID
-           END-IF
+      *        PERFORM 49061-API-CLMAI-SEC
+      *    END-IF
       *
       *!!!!
       *    ユーザプログラム起動
@@ -6237,12 +6113,6 @@
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-NAI-CSVKBN2 NOT =   SPACE )
                PERFORM 4908-JMAMR-SEC
-           END-IF
-      *
-      *    感染症送信
-           IF      SPA-DATAINFECTIONKBN    =   1
-               MOVE    ZERO                TO  FLG-INFEC-DLT
-               PERFORM 4904-INFECTION-SEND-SEC
            END-IF
            .
        450011-KOUSIN-ATO-EXT.
@@ -6496,23 +6366,10 @@
                 END-IF
            END-IF
       *
-      *H29.7
-      *PUSH通信
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 600-PUSH-SYORI-SEC
-           END-IF
-      *
-      *    感染症送信一時退避（ユーザプログラムの後で起動）
+      *    感染症送信
            IF      SPA-DATAINFECTIONKBN    =   1
-               INITIALIZE  WRK-INF-AREA
-               MOVE    SPA-HOSPNUM         TO  WRK-INF-HOSPNUM
-               MOVE    SPA-HOSPID          TO  WRK-INF-HOSPID
-               MOVE    SPA-SYORIFLG        TO  WRK-INF-SYORIFLG
-               MOVE    SPA-NYUGAIKBN       TO  WRK-INF-NYUGAIKBN
-               MOVE    SPA-PTID            TO  WRK-INF-PTID
-               MOVE    SPA-SRYYMD          TO  WRK-INF-SRYYMD
-               MOVE    SPA-SRYKA           TO  WRK-INF-SRYKA
-               MOVE    SPA-BEDFLG          TO  WRK-INF-BEDFLG
+               MOVE    1                   TO  FLG-INFEC-DLT
+               PERFORM 4904-INFECTION-SEND-SEC
            END-IF
       *
       *    ユーザプログラム起動
@@ -6526,12 +6383,6 @@
                    MOVE    ZERO        TO  SPA-FLG-CLAIM
                    MOVE    3           TO  SPA-USERPG-FLG
                END-IF
-           END-IF
-      *
-      *    感染症送信
-           IF      SPA-DATAINFECTIONKBN    =   1
-               MOVE    1                   TO  FLG-INFEC-DLT
-               PERFORM 4904-INFECTION-SEND-SEC
            END-IF
       *
            .
@@ -6907,18 +6758,18 @@
            MOVE    SPACE               TO  SHELLTBL
            MOVE    INFECTION-FILE      TO  SHELLTBL-NAME
            MOVE    "K03"               TO  SHELLTBL-ARG1
-           MOVE    WRK-INF-HOSPNUM     TO  SHELLTBL-ARG2
-           MOVE    WRK-INF-HOSPID      TO  SHELLTBL-ARG3
-           MOVE    WRK-INF-SYORIFLG    TO  SHELLTBL-ARG4
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG3
+           MOVE    SPA-SYORIFLG        TO  SHELLTBL-ARG4
            IF      FLG-INFEC-DLT       =   1
                MOVE    "2"                 TO  SHELLTBL-ARG4
            END-IF
-           MOVE    WRK-INF-NYUGAIKBN   TO  SHELLTBL-ARG5
-           MOVE    WRK-INF-PTID        TO  WRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  SHELLTBL-ARG5
+           MOVE    SPA-PTID            TO  WRK-PTID
            MOVE    WRK-PTID            TO  SHELLTBL-ARG6
-           MOVE    WRK-INF-SRYYMD      TO  SHELLTBL-ARG7
-           MOVE    WRK-INF-SRYKA       TO  SHELLTBL-ARG8
-           MOVE    WRK-INF-BEDFLG      TO  SHELLTBL-ARG9
+           MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG7
+           MOVE    SPA-SRYKA           TO  SHELLTBL-ARG8
+           MOVE    SPA-BEDFLG          TO  SHELLTBL-ARG9
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -7071,7 +6922,7 @@
       *****************************************************************
       *    ＣＬＡＩＭ接続情報取得処理
       *****************************************************************
-       49061-CLAIM-SOUSINSYOSI-SEC     SECTION.
+       49061-CLAIM-SOUSINSYOSI-SEC               SECTION.
       *
       *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
@@ -7127,7 +6978,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    API ＣＬＡＩＭ送信処理
       *****************************************************************
-       49061-API-CLAIM-SEC  SECTION.
+       49061-API-CLMAI-SEC  SECTION.
       *
            MOVE    ZERO                TO  FLG-CLAIM
       *    ＣＬＡＩＭ接続判定
@@ -7154,7 +7005,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      FLG-CLAIM           =   ZERO
-               GO  TO  49061-API-CLAIM-EXT
+               GO  TO  49061-API-CLMAI-EXT
            END-IF
       *
       *
@@ -7213,7 +7064,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
            .
-       49061-API-CLAIM-EXT.
+       49061-API-CLMAI-EXT.
            EXIT.
       *****************************************************************
       *    ユーザプログラム起動処理
@@ -7221,10 +7072,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        4907-USERPG-SEC  SECTION.
       *
       *v4.8
-      **   ginbee対応
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        GO      TO      4907-USERPG-EXT
-      **   END-IF
+      *    ginbee対応
+           IF      SPA-MW              =   SPA-GINBEE
+               GO      TO      4907-USERPG-EXT
+           END-IF
       *
            EVALUATE    SPA-USERPG-FLG
                WHEN    1
@@ -7321,14 +7172,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SHELLTBL
            MOVE    JMAMR-FILE          TO  SHELLTBL-NAME
-           MOVE    WRK-JMR-HOSPNUM     TO  SHELLTBL-ARG1
-           MOVE    WRK-JMR-PTID        TO  WRK-PTID
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG1
+           MOVE    SPA-PTID            TO  WRK-PTID
            MOVE    WRK-PTID            TO  SHELLTBL-ARG2
-           MOVE    WRK-JMR-NYUGAIKBN   TO  SHELLTBL-ARG3
-           MOVE    WRK-JMR-SRYYMD      TO  SHELLTBL-ARG4
+           MOVE    SPA-NYUGAIKBN       TO  SHELLTBL-ARG3
+           MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG4
            MOVE    SPA-NAI-CSVKBN2     TO  SHELLTBL-ARG5
-           MOVE    WRK-JMR-DRCD        TO  SHELLTBL-ARG6
-           MOVE    WRK-JMR-OPID        TO  SHELLTBL-ARG7
+           MOVE    SPA-DRCD            TO  SHELLTBL-ARG6
+           MOVE    SPA-OPID            TO  SHELLTBL-ARG7
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -7339,464 +7190,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4908-JMAMR-EXT.
            EXIT.
-      *HAORI
-      *****************************************************************
-      *    HAPRI　処理
-      *****************************************************************
-       300-HAORI-SYORI-SEC                SECTION.
-      *
-            MOVE    1                   TO  FLG-END
-      *
-           IF      SPA-API-FLG     NOT =   1
-               MOVE    "XXXX"          TO  SPA-ERRCD
-               GO      TO  300-HAORI-SYORI-EXT
-           END-IF
-      *
-      *    送信項目保存
-           EVALUATE    SPA-GMN-PAGE
-           WHEN    1
-      *        初期処理
-               PERFORM 3001-HAORI-INI-SEC
-           WHEN    2
-      *        入金額等チェック処理
-               PERFORM 3002-HAORI-CHK-SEC
-           WHEN    3
-      *        更新処理
-               PERFORM 3003-HAORI-UPD-SEC
-           END-EVALUATE
-           .
-       300-HAORI-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    初期処理編集処理
-      *****************************************************************
-       3001-HAORI-INI-SEC         SECTION.
-      *
-           PERFORM 310-SPA-SET-SEC
-      *
-           .
-       3001-HAORI-INI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入金額等チェック処理
-      *****************************************************************
-       3002-HAORI-CHK-SEC         SECTION.
-      *
-           INITIALIZE                  WRK-HAORI-AREA
-           IF      SPA-GMN-NYUKIN-X(1:1)   =   "*"
-      *        一括入金
-               MOVE    1                   TO  FLG-HAORI-IKT
-           ELSE
-      *        入金金額
-               IF      SPA-GMN-NYUKIN-X        =   "HAORI"
-                   MOVE    SPA-GMN-NYUKIN      TO  WRK-HR-NYUKIN
-                   MOVE    1                   TO  FLG-HAORI-NYU
-               END-IF
-      *        返金金額
-               IF      SPA-GMN-HENKIN-X        =   "HAORI"
-                   MOVE    SPA-GMN-HENKIN      TO  WRK-HR-HENKIN
-                   MOVE    1                   TO  FLG-HAORI-HEN
-               END-IF
-           END-IF
-           MOVE    SPA-GMN-CHOSEI1-X   TO  WRK-CHOSEI1-X
-           MOVE    SPA-GMN-CHOSEI2-X   TO  WRK-CHOSEI2-X
-           MOVE    SPA-GMN-CHOSEI1     TO  WRK-CHOSEI1
-           MOVE    SPA-GMN-CHOSEI2     TO  WRK-CHOSEI2
-      *    収納から画面編集
-           PERFORM 3102-SYUNOU-HEN-SEC
-      *    調整金
-           MOVE    WRK-CHOSEI1-X       TO  SPA-GMN-CHOSEI1-X
-           MOVE    WRK-CHOSEI2-X       TO  SPA-GMN-CHOSEI2-X
-           IF      FLG-HAORI-NYU       =   1
-               MOVE    WRK-HR-NYUKIN       TO  WRK-Z99
-               MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
-               MOVE    WRK-HR-NYUKIN       TO  SPA-GMN-NYUKIN
-           END-IF
-           IF      FLG-HAORI-HEN       =   1
-               MOVE    WRK-HR-HENKIN       TO  WRK-Z99
-               MOVE    WRK-Z99             TO  SPA-GMN-HENKIN-X
-               MOVE    WRK-HR-HENKIN       TO  SPA-GMN-HENKIN
-           END-IF
-      *
-           MOVE    1                   TO  FLG-TOUROKU
-      *    基本チェックと別画面処理
-           PERFORM 4102-KIHON-CHK-SEC
-      *
-      *    一括入金・返金処理
-           MOVE    SPACE               TO  SPA-IKKATUKBN
-           IF      FLG-HAORI-IKT       =   1
-               IF     (SPA-GMN-NYUKINKBN   =   "1" )
-                 AND  (SPA-SYORIFLG        =   ZERO)
-                   CONTINUE
-               ELSE
-      *            一括返金
-                   PERFORM 409-HENKIN-SYORI-SEC
-               END-IF
-      *        一括入金
-               PERFORM 408-NYUKIN-SYORI-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-      *        エラーメッセージ編集
-               PERFORM 510-ERRSET-SEC
-           END-IF
-           .
-       3002-HAORI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    HAORI 基本チェックと別画面処理
-      *****************************************************************
-       4102-HAORI-KIHON-CHK-SEC          SECTION.
-      *
-      *    発行日（警告チェックなのでなし）
-      **** PERFORM 410-HAKYMD-CHK-SEC
-      *
-      *    調整金
-           IF     (SPA-GMN-HKNCOMBI    =   ZERO )  OR
-                  (SPA-GMN-SRYKA       =   ZERO )
-               CONTINUE
-           ELSE
-               PERFORM 410-CHOSEI-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      4102-HAORI-KIHON-CHK-EXT
-               END-IF
-           END-IF
-      *    返金
-           IF     (SPA-NAI-HENFLG       =   1    )
-               IF      SPA-ERRCD        =   SPACE
-                   PERFORM 450-HENKIN-CHK-SEC
-               END-IF
-           END-IF
-      *    入金
-      *    入金があればそのまま編集
-           IF      FLG-HAORI-NYU       =   1
-               MOVE    WRK-HR-NYUKIN       TO  WRK-Z99
-               MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
-               MOVE    WRK-HR-NYUKIN       TO  SPA-GMN-NYUKIN
-           END-IF
-      *
-           IF    ((SPA-GMN-HKNCOMBI    NOT =   ZERO )  AND
-                  (SPA-GMN-SRYKA       NOT =   ZERO ))  OR
-                  (SPA-NAI-NYUKINFLG       =   1    )
-               IF      SPA-ERRCD           =   SPACE
-                   PERFORM 450-NYUKIN-CHK-SEC
-               END-IF
-           END-IF
-      *    入金方法
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 450-NYUKINHOU-CHK-SEC
-           END-IF
-      *    入金の取扱い
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 450-NYUKINKBN-CHK-SEC
-           END-IF
-      *
-      *    関連チェック
-      *    変更が無い時
-           IF    ((SPA-GMN-NYUKINKBN   =   SPA-MAE-NYUKINKBN )  AND
-                  (SPA-GMN-NYUKIN      =   SPA-MAE-NYUKIN    )  AND
-                  (SPA-GMN-HENKIN      =   SPA-MAE-HENKIN    )  AND
-                  (SPA-GMN-CHOSEI1     =   SPA-MAE-CHOSEI1   )  AND
-                  (SPA-GMN-CHOSEI2     =   SPA-MAE-CHOSEI2   )  AND
-                  (FLG-TOUROKU         =   ZERO              ))
-              OR  (SPA-ERRCD       NOT =   SPACE             )
-               CONTINUE
-           ELSE
-      *        入金額計算計算処理
-               PERFORM 31051-NYUKIN-KEISAN-SEC
-               IF      SPA-ERRCD           =   SPACE
-                   MOVE    SPA-GMN-NYUKINKBN   TO  SPA-MAE-NYUKINKBN
-                   MOVE    SPA-GMN-NYUKIN      TO  SPA-MAE-NYUKIN
-                   MOVE    SPA-GMN-HENKIN      TO  SPA-MAE-HENKIN
-                   MOVE    SPA-GMN-CHOSEI1     TO  SPA-MAE-CHOSEI1
-                   MOVE    SPA-GMN-CHOSEI2     TO  SPA-MAE-CHOSEI2
-                   COMPUTE SPA-MAE-CHOSEI      =   SPA-MAE-CHOSEI1
-                                               +   SPA-MAE-CHOSEI2
-               ELSE
-                   MOVE    "E"                 TO  SPA-MAE-NYUKINKBN
-               END-IF
-           END-IF
-      *
-           .
-       4102-HAORI-KIHON-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    HAORI 調整金から入金額等を再編集処理
-      *****************************************************************
-       3OO29-HAORICHOSEI-HENKOU-SEC         SECTION.
-      *
-      *    今回請求額
-           COMPUTE SPA-GMN-SEIKYU      =  (SPA-NAI-SEIKYU
-                                       +   SPA-GMN-CHOSEI )
-                                       -   SPA-OLD-SEIKYU
-      *
-      *    訂正時入金可能へ
-           IF      SPA-SYORIFLG        =   1
-               IF      SPA-GMN-SEIKYU      <   ZERO
-                   MOVE    1               TO  SPA-NAI-HENFLG
-               ELSE
-                   MOVE    ZERO            TO  SPA-NAI-HENFLG
-               END-IF
-           END-IF
-      *
-           IF      FLG-HAORI-NYU       =   1
-      *        入金額送信ありはそのまま
-               MOVE    SPA-GMN-NYUKIN      TO  WRK-Z99
-               MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
-               GO      TO      3OO29-HAORICHOSEI-HENKOU-EXT
-           END-IF
-      *
-           IF      SPA-GMN-SEIKYU      <   ZERO
-               MOVE    ZERO            TO  SPA-GMN-NYUKIN
-           ELSE
-               MOVE    SPA-GMN-SEIKYU  TO  SPA-GMN-NYUKIN
-           END-IF
-      *    入金状態が未入金の時、ゼロ
-           IF     (SPA-NAI-NYUKIN-JYOTAI   =   "2" ) 
-               MOVE    ZERO            TO  SPA-GMN-NYUKIN
-           END-IF
-      *
-      *    訂正時入金可能へ
-           IF      SPA-SYORIFLG        =   1
-               IF      SPA-GMN-SEIKYU      <   ZERO
-                   MOVE    1               TO  SPA-NAI-HENFLG
-               ELSE
-                   MOVE    ZERO            TO  SPA-NAI-HENFLG
-               END-IF
-           END-IF
-      *!!
-      *
-           IF      (SPA-SYORIFLG       =   0  )
-              AND  (SPA-NAI-NYKHNKKBN  =   "1"  OR  "3" )
-              AND  (SPA-GMN-NYUKINKBN   NOT =   "1"  )
-               IF     (SPA-GMN-SRYKA       =   SPA-GOK-SRYKA ) AND
-                      (SPA-GMN-HKNCOMBI    =   SPA-GOK-HKNCOMBI)
-      *            入金上限額を入金へ
-                   COMPUTE SPA-GMN-NYUKIN  =   SPA-GMN-NYUKIN
-                                           +   SPA-GMN-ZENMISYU
-               END-IF
-           END-IF
-      *
-      *    返金額対応
-           IF      SPA-GMN-HENKIN      >   ZERO
-               IF      SPA-SYORIFLG        =   ZERO
-                   IF      SPA-GMN-NYUKIN  >   SPA-GMN-HENKIN
-                       COMPUTE SPA-GMN-NYUKIN  =   SPA-GMN-NYUKIN
-                                               -   SPA-GMN-HENKIN
-                   END-IF
-               ELSE
-                   IF      SPA-GMN-SEIKYU      >=  ZERO
-                       MOVE    ZERO            TO  SPA-GMN-HENKIN
-                       MOVE    SPA-GMN-HENKIN  TO  SPA-GMN-HENKIN-X
-                   END-IF
-               END-IF
-           END-IF
-      *
-           MOVE    SPA-GMN-NYUKIN      TO  WRK-Z99
-           MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
-           .
-       3OO29-HAORICHOSEI-HENKOU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    HAORI更新処理
-      *****************************************************************
-       3003-HAORI-UPD-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  SPA-MATOME-NYUHENKIN-KBN
-      *
-      *    入金額振り分け処理
-           IF      SPA-GMN-NYUKINKBN   =   "1"
-               MOVE    SPA-GOK-NYUKIN      TO  WRK-NYUKIN
-           ELSE
-      *        未入金が無い場合対象外
-               IF    ((SPA-GMN-ZENMISYU    =   ZERO )  AND
-                      (SPA-GMN-CHOKAKIN    =   ZERO ))
-                  OR ((SPA-GOK-NYUKIN      =   ZERO )  AND
-                      (SPA-GOK-HENKIN      =   ZERO ))
-                   MOVE    SPA-GOK-NYUKIN      TO  WRK-NYUKIN
-               ELSE
-                   PERFORM 450011-NYUKIN-KEISAN-SEC
-               END-IF
-           END-IF
-           IF      SPA-ERRCD           =   SPACE
-      *        外来更新処理
-               IF     (SPA-HKNCOMBINUM     =   "9999" )
-                   PERFORM 30031-GAIRAI999-CALL-SEC
-               ELSE
-                    PERFORM 450012-GAIRAI-CALL-SEC
-               END-IF
-           END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
-      *        エラーメッセージ編集
-               PERFORM 510-ERRSET-SEC
-           END-IF
-      *
-           .
-       3003-HAORI-UPD-EXT.
-           EXIT.
-      *****************************************************************
-      *    HAORI　保険組合わせ9999　更新処理
-      *****************************************************************
-       30031-GAIRAI999-CALL-SEC             SECTION.
-      *
-      *    外来更新処理
-           INITIALIZE                  ORCSCGAIRAIAREA
-      *    新規、更新
-           MOVE    "1"                 TO  ORCSCGAIRAI-KBN
-      *    収納情報
-           MOVE    SPA-SYUNOU-MAX      TO  ORCSCGAIRAI-SYUNOU-MAX
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-SYUNOU-MAX
-               MOVE    SPA-SYUNOU-REC(IDX) TO  ORCSCGAIRAI-SYUNOU-REC
-                                                               (IDX)
-           END-PERFORM
-      *
-           CALL    "ORCSCGAIRAI"       USING
-                                       SPA-AREA
-                                       ORCSCGAIRAIAREA
-           MOVE    SPA-WORK        TO  SPA-K01KYOUTU
-      *
-           .
-       30031-GAIRAI999-CALL-EXT.
-           EXIT.
-      *
-      *HAORI
-      *H29.7
-      *PUSH通信
-      *****************************************************************
-      *    PUSH通信処理
-      *****************************************************************
-       600-PUSH-SYORI-SEC             SECTION.
-      *
-           INITIALIZE                      PUSHMD01-REC
-           MOVE    "patient_account"       TO  PUSHMD01-EVENT
-           EVALUATE    SPA-SYORIFLG
-           WHEN    ZERO
-      *        追加
-               MOVE    "add"               TO  PUSHMD01-PMODE
-           WHEN    1
-      *        訂正
-               IF      SPA-IDX-KOUI        =   ZERO
-      *            削除
-                   MOVE    "delete"            TO  PUSHMD01-PMODE
-               ELSE
-      *            更新
-                   MOVE    "modify"            TO  PUSHMD01-PMODE
-               END-IF
-           END-EVALUATE
-      *    処理時間取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
-           MOVE    SMCNDATE-HMS        TO  WRK-THMS
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PUSHMD01-SYSYMD
-           MOVE    WRK-HEN-TIME        TO  PUSHMD01-SYSTIME
-           MOVE    SPA-PTNUM           TO  PUSHMD01-PTNUM
-      *    診療日付
-           MOVE    SPA-SRYYMD          TO  WRK-SYMD
-           MOVE    SPACE               TO  WRK-THMS
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PUSHMD01-SRYYMD
-      *
-           IF      SPA-IDX-KOUI        =   ZERO
-      *        削除
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   15  )  OR
-                                  (SPA-TEI-DENPNUM(IDX)   =   ZERO)
-                   MOVE    SPA-TEI-SRYKA(IDX)  TO  PUSHMD01-SRYKA
-                                                          (IDX)
-                   MOVE    SPA-TEI-HKNCOMBI(IDX)
-                                           TO  PUSHMD01-HKNCOMBI
-                                                          (IDX)
-                   MOVE    SPA-TEI-DENPNUM(IDX)
-                                           TO  PUSHMD01-DENPNUM
-                                                          (IDX)
-               END-PERFORM
-               IF      SPA-TEI-DENPNUM(1)  =   ZERO
-      *            単独の時
-                   MOVE    SPA-OLD-SRYKA   TO  PUSHMD01-SRYKA
-                                                          (1)
-                   MOVE    SPA-OLD-HKNCOMBI
-                                           TO  PUSHMD01-HKNCOMBI
-                                                          (1)
-                   MOVE    SPA-DENPNUM     TO  PUSHMD01-DENPNUM
-                                                          (1)
-               END-IF
-           ELSE
-      *        新規・更新
-               MOVE    ZERO                TO  IDX
-               PERFORM VARYING     IDX-S   FROM    1   BY  1
-                       UNTIL      (IDX-S   >   SPA-SYUNOU-MAX )
-                              OR  (IDX     >=  15  )
-                   MOVE    SPA-SYUNOU-REC(IDX-S)   TO  SYUNOU-REC
-                   IF     (SYU-SRYKA           =   ZERO )
-                       OR (SYU-HKNCOMBINUM     =   ZERO )
-                       CONTINUE
-                   ELSE
-                       ADD     1               TO  IDX
-                       MOVE    SYU-SRYKA   TO  PUSHMD01-SRYKA
-                                                          (IDX)
-                       MOVE    SYU-HKNCOMBINUM
-                                           TO  PUSHMD01-HKNCOMBI
-                                                          (IDX)
-                       MOVE    SYU-DRCD-G  TO  PUSHMD01-DRCD
-                                                          (IDX)
-                       MOVE    SYU-DENPNUM
-                                           TO  PUSHMD01-DENPNUM
-                                                          (IDX)
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-           MOVE    PUSHMD01-REC        TO  MCPDATA-REC
-      *
-           MOVE    "PUSHEVENT"         TO  MCP-FUNC
-           MOVE    "push_medical01"    TO  MCP-TABLE
-           MOVE    "push_medical01"    TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-       600-PUSH-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    日付編集処理
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE           TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYY             TO  WRK-HEN-YY
-               MOVE    WRK-SMM             TO  WRK-HEN-MM
-               MOVE    WRK-SDD             TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-      *
-           INITIALIZE                  WRK-HEN-TIME
-           MOVE    WRK-THHH            TO  WRK-HEN-THH
-           MOVE    WRK-THMM            TO  WRK-HEN-TMM
-           MOVE    WRK-THSS            TO  WRK-HEN-TSS
-           MOVE    ":"                 TO  WRK-HEN-T1
-           MOVE    ":"                 TO  WRK-HEN-T2
-           .
-       801-DAYHEN01-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    自画面編集処理
@@ -8012,13 +7405,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0113"
                    STRING  "今回請求分のみの入力です。"
                            "過入金の返金はできません。"
-                                       DELIMITED   BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H30.1
-               WHEN    "0114"
-                   STRING  "返金額が前回入金額以下となります。"
-                           "返金はできません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
