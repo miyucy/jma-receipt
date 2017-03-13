@@ -55,11 +55,6 @@
       *  04.08.07    NACL-ÃÁœ∆    16/09/20  £±£µ±ﬂ∞ ≤ºÃÙ∫ﬁ§ŒƒÛΩ–Õ—•Ï•ª•◊•»µ≠∫‹
       *                                     ° µ≠œø°À¬–±˛
       *  04.08.08    NACL-∆£∏∂    17/03/02  Ã§•≥°º•…≤Ω∆√ƒÍ¥Ô∫‡•≥°º•…«—ªﬂ¬–±˛
-      *  04.08.09    NACL-ÃÁœ∆    17/08/28   ø¿Æ£≤£π«Ø£±£∞∑Ó≤˛¿µ
-      *                                     ° ∆˛±°ª˛¿∏≥ËŒ≈Õ‹§Œ∏´ƒæ§∑°À
-      *
-      *  05.00.01    NACL-∆£∏∂    17/07/04  £»£¡£œ£“£…¬–±˛
-      *  05.00.02    NACL-∞À∆£    17/12/22  ø«Œ≈æ Û•∑•π•∆•‡¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -283,7 +278,6 @@
                05  WRK-PARA-SHELLID    PIC X(08).
                05  WRK-PARA-CREYMD     PIC X(08).
                05  WRK-PARA-CREHMS     PIC X(08).
-               05  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
@@ -369,17 +363,6 @@
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
            03  WRK-ACCTP-SYUTEN        PIC 9(07).
-      *
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY      PIC X(04).
-               05  WRK-HEN-H1      PIC X(01).
-               05  WRK-HEN-MM      PIC X(02).
-               05  WRK-HEN-H2      PIC X(01).
-               05  WRK-HEN-DD      PIC X(02).
-      *
-           03  WRK-CNT             PIC 9(10).
-           03  WRK-CNT-X           REDEFINES   WRK-CNT
-                                   PIC X(10).
       *
            03  WRK-CO-COMMENT          PIC X(76).
            03  WRK-CO-SRYCD            PIC X(09).
@@ -1051,6 +1034,53 @@
       *    ¬‡±°«Ø∑Ó∆¸
            03  WRK-CONS-TAIIN-SRYCD   PIC X(09)   VALUE   "840000013".
       *
+      *    …∏Ω‡…È√¥≥€
+           03  WRK-CONS-HYOJYUN-FUTAN-G.
+      *        …∏Ω‡…È√¥≥€° ∞Ï»Ã°À
+               05  WRK-CONS-HYOJYUN-FUTAN1
+                                      PIC X(09)   VALUE   "197000810".
+      *        …∏Ω‡…È√¥≥€° ƒ„ΩÍ∆¿£±°À
+               05  WRK-CONS-HYOJYUN-FUTAN2
+                                      PIC X(09)   VALUE   "197001110".
+      *        …∏Ω‡…È√¥≥€° ƒ„ΩÍ∆¿£≤°¶£π£∞∆¸∞ ≤º°À
+               05  WRK-CONS-HYOJYUN-FUTAN3
+                                      PIC X(09)   VALUE   "197000910".
+      *        …∏Ω‡…È√¥≥€° ƒ„ΩÍ∆¿£≤°¶£π£∞∆¸ƒ∂°À
+               05  WRK-CONS-HYOJYUN-FUTAN4
+                                      PIC X(09)   VALUE   "197001010".
+      *        ¿∏≥ËŒ≈Õ‹°¶…∏Ω‡…È√¥≥€
+               05  WRK-CONS-HYOJYUN-FUTAN5
+                                      PIC X(09)   VALUE   "197001910".
+      *        ¿∏≥ËŒ≈Õ‹° £±°À°¶…∏Ω‡…È√¥≥€° ∞Ï»Ã°À
+               05  WRK-CONS-HYOJYUN-FUTAN6
+                                      PIC X(09)   VALUE   "197002010".
+      *        ¿∏≥ËŒ≈Õ‹° £≤°À°¶…∏Ω‡…È√¥≥€° ∞Ï»Ã°À
+               05  WRK-CONS-HYOJYUN-FUTAN7
+                                      PIC X(09)   VALUE   "197002110".
+      *        ¿∏≥ËŒ≈Õ‹°¶…∏Ω‡…È√¥≥€° ƒ„£≤°À
+               05  WRK-CONS-HYOJYUN-FUTAN8
+                                      PIC X(09)   VALUE   "197002210".
+      *        ¿∏≥ËŒ≈Õ‹°¶…∏Ω‡…È√¥≥€° ƒ„£±°À
+               05  WRK-CONS-HYOJYUN-FUTAN9
+                                      PIC X(09)   VALUE   "197002310".
+      *        ¿∏≥ËŒ≈Õ‹°¶…∏Ω‡…È√¥≥€° œ∑øÕƒ„£±° œ∑ °∞ ≥∞°À°À
+               05  WRK-CONS-HYOJYUN-FUTAN10
+                                      PIC X(09)   VALUE   "197002410".
+      *        ¿∏≥ËŒ≈Õ‹°¶…∏Ω‡…È√¥≥€° œ∑øÕƒ„£±° œ∑ °°À°À
+               05  WRK-CONS-HYOJYUN-FUTAN11
+                                      PIC X(09)   VALUE   "197002510".
+      *        ¿∏≥ËŒ≈Õ‹°¶…∏Ω‡…È√¥≥€° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ∞Ï»Ã°À
+               05  WRK-CONS-HYOJYUN-FUTAN12
+                                      PIC X(09)   VALUE   "197002710".
+      *        ¿∏≥ËŒ≈Õ‹°¶…∏Ω‡…È√¥≥€° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„£≤°¶£π£∞∆¸∞ ≤º°À
+               05  WRK-CONS-HYOJYUN-FUTAN13
+                                      PIC X(09)   VALUE   "197002810".
+      *        ¿∏≥ËŒ≈Õ‹°¶…∏Ω‡…È√¥≥€° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„£≤°¶£π£∞∆¸ƒ∂°À
+               05  WRK-CONS-HYOJYUN-FUTAN14
+                                      PIC X(09)   VALUE   "197002910".
+      *        ¿∏≥ËŒ≈Õ‹°¶…∏Ω‡…È√¥≥€° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„£±°À
+               05  WRK-CONS-HYOJYUN-FUTAN15
+                                      PIC X(09)   VALUE   "197003010".
       *    •Ï•ª•◊•»•≥•·•Û•»
            03  WRK-CONS-RECECOM-MAX
                                    PIC 9(02)   VALUE   48.
@@ -1134,8 +1164,6 @@
       *
            COPY    "MCPAREA".
       *
-      *    PUSH
-           COPY    "CPPUSHBATCH01.INC".
       *
       ****************************************************************
        LINKAGE                     SECTION.
@@ -1178,7 +1206,6 @@
                                                WRK-PARA-HOSPNUM
                                                WRK-PARA-CREYMD
                                                WRK-PARA-CREHMS
-                                               WRK-PARA-PRTKBN
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -5894,9 +5921,6 @@
                    RECE855-FILE
                    RECE88-FILE
       *
-      *    £–£’£”£»ƒÃ√ŒΩËÕ˝
-           PERFORM 3001-PUSH-SEC
-      *
       *    •π•∆•√•◊¥…Õ˝Ω™ŒªΩËÕ˝
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -5910,71 +5934,6 @@
       *
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £–£’£”£»ƒÃ√ŒΩËÕ˝
-      *****************************************************************
-       3001-PUSH-SEC        SECTION.
-      *
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           PERFORM 900-CALL-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN
-                                   =   ZERO  )
-           AND   ( JOB-KARTE-UID
-                               NOT =   SPACE )
-               INITIALIZE                  PUSHBA01-REC
-               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
-               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
-               MOVE    "000"           TO  PUSHBA01API-RESULT
-               MOVE    "receipt_make"  TO  PUSHBA01-EVENT
-               IF      WRK-PARA-SRYYM  =   ZERO
-                   MOVE    "9999-12"       TO  PUSHBA01-PERFORM-MONTH
-               ELSE
-                   MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE (1:7)
-                                           TO  PUSHBA01-PERFORM-MONTH
-               END-IF
-               MOVE    JOB-UPDCNT1     TO  WRK-CNT
-               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
-      *??
-             display "push=" PUSHBA01-REC "#"
-      *??
-               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
-               MOVE    "PUSHEVENT"     TO  MCP-FUNC
-               MOVE    "push_batch01"  TO  MCP-TABLE
-               MOVE    "push_batch01"  TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           END-IF
-           .
-       3001-PUSH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ∆¸…’ ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE               TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYMD (1:4)      TO  WRK-HEN-YY
-               MOVE    WRK-SYMD (5:2)      TO  WRK-HEN-MM
-               MOVE    WRK-SYMD (7:2)      TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-           .
-       801-DAYHEN01-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6162,11 +6121,7 @@
                                        TO  RECEDEN-CREHMS
       *
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           IF      WRK-PARA-PRTKBN     =   "B"
-               MOVE    "tbl_receden_tmp"   TO  MCP-TABLE
-           ELSE
-               MOVE    "tbl_receden"       TO  MCP-TABLE
-           END-IF
+           MOVE    "tbl_receden"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-DBINSERT-SEC
       *

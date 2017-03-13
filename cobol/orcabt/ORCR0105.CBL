@@ -226,17 +226,6 @@
       *  04.08.10    NACL-門脇    16/09/28  自賠責（第三者行為）
       *                                     保険別請求チェック表の機能追加
       *  04.08.11    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
-      *  04.08.12    NACL-門脇    17/03/17  保険別請求チェック表の機能追加
-      *                                     （公費請求書に関わる対応）
-      *  04.08.13    NACL-門脇    17/03/27  請求金額０円レセプト作成対応
-      *  04.08.14    NACL-藤原    17/04/12  請求点数不一致時の種別不明対応
-      *  04.08.15    NACL-藤原    17/05/26  直接請求する保険者に地方職員
-      *                                     共済組合を追加
-      *  04.08.16    NACL-門脇    17/07/03  （災１）等の記載を括弧なしで
-      *                                     記載するよう変更
-      *
-      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
-      *  05.00.02    NACL-伊藤    17/12/20  診療情報システム対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -601,17 +590,6 @@
                    07  WRK-TOKKINM-O
                                    PIC X(12).
       *
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY      PIC X(04).
-               05  WRK-HEN-H1      PIC X(01).
-               05  WRK-HEN-MM      PIC X(02).
-               05  WRK-HEN-H2      PIC X(01).
-               05  WRK-HEN-DD      PIC X(02).
-      *
-           03  WRK-CNT             PIC 9(10).
-           03  WRK-CNT-X           REDEFINES   WRK-CNT
-                                   PIC X(10).
-      *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
                    07  WRK-1033-HKNJANUM-G.
@@ -814,9 +792,6 @@
            03  WRK-TEKIYOU         PIC X(50).
            03  WRK-ADRS.
                05  WRK-ADRS-R      PIC X(50)  OCCURS  5.
-      *
-           03  WRK-TOTALTEN-OCC.
-               05  WRK-TOTALTEN    PIC 9(8)    OCCURS  5.
       *
       *    県単用項目ファイル用ワーク     
            COPY    "HC06.INC"      REPLACING  //HC06//
@@ -1064,6 +1039,8 @@
            03  WRK-SAIKEI.
                05  WRK-SAIKEIZ     PIC  ZZZZZZ9.
       *
+       01  WRK-CNT                 PIC  9(5).
+      *
       *    ＯＣＲ編集領域
        01  OCR1-AREA.
            03  OCR1-HKNJANUM                           PIC 9(08).
@@ -1249,10 +1226,6 @@
                05  FILLER          PIC X(52)   VALUE
                "０５９で始まる「その他材料コード」が使用されています". 
       *
-           03  WRK-ERR-MSG-18.
-               05  FILLER          PIC X(52)   VALUE
-               "請求点数と点数欄の合計が不一致です". 
-      *
            03  WRK-ERR-MSG-88.
                05  FILLER          PIC X(24)  VALUE
                    "公費が４つを超えています".
@@ -1400,9 +1373,6 @@
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    PUSH
-           COPY    "CPPUSHBATCH01.INC".
-      *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -1501,8 +1471,8 @@
                PERFORM 5001-DB-DELETE-SEC
            END-IF
       *
-      *    ＥＦファイル作成・連携基盤用・診療情報システム用のとき処理終了
-           IF      WRK-PARA-PRTKBN      =   "9" OR  "8" OR "B"
+      *    ＥＦファイル作成・連係基盤用のとき処理終了
+           IF      WRK-PARA-PRTKBN      =   "9" OR  "8"
                IF      WRK-PARA-PRTKBN      =   "8"
                    PERFORM 1001-EFOUT-CHECK-SEC
                END-IF
@@ -3542,15 +3512,15 @@
                            WHEN    8
                            WHEN    10
                            WHEN    11
-                               MOVE    "不詳"  TO  HC06-HEAD5
+                               MOVE    "（不詳）"  TO  HC06-HEAD5
                            WHEN    2
                            WHEN    7
-                               MOVE    "災１"  TO  HC06-HEAD5
+                               MOVE    "（災１）"  TO  HC06-HEAD5
                            WHEN    4
-                               MOVE    "災２"  TO  HC06-HEAD5
+                               MOVE    "（災２）"  TO  HC06-HEAD5
                            WHEN    5
-                               MOVE    "不詳・災１"
-                                               TO  HC06-HEAD5
+                               MOVE    "（不詳・災１）"
+                                                   TO  HC06-HEAD5
                        END-EVALUATE
                END-EVALUATE
            END-IF
@@ -3660,8 +3630,6 @@
                    MOVE    WRK-ERR-MSG-16  TO   HC06-HEAD4-G (5:)
                WHEN    15
                    MOVE    WRK-ERR-MSG-17  TO   HC06-HEAD4-G (5:)
-               WHEN    16
-                   MOVE    WRK-ERR-MSG-18  TO   HC06-HEAD4-G (5:)
                WHEN    88
                    MOVE    WRK-ERR-MSG-88  TO   HC06-HEAD4-G (5:)
            END-EVALUATE        
@@ -7456,15 +7424,15 @@
                          WHEN    8
                          WHEN    10
                          WHEN    11
-                             MOVE    "不詳"  TO  WRK-TITLE
+                             MOVE    "（不詳）"  TO  WRK-TITLE
                          WHEN    2
                          WHEN    7
-                             MOVE    "災１"  TO  WRK-TITLE
+                             MOVE    "（災１）"  TO  WRK-TITLE
                          WHEN    4
-                             MOVE    "災２"  TO  WRK-TITLE
+                             MOVE    "（災２）"  TO  WRK-TITLE
                          WHEN    5
-                             MOVE    "不詳・災１"
-                                             TO  WRK-TITLE
+                             MOVE    "（不詳・災１）"
+                                                   TO  WRK-TITLE
                  END-EVALUATE
                  INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
       * 
@@ -9294,8 +9262,7 @@
                MOVE    "8"             TO  RECE08-HKNJANUM-SRT
       *
                IF       RECE08-HKNJANUM (1:2)
-                                        =   "06"    OR  "63"    OR
-                                            "32"
+                                        =   "06"    OR  "63"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       5
                            OR      SYS-200505-HKNJANUM (IDX)
@@ -9950,13 +9917,6 @@
                MOVE  WRK-DAISAN-DATA  TO  RECE10-RESERVE-AREA(13:9)
            END-IF
       *
-      *    請求額情報（公費負担のうちレセプト請求しない地方公費分）を記録
-           IF    RECE02-SKYIRYO-KOHFTN-KOHSKY  NOT = ZERO
-               MOVE  RECE02-SKYIRYO-KOHFTN-KOHSKY
-                                      TO  WRK-DAISAN-FTNMONEY
-               MOVE  WRK-DAISAN-DATA  TO  RECE10-RESERVE-AREA(22:9)
-           END-IF
-      *
            IF      RECE02-SRYYM    >=  "201004"
                MOVE    RECE02-SKYIRYO-INF  TO  RECE10-SKYIRYO-INF
                PERFORM VARYING IDX FROM    1   BY  1
@@ -10260,8 +10220,8 @@
       *****************************************************************
        5001-DB-DELETE-SEC               SECTION.
       *
-      *    ＥＦファイル作成、連携基盤用、診療情報システム用のとき
-           IF      WRK-PARA-PRTKBN =   "9" OR  "8" OR  "B"
+      *    ＥＦファイル作成、連係基盤用のとき
+           IF      WRK-PARA-PRTKBN =   "9" OR  "8"
                IF      WRK-PARA-SYOKBN     =   "1"
                    INITIALIZE                      RECEDEN-REC
                    MOVE    WRK-PARA-HOSPNUM    TO  RECEDEN-HOSPNUM
@@ -10272,11 +10232,7 @@
                    IF      WRK-PARA-PRTKBN =   "9"
                        MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
                    ELSE
-                       IF      WRK-PARA-PRTKBN =   "8"
-                           MOVE    "tbl_efout"         TO  MCP-TABLE
-                       ELSE
-                           MOVE    "tbl_receden_tmp"   TO  MCP-TABLE
-                       END-IF
+                       MOVE    "tbl_efout"         TO  MCP-TABLE
                    END-IF
                    MOVE    "del1"              TO  MCP-PATHNAME
                    PERFORM 900-ORCDBMAIN-SEC
@@ -10288,15 +10244,9 @@
                           "ＥＦファイル作成削除処理でエラーとなりました"
                                                        TO  WRK-RECEERR
                        ELSE
-                           IF      WRK-PARA-PRTKBN =   "9"
-                               MOVE
-                               "連携基盤削除処理でエラーとなりました"
+                           MOVE
+                               "連係基盤削除処理でエラーとなりました"
                                                        TO  WRK-RECEERR
-                           ELSE
-                               MOVE
-                       "診療情報システム用削除処理でエラーとなりました"
-                                                       TO  WRK-RECEERR
-                           END-IF
                        END-IF
                        PERFORM 500-ERR-HENSYU-SEC
                        GO  TO  5001-DB-DELETE-EXT
@@ -10340,13 +10290,7 @@
                            IF      WRK-PARA-PRTKBN =   "9"
                                MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
                            ELSE
-                               IF      WRK-PARA-PRTKBN =   "8"
-                                   MOVE    "tbl_efout"         TO
-                                                               MCP-TABLE
-                               ELSE
-                                   MOVE    "tbl_receden_tmp"   TO
-                                                               MCP-TABLE
-                               END-IF
+                               MOVE    "tbl_efout"         TO  MCP-TABLE
                            END-IF
                            MOVE    "del2"              TO  MCP-PATHNAME
                            PERFORM 900-ORCDBMAIN-SEC
@@ -10359,15 +10303,9 @@
                           "ＥＦファイル作成削除処理でエラーとなりました"
                                                        TO  WRK-RECEERR
                                ELSE
-                                   IF      WRK-PARA-PRTKBN =   "9"
-                                       MOVE
-                               "連携基盤削除処理でエラーとなりました"
+                                   MOVE
+                               "連係基盤削除処理でエラーとなりました"
                                                        TO  WRK-RECEERR
-                                   ELSE
-                                       MOVE
-                       "診療情報システム用削除処理でエラーとなりました"
-                                                       TO  WRK-RECEERR
-                                   END-IF
                                END-IF
                                PERFORM 500-ERR-HENSYU-SEC
                                GO  TO  5001-DB-DELETE-EXT
@@ -11333,12 +11271,6 @@
                PERFORM 3001-MISEIKYU-FLG-KOUSIN-SEC
            END-IF 
       *
-      *    ＰＵＳＨ通知処理
-           IF    ( WRK-PARA-SHELLID
-                                   NOT =   "RECEPTX" )
-               PERFORM 3001-PUSH-SEC
-           END-IF
-      *
            DISPLAY "RECE02  CNT-IN  :"  CNT-RECE02
            DISPLAY "RECE02X CNT-IN  :"  CNT-RECE02X
            DISPLAY "        PAGE    :"  CNT-OUT
@@ -11349,7 +11281,6 @@
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    CNT-OUT         TO  JOB-UPDCNT
-               MOVE    CNT-RECE02      TO  JOB-UPDCNT1
                PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
@@ -11439,71 +11370,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ＰＵＳＨ通知処理
-      *****************************************************************
-       3001-PUSH-SEC        SECTION.
-      *
-           EVALUATE    WRK-PARA-RECEKBN
-               WHEN    "0"
-                   IF    ( SYS-2005-SYARECEKBN =   "1" OR  "3" )
-                   AND   ( SYS-2005-KKHRECEKBN =   "1" OR  "3" )
-                   AND   ( SYS-200501-KOUIKIRECEKBN
-                                               =   "1" OR  "3" )
-                       GO  TO  3001-PUSH-EXT
-                   END-IF
-               WHEN    "1"
-                   IF      SYS-2005-SYARECEKBN =   "1" OR  "3"
-                       GO  TO  3001-PUSH-EXT
-                   END-IF
-               WHEN    "2"
-                   IF      SYS-2005-KKHRECEKBN =   "1" OR  "3"
-                       GO  TO  3001-PUSH-EXT
-                   END-IF
-               WHEN    "7"
-                   IF      SYS-200501-KOUIKIRECEKBN
-                                               =   "1" OR  "3"
-                       GO  TO  3001-PUSH-EXT
-                   END-IF
-           END-EVALUATE
-      *
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           PERFORM 900-CALL-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN
-                                   =   ZERO  )
-           AND   ( JOB-KARTE-UID
-                               NOT =   SPACE )
-               INITIALIZE                  PUSHBA01-REC
-               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
-               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
-               MOVE    "000"           TO  PUSHBA01API-RESULT
-               MOVE    "receipt_make"  TO  PUSHBA01-EVENT
-               IF      WRK-PARA-SRYYM  =   ZERO
-                   MOVE    "9999-12"       TO  PUSHBA01-PERFORM-MONTH
-               ELSE
-                   MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE (1:7)
-                                           TO  PUSHBA01-PERFORM-MONTH
-               END-IF
-               MOVE    CNT-RECE02      TO  WRK-CNT
-               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
-      *??
-             display "push=" PUSHBA01-REC "#"
-      *??
-               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
-               MOVE    "PUSHEVENT"     TO  MCP-FUNC
-               MOVE    "push_batch01"  TO  MCP-TABLE
-               MOVE    "push_batch01"  TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           END-IF
-           .
-       3001-PUSH-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    一時ファイル名取得処理
       *****************************************************************
        800-FILENM-SET-SEC        SECTION.
@@ -11512,29 +11378,6 @@
            MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
            .
        800-FILENM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    日付編集処理
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE               TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYMD (1:4)      TO  WRK-HEN-YY
-               MOVE    WRK-SYMD (5:2)      TO  WRK-HEN-MM
-               MOVE    WRK-SYMD (7:2)      TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-           .
-       801-DAYHEN01-EXT.
            EXIT.
       *
       *****************************************************************
@@ -11565,7 +11408,6 @@
                    AND   ( RECE02-TOTALTEN (3) =   ZERO )
                    AND   ( RECE02-TOTALTEN (4) =   ZERO )
                    AND   ( RECE02-TOTALTEN (5) =   ZERO )
-                   AND   ( RECE02-SKYZEROFLG   =   ZERO )
                        IF      RECE02-RECESYUBETU  NOT =   8888 AND ZERO
                            GO  TO  990-RECE02-READ-SEC
                        END-IF
@@ -11574,11 +11416,8 @@
                            GO  TO  990-RECE02-READ-SEC
                        END-IF
                    END-IF
-      *
+      *        
                    DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
-                           " SRYYM="        RECE02-SRYYM
-                           " RECESYUBETU="  RECE02-RECESYUBETU
-                           " ERR-ERRKBN="   RECE02-ERR-ERRKBN
                            " RJNGAIKOHFTN(1)="
                                             RECE02-RJNGAIKOHFTN (1)
       *
@@ -11602,44 +11441,6 @@
                        MOVE    "01"            TO  WRK-SYS-SRYYMD(7:2)
                        PERFORM 900-SYSKANRI-HENSYU-SEC
                    END-IF    
-      *
-      *            請求点と点数欄の合計をチェック
-                   IF      RECE02-ERR-ERRKBN   =   ZERO
-                       INITIALIZE              WRK-TOTALTEN-OCC
-      *
-                       PERFORM VARYING IDY     FROM    1   BY  1
-                               UNTIL   IDY     >       5
-                           PERFORM VARYING IDX     FROM    1   BY  1
-                                   UNTIL   IDX     >       45
-                               ADD     RECE02-TENSU (IDX IDY)
-                                               TO  WRK-TOTALTEN (IDY)
-                           END-PERFORM
-                       END-PERFORM
-      *
-                       IF    ( RECE02-TOTALTEN (1)
-                                             NOT =   WRK-TOTALTEN (1) )
-                       OR    ( RECE02-TOTALTEN (2)
-                                             NOT =   WRK-TOTALTEN (2) )
-                       OR    ( RECE02-TOTALTEN (3)
-                                             NOT =   WRK-TOTALTEN (3) )
-                       OR    ( RECE02-TOTALTEN (4)
-                                             NOT =   WRK-TOTALTEN (4) )
-                       OR    ( RECE02-TOTALTEN (5)
-                                             NOT =   WRK-TOTALTEN (5) )
-                           MOVE    16            TO  RECE02-ERR-ERRKBN
-      *
-                           DISPLAY "TOTALTEN (1)=" WRK-TOTALTEN    (1)
-                                               "#" RECE02-TOTALTEN (1)
-                           DISPLAY "TOTALTEN (2)=" WRK-TOTALTEN    (2)
-                                               "#" RECE02-TOTALTEN (2)
-                           DISPLAY "TOTALTEN (3)=" WRK-TOTALTEN    (3)
-                                               "#" RECE02-TOTALTEN (3)
-                           DISPLAY "TOTALTEN (4)=" WRK-TOTALTEN    (4)
-                                               "#" RECE02-TOTALTEN (4)
-                           DISPLAY "TOTALTEN (5)=" WRK-TOTALTEN    (4)
-                                               "#" RECE02-TOTALTEN (5)
-                       END-IF
-                   END-IF
            END-READ
            .
        990-RECE02-READ-EXT.

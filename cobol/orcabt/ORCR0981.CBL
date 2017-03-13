@@ -55,8 +55,6 @@
       *  04.08.05    NACL-ÃÁœ∆    16/08/23  ª˝ª≤ÃÙ¬–±˛
       *  04.08.06    NACL-ÃÁœ∆    16/09/15  •Í•œ•”•Í•ﬁ•π•øƒ…≤√¬–±˛
       *  04.08.07    NACL-∆£∏∂    17/03/02  Ã§•≥°º•…≤Ω∆√ƒÍ¥Ô∫‡•≥°º•…«—ªﬂ¬–±˛
-      *  04.08.08    NACL-ÃÁœ∆    18/03/01   ø¿Æ£≥£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.08.09    NACL-ÃÁœ∆    18/03/27   ø¿Æ£≥£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -854,7 +852,7 @@
                    07  TBL-RYOCOM2-ADL-SRYCD-H22     PIC  X(09).
                    07  TBL-RYOCOM2-ADL-TEN-H22       PIC  9(02).
                    07  TBL-RYOCOM2-ADL-TEN-MOJI-H22  PIC  X(04).
-               05  TBL-RYOCOM2-INF5            OCCURS  31.
+               05  TBL-RYOCOM2-INF4            OCCURS  31.
                  06  TBL-RYOCOM2-DAY           PIC  9(01).
       *
        01  TBL-CYOJKSN-INF.
@@ -7451,20 +7449,11 @@
            AND  (FLG-RECE85        =  ZERO                         )
            AND  (WRK-RECE85-SRYCD(1)  =  "190108890" OR "190142190"
                                       OR "190108790" OR "190142090"
-                                      OR "190109090"
+                                      OR "190108990" OR "190109090"
                                       OR "190142290" OR "190141590"
                                       OR "190153190" OR "190153390"
                                       OR "190153290" OR "190153090"
-                                      OR "190182990"
-      ***                             OR "190161470" OR "190161570"
-      ***                             OR "190161870" OR "190162070"
-      ***                             OR "190161670" OR "190161770"
-      ***                             OR "190161970" OR "190162170"
-      ***                             OR "190198570" OR "190198670"
-                                      OR "190213790" OR "190214290"
-                                      OR "190213890" OR "190214090"
-                                      OR "190214390" OR "190213990"
-                                      OR "190214190"               )
+                                      OR "190182990"               )
               MOVE    1     TO    FLG-NG
            END-IF
       *
@@ -8713,9 +8702,6 @@
                   ADD    1             TO      IDX-RECE85
                   MOVE   RECE85-SRYACT-TBL(IDX)
                              TO   WRK-RECE85XX-SRYACT-TBL(IDX-RECE85 1)
-                  IF   RECE84-ZAITEN   =   ZERO
-                     PERFORM   2001111-SRYACTINF-NAME-HEN-SEC
-                  END-IF
                   IF  (RECE84-JIHOKBN  NOT =  SPACE)
                   AND (RECE84-ZAIKBN       =   4   )
                      MOVE  ZERO
@@ -8787,27 +8773,6 @@
       *
            .
        200111-SRYACTINF-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £∞£µ°°£”£“£Ÿ£¡£√£‘£…£Œ£∆°°ÃææŒ ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       2001111-SRYACTINF-NAME-HEN-SEC     SECTION.
-      *
-           IF    RECE82-SRYYM      >=    "201604"
-             EVALUATE   WRK-RECE85XX-SRYCD(IDX-RECE85 1)
-      *
-               WHEN   "190111590"
-                 MOVE  "810000001" TO  WRK-RECE85XX-SRYCD(IDX-RECE85 1)
-                 MOVE   ZERO    TO  WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
-                 MOVE   8       TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
-                 MOVE  "≥∞«Ò° ¡™ƒÍŒ≈Õ‹°À"
-                                TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
-             END-EVALUATE
-           END-IF
-      *
-           .
-       2001111-SRYACTINF-NAME-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10419,7 +10384,7 @@
                     IF   (RECE851-SRYCD(IDX) =
       *1
                           "113000410" OR "113000510" OR "180000110" OR
-                          "180000210" OR "113023910" OR
+                          "180000210" OR
       *3
                           "113001210" OR "113001310" OR "113002110" OR
       *4
