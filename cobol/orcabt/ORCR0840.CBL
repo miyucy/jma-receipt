@@ -4434,8 +4434,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  OR   (RECE82-RECESYUBETU  =  "0000"      )
                  OR   (RECE82-ERR-ERRKBN   >   ZERO       )
                  OR   (SRY-SRYKBN          =  "95" OR "96")
-                 OR   ((WRK-PARA-PRTKBN    =  "1"   ) AND
-                       (ACCT-ZAITEN        =   ZERO )     )
+      ***        OR   ((WRK-PARA-PRTKBN    =  "1"   ) AND
+      ***              (ACCT-ZAITEN        =   ZERO )     )
                    CONTINUE
                  ELSE
                    MOVE     15      TO  RECE82-ERR-ERRKBN
