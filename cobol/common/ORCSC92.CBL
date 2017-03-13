@@ -4001,7 +4001,7 @@
       *H25.2
       *    ¼«ÇåÀÕÆÃÄê¥³¡¼¥É¤ÎÃ±°Ì
       **** IF     (SPA-COM-INPUTCD (IDX-T)(1:5)    =   "09593" )
-      *H29.3   ¼«Èñ¤ÎÌôºÞ¤Î¤ß
+      *H29.2   ¼«Èñ¤ÎÌôºÞ¤Î¤ß
            IF     (SPA-COM-INPUTCD (IDX-T)(1:3)    =   "095"
                                                    OR  "096" )
               AND (TNS-TANICD              NOT =   ZERO   )
@@ -5920,6 +5920,26 @@
                       TNS-NAME             DELIMITED   BY  SPACE
                       INTO             WRK-MEISYO
                END-STRING
+               MOVE    WRK-MEISYO          TO  TNS-NAME
+           END-IF
+      *
+      *H29.3
+      *    ´ïºàÊÌÉ½¶èÊ¬ÊÔ½¸
+           IF     (TNS-SRYCD(1:1)      =   "7" )
+             AND  (TNS-CDKBN-BU        =   "01"
+                                       OR  "08" )
+               MOVE    SPACE               TO  WRK-MEISYO
+               IF      TNS-CDKBN-BU        =   "01"
+                   STRING  "¡Úºß¡Û"            DELIMITED   BY  SIZE
+                          TNS-NAME             DELIMITED   BY  SPACE
+                          INTO                 WRK-MEISYO
+                   END-STRING
+               ELSE
+                   STRING  "¡ÚÄ´¡Û"            DELIMITED   BY  SIZE
+                          TNS-NAME             DELIMITED   BY  SPACE
+                          INTO                 WRK-MEISYO
+                   END-STRING
+               END-IF
                MOVE    WRK-MEISYO          TO  TNS-NAME
            END-IF
       *!!
