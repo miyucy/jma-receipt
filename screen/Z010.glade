@@ -894,7 +894,7 @@
         <class>GtkLabel</class>
         <name>label13</name>
         <x>248</x>
-        <y>464</y>
+        <y>467</y>
         <width>80</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -930,7 +930,7 @@
         <class>GtkLabel</class>
         <name>label15</name>
         <x>248</x>
-        <y>524</y>
+        <y>528</y>
         <width>80</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -947,7 +947,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label16</name>
-        <x>532</x>
+        <x>536</x>
         <y>436</y>
         <width>80</width>
         <height>24</height>
@@ -1149,8 +1149,8 @@
       <widget>
         <class>GtkLabel</class>
         <name>label17</name>
-        <x>532</x>
-        <y>468</y>
+        <x>536</x>
+        <y>467</y>
         <width>110</width>
         <height>24</height>
         <sensitive>True</sensitive>
