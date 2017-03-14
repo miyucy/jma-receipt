@@ -85,7 +85,6 @@
            03  FLG-GENERICPRICE        PIC 9(01).
            03  FLG-TENSUPLUS           PIC 9(01).
            03  FLG-PSYCHOTROPIC        PIC 9(01).
-           03  FLG-TENSUPRICE          PIC 9(01).
       *H27.9
            03  FLG-SET-SEL             PIC 9(01).
            03  FLG-SETKBN              PIC 9(01).
@@ -400,10 +399,6 @@
       *    ¸þÀº¿ÀÌôÀ®Ê¬¥³¡¼¥É
        01  PSYCHOTROPIC-REC.
            COPY    "CPPSYCHOTROPIC.INC".
-      *v5.0
-      *    ÅÀ¿ô¥Þ¥¹¥¿´ïºà¶â³Û
-        01 TENSU-PRICE-REC.
-           COPY    "CPTENSU-PRICE.INC".
       *
       *
       *****************************************************************
@@ -1831,8 +1826,7 @@
                IF      SPA-KT98-GMN-SYORI3      =   "U6"
                    IF      TNS-SRYCD           >=  "099999911"
                        IF     (TNS-SRYCD           >=  "099999921"
-      *H29.10                                  AND <=  "099999929" )
-                                               AND <=  "099999949" )
+                                               AND <=  "099999929" )
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-CHK
@@ -2243,22 +2237,6 @@
                                                              (IDX)
            MOVE    TNS-TEN             TO  SPA-KT98-GMN-KISOTEN
                                                             (IDX)
-      *H29.2
-      *    ´ïºà¥æ¡¼¥¶¡¼¶â³ÛÊÔ½¸¡Ê»ÀÁÇÅù¡Ë
-           IF     (TNS-SRYCD(1:1)      =   "7" )
-      *        »ÀÁÇÅù¡¢ÅÔÆ»ÉÜ¸©¹ØÆþ²Á³Ê
-              AND ((TNS-TOKUKIZAISBT1  =   "2"
-                                       OR  "3"
-                                       OR  "4" )  OR
-                   (TNS-TENSIKIBETU    =   "2" ))
-               PERFORM 9103-TENSUPRICE-READ-SEC
-               IF    ( FLG-TENSUPRICE      =   ZERO )
-                 AND ( TNSPR-PRICE     NOT =   ZERO )
-                   MOVE    TNSPR-PRICE         TO  SPA-KT98-GMN-KISOTEN
-                                                            (IDX)
-               END-IF
-           END-IF
-      *
       *H28.4
       *    ÌôºÞ¡¡½ü»»¶â³Û¡Ê£±£°¤Ç½ü¤¹¡Ë
            IF     (TNS-SRYCD(1:1)      =   "6"  ) AND
@@ -2538,26 +2516,6 @@
                         TNS-NAME           DELIMITED   BY  SIZE
                                INTO        SPA-KT98-GMN-NAME(IDX)
                 END-STRING
-      *H29.3
-           WHEN    3
-                MOVE    SPACE              TO  SPA-KT98-GMN-NAME (IDX)
-                STRING  WRK-MSG-2          DELIMITED   BY  SPACE
-                        "¡Ú"
-                        WRK-PSY-MEI        DELIMITED   BY  SPACE
-                        "ÀèÌµ²Ã¡Û"         DELIMITED   BY  SIZE
-                        TNS-NAME           DELIMITED   BY  SIZE
-                               INTO        SPA-KT98-GMN-NAME(IDX)
-                END-STRING
-           WHEN    4
-                MOVE    SPACE              TO  SPA-KT98-GMN-NAME (IDX)
-                STRING  WRK-MSG-2          DELIMITED   BY  SPACE
-                        "¡Ú"
-                        WRK-PSY-MEI        DELIMITED   BY  SPACE
-                        "²Ã¡Û"             DELIMITED   BY  SIZE
-                        TNS-NAME           DELIMITED   BY  SIZE
-                               INTO        SPA-KT98-GMN-NAME(IDX)
-                END-STRING
-      *
            WHEN    OTHER
                MOVE    SPACE              TO  SPA-KT98-GMN-NAME (IDX)
                IF      WRK-PSY-MEI        =   SPACE
@@ -5769,8 +5727,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
@@ -5931,45 +5889,6 @@
            .
        975-INPSET-READ-EXT.
            EXIT.
-      *H29.2
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿´ïºà¶â³ÛÉÕ²Ã¾ðÊó¤è¤êÊÔ½¸½èÍý
-      *****************************************************************
-       9103-TENSUPRICE-READ-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  TENSU-PRICE-REC
-           INITIALIZE                  TENSU-PRICE-REC
-           MOVE    SPA-HOSPNUM         TO  TNSPR-HOSPNUM
-           MOVE    TNS-SRYCD           TO  TNSPR-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOEDYMD
-      *
-           MOVE    TENSU-PRICE-REC     TO  MCPDATA-REC
-           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TENSU-PRICE-REC
-                   MOVE    ZERO                TO  FLG-TENSUPRICE
-               ELSE
-                   MOVE    1                   TO  FLG-TENSUPRICE
-                   INITIALIZE                      TENSU-PRICE-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-TENSUPRICE
-               INITIALIZE                      TENSU-PRICE-REC
-           END-IF
-           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       9103-TENSUPRICE-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
       *****************************************************************
