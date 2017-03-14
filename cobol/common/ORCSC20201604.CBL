@@ -2872,13 +2872,13 @@
                END-IF
            END-IF
       *H28.4
-      *    保険毎の逓減計算（外用）
-           INITIALIZE                  WRK-HKNKEISP-G
+      *    保険毎の逓減計算（外用）（入力チェックの後へ）
+      *    INITIALIZE                  WRK-HKNKEISP-G
       *    湿布薬７０枚以上
-           IF      FLG-SIP70-ARI      =   1
+      *    IF      FLG-SIP70-ARI      =   1
       *        剤点数再計算
-               PERFORM 2009-SIP-SAIKEISAN-SEC
-           END-IF
+      *        PERFORM 2009-SIP-SAIKEISAN-SEC
+      *    END-IF
       *
       *H26.10
       *    抗精神薬剤投与チェック処理
@@ -2899,6 +2899,16 @@
       *    入力分のチェック
            IF      SPA-ERRCD           =   SPACE
                PERFORM 3003-CHEK-SYORI-SEC
+           END-IF
+      *H28.4
+      *    保険毎の逓減計算（外用）
+           INITIALIZE                  WRK-HKNKEISP-G
+           IF      SPA-ERRCD           =   SPACE
+      *        湿布薬７０枚以上
+               IF      FLG-SIP70-ARI      =   1
+      *            剤点数再計算
+                   PERFORM 2009-SIP-SAIKEISAN-SEC
+               END-IF
            END-IF
       *
            IF     (LNK-ORCSC-KIDCD     NOT =   SPACE )  OR
@@ -3728,7 +3738,6 @@
                END-IF
            END-IF
       *
-      *
       *H29.3
       *    処方料の入力チェック
            IF     (SPA-NYUGAIKBN       =   "2" )
@@ -3799,9 +3808,8 @@
                END-EVALUATE
       *        湿布70枚以上
                IF     (FLG-SIP70-ARI       =   1    )
-                  AND (SPA-ERRCD           =   SPACE)
                    MOVE    "0244"          TO  SPA-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR
+                   MOVE    "1"             TO  WRK-COM-CUR
                                                    (IDX-SYOHOU2)
                END-IF
       *
