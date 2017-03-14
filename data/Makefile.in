@@ -40,6 +40,8 @@ ORCADATA_files = \
 	SKDEF2003.yml \
 	SKDEF2006.yml \
 	SKDEF4100.yml \
+	SKDEF3004.yml \
+	SKDEF9700.yml \
 
 all:   
 
