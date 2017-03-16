@@ -57,7 +57,15 @@ ORCADATA_files = \
 	SKDEF5113.yml \
 	SKDEF5114.yml \
 	SKDEF5115.yml \
-
+	SKDEF2007.yml \
+	SKDEF1011.yml \
+	SKDEF1018.yml \
+	SKDEF1021.yml \
+	SKDEF1022.yml \
+	SKDEF1026.yml \
+	SKDEF1027.yml \
+	SKDEF1028.yml \
+	SKDEF1030.yml \
 
 all:   
 
