@@ -537,10 +537,11 @@
       *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
-           END-IF
-           IF      WRK-ERRCD       NOT =   SPACE
+           ELSE
       *        編集処理
                PERFORM 20010-INPUT-HEN-SEC
+           END-IF
+           IF      WRK-ERRCD       NOT =   SPACE
                MOVE    SPACE               TO  WRK-KEICD-G
       *        API処理登録
                IF     (WRK-ORCA-UID    NOT =   SPACE )
