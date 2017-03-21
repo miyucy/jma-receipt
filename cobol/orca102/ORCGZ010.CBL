@@ -1110,7 +1110,7 @@
            END-IF
       *
            IF     (SPA-ERRCD           =  SPACE )
-             AND  (SPA-Z010-YUKOSTYMD  NOT =   SPA-Z010-NAI-YUKOSTYMD)
+             AND  (SPA-Z01-YUKOSTYMD   NOT =   SPA-Z010-NAI-YUKOSTYMD)
       *        １日であること
                IF     SPA-Z010-NAI-YUKOSTYMD(7:2)  =   "01"
                                                    OR  "00"

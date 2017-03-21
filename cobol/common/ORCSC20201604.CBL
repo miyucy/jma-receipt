@@ -4247,7 +4247,7 @@
       *H29.3
       *H29.4から       先発なし後発医薬品（加算対象）判定
                        IF      (WRK-COM-KOUHATUKBN (IDX) =   "3" )
-                          AND  (SPA-SRYYMD         >=   "20170401")
+      ******              AND  (SPA-SRYYMD         >=   "20170401")
                            ADD     1               TO  CNT-GENERIC
                            IF      (FLG-CHK-P      =   ZERO)
                                MOVE    1           TO  FLG-GENERIC-NO
