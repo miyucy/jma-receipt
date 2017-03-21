@@ -155,12 +155,6 @@
       *  04.08.06    NACL-門脇    16/05/30  １９原爆一般の特殊計算対応
       *  04.08.07    NACL-門脇    17/03/17  保険別請求チェック表の機能追加
       *                                     （公費請求書に関わる対応）
-      *  04.08.08    NACL-門脇    17/03/27  請求金額０円レセプト作成対応
-      *  04.08.09    NACL-門脇    17/09/26  平成２９年１０月改正
-      *                                     （入院時生活療養費の見直し）
-      *  04.08.10    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
-      *                                     での食事算定対応
-      *  04.08.11    NACL-門脇    18/03/27  平成３０年４月改正対応
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -624,8 +618,6 @@
                                           OCCURS  4.
       *低所得フラグ３（食事判定用）
            03  RECE62-TEISYOTOKU3         PIC  X(01).
-           03  RECE62-TEISYOTOKU3-KKSKBN  PIC  X(01).
-           03  RECE62-TEISYOTOKU3-SKJKBN  PIC  X(01)  OCCURS 31.
       *高齢者フラグ
            03  RECE62-KOUREI              PIC  X(01).
       *高齢者一部負担金再掲
@@ -1054,17 +1046,6 @@
                05  RECE62-GENBAKU-OCC           OCCURS 10.
                    07  RECE62-GENBAKU-FTNKIN    PIC 9(07)V9(01).
                    07  RECE62-GENBAKU-IDX       PIC 9(01).
-      *
-      *請求点数０円レセプト作成フラグ
-           03  RECE62-SKYZEROFLG                PIC 9(01).
-      *
-      *入院料算定日テーブル情報（ＥＦ用）
-           03  RECE62-EF-NYUINDAY-TBL.
-               05  RECE62-EF-NYUINDAY-KBN       PIC X(01)  OCCURS 31.
-      *
-      *夜間看護体制特定日減算情報
-           03  RECE62-KANGOGENINF.
-               05  RECE62-KANGOGEN-SRYCD        PIC X(09)  OCCURS 31.
       *
       *予備
            03  RECE62-YOBIETC-AREA.
