@@ -158,10 +158,6 @@
            03  WRK-DRCD                PIC X(05).
            03  WRK-DRCD-NAME           PIC X(80).
            03  WRK-RENNUM              PIC 9(01).
-      *    負担率・額編集
-           03  WRK-FTNRATE             PIC 9(02)V99.
-           03  WRK-Z9                  PIC 9.ZZ.
-           03  WRK-FTNRATEMEI          PIC X(04).
       *
       *    入院日
       *    03  WRK-NYUIN-DATE          PIC X(10).
@@ -183,9 +179,6 @@
            03  WRK-APIV3DATA-REC.
       *        レスポンス番号
                05  WRK-RESPONSE-NUMBER     PIC X(02).
-      *        処理ＰＧ
-               05  WRK-PARA-SYORIPG        PIC X(02).
-      *
                05  WRK-SELECT-CODE         PIC X(04).
       *        処理区分
                05  WRK-PARA-MODE           PIC X(03).
@@ -470,21 +463,19 @@
       *****************************************************************
        1001-ORCSCOMMON-SEC           SECTION.
       *
-      *    システム日付で検索
-      ***  診療日をシステム日付へ
-      *    IF      MDCREQ-PERFORM-DATE NOT =   SPACE
-      *        MOVE    MDCREQ-PERFORM-DATE TO  WRK-HEN-DATE
-      *        MOVE    SPACE               TO  WRK-HEN-TIME
-      *        PERFORM 802-DAYHEN02-SEC
-      *        MOVE    WRK-SYMD            TO  WRK-PERFORM-YMD
-      *        PERFORM 20011-PERFORM-CHK-SEC
+      *    診療日をシステム日付へ
+           IF      MDCREQ-PERFORM-DATE NOT =   SPACE
+               MOVE    MDCREQ-PERFORM-DATE TO  WRK-HEN-DATE
+               MOVE    SPACE               TO  WRK-HEN-TIME
+               PERFORM 802-DAYHEN02-SEC
+               MOVE    WRK-SYMD            TO  WRK-PERFORM-YMD
+               PERFORM 20011-PERFORM-CHK-SEC
       *        診療日をシステム日付へ
-      *        IF      WRK-ERRCD           =   SPACE
-      *            MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
-      *        END-IF
-      *        MOVE    SPACE               TO  WRK-ERRCD
-      *****END-IF
-      *
+               IF      WRK-ERRCD           =   SPACE
+                   MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
+               END-IF
+               MOVE    SPACE               TO  WRK-ERRCD
+           END-IF
       *
            MOVE    "API"               TO  SPA-MOTOPG
       *    ＳＰＡ共通設定
@@ -500,7 +491,6 @@
                MOVE   "89"             TO  WRK-ERRCD
            END-IF
            MOVE    SPACE               TO  SPA-MOTOPG
-      *
            .
        1001-ORCSCOMMON-EXT.
            EXIT.
@@ -929,6 +919,8 @@
                MOVE    MDCRES-INFORMATION-DATE
                                            TO  MDCRES-PERFORM-DATE
            END-IF
+      *    診療日をシステム日付・診療日付へ
+      **** MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
       *
            MOVE    WRK-PERFORM-YMD     TO  SPA-SRYYMD
       *    診療科
@@ -1365,9 +1357,6 @@
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
       *    訂正処理
            MOVE    1                   TO  SPA-SYORIFLG
-      *H29.5
-      *    HAORI処理
-           MOVE    1                   TO  SPA-API-FLG
       *    初診算定日は変更しない
       **** MOVE    SPA-GMN-SYOSINYMD   TO  WRK-SPA-GMN-SYOSINYMD
       *
@@ -1419,7 +1408,6 @@
       *    保険組合せ編集
            INITIALIZE                   MDCRES-INSURANCE-G
            MOVE    SPA-HKNCOMBINUM     TO  MDCRES-COMBINATION-NUMBER
-      *
       *    包括分入力
            IF     (SPA-HKNCOMBINUM     =   "9999" )
                MOVE    9999            TO  WRK-HKNCOMBI
@@ -1427,29 +1415,6 @@
            ELSE
       *        保険組合せ編集処理
                PERFORM 2002101-HKNHEN-TBL-SEC
-      *
-      *        保険負担割合
-               INITIALIZE                  ORCSAGECHKAREA
-               MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
-               MOVE    SPA-PTID            TO  AGECHK-PTID
-               MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
-               MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
-               MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
-               MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
-               CALL    "ORCSAGECHK"        USING
-                                           ORCSAGECHKAREA
-                                           SPA-AREA
-               IF      AGECHK-FTNRATE  NOT =   ZERO
-      *           負担率
-                   COMPUTE WRK-FTNRATE         =   AGECHK-FTNRATE
-                                               /   100
-                   MOVE    WRK-FTNRATE         TO  WRK-Z9
-                   MOVE    WRK-Z9              TO  WRK-FTNRATEMEI
-                   MOVE    WRK-FTNRATEMEI
-                                       TO  MDCRES-COMBINATION-RATE
-               ELSE
-                   MOVE    "0"         TO  MDCRES-COMBINATION-RATE
-               END-IF
            END-IF
       *
            .
@@ -1553,13 +1518,6 @@
                     MOVE    "True"         TO  MDCRES-INCLUSION-CLASS
                                                                 (IDX)
                END-IF
-      *H29.5
-      *        包括検査の検査数
-               IF      ORAPISUB2-HKTKNSA-CNT (IDX) >   ZERO
-                   MOVE    ORAPISUB2-HKTKNSA-CNT (IDX)
-                                               TO  MDCRES-HKTKNSA-CNT
-                                                                (IDX)
-               END-IF
       *        剤内容
                PERFORM VARYING IDY     FROM    1   BY  1
                        UNTIL   (IDY            >   50    )
@@ -1601,23 +1559,6 @@
                    MOVE    ORAPISUB2-PRSCRPT-AUTOKBN (IDX IDY)
                                        TO  MDCRES-PRSCRPT-AUTOKBN
                                                             (IDX IDY)
-      *H29.5
-      *            単位コード
-                   MOVE    ORAPISUB2-PRSCRPT-TANICD (IDX IDY)
-                                       TO  MDCRES-PRSCRPT-TANICD
-                                                            (IDX IDY)
-                   MOVE    ORAPISUB2-PRSCRPT-TANICD-NAME (IDX IDY)
-                                       TO  MDCRES-PRSCRPT-TANICD-NAME
-                                                            (IDX IDY)
-      *            フィルム分画数
-                   MOVE    ORAPISUB2-PRSCRPT-FILMNUM (IDX IDY)
-                                       TO  MDCRES-PRSCRPT-FILMNUM
-                                                            (IDX IDY)
-      *            加算自動算定なし
-                   MOVE    ORAPISUB2-PRSCRPT-NOAUTO (IDX IDY)
-                                       TO  MDCRES-PRSCRPT-NOAUTO
-                                                            (IDX IDY)
-      *
                END-PERFORM
            END-PERFORM
            IF     (ORAPISUB2-ERRCD NOT =   SPACE )
@@ -1927,8 +1868,6 @@
            MOVE    SPACE               TO  WRK-APIV3DATA-REC
            MOVE    MDCRES-RESPONSE-NUMBER
                                        TO  WRK-RESPONSE-NUMBER
-      *    処理ＰＧ
-           MOVE    "01"                TO  WRK-PARA-SYORIPG
            MOVE    WRK-DENPNUM         TO  WRK-PARA-DENPNUM
            MOVE    WRK-SYORI-MODE      TO  WRK-PARA-MODE
            MOVE    MDCRES-SELECT-CODE
@@ -2008,15 +1947,6 @@
                MOVE    "08"                TO  WRK-ERRCD
            END-IF
       *
-      *
-           IF     (WRK-ERRCD               =   SPACE )
-             AND  (MDCREQ-REQUEST-NUMBER   NOT =   "01"  )
-      *        リクエスト０１以外は、同じ処理の続きであること
-      *        診療行為登録の処理の続きであること
-               IF      WRK-PARA-SYORIPG    NOT =   "01"
-                   MOVE    "08"                TO  WRK-ERRCD
-               END-IF
-           END-IF
       *
            .
        2009-PARA-INIT-EXT.

@@ -28,10 +28,6 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  04.08.00    NACL-Â¿¡¹Ç¼  15/11/XX  ¥»¥Ã¥ÈÅÐÏ¿ÂÐ±þÂ¾
-      *  04.08.00    NACL-Â¿¡¹Ç¼  17/05/XX  Êñ³ç¸¡ºº¿ô¡¢Ã±°Ì¥³¡¼¥ÉÂÐ±þ
-      *                                     ¥Õ¥£¥ë¥àÊ¬²è¿ôÅùÂÐ±þ
-      *  05.01.00    NACL-Â¿¡¹Ç¼  19/09/XX  ²þ¹Ô¥³¡¼¥É¥¨¥é¡¼
-      *  05.00.00    NACL-Â¿¡¹Ç¼  17/11/XX  Æþ±¡ÂÐ±þÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -120,41 +116,6 @@
       *
            03  WRK-GYOUMUID            PIC X(04).
       *
-           03  WRK-JIDO-KBN            PIC X(01).
-      *
-      *H29.12
-      *    Æþ±¡Æü»ØÄê
-      *    03  TBL-NYUINDAY-AREA.
-      *        05  TBL-NYUINDAY-OCC        OCCURS   31.
-      *            07  TBL-NYUINDAY        PIC 9(01).
-           03  WRK-NISUU-AREA.
-               05  WRK-NISUU-TBL           OCCURS   31.
-                   07  WRK-DAY             PIC 9(02).
-                   07  WRK-SEL             PIC X(01).
-           03  IDN1                    PIC 9(04).
-           03  IDN2                    PIC 9(04).
-           03  IDN3                    PIC 9(04).
-           03  IDN4                    PIC 9(04).
-           03  FLG-DAY                 PIC 9(01).
-           03  WRK-H-DAY               PIC 9(02).
-           03  WRK-H-SEL               PIC X(01).
-           03  WRK-KAISU-H             PIC X(04).
-      *    ËöÆü
-           03  WRK-MATU                PIC 9(02).
-      *    ¿ÇÎÅÆüÉÕ
-           03  WRK-SRYYMD.
-               05  WRK-SRYYY           PIC 9(04).
-               05  WRK-SRYMM           PIC 9(02).
-               05  WRK-SRYDD           PIC 9(02).
-      *
-           03  WRK-Z95                 PIC ZZZZ9.
-           03  WRK-INPUTCD-G.
-               05  WRK-INPUTCD         PIC X(54)
-                                           OCCURS   5.
-      *
-      *    ÆþÎÏ¥³¡¼¥É¹àÌÜ·å¿ô
-       01  CONS-INPUT              PIC 9(02)   VALUE   54.
-      *
       *    È¾³ÑÁ´³ÑÊÑ´¹
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT           PIC X(100).
@@ -178,41 +139,38 @@
        01  CONS-JIDOTBL-AREA.
            03  CONS-JIDOTBL-TBL.
       *Ä´ºÞÎÁ¡ÊÆâÉþÌô¡¦¿»ÀùÌô¡¦ÆÖÉþÌô¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "120000710".
+               05  FILLER              PIC  X(9)   VALUE   "120000710".
       *Ä´ºÞÎÁ¡Ê³°ÍÑÌô¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "120001010".
+               05  FILLER              PIC  X(9)   VALUE   "120001010".
       *Ä´ºÞÎÁ¡ÊËã¡¦¸þ¡¦³Ð¡¦ÆÇ¡Ë¡ÊÆþ±¡³°¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "120000110".
-      *!
+               05  FILLER              PIC  X(9)   VALUE   "120000110".
       *½èÊýÎÁ¡Ê£·¼ïÎà°Ê¾å¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "120002610 1".
+               05  FILLER              PIC  X(9)   VALUE   "120002610".
       *½èÊýÎÁ¡Ê¤½¤ÎÂ¾¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "120001210 1".
+               05  FILLER              PIC  X(9)   VALUE   "120001210".
       *½èÊýÎÁ¡ÊËã¡¦¸þ¡¦³Ð¡¦ÆÇ¡Ë²Ã»»
-               05  FILLER          PIC  X(11)  VALUE   "120001310 1".
+               05  FILLER              PIC  X(9)   VALUE   "120001310".
       *½èÊýÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
-               05  FILLER          PIC  X(11)  VALUE   "120002170 1".
+               05  FILLER              PIC  X(9)   VALUE   "120002170".
       *½èÊýÎÁ¡Ê¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "120003610 1".
+               05  FILLER              PIC  X(9)   VALUE   "120003610".
       *½èÊýÎÁ¡Ê¾Ò²ðÎ¨¤¬Äã¤¤ÂçÉÂ±¡£³£°Æü°Ê¾åÅêÌô¸º»»¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "120003870 1".
+               05  FILLER              PIC  X(9)   VALUE   "120003870".
       *¡Ê¸º¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "820000047" .
+               05  FILLER              PIC  X(9)   VALUE   "820000047" .
       *¡ÊÀº¸º¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "820000166" .
+               05  FILLER              PIC  X(9)   VALUE   "820000166" .
       *ÌôºÞÎÁÄþ¸º¡Ê£¹£°¡¿£±£°£°¡Ë¡ÊÆâÉþÌô¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "630010002".
+               05  FILLER              PIC  X(9)   VALUE   "630010002".
       *ÌôºÞÎÁÄþ¸º¡Ê£¸£°¡¿£±£°£°¡Ë¡Ê¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "630010005".
+               05  FILLER              PIC  X(9)   VALUE   "630010005".
       *ÌôºÞÎÁÄþ¸º¡Ê£¶£°¡¿£±£°£°¡Ë¡Ê¾Ò²ðÎ¨¤¬Äã¤¤ÂçÉÂ±¡£³£°Æü°Ê¾åÅêÌô¡Ë
-               05  FILLER          PIC  X(11)  VALUE   "630010006".
+               05  FILLER              PIC  X(9)   VALUE   "630010006".
       *
            03  CONS-JIDOTBL-TBLR   REDEFINES   CONS-JIDOTBL-TBL.
-               05  CONS-JIDOTBL-OCC        OCCURS  14
+               05  CONS-JIDOTBL-OCC        OCCURS  13
                                            INDEXED    IDX-JIDO.
                    07  CONS-JIDO-CODE          PIC  X(9).
-                   07  CONS-JIDO-YOBI          PIC  X(1).
-                   07  CONS-JIDO-KBN           PIC  X(1).
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -548,17 +506,6 @@
                END-IF
            END-PERFORM
       *
-      *H29.12
-      *    Æþ±¡¤Î»»ÄêÆü
-           IF      SPA-NYUGAIKBN       =   "1"
-               PERFORM 2900-NYUIN-DAYHEN-SEC
-               IF      WRK-ERRCD       NOT =   SPACE
-                   MOVE    ZERO                TO  IDZ
-                   MOVE    SPACE               TO  WRK-SRYCD
-                   PERFORM 200210-ERRCD-HENSYU-SEC
-               END-IF
-           END-IF
-      *
            .
        200211-ZAI-HENSYU-EXT.
            EXIT.
@@ -659,7 +606,7 @@
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
                                        =   "059"  ))  AND
                   (TNS-DATAKBN         =   "3"    )   AND
-                  (WRK-SRYKBN          =   "70"   )   AND
+                  ( WRK-SRYKBN         =   "70"   )   AND
                   (ORAPISUB01-PRSCRPT-NUMBER(IDY IDZ)  NOT =   SPACE )
                PERFORM 200322-FIRUMU-HEN70-SEC
                MOVE    1               TO  FLG-SURYO
@@ -741,9 +688,7 @@
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
                                        =   "0084"  ) OR
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                       =   "001"   ) OR
-                  (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
-                                       =   "0992081"))  AND
+                                       =   "001"   ))  AND
                   (ORAPISUB01-ATAI-G  (IDY IDZ)
                                    NOT =   SPACE )
                PERFORM 200321-INPUTCHI-HEN-SEC
@@ -821,19 +766,6 @@
                                        TO  TBL-WKSRY-AUTOKBN
                                                        (TBL-MAX IDX-S)
            END-IF
-      *H29.5
-      *    ¼«Æ°»»Äê¤Ê¤·¶èÊ¬¡ÊºßÂðÎÅÍÜ¼ÂÀÓ²Ã»»¤Ê¤É¡Ë
-      *    (¹¹¿·»þ´Ö¤òÎ®ÍÑ¡Ë
-           IF      TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:1)
-                                       =   "1"
-      *
-               EVALUATE    ORAPISUB01-NOAUTO (IDY IDZ)
-               WHEN    "YES"
-               WHEN    "Yes"
-                   MOVE    "Yes"           TO  TBL-WKSRY-INPUTCOMENT
-                                                       (TBL-MAX IDX-S)
-               END-EVALUATE
-           END-IF
       *
            IF      WRK-ERRCD       NOT =   SPACE
                PERFORM 200210-ERRCD-HENSYU-SEC
@@ -888,17 +820,16 @@
                    ELSE
                        MOVE    "012"               TO  WRK-ERRCD
                    END-IF
-      *H29.7   ¿ôÎÌ¶õÇò¤Ï¿ôÎÌ=1¤ÇÊÖµÑ¤¹¤ë¤Î¤Ç¡¢¥Õ¥£¥ë¥àËç¿ô¤¬È¿±Ç¤Ç¤­¤Ê¤¤°Ù¡¡ÇÑ»ß¡£
-      ****     ELSE
+               ELSE
       *            £ØÀþ»£±Æ¤Ï£±¤Ç¤â¿ôÎÌÆþÎÏÍ­
-      *            IF     (WRK-SRYCD(1:1)      =   "1"  )  AND
-      *                   (TNS-KZMCOMPSIKIBETU NOT =   ZERO ) AND
-      *                   (TNS-SRYSYUKBN       =   "721"
-      *                                        OR  "720"    )
+                   IF     (WRK-SRYCD(1:1)      =   "1"  )  AND
+                          (TNS-KZMCOMPSIKIBETU NOT =   ZERO ) AND
+                          (TNS-SRYSYUKBN       =   "721"
+                                               OR  "720"    )
       *                ¿ôÎÌÆþÎÏ¤¢¤ê
-      *                MOVE    "S"             TO  TBL-WKSRY-AUTOKBN
-      *                                              (TBL-MAX IDX-S)
-      ****         END-IF
+                       MOVE    "S"             TO  TBL-WKSRY-AUTOKBN
+                                                     (TBL-MAX IDX-S)
+                   END-IF
                END-IF
            END-IF
            .
@@ -914,20 +845,10 @@
            SEARCH      CONS-JIDOTBL-OCC    VARYING   IDX-JIDO
                AT   END
                    MOVE    ZERO            TO  FLG-JIDO-ARI
-                   MOVE    SPACE           TO  WRK-JIDO-KBN
                WHEN    WRK-SRYCD           =   CONS-JIDO-CODE
                                                            (IDX-JIDO)
                    MOVE    1               TO  FLG-JIDO-ARI
-                   MOVE    CONS-JIDO-KBN (IDX-JIDO)
-                                           TO  WRK-JIDO-KBN
            END-SEARCH 
-      *
-      *    ½èÊýÎÁ¤Ï¥·¥¹¥Æ¥à´ÉÍý¤Ë¤è¤êÂÐ¾Ý¤È¤¹¤ë
-           IF     (WRK-JIDO-KBN        =   "1" )
-              AND (SPA-TEISHOHOU-FLG   =   "1" )
-               MOVE    ZERO                TO  FLG-JIDO-ARI
-           END-IF
-      *
            IF     FLG-JIDO-ARI         =   1
                MOVE    "W13"               TO  WRK-ERRCD
            END-IF
@@ -975,9 +896,7 @@
                        IF   ((TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
                                                =   "0084"   )  OR
                              (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                               =   "001"    )
-                          OR (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
-                                               =   "0992081"))
+                                               =   "001"    ))
                         AND  (SNUM-SYOSUU      >   0        )
                            MOVE    ORAPISUB01-ATAI(IDY IDZ IDX-I)
                                                TO  TBL-WKSRY-INPUTCHI
@@ -995,29 +914,27 @@
       *****************************************************************
        200322-FIRUMU-HEN70-SEC         SECTION.
       *
-      *    MOVE    SPACE               TO  WRK-INPUTCHI-G
-      *    MOVE    1                   TO  IDX-I1
-      *    MOVE    ZERO                TO  IDX-I2
-      *    PERFORM VARYING     IDX-I   FROM    1   BY  1
-      *            UNTIL      (IDX-I   >   12  )   OR
-      *                       (IDX-I1  >   4   )
-      *        IF      ORAPISUB01-PRSCRPT-NUMBER(IDY IDZ)(IDX-I:1)
-      *                                    =   "-"
-      *            ADD     1                   TO  IDX-I1
-      *            MOVE    ZERO                TO  IDX-I2
-      *        ELSE
-      *            ADD     1                   TO  IDX-I2
-      *            MOVE    ORAPISUB01-PRSCRPT-NUMBER(IDY IDZ)(IDX-I:1)
-      *                                        TO  WRK-INPUTCHI
-      *                                              (IDX-I1)(IDX-I2:1)
-      *        END-IF
-      **** END-PERFORM
+           MOVE    SPACE               TO  WRK-INPUTCHI-G
+           MOVE    1                   TO  IDX-I1
+           MOVE    ZERO                TO  IDX-I2
+           PERFORM VARYING     IDX-I   FROM    1   BY  1
+                   UNTIL      (IDX-I   >   12  )   OR
+                              (IDX-I1  >   4   )
+               IF      ORAPISUB01-PRSCRPT-NUMBER(IDY IDZ)(IDX-I:1)
+                                           =   "-"
+                   ADD     1                   TO  IDX-I1
+                   MOVE    ZERO                TO  IDX-I2
+               ELSE
+                   ADD     1                   TO  IDX-I2
+                   MOVE    ORAPISUB01-PRSCRPT-NUMBER(IDY IDZ)(IDX-I:1)
+                                               TO  WRK-INPUTCHI
+                                                     (IDX-I1)(IDX-I2:1)
+               END-IF
+           END-PERFORM
       *    ¿ôÎÌ
            MOVE    ZERO                TO  WRK-SURYO
            INITIALIZE                      ORCSNUMAREA
-      **** MOVE    WRK-INPUTCHI(1)     TO  SNUM-INX
-           MOVE    ORAPISUB01-PRSCRPT-NUMBER(IDY IDZ)
-                                       TO  SNUM-INX
+           MOVE    WRK-INPUTCHI(1)     TO  SNUM-INX
            CALL    "ORCSNUM"           USING
                                        ORCSNUMAREA
            IF     (SNUM-RC         NOT =   ZERO  )   OR
@@ -1036,19 +953,16 @@
            MOVE    WRK-SURYO           TO  TBL-WKSRY-SRYSURYO
                                                      (TBL-MAX IDX-S)
       *    Ê¬²è¿ô
-      **** IF      WRK-INPUTCHI(2) NOT =   SPACE
-           IF      ORAPISUB01-PRSCRPT-FILMNUM(IDY IDZ) NOT =   SPACE
+           IF      WRK-INPUTCHI(2) NOT =   SPACE
                INITIALIZE                      ORCSNUMAREA
                MOVE    WRK-INPUTCHI(2)     TO  SNUM-INX
-               MOVE    ORAPISUB01-PRSCRPT-FILMNUM(IDY IDZ)
-                                           TO  SNUM-INX
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF     (SNUM-RC         NOT =   ZERO  )   OR
                       (SNUM-MINKBN         =   "1"   )   OR
                       (SNUM-SEISUU         >   7     )   OR
                       (SNUM-SYOSUU         >   5     )
-                   MOVE    "017"               TO  WRK-ERRCD
+                   CONTINUE
                ELSE
                    IF      SNUM-OUTNUM     NOT =   ZERO
                        MOVE    SNUM-OUTNUM     TO  TBL-WKSRY-SRYKAISU
@@ -1157,7 +1071,7 @@
                                                TO  ORAPISUB01-IN-ERRMSG
                                                                (IDX-E)
                WHEN    "017"
-                   MOVE    "Ê¬²è¿ô¤Î¿ôÃÍ¥¨¥é¡¼"
+                   MOVE    "¿ôÎÌ¤Î¿ôÃÍ¥¨¥é¡¼"
                                                TO  ORAPISUB01-IN-ERRMSG
                                                                (IDX-E)
                WHEN    "008"
@@ -1182,10 +1096,6 @@
                                                                (IDX-E)
                WHEN    "W13"
                    MOVE    "¼«Æ°»»ÄêÂÐ¾Ý¤Ç¤¹¡£ºï½ü¤·¤Þ¤·¤¿¡£"
-                                               TO  ORAPISUB01-IN-ERRMSG
-                                                               (IDX-E)
-               WHEN    "014"
-                   MOVE    "Æþ±¡»»ÄêÆü¶èÊ¬¤Ï£°¡¢£±¤ÇÀßÄê¤·¤Æ²¼¤µ¤¤¡£"
                                                TO  ORAPISUB01-IN-ERRMSG
                                                                (IDX-E)
            END-EVALUATE
@@ -1288,159 +1198,9 @@
            MOVE    WRK-KAISU           TO  WKSRY-ZAIKAIKEI
            MOVE    WRK-ZAITENKEI       TO  WKSRY-ZAITENKEI
            MOVE    WRK-HKNCOMBI        TO  WKSRY-HKNCOMBI
-      *
            .
        2002121-WKSRYACT-HEN-EXT.
            EXIT.
-      *
-      *H29.12
-      *****************************************************************
-      *    Æþ±¡¤Î»»ÄêÆüÊÑ´¹½èÍý
-      *****************************************************************
-       2900-NYUIN-DAYHEN-SEC       SECTION.
-      *
-           MOVE    SPACE               TO  WRK-ERRCD
-      *    »»Äê¶èÊ¬¥Á¥§¥Ã¥¯
-           PERFORM VARYING     IDN1    FROM    1   BY  1
-                   UNTIL       IDN1    >   31
-               EVALUATE    ORAPISUB01-MDC-DAY (IDY IDN1)
-               WHEN    SPACE
-               WHEN    ZERO
-                   MOVE    "0"             TO  ORAPISUB01-MDC-DAY
-                                                           (IDY IDN1)
-               WHEN    "1"
-                   CONTINUE
-               WHEN    OTHER
-                   MOVE    "014"           TO  WRK-ERRCD
-               END-EVALUATE
-           END-PERFORM
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO  TO  2900-NYUIN-DAYHEN-EXT
-           END-IF
-      *
-      *    »ØÄê¤Ê¤·¤Ï¿ÇÎÅÆü¤Î»»Äê¤È¤¹¤ë
-           IF      ORAPISUB01-MDC-DAY-G (IDY)  =   ZERO
-               MOVE    SPA-SRYYMD      TO  WRK-SRYYMD
-               MOVE    ZERO            TO  ORAPISUB01-MDC-DAY-G
-                                                         (IDY)
-               MOVE    "1"             TO  ORAPISUB01-MDC-DAY
-                                                   (IDY WRK-SRYDD)
-           END-IF
-      *
-           INITIALIZE                      WRK-NISUU-AREA
-           MOVE    ZERO                TO  WRK-H-DAY
-           MOVE    SPACE               TO  WRK-H-SEL
-           MOVE    ZERO                TO  IDN1
-           MOVE    ZERO                TO  IDN2
-           MOVE    ZERO                TO  IDN3
-           MOVE    ZERO                TO  IDN4
-           PERFORM VARYING     IDN1    FROM    1   BY  1
-                   UNTIL       IDN1    >   32
-               IF     (IDN1                =   32  )  OR
-      *Æü¤ÏÊÌ¤Ç       (IDN1                >   WRK-MATU)  OR
-                      (ORAPISUB01-MDC-DAY(IDY IDN1)
-                                           =   "0"    )
-                   IF      WRK-H-DAY       NOT =   ZERO
-                       IF      WRK-H-SEL   NOT =   SPACE
-                           ADD     1               TO  IDN2
-                           MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
-                           MOVE    WRK-H-SEL       TO  WRK-SEL(IDN2 - 1)
-                       END-IF
-                       MOVE    ZERO            TO  WRK-H-DAY
-                       MOVE    SPACE           TO  WRK-H-SEL
-                   END-IF
-               ELSE
-                   IF      WRK-H-DAY           =   ZERO
-                       MOVE    IDN1            TO  WRK-H-DAY
-                       ADD     1               TO  IDN2
-                       MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
-                   ELSE
-                       IF      WRK-H-DAY       =  (IDN1  -  1 )
-                           MOVE    "-"             TO  WRK-H-SEL
-                       END-IF
-                       MOVE    IDN1            TO  WRK-H-DAY
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           PERFORM VARYING     IDN1    FROM    1   BY  1
-                   UNTIL       IDN1    >   31
-               IF     (WRK-SEL (IDN1)      =   SPACE )  AND
-                      (IDN1                <   31    )
-                   IF      WRK-DAY (IDN1 + 1 )     NOT =   ZERO
-                       MOVE    ","          TO  WRK-SEL (IDN1)
-                   END-IF
-               ELSE
-                   IF     (IDN1                    =   31    )  OR
-                          (WRK-DAY (IDN1 + 1 )     =   ZERO  )
-                       MOVE    SPACE        TO  WRK-SEL (IDN1)
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           INITIALIZE                      WRK-INPUTCD-G
-      *    ²ó¿ôÊÑ´¹
-           MOVE    SPACE               TO  WRK-KAISU-H
-           MOVE    WRK-KAISU           TO  WRK-Z95
-           MOVE    ZERO                TO  IDN4
-           PERFORM VARYING     IDN1    FROM    1   BY  1
-                   UNTIL      (IDN1    >   5    )
-               IF      WRK-Z95(IDN1:1) NOT =   SPACE
-                   ADD     1               TO  IDN4
-                   MOVE    WRK-Z95(IDN1:1) TO  WRK-KAISU-H
-                                                     (IDN4:1)
-               END-IF
-           END-PERFORM
-      *
-           MOVE    1                   TO  IDN2
-           MOVE    1                   TO  IDN3
-           PERFORM VARYING     IDN1    FROM    1   BY  1
-                   UNTIL      (IDN1    >   31  )  OR
-                              (IDN2            >=  5  )  OR
-                              (WRK-DAY (IDN1)  =   ZERO )
-               IF      IDN3                >   CONS-INPUT
-                   ADD     1               TO  IDN2
-                   MOVE    1               TO  IDN3
-               END-IF
-      *        '-' ¤Î¼¡È½Äê
-               IF     (WRK-SEL (IDN1)      =   "-" )
-                  AND ((IDN3   +   3 )     >=  CONS-INPUT  )
-                   ADD     1               TO  IDN2
-                   MOVE    1               TO  IDN3
-               END-IF
-               IF      WRK-INPUTCD (IDN2)  =   SPACE
-                   STRING  "*"             DELIMITED  BY  SIZE
-                           WRK-KAISU-H     DELIMITED  BY  SPACE
-                           "/"             DELIMITED  BY  SIZE
-                           INTO            WRK-INPUTCD (IDN2)
-                   END-STRING
-                   ADD     2               TO  IDN3
-                   ADD     IDN4            TO  IDN3
-               END-IF
-               IF      WRK-SEL (IDN1)      =   SPACE
-                   MOVE    ","             TO  WRK-SEL (IDN1)
-               END-IF
-               MOVE    WRK-NISUU-TBL(IDN1) TO  WRK-INPUTCD(IDN2)
-                                                       (IDN3:3)
-               ADD     3                   TO  IDN3
-           END-PERFORM
-      *
-           PERFORM VARYING    IDN2     FROM    1   BY  1
-                   UNTIL     (IDN2     >   5  )
-                         OR  (WRK-INPUTCD(IDN2)    =   SPACE)
-               ADD     1               TO  IDX-S
-               IF      IDX-S           >   5
-                   ADD     1               TO  TBL-MAX
-                   MOVE    1               TO  IDX-S
-               END-IF
-               MOVE    WRK-INPUTCD (IDN2)  TO  TBL-WKSRY-INPUTCD
-                                                   (TBL-MAX IDX-S)
-           END-PERFORM
-           .
-       2900-NYUIN-DAYHEN-EXT.
-           EXIT.
-      *H29.12
-      *
       *****************************************************************
       *    È¾³Ñ¤òÁ´³Ñ¤ØÊÑ´¹½èÍý
       *****************************************************************
@@ -1465,8 +1225,6 @@
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
            IF     (KANACHK-RC      NOT =   ZERO  )
-      *H29.9   ²þ¹Ô¥¨¥é¡¼
-              OR  (KANACHK-RC4     NOT =   ZERO  )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE
