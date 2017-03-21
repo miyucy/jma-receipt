@@ -2369,7 +2369,6 @@
                   (TNS-KOUHATUKBN      =   1
                                        OR  2
                                        OR  3
-                                       OR  4
                                        OR  7  )
                 PERFORM 3100123-KOUHATU-HEN-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
@@ -2432,13 +2431,6 @@
       *    コメントの時、内容設定
            IF    ((LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
                   (LNK-WKSRY-SRYCD   (IDX IDZ)(1:3)  =   "008" )) AND
-                  (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
-               MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
-                                           TO  SPA-GMN-TMEISYO2(IDG)
-           END-IF
-      *
-      *H30.4
-           IF     (LNK-WKSRY-SRYCD   (IDX IDZ)(1:7)  =   "0992081") AND
                   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
                                            TO  SPA-GMN-TMEISYO2(IDG)
@@ -2599,20 +2591,11 @@
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
                                            TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
-      *
-      *H30.4
-           IF     (LNK-WKSRY-SRYCD   (IDX IDZ)(1:7)  =   "0992081") AND
-                  (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
-               MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
-                                           TO  SPA-GMN-TMEISYO2(IDG)
-           END-IF
-      *
       *    後発医薬品再編集
            IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)  =   "6") AND
                   (TNS-KOUHATUKBN      =   1
                                        OR  2
                                        OR  3
-                                       OR  4
                                        OR  7  )
                 PERFORM 3100123-KOUHATU-HEN-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
@@ -2837,8 +2820,6 @@
       *H29.4
                WHEN    3
                    MOVE    "加"            TO  WRK-KOUMEI
-               WHEN    4
-                   MOVE    "加"            TO  WRK-KOUMEI
                WHEN    7
                    MOVE    "無"            TO  WRK-KOUMEI
            END-EVALUATE
@@ -2922,7 +2903,6 @@
       *H27   AND  (SPA-KOUHATUKA           =   "1"     )
              AND  (TNS-KOUHATUKBN          =   1  OR  2
                                            OR  3
-                                           OR  4
                                            OR  7       )
       *H27.1
                IF       (SPA-KOUHATUKA           =   "1" )
@@ -4382,12 +4362,6 @@
                        IF      LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   "099409907"
                            MOVE    "1"         TO  LNK-S01-JIKANGAI
-                       END-IF
-      *H30.1
-      *                第三者行為分計算優先フラグ
-                       IF      LNK-WKSRY-SRYCD(IDX IDS)
-                                                   =   "099999931"
-                           MOVE    "1"     TO  LNK-S01-DAISANYUSENFLG
                        END-IF
                    END-PERFORM
                END-IF
@@ -6572,11 +6546,8 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-      *    MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
-      *    MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
-      *
-           MOVE    SPA-NAI-SRYYMD      TO  TNS-YUKOSTYMD
-           MOVE    SPA-NAI-SRYYMD      TO  TNS-YUKOEDYMD
+           MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
@@ -6846,10 +6817,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-      **   MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-      **   MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
-           MOVE    SPA-NAI-SRYYMD      TO  TNSP-YUKOSTYMD
-           MOVE    SPA-NAI-SRYYMD      TO  TNSP-YUKOEDYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
