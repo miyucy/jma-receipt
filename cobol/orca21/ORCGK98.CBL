@@ -2456,6 +2456,17 @@
                         TNS-NAME           DELIMITED   BY  SIZE
                                INTO        SPA-K98-GMN-NAME(IDX)
                 END-STRING
+      *H29.3
+           WHEN    3
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  WRK-MSG-2          DELIMITED   BY  SPACE
+                        "¡Ú"
+                        WRK-PSY-MEI        DELIMITED   BY  SPACE
+                        "ÀèÌµ²Ã¡Û"         DELIMITED   BY  SIZE
+                        TNS-NAME           DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+      *
            WHEN    7
                 MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
                 STRING  WRK-MSG-2          DELIMITED   BY  SPACE

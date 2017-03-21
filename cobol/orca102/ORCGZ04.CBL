@@ -693,6 +693,15 @@
            MOVE    "先発医薬品のない後発医薬品である"
                                        TO  SPA-GMN-KOUHATUKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-KOUHATUKBN-MAX
+           IF      SPA-Z01-YUKOSTYMD   >=  "20170401"
+               MOVE    "3"                 TO  SPA-GMN-KOUHATUKBNL (4)
+               MOVE    "先発なし後発医薬品（加算対象）"
+                                           TO  SPA-GMN-KOUHATUKBNMEIL(4)
+               MOVE    "7"                 TO  SPA-GMN-KOUHATUKBNL (5)
+               MOVE    "先発なし後発医薬品（加算非対象）"
+                                           TO  SPA-GMN-KOUHATUKBNMEIL(5)
+               MOVE    5                   TO  SPA-GMN-KOUHATUKBN-MAX
+           END-IF
       *
            MOVE    "0"                 TO  SPA-GMN-ALLSURYOKBNL   (1)
            MOVE    "記載しない"        TO  SPA-GMN-ALLSURYOKBNMEIL(1)
@@ -1507,11 +1516,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *    付加情報２編集反映
            PERFORM 41011-GMN-SPA-SET02-SEC
       *
-           MOVE    ZERO                TO  FLG-CHNGE
-           IF      Z04-CHNGCD      NOT =   SPA-NAI-CHNGCD
-               MOVE    1               TO  FLG-CHNGE
-           END-IF
-           MOVE    Z04-CHNGCD          TO  SPA-GMN-CHNGCD
+      *    MOVE    ZERO                TO  FLG-CHNGE
+      *    IF      Z04-CHNGCD      NOT =   SPA-NAI-CHNGCD
+      *        MOVE    1               TO  FLG-CHNGE
+      *    END-IF
+      *    MOVE    Z04-CHNGCD          TO  SPA-GMN-CHNGCD
       *H28.4
       *    規格単位数
            MOVE    Z04-KIKAKUTANI      TO  SPA-GMN-KIKAKUTANI
@@ -1550,6 +1559,12 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            MOVE    Z04-TUKIJGNKAISU        TO  SPA-GMN-TUKIJGNKAISU
            MOVE    Z04-TUKIJGNTOUYORYO     TO  SPA-GMN-TUKIJGNTOUYORYO
+      *
+           MOVE    ZERO                TO  FLG-CHNGE
+           IF      Z04-CHNGCD      NOT =   SPA-NAI-CHNGCD
+               MOVE    1               TO  FLG-CHNGE
+           END-IF
+           MOVE    Z04-CHNGCD          TO  SPA-GMN-CHNGCD
            .
        41011-GMN-SPA-SET02-EXT.
            EXIT.
@@ -2679,8 +2694,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *     点数マスタ投与付加情報更新処理
       *****************************************************************
        41291-TENSUPLUS2-KOUSIN-SEC     SECTION.
-      *TEST
-           DISPLAY "41291-TENSUPLUS2-KOUSIN-SEC "
       *
            INITIALIZE                  TENSUPLUS2-REC 
            MOVE    SPACE               TO  TENSUPLUS2-REC
@@ -2731,9 +2744,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    1               TO  FLG-TENSUPLUS2-CHK
            END-IF
-      *TEST
-           DISPLAY "FLG-TENSUPLUS2-CHK:"  FLG-TENSUPLUS2-CHK
-            ",FLG-TENSUPLUS2 :" FLG-TENSUPLUS2 
       *
            IF      FLG-TENSUPLUS2-CHK  =   ZERO
       *        削除
