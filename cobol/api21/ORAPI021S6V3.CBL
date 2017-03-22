@@ -644,7 +644,7 @@
            END-IF
            MOVE    MDCREQ-KARTE-UID    TO  APIV3SUB01-KARTE-UID
            MOVE    "AP21"              TO  APIV3SUB01-API-GYOUMUID
-           MOVE    "API21V3"           TO  APIV3SUB01-API-FILEMEI
+           MOVE    "API216V3"          TO  APIV3SUB01-API-FILEMEI
            MOVE    WRK-PTNUM           TO  APIV3SUB01-PTNUM
            MOVE    "K02"               TO  APIV3SUB01-PARA-GYOUMUID
            CALL    "ORAPIV3SUB01"      USING
@@ -859,7 +859,7 @@
            MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
            MOVE    "AP21"              TO  APIPARA-GYOUMUID
            MOVE    SPA-TERMID          TO  APIPARA-TERMID
-           MOVE    "API21V3"           TO  APIPARA-FILEMEI
+           MOVE    "API216V3"          TO  APIPARA-FILEMEI
            MOVE    1                   TO  APIPARA-EDANUM
            PERFORM 9010-APIPARA-KEYREAD-SEC
       *
@@ -1335,7 +1335,7 @@
            MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
            MOVE    "AP21"              TO  APIPARA-GYOUMUID
            MOVE    SPA-TERMID          TO  APIPARA-TERMID
-           MOVE    "API21V3"           TO  APIPARA-FILEMEI
+           MOVE    "API216V3"          TO  APIPARA-FILEMEI
            MOVE    1                   TO  APIPARA-EDANUM
       *    レスポンス番号・電子カルテUID保存
            MOVE    MDCREQ-KARTE-UID    TO  APIPARA-KARTE-UID
