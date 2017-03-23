@@ -446,14 +446,6 @@
       *                                     ¡Êµ­Ï¿¡ËÂÐ±þ
       *  04.08.11    NACL-ÌçÏÆ    17/03/22  °åÎÅ¾ðÊóÏ¢·È
       *                                     ¸åÈ¯ÉÊÊÑ¹¹²Ä¡Ê½èÊýÃ±°Ì¡Ë
-      *  04.08.12    NACL-ÌçÏÆ    17/03/27  ÀÁµá¶â³Û£°±ß¥ì¥»¥×¥ÈºîÀ®ÂÐ±þ
-      *  04.08.13    NACL-ÌçÏÆ    17/07/03  ¡ÊºÒ£±¡ËÅù¤Îµ­Ï¿¤ò³ç¸Ì¤Ê¤·¤Ç
-      *                                     µ­Ï¿¤¹¤ë¤è¤¦ÊÑ¹¹
-      *  04.08.14    NACL-ÌçÏÆ    17/08/28  Ê¿À®£²£¹Ç¯£±£°·î²þÀµ
-      *                                     ¡ÊÆþ±¡»þÀ¸³èÎÅÍÜ¤Î¸«Ä¾¤·¡Ë
-      *
-      *  05.00.01    NACL-Æ£¸¶    17/07/04  £È£Á£Ï£Ò£ÉÂÐ±þ
-      *  05.00.02    NACL-°ËÆ£    17/12/20  ¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -832,16 +824,6 @@ grpsys     COPY    "COMMON-SPA".
                                        PIC 9(01).
       *    ÆüÉÕÊÑ´¹ÍÑ
            03  WRK-SYMD                PIC X(08).
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY          PIC X(04).
-               05  WRK-HEN-H1          PIC X(01).
-               05  WRK-HEN-MM          PIC X(02).
-               05  WRK-HEN-H2          PIC X(01).
-               05  WRK-HEN-DD          PIC X(02).
-      *
-           03  WRK-CNT                 PIC 9(10).
-           03  WRK-CNT-X               REDEFINES   WRK-CNT
-                                       PIC X(10).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -1831,8 +1813,6 @@ grpsys     COPY    "COMMON-SPA".
       *
            COPY    "MCPAREA".
       *
-      *    PUSH
-           COPY    "CPPUSHBATCH01.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -2537,20 +2517,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
       *    ÉÂÅï¶èÊ¬
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬
-           IF      RECE02-SRYYM  >=  "201710"
-             IF    ( RECE02-TEISYOTOKU   NOT =   SPACE )
-             AND   ( RECE02-ZAITAKU          =   "1"   )
-               EVALUATE    RECE02-TEISYOTOKU
-                   WHEN    "1"
-                   WHEN    "4"
-                       MOVE    "3"             TO  WRK-DATA
-                   WHEN    "2"
-                       MOVE    "1"             TO  WRK-DATA
-               END-EVALUATE
-             END-IF
-           ELSE
-             IF    ( RECE02-TEISYOTOKU   NOT =   SPACE )
-             AND   ( RECE02-ZAITAKU          =   "1"   )
+           IF    ( RECE02-TEISYOTOKU   NOT =   SPACE )
+           AND   ( RECE02-ZAITAKU          =   "1"   )
                EVALUATE    RECE02-TEISYOTOKU
                    WHEN    "1"
                        MOVE    "3"             TO  WRK-DATA
@@ -2559,7 +2527,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                    WHEN    "4"
                        MOVE    "4"             TO  WRK-DATA
                END-EVALUATE
-             END-IF
            END-IF
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
@@ -4099,15 +4066,15 @@ grpsys         MOVE    RECE041-HOSPNUM TO  COMB-HOSPNUM
                WHEN    8
                WHEN    10
                WHEN    11
-                   MOVE    "ÉÔ¾Ü"      TO  WRK-DISASTER-COMMENT
+                   MOVE    "¡ÊÉÔ¾Ü¡Ë"      TO  WRK-DISASTER-COMMENT
                WHEN    2
                WHEN    7
-                   MOVE    "ºÒ£±"      TO  WRK-DISASTER-COMMENT
+                   MOVE    "¡ÊºÒ£±¡Ë"      TO  WRK-DISASTER-COMMENT
                WHEN    4
-                   MOVE    "ºÒ£²"      TO  WRK-DISASTER-COMMENT
+                   MOVE    "¡ÊºÒ£²¡Ë"      TO  WRK-DISASTER-COMMENT
                WHEN    5
-                   MOVE    "ÉÔ¾Ü¡¦ºÒ£±"
-                                       TO  WRK-DISASTER-COMMENT
+                   MOVE    "¡ÊÉÔ¾Ü¡¦ºÒ£±¡Ë"
+                                           TO  WRK-DISASTER-COMMENT
            END-EVALUATE
            PERFORM 200701-DISASTER-COMMENT-HEN-SEC
       *
@@ -8228,10 +8195,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    RECE09-FILE
                    RECE11-FILE
                    RECE055-FILE
-                   RECE12-FILE
-      *
-      *    £Ð£Õ£Ó£ÈÄÌÃÎ½èÍý
-           PERFORM 3001-PUSH-SEC
+                   RECE12-FILE 
       *
       *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -8249,48 +8213,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ð£Õ£Ó£ÈÄÌÃÎ½èÍý
-      *****************************************************************
-       3001-PUSH-SEC        SECTION.
-      *
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           PERFORM 900-CALL-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN
-                                   =   ZERO  )
-           AND   ( JOB-KARTE-UID
-                               NOT =   SPACE )
-               INITIALIZE                  PUSHBA01-REC
-               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
-               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
-               MOVE    "000"           TO  PUSHBA01API-RESULT
-               MOVE    "receipt_make"  TO  PUSHBA01-EVENT
-               IF      WRK-PARA-SRYYM  =   ZERO
-                   MOVE    "9999-12"       TO  PUSHBA01-PERFORM-MONTH
-               ELSE
-                   MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE (1:7)
-                                           TO  PUSHBA01-PERFORM-MONTH
-               END-IF
-               MOVE    JOB-UPDCNT1     TO  WRK-CNT
-               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
-      *??
-             display "push=" PUSHBA01-REC "#"
-      *??
-               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
-               MOVE    "PUSHEVENT"     TO  MCP-FUNC
-               MOVE    "push_batch01"  TO  MCP-TABLE
-               MOVE    "push_batch01"  TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           END-IF
-           .
-       3001-PUSH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8502,11 +8424,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            IF      WRK-PARA-PRTKBN =   "9"
                MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
            ELSE
-               IF      WRK-PARA-PRTKBN =   "B"
-                   MOVE    "tbl_receden_tmp"   TO  MCP-TABLE
-               ELSE
-                   MOVE    "tbl_receden"       TO  MCP-TABLE
-               END-IF
+               MOVE    "tbl_receden"       TO  MCP-TABLE
            END-IF
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-DBINSERT-SEC
@@ -8744,29 +8662,6 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
            .
        800-FILENM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE               TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYMD (1:4)      TO  WRK-HEN-YY
-               MOVE    WRK-SYMD (5:2)      TO  WRK-HEN-MM
-               MOVE    WRK-SYMD (7:2)      TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-           .
-       801-DAYHEN01-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9351,10 +9246,8 @@ grpsys     PERFORM 900-DBFETCH-SEC
                                AND   ( RECE02-TOTALTEN (3) =   ZERO    )
                                AND   ( RECE02-TOTALTEN (4) =   ZERO    )
                                AND   ( RECE02-TOTALTEN (5) =   ZERO    )
-                               AND   ( RECE02-SKYZEROFLG   =   ZERO    )
                                AND   ( RECE02-RECESYUBETU  NOT =  8888
                                                               AND ZERO )
-                               AND   ( WRK-PARA-PRTKBN     NOT =  "9"  )
                                    MOVE    2               TO  FLG-READ
                                END-IF
                            END-IF

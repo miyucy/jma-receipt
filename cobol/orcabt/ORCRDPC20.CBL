@@ -111,8 +111,6 @@
       *              NACL-¾®Æ¦Âô  16/12/20  ³°Íè¤ÎÊñ³çÊ¬¤Ï½ÐÍè¹â¼ÂÀÓÅÀ¿ô
       *                                     ¤ò¥¼¥íÅÀ¤Çµ­Ï¿¤¹¤ë
       *              NACL-ÌçÏÆ    17/03/22  ¸åÈ¯ÉÊÊÑ¹¹²Ä¡Ê½èÊýÃ±°Ì¡Ë
-      *              NACL-¾®Æ¦Âô  17/09/08  ¤­¤¶¤ß·×»»¤Î½ÐÍè¹â¼ÂÀÓÅÀ¿ô
-      *                                     Ã¼¿ô½èÍýÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -996,6 +994,54 @@
            03  WRK-CONS-NYUIN-SRYCD   PIC X(09)   VALUE   "840000014".
       *    Âà±¡Ç¯·îÆü
            03  WRK-CONS-TAIIN-SRYCD   PIC X(09)   VALUE   "840000013".
+      *
+      *    É¸½àÉéÃ´³Û
+           03  WRK-CONS-HYOJYUN-FUTAN-G.
+      *        É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN1
+                                      PIC X(09)   VALUE   "197000810".
+      *        É¸½àÉéÃ´³Û¡ÊÄã½êÆÀ£±¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN2
+                                      PIC X(09)   VALUE   "197001110".
+      *        É¸½àÉéÃ´³Û¡ÊÄã½êÆÀ£²¡¦£¹£°Æü°Ê²¼¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN3
+                                      PIC X(09)   VALUE   "197000910".
+      *        É¸½àÉéÃ´³Û¡ÊÄã½êÆÀ£²¡¦£¹£°ÆüÄ¶¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN4
+                                      PIC X(09)   VALUE   "197001010".
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û
+               05  WRK-CONS-HYOJYUN-FUTAN5
+                                      PIC X(09)   VALUE   "197001910".
+      *        À¸³èÎÅÍÜ¡Ê£±¡Ë¡¦É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN6
+                                      PIC X(09)   VALUE   "197002010".
+      *        À¸³èÎÅÍÜ¡Ê£²¡Ë¡¦É¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN7
+                                      PIC X(09)   VALUE   "197002110".
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡ÊÄã£²¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN8
+                                      PIC X(09)   VALUE   "197002210".
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN9
+                                      PIC X(09)   VALUE   "197002310".
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡ÊÏ·¿ÍÄã£±¡ÊÏ·Ê¡°Ê³°¡Ë¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN10
+                                      PIC X(09)   VALUE   "197002410".
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡ÊÏ·¿ÍÄã£±¡ÊÏ·Ê¡¡Ë¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN11
+                                      PIC X(09)   VALUE   "197002510".
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN12
+                                      PIC X(09)   VALUE   "197002710".
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN13
+                                      PIC X(09)   VALUE   "197002810".
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN14
+                                      PIC X(09)   VALUE   "197002910".
+      *        À¸³èÎÅÍÜ¡¦É¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN15
+                                      PIC X(09)   VALUE   "197003010".
       *
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.
       *
@@ -3087,27 +3133,44 @@
              MOVE    TBL-HEIMA-30M-IDX (IDZ3)
                                            TO  WRK-HEIMA-IDX
              IF      WRK-HEIMA-IDX   NOT =   ZERO
-                 PERFORM VARYING IDXW FROM 1 BY 1
-                         UNTIL ( IDXW > TBL-HEIMA-MAX )
-                     MOVE    TBL-HEIMA-30M-IDX (IDXW)
-                                           TO  IDW
-                     IF      IDW           NOT =   ZERO
-                         COMPUTE WRK-KZM-SURYO =   WRK-KZM-SURYO
-                                               +   TBL-HEIMA-ZAN-SURYO
-                                                   (IDW)
-                         IF      WRK-KZM-SURYO >=  30
-                             COMPUTE TBL-HEIMA-ZAN-SURYO (IDW) =
-                                     WRK-KZM-SURYO -   30
-                             MOVE    30        TO  WRK-KZM-SURYO
-                         ELSE 
-                             MOVE    ZERO      TO  TBL-HEIMA-ZAN-SURYO
-                                                   (IDW)
-                             MOVE    ZERO      TO  TBL-HEIMA-30M-SURYO
-                                                   (IDW)
-                         END-IF
-                     END-IF
-                 END-PERFORM
+                   MOVE    TBL-HEIMA-ZAN-SURYO (WRK-HEIMA-IDX)
+                                          TO  WRK-KZM-SURYO
+                   MOVE    ZERO  TO  TBL-HEIMA-ZAN-SURYO (WRK-HEIMA-IDX)
+                   MOVE    ZERO  TO  TBL-HEIMA-30M-SURYO (WRK-HEIMA-IDX)
              END-IF
+      **     DISPLAY " "
+      **     DISPLAY "WRK-HEIMA-IDX = " WRK-HEIMA-IDX
+             PERFORM VARYING IDXW FROM 1  BY  1
+                     UNTIL   ( IDXW > TBL-HEIMA-MAX )
+                        OR   ( WRK-HEIMA-IDX = ZERO )
+               IF      IDXW          NOT =   WRK-HEIMA-IDX
+                   MOVE    IDXW            TO  IDW
+                   PERFORM VARYING IDW0 FROM TBL-HEIMA-MAX  BY  -1
+                           UNTIL   ( IDW0 = 0 )
+                     IF    ( IDW0      NOT =   WRK-HEIMA-IDX ) AND
+                           ( IDW0      NOT =   IDXW )
+                       IF      TBL-HEIMA-ZAN-SURYO (IDW0)
+                                       =   TBL-HEIMA-ZAN-SURYO (IDXW)
+                         MOVE  IDW0        TO  IDW
+                         MOVE  1           TO  IDW0
+                       END-IF
+                     END-IF
+                   END-PERFORM
+      **     DISPLAY "IDW = " IDW
+                   COMPUTE WRK-HEIMA-SURYO =  30  -  WRK-KZM-SURYO
+                   IF      TBL-HEIMA-ZAN-SURYO (IDW) < WRK-HEIMA-SURYO
+                       COMPUTE WRK-KZM-SURYO =  WRK-KZM-SURYO
+                                         +  TBL-HEIMA-ZAN-SURYO (IDW)
+                       MOVE    ZERO      TO TBL-HEIMA-ZAN-SURYO (IDW)
+                   ELSE
+                       COMPUTE TBL-HEIMA-ZAN-SURYO (IDW)
+                                         =  TBL-HEIMA-ZAN-SURYO (IDW)
+                                         -  WRK-HEIMA-SURYO
+                       MOVE    30            TO WRK-KZM-SURYO
+                       MOVE    TBL-HEIMA-MAX TO IDXW
+                   END-IF
+               END-IF
+             END-PERFORM
              COMPUTE TBL-HEIMA-COM-SURYO (WRK-HEIMA-IDX)
                                  =  TBL-HEIMA-COM-SURYO (WRK-HEIMA-IDX)
                                  +  WRK-KZM-SURYO
@@ -4227,7 +4290,7 @@
                   (WRK-KZM-TEN2        >   ZERO )
                MOVE    WRK-KZM-TEN2    TO  WRK-FEDT-DEKIDAKA-TEN
            ELSE
-               COMPUTE    WRK-FEDT-DEKIDAKA-TEN   =  TNS-TEN  + 0.5
+               MOVE    TNS-TEN         TO  WRK-FEDT-DEKIDAKA-TEN
            END-IF
            .
        200799-KZM-DEKIDAKA-EXT.
