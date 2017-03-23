@@ -193,9 +193,6 @@
       *    全角チェックパラメタ(拡張文字対応版)
            COPY    "CPORCSKANACHK2.INC".
       *
-      *    一時ディレクトリ作成サブ
-           COPY "CPORCSTEMPDIR.INC".
-      *
       *    バッチジョブ制御
            COPY    "CPORCSMONBATCH.INC".
       *
@@ -880,18 +877,18 @@
       *****************************************************************
        2001-BASEYMD-CHK-SEC            SECTION.
       *
-      *    IF    ( FINDREQ-BASEYMD       =   SPACE )
+           IF    ( FINDREQ-BASEYMD       =   SPACE )
                MOVE    SPA-SYSYMD      TO  REQ-BASEYMD
-      *    ELSE
-      *        MOVE    FINDREQ-BASEYMD TO WRK-DATE
-      *        PERFORM 800-SYMD-SEC
-      *        PERFORM 800-HIZUKE-SEC
-      *        IF    ( WRK-EDTYMD1     =   SPACE )
-      *            MOVE    "0210"      TO  SPA-ERRCD
-      *        ELSE
-      *            MOVE    WRK-SYMD    TO  REQ-BASEYMD
-      *        END-IF
-      *    END-IF
+           ELSE
+               MOVE    FINDREQ-BASEYMD TO WRK-DATE
+               PERFORM 800-SYMD-SEC
+               PERFORM 800-HIZUKE-SEC
+               IF    ( WRK-EDTYMD1     =   SPACE )
+                   MOVE    "0210"      TO  SPA-ERRCD
+               ELSE
+                   MOVE    WRK-SYMD    TO  REQ-BASEYMD
+               END-IF
+           END-IF
       *
            .
        2001-BASEYMD-CHK-EXT.
@@ -1144,7 +1141,6 @@
       *
                IF    ( SPA-ERRCD       =   SPACE )
                    MOVE    FINDREQ-DRCD  TO  SPA-Q01-DRCD
-                   MOVE    "2"           TO  FINDREQ-NYUGAIKBN
                END-IF
            END-IF
       *
@@ -4813,10 +4809,26 @@
       *****************************************************************
        2003-SHELL-SEC                  SECTION.
       *
-          INITIALIZE                   STEMPDIR-AREA
-          CALL     "ORCSTEMPDIR"       USING
-                                       STEMPDIR-AREA
-          MOVE     STEMPDIR-TEMPDIR    TO  MCP-TEMPDIR
+           MOVE    SPACE           TO  MCP-TEMPDIR
+           ACCEPT  WRK-TEMPDIR-ROOT
+                               FROM    ENVIRONMENT  "MCP_TEMPDIR_ROOT"
+           STRING  WRK-TEMPDIR-ROOT    DELIMITED BY SPACE
+                   "/"                 DELIMITED BY SIZE
+                   SPA-TERMID          DELIMITED BY SPACE
+                   LOW-VALUE           DELIMITED BY SIZE
+           INTO    MCP-TEMPDIR
+           END-STRING
+      *
+           SET ENVIRONMENT "MCP_TEMPDIR"     TO    MCP-TEMPDIR
+      *
+           CALL "CBL_CREATE_DIR"   USING MCP-TEMPDIR
+           IF    ( RETURN-CODE     NOT =   ZERO )
+               MOVE    "4008"      TO  SPA-ERRCD
+               INITIALIZE              SYSKANRI-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "abort"             TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+           END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
       *
