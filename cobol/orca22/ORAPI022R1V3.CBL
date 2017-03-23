@@ -3029,14 +3029,14 @@
                    MOVE    "医保分でしか設定できない値です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E19"
-                   MOVE    "保険組合せが存在しません。"
+                   MOVE    "保険組合せ番号が存在しません。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E20"
                WHEN    "E21"
-                   MOVE    "保険区分の設定と異なる保険組合せです。"
+                   MOVE    "保険区分の設定と異なる保険組合せ番号です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E22"
-                   MOVE    "保険組合せの設定に誤りがあります。"
+                   MOVE    "保険組合せ番号の設定に誤りがあります。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E23"
                    STRING  "同名の病名が"      DELIMITED   BY  SIZE 
@@ -3064,7 +3064,7 @@
                    MOVE    "開始日が険組合せの適用日の範囲外です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E28"
-                   MOVE    "保険組合せが存在しません。"
+                   MOVE    "保険組合せ番号が存在しません。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E29"
                    MOVE    "第三者行為が存在しません。"
