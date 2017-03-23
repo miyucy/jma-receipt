@@ -2148,10 +2148,12 @@
                                    MOVE    HKNCOMBI-REC
                                                    TO  MCPDATA-REC
                                    PERFORM 900-COMB-READ-SEC
-                                   IF      COMB-HKNNUM
+                                   IF    ( COMB-HKNNUM
                                                    =   "971"   OR
                                                        "973"   OR
-                                                       "975"
+                                                       "975" )
+                                   OR    ( COMB-KOHHKNNUM (1)
+                                                   =   "970" )
                                        CONTINUE
                                    ELSE
                                        MOVE    1   TO  FLG-PTBYOMEI-OK
@@ -2438,7 +2440,7 @@
            IF    ( WRK-HKNCOMBI        >   ZERO           )
            AND   ( WRK-HKNCOMBI    NOT =   PTBYO-HKNCOMBI )
                IF      WRK-HKNCOMBI-DELKBN =  "1"
-                   MOVE    "E19"               TO  WRK-DIAG-WARNING
+                   MOVE    "E28"               TO  WRK-DIAG-WARNING
                    PERFORM 500-WARNING-HENSYU-SEC
                    GO  TO  200234-KOUSIN-02-EXT
                END-IF
@@ -2447,7 +2449,7 @@
            IF    ( WRK-KOHID           >   ZERO        )
            AND   ( WRK-KOHID       NOT =   PTBYO-KOHID )
                IF     WRK-KOHID-DELKBN     =   "1"
-                   MOVE    "E25"               TO  WRK-DIAG-WARNING
+                   MOVE    "E29"               TO  WRK-DIAG-WARNING
                    PERFORM 500-WARNING-HENSYU-SEC
                    GO  TO  200234-KOUSIN-02-EXT
                END-IF
@@ -2781,7 +2783,7 @@
       *    保険組合せが削除のとき
            IF      WRK-HKNCOMBI        >   ZERO
                IF      WRK-HKNCOMBI-DELKBN =  "1"
-                   MOVE    "E19"               TO  WRK-DIAG-WARNING
+                   MOVE    "E28"               TO  WRK-DIAG-WARNING
                    PERFORM 500-WARNING-HENSYU-SEC
                    GO  TO  200235-KOUSIN-01-EXT
                END-IF
@@ -2789,7 +2791,7 @@
       *    第三者行為が削除のとき
            IF      WRK-KOHID           >   ZERO
                IF     WRK-KOHID-DELKBN     =   "1"
-                   MOVE    "E25"               TO  WRK-DIAG-WARNING
+                   MOVE    "E29"               TO  WRK-DIAG-WARNING
                    PERFORM 500-WARNING-HENSYU-SEC
                    GO  TO  200235-KOUSIN-01-EXT
                END-IF
@@ -3060,6 +3062,12 @@
                                            TO  WRK-DIAG-MSG
                WHEN    "E27"
                    MOVE    "開始日が険組合せの適用日の範囲外です。"
+                                           TO  WRK-DIAG-MSG
+               WHEN    "E28"
+                   MOVE    "保険組合せが存在しません。"
+                                           TO  WRK-DIAG-MSG
+               WHEN    "E29"
+                   MOVE    "第三者行為が存在しません。"
                                            TO  WRK-DIAG-MSG
       *
                WHEN    "E31"
