@@ -747,9 +747,9 @@
       *
                EVALUATE    BGSMEI-SEIKYUFLG
                WHEN   1
-                    MOVE    "¢þ" TO  HCGS121N-HKNKBNNAME(CNT-LINE)
+                    MOVE    "¢þ" TO  HCGS121N-HKNKBNNAME(CNT-LINE)(1:2)
                WHEN   2
-                    MOVE    "¡þ" TO  HCGS121N-HKNKBNNAME(CNT-LINE)
+                    MOVE    "¡þ" TO  HCGS121N-HKNKBNNAME(CNT-LINE)(1:2)
                END-EVALUATE
       *
                IF    ( PTNUM-PTNUM (11:)   =   SPACE )
