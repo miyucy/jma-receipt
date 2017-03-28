@@ -1,6 +1,6 @@
 xml_diseasev2req {
-    context         int;
-    object  object;
+	context int;
+	object  object;
 	mode	int;
 	recordname	varchar(128);
 	diseasereq {

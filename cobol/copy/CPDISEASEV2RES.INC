@@ -68,47 +68,51 @@
                    07  DISEASES-DIAG-CODE      PIC X(50).
       *            移行(廃止)
                    07  DISEASES-DIAG-CHANGE    PIC X(02).
-      *        不一致病名一覧
-               05  DISEASES-UNMATCH-INFORMATION    OCCURS  50.
-                   07   DISEASES-SPICOD1       PIC X(50).
-                   07   DISEASES-SPINAME1      PIC X(80).
-                   07   DISEASES-SNDSPITBL             OCCURS  6.
-                       09   DISEASES-SPICOD2       PIC X(7).
-                       09   DISEASES-SPINAME2      PIC X(20).
-      *            補足コメントコード
-                   07   DISEASES-HOSOKUCD-G.
-                       09   DISEASES-HOSOKUCD      PIC X(10)
-                                                       OCCURS  3.
-      *            補足コメント
-                   07   DISEASES-HOSOKU-COMMENT
+      *        不一致病名情報
+               05  DISEASES-UNMATCH-INFORMATION.
+      *            不一致病名情報オーバーフラグ
+                   07  DISEASES-INFORMATION-OVERFLOW
+                                               PIC X(5).
+      *            不一致病名一覧
+                   07  DISEASES-UNMATCH-INFORMATION    OCCURS  50.
+                       09  DISEASES-SPICOD1    PIC X(50).
+                       09  DISEASES-SPINAME1   PIC X(80).
+      *                補足コメントコード
+                       09  DISEASES-HOSOKUCD-G.
+                           11  DISEASES-HOSOKUCD
+                                               PIC X(10)   OCCURS  3.
+      *                補足コメント
+                       09  DISEASES-HOSOKU-COMMENT
                                                PIC X(40).
-      *            入外区分
-                   07   DISEASES-NYUGAIKBN     PIC X(1).
-      *            主病
-                   07   DISEASES-SYUOBYOFLG    PIC X(2).
-      *            疑いフラグ
-                   07   DISEASES-UTAGAIFLG     PIC X(1).
-      *            疾患開始日
-                   07   DISEASES-STARTDATE     PIC X(10).
-      *            疾患終了日
-                   07   DISEASES-ENDDATE       PIC X(10).
-      *            転帰
-                   07   DISEASES-TENKIKBN      PIC X(1).
-      *            カルテ病名
-                   07   DISEASES-KARTE-NAME    PIC X(80).
-      *            疾患区分
-                   07   DISEASES-MANSEIKBN     PIC X(2).
-      *            保険適用
-                   07   DISEASES-HKNCOMBI      PIC X(4).
-      *            レセプト表示
-                   07   DISEASES-REZEFLG       PIC X(1).
-      *            表示期間
-                   07   DISEASES-REZEMM        PIC X(2).
-      *            保険病名
-                   07   DISEASES-HKNBYOMEIFLG  PIC X(1).
-      *            退院証明書
-                   07   DISEASES-DISCHARGEFLG  PIC X(1).
-      *            原疾患区分
-                   07   DISEASES-CLASS1        PIC X(2).
-      *            合併症区分
-                   07   DISEASES-CLASS2        PIC X(2).
+      *                入外区分
+                       09  DISEASES-NYUGAIKBN  PIC X(1).
+      *                主病
+                       09  DISEASES-SYUOBYOFLG PIC X(2).
+      *                疑いフラグ
+                       09  DISEASES-UTAGAIFLG  PIC X(1).
+      *                疾患開始日
+                       09  DISEASES-STARTDATE  PIC X(10).
+      *                疾患終了日
+                       09  DISEASES-ENDDATE    PIC X(10).
+      *                転帰
+                       09  DISEASES-TENKIKBN   PIC X(1).
+      *                カルテ病名
+                       09  DISEASES-KARTE-NAME PIC X(80).
+      *                疾患区分
+                       09  DISEASES-MANSEIKBN  PIC X(2).
+      *                保険適用
+                       09  DISEASES-HKNCOMBI   PIC X(4).
+      *                レセプト表示
+                       09  DISEASES-REZEFLG    PIC X(1).
+      *                表示期間
+                       09  DISEASES-REZEMM     PIC X(2).
+      *                保険病名
+                       09  DISEASES-HKNBYOMEIFLG
+                                               PIC X(1).
+      *                退院証明書
+                       09  DISEASES-DISCHARGEFLG
+                                               PIC X(1).
+      *                原疾患区分
+                       09  DISEASES-CLASS1     PIC X(2).
+      *                合併症区分
+                       09  DISEASES-CLASS2     PIC X(2).

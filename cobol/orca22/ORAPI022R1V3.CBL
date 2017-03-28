@@ -66,6 +66,7 @@
            03  FLG-PTBYOMEI-OK     PIC 9(01).
            03  FLG-KOUSIN          PIC 9(01).
            03  FLG-BYOMEI-HEN      PIC 9(01).
+           03  FLG-OK              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -157,7 +158,6 @@
                                        PIC X(4).
                    07  WRK-CLASS1-X    PIC X(4).
                    07  WRK-CLASS2-X    PIC X(4).
-                   07  WRK-KOHID-X     PIC X(4).
       *
            03  WRK-BYOMEI-TBL. 
                05  WRK-BYOMEICD-G.
@@ -181,6 +181,7 @@
            03  WRK-POSITION        PIC 9(02).
            03  WRK-POSITION-X      REDEFINES   WRK-POSITION
                                    PIC X(02).
+           03 WRK-DISEASES-SPICOD1 PIC X(50).
       *
            03  WRK-DIAG-AREA.
                05  WRK-DIAG-POSITION
@@ -248,13 +249,14 @@
                05  WRK-DISEASEQ-HKNCOMBI   PIC 9(04).
                05  WRK-DISEASEQ-HKNCOMBI-X PIC X(04).
                05  WRK-DISEASEQ-KOHID      PIC 9(04).
-               05  WRK-DISEASEQ-KOHID-X    PIC X(04).
                05  WRK-DISEASEQ-TENKIYMD   PIC X(08).
                05  WRK-DISEASEQ-TENKIKBN   PIC X(01).
                05  WRK-DISEASEQ-SYUBYOFLG  PIC X(01).
                05  WRK-DISEASEQ-UTAGAIFLG  PIC X(01).
                05  WRK-DISEASEQ-KARTE-NAME PIC X(80).
                05  WRK-DISEASEQ-MANSEIKBN  PIC 9(2).
+               05 WRK-DISEASEQ-INSURANCE-CLASS
+                                           PIC X(01).
       *
       *    保険組合せ、第三者行為重複チェック用エリア
        01  WRK-CHK-HKNCOMBI-AREA.
@@ -479,16 +481,17 @@
            MOVE    WRK-SMCNDATE-TIME   TO  DISEASES-INFORMATION-TIME
       *
            MOVE    DISEASEQ-PERFORM-DATE
-                                       TO  WRK-HEN-DATE
+                                       TO  DISEASES-PERFORM-DATE
+                                           WRK-HEN-DATE
            PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD (1:6)      TO  SPA-SYSYMD
+           MOVE    WRK-SYMD            TO  SPA-SYSYMD
            IF      SPA-SYSYMD          =   SPACE
                MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-               MOVE    WRK-HEN-DATE        TO  DISEASEQ-PERFORM-DATE
+               MOVE    WRK-SMCNDATE-DATE   TO  DISEASES-PERFORM-DATE
            END-IF
-           MOVE    DISEASEQ-PERFORM-DATE
-                                       TO  DISEASES-PERFORM-DATE
-           IF      DISEASEQ-PERFORM-DATE
+           MOVE    DISEASEQ-PERFORM-TIME
+                                       TO  DISEASES-PERFORM-TIME
+           IF      DISEASEQ-PERFORM-TIME
                                        =   SPACE
                MOVE    WRK-HEN-TIME        TO  DISEASES-PERFORM-TIME
            END-IF
@@ -669,7 +672,7 @@
       *
            IF      WRK-ERRCD           =   SPACE
       *        正常終了
-                MOVE    "処理実施終了" TO  DISEASES-API-RESULT-MSG
+                MOVE   "処理実施終了"  TO  DISEASES-API-RESULT-MSG
            ELSE
       *        エラーメッセージ
                PERFORM 890-ERRCD-MSG-SEC
@@ -2914,10 +2917,13 @@
       *****************************************************************
        2003-DISEASES-UNMATCH-SEC       SECTION.
       *
+           MOVE    "False"             TO  DISEASES-INFORMATION-OVERFLOW
+           MOVE    ZERO                TO  IDY
+      *
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    WRK-PTID            TO  PTBYO-PTID
-           MOVE    "%%"                TO  PTBYO-SRYKA
+           MOVE    WRK-SRYKA           TO  PTBYO-SRYKA
            MOVE    WRK-BASE-MONTH      TO  PTBYO-SRYYMD (1:6)
            MOVE    "31"                TO  PTBYO-SRYYMD (7:2)
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
@@ -2935,9 +2941,6 @@
       *
            PERFORM UNTIL   FLG-PTBYOMEI    =   1
                PERFORM 20031-DISEASES-UNMATCH-CHK-SEC
-               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key37"             TO  MCP-PATHNAME
-               PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
@@ -2952,9 +2955,200 @@
       *****************************************************************
        20031-DISEASES-UNMATCH-CHK-SEC SECTION.
       *
+           MOVE    ZERO            TO  FLG-OK
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       50
+                   UNTIL       IDX     >       WRK-DISEASEQ-MAX
+                   OR          FLG-OK  =       1
+               IF    ( PTBYO-SRYYMD    =   WRK-DISEASEQ-SRYYMD   (IDX) )
+               AND   ( PTBYO-NYUGAIKBN =   WRK-DISEASEQ-NYUGAIKBN(IDX) )
+               AND   ( PTBYO-BYOMEI    =   WRK-DISEASEQ-BYOMEI   (IDX) )
+               AND   ( PTBYO-HOSOKU-COMMENT
+                                       =   WRK-DISEASEQ-HOSOKU-COMMENT
+                                                                 (IDX) )
+               AND   ( PTBYO-TENKIYMD  =   WRK-DISEASEQ-TENKIYMD (IDX) )
+      ******** AND   ( PTBYO-TENKIKBN  =   WRK-DISEASEQ-TENKIKBN (IDX) )
+      ******** AND   ( PTBYO-SYUBYOFLG =   WRK-DISEASEQ-SYUBYOFLG(IDX) )
+      ******** AND   ( PTBYO-UTAGAIFLG =   WRK-DISEASEQ-UTAGAIFLG(IDX) )
+                   IF      WRK-DISEASEQ-HKNCOMBI-X (IDX)
+                                           =   "None"
+                       IF      PTBYO-HKNCOMBI  =   ZERO
+                           MOVE    1               TO  FLG-OK
+                       ELSE
+                           INITIALIZE                  HKNCOMBI-REC
+                           MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
+                           MOVE    WRK-PTID        TO  COMB-PTID
+                           MOVE    PTBYO-HKNCOMBI  TO  COMB-HKNCOMBINUM
+                           MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+                           PERFORM 900-COMB-READ-SEC
+                           IF    ( COMB-HKNNUM     =   "971"   OR
+                                                       "973"   OR
+                                                       "975" )
+                           OR    ( COMB-KOHHKNNUM (1)
+                                                   =   "970" )
+                               CONTINUE
+                           ELSE
+                               MOVE    1               TO  FLG-OK
+                           END-IF
+                       END-IF
+                   ELSE
+                       IF      WRK-DISEASEQ-INSURANCE-CLASS (IDX)
+                                               =   "1"
+                           IF      PTBYO-HKNCOMBI  =
+                                           WRK-DISEASEQ-HKNCOMBI (IDX)
+                               MOVE    1               TO  FLG-OK
+                           END-IF
+                           IF      PTBYO-KOHID     =
+                                           WRK-DISEASEQ-KOHID    (IDX)
+                               MOVE    1               TO  FLG-OK
+                           END-IF
+                       ELSE
+                           IF      PTBYO-HKNCOMBI  =
+                                           WRK-DISEASEQ-HKNCOMBI (IDX)
+                               MOVE    1               TO  FLG-OK
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
            END-PERFORM
+      *
+      *    対象の病名がないとき不一致リストに返却
+           IF      FLG-OK              =   ZERO
+      *        ５０件以上のときエラーとする
+               IF      IDY                 =   50
+                   MOVE    "True"              TO
+                                          DISEASES-INFORMATION-OVERFLOW
+                   MOVE    1                   TO  FLG-PTBYOMEI
+                   GO  TO  20031-DISEASES-UNMATCH-CHK-EXT
+               END-IF
+      *
+               ADD     1                   TO  IDY
+      *
+      *        入る病名コードまで返却
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       21
+                       OR      PTBYO-BYOMEICD (IDXX)   =   SPACE
+                   MOVE    SPACE           TO  WRK-BYOMEICD
+                                               WRK-DISEASES-SPICOD1
+                   MOVE    DISEASES-SPICOD1 (IDY)
+                                           TO  WRK-DISEASES-SPICOD1
+                   IF      PTBYO-BYOMEICD (IDXX) (1:3)
+                                           =   "ZZZ"
+                       IF      WRK-DISEASES-SPICOD1 (46:)
+                                              =   SPACE
+                           MOVE    PTBYO-BYOMEICD (IDXX) (4:)
+                                                   TO  WRK-BYOMEICD
+                       END-IF
+                   ELSE
+                       IF      WRK-DISEASES-SPICOD1 (43:)
+                                              =   SPACE
+                           MOVE    PTBYO-BYOMEICD (IDXX)
+                                                   TO  WRK-BYOMEICD
+                       END-IF
+                   END-IF
+                   IF      WRK-BYOMEICD    =   SPACE
+                       MOVE    21              TO  IDXX
+                   ELSE
+                       MOVE    SPACE           TO  DISEASES-SPICOD1(IDY)
+                       IF      IDXX                =   1
+                           MOVE    WRK-BYOMEICD        TO
+                                                   DISEASES-SPICOD1(IDY)
+                       ELSE
+                           STRING  WRK-DISEASES-SPICOD1
+                                               DELIMITED  BY  SPACE
+                               "."             DELIMITED  BY  SIZE
+                               WRK-BYOMEICD    DELIMITED  BY  SPACE
+                                       INTO    DISEASES-SPICOD1 (IDY)
+                           END-STRING
+                       END-IF
+                   END-IF
+               END-PERFORM
+               MOVE    PTBYO-BYOMEI        TO  DISEASES-SPINAME1   (IDY)
+               MOVE    PTBYO-HOSOKUCD-G    TO  DISEASES-HOSOKUCD-G (IDY)
+               MOVE    PTBYO-HOSOKU-COMMENT
+                                           TO  DISEASES-HOSOKU-COMMENT
+                                                                   (IDY)
+               EVALUATE    PTBYO-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    "I"         TO  DISEASES-NYUGAIKBN  (IDY)
+                   WHEN    "2"
+                       MOVE    "O"         TO  DISEASES-NYUGAIKBN  (IDY)
+               END-EVALUATE
+               IF      PTBYO-SYUBYOFLG     =   "1"
+                   MOVE    "PD"                TO
+                                               DISEASES-SYUOBYOFLG (IDY)
+               END-IF
+               MOVE    PTBYO-UTAGAIFLG     TO  DISEASES-UTAGAIFLG  (IDY)
+               MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  DISEASES-STARTDATE  (IDY)
+               IF      PTBYO-TENKIYMD  NOT =   SPACE
+                   MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE        TO
+                                           DISEASES-ENDDATE    (IDY)
+               END-IF
+               MOVE    PTBYO-TENKIKBN      TO  DISEASES-TENKIKBN   (IDY)
+               MOVE    PTBYO-CHARTBYOMEI   TO  DISEASES-KARTE-NAME (IDY)
+               IF      PTBYO-MANSEIKBN     >   ZERO
+                   MOVE    PTBYO-MANSEIKBN     TO
+                                               DISEASES-MANSEIKBN  (IDY)
+               END-IF
+               IF      PTBYO-HKNCOMBI      >   ZERO
+                   MOVE    PTBYO-HKNCOMBI      TO
+                                               DISEASES-HKNCOMBI   (IDY)
+               END-IF
+               IF      PTBYO-KOHID         >   ZERO
+                   INITIALIZE                      HKNCOMBI-REC
+                   MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+                   MOVE    PTBYO-PTID          TO  COMB-PTID
+                   MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+                   MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                       MOVE    "key8"              TO  MCP-PATHNAME
+                       PERFORM 900-COMB-READ-N-SEC
+                   ELSE
+                       INITIALIZE                      HKNCOMBI-REC
+                       MOVE    1                   TO  FLG-HKNCOMBI
+                   END-IF
+                   PERFORM            UNTIL    FLG-HKNCOMBI =   1
+                       IF   ( PTBYO-KOHID      =   COMB-KOHID (1) )
+                       AND  ( PTBYO-SRYYMD     <=  COMB-TEKEDYMD  )
+                           MOVE    PTBYO-HKNCOMBI      TO
+                                               DISEASES-HKNCOMBI (IDY)
+                           MOVE    1                   TO  FLG-HKNCOMBI
+                       ELSE
+                           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                           MOVE    "key8"              TO  MCP-PATHNAME
+                           PERFORM 900-COMB-READ-N-SEC
+                       END-IF
+                   END-PERFORM
+                   MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
+               END-IF
+               MOVE    PTBYO-REZEFLG       TO  DISEASES-REZEFLG    (IDY)
+               IF      PTBYO-REZEMM        >   ZERO
+                   MOVE    PTBYO-REZEMM        TO  DISEASES-REZEMM (IDY)
+               END-IF
+               MOVE    PTBYO-HKNBYOMEIFLG  TO  DISEASES-HKNBYOMEIFLG
+                                                                   (IDY)
+               MOVE    PTBYO-DISCHARGEFLG  TO  DISEASES-DISCHARGEFLG
+                                                                   (IDY)
+               IF      PTBYO-CLASS1        >   ZERO
+                   MOVE    PTBYO-CLASS1        TO  DISEASES-CLASS1 (IDY)
+               END-IF
+               IF      PTBYO-CLASS1        >   ZERO
+                   MOVE    PTBYO-CLASS2        TO  DISEASES-CLASS2 (IDY)
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    "key37"             TO  MCP-PATHNAME
+           PERFORM 900-PTBYO-READ-SEC
            .
        20031-DISEASES-UNMATCH-CHK-EXT.
            EXIT.
@@ -2966,6 +3160,9 @@
       *
            ADD     1                   TO  WRK-DISEASEQ-MAX
       *
+           MOVE    DISEASEQ-INSURANCE-CLASS (IDX)
+                                       TO  WRK-DISEASEQ-INSURANCE-CLASS
+                                                   (WRK-DISEASEQ-MAX)
            MOVE    WRK-BYOYMD          TO  WRK-DISEASEQ-SRYYMD
                                                    (WRK-DISEASEQ-MAX)
            MOVE    WRK-NYUGAIKBN       TO  WRK-DISEASEQ-NYUGAIKBN
@@ -2983,8 +3180,6 @@
            MOVE    WRK-HKNCOMBI-X      TO  WRK-DISEASEQ-HKNCOMBI-X
                                                    (WRK-DISEASEQ-MAX)
            MOVE    WRK-KOHID           TO  WRK-DISEASEQ-KOHID
-                                                   (WRK-DISEASEQ-MAX)
-           MOVE    WRK-KOHID-X         TO  WRK-DISEASEQ-KOHID-X
                                                    (WRK-DISEASEQ-MAX)
       *    MOVE                        TO  WRK-DISEASEQ-SYUBYOFLG
       *    MOVE                        TO  WRK-DISEASEQ-UTAGAIFLG
@@ -3608,14 +3803,7 @@
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-                   MOVE    ZERO            TO  FLG-HKNCOMBI
-               ELSE
-                   INITIALIZE                  HKNCOMBI-REC
-                   MOVE    1               TO  FLG-HKNCOMBI
-               END-IF
+               PERFORM 900-COMB-READ-N-SEC
            ELSE
                INITIALIZE                  HKNCOMBI-REC
                MOVE    1               TO  FLG-HKNCOMBI
@@ -3627,6 +3815,24 @@
       *
            .
        900-COMB-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ読込
+      *****************************************************************
+       900-COMB-READ-N-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       900-COMB-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
