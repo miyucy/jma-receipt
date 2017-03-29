@@ -1222,7 +1222,7 @@
                    IF      IDXY                >   200
                        MOVE    1               TO  SPA-SHO-NEXT
                    ELSE
-                       MOVE    IDXX                TO  SPA-GMN-RENNUM
+                       MOVE    IDXY                TO  SPA-GMN-RENNUM
                                                                (IDXY)
                        MOVE    MATERH-SNAME        TO  SPA-GMN-SHONAME
                                                                (IDXY)
@@ -2382,15 +2382,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-SHO-NEXT        =   1
                IF      SPA-SHO-PAGE    =   1
-                   MOVE    "次頁あり"      TO  Z08-MNEXT-DATA
+                   MOVE    "次頁有り"      TO  Z08-MNEXT-DATA
                    MOVE    "red"           TO  Z08-MNEXT-STYLE
                ELSE
-                   MOVE    "前次頁あり"    TO  Z08-MNEXT-DATA
+                   MOVE    "前頁・次頁有り"    TO  Z08-MNEXT-DATA
                    MOVE    "red"           TO  Z08-MNEXT-STYLE
                END-IF
            ELSE
                IF      SPA-SHO-PAGE    >   1
-                   MOVE    "前頁あり"      TO  Z08-MNEXT-DATA
+                   MOVE    "前頁有り"      TO  Z08-MNEXT-DATA
                    MOVE    "red"           TO  Z08-MNEXT-STYLE
                END-IF
            END-IF

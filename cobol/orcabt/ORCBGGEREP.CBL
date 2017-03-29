@@ -1326,6 +1326,7 @@
            MOVE    ZERO                TO  FLG-GENERIC-NO2
            MOVE    ZERO                TO  CNT-GENERIC2
            MOVE    ZERO                TO  CNT-GENERIC3
+           MOVE    ZERO                TO  FLG-GENERIC-OK12
       *
            MOVE    400                 TO  SPA-MAX-LINE
       *
