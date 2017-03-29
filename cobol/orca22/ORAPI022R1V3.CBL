@@ -472,6 +472,7 @@
            MOVE    WRK-HEN-TIME        TO  WRK-SMCNDATE-TIME
       *
            MOVE    MCP-USER            TO  SPA-OPID
+           MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
       *
            INITIALIZE                      XML-DISEASERES
       *
@@ -479,22 +480,6 @@
       *
            MOVE    WRK-SMCNDATE-DATE   TO  DISEASES-INFORMATION-DATE
            MOVE    WRK-SMCNDATE-TIME   TO  DISEASES-INFORMATION-TIME
-      *
-           MOVE    DISEASEQ-PERFORM-DATE
-                                       TO  DISEASES-PERFORM-DATE
-                                           WRK-HEN-DATE
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD            TO  SPA-SYSYMD
-           IF      SPA-SYSYMD          =   SPACE
-               MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-               MOVE    WRK-SMCNDATE-DATE   TO  DISEASES-PERFORM-DATE
-           END-IF
-           MOVE    DISEASEQ-PERFORM-TIME
-                                       TO  DISEASES-PERFORM-TIME
-           IF      DISEASEQ-PERFORM-TIME
-                                       =   SPACE
-               MOVE    WRK-HEN-TIME        TO  DISEASES-PERFORM-TIME
-           END-IF
       *
       *    医療機関識別番号セット
            MOVE    "API"               TO  SPA-MOTOPG
@@ -586,9 +571,40 @@
                GO  TO  200-MAIN-EXT
            END-IF
       *
+           IF      DISEASEQ-PERFORM-DATE
+                                   NOT =   SPACE
+               MOVE    DISEASEQ-PERFORM-DATE
+                                           TO  WRK-HEN-DATE
+               PERFORM 802-DAYHEN02-SEC
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    WRK-SYMD            TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    WRK-SYMD            TO  SPA-SYSYMD
+                   MOVE    DISEASEQ-PERFORM-DATE
+                                               TO  DISEASES-PERFORM-DATE
+               END-IF
+           END-IF
+           IF      DISEASES-PERFORM-DATE
+                                       =   SPACE
+               MOVE    WRK-SMCNDATE-DATE   TO  DISEASES-PERFORM-DATE
+           END-IF
+      *
+           IF      DISEASEQ-PERFORM-TIME
+                                       =   SPACE
+               MOVE    WRK-SMCNDATE-TIME   TO  DISEASES-PERFORM-TIME
+           ELSE
+               MOVE    DISEASEQ-PERFORM-TIME
+                                           TO  DISEASES-PERFORM-TIME
+           END-IF
+      *
            MOVE    ZERO                TO  DISEASES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
                                            WRK-WARNING
+      *??
+           DISPLAY "SPA-SYSYMD=" SPA-SYSYMD "#" 
+      *??
       *
       *    入力項目チェック処理
            PERFORM 2001-INPUT-CHK-SEC
@@ -1545,8 +1561,6 @@
            END-IF
       *
       *    疾患区分
-          DISPLAY " Diseasee_Class ="  DISEASEQ-MANSEIKBN (IDX)
-      *??
           IF      DISEASEQ-MANSEIKBN (IDX)
                                        =   "None"  OR  "Auto"
                MOVE    DISEASEQ-MANSEIKBN (IDX)
@@ -2094,6 +2108,7 @@
            .
        200231-PTBYO-DELETE-EXT.
            EXIT.
+      *
       *****************************************************************
       *    同一病名チェック処理
       *****************************************************************
@@ -2436,9 +2451,7 @@
       *    患者病名マスタ更新処理
       *****************************************************************
        200234-KOUSIN-02-SEC           SECTION.
-      *??
-           DISPLAY "200234-KOUSIN-02-SEC START" 
-      *??
+      *
       *    保険組合せが削除のとき
            IF    ( WRK-HKNCOMBI        >   ZERO           )
            AND   ( WRK-HKNCOMBI    NOT =   PTBYO-HKNCOMBI )
@@ -2780,9 +2793,7 @@
       *    患者病名追加処理
       *****************************************************************
        200235-KOUSIN-01-SEC           SECTION.
-      *??
-           DISPLAY "200234-KOUSIN-01-SEC START" 
-      *??
+      *
       *    保険組合せが削除のとき
            IF      WRK-HKNCOMBI        >   ZERO
                IF      WRK-HKNCOMBI-DELKBN =  "1"
@@ -3392,10 +3403,6 @@
                        END-IF
                    END-PERFORM
            END-EVALUATE
-      *??
-           DISPLAY "DISEASES-DIAG-TBL-G=" CNT-DIAG "#" 
-                      DISEASES-DIAG-TBL-G (CNT-DIAG) "#" 
-      *??
       *
            IF      FLG-DIAG            =   9
                CONTINUE
@@ -3469,7 +3476,7 @@
       *    診療科編集処理
       *****************************************************************
        5001-SRYKA-HENSYU-SEC       SECTION.
-      * 
+      *
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                      SYS-1005-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
