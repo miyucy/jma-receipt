@@ -196,6 +196,9 @@
            03  WRK-ZZZ                 PIC ZZZ.
            03  WRK-SELNUM              PIC 9(03).
       *
+           03  WRK-MATERH-SNAME        PIC X(200).
+           03  WRK-MATERH-KIKAKU       PIC X(120).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -1077,9 +1080,6 @@
       *    入力個所のセット
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
-      *H29.3   商品名称一覧クリア
-           MOVE    ZERO                TO  SPA-GMN-SHONAME-MAX
-           INITIALIZE                      SPA-GMN-SHONAME-LIST-G
       *
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
@@ -1094,6 +1094,11 @@
                    MOVE    SPACE               TO  SPA-GMN-IDOKIKAN
                    MOVE    SPACE               TO  SPA-GMN-IDOKANRENNAME
                    MOVE    SPACE               TO  SPA-GMN-MSGLABEL
+      *H29.3       商品名称一覧クリア
+                   MOVE    ZERO                TO  SPA-GMN-SHONAME-MAX
+                   INITIALIZE                  SPA-GMN-SHONAME-LIST-G
+                   MOVE    ZERO                TO  SPA-SHO-NEXT
+                   MOVE    ZERO                TO  SPA-SHO-PAGE
                    MOVE    6                   TO  SPA-GMN-CUR
                END-IF
                GO      TO      501-IDOKANREN-CHK-EXT
@@ -1199,8 +1204,16 @@
            END-IF
            MOVE    ZERO                TO  IDXX
            MOVE    ZERO                TO  IDXY
+           MOVE    SPACE               TO  WRK-MATERH-SNAME
+           MOVE    SPACE               TO  WRK-MATERH-KIKAKU
            PERFORM UNTIL   (FLG-MATERIAL-H =   1  )
                         OR (SPA-SHO-NEXT   =   1  )
+      *        前と同じ内容
+               IF     (MATERH-SNAME        =   WRK-MATERH-SNAME)
+                  AND (MATERH-KIKAKU       =   WRK-MATERH-KIKAKU)
+                   CONTINUE
+               ELSE
+      *
                ADD     1                   TO  IDXX
                IF      IDXX                <   IDX-STR
                    CONTINUE
@@ -1221,6 +1234,10 @@
                        MOVE    IDXY            TO  SPA-GMN-SHONAME-MAX
                    END-IF
                END-IF
+      *
+               END-IF
+               MOVE    MATERH-SNAME        TO  WRK-MATERH-SNAME
+               MOVE    MATERH-KIKAKU       TO  WRK-MATERH-KIKAKU
       *
                MOVE    "tbl_material_h"    TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME

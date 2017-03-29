@@ -33,7 +33,9 @@ path	key2	{
 		SELECT *
 		FROM tbl_material_h
 		WHERE 	SRYCD	= :SRYCD
-			ORDER   BY  JANCD
+			ORDER   BY  SNAME,
+                                    KIKAKU,
+                                    JANCD
 		;
 	};
 };
