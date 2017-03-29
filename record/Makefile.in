@@ -972,6 +972,9 @@ DB_files = \
 	xml_medicalv3res6.db \
 	xml_diseasev2req.db \
 	xml_diseasev2res.db \
+	tbl_material_h.db \
+	tbl_material_k.db \
+	tbl_material_s.db \
 
 
 shell.db: shell.db.in

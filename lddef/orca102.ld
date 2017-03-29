@@ -103,6 +103,7 @@ db	{
 	tbl_tensuplus;
 	tbl_tensuplus2;
 	tbl_yakujyo;
+	tbl_material_h;
 };
 
 /* #include "orcadb.inc" */
