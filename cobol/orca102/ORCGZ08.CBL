@@ -1303,7 +1303,9 @@
                                    TO  SPA-GMN-FORMALNAME
            ELSE
                STRING  SPA-GMN-SHONAME (IDXX)
+                       "["
                        SPA-GMN-KIKAKU  (IDXX)
+                       "]"
                                    DELIMITED  BY  SPACE
                                    INTO  SPA-GMN-FORMALNAME
                END-STRING
