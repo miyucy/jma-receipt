@@ -1298,11 +1298,16 @@
                GO      TO   503-SELNUM-CHK-EXT
            END-IF
            MOVE    SPACE           TO  SPA-GMN-FORMALNAME
-           STRING  SPA-GMN-SHONAME (IDXX)
-                   SPA-GMN-KIKAKU  (IDXX)
+           IF      SPA-GMN-KIKAKU  (IDXX)  =   "¡Ý"
+               MOVE    SPA-GMN-SHONAME (IDXX)
+                                   TO  SPA-GMN-FORMALNAME
+           ELSE
+               STRING  SPA-GMN-SHONAME (IDXX)
+                       SPA-GMN-KIKAKU  (IDXX)
                                    DELIMITED  BY  SPACE
                                    INTO  SPA-GMN-FORMALNAME
-           END-STRING
+               END-STRING
+           END-IF
            MOVE    SPACE           TO  SPA-GMN-SELNUM
            MOVE    ZERO            TO  SPA-NAI-SELNUM
            MOVE    5                   TO  SPA-GMN-CUR
@@ -2107,12 +2112,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "tbl_tensu_user"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
+      ***      MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "tbl_tensu_user"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-TENSU-READ-SEC
@@ -2121,7 +2126,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                      TNS-TENSU-REC
            END-IF
       *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      ***  MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "tbl_tensu_user"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBLOSEC-SEC
