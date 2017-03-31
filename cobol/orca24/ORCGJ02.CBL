@@ -3145,6 +3145,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      ORCSGETGE-GENEFLG   =   "1"
                MOVE    "1"             TO  SPA-NAI-GENEFLG (IDX)
            END-IF
+      *    後発品変更可（処方）あり
+           IF      ORCSGETGE-GENEFLG   =   "2"
+               MOVE    "2"             TO  SPA-NAI-GENEFLG (IDX)
+           END-IF
            .
        31012-GENERIC-EXT.
            EXIT.

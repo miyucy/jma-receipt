@@ -4677,7 +4677,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-KOUHATUKA       TO  ORCSCGENN-1030-KOUHATUKA
       *    後発品変更不可（処方毎）有
            IF      SPA-GENEFUKAFLG     =   "1"
-               MOVE    "1"             TO  SPA-GENEFUKAFLG
+               MOVE    "1"             TO  ORCSCGENN-KOUHATU-IN 
+           END-IF
+      *    後発品変更可（処方毎）有
+           IF      SPA-GENEFUKAFLG     =   "2"
+               MOVE    "2"             TO  ORCSCGENN-KOUHATU-IN 
            END-IF
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z   >   WRK-MAX      )
