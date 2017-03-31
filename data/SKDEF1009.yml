@@ -1,7 +1,7 @@
 kanri_cd    : "1009"
 name        : "´µ¼ÔÈÖ¹æ¹½À®´ÉÍý"
 class_cd    : "*"
-item_max    : 16
+item_max    : 15
 item_list   :
 - item_no   : 1
   item      : "PTNUMKSIKBN"
@@ -100,9 +100,3 @@ item_list   :
   type      : "X"
   start     : 41
   length    : 2
-- item_no   : 16
-  item      : "YOBI"
-  item_jp   : "Í½È÷"
-  type      : "X"
-  start     : 43
-  length    : 458

@@ -66,6 +66,41 @@ ORCADATA_files = \
 	SKDEF1027.yml \
 	SKDEF1028.yml \
 	SKDEF1030.yml \
+	SKDEF1040.yml \
+	SKDEF1041.yml \
+	SKDEF1042.yml \
+	SKDEF1043.yml \
+	SKDEF1044.yml \
+	SKDEF1045.yml \
+	SKDEF1046.yml \
+	SKDEF1050.yml \
+	SKDEF1920.yml \
+	SKDEF2001.yml \
+	SKDEF2002.yml \
+	SKDEF2004.yml \
+	SKDEF2008.yml \
+	SKDEF2009.yml \
+	SKDEF2011.yml \
+	SKDEF2012.yml \
+	SKDEF2013.yml \
+	SKDEF3001.yml \
+	SKDEF3002.yml \
+	SKDEF3003.yml \
+	SKDEF3005.yml \
+	SKDEF4002.yml \
+	SKDEF4003.yml \
+	SKDEF5003.yml \
+	SKDEF5007.yml \
+	SKDEF5010.yml \
+	SKDEF5011.yml \
+	SKDEF5012.yml \
+	SKDEF5013.yml \
+	SKDEF5015.yml \
+	SKDEF5020.yml \
+	SKDEF8000.yml \
+	SKDEF9100.yml \
+	SKDEF9101.yml \
+	SKDEF9701.yml \
 
 all:   
 

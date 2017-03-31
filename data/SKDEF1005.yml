@@ -1,7 +1,7 @@
 kanri_cd    : "1005"
 name        : "ø«Œ≈≤ Ã‹æ Û"
 class_cd    : "*"
-item_max    : 8
+item_max    : 7
 item_list   :
 - item_no   : 1
   item      : "SRYKANAME"
@@ -45,9 +45,3 @@ item_list   :
   type      : "X"
   start     : 120
   length    : 1
-- item_no   : 8
-  item      : "YOBI"
-  item_jp   : "ÕΩ»˜"
-  type      : "X"
-  start     : 121
-  length    : 380
