@@ -11381,10 +11381,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                               (SPA-ERRCD   NOT =   SPACE )
                PERFORM 49011-JYURRK-PARAUPD-SEC
            END-PERFORM
-      *TEST
-           DISPLAY "49011-JYURRK-UPD-SEC"
-                     ",SPA-SYUNOU-KOUSIN:" SPA-SYUNOU-KOUSIN
-      *TEST
       *D   ¼ýÇ¼ÊÑ¹¹»þ¡¢ºÆ·×»»
       *    IF      SPA-SYUNOU-KOUSIN   =   1
       *        PERFORM 49012-SYUNOU-SAIKEISAN-SEC
