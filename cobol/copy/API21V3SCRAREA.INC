@@ -38,21 +38,3 @@
       *ORAPI021S6V3
            COPY    "CPAPILSTV2.INC"    REPLACING
                                        //APILST-// BY //APILST09-//.
-      *ORAPI021S2V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST10-//.
-      *ORAPI021S7V3
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST11-//.
-      *ORAPI021NS1V3
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST12-//.
-      *ORAPI021NS2V3
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST13-//.
-      *ORAPI021NS3V3
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST14-//.
-      *ORAPI021NS4V3
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST15-//.

@@ -77,7 +77,6 @@
       *  04.08.00    NACL-多々納  16/06/XX  中心静脈（植入型カテーテル）対応
       *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
       *  04.08.00    NACL-多々納  16/10/XX  一括変更項目桁数対応
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -913,22 +912,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA24SCRAREA.INC".
-      *    COPY    "J02.INC".
-      *    COPY    "J021.INC".
-      *    COPY    "J022.INC".
-      *    COPY    "J025.INC".
-      *    COPY    "J026.INC".
-      *    COPY    "J03.INC".
-      *    COPY    "J04.INC".
-      *    COPY    "J041.INC".
-      *    COPY    "J042.INC".
-      *    COPY    "J98.INC".
-      *    COPY    "J99.INC".
-      *    COPY    "JERR.INC".
-      *    COPY    "JERR2.INC".
-      *    COPY    "JID1.INC".
-      *    COPY    "JID2.INC".
+           COPY    "J02.INC".
+           COPY    "J021.INC".
+           COPY    "J022.INC".
+           COPY    "J025.INC".
+           COPY    "J026.INC".
+           COPY    "J03.INC".
+           COPY    "J04.INC".
+           COPY    "J041.INC".
+           COPY    "J042.INC".
+           COPY    "J98.INC".
+           COPY    "J99.INC".
+           COPY    "JERR.INC".
+           COPY    "JERR2.INC".
+           COPY    "JID1.INC".
+           COPY    "JID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -3436,12 +3434,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
                PERFORM 310122-KNJCOM-SET-SEC
            END-IF
-      *H30.4
-      *    コメントの時、内容設定
-           IF     (SRY-SRYCD  (IDZ)(1:7)   =   "0992081" )
-             AND  (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
-               PERFORM 310122-KNJCOM-SET-SEC
-           END-IF
       *
       *    数量（薬剤、器材のとき）
            IF    ((SRY-SRYCD  (IDZ)(1:1)   =   "6"  OR  "7" )
@@ -3645,12 +3637,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ((SRY-SRYCD  (IDZ)(1:1)   =   "8"   ) OR
                   (SRY-SRYCD  (IDZ)(1:3)   =   "008" )) AND
                   (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
-               PERFORM 310122-KNJCOM-SET-SEC
-           END-IF
-      *H30.4
-      *    コメントの時、内容設定
-           IF     (SRY-SRYCD  (IDZ)(1:7)   =   "0992081" )
-             AND  (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
                PERFORM 310122-KNJCOM-SET-SEC
            END-IF
       *
@@ -12112,15 +12098,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            OR (SPA-ERRCD   NOT =   SPACE )
       *
                MOVE    TBL-SYUNOU-REC(IDX) TO  SYUNOU-REC
-      *
                ADD     1                   TO  SPA-J025-MAX
                IF      SPA-J025-MAX        <=  100
                    PERFORM 490122-J025-HENSYU-SEC
                END-IF
       *
       *        追加分
-      *H29.6   修正
-      *****    IF      TBL-SYU-ACCT-UPDKBN(IDX)    =   "2"
+               IF      TBL-SYU-ACCT-UPDKBN(IDX)    =   "2"
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "tbl_syunou"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
@@ -12137,8 +12121,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "tbl_syunou"        TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
                    PERFORM 990-DBCLOSE-SEC
-      *
-               IF      TBL-SYU-ACCT-UPDKBN(IDX)    =   "2"
       *            新規分追加
                    PERFORM 4901219-SYUNOU-MEI-OUT-SEC
                END-IF
@@ -12293,13 +12275,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SYU-SKYMONEY        =   ZERO
                MOVE    SPACE               TO  SYU-DENPJTIKBN
            ELSE
-      ******   MOVE    "1"                 TO  SYU-DENPJTIKBN
-      *H29.6   未収判定
-               IF      SYU-SKYMONEY        <=  SYU-NYUKIN-TOTAL
-                   MOVE    "1"                 TO  SYU-DENPJTIKBN
-               ELSE
-                   MOVE    "2"                 TO  SYU-DENPJTIKBN
-               END-IF
+               MOVE    "1"                 TO  SYU-DENPJTIKBN
            END-IF
            IF      FLG-ERR             =   ZERO
       *        会計変更区分

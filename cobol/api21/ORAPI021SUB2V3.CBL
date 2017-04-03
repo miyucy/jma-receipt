@@ -29,9 +29,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.08.00    NACL-多々納  16/12/XX  院内・院外区分対応
-      *  04.08.00    NACL-多々納  17/05/XX  包括検査数、単位コード対応
-      *                                     フィルム分画数等対応
-      *  05.00.00    NACL-多々納  17/12/XX  入院対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -68,7 +65,6 @@
       *
            03  IDXM                PIC 9(04).
            03  IDXR                PIC 9(04).
-           03  IDD                 PIC 9(02).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -97,8 +93,6 @@
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-SRYSYUKBNMEI        PIC X(40).
            03  WRK-SRYCD               PIC X(09).
-      *    包括検査数
-           03  WRK-HOUKNS-CNT          PIC 9(02).
       *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
@@ -118,9 +112,6 @@
       *
       *返却剤数
        01  COB-ZAI-OUTMAX          PIC 9(04)   VALUE   120.
-      *    入力コード項目桁数
-       01  CONS-INPUT              PIC 9(02)   VALUE   54.
-      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -138,16 +129,6 @@
       *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *
-      *    診療行為入力項目変換パラメタ（入院の算定日変換）
-      *    COPY    "CPORCSC97.INC".
-      *
-      *    一括日変換パラメタ
-           COPY    "CPORCSNDAYCHG.INC".
-      *
-      *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
-       01  SPA-SCR-REC.
-           COPY    "CPK02SPASCR.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -256,7 +237,6 @@
       *    投薬判定
            MOVE    ZERO                TO  FLG-INGAIKBN
            MOVE    ZERO                TO  FLG-INGAIKBN-ARI
-           MOVE    ZERO                TO  WRK-HOUKNS-CNT
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   (IDX            >   LNK-WKSRYACT-MAX)
@@ -266,15 +246,6 @@
                   OR  ((IDX            >   1    )  AND
                        (LNK-WKSRY-ZAINUM (IDX - 1)
                                    NOT =   LNK-WKSRY-ZAINUM(IDX)))
-      *H29.5
-      *            包括検査の検査数
-                   IF     (WRK-HOUKNS-CNT      >   ZERO )
-                      AND (IDY                 >   ZERO )
-                       MOVE    WRK-HOUKNS-CNT
-                                               TO  ORAPISUB2-HKTKNSA-CNT
-                                                                 (IDY)
-                   END-IF
-                   MOVE    ZERO                TO  WRK-HOUKNS-CNT
                    ADD     1                   TO  IDY
                    IF      IDY                 >   COB-ZAI-OUTMAX
                        MOVE    1               TO  FLG-HENCHK
@@ -285,17 +256,7 @@
                PERFORM VARYING   IDW       FROM    1   BY  1
                        UNTIL    (IDW           >   5   )
                            OR   (FLG-HENCHK    =   1   )
-                           OR  ((LNK-WKSRY-SRYCD  (IDX IDW) =   SPACE)
-                           AND  (LNK-WKSRY-INPUTCD(IDX IDW) =   SPACE))
-      *H29.12
-      *入院
-                   IF     (LNK-WKSRY-SRYCD (IDX IDW)   =   SPACE)
-                       IF     (LNK-WKSRY-NYUGAIKBN (IDX)   =   "1" )
-                          AND (LNK-WKSRY-INPUTCD(IDX IDW)(1:1) =   "*")
-                           PERFORM 2002342-NYUINDAY-HEN-SEC
-                       END-IF
-                   ELSE
-      *!
+                           OR   (LNK-WKSRY-SRYCD  (IDX IDW) =   SPACE)
                    ADD     1               TO  IDZ
                    IF      IDZ                 >   50
                        MOVE    1               TO  FLG-HENCHK
@@ -315,9 +276,6 @@
                                            NOT =   1   )
                        PERFORM 2002343-INGAI-CHK-SEC
                    END-IF
-      *!
-                   END-IF
-      *!
       *
                END-PERFORM
            END-PERFORM
@@ -405,35 +363,6 @@
            .
        2002341-WKSRYHEAD-HEN-EXT.
            EXIT.
-      *H29.12
-      *入院
-      *****************************************************************
-      *    剤明細編集処理
-      *****************************************************************
-       2002342-NYUINDAY-HEN-SEC         SECTION.
-      *
-           INITIALIZE                      ORCSNDAYCHGAREA
-           MOVE    SPA-SRYYMD          TO  ORCSNDAYCHG-SRYYMD
-           MOVE    LNK-WKSRY-INPUTCD(IDX IDW)
-                                       TO  ORCSNDAYCHG-INPUTCD
-           MOVE    CONS-INPUT          TO  ORCSNDAYCHG-KETA
-           CALL    "ORCSNDAYCHG"       USING   SPA-AREA
-                                               ORCSNDAYCHGAREA
-      *
-           PERFORM VARYING     IDD     FROM    1   BY  1
-                   UNTIL       IDD        >   31
-               IF      ORCSNDAYCHG-NYU-DAY (IDD)   =   ZERO
-                   MOVE    "0"             TO  ORAPISUB02-MDC-DAY
-                                                 (IDY IDD)
-               ELSE
-                   MOVE    "1"             TO  ORAPISUB02-MDC-DAY
-                                                 (IDY IDD)
-               END-IF
-           END-PERFORM
-           .
-       2002342-NYUINDAY-HEN-EXT.
-           EXIT.
-      *!
       *
       *****************************************************************
       *    剤明細編集処理
@@ -451,8 +380,6 @@
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1) =   "8")
              OR   (LNK-WKSRY-SRYCD (IDX IDW)(1:3) =   "008")
              OR   (LNK-WKSRY-SRYCD (IDX IDW)(1:3) =   "001")
-      *H30.4
-             OR   (LNK-WKSRY-SRYCD (IDX IDW)(1:7) =   "0992081")
       *        編集名称
                IF      LNK-WKSRY-INPUTCOMENT (IDX IDW) NOT =   SPACE
                    MOVE    LNK-WKSRY-INPUTCOMENT (IDX IDW) 
@@ -493,77 +420,10 @@
       *
       *    数量
            MOVE    LNK-WKSRY-SRYSURYO(IDX IDW) TO  WRK-SURYO
-           IF      WRK-SURYO           =   ZERO
-      *        ZERO は１とする（CLAIMでゼロあり）
-               MOVE    1                   TO  WRK-SURYO
-           END-IF
            PERFORM 810-NUMHENKAN-SEC
            MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                        TO  ORAPISUB2-PRSCRPT-NUMBER
                                                              (IDY IDZ)
-      *H29.5
-      *    単位コード
-           IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1)  =   "6"
-                                                   OR  "7" )
-      *        薬剤・器材
-               MOVE    TNS-TANICD      TO  ORAPISUB2-PRSCRPT-TANICD
-                                                             (IDY IDZ)
-               MOVE    TNS-TANINAME    TO  ORAPISUB2-PRSCRPT-TANICD-NAME
-                                                             (IDY IDZ)
-           END-IF
-           IF    ((LNK-WKSRY-SRYCD (IDX IDW)(1:1)  =   "1" )  OR
-                  (LNK-WKSRY-SRYCD (IDX IDW)(1:3)  =   "058"
-                                                   OR  "059"
-                                                   OR  "095"
-                                                   OR  "096"))
-               IF      TNS-TANICD          NOT =   ZERO
-                   MOVE    TNS-TANICD      TO  ORAPISUB2-PRSCRPT-TANICD
-                                                             (IDY IDZ)
-                   MOVE    TNS-TANINAME    TO
-                                           ORAPISUB2-PRSCRPT-TANICD-NAME
-                                                             (IDY IDZ)
-               END-IF
-           END-IF
-      *
-      *    分画数を編集
-           IF     (LNK-WKSRY-SRYKBN (IDX)  =   "70"   )
-              AND (LNK-WKSRY-SRYCD (IDX IDW)(1:1)  =   "7" )
-              AND (LNK-WKSRY-SRYKAISU(IDX IDW) NOT =   ZERO)
-               MOVE    LNK-WKSRY-SRYKAISU(IDX IDW) TO  WRK-SURYO
-               PERFORM 810-NUMHENKAN-SEC
-               MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
-                                       TO  ORAPISUB2-PRSCRPT-FILMNUM
-                                                             (IDY IDZ)
-           END-IF
-      *H29.5
-      *    加算自動算定なし
-           IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1)  =   "1")
-             AND  (TNS-DATAKBN             =   "1"   )
-      *        在宅加算等の自動算定なし設定
-               IF      (TNS-CDKBN-KBN          =   "C"   )
-                  AND  (TNS-CDKBN-KBNNUM       =   "002" )
-                   MOVE    "Yes"           TO  ORAPISUB2-PRSCRPT-NOAUTO
-                                                             (IDY IDZ)
-               END-IF
-      *        精神通院の２０歳未満加算の自動発生なし
-               IF      (TNS-CDKBN-KBN          =   "I"   )
-                  AND  (TNS-CDKBN-KBNNUM       =   "002" )
-                  AND  (TNS-AGEKSNSRYCD(1) NOT =   ZERO
-                                               AND SPACE )
-                   MOVE    "Yes"           TO  ORAPISUB2-PRSCRPT-NOAUTO
-                                                             (IDY IDZ)
-               END-IF
-      *H29.7
-      *        心身療法の２０歳未満加算の自動発生なし
-               IF      (TNS-CDKBN-KBN          =   "I"   )
-                  AND  (TNS-CDKBN-KBNNUM       =   "004" )
-                  AND  (TNS-AGEKSNSRYCD(1) NOT =   ZERO
-                                               AND SPACE )
-                  AND  (SPA-SRYYMD             >=  "20170701")
-                   MOVE    "Yes"           TO  ORAPISUB2-PRSCRPT-NOAUTO
-                                                             (IDY IDZ)
-               END-IF
-           END-IF
       *
       *    自費金額
            IF     (LNK-WKSRY-SRYKBN (IDX)  =   "96"
@@ -584,7 +444,8 @@
                MOVE    "2"        TO  ORAPISUB2-PRSCRPT-CONTKBN(IDY IDZ)
            END-IF
       *    自動算定区分
-           IF      LNK-WKSRY-AUTOKBN (IDX IDW) =   "2"
+           IF      LNK-WKSRY-AUTOKBN (IDX IDW) =   "1"
+                                               OR  "2"
                                                OR  "3"
                                                OR  "4"
                                                OR  "5"
@@ -614,8 +475,6 @@
               OR  (LNK-WKSRY-SRYCD (IDX IDW)(1:4)  =   "0084")
       *       用法コメント
               OR  (LNK-WKSRY-SRYCD (IDX IDW)(1:3)  =   "001")
-      *H30.4
-              OR  (LNK-WKSRY-SRYCD (IDX IDW)(1:7)  =   "0992081")
                PERFORM VARYING     IDX-A   FROM    1   BY  1
                        UNTIL      (IDX-A       >   5   )
                    IF      LNK-WKSRY-INPUTCHI (IDX IDW IDX-A)
@@ -626,15 +485,6 @@
                    END-IF
                END-PERFORM
            END-IF
-      *H29.5
-      *    包括検査の判定
-           IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1) =   "1" )  AND
-                  (LNK-WKSRY-SRYKBN (IDX)      =   "60" ) AND
-                  (TNS-DATAKBN                 =   1    ) AND
-                  (TNS-HOUKNSKBN           NOT =   ZERO )
-               ADD     1                   TO  WRK-HOUKNS-CNT
-           END-IF
-      *!
       *
            .
        2002342-WKSRYMEI-HEN-EXT.
