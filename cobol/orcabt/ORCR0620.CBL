@@ -239,6 +239,8 @@
       *  04.08.04    NACL-門脇    16/02/08  RECE62の予備項目使用分について、
       *                                     個々に項目を設ける事に伴う修正
       *  04.08.05    NACL-藤原    16/07/20  ＥＦファイル作成対応
+      *  04.08.06    NACL-藤原    17/03/31  １日入院で医保以外で同日再入院
+      *                                     のときの対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -369,7 +371,8 @@
            03  FLG-KYUSEIRRK                           PIC 9(01).
            03  FLG-PTTOKKI                             PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01). 
-      *   
+           03  FLG-PTRSIINF                            PIC 9(01).
+      *
            03  FLG-ARI                                 PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-ROUJINHOKEN                         PIC 9(01).
@@ -377,7 +380,7 @@
            03  FLG-SEIHO                               PIC 9(01).
            03  FLG-RIREKI-HEN                          PIC 9(01).
            03  FLG-BUNBEN-SET                          PIC 9(01).
-           03  FLG-PTRSIINF                            PIC 9(01).
+           03  FLG-PTNYUINRRK-OK                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -3786,6 +3789,8 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                END-IF
       *        保険組合せのチェック
       *       （会計に対象の組合せがないとき又はＥＦファイル作成時は全て）
+               MOVE    ZERO                TO  FLG-PTNYUINRRK-OK
+      *
                IF    ( RECE61-DAY-AREA     =   ALL "0" )
                OR    ( WRK-PARA-PRTKBN     =   "8"     )
                    MOVE    "1"   TO   RECE62-NYUINRYOFLG
@@ -3806,9 +3811,20 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                                    PERFORM 2401-PTNYUINRRK-HENSYU-SEC
                                    MOVE    10              TO  IDY
                                    MOVE   IDX5             TO  IDX
+                                   MOVE    1               TO
+                                                       FLG-PTNYUINRRK-OK
                                END-IF
                            END-PERFORM
-                       ELSE    
+      *                    一日入院以外は再入院分の保険組合せ以外のチェックは行わない
+                           IF      IDX4            =   IDX5
+                               CONTINUE
+                           ELSE
+                               MOVE    1               TO
+                                                       FLG-PTNYUINRRK-OK
+                           END-IF
+                       END-IF
+      *
+                       IF      FLG-PTNYUINRRK-OK   =   ZERO
                            PERFORM VARYING IDY FROM    1   BY  1
                                    UNTIL   IDY >       10
                                    OR  RECE62-HKNCOMBI (IDY)   =   ZERO
