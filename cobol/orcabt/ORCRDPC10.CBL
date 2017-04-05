@@ -4247,17 +4247,20 @@
                          UNTIL ( IDXW > TBL-HEIMA-MAX )
                      MOVE    TBL-HEIMA-30M-IDX (IDXW)
                                            TO  IDW
-                     COMPUTE WRK-KZM-SURYO =   WRK-KZM-SURYO
-                                           +   TBL-HEIMA-ZAN-SURYO (IDW)
-                     IF      WRK-KZM-SURYO >=  30
-                         COMPUTE TBL-HEIMA-ZAN-SURYO (IDW) =
-                                 WRK-KZM-SURYO -   30
-                         MOVE    30            TO  WRK-KZM-SURYO
-                     ELSE 
-                         MOVE    ZERO          TO  TBL-HEIMA-ZAN-SURYO
+                     IF      IDW           NOT =   ZERO
+                         COMPUTE WRK-KZM-SURYO =   WRK-KZM-SURYO
+                                               +   TBL-HEIMA-ZAN-SURYO
                                                    (IDW)
-                         MOVE    ZERO          TO  TBL-HEIMA-30M-SURYO
+                         IF      WRK-KZM-SURYO >=  30
+                             COMPUTE TBL-HEIMA-ZAN-SURYO (IDW) =
+                                     WRK-KZM-SURYO -   30
+                             MOVE    30        TO  WRK-KZM-SURYO
+                         ELSE 
+                             MOVE    ZERO      TO  TBL-HEIMA-ZAN-SURYO
                                                    (IDW)
+                             MOVE    ZERO      TO  TBL-HEIMA-30M-SURYO
+                                                   (IDW)
+                         END-IF
                      END-IF
                  END-PERFORM
              END-IF
