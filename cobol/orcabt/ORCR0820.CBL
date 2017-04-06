@@ -63,6 +63,7 @@
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
       *                                     （コンパイル時のワーニング修正）
+      *  04.08.03    NACL-藤原    17/03/31  同日再入院の入退院履歴のチェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -137,6 +138,7 @@
            03  FLG-PTNYUINRRK22        PIC 9(01).
            03  FLG-JYURRKCHECK         PIC 9(01).
            03  FLG-JYURRK              PIC 9(01).
+      *
            03  FLG-RRKOK               PIC 9(01).
       *
       *    カウント領域
@@ -558,15 +560,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                            UNTIL   IDX >       IDX5
                        IF    ( IDX             =   IDX4 )
                        AND   ( RECE82-DOUJITSU-HKNCOMBI (IDX)
-                                               >   ZERO )
+                                               =
+                                               PTNYUINRRK-HKNCOMBINUM )
       *                    同日再入院のとき再入院分の保険組合せをチェック
                            IF      RECE82-DOUJITSU-HKNCOMBI (IDX)
                                                    =   RECE82-HKNCOMBI
                                MOVE    1               TO  FLG-RRKOK
                                PERFORM 21011-PTNYUINRRK-HENSYU-SEC
                                MOVE   IDX5             TO  IDX
-                           END-IF
-                       ELSE    
+                           END-IF    
+                           MOVE    1               TO  FLG-RRKOK
+                       ELSE
                            IF      RECE82-DAY (IDX)
                                                    =   RECE82-HKNCOMBI
                                MOVE    1               TO  FLG-RRKOK
