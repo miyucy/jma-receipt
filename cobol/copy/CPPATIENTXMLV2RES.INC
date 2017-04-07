@@ -27,8 +27,6 @@
       * 04.07.00     NACL-多々納  15/01/XX  労災自賠責編集追加
       * 04.08.00     NACL-多々納  16/10/XX  勤務先から帰省先追加
       * 04.08.00     NACL-多々納  17/04/XX  職業から入金方法追加等
-      *                                     保険組合せ３０件へ
-      * 04.08.00     NACL-多々納  17/05/XX  テスト患者・死亡区分追加
       ************************************************************
         01  XML-PATIENTINFORES.
             02  PTRES-CONTEXT          PIC S9(9)   BINARY.
@@ -131,11 +129,6 @@
                   04  PTRES-COMMENT-1            PIC  X(200).
       *           コメント２
                   04  PTRES-COMMENT-2            PIC  X(200).
-      *H29.5
-      *           テスト患者区分
-                  04  PTMODRES-TEST-PATIENT      PIC  X(01).
-      *           死亡区分
-                  04  PTMODRES-DEATHKBN          PIC  X(01).
       *H29.4
       *           職業
                   04  PTRES-JOB                PIC X(20).
@@ -179,7 +172,7 @@
                   04  PTRES-DISCHARGE-DATE       PIC  X(10).
       *
       *           保険情報
-                  04  PTRES-INSURANCE-INFO     OCCURS  30 TIMES.
+                  04  PTRES-INSURANCE-INFO     OCCURS  20 TIMES.
       *               保険組合せ番号
                       06  PTRES-COMBINATION-NUMBER     PIC X(04).
       *H26.11
@@ -316,11 +309,6 @@
                   04  PTRES-COMMUNITY-DISEASE.
                       05  PTRES-TARGET-DISEASE     PIC X(05)
                                                    OCCURS   4.
-      *H30.4
-      *           患者個別情報
-                  04  PTRES-PTCONF-INFO.
-      *               妊婦設定
-                      05  PTRES-NINPUKBN             PIC X(05).
       *
       *           患者個人番号情報
                   04  PTRES-PTMYNUMBER-G.
