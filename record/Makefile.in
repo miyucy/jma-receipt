@@ -975,6 +975,12 @@ DB_files = \
 	tbl_material_h.db \
 	tbl_material_k.db \
 	tbl_material_s.db \
+	tbl_material_h_m_master.db \
+	tbl_material_h_c_master.db \
+	tbl_material_h_k_master.db \
+	tbl_material_h_n_master.db \
+	tbl_material_k_master.db \
+	tbl_material_s_master.db \
 
 
 shell.db: shell.db.in

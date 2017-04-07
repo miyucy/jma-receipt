@@ -254,4 +254,13 @@ db	{
         tbl_tensu_price;
 	tbl_tensu_user;
 	tbl_tensu_master;
+	tbl_material_h;
+	tbl_material_s;
+	tbl_material_k;
+	tbl_material_h_m_master;
+	tbl_material_h_c_master;
+	tbl_material_h_k_master;
+	tbl_material_h_n_master;
+	tbl_material_s_master;
+	tbl_material_k_master;
 };
