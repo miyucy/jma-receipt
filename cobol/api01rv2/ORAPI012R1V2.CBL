@@ -441,6 +441,8 @@
            MOVE    PTINF-KISEI-BANTI   TO  PTRES-KISEI-ADDRESSES2
            MOVE    PTINF-KISEI-TEL     TO  PTRES-KISEI-HPONE
       *H29.4
+      *    ÄÌ¾ÎÌ¾
+           MOVE    PTINF-NICKNAME      TO  PTRES-NICKNAME
       *    ¿¦¶È
            MOVE    PTINF-JOB           TO  PTRES-JOB
       *    £Æ£Á£ØÈÖ¹æ
