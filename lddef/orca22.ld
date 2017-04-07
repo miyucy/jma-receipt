@@ -22,7 +22,6 @@ bind	"CID4"		"OpenCOBOL"	"ORCGCID4";
 bind	"CID5"		"OpenCOBOL"	"ORCGCID5";
 bind	"CID6"		"OpenCOBOL"	"ORCGCID6";
 bindapi	"diseasev2"	"OpenCOBOL"	"ORAPI022R1V3";
-bindapi	"diseasev3"	"OpenCOBOL"	"ORAPI022R2V3";
 
 multiplex_group	orca22;
 
@@ -48,15 +47,12 @@ data	{
 		CID5;
 		CID6;
 		diseasev2;
-		diseasev3;
 	};
 };
 
 db "xml2" {
  xml_diseasev2req;
  xml_diseasev2res;
- xml_diseasev3req;
- xml_diseasev3res;
 };
 
 #include "orcadb.inc"
