@@ -240,10 +240,6 @@
       *                                     個々に項目を設ける事に伴う修正
       *  04.08.05    NACL-藤原    16/07/20  ＥＦファイル作成対応
       *  04.08.06    NACL-藤原    17/03/31  同日再入院の入退院履歴のチェック
-      *  04.08.07    NACL-門脇    17/09/26  平成２９年１０月改正
-      *                                     （入院時生活療養の見直し）
-      *  04.08.08    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
-      *                                     での食事算定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1768,11 +1764,7 @@
            END-IF              
       *
       *    低所得情報編集
-           IF   RECE62-RECESYUBETU  =  "8888"  OR  "6666"
-             CONTINUE
-           ELSE
-             PERFORM   2101-TEISYOTOKU-HENSYU-SEC
-           END-IF
+           PERFORM   2101-TEISYOTOKU-HENSYU-SEC
       *
       *    高齢者判定フラグ
            IF     (( RECE62-AGE          >=  70      )   OR
@@ -2202,8 +2194,6 @@
                    ELSE
                      MOVE  LNK-SYOTOKU-SKJKBN(LNK-SYOTOKU-SKJIDX)
                                     TO  RECE62-TEISYOTOKU3
-                     MOVE  LNK-SYOTOKU-KKSKBN(LNK-SYOTOKU-SKJIDX)
-                                    TO  RECE62-TEISYOTOKU3-KKSKBN
                    END-IF
                 ELSE
                    MOVE  LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
@@ -2219,11 +2209,6 @@
                      END-PERFORM
                    END-IF
                 END-IF
-                PERFORM VARYING SYOTOKU-IDX9 FROM 1 BY 1
-                         UNTIL  SYOTOKU-IDX9   > 31
-                   MOVE  LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX9)
-                            TO  RECE62-TEISYOTOKU3-SKJKBN(SYOTOKU-IDX9)
-                END-PERFORM
            END-IF
       *
            .
@@ -2241,8 +2226,8 @@
              OR  (RECE62-HKNNUM(1:2)  =   "98" OR  "90" OR  "91")
                 CONTINUE
              ELSE
-              IF ( RECE62-HKNNUM      = "060"           )
-              OR ((RECE62-HKNNUM  NOT = "060"          ) AND
+              IF ( RECE62-HKNNUM      = "060" OR  "067" )
+              OR ((RECE62-HKNNUM  NOT = "060" AND "067") AND
                   (RECE62-HOJOKBN     = SPACE          ))
                 MOVE      RECE61-SRYYM       TO   WRK-SRYYYMM
                 IF   RECE62-TEKSTYMD(1:6)  >=  RECE61-SRYYM
