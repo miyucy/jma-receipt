@@ -569,7 +569,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                PERFORM 21011-PTNYUINRRK-HENSYU-SEC
                                MOVE   IDX5             TO  IDX
                            END-IF    
-                           MOVE    1               TO  FLG-RRKOK
                        ELSE
                            IF      RECE82-DAY (IDX)
                                                    =   RECE82-HKNCOMBI
@@ -584,6 +583,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                      PERFORM VARYING IDX FROM  IDX4    BY  1
                              UNTIL   IDX >     IDX5
                         IF  RECE82-DAY(IDX)  NOT =  999
+                        AND RECE82-DAY(IDX)  NOT =  RECE82-HKNCOMBI
                            MOVE   998    TO   RECE82-DAY(IDX)
                         END-IF
                      END-PERFORM
