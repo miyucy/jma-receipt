@@ -941,7 +941,7 @@
                                                                 (IDX)
       *H29.4
       *    保険組合せ非表示
-           EVALUATE    ORCSAPIHKN-HYOJIKBN (IDX)
+           EVALUATE    ORCSAPIHKN-HYOJIKBN (IDH)
                WHEN    "2"
       *            入院非表示
                    MOVE    "I"         TO  ACPLSTRES-COMBINATION-HYOJI

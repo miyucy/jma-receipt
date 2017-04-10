@@ -1270,15 +1270,15 @@
                WHEN    "2"
       *            入院非表示
                    MOVE    "I"         TO  ACCPTRES-COMBINATION-HYOJI
-                                                            (IDX)
+                                                            (IDY)
                WHEN    "3"
       *            外来非表示
                    MOVE    "O"         TO  ACCPTRES-COMBINATION-HYOJI
-                                                            (IDX)
+                                                            (IDY)
                WHEN    OTHER
       *            非表示なし
                    MOVE    "N"         TO  ACCPTRES-COMBINATION-HYOJI
-                                                            (IDX)
+                                                            (IDY)
            END-EVALUATE
       *
       *    保険の種類
