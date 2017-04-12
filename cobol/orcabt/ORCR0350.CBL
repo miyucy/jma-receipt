@@ -419,15 +419,6 @@
       *  04.08.15    NACL-ÌçÏÆ    16/09/20  £±£µ±ß°Ê²¼ÌôºÞ¤ÎÄó½ÐÍÑ¥ì¥»¥×¥Èµ­ºÜ
       *                                     ¡Êµ­Ï¿¡ËÂÐ±þ
       *  04.08.16    NACL-ÌçÏÆ    17/03/27  ÀÁµá¶â³Û£°±ß¥ì¥»¥×¥ÈºîÀ®ÂÐ±þ
-      *  04.08.17    NACL-ÌçÏÆ    17/07/03  ¡ÊºÒ£±¡ËÅù¤Îµ­Ï¿¤ò³ç¸Ì¤Ê¤·¤Ç
-      *                                     µ­Ï¿¤¹¤ë¤è¤¦ÊÑ¹¹
-      *  04.08.18    NACL-ÌçÏÆ    17/08/28  Ê¿À®£²£¹Ç¯£±£°·î²þÀµ
-      *                                     ¡ÊÆþ±¡»þÀ¸³èÎÅÍÜ¤Î¸«Ä¾¤·¡Ë
-      *  04.08.19    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
-      *
-      *  05.00.01    NACL-Æ£¸¶    17/07/04  £È£Á£Ï£Ò£ÉÂÐ±þ
-      *  05.00.02    NACL-¾®Æ¦Âô  17/11/07  ¥ì¥»ÅÅ¥µ¥Ö°ú¿ô¤ËÊÝ¸±ÁÈ¹ç¤»ÄÉ²Ã
-      *  05.00.03    NACL-°ËÆ£    17/12/20  ¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -817,15 +808,8 @@
       *    ½èÃÖ¤Î²Ã»»¹àÌÜ¤ÎÍ­Ìµ¥Õ¥é¥°
            03  WRK-SRYKBN40-KOKUJISKBKBN1
                                        PIC 9(01).
-      *
       *    ÆüÉÕÊÑ´¹ÍÑ
            03  WRK-SYMD                PIC X(08).
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY          PIC X(04).
-               05  WRK-HEN-H1          PIC X(01).
-               05  WRK-HEN-MM          PIC X(02).
-               05  WRK-HEN-H2          PIC X(01).
-               05  WRK-HEN-DD          PIC X(02).
       *
            03  WRK-HENYMDG             PIC 9(08).
            03  WRK-HENYMDGR            REDEFINES   WRK-HENYMDG.
@@ -837,10 +821,6 @@
            03  WRK-EDYMD-R             REDEFINES   WRK-EDYMD.
                05  FILLER              PIC X(06).
                05  WRK-EDDD            PIC 9(02).
-      *
-           03  WRK-CNT                 PIC 9(10).
-           03  WRK-CNT-X               REDEFINES   WRK-CNT
-                                       PIC X(10).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -1734,51 +1714,6 @@
       *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÀº¿À£±Ç¯Ä¶¡¦°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
                05  WRK-CONS-HYOJYUN-FUTAN19
                                       PIC X(09)   VALUE   "197003710".
-      *        À¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN20
-                                      PIC X(09)   VALUE   "197003810".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN21
-                                      PIC X(09)   VALUE   "197003910".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡ÊÄã¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN22
-                                      PIC X(09)   VALUE   "197004010".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN23
-                                      PIC X(09)   VALUE   "197004110".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN24
-                                      PIC X(09)   VALUE   "197004210".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN25
-                                      PIC X(09)   VALUE   "197004310".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN26
-                                      PIC X(09)   VALUE   "197004410".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN27
-                                      PIC X(09)   VALUE   "197004510".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN28
-                                      PIC X(09)   VALUE   "197004610".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN29
-                                      PIC X(09)   VALUE   "197004710".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN30
-                                      PIC X(09)   VALUE   "197004810".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN31
-                                      PIC X(09)   VALUE   "197004910".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN32
-                                      PIC X(09)   VALUE   "197005010".
-      *        À¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN33
-                                      PIC X(09)   VALUE   "197005110".
-      *        À¸³èÎÅÍÜ¡Ê£²¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN34
-                                      PIC X(09)   VALUE   "197005210".
       *
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
@@ -1886,8 +1821,6 @@
       *
            COPY    "MCPAREA".
       *
-      *    PUSH
-           COPY    "CPPUSHBATCH01.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -2380,15 +2313,13 @@
       *
                MOVE    ZERO               TO  FLG-TOYAKUFLG
       *
-      ***        Æþ±¡²ñ·×¼èÆÀ½èÍý¡ÊÄó½ÐÀèÊÌ¡Ë
-      ***        PERFORM 2001-NYURECEDEN-GET-SEC
+      *        Æþ±¡²ñ·×¼èÆÀ½èÍý¡ÊÄó½ÐÀèÊÌ¡Ë
+               PERFORM 2001-NYURECEDEN-GET-SEC
       *
       *        ¿ÇÎÅÇ¯·î¡¦´µ¼ÔID¡¦¥ì¥»²Ê¡¦Äó½ÐÀèÊÌ½èÍý
                MOVE    KEY-NEW         TO  KEY-OLD
                PERFORM                 UNTIL   FLG-END     =   1
                                        OR      KEY-NEW NOT =   KEY-OLD
-      *            Æþ±¡²ñ·×¼èÆÀ½èÍý¡ÊÄó½ÐÀèÊÌ¡Ë
-                   PERFORM 2001-NYURECEDEN-GET-SEC
       *
       *            ¸©Ã±ÍÑ¹àÌÜ¥Õ¥¡¥¤¥ëÆÉ¹þ½èÍý
                    PERFORM 2001-RECE67-HENSYU-SEC
@@ -2762,17 +2693,6 @@
            ELSE
                MOVE    RECE62-TEISYUTUSAKI TO  LNK-NYURECEDEN-HKNKBN
            END-IF
-           PERFORM VARYING IDX FROM    1   BY  1
-              UNTIL  (IDX   >    10)    OR
-                     (RECE62-HKNCOMBI (IDX)  =   ZERO)
-               MOVE    RECE62-HKNCOMBI(IDX)   TO
-                                      LNK-NYURECEDEN-SET-HKNCOMBI(IDX)
-           END-PERFORM
-           DISPLAY "RECE62-HKNCOMBI(1) = " RECE62-HKNCOMBI(1)
-           DISPLAY "RECE62-HKNCOMBI(2) = " RECE62-HKNCOMBI(2)
-           DISPLAY "RECE62-HKNCOMBI(3) = " RECE62-HKNCOMBI(3)
-           DISPLAY "RECE62-HKNCOMBI(4) = " RECE62-HKNCOMBI(4)
-           DISPLAY "RECE62-HKNCOMBI(5) = " RECE62-HKNCOMBI(5)
            CALL    "ORCSNYURECEDEN"    USING   ORCSNYURECEDEN-AREA
                                                SPA-AREA
            IF      LNK-NYURECEDEN-RC   NOT =   ZERO
@@ -2922,60 +2842,32 @@
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬
-           IF      RECE62-SRYYM  >=  "201710"
-             IF     (RECE62-KOUREI           = "1"  )
-             AND    (RECE62-TEISYOTOKU   NOT = SPACE)
-               EVALUATE    RECE62-TEISYOTOKU
-                 WHEN    "1"
-                 WHEN    "4"
-                     MOVE    "3"       TO  WRK-DATA
-                 WHEN    "2"
-                     MOVE    "1"       TO  WRK-DATA
-                     IF   RECE62-TEISYOTOKU3 = "3"
-                       MOVE  "2"       TO  WRK-DATA
-                     END-IF
-               END-EVALUATE
-             ELSE
-               EVALUATE    RECE62-TEISYOTOKU3
-                 WHEN    "1"
-                 WHEN    "4"
-                     MOVE    "3"       TO  WRK-DATA
-                 WHEN    "2"
-                     MOVE    "1"       TO  WRK-DATA
-                 WHEN    "3"
-                     MOVE    "2"       TO  WRK-DATA
-               END-EVALUATE
-             END-IF
-             IF     (RECE62-TEISYOTOKU3      =  "4")
-             AND    (RECE62-SEIKATURYOYO     =  "1")
-                     MOVE    "4"       TO  WRK-DATA
-             END-IF
+           IF     (RECE62-KOUREI           = "1"  )
+           AND    (RECE62-TEISYOTOKU   NOT = SPACE)
+             EVALUATE    RECE62-TEISYOTOKU
+               WHEN    "1"
+                   MOVE    "3"             TO  WRK-DATA
+               WHEN    "2"
+                   MOVE    "1"             TO  WRK-DATA
+                   IF   RECE62-TEISYOTOKU3 = "3"
+                     MOVE  "2"             TO  WRK-DATA
+                   END-IF
+      **       WHEN    "3"
+      **           MOVE    "2"             TO  WRK-DATA
+               WHEN    "4"
+                   MOVE    "4"             TO  WRK-DATA
+             END-EVALUATE
            ELSE
-             IF     (RECE62-KOUREI           = "1"  )
-             AND    (RECE62-TEISYOTOKU   NOT = SPACE)
-               EVALUATE    RECE62-TEISYOTOKU
-                 WHEN    "1"
-                     MOVE    "3"       TO  WRK-DATA
-                 WHEN    "2"
-                     MOVE    "1"       TO  WRK-DATA
-                     IF   RECE62-TEISYOTOKU3 = "3"
-                       MOVE  "2"       TO  WRK-DATA
-                     END-IF
-                 WHEN    "4"
-                     MOVE    "4"       TO  WRK-DATA
-               END-EVALUATE
-             ELSE
-               EVALUATE    RECE62-TEISYOTOKU3
-                 WHEN    "1"
-                     MOVE    "3"       TO  WRK-DATA
-                 WHEN    "2"
-                     MOVE    "1"       TO  WRK-DATA
-                 WHEN    "3"
-                     MOVE    "2"       TO  WRK-DATA
-                 WHEN    "4"
-                     MOVE    "4"       TO  WRK-DATA
-               END-EVALUATE
-             END-IF
+             EVALUATE    RECE62-TEISYOTOKU3
+               WHEN    "1"
+                   MOVE    "3"             TO  WRK-DATA
+               WHEN    "2"
+                   MOVE    "1"             TO  WRK-DATA
+               WHEN    "3"
+                   MOVE    "2"             TO  WRK-DATA
+               WHEN    "4"
+                   MOVE    "4"             TO  WRK-DATA
+             END-EVALUATE
            END-IF
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
@@ -4549,15 +4441,15 @@
                WHEN    8
                WHEN    10
                WHEN    11
-                   MOVE    "ÉÔ¾Ü"      TO  WRK-DISASTER-COMMENT
+                   MOVE    "¡ÊÉÔ¾Ü¡Ë"      TO  WRK-DISASTER-COMMENT
                WHEN    2
                WHEN    7
-                   MOVE    "ºÒ£±"      TO  WRK-DISASTER-COMMENT
+                   MOVE    "¡ÊºÒ£±¡Ë"      TO  WRK-DISASTER-COMMENT
                WHEN    4
-                   MOVE    "ºÒ£²"      TO  WRK-DISASTER-COMMENT
+                   MOVE    "¡ÊºÒ£²¡Ë"      TO  WRK-DISASTER-COMMENT
                WHEN    5
-                   MOVE    "ÉÔ¾Ü¡¦ºÒ£±"
-                                       TO  WRK-DISASTER-COMMENT
+                   MOVE    "¡ÊÉÔ¾Ü¡¦ºÒ£±¡Ë"
+                                           TO  WRK-DISASTER-COMMENT
            END-EVALUATE
            PERFORM 200701-DISASTER-COMMENT-HEN-SEC
       *
@@ -7780,22 +7672,7 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN16
                                            OR  WRK-CONS-HYOJYUN-FUTAN17
                                            OR  WRK-CONS-HYOJYUN-FUTAN18
-                                           OR  WRK-CONS-HYOJYUN-FUTAN19
-                                           OR  WRK-CONS-HYOJYUN-FUTAN20
-                                           OR  WRK-CONS-HYOJYUN-FUTAN21
-                                           OR  WRK-CONS-HYOJYUN-FUTAN22
-                                           OR  WRK-CONS-HYOJYUN-FUTAN23
-                                           OR  WRK-CONS-HYOJYUN-FUTAN24
-                                           OR  WRK-CONS-HYOJYUN-FUTAN25
-                                           OR  WRK-CONS-HYOJYUN-FUTAN26
-                                           OR  WRK-CONS-HYOJYUN-FUTAN27
-                                           OR  WRK-CONS-HYOJYUN-FUTAN28
-                                           OR  WRK-CONS-HYOJYUN-FUTAN29
-                                           OR  WRK-CONS-HYOJYUN-FUTAN30
-                                           OR  WRK-CONS-HYOJYUN-FUTAN31
-                                           OR  WRK-CONS-HYOJYUN-FUTAN32
-                                           OR  WRK-CONS-HYOJYUN-FUTAN33
-                                           OR  WRK-CONS-HYOJYUN-FUTAN34)
+                                           OR  WRK-CONS-HYOJYUN-FUTAN19)
                                    EVALUATE    WRK-FTNKBN
                                        WHEN    "5"
                                        WHEN    "7"
@@ -7865,22 +7742,7 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN16
                                            OR  WRK-CONS-HYOJYUN-FUTAN17
                                            OR  WRK-CONS-HYOJYUN-FUTAN18
-                                           OR  WRK-CONS-HYOJYUN-FUTAN19
-                                           OR  WRK-CONS-HYOJYUN-FUTAN20
-                                           OR  WRK-CONS-HYOJYUN-FUTAN21
-                                           OR  WRK-CONS-HYOJYUN-FUTAN22
-                                           OR  WRK-CONS-HYOJYUN-FUTAN23
-                                           OR  WRK-CONS-HYOJYUN-FUTAN24
-                                           OR  WRK-CONS-HYOJYUN-FUTAN25
-                                           OR  WRK-CONS-HYOJYUN-FUTAN26
-                                           OR  WRK-CONS-HYOJYUN-FUTAN27
-                                           OR  WRK-CONS-HYOJYUN-FUTAN28
-                                           OR  WRK-CONS-HYOJYUN-FUTAN29
-                                           OR  WRK-CONS-HYOJYUN-FUTAN30
-                                           OR  WRK-CONS-HYOJYUN-FUTAN31
-                                           OR  WRK-CONS-HYOJYUN-FUTAN32
-                                           OR  WRK-CONS-HYOJYUN-FUTAN33
-                                           OR  WRK-CONS-HYOJYUN-FUTAN34)
+                                           OR  WRK-CONS-HYOJYUN-FUTAN19)
                                        CONTINUE
                                    ELSE
                                       IF    ( RECE62-HKNNUM (1:2)
@@ -7909,22 +7771,7 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN16
                                            OR  WRK-CONS-HYOJYUN-FUTAN17
                                            OR  WRK-CONS-HYOJYUN-FUTAN18
-                                           OR  WRK-CONS-HYOJYUN-FUTAN19
-                                           OR  WRK-CONS-HYOJYUN-FUTAN20
-                                           OR  WRK-CONS-HYOJYUN-FUTAN21
-                                           OR  WRK-CONS-HYOJYUN-FUTAN22
-                                           OR  WRK-CONS-HYOJYUN-FUTAN23
-                                           OR  WRK-CONS-HYOJYUN-FUTAN24
-                                           OR  WRK-CONS-HYOJYUN-FUTAN25
-                                           OR  WRK-CONS-HYOJYUN-FUTAN26
-                                           OR  WRK-CONS-HYOJYUN-FUTAN27
-                                           OR  WRK-CONS-HYOJYUN-FUTAN28
-                                           OR  WRK-CONS-HYOJYUN-FUTAN29
-                                           OR  WRK-CONS-HYOJYUN-FUTAN30
-                                           OR  WRK-CONS-HYOJYUN-FUTAN31
-                                           OR  WRK-CONS-HYOJYUN-FUTAN32
-                                           OR  WRK-CONS-HYOJYUN-FUTAN33
-                                           OR  WRK-CONS-HYOJYUN-FUTAN34)
+                                           OR  WRK-CONS-HYOJYUN-FUTAN19)
                                            CONTINUE
                                        ELSE
                                            MOVE    1   TO  FLG-PRT
@@ -7952,22 +7799,7 @@
                                            WRK-CONS-HYOJYUN-FUTAN16 OR
                                            WRK-CONS-HYOJYUN-FUTAN17 OR
                                            WRK-CONS-HYOJYUN-FUTAN18 OR
-                                           WRK-CONS-HYOJYUN-FUTAN19 OR
-                                           WRK-CONS-HYOJYUN-FUTAN20 OR
-                                           WRK-CONS-HYOJYUN-FUTAN21 OR
-                                           WRK-CONS-HYOJYUN-FUTAN22 OR
-                                           WRK-CONS-HYOJYUN-FUTAN23 OR
-                                           WRK-CONS-HYOJYUN-FUTAN24 OR
-                                           WRK-CONS-HYOJYUN-FUTAN25 OR
-                                           WRK-CONS-HYOJYUN-FUTAN26 OR
-                                           WRK-CONS-HYOJYUN-FUTAN27 OR
-                                           WRK-CONS-HYOJYUN-FUTAN28 OR
-                                           WRK-CONS-HYOJYUN-FUTAN29 OR
-                                           WRK-CONS-HYOJYUN-FUTAN30 OR
-                                           WRK-CONS-HYOJYUN-FUTAN31 OR
-                                           WRK-CONS-HYOJYUN-FUTAN32 OR
-                                           WRK-CONS-HYOJYUN-FUTAN33 OR
-                                           WRK-CONS-HYOJYUN-FUTAN34)
+                                           WRK-CONS-HYOJYUN-FUTAN19)
                                      PERFORM  200773-SKJFTNFLG-CHECK-SEC
                                    END-IF
                                END-IF   
@@ -9853,9 +9685,6 @@
                    RECE68-FILE
                    RECE655-FILE
       *
-      *    £Ð£Õ£Ó£ÈÄÌÃÎ½èÍý
-           PERFORM 3001-PUSH-SEC
-      *
       *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -9872,48 +9701,6 @@
       *
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ð£Õ£Ó£ÈÄÌÃÎ½èÍý
-      *****************************************************************
-       3001-PUSH-SEC        SECTION.
-      *
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           PERFORM 900-CALL-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN
-                                   =   ZERO  )
-           AND   ( JOB-KARTE-UID
-                               NOT =   SPACE )
-               INITIALIZE                  PUSHBA01-REC
-               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
-               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
-               MOVE    "000"           TO  PUSHBA01API-RESULT
-               MOVE    "receipt_make"  TO  PUSHBA01-EVENT
-               IF      WRK-PARA-SRYYM  =   ZERO
-                   MOVE    "9999-12"       TO  PUSHBA01-PERFORM-MONTH
-               ELSE
-                   MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE (1:7)
-                                           TO  PUSHBA01-PERFORM-MONTH
-               END-IF
-               MOVE    JOB-UPDCNT1     TO  WRK-CNT
-               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
-      *??
-             display "push=" PUSHBA01-REC "#"
-      *??
-               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
-               MOVE    "PUSHEVENT"     TO  MCP-FUNC
-               MOVE    "push_batch01"  TO  MCP-TABLE
-               MOVE    "push_batch01"  TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           END-IF
-           .
-       3001-PUSH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10124,11 +9911,7 @@
            IF      WRK-PARA-PRTKBN =   "9"
                MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
            ELSE
-               IF      WRK-PARA-PRTKBN =   "B"
-                   MOVE    "tbl_receden_tmp"   TO  MCP-TABLE
-               ELSE
-                   MOVE    "tbl_receden"       TO  MCP-TABLE
-               END-IF
+               MOVE    "tbl_receden"       TO  MCP-TABLE
            END-IF
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-DBINSERT-SEC
@@ -10366,29 +10149,6 @@
            MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
            .
        800-FILENM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE               TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYMD (1:4)      TO  WRK-HEN-YY
-               MOVE    WRK-SYMD (5:2)      TO  WRK-HEN-MM
-               MOVE    WRK-SYMD (7:2)      TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-           .
-       801-DAYHEN01-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10639,7 +10399,6 @@
                                AND   ( RECE62-SKYZEROFLG   =   ZERO    )
                                AND   ( RECE62-RECESYUBETU  NOT =  8888
                                                               AND ZERO )
-                               AND   ( WRK-PARA-PRTKBN     NOT =  "9"  )
                                    MOVE    2               TO  FLG-READ
                                END-IF
                            END-IF
