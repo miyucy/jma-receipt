@@ -197,9 +197,9 @@
            COPY    "CPORCSMCNDATE.INC".
       *
       *
-      ***  COPY    "CPORCXKANACONV.INC".
+           COPY    "CPORCXKANACONV.INC".
       *
-      ***  COPY    "CPORCSKANACHK.INC".
+           COPY    "CPORCSKANACHK.INC".
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
