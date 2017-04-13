@@ -3522,6 +3522,14 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H29.4
+               WHEN    "K268"
+                   STRING  "警告！"
+                           "処方日数が３０日を超えています。"
+                           "コメント入力を確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       **
                WHEN    "K910"
                    STRING  "警告！"
