@@ -234,6 +234,7 @@
       *  04.08.15    NACL-門脇    17/03/17  保険別請求チェック表の機能追加
       *                                     （公費請求書に関わる対応）
       *  04.08.16    NACL-門脇    17/03/27  請求金額０円レセプト作成対応
+      *  04.08.17    NACL-藤原    17/04/12  請求点数不一致時の種別不明対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -625,6 +626,9 @@
            03  WRK-TEKIYOU         PIC X(50).
            03  WRK-ADRS.
                05  WRK-ADRS-R      PIC X(50)  OCCURS  5.
+      *
+           03  WRK-TOTALTEN-OCC.
+               05  WRK-TOTALTEN    PIC 9(8)    OCCURS  5.
       *
       *    県単用項目ファイル用ワーク     
            COPY    "HCN06.INC"     REPLACING  //HCN06//
@@ -1283,6 +1287,10 @@
            03  WRK-ERR-MSG-18.
                 05  FILLER          PIC X(52)   VALUE
                "０５９で始まる「その他材料コード」が使用されています". 
+      *
+           03  WRK-ERR-MSG-19.
+               05  FILLER          PIC X(52)   VALUE
+               "請求点数と点数欄の合計が不一致です". 
       *
            03  WRK-ERR-MSG-88.
                05  FILLER          PIC X(24)  VALUE
@@ -3759,6 +3767,8 @@
                    MOVE    WRK-ERR-MSG-17  TO   HC06-HEAD4-G (5:)
                WHEN    15
                    MOVE    WRK-ERR-MSG-18  TO   HC06-HEAD4-G (5:)
+               WHEN    16
+                   MOVE    WRK-ERR-MSG-19  TO   HC06-HEAD4-G (5:)
                WHEN    88
                    MOVE    WRK-ERR-MSG-88  TO   HC06-HEAD4-G (5:)
            END-EVALUATE
@@ -12241,6 +12251,9 @@
                    END-IF    
       *
                    DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
+                           " SRYYM="        RECE62-SRYYM
+                           " RECESYUBETU="  RECE62-RECESYUBETU
+                           " ERR-ERRKBN="   RECE62-ERR-ERRKBN
                            " RJNGAIKOHFTN(1)="
                                             RECE62-RJNGAIKOHFTN (1)
       *
@@ -12264,6 +12277,51 @@
                        MOVE    "01"           TO  WRK-SYS-SRYYMD(7:2)
                        PERFORM 900-SYSKANRI-HENSYU-SEC
                    END-IF
+      *
+      *            請求点と点数欄の合計をチェック
+                   IF      RECE62-ERR-ERRKBN   =   ZERO
+                       INITIALIZE              WRK-TOTALTEN-OCC
+      *
+                       PERFORM VARYING IDY     FROM    1   BY  1
+                               UNTIL   IDY     >       5
+                           PERFORM VARYING IDX     FROM    1   BY  1
+                                   UNTIL   IDX     >       22
+                               ADD     RECE62-TENSU (IDX IDY)
+                                               TO  WRK-TOTALTEN (IDY)
+                           END-PERFORM
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX >       10
+                               ADD     RECE62-NYUKHNKEI  (IDX IDY)
+                                               TO  WRK-TOTALTEN (IDY)
+                               ADD     RECE62-NYUTOKKEI  (IDX IDY)
+                                               TO  WRK-TOTALTEN (IDY)
+                           END-PERFORM
+                           ADD     RECE62-NYUKHNKEI2 (IDY)
+                                               TO  WRK-TOTALTEN (IDY)
+                           ADD     RECE62-NYUTOKKEI2 (IDY)
+                                               TO  WRK-TOTALTEN (IDY)
+                       END-PERFORM
+      *
+                       IF    ( RECE62-TOTALTEN (1)
+                                             NOT =   WRK-TOTALTEN (1) )
+                       OR    ( RECE62-TOTALTEN (2)
+                                             NOT =   WRK-TOTALTEN (2) )
+                       OR    ( RECE62-TOTALTEN (3)
+                                             NOT =   WRK-TOTALTEN (3) )
+                       OR    ( RECE62-TOTALTEN (4)
+                                             NOT =   WRK-TOTALTEN (4) )
+                           MOVE    16            TO  RECE62-ERR-ERRKBN
+      *
+                           DISPLAY "TOTALTEN (1)=" WRK-TOTALTEN    (1)
+                                               "#" RECE62-TOTALTEN (1)
+                           DISPLAY "TOTALTEN (2)=" WRK-TOTALTEN    (2)
+                                               "#" RECE62-TOTALTEN (2)
+                           DISPLAY "TOTALTEN (3)=" WRK-TOTALTEN    (3)
+                                               "#" RECE62-TOTALTEN (3)
+                           DISPLAY "TOTALTEN (4)=" WRK-TOTALTEN    (4)
+                                               "#" RECE62-TOTALTEN (4)
+                       END-IF
+               END-IF
            END-READ
       *
            .
