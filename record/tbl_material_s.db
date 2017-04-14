@@ -25,3 +25,15 @@ path	key 	{
 	};
 };
 
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_material_s_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_material_s
+		WHERE    SRYCD  LIKE :SRYCD
+		ORDER BY RENNUM1,
+		         RENNUM2
+		;
+	};
+};
+
