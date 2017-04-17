@@ -140,6 +140,8 @@
       *                                     混在する場合）
       *  04.08.04    NACL-門脇    16/11/11  減額（円超）の対応
       *  04.08.05    NACL-門脇    17/02/13  東京都地方公費組み合わせ作成
+      *  04.08.07    NACL-門脇    17/04/17  継続区分「３特別」選択時は、
+      *                                     主保険名に（特）をつける
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -418,6 +420,7 @@
        01  WRK-EDIT-AREA.
            03  WRK-KEI1            PIC X(06)   VALUE  "（継）".
            03  WRK-KEI2            PIC X(06)   VALUE  "（任）".
+           03  WRK-KEI3            PIC X(06)   VALUE  "（特）".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -965,6 +968,12 @@
       *        ...継続区分＝"2"の場合、後に[任]　EX.船員（任）
                    STRING  WRK-KEN-SEIDO   DELIMITED  BY  " "
                            WRK-KEI2        DELIMITED  BY  SIZE
+                           INTO            WRK-KEN-SEIDO
+                   END-STRING
+               WHEN    "3"
+      *        ...継続区分＝"3"の場合、後に[特]　EX.一般（特）
+                   STRING  WRK-KEN-SEIDO   DELIMITED  BY  " "
+                           WRK-KEI3        DELIMITED  BY  SIZE
                            INTO            WRK-KEN-SEIDO
                    END-STRING
                END-EVALUATE
