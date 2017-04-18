@@ -1730,7 +1730,7 @@
       *H29.4
       *            ÅêÌôÆü¿ô¤¬£³£°ÆüÄ¶¤Ï·Ù¹ð
                    IF     (WRK-COM-HKNCOMBI(IDX)   NOT =   "9999")
-                     AND  (SPA-NYUGAIKBN           =   "2" )
+                     AND  (SPA-SHOHOU30CHK         =   "1" )
                      AND  (WRK-COM-SRYKBN (IDX)    =   "21"
                                                    OR  "22")
                      AND  (WRK-COM-ZAIEND (IDX)    =   "1" )
@@ -1743,7 +1743,7 @@
                                                           (IDX)
                            MOVE    "1"             TO  WRK-COM-KZMFLG
                                                           (IDX)
-                           MOVE    IDX            TO  LNK-ORCSC-KEI-IDX
+                           MOVE    IDX             TO  LNK-ORCSC-KEI-IDX
                        END-IF
                    END-IF
       *
