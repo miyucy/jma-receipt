@@ -7874,8 +7874,6 @@
       **************************************************************
        510-ERRSET-SEC              SECTION.
       *
-           MOVE    SPACE                TO  SPA-ERRMSG
-      *
            CALL    "ORCGSERRMSG"        USING
                                         SPA-AREA
                                         ORCSLOCKAREA
