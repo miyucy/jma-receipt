@@ -53,8 +53,6 @@ db "xml2" {
  xml_incomev3req02;
  xml_incomev3res02;
  xml_incomev3res03;
- fm_invoice_receipt_h;
- fm_statement_h;
 };
 
 #include "orcadb.inc"
