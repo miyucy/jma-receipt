@@ -1,7 +1,7 @@
 kanri_cd    : "1008"
 name        : "チェック機能制御情報"
 class_cd    : "*"
-item_max    : 40
+item_max    : 41
 item_list   :
 - item_no   : 1
   item      : "INTERACT-KIKAN"
@@ -252,4 +252,10 @@ item_list   :
   item_jp   : "訂正時の展開（処方料）"
   type      : "X"
   start     : 67
+  length    : 1
+- item_no   : 41
+  item      : "SHOHOU30CHK"
+  item_jp   : "投薬３０日超チェック区分"
+  type      : "X"
+  start     : 68
   length    : 1
