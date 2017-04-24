@@ -60,7 +60,7 @@
            03  IDX                 PIC 9(04).
       *
        01  WRK-AREA.
-           03  WRK-PAGE            PIC ZZZZZZZZZZ.
+           03  WRK-PAGE            PIC ZZZZZZZZZ9.
       *----(03.04.01)--ADD-START---
            03  WRK-PRT-PAGE        PIC 9(10).
       *----(03.04.01)--ADD-END-----
@@ -214,7 +214,6 @@
        490-KAKUNIN-SEC             SECTION.
       *     
            MOVE    SPACE               TO  S99
-           INITIALIZE                      S99
            MOVE    ZERO                TO  S99-COUNT
       *----(03.04.01)--ADD-START---
            MOVE    WIDGET-INSENSITIVE  TO  S99-B12-STATE

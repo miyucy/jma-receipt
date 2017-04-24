@@ -44,17 +44,14 @@ data	{
                 incomev3;
 	};
 };
+
 db "xml2" {
- fm_statement;
- fm_invoice_receipt;
  xml_incomev3req;
  xml_incomev3req01;
  xml_incomev3res01;
  xml_incomev3req02;
  xml_incomev3res02;
  xml_incomev3res03;
- fm_invoice_receipt_h;
- fm_statement_h;
 };
 
 #include "orcadb.inc"
