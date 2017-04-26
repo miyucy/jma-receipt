@@ -1189,6 +1189,23 @@
                    END-IF
                END-PERFORM
            END-IF
+      *
+      *    自賠責点数区分
+           IF      SPA-GMN2D-JIBAIKBN  =   SPACE
+               MOVE    SPACE           TO  SPA-GMN2D-JIBAIKBN-G
+           ELSE
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN2D-JIBAIKBN-MAX)
+                          OR  (FLG-OK  =   1    )
+                   IF      SPA-GMN2D-JIBAIKBN
+                                       =   SPA-GMN2D-JIBAIKBN-LST
+                                                          (IDX)(1:1)
+                       MOVE    SPA-GMN2D-JIBAIKBN-LST (IDX)
+                                           TO  SPA-GMN2D-JIBAIKBN-G
+                       MOVE    1           TO  FLG-OK
+                   END-IF
+               END-PERFORM
+           END-IF
            .
        3003-COMBBOX-SET-EXT.
            EXIT.
@@ -4466,19 +4483,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *H29.5
                WHEN    "0055"
-                   STRING  "自賠責点数区分がありません"
+                   STRING  "自賠責算定点数区分がありません"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0057"
-                   STRING  "自賠責点数区分は平成２９年７月１日からの"
-                           "設定です。"
+                   STRING  "自賠責算定点数区分は療養開始日が"
+                           "平成２９年７月１日以降で設定可能です。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K056"
                    STRING  "警告！"
-                           "自賠責点数区分が変更されました。"
+                           "自賠責算定点数区分が変更されました。"
                            "登録済みの診療行為を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
