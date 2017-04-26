@@ -4483,19 +4483,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *H29.5
                WHEN    "0055"
-                   STRING  "自賠責算定点数区分がありません"
+                   STRING  "自賠責点数算定区分がありません"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0057"
-                   STRING  "自賠責算定点数区分は療養開始日が"
+                   STRING  "自賠責点数算定区分は療養開始日が"
                            "平成２９年７月１日以降で設定可能です。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K056"
                    STRING  "警告！"
-                           "自賠責算定点数区分が変更されました。"
+                           "自賠責点数算定区分が変更されました。"
                            "登録済みの診療行為を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
