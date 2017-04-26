@@ -31,11 +31,11 @@
                 05  INCOMEREQ01-KARTE-UID      PIC X(36).
                 05  INCOMEREQ01-ORCA-UID       PIC X(36).
                 05  INCOMEREQ01-PTNUM          PIC X(20).
+                05  INCOMEREQ01-OUTKBN         PIC X(1).
                 05  INCOMEREQ01-STSRYYMD       PIC X(10).
                 05  INCOMEREQ01-EDSRYYMD       PIC X(10).
                 05  INCOMEREQ01-STSRYYM        PIC X(07).
                 05  INCOMEREQ01-EDSRYYM        PIC X(07).
-                05  INCOMEREQ01-OUTKBN         PIC X(1).
                 05  INCOMEREQ01-SORT           PIC X(1).
                 05  INCOMEREQ01-ORDER          PIC X(1).
                 05  INCOMEREQ01-RANGE-FROM     PIC X(05).

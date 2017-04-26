@@ -9,11 +9,11 @@ xml_incomev3req01 {
     Karte_Uid            varchar(36);
     Orca_Uid             varchar(36);
     Patient_ID           varchar(20);
+    Information_Class    varchar(1);
     Start_Date           varchar(10);
     End_Date             varchar(10);
     Start_Month          varchar(7);
     End_Month            varchar(7);
-    Information_Class    varchar(1);
     Sort_Key{
       Key_Class          varchar(1);
       Order_Class        varchar(1);
