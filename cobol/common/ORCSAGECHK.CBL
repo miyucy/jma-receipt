@@ -1253,7 +1253,12 @@
            MOVE    AGECHK-HOSPNUM      TO  SYS-4001-HOSPNUM
            MOVE    SYS-4001-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
-      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-4001-REC
+           ELSE
+               INITIALIZE                  SYS-4001-REC
+           END-IF
+     *
       *    自賠責点数区分の設定があれば優先
            EVALUATE    PTRSI-JIBAIKBN
                WHEN    "1"
