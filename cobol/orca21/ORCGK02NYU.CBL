@@ -75,8 +75,6 @@
       * 04.08.00     NACL-多々納  14/08/11  クライアント印刷変更
       * 04.08.00     NACL-多々納  14/10/23  連続挿入対応
       * 04.08.00     NACL-多々納  17/01/17  翌月入院料チェック対応
-      * 04.08.00     NACL-多々納  17/05/XX  公費期間表示、メモ対応
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -182,7 +180,6 @@
            03  FLG-PARA            PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       **   03  FLG-PTNYUINRRK      PIC 9(01).
-           03  FLG-PTMEMOINF       PIC 9(01).
            03  FLG-SPATMP          PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
@@ -840,9 +837,6 @@
       *    収納マスタワーク
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
-      *    患者メモ
-       01  PTMEMOINF-REC.
-           COPY    "CPPTMEMOINF.INC".
       *
       *    収納マスタワーク
       *01  HZN-SYUNOU-REC.
@@ -1298,7 +1292,6 @@
                IF      WRK-MOTOPG          =   "Y01"  OR  "U01"
                                                       OR  "P97"
                                                       OR  "KA02"
-                                                      OR  "XF01"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-K02
                    MOVE    SPA-WORK        TO  SPA-K01KYOUTU
@@ -1325,14 +1318,6 @@
                    PERFORM 3101-P97SPASET-SEC
                    GO      TO      300-SCREEN-EXT
                END-IF
-      *H29.5
-      *        メモ画面
-               IF      WRK-MOTOPG          =   "XF01"
-      *            メモ登録有無
-                   PERFORM 41021-PTMEMOINF-SEC
-                   GO      TO      300-SCREEN-EXT
-               END-IF
-      *
            END-IF
       *!
            CALL    "ORCSSPACHK"        USING    SPA-AREA
@@ -1418,6 +1403,7 @@
       *            ＤＯ選択画面より
                    PERFORM 3013-K09-SET-SEC
                    MOVE    2                   TO  FLG-GMN
+      *************GO      TO      300-SCREEN-EXT
                WHEN    "KHELP"
       *            ヘルプ画面より
                    MOVE    2                   TO  FLG-GMN
@@ -1557,6 +1543,7 @@
                    END-IF
       *
                WHEN    "K08"
+      ******** WHEN    "K03"
       *            登録後クリア画面の表示
                    IF      SPA-PTNUM          =   SPACE
                        PERFORM 30010-INIT-GMN-SEC
@@ -1761,13 +1748,6 @@
                GO      TO      30011-INIT-HEN-EXT
            END-IF
       *
-      *H29.5
-      *    メモ登録有無
-           PERFORM 41021-PTMEMOINF-SEC
-      *
-      *    保険組合
-           PERFORM 3101-HKNCOMBI-HEN-SEC
-      *
            MOVE    WRK-DRCD            TO  SPA-DRCD
            MOVE    WRK-MAE-HKNCOMBI    TO  SPA-GMN-HKNCOMBINUM
            MOVE    WRK-MAE-HKNCOMBI    TO  SPA-HKNCOMBINUM
@@ -1830,10 +1810,6 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      3003-GMN-HEN-EXT
            END-IF
-      *
-      *H29.5
-      *    メモ登録有無
-           PERFORM 41021-PTMEMOINF-SEC
       *
       *    保険組合
            PERFORM 3101-HKNCOMBI-HEN-SEC
@@ -1899,13 +1875,6 @@
            IF      SPA-ERRCD           =   "9999"
                GO      TO      3009-SAIHEN-EXT
            END-IF
-      *
-      *H29.5
-      *    メモ登録有無
-           PERFORM 41021-PTMEMOINF-SEC
-      *
-      *    保険組合
-           PERFORM 3101-HKNCOMBI-HEN-SEC
       *    診療選択からの時、診療選択分とする
            IF      SPA-MOTOPG          =   "K01"
                MOVE    SPA-DRCD            TO  WRK-DRCD
@@ -1941,9 +1910,7 @@
                MOVE    WRK-SRYKA           TO  SPA-SRYKA
                MOVE    WRK-SRYKA           TO  SPA-GMN-SRYKA
            END-IF
-      *H29.5
-      *    メモ登録有無
-           PERFORM 41021-PTMEMOINF-SEC
+      *
       *
            INITIALIZE                  ORCSC95AREA
            MOVE    "5"                 TO  LNK-SC95-KBN
@@ -2117,52 +2084,6 @@
       *
            .
        30091-SAIHEN2-EXT.
-           EXIT.
-      *
-      *H29.5
-      *****************************************************************
-      *    メモ登録有無処理
-      *****************************************************************
-       41021-PTMEMOINF-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  PTMEMOINF-REC
-           INITIALIZE                  PTMEMOINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTMEMOINF-HOSPNUM
-           MOVE    SPA-PTID            TO  PTMEMOINF-PTID
-      *D   MOVE    2                   TO  PTMEMOINF-MEMOKBN
-           MOVE    SPA-SYSYMD          TO  PTMEMOINF-SYSYMD
-      *
-           MOVE    PTMEMOINF-REC       TO  MCPDATA-REC
-           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PTMEMOINF-REC
-                   MOVE    ZERO                TO  FLG-PTMEMOINF
-               ELSE
-                   MOVE    1                   TO  FLG-PTMEMOINF
-                   INITIALIZE                  PTMEMOINF-REC
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-PTMEMOINF
-               INITIALIZE                  PTMEMOINF-REC
-           END-IF
-           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-PTMEMOINF       =   ZERO
-               MOVE    "1"             TO  SPA-NAI-MEMOKBN
-           ELSE
-               MOVE    SPACE           TO  SPA-NAI-MEMOKBN
-           END-IF
-      *
-           .
-       41021-PTMEMOINF-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3477,10 +3398,6 @@
       *        １行目へ
                WHEN    "CLICKED"       ALSO    "CTRLHOME"
                    PERFORM 4501-CTRHOME-SEC
-      *H29.5
-      *        メモ登録へ
-               WHEN    "CLICKED"       ALSO    "BSH2"
-                   PERFORM 4188-MEMO-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -3697,9 +3614,6 @@
                    IF      SPA-ERRCD           =   SPACE
       *                患者番号決定初期処理
                        PERFORM 410101-PTNUM-SYOKI-SEC
-      *H29.5
-      *            メモ登録有無
-                   PERFORM 41021-PTMEMOINF-SEC
       *
       *            患者情報通知
                    PERFORM 41023-POPUP-SYORI-SEC
@@ -5835,11 +5749,6 @@
                               (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
-      *H30.4             分割調剤など
-                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
-                                                   =   "0992081" ) AND
-                              (SPA-COM-SURFLG (SPA-GMN-IDX)
-                                                       =   SPACE ))
       *
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
@@ -6117,11 +6026,6 @@
                IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
                                                =   "001" )
                  AND  (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 )
-                   MOVE    1                   TO  FLG-IN1
-               END-IF
-      *H30.4   分割調剤など
-               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
-                                               =   "0992081" )
                    MOVE    1                   TO  FLG-IN1
                END-IF
       *
@@ -6867,7 +6771,6 @@
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
-              OR  (KANACHK-RC4     NOT =   ZERO  )
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
                                                        (SPA-GMN-IDX)
                                                             (IDX-STR:)
@@ -9177,52 +9080,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        41251-NYUINRRK-NEXTSYORI-EXT.
            EXIT.
       *
-      *H29.5
-      *****************************************************************
-      *    メモ登録処理へ
-      *****************************************************************
-       4188-MEMO-SYORI-SEC             SECTION.
-      *
-      *    患者の確定されてない時、処理をしない
-           IF     (SPA-GMN-PTNUM       =   SPACE )  OR
-                  (SPA-PTID            =   ZERO  )
-               GO      TO      4188-MEMO-SYORI-EXT
-           END-IF
-      *
-           MOVE    1                   TO  FLG-HENKOU
-      *    診療行為入力チェック
-           PERFORM 41011-KOUI-ALLHEN-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-KIDCD       NOT =   SPACE )  OR
-                  (FLG-END             =   1     )
-               GO      TO      4188-MEMO-SYORI-EXT
-           END-IF
-      *
-      *    ワーク行為負担パラメタを作成
-           PERFORM 4410-WSINPARA-SEC
-      *
-      *    戻り時、画面を元へ戻す
-           MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-KYOUTU          TO  LNK-COMMON
-           MOVE    SPA-K02             TO  LNK-SCRSPA
-      *
-      *    画面移行用のパラメタ変更
-           MOVE    "K02N"              TO  SPA-MOTOPG
-           MOVE    "XF01"              TO  SPA-SAKIPG
-      *
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
-           MOVE    "XF01"              TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       4188-MEMO-SYORI-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    ヘルプ処理
       *****************************************************************
@@ -10961,16 +10818,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  K02N-INPUTCD(IDX)
                    MOVE    SPA-GMN-MEISYO-G(WRK-IDX)
                                                TO  K02N-MEISYO(IDX)
-      *H29.1
-      *!!          ユーザー管理
-                   IF      SPA-COM-MASTER-CLASS (WRK-IDX)  =   "2"
-                       MOVE    CL-GREEN        TO
-      *?                              K02N-SRYKBN-FGCOLOR (IDX)
-                                      K02N-INPUTCD-FGCOLOR(IDX)
-      *?                              K02N-MEISYO-FGCOLOR(IDX)
-      *?                              K02N-SURYO-FGCOLOR(IDX)
-                   END-IF
-      *TEST
                    PERFORM 5002-SURYO-HEN-SEC
       *@
       *            包括行
@@ -11217,35 +11064,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE SPA-GMN-POPUP-STATUS
            END-IF
       *
-      *H29.5
-      *    メモボタン
-           IF      SPA-NAI-MEMOKBN     =   "1"
-               MOVE    "red"               TO  K02N-BSH2-STYLE
-           ELSE
-               MOVE    "black"             TO  K02N-BSH2-STYLE
-           END-IF
-           MOVE    "メモ"              TO  K02N-BSH2-LABEL
-      *    公費期限切れ名称
-           IF      SPA-GMN-KOHMSG      =   SPACE
-               MOVE    SPACE               TO  K02N-KOHMSG-DATA
-           ELSE
-               MOVE    "red"               TO  K02N-KOHMSG-STYLE
-               MOVE    SPA-GMN-KOHMSG      TO  K02N-KOHMSG-DATA
-           END-IF
-      *
-      *H30.4
-           IF     (SPA-SRYYMD          >=  "20180401")
-               IF     (SPA-NINPUKBN-ARI    =   1    )
-                   MOVE    "（妊婦）"      TO  K02N-MODE3-VALUE
-                   MOVE    "blue"          TO  K02N-MODE3-STYLE
-               ELSE
-      *            手入力で妊婦
-                   IF     (SPA-NINPUKBN-IN     =   1    )
-                   MOVE    "（妊婦）"      TO  K02N-MODE3-VALUE
-                   MOVE    "black"         TO  K02N-MODE3-STYLE
-                   END-IF
-               END-IF
-           END-IF
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
