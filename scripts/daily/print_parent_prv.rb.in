@@ -6,7 +6,7 @@ Encoding.default_external = "ascii-8bit" if defined?(Encoding) && Encoding.respo
 $:.unshift(File.dirname(__FILE__))
 require 'yaml'
 require "securerandom"
-require 'daily/print_parent_common'
+require 'print_parent_common'
 
 # 引数指定方法
 #   引数1         設定ファイル名
@@ -142,21 +142,20 @@ class Jma_print
 
     item[:red_file] = red_file
 
-    item[:lp_name]  = "#{report_info[30, 20]}".strip unless "#{report_info[30, 20]}".strip.empty?
-    item[:offset_x] = "#{report_info[50, 5]}".strip unless "#{report_info[50, 5]}".strip.empty?
-    item[:offset_y] = "#{report_info[55, 5]}".strip unless "#{report_info[55, 5]}".strip.empty?
-    item[:site_program] = true if "#{report_info[60, 1]}" == '2'
-    item[:print_order] = "#{report_info[61, 1]}".strip
-    item[:out_dir] = format_dir("#{report_info[62, 165]}")
-    item[:tbl_key] = "#{report_info[227, 8]}".strip
-    item[:seq] = "#{report_info[235, 4]}".strip
-    item[:tbl_group] = "#{report_info[239, 14]}".strip
-    item[:subseq] = "#{report_info[253, 4]}".strip
-    item[:page] = "#{report_info[257, 5]}".strip
-    item[:uuid] = "#{report_info[262,36]}".strip
-    item[:data_type] = "#{report_info[298,16]}".strip
-    item[:data] = "#{report_info[314..-1]}".rstrip
-
+    item[:lp_name]  = report_info[30, 20].strip unless report_info[30, 20].strip.empty?
+    item[:offset_x] = report_info[50, 5].strip unless report_info[50, 5].strip.empty?
+    item[:offset_y] = report_info[55, 5].strip unless report_info[55, 5].strip.empty?
+    item[:site_program] = true if report_info[60, 1] == '2'
+    item[:print_order] = report_info[61, 1].strip
+    item[:out_dir] = format_dir(report_info[62, 165])
+    item[:tbl_key] = report_info[227, 8].strip
+    item[:seq] = report_info[235, 4].strip
+    item[:tbl_group] = report_info[239, 14].strip
+    item[:subseq] = report_info[253, 4].strip
+    item[:page] = report_info[257, 5].strip
+    item[:uuid] = report_info[262,36].strip
+    item[:data_type] = report_info[298,16].strip
+    item[:data] = report_info[314..-1].rstrip
 
     item[:offset]= "-x #{item[:offset_x]} -y #{item[:offset_y]}"
 
@@ -239,7 +238,7 @@ class Jma_print
       @items.each {|item| create_pdf(item)}
     end
 
-    if ["3", "4", "5", "6", "7" ].include?(@print_order)
+    if ["3", "4", "5", "6" ].include?(@print_order)
       threads=[]
       MAX_THREADS.times.each_with_index do |index|
         threads << Thread.start do
@@ -249,7 +248,7 @@ class Jma_print
       threads.each {|t| t.join}
     end
 
-    concatenate_pdf if ["5", "6", "7"].include?(@print_order)
+    concatenate_pdf if ["5", "6"].include?(@print_order)
 
     @items.clear
     @print_data.clear
@@ -267,15 +266,9 @@ class Jma_print
       execute("#{ENV['MONUPLOAD']} -t report -T \"#{@report_title}\" #{monupload_options} #{out_file}")
     when "6"
       execute("lpr -P #{printer} #{out_file}")
-    when "7"
-      item = @items.first
-      execute("mv #{out_file} #{@mcp_temp_dir}/#{item[:tbl_key]}#{item[:tbl_group]}.pdf")
     end
 
     File.delete(out_file) if File.exist?(out_file)
-    pdf_files.each do |pdf_file|
-      File.delete(pdf_file) if File.exist?(pdf_file)
-    end
   end
 
   def concatenate_pdf
@@ -283,7 +276,7 @@ class Jma_print
     pdf_files=Array.new
 
     @print_data.each do |data|
-      unless @show_dialog == true or @print_order == "7"
+      if @show_dialog == false
         unless printer == data[:lp_name]
           execute_concat(pdf_files,printer)
           pdf_files.clear
