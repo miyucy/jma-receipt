@@ -251,9 +251,6 @@ db	{
 	tbl_access_key;
 	tbl_mstkanri_public;
 	tbl_mstkanri_master;
-        tbl_tensu_price;
-	tbl_tensu_user;
-	tbl_tensu_master;
 	tbl_material_h;
 	tbl_material_s;
 	tbl_material_k;
@@ -263,15 +260,4 @@ db	{
 	tbl_material_h_n_master;
 	tbl_material_s_master;
 	tbl_material_k_master;
-	tbl_srycdchg_user;
-	tbl_srycdchg_master;
-	tbl_chk_user;
-	tbl_chk_master;
-	tbl_adrs_user;
-	tbl_adrs_master;
-	tbl_hknjainf_user;
-	tbl_hknjainf_master;
-        tbl_receden_tmp;
-    monpushevent;
-        tbl_file_mis;
 };

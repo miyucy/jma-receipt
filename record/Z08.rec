@@ -62,6 +62,8 @@ Z08 {
         count int;
         row int;
         selectdata bool[200];
+        fgcolor varchar(256)[200];
+        bgcolor varchar(256)[200];
         item {
           column1 varchar(03);
           column2 varchar(200);
