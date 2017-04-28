@@ -48,8 +48,6 @@ xml_patientmodv2res {
 		Infection2		varchar(200);
 		Comment1		varchar(200);
 		Comment2		varchar(200);
-#---            ƒeƒXƒgŠ³ŽÒ‹æ•ª
-		TestPatient_Flag	varchar(01);
 		HealthInsurance_Information	{
 		Insurance_Combination_Number		varchar(4);
 		InsuranceProvider_Class			varchar(03);
