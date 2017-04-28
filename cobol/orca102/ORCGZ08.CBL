@@ -766,6 +766,7 @@
       *        ³ÎÄê
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  412-TOUROKU-SEC
+      *H29.5
       *        Á°ÊÇ
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM  407-MAE-PAGE-SEC

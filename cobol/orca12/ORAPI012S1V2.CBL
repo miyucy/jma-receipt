@@ -31,6 +31,7 @@
       * 04.07.00     NACL-多々納  13/11/01  API保険・公費追加対応
       *                                     保険組合せ番号追加他
       * 04.07.00     NACL-多々納  15/01/XX  性別・生年月日変更対応
+      * 04.08.00     NACL-多々納  17/05/XX  テスト患者区分追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -758,6 +759,8 @@
       *    コメント
            MOVE    PTMODREQ-COMMENT-1      TO  PTMODRES-COMMENT-1
            MOVE    PTMODREQ-COMMENT-2      TO  PTMODRES-COMMENT-2
+      *    テスト患者番号区分
+           MOVE    PTMODREQ-TEST-PATIENT   TO  PTMODRES-TEST-PATIENT
       *
       *    保険情報（登録のみ）
            IF      FLG-SYORI           =   1
@@ -1191,6 +1194,9 @@
       *    コメント
            MOVE    PTMODREQ-COMMENT-1  TO  SPA-GMN-COMMENT-1
            MOVE    PTMODREQ-COMMENT-2  TO  SPA-GMN-COMMENT-2
+      *H29.5
+      *    テスト患者番号区分
+           MOVE    PTMODREQ-TEST-PATIENT   TO  SPA-GMN-TSTPTNUMKBN
       *
       *    生年月日
            IF     (WRK-ERRCD           =   SPACE ) 
@@ -1285,6 +1291,12 @@
            IF     (WRK-ERRCD           =   SPACE ) 
            AND    (SPA-ERRCD           =   SPACE )
                PERFORM 200211-OFFICETEL-CHK-SEC
+           END-IF
+      *H29.5
+      *    テスト患者番号区分
+           IF     (WRK-ERRCD           =   SPACE ) 
+           AND    (SPA-ERRCD           =   SPACE )
+               PERFORM 200211-TSTPTNUMKBN-CHK-SEC
            END-IF
       *
            IF     (WRK-ERRCD           =   SPACE ) 
@@ -1946,6 +1958,26 @@
        200211-OFFICETEL-CHK-EXT.
            EXIT.
       *
+      *H29.5
+      *****************************************************************
+      *    テスト患者番号区分チェック処理
+      *****************************************************************
+       200211-TSTPTNUMKBN-CHK-SEC     SECTION.
+      *
+      *    テスト患者
+           IF      SPA-GMN-TSTPTNUMKBN =   SPACE
+               MOVE    "0"             TO  SPA-GMN-TSTPTNUMKBN
+           END-IF
+           IF      SPA-GMN-TSTPTNUMKBN =   "0"  OR  "1"
+               CONTINUE
+           ELSE
+               MOVE    "34"                TO  WRK-ERRCD
+           END-IF
+           .
+       200211-TSTPTNUMKBN-CHK-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *    保険情報更新処理
       *****************************************************************
@@ -2476,7 +2508,7 @@
            MOVE    SPA-PTID            TO  PTINF-PTID
       *H26.8
       *    テスト患者番号区分
-           MOVE    "0"                 TO  PTINF-TSTPTNUMKBN
+      **** MOVE    "0"                 TO  PTINF-TSTPTNUMKBN
       *    明細編集
            PERFORM 20023-PTINF-HENSYU-SEC
       *
@@ -2823,6 +2855,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN21-OFFICE-ADRS   TO  PTINF-OFFICE-ADRS
            MOVE    SPA-GMN21-OFFICE-BANTI  TO  PTINF-OFFICE-BANTI
            MOVE    SPA-GMN21-OFFICE-TEL    TO  PTINF-OFFICE-TEL
+      *H29.5
+      *    テスト患者番号区分
+           MOVE    SPA-GMN-TSTPTNUMKBN     TO  PTINF-TSTPTNUMKBN
       *
       *    患者情報出力内容編集処理
            PERFORM 20021-PTMODRES-HEN-SEC
@@ -2911,6 +2946,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    PTINF-ALLERGY-2     TO  PTMODRES-ALLERGY-2
            MOVE    PTINF-KANSENSYO-1   TO  PTMODRES-KANSENSYO-1
            MOVE    PTINF-KANSENSYO-2   TO  PTMODRES-KANSENSYO-2
+      *H29.5
+      *    テスト患者番号区分
+           MOVE    PTINF-TSTPTNUMKBN   TO  PTMODRES-TEST-PATIENT
            .
        20021-PTMODRES-HEN-EXT.
            EXIT.
@@ -4066,6 +4104,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  WRK-ERRMSG
            WHEN    "33"
                MOVE    "番号全角エラー"
+                                               TO  WRK-ERRMSG
+      *H29.5
+           WHEN    "34"
+               MOVE    "テスト患者区分エラー"
                                                TO  WRK-ERRMSG
            WHEN    "39"
                MOVE    "労災・自賠責保険は登録できません。"
