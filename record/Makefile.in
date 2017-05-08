@@ -534,6 +534,7 @@ RECORD_files = \
 	diseasev2.rec \
 	incomev3.rec \
 	patientlst6v2.rec \
+ 	Q05.rec \
 
 DEF_files = \
 
