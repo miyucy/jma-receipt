@@ -47,7 +47,6 @@
       *  04.06.00    NACL-多々納  10/11/16  マル長負担額を保険負担額反映
       *  04.08.00    NACL-多々納  13/01/15  診療回数テーブル１０対応
       *  04.08.00    NACL-多々納  17/05/12  用法コード名称編集対応
-      *  04.08.00    NACL-多々納  17/12/XX  剤オーバー対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -112,8 +111,6 @@
            03  FLG-SYOHOU          PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-GENTEN          PIC 9(01).
-      *    剤オーバー
-           03  FLG-ERROVER         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -481,10 +478,6 @@
       *        DISPLAY "*** ORCL0021 LF03 INVALID ***"
       *        MOVE    1               TO  FLG-END
       *****END-IF
-      *
-           INITIALIZE                  IDX-AREA
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  WRK-AREA
       *
       *    UID検索
            INITIALIZE                      CLMUID-REC
@@ -986,8 +979,6 @@
            MOVE    ZERO                TO  IDX-SATU
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
-      *H29.12  剤オーバー
-                     OR   (FLG-ERROVER     NOT =   ZERO )
                MOVE    SRY-SRYSYUKBN       TO  WRK-SRYSYUKBN
                MOVE    SRY-SRYKBN          TO  WRK-SRYKBN
                MOVE    SRY-SRYSYUKBN       TO  WRK-SRYKBN3
@@ -1001,8 +992,6 @@
                    END-IF
                    PERFORM VARYING     IDXA    FROM    1   BY  1
                            UNTIL       IDXA    >   5
-      *H29.12  剤オーバー
-                     OR   (FLG-ERROVER     NOT =   ZERO )
                        IF      SRY-SRYCD (IDXA)    NOT =   SPACE
                            PERFORM 20022-SRYACT-HANTEI-SEC
                        END-IF
@@ -1078,9 +1067,7 @@
       *    ３０剤以上の時エラー
            IF      IDX-LF2             >   30
                DISPLAY "ZAI 30 OVER ???"
-      *!!!     MOVE    30              TO  IDX-LF2
-               MOVE    1               TO  FLG-ERROVER
-               GO      TO      20021-SRYACCT-SYORI-EXT
+               MOVE    30              TO  IDX-LF2
            END-IF
       *
            MOVE    IDX-LF2             TO  IDX-LF
@@ -1966,15 +1953,6 @@
       *
       *            括りメモ
                    MOVE    TBL-MEMO (IDX-LF)   TO  WRK-LF02-MEMO(IDX-LF)
-      *H29.12
-      *           剤オーバー
-                  IF     (FLG-ERROVER         =   1 )
-                     AND (IDX-LF              =   30 )
-                       MOVE    "明細数がオーバーしました"
-                                              TO  WRK-LF02-EVENT
-                                                          (IDX-LF 1)
-                  END-IF
-      *
                END-IF
            END-PERFORM
       *
@@ -2151,7 +2129,6 @@
       *@   IF      IDX-LF2             >   20
            IF      IDX-LF2             >   30
                DISPLAY "ZAI 30 OVER ???"
-               MOVE    1               TO  FLG-ERROVER
            ELSE
                MOVE    IDX-LF2             TO  IDX-LF
                PERFORM 20051-SEIKYU-TEN-SEC
@@ -2165,7 +2142,6 @@
       *@       IF      IDX-LF2             >   20
                IF      IDX-LF2             >   30
                    DISPLAY "ZAI 30 OVER ???"
-                   MOVE    1               TO  FLG-ERROVER
                ELSE
                    MOVE    IDX-LF2             TO  IDX-LF
                    PERFORM 20052-JIHI-TEN-SEC
@@ -2179,7 +2155,6 @@
       *@       IF      IDX-LF2             >   20
                IF      IDX-LF2             >   30
                    DISPLAY "ZAI 30 OVER ???"
-                   MOVE    1               TO  FLG-ERROVER
                ELSE
                    MOVE    IDX-LF2             TO  IDX-LF
                    PERFORM 20053-JIHITEX-TEN-SEC
@@ -2655,7 +2630,6 @@
            IF      IDX-LF2             >   30
                DISPLAY "ZAI 30 OVER ???"
                MOVE    1                   TO  FLG-ERR
-               MOVE    1                   TO  FLG-ERROVER
                GO      TO      200531-IDX-CNT-EXT
            END-IF
            MOVE    TBL-KAISU  (IDX-LF) TO  TBL-KAISU (IDX-LF2)
@@ -2827,10 +2801,6 @@
            IF      SRY-RENNUM          =   1
                PERFORM 200201-JIHI-ACCT-SEC
            END-IF
-      *H29.12  剤オーバー
-           IF      FLG-ERROVER     NOT =   ZERO
-               GO      TO      20020-JIHI-SYORI-EXT
-           END-IF
       *
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL       IDXA    >   5
@@ -2879,9 +2849,7 @@
       *    ３０剤以上の時エラー
            IF      IDX-LF2             >   30
                DISPLAY "ZAI 30 OVER ???"
-      *!!!     MOVE    30              TO  IDX-LF2
-               MOVE    1               TO  FLG-ERROVER
-               GO      TO      200201-JIHI-ACCT-EXT
+               MOVE    30              TO  IDX-LF2
            END-IF
       *
            MOVE    IDX-LF2             TO  IDX-LF
@@ -2937,12 +2905,6 @@
            MOVE    SRY-JIHIMONEY(IDXA) TO  TBL-MEISAITANKA
                                                       (IDX-LF IDX-IJ)
            MOVE    1                   TO  TBL-SURYO  (IDX-LF IDX-IJ)
-      *H30.2
-      *    メモにフリーコメントの内容セット
-           IF      SRY-INPUTNUM (IDXA)  NOT =   ZERO
-               PERFORM 200221-PTCOM-SET-SEC
-           END-IF
-      *
       *    自費合計
            ADD     SRY-JIHIMONEY(IDXA) TO  TBL-GINGAKUALL(IDX-LF)
            .
