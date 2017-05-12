@@ -60,6 +60,8 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-藤原    17/04/10  患者単位での点数算定設定
+      *                                     （労災準拠又は健保準拠）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -207,6 +209,11 @@
        01  WRK-RECE40-REC. 
            COPY    "CPRCF040.INC"  REPLACING  //RECE40//
                                    BY         //WRK-RECE40//.
+      *
+       01  WRK-CONS-AREA.
+           03  WRK-CONS-SRYYM-201707-X.
+               05  WRK-CONS-SRYYM-201707
+                                   PIC 9(06)   VALUE   201707.
       *
            COPY    "MCPAREA".
       *     
@@ -653,13 +660,23 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
            PERFORM 900-PTRSIINF-INV-SEC
            IF      FLG-PTRSIINF    =   "1"
                MOVE    "1"             TO  WRK-ROUSAIKBN
-           END-IF                
+           END-IF
+      *
+           DISPLAY "WRK-ROUSAIKBN="     WRK-ROUSAIKBN
+                   " PTRSI-JIBAIKBN="   PTRSI-JIBAIKBN
       *
       *    労災・自賠責保険以外のとき処理しない
            IF      WRK-ROUSAIKBN       =   "1"
                GO  TO  20011-FILE-SYORI-EXT
            END-IF
-      *                  
+      *
+      *    新様式で健保準拠のときは処理しない
+           IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201707-X )
+           AND   ( WRK-PARA-RECEKBN    =   "4"                     )
+           AND   ( PTRSI-JIBAIKBN      =   "2"                     )
+               GO  TO  20011-FILE-SYORI-EXT
+           END-IF
+      *
            IF      WRK-UPDKBN          =   "1"
       *    保険の訂正がされているか
                IF      COMB-TEKSTYMD(1:6)  =   WRK-STYMD (1:6)
@@ -783,6 +800,17 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE40-HOSPNUM
            ELSE
                MOVE    COMB-TEKEDYMD           TO  WRK-RECE40-TEKEDYMD-X
            END-IF
+      *
+      *    自賠責区分（患者別設定）
+           IF      WRK-RECE40-SRYYM    >=  WRK-CONS-SRYYM-201707
+               IF     WRK-PARA-RECEKBN     =   "8"
+                   CONTINUE
+               ELSE
+                   MOVE    PTRSI-JIBAIKBN      TO  WRK-RECE40-JIBAIKBN
+               END-IF
+           END-IF
+      *
+           DISPLAY "WRK-RECE40-JIBAIKBN=" WRK-RECE40-JIBAIKBN "#"
       *
            MOVE    WRK-RECE40-REC      TO  RECE40-REC
            WRITE   RECE40-REC

@@ -78,6 +78,8 @@
       *  04.08.05    NACL-門脇    16/02/29  平成２８年４月改正対応
       *  04.08.06    NACL-門脇    17/04/06  入院期間外の入院診療行為入力
       *                                     チェック
+      *  04.08.07    NACL-藤原    17/04/10  患者単位での点数算定設定
+      *                                     （労災準拠又は健保準拠）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -116,6 +118,8 @@
            03  FLG-NYUINACCT                           PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-PTNYUINRRK                          PIC 9(01).
+           03  FLG-PTRSIINF                            PIC 9(01).
+      *
            03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-DATA                                PIC 9(01).
@@ -216,6 +220,11 @@
       *
            03  WRK-SRYACCT-PATHNAME                    PIC X(64).
       *
+       01  WRK-CONS-AREA.
+           03  WRK-CONS-SRYYM-201707-X.
+               05  WRK-CONS-SRYYM-201707
+                                   PIC 9(06)   VALUE   201707.
+      *
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
       *
@@ -265,6 +274,10 @@
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
+      *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -800,6 +813,22 @@ grpsys         PERFORM 900-DBSELECT-SEC
                GO  TO  20011-SRYACCT-FILE-HENSYU-EXT
            END-IF
       *
+      *    新様式で健保準拠のときは処理しない
+           IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201707-X )
+           AND   ( WRK-PARA-RECEKBN    =   "4"                     )
+               INITIALIZE              PTRSIINF-REC
+               MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
+               MOVE    COMB-HKNID      TO  PTRSI-HKNID
+               MOVE    COMB-PTID       TO  PTRSI-PTID
+               MOVE    PTRSIINF-REC    TO  MCPDATA-REC
+               PERFORM 900-PTRSIINF-INV-SEC
+      *
+               DISPLAY " PTRSI-JIBAIKBN="   PTRSI-JIBAIKBN
+               IF      PTRSI-JIBAIKBN  =   "2"
+                   GO  TO  20011-SRYACCT-FILE-HENSYU-EXT
+               END-IF
+           END-IF
+      *
       *    仮収納作成 
            PERFORM 20011-HENSYU-SEC
       *
@@ -996,6 +1025,22 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *    対象保険以外のとき処理しない
            IF      WRK-SYOKBN       =   "1"
                GO  TO  200122-NYUINACCT-HENSYU-EXT
+           END-IF
+      *
+      *    新様式で健保準拠のときは処理しない
+           IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201707-X )
+           AND   ( WRK-PARA-RECEKBN    =   "4"                     )
+               INITIALIZE              PTRSIINF-REC
+               MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
+               MOVE    COMB-HKNID      TO  PTRSI-HKNID
+               MOVE    COMB-PTID       TO  PTRSI-PTID
+               MOVE    PTRSIINF-REC    TO  MCPDATA-REC
+               PERFORM 900-PTRSIINF-INV-SEC
+      *
+               DISPLAY " PTRSI-JIBAIKBN="   PTRSI-JIBAIKBN
+               IF      PTRSI-JIBAIKBN  =   "2"
+                   GO  TO  200122-NYUINACCT-HENSYU-EXT
+               END-IF
            END-IF
       *
       *    仮収納作成 
@@ -2348,6 +2393,41 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-SYUNOU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災保険情報マスタ読込
+      *****************************************************************
+       900-PTRSIINF-INV-SEC         SECTION.
+      *
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-PTRSIINF
+                   MOVE    MCPDATA-REC         TO  PTRSIINF-REC
+                   IF      PTRSI-SAKUJOKBN     =   "1"
+                       MOVE    1               TO  FLG-PTRSIINF
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  FLG-PTRSIINF
+                   INITIALIZE                      PTRSIINF-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTRSIINF
+               INITIALIZE                      PTRSIINF-REC
+           END-IF
+      *
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-PTRSIINF-INV-EXT.
            EXIT.
       *
       *****************************************************************
