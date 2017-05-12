@@ -1,0 +1,46 @@
+fm_payment_certificate {
+  context                 int;
+  object                  object;
+  mode                    int;
+  recordname              varchar(128);
+  data {
+    Form_ID               varchar(30);
+    Custom_ID             varchar(30);
+    Printer               varchar(20);
+    Order_Class           varchar(01);
+    Patient{
+      ID                  varchar(20);
+      KanaName            varchar(50);
+      Name                varchar(50);
+    };
+    Hospital{
+      Name                varchar(120)[3];
+      ZipCode             varchar(7);
+      Address             varchar(200)[3];
+      PhoneNumber         varchar(15);
+    };
+    Number_Days           varchar(03);
+    Start_Date            varchar(10);
+    End_Date              varchar(10);
+    IssuedDate            varchar(10);
+    InOut                 varchar(1);
+    Payment_Information{
+      Payment_List {
+        Perform_Month     varchar(07);
+        Perform_Date      varchar(10);
+        Perform_End_Date  varchar(10);
+        Point             varchar(08);
+        Ai_Smoney         varchar(08);
+        Oe_Money          varchar(08);
+        Meal_Smoney       varchar(08);
+        Ic_Money          varchar(08);
+        Past_Ic_Money     varchar(08);
+      };
+    }[2000];
+    Total_Point           varchar(08);
+    Total_Ai_Smoney       varchar(08);
+    Total_Oe_Money        varchar(08);
+    Total_Meal_Smoney     varchar(08);
+    Total_Ic_Money        varchar(08);
+  };
+};
