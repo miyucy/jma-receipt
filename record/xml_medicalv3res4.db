@@ -72,8 +72,8 @@ xml_medicalv3res4 {
 				Medication_Name	varchar(80);
 				Medication_Number	varchar(11);
 #----->                         単位コード
-				Unit_Code		varchar(3);
-				Unit_Code_Name		varchar(24);
+				Medication_Unit_Code		varchar(3);
+				Medication_Unit_Code_Name	varchar(24);
 				Medication_Money 	varchar(07);
 				Medication_Input_Info {
 					Medication_Input	varchar(08);
