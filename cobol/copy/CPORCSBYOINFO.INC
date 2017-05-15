@@ -74,7 +74,7 @@
                                            PIC X(80).
       *        補足コメントコード
                    07  SBYOINFO-HOSOKUCD-G.
-                       09    SBYOINFO-HOSOKUCD
+                       09  SBYOINFO-HOSOKUCD
                                            PIC X(20)   OCCURS   3.
                    07  SBYOINFO-HOSOKUCD-COMMENT-G.
                        09  SBYOINFO-HOSOKUCD-COMMENT
