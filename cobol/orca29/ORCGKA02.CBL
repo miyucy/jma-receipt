@@ -38,6 +38,7 @@
       *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
       *  04.08.00    NACL-多々納  16/11/XX   用法コード数量追加
+      *  05.00.00    NACL-多々納  17/05/XX  API(GINBEE)対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -181,6 +182,7 @@
            03  WRK-ZAIKAISU        PIC 9(08).
            03  WRK-EDANUM          PIC 9(02).
            03  WRK-SRYYMD          PIC X(08).
+           03  WRK-YUKOSTYMD       PIC X(08).
            03  WRK-DAY-TBL.
                05  WRK-DAY-T           PIC 9(03)   OCCURS   31.
       *
@@ -274,8 +276,6 @@
            03  WRK-QRKBN               PIC X(01).
            03  WRK-CSVKBN              PIC X(01).
            03  WRK-PRTKBN              PIC X(01).
-      *
-           03  WRK-YUKOSTYMD           PIC X(08).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -4281,6 +4281,9 @@
            MOVE    SPA-NAI-BTUNAME     TO  ORCSHCN30-BTUNAME
            MOVE    SPA-NAI-ROOMNO      TO  ORCSHCN30-ROOMNO
            MOVE    SPA-NAI-KOUFUYMD    TO  ORCSHCN30-SRYYMD
+      *API(GINBEE)対応
+      *    病棟番号
+           MOVE    SPA-NAI-BTUNUM      TO  ORCSHCN30-BTUNUM
            PERFORM 41031-ORCSHCN30-HENSYU-SEC
       *
            IF      SPA-ERRCD           =   SPACE
@@ -4445,6 +4448,9 @@
                MOVE    PTNYUINRRK-BRMNUM (3:6)
                                            TO  SPA-NAI-ROOMNO
            END-IF
+      *API(GINBEE)対応
+      *    病棟番号
+           MOVE    PTNYUINRRK-BTUNUM   TO  SPA-NAI-BTUNUM
       *
            .
        41041-BTUNAME-HEN-EXT.
@@ -4487,6 +4493,10 @@
            MOVE    SPA-NAI-KOUFUYMD    TO  ORCHCN62-SRYYMD
            MOVE    SPA-NAI-BTUNAME     TO  ORCHCN62-BTUNAME
            MOVE    SPA-NAI-ROOMNO      TO  ORCHCN62-ROOMNO
+      *API(GINBEE)対応
+      *    病棟番号
+           MOVE    SPA-NAI-BTUNUM      TO  ORCHCN62-BTUNUM
+      *
            MOVE    1                   TO  ORCHCN62-CNT
       *ver.4.7
            MOVE    WRK-QRKBN           TO  ORCHCN62-QRKBN
