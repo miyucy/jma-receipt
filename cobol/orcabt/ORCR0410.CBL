@@ -906,9 +906,6 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    CONTINUE
                ELSE
                    DISPLAY "RECE40-JIBAIKBN=" RECE40-JIBAIKBN
-                   IF      RECE40-JIBAIKBN     =   SPACE   OR  "0"
-                       MOVE    WRK-JIBAIKBN        TO  RECE40-JIBAIKBN
-                   END-IF
                    MOVE    RECE40-JIBAIKBN     TO  WRK-JIBAIKBN
                END-IF
            END-IF

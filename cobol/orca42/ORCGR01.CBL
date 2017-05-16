@@ -2315,6 +2315,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       *****END-IF
       *
       *    自賠責（新様式）のとき健保準拠かチェック
+      *    平成２９年７月診療分以降はエラーとしない 
            IF    ( SPA-R01-RECEKBN     =   "4" )
                INITIALIZE                  SYS-4001-REC
                MOVE    "4001"              TO  SYS-4001-KANRICD
@@ -2330,7 +2331,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
                ELSE
                   INITIALIZE                   SYS-4001-REC
                END-IF
-               IF      SYS-4001-JIBAIKBN   =   "2"
+               IF    ( SYS-4001-JIBAIKBN   =   "2"    )
+               AND   ( SPA-NAI-R01-SRYYM   <   201707 )
                    MOVE    "0036"              TO  SPA-ERRCD
                    MOVE    5                   TO  SPA-GMN-R01-CUR
                    GO  TO  4203-KOMOKUCHK-EXT
@@ -2593,6 +2595,10 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    COMB-HKNID          TO  PTRSI-HKNID
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                PERFORM 900-PTRSIINF-INV-SEC
+      *
+               IF      PTRSI-JIBAIKBN      =   SPACE   OR  "0"
+                   MOVE    SYS-4001-JIBAIKBN   TO  PTRSI-JIBAIKBN
+               END-IF
                IF      PTRSI-JIBAIKBN      =   "2"
                    MOVE    2                   TO  FLG-CHK
                END-IF
@@ -5722,7 +5728,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "前回とはレセプトの種類が違います"
                                                        TO  SPA-ERRMSG
                WHEN    "0043"
-                   STRING  "該当患者に健保準拠の設定がありますので"
+                   STRING  "該当患者に労災準拠の設定がありませんので"
                                            DELIMITED   BY  SIZE  
                            "自賠責（新様式）では処理できません"
                                            DELIMITED   BY  SIZE  
