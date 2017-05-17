@@ -49,6 +49,7 @@ db "xml2" {
  xml_hsacctmodv2req;
  xml_hsacctmodv2res;
  fm_prescription;
+ fm_statement_h;
 };
 
 #include "orcadb.inc"
