@@ -1701,6 +1701,9 @@
       *    £Ñ£Ò¥¤¥á¡¼¥¸°õºþ
            IF     (ORCSQRCSV62-RET-COUNT   >   ZERO)
              AND  (ORCSQRCSV62-RET-COUNT   <=  12  )
+      *----API-ADD-START---
+             AND  (PARA-API-DATA           =   "0"  )
+      *----API-ADD-END-----
                PERFORM 5003-QRIMAGE-HEN-SEC
            END-IF
            .
