@@ -8,7 +8,6 @@ fm_medication_note {
 		Custom_ID				varchar(30);
 		Printer					varchar(20);
 		Perform_Date   varchar(10);
-		Invoice_Number varchar(7);
 		Ward_Number					varchar(02);
 		Ward_Name						varchar(20);
 		Room_Number					varchar(6);

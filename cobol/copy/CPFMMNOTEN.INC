@@ -29,8 +29,6 @@
                05  FMMNOTEN-PRINTER                 PIC X(20).
       *            êfó√ì˙ YYYY-MM-DD
                05  FMMNOTEN-SRYYMD                  PIC X(10).
-      *            ì`ï[î‘çÜ
-               05  FMMNOTEN-DENPNUM                 PIC X(7).
       *            ïaìèî‘çÜ
                05  FMMNOTEN-BTUNUM                  PIC X(2).
       *            ïaìèñºèÃ

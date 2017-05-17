@@ -72,6 +72,8 @@ db "xml2" {
  fm_medication_note;
  fm_prescription;
  fm_medicine_information;
+ fm_medication_note_h;
+ fm_medicine_information_h;
 };
 
 
