@@ -83,8 +83,6 @@ db "xml2" {
  fm_appointment_form;
  fm_statement;
  fm_invoice_receipt;
- fm_medication_note_h;
- fm_medicine_information_h;
 };
 
 #include "orcadb.inc"
