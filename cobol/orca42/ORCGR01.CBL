@@ -5728,9 +5728,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "前回とはレセプトの種類が違います"
                                                        TO  SPA-ERRMSG
                WHEN    "0043"
-                   STRING  "該当患者に労災準拠の設定がありませんので"
+                   STRING  "該当診療年月に労災準拠の設定がありませんの"
                                            DELIMITED   BY  SIZE  
-                           "自賠責（新様式）では処理できません"
+                           "で、自賠責（新様式）では処理できません"
                                            DELIMITED   BY  SIZE  
                                            INTO        SPA-ERRMSG
                    END-STRING
