@@ -3917,7 +3917,6 @@
       *    排他制御解除処理(削除)
       *****************************************************************
        990-LOCK-OUT-SEC         SECTION.
-         go  to  990-LOCK-OUT-EXT
       *
       *    排他制御解除処理
       *    MOVE    MCP-WINDOW          TO  WRK-MCP-WINDOW
