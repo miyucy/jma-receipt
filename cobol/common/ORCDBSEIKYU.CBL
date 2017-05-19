@@ -589,7 +589,8 @@
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
                                     OR "del6" OR "del7" OR "del8"
                                     OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14" )
+                                    OR "del12" OR "del13" OR "del14"
+                                    OR "del15" OR "del16" OR "del17" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME
@@ -674,7 +675,8 @@
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
                                     OR "del6" OR "del7" OR "del8"
                                     OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14" )
+                                    OR "del12" OR "del13" OR "del14"
+                                    OR "del15" OR "del16" OR "del17" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME
@@ -743,7 +745,8 @@
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
                                     OR "del6" OR "del7" OR "del8"
                                     OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14" )
+                                    OR "del12" OR "del13" OR "del14"
+                                    OR "del15" OR "del16" OR "del17" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME

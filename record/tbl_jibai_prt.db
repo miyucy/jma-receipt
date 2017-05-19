@@ -106,7 +106,8 @@ path	del3 	{
                   AND   NYUGAIKBN    =   :NYUGAIKBN
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
                   AND   HKNNUM       =   :HKNNUM
-                  AND   HKNKBN       =   :HKNKBN
+                  AND ( HKNKBN       =   :HKNKBN  OR
+                        HKNKBN        =   '' )
 		;
 	};
 };
@@ -127,6 +128,36 @@ path	del4 	{
 };
 
 path	del5 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_jibai_prt
+                WHERE   HOSPNUM      =   :HOSPNUM
+                  AND   SRYYM        =   :SRYYM
+                  AND   NYUGAIKBN    =   :NYUGAIKBN
+                  AND   TEISYUTUSAKI =   :TEISYUTUSAKI
+                  AND   HKNNUM       =   :HKNNUM
+		  AND   PTID         =   :PTID
+                  AND ( HKNKBN       =   :HKNKBN  OR
+                        HKNKBN        =   '' )
+		;
+	};
+};
+
+path	del6 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_jibai_prt
+                WHERE   HOSPNUM      =   :HOSPNUM
+                  AND   SRYYM        =   :SRYYM
+                  AND   NYUGAIKBN    =   :NYUGAIKBN
+                  AND   TEISYUTUSAKI =   :TEISYUTUSAKI
+                  AND   HKNNUM       =   :HKNNUM
+                  AND   HKNKBN       =   :HKNKBN
+		;
+	};
+};
+
+path	del7 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_jibai_prt
