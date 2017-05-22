@@ -300,15 +300,14 @@ path	del15 	{
 		WHERE (HOSPNUM,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,HOJOKBN_KEY,KOHID_KEY,TEKSTYMD,RECEIPT_KBN) in (
 		SELECT HOSPNUM,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,HOJOKBN_KEY,KOHID_KEY,TEKSTYMD,RECEIPT_KBN
 		FROM tbl_seikyu_main
-                WHERE   HOSPNUM     =   :HOSPNUM
+                WHERE   HOSPNUM      =   :HOSPNUM
                   AND   SRYYM       =   :SRYYM
                   AND   NYUGAIKBN   =   :NYUGAIKBN
-                  AND   PTID        =   :PTID
                   AND   SKYKBN      <>  '0' 
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
                   AND   HKNNUM       =   :XXHKNNUM
                   AND   HKNKBN_RSI   =   :XXHKNKBN_RSI
-		) ;
+		);
 	};
 };
 
@@ -322,8 +321,8 @@ path	del16 	{
                 WHERE   HOSPNUM       =   :HOSPNUM
                   AND   SRYYM        =   :SRYYM
                   AND   NYUGAIKBN    =   :NYUGAIKBN
+                  AND   PTID         =   :PTID
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
-                  AND   SKYKBN       <>  '0' 
                   AND   HKNNUM       =   :XXHKNNUM
                   AND   HKNKBN_RSI   =   :XXHKNKBN_RSI
 		);
@@ -342,6 +341,7 @@ path    del17   {
                   AND   NYUGAIKBN   =   :NYUGAIKBN
                   AND   PTID        =   :PTID
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
+                  AND   SKYKBN       <>  '0' 
                   AND   HKNNUM       =   :XXHKNNUM
                   AND   HKNKBN_RSI   =   :XXHKNKBN_RSI
 		);

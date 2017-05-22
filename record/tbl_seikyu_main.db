@@ -2865,7 +2865,6 @@ path	del15 	{
                 WHERE   HOSPNUM      =   :HOSPNUM
                   AND   SRYYM       =   :SRYYM
                   AND   NYUGAIKBN   =   :NYUGAIKBN
-                  AND   PTID        =   :PTID
                   AND   SKYKBN      <>  '0' 
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
                   AND   HKNNUM       =   :HKNNUM
@@ -2881,8 +2880,8 @@ path	del16 	{
                 WHERE   HOSPNUM       =   :HOSPNUM
                   AND   SRYYM        =   :SRYYM
                   AND   NYUGAIKBN    =   :NYUGAIKBN
+                  AND   PTID         =   :PTID
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
-                  AND   SKYKBN       <>  '0' 
                   AND   HKNNUM       =   :HKNNUM
                   AND   HKNKBN_RSI   =   :HKNKBN_RSI
 		;
@@ -2899,6 +2898,7 @@ path    del17    {
                   AND   NYUGAIKBN   =   :NYUGAIKBN
                   AND   PTID        =   :PTID
                   AND   TEISYUTUSAKI =   :TEISYUTUSAKI
+                  AND   SKYKBN       <>  '0' 
                   AND   HKNNUM       =   :HKNNUM
                   AND   HKNKBN_RSI   =   :HKNKBN_RSI
                 ;
