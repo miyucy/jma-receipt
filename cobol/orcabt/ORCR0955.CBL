@@ -239,6 +239,7 @@
            03  FLG-SHOKUJI-ETC     PIC 9(01).
            03  FLG-RECECOM-SJKBN   PIC 9(01).
            03  FLG-STS             PIC 9(01).
+           03  FLG-DB-DELETE       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -4009,7 +4010,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            PERFORM 900-RECE82-READ-NEXT-SEC
            PERFORM         UNTIL       FLG-RECE82  =   1
       *        診療年月の請求管理削除処理
-               INITIALIZE                  RECE10-REC
+               MOVE    ZERO                TO  FLG-DB-DELETE
+      *
+               INITIALIZE                      RECE10-REC
                MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                MOVE    RECE82-PTID         TO  RECE10-PTID
                MOVE    RECE82-SRYYM        TO  RECE10-SRYYM
@@ -4018,41 +4021,68 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                                RECE10-XXTEISYUTUSAKI
                MOVE    "973"               TO  RECE10-HKNNUM
                MOVE    RECE82-HKNID        TO  RECE10-KOHID-KEY
-               MOVE    RECE10-REC          TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "del12"             TO  MCP-PATHNAME
-               PERFORM 900-ORCDBMAIN-SEC
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" MCP-TABLE " "   MCP-PATHNAME
-                                   " MCP-RC=" MCP-RC
-                   MOVE    "請求管理削除処理でエラーとなりました"
-                                               TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   PERFORM 900-DB-ERR-ABORT-SEC
+      *
+               MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
+               MOVE    "key92"             TO  WRK-MCP-PATHNAME
+               PERFORM 900-SEIKYU-INV-SEC
+               IF      FLG-RECE10          =   ZERO
+                   MOVE    MCPDATA-REC         TO  RECE10-REC
+      *
+      *            個別作成時に請求しないを削除する設定のときは無条件に削除
+                   IF    ( WRK-PARA-SYOKBN     =   "2" )
+                   AND   ( WRK-PARA-DLTKBN     =   "1" )
+                       MOVE    1                   TO  FLG-DB-DELETE
+                   ELSE
+      *                健保準拠で請求しないのときは削除しない
+                       IF    ( RECE10-HKNKBN-RSI   =   "5" )
+                       AND   ( RECE10-SKYKBN       =   "0" )
+                           CONTINUE
+                       ELSE 
+                           MOVE    1                   TO  FLG-DB-DELETE
+                       END-IF
+                   END-IF
                END-IF
       *
-      *        診療年月の自賠責ＰＤＦ削除処理
-               INITIALIZE                      JIBAI-PRT-REC
-               MOVE    WRK-PARA-HOSPNUM    TO  JIBAI-PRT-HOSPNUM
-               MOVE    RECE82-PTID         TO  JIBAI-PRT-PTID
-               MOVE    RECE82-SRYYM        TO  JIBAI-PRT-SRYYM
-               MOVE    RECE82-NYUGAIKBN    TO  JIBAI-PRT-NYUGAIKBN
-               MOVE    4                   TO  JIBAI-PRT-TEISYUTUSAKI
-               MOVE    "973"               TO  JIBAI-PRT-HKNNUM
-               MOVE    RECE82-HKNID        TO  JIBAI-PRT-KOHID-KEY
-               MOVE    JIBAI-PRT-REC       TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_jibai_prt"     TO  MCP-TABLE
-               MOVE    "del4"              TO  MCP-PATHNAME
-               PERFORM 900-ORCDBMAIN-SEC
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" MCP-TABLE " "  MCP-PATHNAME
-                                   " MCP-RC=" MCP-RC
-                   MOVE    "自賠責ＰＤＦ削除処理でエラーとなりました"
+               IF      FLG-DB-DELETE        =   1
+                   DISPLAY "HKNKBN DELETE PTNUM=" RECE82-PTNUM
+      *
+                   MOVE    RECE10-REC          TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "tbl_seikyu"        TO  MCP-TABLE
+                   MOVE    "del12"             TO  MCP-PATHNAME
+                   PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" MCP-TABLE " "   MCP-PATHNAME
+                                       " MCP-RC=" MCP-RC
+                       MOVE    "請求管理削除処理でエラーとなりました"
+                                                   TO  WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       PERFORM 900-DB-ERR-ABORT-SEC
+                   END-IF
+      *
+      *            診療年月の自賠責ＰＤＦ削除処理
+                   INITIALIZE                      JIBAI-PRT-REC
+                   MOVE    WRK-PARA-HOSPNUM    TO  JIBAI-PRT-HOSPNUM
+                   MOVE    RECE82-PTID         TO  JIBAI-PRT-PTID
+                   MOVE    RECE82-SRYYM        TO  JIBAI-PRT-SRYYM
+                   MOVE    RECE82-NYUGAIKBN    TO  JIBAI-PRT-NYUGAIKBN
+                   MOVE    4                   TO
+                                               JIBAI-PRT-TEISYUTUSAKI
+                   MOVE    "973"               TO  JIBAI-PRT-HKNNUM
+                   MOVE    RECE82-HKNID        TO  JIBAI-PRT-KOHID-KEY
+                   MOVE    JIBAI-PRT-REC       TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "tbl_jibai_prt"     TO  MCP-TABLE
+                   MOVE    "del4"              TO  MCP-PATHNAME
+                   PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" MCP-TABLE " "  MCP-PATHNAME
+                                       " MCP-RC=" MCP-RC
+                       MOVE   "自賠責ＰＤＦ削除処理でエラーとなりました"
                                                TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   PERFORM 900-DB-ERR-ABORT-SEC
+                       PERFORM 500-ERR-HENSYU-SEC
+                       PERFORM 900-DB-ERR-ABORT-SEC
+                   END-IF
                END-IF
       *
                PERFORM 900-RECE82-READ-NEXT-SEC

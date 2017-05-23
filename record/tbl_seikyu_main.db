@@ -2905,3 +2905,19 @@ path    del17    {
         };
 };
 
+path	key92	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_main_key92_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu_main
+                WHERE   HOSPNUM      =   :HOSPNUM
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+                  AND   TEISYUTUSAKI =   :TEISYUTUSAKI
+                  AND   HKNNUM       =   :HKNNUM
+                  AND   KOHID_KEY    =   :KOHID_KEY
+                ;
+        };
+};
+
