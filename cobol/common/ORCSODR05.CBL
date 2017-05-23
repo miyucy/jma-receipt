@@ -158,9 +158,6 @@
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //SNRRK-//.
       *
-      *    入退院登録PUSH通知
-           COPY    "CPORCSI03.INC".
-      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
@@ -169,7 +166,6 @@
       *
       *    ユーザプログラム起動サブパラメタ
            COPY    "CPORCSUSERCHK.INC".
-      *
       *
            COPY    "MCPDATA.INC".
       *
@@ -310,13 +306,11 @@
                        PERFORM 2101-ORDER-INSERT-SEC
                    END-IF
                END-IF
-       *
+      *
                IF    ( FLG-END  =   ZERO )
                    IF    ( SODR-KEYGENERATE
                                            =   CONST-API )
                        PERFORM 2101-USERPG-CALL-SEC
-      *
-                       PERFORM 2101-PUSHEVENT-SEC
                    END-IF
                END-IF
       *
@@ -889,38 +883,13 @@
            MOVE    TRRK-NYUINKA        TO  ORCSUSERCHK-SRYKA
            MOVE    TRRK-HKNCOMBINUM    TO  ORCSUSERCHK-HKNCOMBI
            MOVE    TRRK-DRCD1          TO  ORCSUSERCHK-DRCD
-           IF    ( SODR-ORDERID        =   NORDERID-HENKOID )
-                MOVE    03             TO  ORCSUSERCHK-SYORI-FLG
-           ELSE
-                MOVE    08             TO  ORCSUSERCHK-SYORI-FLG
-           END-IF
+           MOVE    03                  TO  ORCSUSERCHK-SYORI-FLG
            CALL    "ORCSUSERCHK"           USING
                                            ORCSUSERCHKAREA
                                            SPA-AREA
       *
            .
        2101-USERPG-CALL-EXT.
-           EXIT.
-      *****************************************************************
-      *    PUSH通知処理
-      *****************************************************************
-       2101-PUSHEVENT-SEC            SECTION.
-      *
-           INITIALIZE                      SI03-AREA
-      *
-           IF    ( SODR-ORDERID        =   NORDERID-HENKOID )
-               MOVE    "03"            TO  SI03-REQNUM
-           ELSE
-               MOVE    "08"            TO  SI03-REQNUM
-           END-IF
-           MOVE    SODR-PTNUM          TO  SI03-PTNUM
-           MOVE    TRRK-NYUINYMD       TO  SI03-NYUINYMD
-           CALL    "ORCSI03"           USING
-                                       SI03-AREA
-                                       SPA-AREA
-      *
-           .
-       2101-PUSHEVENT-EXT.
            EXIT.
       *****************************************************************
       *    オーダ編集処理
@@ -1423,19 +1392,6 @@
            .
       *
        910-DBDELETE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＰＵＳＨＥＶＥＮＴ処理
-      *****************************************************************
-       910-PUSHEVENT-SEC               SECTION.
-      *
-           MOVE    "PUSHEVENT"         TO      MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-PUSHEVENT-EXT.
            EXIT.
       *****************************************************************
       *    排他制御処理（チェックのみ）

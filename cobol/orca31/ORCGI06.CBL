@@ -210,7 +210,7 @@
            03  CONST-H180701               PIC X(08)   VALUE "20060701".
            03  CONST-ERRCD9001             PIC X(04)   VALUE "9001".
            03  CONST-BTUNAME-MAX           PIC 9(05)   VALUE 50.
-           03  CONST-SAGAKU-MAX            PIC 9(05)   VALUE 99.
+           03  CONST-SAGAKU-MAX            PIC 9(05)   VALUE 20.
            03  CONST-NYUINKA-MAX           PIC 9(05)   VALUE 99.
            03  CONST-TAIINCD-MAX           PIC 9(05)   VALUE 50.
            03  CONST-DR-MAX                PIC 9(05)   VALUE 99.
@@ -1870,8 +1870,6 @@
                WHEN    NORDERID-FOODID
                WHEN    NORDERID-PTEVALID
                WHEN    NORDERID-BUNBENID
-               WHEN    NORDERID-CRENACCTID
-               WHEN    NORDERID-SAGAKUID
                    PERFORM 41011-INPUT-AREA-HEN-SEC
                END-EVALUATE
            END-EVALUATE
@@ -2055,9 +2053,6 @@
                        PERFORM 410111-PTEVAL-HEN-SEC
                    WHEN    NORDERID-BUNBENID
                        PERFORM 410111-BUNBEN-HEN-SEC
-                   WHEN    NORDERID-CRENACCTID
-                   WHEN    NORDERID-SAGAKUID
-                       PERFORM 410111-OTHERS-HEN-SEC
                    END-EVALUATE
       *
                END-IF
@@ -2467,18 +2462,6 @@
        410111-BUNBEN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    その他オーダー編集処理
-      *****************************************************************
-       410111-OTHERS-HEN-SEC      SECTION.
-      *
-           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
-      *
-           PERFORM 410111-INPUT-COMMON-HEN-SEC
-      *
-           .
-       410111-OTHERS-HEN-EXT.
-           EXIT.
-      *****************************************************************
       *    共通入力項目編集処理
       *****************************************************************
        410111-INPUT-COMMON-HEN-SEC     SECTION.
@@ -2576,8 +2559,6 @@
            WHEN    NORDERID-FOODID
            WHEN    NORDERID-PTEVALID
            WHEN    NORDERID-BUNBENID
-           WHEN    NORDERID-CRENACCTID
-           WHEN    NORDERID-SAGAKUID
                CONTINUE
            END-EVALUATE
       *
@@ -5393,8 +5374,6 @@
            WHEN    NORDERID-FOODID
            WHEN    NORDERID-PTEVALID
            WHEN    NORDERID-BUNBENID
-           WHEN    NORDERID-CRENACCTID
-           WHEN    NORDERID-SAGAKUID
                CONTINUE
            END-EVALUATE
       *
@@ -7070,8 +7049,6 @@
                    WHEN    NORDERID-FOODID
                    WHEN    NORDERID-PTEVALID
                    WHEN    NORDERID-BUNBENID
-                   WHEN    NORDERID-CRENACCTID
-                   WHEN    NORDERID-SAGAKUID
                        CONTINUE
                    END-EVALUATE
       *
