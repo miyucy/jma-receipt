@@ -3661,30 +3661,31 @@
                        MOVE    1                   TO  FLG-DB-DELETE
                    ELSE
       *                健保準拠で請求しないのときは削除しない
-                       IF    ( RECE10-HKNKBN-RSI   =   "5" )
-                       AND   ( RECE10-SKYKBN       =   "0" )
+      *****************IF    ( RECE10-HKNKBN-RSI   =   "5" )
+      *****************AND   ( RECE10-SKYKBN       =   "0" )
+                       IF    ( RECE10-SKYKBN       =   "0" )
                            CONTINUE
                        ELSE 
                            MOVE    1                   TO  FLG-DB-DELETE
                        END-IF
                    END-IF
-               END-IF
       *
-               IF      FLG-DB-DELETE        =   1
-                   DISPLAY "HKNKBN DELETE PTNUM=" RECE82-PTNUM
+                   IF      FLG-DB-DELETE        =   1
+                       DISPLAY "HKNKBN DELETE PTNUM=" RECE82-PTNUM
       *
-                   MOVE    RECE10-REC          TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "tbl_seikyu"        TO  MCP-TABLE
-                   MOVE    "del12"             TO  MCP-PATHNAME
-                   PERFORM 900-ORCDBMAIN-SEC
-                   IF      MCP-RC           NOT =   ZERO
-                       DISPLAY "DBPATH=" MCP-TABLE " "   MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                       MOVE    "請求管理削除処理でエラーとなりました"
+                       MOVE    RECE10-REC          TO  MCPDATA-REC
+                       MOVE    "DBDELETE"          TO  MCP-FUNC
+                       MOVE    "tbl_seikyu"        TO  MCP-TABLE
+                       MOVE    "del12"             TO  MCP-PATHNAME
+                       PERFORM 900-ORCDBMAIN-SEC
+                       IF      MCP-RC           NOT =   ZERO
+                           DISPLAY "DBPATH=" MCP-TABLE " "  MCP-PATHNAME
+                                           " MCP-RC=" MCP-RC
+                           MOVE   "請求管理削除処理でエラーとなりました"
                                                    TO  WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       PERFORM 900-DB-ERR-ABORT-SEC
+                           PERFORM 500-ERR-HENSYU-SEC
+                           PERFORM 900-DB-ERR-ABORT-SEC
+                       END-IF
                    END-IF
       *
       *            診療年月の自賠責ＰＤＦ削除処理
