@@ -747,13 +747,13 @@
                IF     (IDX2  +  20 )   >   1000
                    COMPUTE IDX2-L          =   1000
                                            -   IDX2
+                                           +   1
                ELSE
                    MOVE    20          TO  IDX2-L
                END-IF
       *H29.5
       ****     IF     (LOG-REC(IDX2:20)    =   SPACE )
-               IF     (IDX2-L              =   ZERO  )
-                 OR   (LOG-REC(IDX2:IDX2-L)    =   SPACE )
+               IF     (LOG-REC(IDX2:IDX2-L)    =   SPACE )
                    MOVE    1           TO  FLG-OVR
                ELSE
                    ADD     1           TO  IDX-1
