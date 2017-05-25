@@ -6,6 +6,7 @@ tbl_tsyrrk {
 	SKJNINSTYMD			char(8);
 	SKJGNSTYMD			char(8);
 	HKNTEKKBN			char(1);
+	KYOUKAISOUKBN			char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);

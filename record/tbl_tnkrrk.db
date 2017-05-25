@@ -6,6 +6,7 @@ tbl_tnkrrk {
 	SKJNINSTYMD			char(8);
 	RRI_FUKUSHI_KBN			char(1);
 	HKNTEKKBN			char(1);
+	KYOUKAISOUKBN			char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
