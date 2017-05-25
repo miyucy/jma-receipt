@@ -83,6 +83,9 @@ db "xml2" {
  fm_appointment_form;
  fm_statement;
  fm_invoice_receipt;
+ fm_prescription_h;
+ fm_order_injection;
+ fm_order_direction;
 };
 
 #include "orcadb.inc"
