@@ -196,9 +196,6 @@
       *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    数字変換領域
-           COPY    "CPORCSNUM.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
        01  MCPDATA.
@@ -368,9 +365,6 @@
            MOVE    SPA-NAI-MOTOPG      TO  SPA-SAKIPG
            MOVE    "MJOB"              TO  SPA-MOTOPG
            MOVE    SPACE               TO  LINKAREA
-      *H29.10
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
            PERFORM 900-PUT-WINDOW
@@ -421,18 +415,7 @@
            MOVE    ZERO                TO  SPA-NAI-NEXT01
       *
            INITIALIZE  MBL-REC
-           IF      SPA-MW              =   SPA-PANDA
-               MOVE    SPA-HOSPNUM         TO  MBL-TENANT
-           ELSE
-               INITIALIZE  ORCSNUMAREA
-               MOVE    MCP-TENANT          TO  SNUM-INX
-               CALL    "ORCSNUM"       USING   ORCSNUMAREA
-               IF    ( SNUM-RC             =   ZERO  )
-               AND   ( SNUM-MINKBN         =   SPACE )
-               AND   ( SNUM-SYOKBN         =   SPACE )
-                   MOVE    SNUM-OUTNUM         TO  MBL-TENANT
-               END-IF
-           END-IF
+           MOVE    SPA-HOSPNUM         TO  MBL-TENANT
            IF      SPA-NAI-LOGDATE     =   SPACE
                MOVE    SPA-SYSYMD          TO  MBL-STARTTIME
            ELSE
