@@ -205,6 +205,9 @@ grpsys     COPY  "COMMON-SPA".
            MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-4001-REC
+           IF    ( SYS-4001-JIBAIKBN   =   SPACE )
+               MOVE    "1"             TO  SYS-4001-JIBAIKBN
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -883,7 +886,6 @@ grpsys         MOVE    SS001-HOSPNUM       TO  COMB-HOSPNUM
                    MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                    IF    ( COMB-HKNNUM     =   "973" )
                        PERFORM 900-PTRSIINF-KEY-SEL-SEC
-                       DISPLAY "PTRSI-JIBAIKBN=" PTRSI-JIBAIKBN
                        IF    ( PTRSI-JIBAIKBN  =   "1" OR "2" )
                            MOVE    PTRSI-JIBAIKBN
                                            TO  COMB-HOJOKBN
