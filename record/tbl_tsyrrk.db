@@ -80,6 +80,7 @@ path	upd1	{
                    SKJNINSTYMD         = :SKJNINSTYMD,
                    SKJGNSTYMD          = :SKJGNSTYMD,
                    HKNTEKKBN           = :HKNTEKKBN,
+                   KYOUKAISOUKBN       = :KYOUKAISOUKBN,
                    TERMID              = :TERMID,
                    OPID                = :OPID,
                    CREYMD              = :CREYMD,
