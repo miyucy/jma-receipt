@@ -15,9 +15,13 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        01  RPMAIN-AREA.
-            03  RPMAIN-ID              PIC X(20).
-            03  RPMAIN-CUSTOM-ID       PIC X(20).
-            03  RPMAIN-TITLE           PIC X(100).
-            03  RPMAIN-TBL-KEY         PIC X(8).
-            03  RPMAIN-DATA            PIC X(3000000).
+      ************************************************************
+      *    一時ディレクトリ取得・削除サブCOPY句(CPORCSTEMPDIR.INC)
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付     内容
+      ************************************************************
+       01  STEMPDIR-AREA.
+           03  STEMPDIR-MODE               PIC X(5).
+           03  STEMPDIR-TEMPDIR            PIC X(1024).

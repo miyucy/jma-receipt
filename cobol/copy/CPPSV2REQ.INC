@@ -15,9 +15,21 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        01  RPMAIN-AREA.
-            03  RPMAIN-ID              PIC X(20).
-            03  RPMAIN-CUSTOM-ID       PIC X(20).
-            03  RPMAIN-TITLE           PIC X(100).
-            03  RPMAIN-TBL-KEY         PIC X(8).
-            03  RPMAIN-DATA            PIC X(3000000).
+      ******************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ******************************************************
+       01  PSREQ-AREA.
+           03  PSREQ-CONTEXT               PIC S9(9)   BINARY.
+           03  PSREQ-OBJECT                PIC X(8).
+           03  PSREQ-MODE                  PIC S9(9)   BINARY.
+           03  PSREQ-RECORDNAME            PIC X(128).
+           03  PSREQ-DATA-AREA.
+      *       リクエスト番号
+              05  PSREQ-REQNUM             PIC X(2).
+      *       患者番号
+              05  PSREQ-PTNUM              PIC X(20).
+      *       伝票番号
+              05  PSREQ-DENPNUM            PIC X(7).
+      *       院外区分
+              05  PSREQ-INGAIKBN           PIC X(5).

@@ -128,6 +128,8 @@ shell_sources = \
 	daily/HCALL_prv.sh.in \
 	daily/online-reprint.sh.in \
 	daily/red2pdf.sh.in \
+	daily/import_blob.sh.in \
+	daily/rpmain1.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \

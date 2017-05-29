@@ -15,9 +15,14 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        01  RPMAIN-AREA.
-            03  RPMAIN-ID              PIC X(20).
-            03  RPMAIN-CUSTOM-ID       PIC X(20).
-            03  RPMAIN-TITLE           PIC X(100).
-            03  RPMAIN-TBL-KEY         PIC X(8).
-            03  RPMAIN-DATA            PIC X(3000000).
+      ************************************************************
+      *    API用帳票データレスポンス作成COPY句 (CPORCSAPIFM.INC)
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付     内容
+      ************************************************************
+       01  SAPIFM-AREA.
+           03  SAPIFM-ERRCD            PIC X(4).
+           03  SAPIFM-DATAID           PIC X(80).
+           03  SAPIFM-OBJECT           PIC X(8).
