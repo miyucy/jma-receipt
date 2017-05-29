@@ -266,7 +266,7 @@
            COPY    "CPORAPIV3SUB01.INC".
       *
       *    保険組合せ決定関数サブ
-           COPY    "CPORCSAPIHKN.INC".
+      **** COPY    "CPORCSAPIHKN.INC".
       *ver.4.7
       *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
@@ -1118,6 +1118,7 @@
                IF      SPA-ERRCD           =   SPACE
                    MOVE    ORCSP01-PTNUM       TO  SPA-GMN-PTNUM
                    MOVE    ORCSP01-PTNUM       TO  SPA-PTNUM
+                   MOVE    SPA-PTNUM           TO  WRK-PTNUM
                ELSE
                    MOVE    "P1"                TO  WRK-ERRCD
                END-IF
@@ -1226,6 +1227,7 @@
                    MOVE    ORCSP01-PTNUM       TO  SPA-PTNUM
                    MOVE    ORCSP01-PTID        TO  SPA-PTID
                    MOVE    ORCSP01-PTID        TO  SPA-GMN-PTID
+                   MOVE    SPA-PTNUM           TO  WRK-PTNUM
                ELSE
                    MOVE    "P1"                TO  WRK-ERRCD
                END-IF
@@ -1425,6 +1427,9 @@
            MOVE    "01"                TO  WRK-PARA-SYORIPG
       *
            MOVE    WRK-APIV3DATA-REC   TO  APIPARA-DATA-REC
+      *
+           MOVE    SMCNDATE-YMD        TO  APIPARA-UPYMD
+           MOVE    SMCNDATE-HMS        TO  APIPARA-UPHMS
       *
            MOVE    APIPARA-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -4258,7 +4263,7 @@
                MOVE    "漢字氏名は全角で入力して下さい"
                                                TO  WRK-ERRMSG
            WHEN    "15"
-               MOVE    "カナ氏名は全角で入力して下さい"
+               MOVE    "カナ氏名にエラーがあります"
                                                TO  WRK-ERRMSG
            WHEN    "16"
                MOVE    "性別は１：男２：女で入力して下さい"

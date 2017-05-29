@@ -1406,6 +1406,9 @@
       *
            MOVE    SPA-P02KYOUTU       TO  PARA-DATA-REC
       *
+           MOVE    SMCNDATE-YMD        TO  PARA-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PARA-UPHMS
+      *
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_para"          TO  MCP-TABLE
@@ -1457,6 +1460,9 @@
            MOVE    "02"                TO  WRK-PARA-SYORIPG
       *
            MOVE    WRK-APIV3DATA-REC   TO  APIPARA-DATA-REC
+      *
+           MOVE    SMCNDATE-YMD        TO  APIPARA-UPYMD
+           MOVE    SMCNDATE-HMS        TO  APIPARA-UPHMS
       *
            MOVE    APIPARA-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3307,6 +3313,9 @@
       *****************************************************************
        20081-SPATMP-INSERT-SEC                SECTION.
       *
+           MOVE    SMCNDATE-YMD        TO  SPATMP-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SPATMP-UPHMS
+      *
            MOVE    SPATMP-REC          TO  MCPDATA2-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3643,7 +3652,8 @@
                MOVE    "漢字氏名は全角で入力して下さい"
                                                TO  WRK-ERRMSG
            WHEN    "15"
-               MOVE    "カナ氏名は全角で入力して下さい"
+      ****     MOVE    "カナ氏名は全角で入力して下さい"
+               MOVE    "カナ氏名にエラーがあります"
                                                TO  WRK-ERRMSG
            WHEN    "16"
                MOVE    "性別は１：男２：女で入力して下さい"
