@@ -3683,7 +3683,7 @@ grpsys                 PERFORM 900-DBSELECT-SEC
            MOVE    WRK-PARA-HOSPNUM    TO  JIBAI-PRT-HOSPNUM
            MOVE    WRK-DEL-PTID        TO  JIBAI-PRT-PTID
            MOVE    WRK-DEL-SRYYM       TO  JIBAI-PRT-SRYYM
-           MOVE    SYS-2002-NYUGAIKBN  TO  JIBAI-PRT-NYUGAIKBN
+           MOVE    "2"                 TO  JIBAI-PRT-NYUGAIKBN
            MOVE    4                   TO  JIBAI-PRT-TEISYUTUSAKI
            MOVE    "973"               TO  JIBAI-PRT-HKNNUM
            MOVE    "5"                 TO  JIBAI-PRT-HKNKBN

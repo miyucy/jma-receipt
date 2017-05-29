@@ -3539,7 +3539,7 @@
            MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    WRK-DEL-PTID        TO  RECE10-PTID
            MOVE    WRK-DEL-SRYYM       TO  RECE10-SRYYM
-           MOVE    "2"                 TO  RECE10-NYUGAIKBN
+           MOVE    "1"                 TO  RECE10-NYUGAIKBN
            MOVE    4                   TO  RECE10-TEISYUTUSAKI
                                            RECE10-XXTEISYUTUSAKI 
            MOVE    "973"               TO  RECE10-HKNNUM
@@ -3584,7 +3584,7 @@
            MOVE    WRK-PARA-HOSPNUM    TO  JIBAI-PRT-HOSPNUM
            MOVE    WRK-DEL-PTID        TO  JIBAI-PRT-PTID
            MOVE    WRK-DEL-SRYYM       TO  JIBAI-PRT-SRYYM
-           MOVE    SYS-2002-NYUGAIKBN  TO  JIBAI-PRT-NYUGAIKBN
+           MOVE    "1"                 TO  JIBAI-PRT-NYUGAIKBN
            MOVE    4                   TO  JIBAI-PRT-TEISYUTUSAKI
            MOVE    "973"               TO  JIBAI-PRT-HKNNUM
            MOVE    "5"                 TO  JIBAI-PRT-HKNKBN
