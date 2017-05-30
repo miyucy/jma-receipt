@@ -645,12 +645,10 @@
            MOVE    SPACE               TO  WRK-HKNKBN-MEI
            IF      COMB-HKNNUM         =   "973"
                IF      (PTRSI-JIBAIKBN     =   "1"  )
-                 AND   (SYS-4001-JIBAIKBN  =   "2"  )
       *            Ï«ºÒ½àµò
                    MOVE   "[Ï«]"             TO  WRK-HKNKBN-MEI
                END-IF
                IF      (PTRSI-JIBAIKBN     =   "2"  )
-                 AND   (SYS-4001-JIBAIKBN  NOT =   "2"  )
       *            ·òÊÝ½àµò
                    MOVE   "[·ò]"             TO  WRK-HKNKBN-MEI
                END-IF
