@@ -59,6 +59,7 @@
            03  FLG-APIPARA             PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
+           03  FLG-ERR2                PIC 9(01).
            03  FLG-DAYERR              PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
            03  FLG-HKNEND              PIC 9(01).
@@ -1608,13 +1609,13 @@
                    PERFORM 2900-SYORI-END-SEC
                END-IF
            ELSE
+               IF      PTMODRES-RESPONSE-NUMBER    =   SPACE
+                   MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
+               END-IF
                IF      FLG-CANSEL      =   ZERO
       *            SPAºÆÊÔ½¸
                    PERFORM 2901-PARA-INS-SEC
                    PERFORM 2008-SPATMP-INS-SEC
-               END-IF
-               IF      PTMODRES-RESPONSE-NUMBER    =   SPACE
-                   MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
                END-IF
            END-IF
       *
@@ -2643,6 +2644,7 @@
        880-HALF-ZENCNG-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  FLG-ERR2
       *    ³ÈÄ¥´Á»úÍ­Ìµ
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
@@ -2650,7 +2652,7 @@
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM2    NOT =   ZERO
-               MOVE    1                   TO  FLG-ERR
+               MOVE    1                   TO  FLG-ERR2
            END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA

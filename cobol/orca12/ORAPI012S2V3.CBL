@@ -58,6 +58,7 @@
            03  FLG-APIPARA             PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
+           03  FLG-ERR2                PIC 9(01).
            03  FLG-DAYERR              PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
            03  FLG-HKNEND              PIC 9(01).
@@ -3570,6 +3571,7 @@
        880-HALF-ZENCNG-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  FLG-ERR2
       *    拡張漢字有無
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
@@ -3577,7 +3579,7 @@
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM2    NOT =   ZERO
-               MOVE    1                   TO  FLG-ERR
+               MOVE    1                   TO  FLG-ERR2
            END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
@@ -3796,10 +3798,10 @@
                MOVE    "労災・自賠責は処理できません。"
                                                TO  WRK-ERRMSG
            WHEN    "AP06"
-               MOVE    "記号全角エラー"
+               MOVE    "記号エラー"
                                                TO  WRK-ERRMSG
            WHEN    "AP07"
-               MOVE    "番号全角エラー"
+               MOVE    "番号エラー"
                                                TO  WRK-ERRMSG
            WHEN    "AP08"
                MOVE    "開始日暦日エラー"

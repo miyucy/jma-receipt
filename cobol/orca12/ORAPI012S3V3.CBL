@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  17/05/XX  自賠責点数算定区分対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -62,6 +63,7 @@
            03  FLG-APIPARA             PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
+           03  FLG-ERR2                PIC 9(01).
            03  FLG-DAYERR              PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
            03  FLG-HKNEND              PIC 9(01).
@@ -1872,6 +1874,29 @@
                                        TO  PTMODRES-DAMAGE-CLASS-NAME
                                                                 (IDX)
                END-IF
+      *H29.5
+      *    自賠責
+           WHEN    "4"
+      *        自賠責点数区分
+               IF      PTRSI-JIBAIKBN      =   SPACE
+                   MOVE    "0"             TO  PTRSI-JIBAIKBN
+               END-IF
+               MOVE    PTRSI-JIBAIKBN      TO  PTMODRES-JIBAIKBN (IDX)
+               EVALUATE    PTRSI-JIBAIKBN
+                   WHEN    "0"
+                       MOVE    "労災自賠医療機関情報に準拠"
+                                           TO  PTMODRES-JIBAIKBN-NAME
+                                                               (IDX)
+                   WHEN    "1"
+                       MOVE    "労災準拠"
+                                           TO  PTMODRES-JIBAIKBN-NAME
+                                                               (IDX)
+                   WHEN    "2"
+                       MOVE    "健保準拠"
+                                           TO  PTMODRES-JIBAIKBN-NAME
+                                                               (IDX)
+               END-EVALUATE
+      *
       *    第三者行為
            WHEN    "6"
       *        現物支給区分
@@ -2258,6 +2283,10 @@
                                        TO  PTMODRES-HOKENNAME (IDX)
                MOVE    PTMODREQ-RSI-DRCD (IDX)
                                        TO  PTMODRES-RSI-DRCD (IDX)
+      *H29.6
+      *        自賠責点数算定区分
+               MOVE    PTMODREQ-JIBAIKBN (IDX)
+                                       TO  PTMODRES-JIBAIKBN (IDX)
       *アフターケア
                MOVE    PTMODREQ-KANRITCHO-NUMBER(IDX)
                                        TO  PTMODRES-KANRITCHO-NUMBER
@@ -2530,6 +2559,10 @@
       *    自賠責患者請求区分
            MOVE    PTMODRES-JIBAISEIKBN (IDM)
                                            TO  PTRSI-JIBAISEIKBN
+      *H29.6
+      *    自賠責点数算定区分
+           MOVE    PTMODRES-JIBAIKBN (IDM)
+                                           TO  PTRSI-JIBAIKBN
       *    自賠責担当医コード
            MOVE    PTMODRES-RSI-DRCD (IDM)
                                            TO  PTRSI-DRCD
@@ -4007,6 +4040,8 @@
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM2    NOT =   ZERO
                MOVE    1                   TO  FLG-ERR
+               MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
+               GO      TO      890-HALF-ZEN-EXT
            END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
@@ -4073,6 +4108,7 @@
        880-HALF-ZENCNG-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  FLG-ERR2
       *    拡張漢字有無
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
@@ -4080,7 +4116,7 @@
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM2    NOT =   ZERO
-               MOVE    1                   TO  FLG-ERR
+               MOVE    1                   TO  FLG-ERR2
            END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
@@ -4098,7 +4134,7 @@
            END-IF
       *
            .
-       880-HALF-ZEN-EXT.
+       880-HALF-ZENCNG-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4321,13 +4357,13 @@
                MOVE    "保険番号と保険区分が一致しません。"
                                                TO  WRK-ERRMSG
            WHEN    "AP34"
-               MOVE    "事業所名全角エラー"
+               MOVE    "事業所名にエラーがあります"
                                                TO  WRK-ERRMSG
            WHEN    "AP35"
-               MOVE    "傷病の部位全角エラー"
+               MOVE    "傷病の部位にエラーがあります"
                                                TO  WRK-ERRMSG
            WHEN    "AP36"
-               MOVE    "郡市区名全角エラー"
+               MOVE    "郡市区名にエラーがあります"
                                                TO  WRK-ERRMSG
       *
            WHEN    "AP73"
