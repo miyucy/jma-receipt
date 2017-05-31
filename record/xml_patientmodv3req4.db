@@ -31,7 +31,7 @@ xml_patientmodv3req4 {
 #---            Ç§ÄêÈÏ°Ï¶èÊ¬
             	Income_Certificate_Code			varchar(01);
 #---            ¶­³¦ÁØ³ºÅö¶èÊ¬
-            	Income_Kyokaisou_Code			varchar(01);
+            	Income_Boundary_Code			varchar(01);
             	} [20];
         };
 #---    Äã½êÆÀ¼Ô£±¾ğÊó¡ÊÇ¯¶âÍúÎò¡Ë
@@ -48,7 +48,7 @@ xml_patientmodv3req4 {
 #---            Ç§ÄêÈÏ°Ï¶èÊ¬
             	Pension_Certificate_Code		varchar(01);
 #---            ¶­³¦ÁØ³ºÅö¶èÊ¬
-            	Pension_Kyokaisou_Code			varchar(01);
+            	Pension_Boundary_Code			varchar(01);
             	} [20];
         };
 #---    µìÀ«ÍúÎò

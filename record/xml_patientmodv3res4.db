@@ -35,8 +35,8 @@ xml_patientmodv3res4 {
             	Income_Certificate_Code			varchar(01);
             	Income_Certificate_Code_Name		varchar(40);
 #---            境界層該当区分
-            	Income_Kyokaisou_Code			varchar(01);
-            	Income_Kyokaisou_Code_Name		varchar(20);
+            	Income_Boundary_Code			varchar(01);
+            	Income_Boundary_Code_Name		varchar(20);
 #---            エラーコード
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
@@ -56,8 +56,8 @@ xml_patientmodv3res4 {
             	Pension_Certificate_Code		varchar(01);
             	Pension_Certificate_Code_Name		varchar(40);
 #---            境界層該当区分
-            	Pension_Kyokaisou_Code			varchar(01);
-            	Pension_Kyokaisou_Code_Name		varchar(20);
+            	Pension_Boundary_Code			varchar(01);
+            	Pension_Boundary_Code_Name		varchar(20);
 #---            エラーコード
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
