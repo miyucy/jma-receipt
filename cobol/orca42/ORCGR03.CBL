@@ -2560,10 +2560,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                            TO  JOB-NYUGAIKBN
                    MOVE    "1"             TO  JOB-SYOKBN
                    MOVE    SPA-R01-SRYYM   TO  JOB-SRYYM
-                   MOVE    SPA-R01-JOB-KARTE-UID
-                                           TO  JOB-KARTE-UID
-                   MOVE    SPA-R01-JOB-ORCA-UID
-                                           TO  JOB-ORCA-UID
+                   MOVE    SPA-R01-JOB-PARAM
+                                           TO  JOB-PARAM
 grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
       *            印刷用スクリプト処理
