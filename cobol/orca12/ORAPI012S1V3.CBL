@@ -615,7 +615,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    APILST03-BODY       TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
-           MOVE    "patientmodv3req1"  TO  APIREQ-RECORDNAME
+           MOVE    "patientmodreq"     TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -633,7 +633,7 @@
            MOVE    "xml_patientmodv3req1"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "patientmodv3req1"  TO  APIREQ-RECORDNAME
+           MOVE    "patientmodreq"     TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -753,7 +753,7 @@
            MOVE    "xml_patientmodv3res1"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  PTMODRES-MODE
-           MOVE    "patientmodv3res1"  TO  PTMODRES-RECORDNAME
+           MOVE    "patientmodres"     TO  PTMODRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTMODRES
@@ -767,7 +767,7 @@
            MOVE    "XMLWRITE"           TO  MCP-FUNC
            MOVE    "xml_patientmodv3res1"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "patientmodv3res1"  TO  PTMODRES-RECORDNAME
+           MOVE    "patientmodres"     TO  PTMODRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTMODRES
@@ -1121,8 +1121,6 @@
                    MOVE    SPA-PTNUM           TO  WRK-PTNUM
                ELSE
                    MOVE    "P1"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-                   MOVE    "18"                TO  WRK-ERRCD
                END-IF
            END-IF
            .
@@ -1232,8 +1230,6 @@
                    MOVE    SPA-PTNUM           TO  WRK-PTNUM
                ELSE
                    MOVE    "P1"                TO  WRK-ERRCD
-                   PERFORM 290-ERROR-HEN-SEC
-                   MOVE    "18"                TO  WRK-ERRCD
                END-IF
            END-IF
            .
@@ -1342,15 +1338,14 @@
                    END-EVALUATE
                END-IF
            END-IF
-           IF    ((PTMODREQ-REQUEST-NUMBER =   "01" )
-              OR  (FLG-PTINF-JFK           =   ZERO ))
-             AND  (WRK-ERRCD               =   SPACE )
+           IF     (PTMODREQ-REQUEST-NUMBER =   "01" )
+              OR  (FLG-PTINF-JFK           =   ZERO )
                MOVE    2                   TO  FLG-PTINF-JFK
                PERFORM 20022-JUFUKU-HEN-SEC
                IF      IDX-JF          >   ZERO
       *            二重登録疑いあり
+                   MOVE    "S"             TO  WRK-ERRKBN
                    IF      WRK-ERRCD       =   SPACE
-                       MOVE    "S"             TO  WRK-ERRKBN
                        MOVE    "20"            TO  WRK-ERRCD
                    END-IF
       *            確認メッセージ
@@ -4284,8 +4279,7 @@
                MOVE    "生年月日暦日エラー"
                                                TO  WRK-ERRMSG
            WHEN    "18"
-      ****     MOVE    "患者番号採番エラー"
-               MOVE    "患者番号にエラーがあります"
+               MOVE    "患者番号採番エラー"
                                                TO  WRK-ERRMSG
            WHEN    "19"
                STRING  "前回と処理区分が違います。"
@@ -4308,6 +4302,7 @@
                                                TO  WRK-ERRMSG
       *エラー
            WHEN    "P1"
+           WHEN    "H1"
            WHEN    "K2"
                PERFORM 8901-PTERRCD-SET-SEC
       *新規

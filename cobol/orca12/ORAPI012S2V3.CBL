@@ -680,7 +680,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    APILST04-BODY       TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
-           MOVE    "patientmodv3req2"  TO  APIREQ-RECORDNAME
+           MOVE    "patientmodreq"     TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -698,7 +698,7 @@
            MOVE    "xml_patientmodv3req2"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "patientmodv3req2"  TO  APIREQ-RECORDNAME
+           MOVE    "patientmodreq"     TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -1338,8 +1338,8 @@
                PERFORM 20021-PTMODRES-HEN-SEC
            END-IF
       *
-      *****IF     (FLG-SYORI       NOT =   1    )
-           IF     (WRK-ERRCD           =   SPACE)
+           IF     (FLG-SYORI       NOT =   1    )
+             AND  (WRK-ERRCD           =   SPACE)
       *        氏名・性別・生年月日の一致
                IF     ((PTMODREQ-NAME  NOT =    SPACE        )  AND
                        (PTMODREQ-NAME  NOT =    PTMODRES-NAME))
@@ -3687,6 +3687,7 @@
       *エラー
            WHEN    "P1"
            WHEN    "H1"
+           WHEN    "K2"
                PERFORM 8901-PTERRCD-SET-SEC
            WHEN    "P2"
                PERFORM 8902-PTPIDCD-SET-SEC
