@@ -65,4 +65,19 @@
               05  MDCREQ-AD-MONEY2         PIC X(10).
       *       ÊÖ¶â³Û¡ÊÄûÀµ»þ¡Ë
               05  MDCREQ-RE-MONEY          PIC X(10).
+      *H29.6
+      *   Ä¢É¼°õºþ»Ø¼¨¶èÊ¬
+              05  MDCREQ-PRINT-AREA.
+      *           ½èÊý¤»¤ó°õºþ
+                  07  MDCREQ-PRINT-SHOHOU      PIC X(01).
+      *           ÀÁµá½ñ·óÎÎ¼ý½ñ°õºþ
+                  07  MDCREQ-PRINT-SEIKYU      PIC X(01).
+      *           ¿ÇÎÅÈñÌÀºÙ½ñ°õºþ
+                  07  MDCREQ-PRINT-MEISAI      PIC X(01).
+      *           ÌôºÞ¾ðÊó°õºþ
+                  07  MDCREQ-PRINT-YAKUJYO     PIC X(01).
+      *           ¤ªÌô¼êÄ¢°õºþ
+                  07  MDCREQ-PRINT-TECHOU      PIC X(01).
+      *           Í½ÌóÉ¼°õºþ
+                  07  MDCREQ-PRINT-YOYAKU      PIC X(01).
       *

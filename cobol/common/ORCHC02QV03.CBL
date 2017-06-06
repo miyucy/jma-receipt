@@ -96,6 +96,7 @@
       * 04.08.00     NACL-多々納  16/11/01  残薬確認プログラムオプション対応
       * 04.08.00     NACL-多々納  16/12/05  再印刷処理対応
       * 04.08.00     NACL-多々納  17/03/07  商品名編集対応
+      * 04.08.00     NACL-多々納  17/06/XX  HAORI対応
       *****************************************************************
       *
       *
@@ -668,6 +669,8 @@
            03  QR-FILE-SYOHMS      PIC 9(08)   VALUE   ZERO.
            03  FILLER              PIC X(04)   VALUE   ".qr_".
            03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
+           03  QR-FILE-IDX         REDEFINES   QR-FILE-ID
+                                   PIC X(02).
            03  FILLER              PIC X(04)   VALUE   ".png".
       *v4.8
       *    ファイル指定領域
@@ -893,6 +896,7 @@
       * API対応
       *    処方せん情報構造体
            COPY    "CPFMSHOHO.INC".
+           COPY    "CPORCSBLOBIMPORT.INC".
       *
            COPY    "CPORCRPMAIN.INC".
       *    画面色等
@@ -1121,6 +1125,11 @@
       *        API送信なし
                MOVE    "0"             TO  PARA-API-DATA
            END-IF
+      *    HAORI対応
+           IF      SPA-API-FLG         =   1
+               MOVE    "1"             TO  PARA-API-DATA
+           END-IF
+      *
       *    ＡＰＩカスタムＩＤ
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
@@ -5982,6 +5991,20 @@
       *    処方内容編集
       *    備考編集
            PERFORM 7002-APIBIKOU-HENSYU-SEC
+      *    ＱＲイメージ編集処理
+           IF      ORCSQRCSV-RET-COUNT >   ZERO
+                INITIALIZE                      SBI-AREA
+                MOVE    SPA-HOSPNUM         TO  QR-FILE-HOSPNUM
+                MOVE    "HC2Q"              TO  QR-FILE-FORM-ID
+                MOVE    SPA-TERMID          TO  QR-FILE-TERMID
+                MOVE    WRK-SYS-TIME        TO  QR-FILE-SYOHMS
+                MOVE    "??"                TO  QR-FILE-IDX
+                MOVE    QR-FILE-NAME-PARA   TO  SBI-AREA
+                CALL    "ORCSBLOBIMPORT"    USING
+                                            SBI-AREA
+                                            SPA-AREA
+                MOVE    SBI-BLOB-ID         TO  FMSHOHO-QR-ID
+           END-IF
       *    ＡＰＩ送信処理
            PERFORM 7009-API-CALLSYORI-SEC
            .

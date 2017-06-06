@@ -190,7 +190,8 @@
       *            ÀÁµá¶â³Û
                    07  MDCRES-AC-MONEY          PIC  X(10).
       *
-      *            º£²óÀÁµá¶â³Û¹ç·×¡ÊÄûÀµ»þ¤Ïº¹³Û¡Ë
+      *            º£²óÀÁµá¶â³Û¹ç·×¡ÊÀÁµá³Û¡ÜÄ´À°¶â³Û¡Ë
+      *                       ¡ÊÄûÀµ»þ¤Ïº¹³Û¡Ë
                    07  MDCRES-TOTAL-AC-MONEY    PIC  X(10).
       *            º£²óÊÖ¶â³Û¡ÊÄûÀµ»þ¤Î¤ß¡Ë¥Þ¥¤¥Ê¥¹ÊÔ½¸
                    07  MDCRES-RE-MONEY          PIC  X(10).
@@ -218,7 +219,9 @@
                         09  MDCRES-AC-POINT-G.
                             11  MDCRES-AC-POINT-TBL      OCCURS   16.
                                 13  MDCRES-AC-POINT-NAME   PIC  X(30).
+      *                         ÊÝ¸±ÅÀ¿ô
                                 13  MDCRES-AC-POINT        PIC  X(10).
+      *
       *        ÄûÀµÁ°¼ýÇ¼¾ðÊóÊÖµÑ
                05  MDCRES-OLD-CD-INF.
       *            Á°²óÆþ¶â¶â³Û
@@ -229,4 +232,32 @@
                    07  MDCRES-OLD-AD-MONEY1        PIC  X(10).
       *            Á°²óÄ´À°¶â³Û£²
                    07  MDCRES-OLD-AD-MONEY2        PIC  X(10).
+      *H29.6
+               05  MDCRES-MAE-CD-INF.
+      *            Á°²ó¤Þ¤Ç¤ÎÌ¤¼ý³Û
+                   07  MDCRES-MAE-MISYU             PIC X(10).
+      *            Á°²ó¤Þ¤Ç¤ÎÄ¶²á³Û
+                   07  MDCRES-MAE-CHOUKA            PIC X(10).
+      *H29.6
+      *   Ä¢É¼°õºþ»Ø¼¨¶èÊ¬
+              05  MDCRES-PRINT-AREA.
+      *           ½èÊý¤»¤ó°õºþ
+                  07  MDCRES-PRINT-SHOHOU      PIC X(01).
+                  07  MDCRES-PRINT-SHOHOU-MEI  PIC X(30).
+      *           ÀÁµá½ñ·óÎÎ¼ý½ñ°õºþ
+                  07  MDCRES-PRINT-SEIKYU      PIC X(01).
+                  07  MDCRES-PRINT-SEIKYU-MEI  PIC X(30).
+      *           ¿ÇÎÅÈñÌÀºÙ½ñ°õºþ
+                  07  MDCRES-PRINT-MEISAI      PIC X(01).
+                  07  MDCRES-PRINT-MEISAI-MEI  PIC X(30).
+      *           ÌôºÞ¾ðÊó°õºþ
+                  07  MDCRES-PRINT-YAKUJYO     PIC X(01).
+                  07  MDCRES-PRINT-YAKUJYO-MEI PIC X(30).
+      *           ¤ªÌô¼êÄ¢°õºþ
+                  07  MDCRES-PRINT-TECHOU      PIC X(01).
+                  07  MDCRES-PRINT-TECHOU-MEI  PIC X(30).
+      *           Í½ÌóÉ¼°õºþ
+                  07  MDCRES-PRINT-YOYAKU      PIC X(01).
+                  07  MDCRES-PRINT-YOYAKU-MEI  PIC X(30).
+      *
       *

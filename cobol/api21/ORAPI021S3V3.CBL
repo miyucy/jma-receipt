@@ -73,6 +73,9 @@
            03  IDXM                PIC 9(04).
            03  IDXR                PIC 9(04).
       *
+           03  IDX-SYU             PIC 9(04).
+           03  IDX-S               PIC 9(04).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-SRYCNT              PIC 9(04).
@@ -163,6 +166,10 @@
            03  WRK-FTNRATE             PIC 9(02)V99.
            03  WRK-Z9                  PIC 9.ZZ.
            03  WRK-FTNRATEMEI          PIC X(04).
+      *
+           03  WRK-JYURRK-RENNUM       PIC 9(01).
+           03  WRK-ZENMISYU            PIC S9(09).
+           03  WRK-CHOKAKIN            PIC S9(09).
       *
       *    03  WRK-H-LINE              PIC X(03).
       *    03  WRK-H-IDX               PIC X(02).
@@ -263,6 +270,7 @@
       *
       *    収納マスタワーク（訂正前）
        01  TEI-SYUNOU-REC.
+     **    02  TEI-SYUNOU-REC      OCCURS   15.
            COPY    "CPSYUNOU.INC"      REPLACING
                                        //SYU-// BY //TEI-SYU-//.
       *
@@ -369,6 +377,31 @@
             03  APIREQ-RECORDNAME       PIC X(128).
             03  APIREQ-PATIENTINFOREQ   PIC X(1000000).
       *
+      *H29.6
+      *    一時ディレクトリ取得・削除サブ
+           COPY    "CPORCSTEMPDIR.INC".
+      *    クライアント印刷情報取得
+           COPY    "CPORCSPRTCTRL.INC".
+      *    オンライン帳票共通パラメタ
+           COPY    "CPONPRTDATA.INC".
+      *
+      *    処方箋印刷パラメタ（Ａ５）
+           COPY    "CPORCHC19.INC".
+      *
+      *    請求書印刷パラメタ
+           COPY    "CPORCHC03.INC".
+      *
+      *    診療費明細書印刷パラメタ
+           COPY    "CPORCHC04.INC".
+      *
+      *    薬情報印刷パラメタ
+           COPY    "CPORCSCH30.INC".
+      *
+      *    お薬手帳発行サブパラメタ
+           COPY    "CPORCSCH62.INC".
+      *
+      *    予約票パラメタ
+           COPY    "CPORCHC67.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -880,6 +913,31 @@
            IF    (WRK-ERRCD            =   SPACE )
                PERFORM 20013-HENKIN-CHK-SEC
            END-IF
+      *
+      *    処方せん印刷
+           IF    (WRK-ERRCD            =   SPACE )
+               PERFORM 20013-SHOHOU-CHK-SEC
+           END-IF
+      *    請求書兼領収書印刷
+           IF    (WRK-ERRCD            =   SPACE )
+               PERFORM 20013-SEIKYU-CHK-SEC
+           END-IF
+      *    診療費明細書印刷
+           IF    (WRK-ERRCD            =   SPACE )
+               PERFORM 20013-MEISAI-CHK-SEC
+           END-IF
+      *    薬剤情報印刷
+           IF    (WRK-ERRCD            =   SPACE )
+               PERFORM 20013-YAKUJYO-CHK-SEC
+           END-IF
+      *    お薬手帳印刷
+           IF    (WRK-ERRCD            =   SPACE )
+               PERFORM 20013-TECHOU-CHK-SEC
+           END-IF
+      *    予約票印刷
+           IF    (WRK-ERRCD            =   SPACE )
+               PERFORM 20013-YOYAKU-CHK-SEC
+           END-IF
            .
        2001-INPUT-CHK-EXT.
            EXIT.
@@ -932,6 +990,19 @@
       *    調整金１
            MOVE    MDCREQ-AD-MONEY1    TO  MDCRES-AD-MONEY1
            MOVE    MDCREQ-AD-MONEY2    TO  MDCRES-AD-MONEY2
+      *H29.6
+      *    請求書印刷
+           MOVE    MDCREQ-PRINT-SEIKYU TO  MDCRES-PRINT-SEIKYU
+      *    診療費明細書印刷
+           MOVE    MDCREQ-PRINT-MEISAI TO  MDCRES-PRINT-MEISAI
+      *    処方せん印刷
+           MOVE    MDCREQ-PRINT-SHOHOU TO  MDCRES-PRINT-SHOHOU
+      *    お薬手帳印刷
+           MOVE    MDCREQ-PRINT-TECHOU TO  MDCRES-PRINT-TECHOU
+      *    薬剤情報印刷
+           MOVE    MDCREQ-PRINT-YAKUJYO TO  MDCRES-PRINT-YAKUJYO
+      *    予約票印刷
+           MOVE    MDCREQ-PRINT-YOYAKU TO  MDCRES-PRINT-YOYAKU
       *
       *    必須入力チェック
       *    患者番号
@@ -1262,6 +1333,143 @@
       *
       *
       *****************************************************************
+      *    請求書兼領収書印刷チェック処理
+      *****************************************************************
+       20013-SEIKYU-CHK-SEC         SECTION.
+      *
+           EVALUATE    MDCREQ-PRINT-SEIKYU
+               WHEN    "0"
+               WHEN    SPACE
+                   MOVE    "0"             TO  MDCRES-PRINT-SEIKYU
+                   MOVE    "発行なし"      TO  MDCRES-PRINT-SEIKYU-MEI
+               WHEN    "1"
+                   MOVE    "発行あり"      TO  MDCRES-PRINT-SEIKYU-MEI
+                   IF      SPA-SYORIFLG        =   1
+                       MOVE    "発行あり（訂正分）"
+                                           TO  MDCRES-PRINT-SEIKYU-MEI
+                   END-IF
+               WHEN    "2"
+                   MOVE    "発行あり"      TO  MDCRES-PRINT-SEIKYU-MEI
+                   IF      SPA-SYORIFLG        =   1
+                       MOVE    "発行あり（合計）"
+                                           TO  MDCRES-PRINT-SEIKYU-MEI
+                   END-IF
+               WHEN    OTHER
+                   MOVE    "51"            TO  WRK-ERRCD
+           END-EVALUATE
+      *
+           .
+       20013-SEIKYU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療費明細書印刷チェック処理
+      *****************************************************************
+       20013-MEISAI-CHK-SEC         SECTION.
+      *
+           EVALUATE    MDCREQ-PRINT-MEISAI
+               WHEN    "0"
+               WHEN    SPACE
+                   MOVE    "0"             TO  MDCRES-PRINT-MEISAI
+                   MOVE    "発行なし"      TO  MDCRES-PRINT-MEISAI-MEI
+               WHEN    "1"
+                   MOVE    "発行あり"      TO  MDCRES-PRINT-MEISAI-MEI
+               WHEN    OTHER
+                   MOVE    "52"            TO  WRK-ERRCD
+           END-EVALUATE
+      *
+           .
+       20013-MEISAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処方せん印刷チェック処理
+      *****************************************************************
+       20013-SHOHOU-CHK-SEC         SECTION.
+      *
+           EVALUATE    MDCREQ-PRINT-SHOHOU
+               WHEN    "0"
+               WHEN    SPACE
+                   MOVE    "0"             TO  MDCRES-PRINT-SHOHOU
+                   MOVE    "発行なし"      TO  MDCRES-PRINT-SHOHOU-MEI
+               WHEN    "1"
+                   MOVE    "発行あり"      TO  MDCRES-PRINT-SHOHOU-MEI
+               WHEN    "2"
+                   MOVE    "院内処方発行"  TO  MDCRES-PRINT-SHOHOU-MEI
+               WHEN    OTHER
+                   MOVE    "53"            TO  WRK-ERRCD
+           END-EVALUATE
+      *
+           .
+       20013-SHOHOU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤情報印刷チェック処理
+      *****************************************************************
+       20013-YAKUJYO-CHK-SEC         SECTION.
+      *
+           EVALUATE    MDCREQ-PRINT-YAKUJYO
+               WHEN    "0"
+               WHEN    SPACE
+                   MOVE    "0"             TO  MDCRES-PRINT-YAKUJYO
+                   MOVE    "発行なし"      TO  MDCRES-PRINT-YAKUJYO-MEI
+               WHEN    "1"
+                   MOVE    "発行あり"      TO  MDCRES-PRINT-YAKUJYO-MEI
+               WHEN    "2"
+                   MOVE    "院外分発行"    TO  MDCRES-PRINT-YAKUJYO-MEI
+               WHEN    OTHER
+                   MOVE    "54"            TO  WRK-ERRCD
+           END-EVALUATE
+      *
+           .
+       20013-YAKUJYO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    お薬手帳印刷チェック処理
+      *****************************************************************
+       20013-TECHOU-CHK-SEC         SECTION.
+      *
+           EVALUATE    MDCREQ-PRINT-TECHOU
+               WHEN    "0"
+               WHEN    SPACE
+                   MOVE    "0"             TO  MDCRES-PRINT-TECHOU
+                   MOVE    "発行なし"      TO  MDCRES-PRINT-TECHOU-MEI
+               WHEN    "1"
+                   MOVE    "発行あり"      TO  MDCRES-PRINT-TECHOU-MEI
+               WHEN    "2"
+                   MOVE    "院外分発行"    TO  MDCRES-PRINT-TECHOU-MEI
+               WHEN    OTHER
+                   MOVE    "55"            TO  WRK-ERRCD
+           END-EVALUATE
+      *
+           .
+       20013-TECHOU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    予約票印刷チェック処理
+      *****************************************************************
+       20013-YOYAKU-CHK-SEC         SECTION.
+      *
+           EVALUATE    MDCREQ-PRINT-YOYAKU
+               WHEN    "0"
+               WHEN    SPACE
+                   MOVE    "0"             TO  MDCRES-PRINT-YOYAKU
+                   MOVE    "発行なし"      TO  MDCRES-PRINT-YOYAKU-MEI
+               WHEN    "1"
+                   MOVE    "発行あり"      TO  MDCRES-PRINT-YOYAKU-MEI
+               WHEN    OTHER
+                   MOVE    "56"            TO  WRK-ERRCD
+           END-EVALUATE
+      *
+           .
+       20013-YOYAKU-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    診療内容チェック処理
       *****************************************************************
        2002-SYORI-01-SEC        SECTION.
@@ -1305,6 +1513,9 @@
       *
       *    診療行為内容編集
            PERFORM 20021-HENSYU-01-SEC
+      *H29.6
+      *    未収金集計処理
+           PERFORM 20026-MISYUKIN-SYUKEI-SEC
       *
       *    返却レスポンス番号
            IF     (WRK-ERRCD           =   SPACE )
@@ -1447,6 +1658,63 @@
       *
            .
        20025-TEISEI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未収金集計処理
+      *****************************************************************
+       20026-MISYUKIN-SYUKEI-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-ZENMISYU
+           MOVE    ZERO                TO  WRK-CHOKAKIN
+      *
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
+           MOVE    "2"                 TO  SYU-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYU-PTID
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key13"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key13"             TO  MCP-PATHNAME
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYUNOU
+               INITIALIZE              SYUNOU-REC
+           END-IF
+           PERFORM UNTIL     FLG-SYUNOU    NOT =  ZERO
+               IF      SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
+      *            未収額
+                   COMPUTE WRK-ZENMISYU    =   WRK-ZENMISYU
+                                           +  (SYU-SKYMONEY
+                                           -   SYU-NYUKIN-TOTAL)
+               ELSE
+      *            超過額
+                   COMPUTE WRK-CHOKAKIN    =   WRK-CHOKAKIN
+                                           +  (SYU-NYUKIN-TOTAL
+                                           -   SYU-SKYMONEY     )
+               END-IF
+               MOVE    "key13"             TO  MCP-PATHNAME
+               PERFORM 980-SYUNOU-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key13"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    未収額
+           MOVE    WRK-ZENMISYU        TO  WRK-SURYO
+           PERFORM 810-NUMHENKAN-SEC
+           MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
+                                       TO  MDCRES-MAE-MISYU
+      *    超過額
+           MOVE    WRK-CHOKAKIN        TO  WRK-SURYO
+           PERFORM 810-NUMHENKAN-SEC
+           MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
+                                       TO  MDCRES-MAE-CHOUKA
+           .
+       20026-MISYUKIN-SYUKEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2041,6 +2309,9 @@
       *
       *    診療行為内容編集
            PERFORM 20021-HENSYU-01-SEC
+      *H29.6
+      *    未収金集計処理
+           PERFORM 20026-MISYUKIN-SYUKEI-SEC
       *
            IF      WRK-ERRCD       =   SPACE
       *        登録処理
@@ -2050,6 +2321,13 @@
       *    返却内容編集
            IF      SPA-HKNCOMBINUM NOT =   "9999"
                PERFORM 20033-MDCRES-HEN02-SEC
+           END-IF
+      *
+      *H29.6
+      *    帳票印刷指示
+           IF     (SPA-ERRCD       =   SPACE )
+              AND (WRK-ERRCD       =   SPACE )
+               PERFORM 20034-PRINT-SYORI-SEC
            END-IF
       *
       *    返却レスポンス番号
@@ -2101,7 +2379,9 @@
       *    登録・更新
            MOVE    "1"                 TO  ORCSCGAIRAI-KBN
       *    請求書作成区分（発行なし）＃＃変更するかも
-           MOVE    "0"                 TO  ORCSCGAIRAI-HAKFLG
+      **** MOVE    "0"                 TO  ORCSCGAIRAI-HAKFLG
+      *    請求書作成区分
+           MOVE    MDCRES-PRINT-SEIKYU TO  ORCSCGAIRAI-HAKFLG
       *    今回請求額
            MOVE    SYU-SKYMONEY        TO  ORCSCGAIRAI-KON-SKYMONEY
       *    入金額
@@ -2250,7 +2530,6 @@
       *
                PERFORM 200212-SYUNOU-OUTHEN-SEC
            END-IF
-      *
            .
        20033-MDCRES-HEN02-EXT.
            EXIT.
@@ -2399,6 +2678,266 @@
            MOVE    ORCSAPIHKN-HKNNUM (IDX)     TO  WRK-HKNNUM
            .
        2002101-HKNHEN-TBL-EXT.
+           EXIT.
+      *
+      *H29.6
+      *****************************************************************
+      *     帳票印刷指示処理
+      *****************************************************************
+       20034-PRINT-SYORI-SEC       SECTION.
+      *
+           IF     (MDCRES-PRINT-SEIKYU     =   "0" )
+             AND  (MDCRES-PRINT-MEISAI     =   "0" )
+             AND  (MDCRES-PRINT-SHOHOU     =   "0" )
+             AND  (MDCRES-PRINT-YAKUJYO    =   "0" )
+             AND  (MDCRES-PRINT-TECHOU     =   "0" )
+             AND  (MDCRES-PRINT-YOYAKU     =   "0" )
+               GO      TO      20034-PRINT-SYORI-EXT
+           END-IF
+      *
+      *    一時ディレクトリ作成
+           INITIALIZE                  STEMPDIR-AREA
+           CALL    "ORCSTEMPDIR"       USING
+                                       STEMPDIR-AREA
+      *
+      *    SPA-API-FLGに1を設定
+           MOVE    1              TO  SPA-API-FLG
+      *
+      *    ORCSONPRTSETをCALL
+           CALL    "ORCSONPRTSET"      USING
+                                       SPA-AREA
+      *
+      *    ORCSPRTCTRLをCALL
+           INITIALIZE                  ORCSPRTCTRLAREA
+           CALL    "ORCSPRTCTRL"       USING
+                                       SPA-AREA
+                                       ORCSPRTCTRLAREA
+                                       MCPAREA
+      *
+      *    主たる伝票番号
+           IF      LNK-SYUNOU-MAX      =   1
+               MOVE    LNK-SYUNOU-REC (1)  TO  SYUNOU-REC
+               MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
+      *
+               MOVE    ORCSCGAIRAI-JYURRK-RENNUM (1)
+                                           TO  WRK-JYURRK-RENNUM
+           ELSE
+               MOVE    ZERO                TO  WRK-DENPNUM
+               MOVE    ZERO                TO  WRK-JYURRK-RENNUM
+           END-IF
+      *
+      *    処方箋印刷（Ａ５）
+           IF      MDCRES-PRINT-SHOHOU =   "1"  OR  "2"
+               INITIALIZE                      ORCHC19AREA
+               MOVE    WRK-JYURRK-RENNUM   TO  ORCHC19-RENNUM
+               MOVE    SPACE               TO  ORCHC19-KBN
+               IF      MDCRES-PRINT-SHOHOU =   "2"
+                   MOVE    "3"                 TO  ORCHC19-KBN
+               END-IF
+               MOVE    WRK-DENPNUM         TO  ORCHC19-DENPNUM
+               MOVE    "01"                TO  SPA-PRT-FLG
+               CALL    "ORCHC02Q"          USING   SPA-AREA
+                                                   ORCHC19AREA
+           END-IF
+      *
+      *    請求書印刷
+           IF      MDCRES-PRINT-SEIKYU =   "1"  OR  "2" 
+               PERFORM 200341-SEIKYU-PRINT-SEC
+           END-IF
+      *
+      *    薬情報出力
+           IF      MDCRES-PRINT-YAKUJYO    =   "1"  OR  "2"
+               INITIALIZE                      ORCSCH30AREA
+               MOVE    WRK-DENPNUM         TO  ORCSCH30-DENPNUM
+               MOVE    MDCRES-PRINT-YAKUJYO    TO  ORCSCH30-KBN
+               MOVE    "03"                TO  SPA-PRT-FLG
+               CALL    "ORCSCH30"          USING   SPA-AREA
+                                                   ORCSCH30AREA
+           END-IF
+      *
+      *    診療費明細書印刷
+           IF      MDCRES-PRINT-MEISAI     =   "1"
+               INITIALIZE                      ORCHC04AREA
+               MOVE    WRK-DENPNUM         TO  ORCHC04-DENPNUM
+      *        発行フラグ
+               IF      SPA-SYORIFLG        =   1
+      *            訂正分
+                   MOVE    2                   TO  ORCHC04-HAKKOFLG
+               ELSE
+                   MOVE    ZERO                TO  ORCHC04-HAKKOFLG
+               END-IF
+      *        発行方法（診療科・保険組合せ別のみ）
+               MOVE    1                   TO  ORCHC04-HAKHOUFLG
+               IF      LNK-SYUNOU-MAX      =   1
+      *            単独
+                   MOVE    ZERO                TO  ORCHC04-HAKHOUFLG
+               END-IF
+               MOVE    "04"                TO  SPA-PRT-FLG
+               CALL    "ORCHC04"           USING
+                                           SPA-AREA
+                                           ORCHC04AREA
+           END-IF
+      *    お薬手帳出力
+           IF      MDCRES-PRINT-TECHOU     =   "1"  OR  "2"
+               INITIALIZE                      ORCSCH62AREA
+               MOVE    WRK-DENPNUM         TO  ORCSCH62-DENPNUM
+               MOVE    MDCRES-PRINT-TECHOU TO  ORCSCH62-KBN
+               MOVE    "05"                TO  SPA-PRT-FLG
+               MOVE    "1"                 TO  ORCSCH62-PGKBN
+               CALL    "ORCSCH62"          USING   SPA-AREA
+                                                   ORCSCH62AREA
+           END-IF
+      *
+      *    予約票発行
+           IF      MDCRES-PRINT-YOYAKU     =   "1"
+               INITIALIZE                  ORCHC67AREA
+               MOVE    SPA-SRYYMD          TO  ORCHC67-SRYYMD
+               MOVE    "2"                 TO  ORCHC67-KBN
+               MOVE    "06"                TO  SPA-PRT-FLG
+      *ver.4.7 プレビューの為、直接印刷へ変更
+               MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
+               CALL    "ORCHC67"           USING   SPA-AREA
+                                                   ONPRTDATA
+           END-IF
+      *
+      *    印刷ダミー処理
+           MOVE    "99"                TO  SPA-PRT-FLG
+           CALL    "ORCHCDUMMY"        USING   SPA-AREA
+      *
+           MOVE    SPACE               TO  SPA-PRT-FLG
+      *
+      *    一時ディレクトリ削除
+           INITIALIZE                  STEMPDIR-AREA
+           MOVE    "DEL"           TO  STEMPDIR-MODE
+           CALL    "ORCSTEMPDIR"       USING
+                                       STEMPDIR-AREA
+      *
+           .
+       20034-PRINT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     請求書兼領収書印刷処理
+      *****************************************************************
+       200341-SEIKYU-PRINT-SEC            SECTION.
+      *
+           INITIALIZE                      ORCHC03AREA
+           MOVE    WRK-DENPNUM         TO  ORCHC03-DENPNUM
+      *    今回合計請求額
+           MOVE    WRK-SKYMONEY-GOK    TO  ORCHC03-SEIKYU
+      *    今回入金額
+           MOVE    WRK-NYUKIN          TO  ORCHC03-NYUKIN
+      *    消費税（再掲）（訂正時は差額）
+           MOVE    SYU-SKYMONEY-TAX-SAI
+                                       TO  ORCHC03-SEIKYU-TAX-SAI
+           IF      SPA-SYORIFLG        =   1
+               COMPUTE ORCHC03-SEIKYU-TAX-SAI
+                                           =   SYU-SKYMONEY-TAX-SAI
+                                           -   TEI-SYU-SKYMONEY-TAX-SAI
+           END-IF
+      *    前回未収額−前回返金額
+      *    IF      SPA-GMN-ZENMISYU    >   SPA-GMN-CHOKAKIN
+      *        COMPUTE ORCHC03-ZENMISYU    =   SPA-GMN-ZENMISYU
+      *                                    -   SPA-GMN-CHOKAKIN
+      *        MOVE    ZERO                TO  ORCHC03-HENKIN
+      *    ELSE
+      *        COMPUTE ORCHC03-HENKIN      =   SPA-GMN-ZENMISYU
+      *                                    -   SPA-GMN-CHOKAKIN
+      *        MOVE    ZERO                TO  ORCHC03-ZENMISYU
+      *    END-IF
+      *    前回未収額２
+           MOVE    WRK-ZENMISYU        TO  ORCHC03-ZENMISYU-2
+      *    前回過入金
+           MOVE    WRK-CHOKAKIN        TO  ORCHC03-KANYUKIN
+           IF      SPA-SYORIFLG        =   1
+               MOVE    ZERO                TO  ORCHC03-ZENMISYU-2
+               MOVE    ZERO                TO  ORCHC03-KANYUKIN
+      *        入金額は返金との差額とする
+      *        COMPUTE ORCHC03-NYUKIN  =   ORCHC03-NYUKIN
+      *                                -   SPA-NAI-HENKIN
+           END-IF
+      *
+      *    発行フラグ
+           IF      SPA-SYORIFLG        =   1
+      *        訂正分
+               MOVE    2                   TO  ORCHC03-HAKKOFLG
+           ELSE
+               MOVE    ZERO                TO  ORCHC03-HAKKOFLG
+           END-IF
+      *    発行方法
+           MOVE    1                   TO  ORCHC03-HAKHOUFLG
+           IF      LNK-SYUNOU-MAX      =   1
+      *        単独の時
+               MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
+           END-IF
+      *    訂正で合計金額編集
+           IF      SPA-SYORIFLG        =   1
+               EVALUATE    MDCRES-PRINT-SEIKYU
+                   WHEN    "0"
+                   WHEN    "1"
+                       MOVE    ZERO            TO  ORCHC03-TEIKIN-KBN
+                   WHEN    "2"
+                       MOVE    1               TO  ORCHC03-TEIKIN-KBN
+               END-EVALUATE
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-HENKIN
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX-SYU
+           PERFORM VARYING     IDX-S   FROM    1   BY  1
+                   UNTIL       IDX-S   >   LNK-SYUNOU-MAX
+               MOVE    LNK-SYUNOU-REC(IDX-S)   TO  SYUNOU-REC
+               IF      SYU-HKNCOMBINUM     NOT =   "9999"
+      *
+               ADD     1               TO  IDX
+      *        ADD     1               TO  IDX-SYU
+               MOVE    SYU-DENPNUM     TO  ORCHC03-OLD-DENPNUM (IDX)
+               MOVE    SYU-SRYKA       TO  ORCHC03-OLD-SRYKA   (IDX)
+               MOVE    SYU-HKNCOMBINUM TO  ORCHC03-OLD-HKNCOMBI (IDX)
+      *        MOVE    SPA-MAE-SKYMONEY(IDX)
+      *                                TO  ORCHC03-OLD-SKYMONEY(IDX)
+      *        MOVE    SPA-MAE-SKYMONEY-TAX-SAI(IDX)
+      *                                TO  ORCHC03-OLD-SKYMONEY-SAI
+      *                                                        (IDX)
+      *        MOVE    SPA-TEI-NYUKIN-TOTAL (IDX)
+      *                                TO  ORCHC03-OLD-NYUKIN-TOTAL
+      *                                                        (IDX)
+      *        返金対応
+      *        IF      SPA-SYORIFLG        =   1
+      *            IF      SPA-SYU-HENKIN(IDX) NOT =   ZERO
+      *                マイナス入金
+      *                COMPUTE ORCHC03-OLD-NYUKIN-TOTAL (IDX)
+      *                                =   SPA-TEI-NYUKIN-TOTAL (IDX)
+      *                                -   SPA-SYU-HENKIN (IDX)
+      *            END-IF
+      *        ELSE
+      *            充当
+      *            MOVE    SPA-SYU-HENKIN (IDX)
+      *                                TO  ORCHC03-KON-HENKIN (IDX)
+      *            IF      SYU-SRYKA       NOT =   ZERO
+      *                ADD     SPA-SYU-HENKIN (IDX)    TO  WRK-HENKIN
+      *            END-IF
+      *        END-IF
+      *
+               END-IF
+           END-PERFORM
+      *    今回返金充当額
+      *    IF      SPA-SYORIFLG        =   1
+      *        MOVE    ZERO                TO  ORCHC03-ZEN-HENKIN
+      *    ELSE
+      *        COMPUTE ORCHC03-ZEN-HENKIN  =   SPA-GOK-HENKIN
+      *                                    -   WRK-HENKIN
+      *    END-IF
+      *    充当処理あり
+      *    MOVE    SPA-MATOME-NYUHENKIN-KBN
+      *                                TO  ORCHC03-MATOME-NYUHENKIN-KBN
+      *
+           MOVE    "02"                TO  SPA-PRT-FLG
+           CALL    "ORCHC03V05"        USING
+                                       SPA-AREA
+                                       ORCHC03AREA
+           .
+       200341-SEIKYU-PRINT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2990,6 +3529,38 @@
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
+      *H29.6
+           WHEN    "51"
+               STRING  "請求書兼領収書印刷指示区分エラーです"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "52"
+               STRING  "診療費明細書印刷指示区分エラーです"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "53"
+               STRING  "処方せん印刷指示区分エラーです"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "54"
+               STRING  "薬剤情報印刷指示区分エラーです"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "55"
+               STRING  "お薬手帳印刷指示区分エラーです"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "56"
+               STRING  "予約票の印刷指示区分エラーです"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+      *
            WHEN    "80"
                STRING  "一時データ出力エラーです。"
                        "強制終了して下さい。"
@@ -3071,6 +3642,25 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納マスター読込
+      *****************************************************************
+       980-SYUNOU-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_syunou"       TO  MCP-TABLE
+      *
+           PERFORM 910-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               MOVE    ZERO            TO  FLG-SYUNOU
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       980-SYUNOU-READ-EXT.
            EXIT.
       *
       *****************************************************************

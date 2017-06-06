@@ -12105,6 +12105,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *
       *        追加分
+      *H29.6   修正
       *****    IF      TBL-SYU-ACCT-UPDKBN(IDX)    =   "2"
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "tbl_syunou"        TO  MCP-TABLE

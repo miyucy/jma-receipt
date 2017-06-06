@@ -485,6 +485,17 @@
            IF    ( WRK-PARA(1:1)   =   "1" )
                MOVE    WRK-PARA(1:1)   TO  PARA-API-DATA
            END-IF
+      *H28.6
+           IF     (PARA-API-DATA       =   "1"       )
+               CONTINUE
+           ELSE
+      *        API送信なし
+               MOVE    "0"             TO  PARA-API-DATA
+           END-IF
+      *    HAORI対応
+           IF      SPA-API-FLG         =   1
+               MOVE    "1"             TO  PARA-API-DATA
+           END-IF
       *
       *    ＡＰＩカスタムＩＤ
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
@@ -536,13 +547,6 @@
                IF      ORCHC62-QRKBN       =   "2"
                    MOVE    "2"             TO  WRK-QRKBN
                END-IF
-           END-IF
-      *H28.6
-           IF     (PARA-API-DATA       =   "1"       )
-               CONTINUE
-           ELSE
-      *        API送信なし
-               MOVE    "0"             TO  PARA-API-DATA
            END-IF
       *
            .

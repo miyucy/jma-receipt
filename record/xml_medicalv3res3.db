@@ -127,5 +127,24 @@ xml_medicalv3res3 {
 	Old_Ac_Money			varchar(10);
 	Old_Ad_Money1			varchar(10);
 	Old_Ad_Money2			varchar(10);
+#---    前回までの未収金
+	Total_Re_Money			varchar(10);
+#---    前回までの過入金
+	Total_Ov_Money			varchar(10);
+#--- 印刷区分
+	Print__Info    {
+		Print_Prescription_Class		varchar(1);
+		Print_Prescription_Class_Name		varchar(30);
+		Print_Invoice_Receipt_Class		varchar(1);
+		Print_Invoice_Receipt_Class_Name	varchar(30);
+		Print_Statement_Class			varchar(1);
+		Print_Statement_Class_Name		varchar(30);
+		Print_Medicine_Information_Class	varchar(1);
+		Print_Medicine_Information_Class_Name	varchar(30);
+		Print_Medication_Note_Class		varchar(1);
+		Print_Medication_Note_Class_Name	varchar(30);
+		Print_Appointment_Form_Class		varchar(1);
+		Print_Appointment_Form_Class_Name	varchar(30);
+		};
 	};
 };

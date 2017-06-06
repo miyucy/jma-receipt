@@ -430,6 +430,21 @@
       *****************************************************************
        300-HC30-PRINT-SEC             SECTION.
       *
+      *H29.6
+      *HAORI対応
+           IF      SPA-API-FLG         =   1
+      *        ドクター変更
+               MOVE    SPA-DRCD            TO  WRK-HZN-DRCD
+               IF      WRK-DRCD        NOT =   SPACE
+                   MOVE    WRK-DRCD            TO  SPA-DRCD
+               END-IF
+               CALL    "ORCHC30"           USING
+                                           SPA-AREA
+                                           ORCHC30AREA
+               MOVE    WRK-HZN-DRCD        TO  SPA-DRCD
+               GO      TO      300-HC30-PRINT-EXT
+           END-IF
+      *
       *    薬情報出力
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "1"                 TO  ORCSPRTNM-KBN
