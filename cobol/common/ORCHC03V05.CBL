@@ -468,6 +468,10 @@
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
+           IF     ( SPA-API-FLG    NOT =   ZERO )
+               MOVE    "1"             TO  PARA-API-DATA
+           END-IF
+      *
       *    ³Æ£Ä£ÂÆÉ¹þ
            PERFORM 100-SYORI-SEC
       *
