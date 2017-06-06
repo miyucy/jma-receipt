@@ -213,21 +213,17 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           IF    ( WRK-ERRCD    =  "0099" )
-               MOVE    404             TO  APILST25-HTTPSTATUS
-           ELSE
-               INITIALIZE                  SAPIFM-AREA
-               MOVE    WRK-ERRCD       TO  SAPIFM-ERRCD
-               MOVE    FDGREQ-DATAID   TO  SAPIFM-DATAID
-               CALL    "ORCSAPIFM"         USING
-                                           SAPIFM-AREA
-                                           SPA-AREA
-               IF    ( SAPIFM-OBJECT   NOT =   LOW-VALUE )
-                   MOVE    SAPIFM-OBJECT
-                                       TO  APILST25-BODY
-                   MOVE    "application/json"
-                                       TO  APILST25-CONTENT-TYPE
-               END-IF
+           INITIALIZE                  SAPIFM-AREA
+           MOVE    WRK-ERRCD       TO  SAPIFM-ERRCD
+           MOVE    FDGREQ-DATAID   TO  SAPIFM-DATAID
+           CALL    "ORCSAPIFM"         USING
+                                       SAPIFM-AREA
+                                       SPA-AREA
+           IF    ( SAPIFM-OBJECT   NOT =   LOW-VALUE )
+               MOVE    SAPIFM-OBJECT
+                                   TO  APILST25-BODY
+               MOVE    "application/json"
+                                   TO  APILST25-CONTENT-TYPE
            END-IF
       *
            .

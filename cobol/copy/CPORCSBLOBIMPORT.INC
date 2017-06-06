@@ -24,4 +24,4 @@
       ************************************************************
        01  SBI-AREA.
            03  SBI-FILENAME                PIC X(150).
-           03  SBI-BLOB-ID                 PIC X(36).
+           03  SBI-BLOB-ID                 PIC X(80).

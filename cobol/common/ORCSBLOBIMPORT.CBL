@@ -156,7 +156,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                READ ZIP-FILE
                END-READ
                IF    ( STS-ZIP         =   ZERO )
-                   MOVE    ZIP-REC     TO  SBI-BLOB-ID
+                   MOVE    "1#"        TO  SBI-BLOB-ID
+                   MOVE    ZIP-REC     TO  SBI-BLOB-ID(3:)
                END-IF
            END-IF
            CLOSE   ZIP-FILE

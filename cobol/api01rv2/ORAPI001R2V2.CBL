@@ -45,7 +45,6 @@
            COPY    "COMMON-SPA".
       *
        01  FLG-AREA.
-           03  FLG-INGAI               PIC 9(01).
            03  FLG-ORCSNUM             PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-SYUNOU              PIC 9(01).
@@ -71,8 +70,8 @@
            03  KEY-SHORI-RENNUM        PIC 9(04).
       *
        01  CONST-AREA.
-           03  CONST-TRUE              PIC X(05)   VALUE "TRUE".
-           03  CONST-FALSE             PIC X(05)   VALUE "FALSE".
+           03  CONST-TRUE              PIC X(05)   VALUE "True".
+           03  CONST-FALSE             PIC X(05)   VALUE "False".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -302,16 +301,14 @@
       *
            IF    ( WRK-ERRCD           =   SPACE )
                IF    ( PSREQ-INGAIKBN  =   SPACE )
-                   MOVE    1           TO  FLG-INGAI
+                   MOVE    CONST-TRUE  TO  PSREQ-INGAIKBN
                ELSE
-                   EVALUATE    FUNCTION UPPER-CASE (PSREQ-INGAIKBN)
-                   WHEN    CONST-TRUE
-                       MOVE    1       TO  FLG-INGAI
-                   WHEN    CONST-FALSE
+                   IF    ( PSREQ-INGAIKBN  =   CONST-TRUE
+                                            OR CONST-FALSE )
                        CONTINUE
-                   WHEN    OTHER
+                   ELSE
                        MOVE    "0106"  TO  WRK-ERRCD
-                   END-EVALUATE
+                   END-IF
                END-IF
            END-IF
       *
