@@ -9278,7 +9278,7 @@
       *
                IF       RECE08-HKNJANUM (1:2)
                                         =   "06"    OR  "63"    OR
-                                            "32"    OR  "73"
+                                            "32"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       5
                            OR      SYS-200505-HKNJANUM (IDX)
@@ -11490,6 +11490,8 @@
                                              NOT =   WRK-TOTALTEN (3) )
                        OR    ( RECE02-TOTALTEN (4)
                                              NOT =   WRK-TOTALTEN (4) )
+                       OR    ( RECE02-TOTALTEN (5)
+                                             NOT =   WRK-TOTALTEN (5) )
                            MOVE    16            TO  RECE02-ERR-ERRKBN
       *
                            DISPLAY "TOTALTEN (1)=" WRK-TOTALTEN    (1)
@@ -11500,6 +11502,8 @@
                                                "#" RECE02-TOTALTEN (3)
                            DISPLAY "TOTALTEN (4)=" WRK-TOTALTEN    (4)
                                                "#" RECE02-TOTALTEN (4)
+                           DISPLAY "TOTALTEN (5)=" WRK-TOTALTEN    (4)
+                                               "#" RECE02-TOTALTEN (5)
                        END-IF
                    END-IF
            END-READ

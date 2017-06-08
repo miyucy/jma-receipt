@@ -7356,7 +7356,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                            END-IF
                        END-PERFORM
                    END-IF
-      *            特定健康保険組合の存在チェック
+      *            特定健康保険組合の存在チェック（健康保険組合のみ）
                    IF      SPA-GMN-HKNJANUM1-63    =   SPACE
                        MOVE    SPACE               TO  HKNJAINF-REC
                        INITIALIZE                      HKNJAINF-REC
@@ -7365,16 +7365,13 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                        IF      HKNJA-HKNJANUM(1:2) =   "06"
                            MOVE    "63"                TO
                                                    HKNJA-HKNJANUM (1:2)
-                       ELSE
-                           MOVE    "73"                TO
-                                                   HKNJA-HKNJANUM (1:2)
-                       END-IF
-                       MOVE    HKNJAINF-REC        TO  MCPDATA-REC
-                       PERFORM 900-HKNJAINF-READ-SEC
-                       IF      FLG-HKNJAINF        =   ZERO
-                           MOVE    HKNJA-HKNJANUM      TO
+                           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+                           PERFORM 900-HKNJAINF-READ-SEC
+                           IF      FLG-HKNJAINF        =   ZERO
+                               MOVE    HKNJA-HKNJANUM      TO
                                                    SPA-GMN-HKNJANUM1-63
-                       END-IF 
+                           END-IF 
+                       END-IF
                    END-IF
                END-IF
            END-IF
