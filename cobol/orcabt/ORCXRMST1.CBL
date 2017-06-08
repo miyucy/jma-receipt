@@ -423,7 +423,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  MSTKANRI-HOSPNUM
                                        TO  MSTKANRI-DBRVERSION2
                    MOVE    MSTKANRI-REC TO  MCPDATA-REC
                    MOVE    "DBUPDATE"  TO  MCP-FUNC
-                   IF      MSTKANRI-KANRICD (7:2)  =   "00" OR "01"
+                   IF      MSTKANRI-KANRICD (7:2)  =           "01"
                                     OR "02" OR "04" OR "05" OR "09"
                                     OR "10" OR "15" OR "16"
                        MOVE    "tbl_mstkanri_public"
