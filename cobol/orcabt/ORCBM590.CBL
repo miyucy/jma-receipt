@@ -1512,17 +1512,16 @@
       *
            PERFORM 900-TENSU-READ-SEC
            IF      FLG-TENSU       =   ZERO
-               MOVE    SPACE           TO  WRK-REC
                PERFORM VARYING WRK-REC-LENGTH  FROM    1  BY  1
                        UNTIL ( WRK-REC-LENGTH  >   2500 )
-                       OR    ( RECEDEN-RECEDATA(WRK-REC-LENGTH:)
-                                               =   SPACE )
                        OR    ( RECEDEN-RECEDATA(WRK-REC-LENGTH:1)
                                                =   WRK-KAIGYO )
-                   MOVE    RECEDEN-RECEDATA(WRK-REC-LENGTH:1)
-                           TO  WRK-REC(WRK-REC-LENGTH:1)
+                   CONTINUE
                END-PERFORM
-               STRING  WRK-REC         DELIMITED   BY  SPACE
+               COMPUTE WRK-REC-LENGTH  =   WRK-REC-LENGTH - 1
+               MOVE    SPACE           TO  WRK-REC
+               STRING  RECEDEN-RECEDATA(1:WRK-REC-LENGTH)
+                                       DELIMITED   BY  SIZE
                        ","             DELIMITED   BY  SIZE
                        TNS-NAME        DELIMITED   BY  SPACE
                        WRK-KAIGYO      DELIMITED   BY  SIZE
