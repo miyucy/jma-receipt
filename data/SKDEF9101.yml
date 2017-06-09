@@ -1,7 +1,7 @@
 kanri_cd    : "9101"
 name        : "°åÎÅ¾ğÊóÏ¢·È´ğÈ×ÍÑ¾ğÊó"
 class_cd    : "*"
-item_max    : 7
+item_max    : 8
 item_list   :
 - item_no   : 1
   item      : "COOPBASE"
@@ -40,8 +40,14 @@ item_list   :
   start     : 205
   length    : 1
 - item_no   : 7
+  item      : "SYBYO"
+  item_jp   : "¿ÇÎÅ¹Ô°Ù¡¦°åÌôÉÊÌ¾¾Îµ­Ï¿"
+  type      : "X"
+  start     : 206
+  length    : 1
+- item_no   : 8
   item      : "YOBI"
   item_jp   : "Í½È÷"
   type      : "X"
-  start     : 206
-  length    : 295
+  start     : 207
+  length    : 294
