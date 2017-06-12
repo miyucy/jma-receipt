@@ -30926,11 +30926,11 @@
                                             TO  PTKOH-KOHNUM
                 MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                 MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                MOVE    "key4"              TO  MCP-PATHNAME
+                MOVE    "key14"             TO  MCP-PATHNAME
                 PERFORM   900-DBSELECT-SEC
                 IF      MCP-RC               =       ZERO
                   MOVE    "tbl_ptkohinf"    TO  MCP-TABLE
-                  MOVE    "key4"            TO  MCP-PATHNAME
+                  MOVE    "key14"           TO  MCP-PATHNAME
                   PERFORM  900-PTKOHINF-READ-SEC
                   PERFORM  UNTIL   FLG-PTKOHINF    =   1
                      IF ((PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD ) AND
@@ -30969,13 +30969,13 @@
                          MOVE     1      TO  FLG-PTKOHINF
                      ELSE
                          MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                         MOVE    "key4"           TO  MCP-PATHNAME
+                         MOVE    "key14"          TO  MCP-PATHNAME
                          PERFORM  900-PTKOHINF-READ-SEC
                      END-IF
                   END-PERFORM
                 END-IF
                 MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                MOVE    "key4"              TO  MCP-PATHNAME
+                MOVE    "key14"             TO  MCP-PATHNAME
                 PERFORM   900-CLOSE-SEC
            END-PERFORM
       *
@@ -32372,11 +32372,11 @@
            MOVE  "966"                 TO  PTKOH-KOHNUM
            MOVE  PTKOHINF-REC          TO  MCPDATA-REC
            MOVE  "tbl_ptkohinf"        TO  MCP-TABLE
-           MOVE  "key4"                TO  MCP-PATHNAME
+           MOVE  "key14"               TO  MCP-PATHNAME
            PERFORM 900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
              MOVE    "tbl_ptkohinf"    TO  MCP-TABLE
-             MOVE    "key4"            TO  MCP-PATHNAME
+             MOVE    "key14"           TO  MCP-PATHNAME
              PERFORM  900-PTKOHINF-READ-SEC
              PERFORM  UNTIL   FLG-PTKOHINF    =   1
                 IF ((PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD ) AND
@@ -32396,13 +32396,13 @@
                   MOVE     1      TO  FLG-PTKOHINF
                 ELSE
                   MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                  MOVE    "key4"           TO  MCP-PATHNAME
+                  MOVE    "key14"          TO  MCP-PATHNAME
                   PERFORM  900-PTKOHINF-READ-SEC
                 END-IF
              END-PERFORM
            END-IF
            MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-           MOVE    "key4"               TO  MCP-PATHNAME
+           MOVE    "key14"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            IF    FLG-TOKUSITU  =  ZERO
@@ -32412,16 +32412,19 @@
              MOVE  "967"                 TO  PTKOH-KOHNUM
              MOVE  PTKOHINF-REC          TO  MCPDATA-REC
              MOVE  "tbl_ptkohinf"        TO  MCP-TABLE
-             MOVE  "key4"                TO  MCP-PATHNAME
+             MOVE  "key14"               TO  MCP-PATHNAME
              PERFORM 900-DBSELECT-SEC
              IF      MCP-RC               =       ZERO
                MOVE    "tbl_ptkohinf"    TO  MCP-TABLE
-               MOVE    "key4"            TO  MCP-PATHNAME
+               MOVE    "key14"           TO  MCP-PATHNAME
                PERFORM  900-PTKOHINF-READ-SEC
                PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                  IF  (PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD )
-                  AND (WRK-GEN70-YMD   <=   PTKOH-TEKEDYMD)
-                  AND (PTKOH-SAKJOKBN   =   SPACE         )
+                  IF ((PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD ) AND
+                      (WRK-GEN70-YMD   <=   PTKOH-TEKEDYMD) AND
+                      (PTKOH-SAKJOKBN   =   SPACE         ))
+                  OR ((PTKOH-TEKSTYMD  <=   WRK-GEN702-YMD) AND
+                      (WRK-GEN702-YMD  <=   PTKOH-TEKEDYMD) AND
+                      (PTKOH-SAKJOKBN   =   SPACE         ))
                     IF  RECE62-TEISYOTOKU  =  SPACE
                          MOVE    2    TO   FLG-TOKUSITU
                          IF  RECE62-SRYYM  >= "201501"
@@ -32440,13 +32443,13 @@
                     MOVE         1    TO   FLG-PTKOHINF
                   ELSE
                     MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                    MOVE    "key4"           TO  MCP-PATHNAME
+                    MOVE    "key14"          TO  MCP-PATHNAME
                     PERFORM  900-PTKOHINF-READ-SEC
                   END-IF
                END-PERFORM
              END-IF
              MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-             MOVE    "key4"               TO  MCP-PATHNAME
+             MOVE    "key14"              TO  MCP-PATHNAME
              PERFORM 900-CLOSE-SEC
            END-IF
       *
@@ -32459,11 +32462,11 @@
              MOVE  "956"                 TO  PTKOH-KOHNUM
              MOVE  PTKOHINF-REC          TO  MCPDATA-REC
              MOVE  "tbl_ptkohinf"        TO  MCP-TABLE
-             MOVE  "key4"                TO  MCP-PATHNAME
+             MOVE  "key14"               TO  MCP-PATHNAME
              PERFORM 900-DBSELECT-SEC
              IF      MCP-RC               =       ZERO
                MOVE    "tbl_ptkohinf"    TO  MCP-TABLE
-               MOVE    "key4"            TO  MCP-PATHNAME
+               MOVE    "key14"           TO  MCP-PATHNAME
                PERFORM  900-PTKOHINF-READ-SEC
                PERFORM  UNTIL   FLG-PTKOHINF    =   1
                   IF ((PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD ) AND
@@ -32483,13 +32486,13 @@
                     MOVE     1      TO  FLG-PTKOHINF
                   ELSE
                     MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                    MOVE    "key4"           TO  MCP-PATHNAME
+                    MOVE    "key14"          TO  MCP-PATHNAME
                     PERFORM  900-PTKOHINF-READ-SEC
                   END-IF
                END-PERFORM
              END-IF
              MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-             MOVE    "key4"               TO  MCP-PATHNAME
+             MOVE    "key14"              TO  MCP-PATHNAME
              PERFORM 900-CLOSE-SEC
            END-IF
       *
@@ -32500,16 +32503,19 @@
              MOVE  "957"                 TO  PTKOH-KOHNUM
              MOVE  PTKOHINF-REC          TO  MCPDATA-REC
              MOVE  "tbl_ptkohinf"        TO  MCP-TABLE
-             MOVE  "key4"                TO  MCP-PATHNAME
+             MOVE  "key14"               TO  MCP-PATHNAME
              PERFORM 900-DBSELECT-SEC
              IF      MCP-RC               =       ZERO
                MOVE    "tbl_ptkohinf"    TO  MCP-TABLE
-               MOVE    "key4"            TO  MCP-PATHNAME
+               MOVE    "key14"           TO  MCP-PATHNAME
                PERFORM  900-PTKOHINF-READ-SEC
                PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                  IF  (PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD )
-                  AND (WRK-GEN70-YMD   <=   PTKOH-TEKEDYMD)
-                  AND (PTKOH-SAKJOKBN   =   SPACE         )
+                  IF ((PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD ) AND
+                      (WRK-GEN70-YMD   <=   PTKOH-TEKEDYMD) AND
+                      (PTKOH-SAKJOKBN   =   SPACE         ))
+                  OR ((PTKOH-TEKSTYMD  <=   WRK-GEN702-YMD) AND
+                      (WRK-GEN702-YMD  <=   PTKOH-TEKEDYMD) AND
+                      (PTKOH-SAKJOKBN   =   SPACE         ))
                     IF  RECE62-TEISYOTOKU  =  SPACE
                          MOVE    2    TO   FLG-TOKUSITU
                          IF  RECE62-SRYYM  >= "201501"
@@ -32528,13 +32534,13 @@
                     MOVE         1    TO   FLG-PTKOHINF
                   ELSE
                     MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                    MOVE    "key4"           TO  MCP-PATHNAME
+                    MOVE    "key14"          TO  MCP-PATHNAME
                     PERFORM  900-PTKOHINF-READ-SEC
                   END-IF
                END-PERFORM
              END-IF
              MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-             MOVE    "key4"               TO  MCP-PATHNAME
+             MOVE    "key14"              TO  MCP-PATHNAME
              PERFORM 900-CLOSE-SEC
            END-IF
       *
@@ -32564,9 +32570,12 @@
                MOVE    "key4"            TO  MCP-PATHNAME
                PERFORM  900-PTKOHINF-READ-SEC
                PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                  IF  (PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD )
-                  AND (WRK-GEN70-YMD   <=   PTKOH-TEKEDYMD)
-                  AND (PTKOH-SAKJOKBN   =   SPACE         )
+                  IF ((PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD ) AND
+                      (WRK-GEN70-YMD   <=   PTKOH-TEKEDYMD) AND
+                      (PTKOH-SAKJOKBN   =   SPACE         ))
+                  OR ((PTKOH-TEKSTYMD  <=   WRK-GEN702-YMD) AND
+                      (WRK-GEN702-YMD  <=   PTKOH-TEKEDYMD) AND
+                      (PTKOH-SAKJOKBN   =   SPACE         ))
                     MOVE     1      TO  FLG-TOKUSITU-TASU
                     MOVE     1      TO  FLG-PTKOHINF
                   ELSE
@@ -32596,27 +32605,30 @@
            MOVE  "957"                 TO  PTKOH-KOHNUM
            MOVE  PTKOHINF-REC          TO  MCPDATA-REC
            MOVE  "tbl_ptkohinf"        TO  MCP-TABLE
-           MOVE  "key4"                TO  MCP-PATHNAME
+           MOVE  "key14"               TO  MCP-PATHNAME
            PERFORM 900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
              MOVE    "tbl_ptkohinf"    TO  MCP-TABLE
-             MOVE    "key4"            TO  MCP-PATHNAME
+             MOVE    "key14"           TO  MCP-PATHNAME
              PERFORM  900-PTKOHINF-READ-SEC
              PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                IF  (PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD )
-                AND (WRK-GEN70-YMD   <=   PTKOH-TEKEDYMD)
-                AND (PTKOH-SAKJOKBN   =   SPACE         )
+                IF ((PTKOH-TEKSTYMD  <=   WRK-GEN70-YMD ) AND
+                    (WRK-GEN70-YMD   <=   PTKOH-TEKEDYMD) AND
+                    (PTKOH-SAKJOKBN   =   SPACE         ))
+                OR ((PTKOH-TEKSTYMD  <=   WRK-GEN702-YMD) AND
+                    (WRK-GEN702-YMD  <=   PTKOH-TEKEDYMD) AND
+                    (PTKOH-SAKJOKBN   =   SPACE         ))
                   MOVE    1    TO   FLG-KISAIOK
                   MOVE    1    TO   FLG-PTKOHINF
                 ELSE
                   MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                  MOVE    "key4"           TO  MCP-PATHNAME
+                  MOVE    "key14"          TO  MCP-PATHNAME
                   PERFORM  900-PTKOHINF-READ-SEC
                 END-IF
              END-PERFORM
            END-IF
            MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-           MOVE    "key4"               TO  MCP-PATHNAME
+           MOVE    "key14"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .
