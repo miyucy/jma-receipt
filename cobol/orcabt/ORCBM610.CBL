@@ -107,12 +107,14 @@
        01  KEY-AREA.
            03  KEY-NEW.
                05  KEY-N-RECKBN        PIC X(01).
-               05  KEY-N-TOTALTEN      PIC 9(08).
+               05  KEY-N-PTID          PIC 9(10).
                05  KEY-N-SJKBN         PIC X(02).
+               05  KEY-N-TOTALTEN      PIC 9(08).
            03  KEY-OLD.
                05  KEY-O-RECKBN        PIC X(01).
-               05  KEY-O-TOTALTEN      PIC 9(08).
+               05  KEY-O-PTID          PIC 9(10).
                05  KEY-O-SJKBN         PIC X(02).
+               05  KEY-O-TOTALTEN      PIC 9(08).
       *
        01  WRK-AREA.
       *    ¥Ñ¥é¥á¥¿¥¨¥ê¥¢
@@ -470,17 +472,19 @@
            END-IF
       *
            PERFORM         UNTIL   FLG-EFOUT   =   1
+               MOVE    ZERO            TO  WRK-RENNUM
                MOVE    KEY-NEW         TO  KEY-OLD
                PERFORM         UNTIL   FLG-EFOUT   =   1
-                               OR      KEY-N-SJKBN
-                                               NOT =   KEY-O-SJKBN
-                   EVALUATE    KEY-N-SJKBN
-                       WHEN    "90"
-                           PERFORM 20022-SRYKBN90-HENSYU-SEC
-                       WHEN    OTHER
-                           PERFORM 20021-EF-WRITE-SEC
-                           PERFORM 900-EFOUT-READ-SEC
-                   END-EVALUATE
+                               OR      KEY-N-PTID
+                                               NOT =   KEY-O-PTID
+                   MOVE    KEY-NEW         TO  KEY-OLD
+                   PERFORM         UNTIL   FLG-EFOUT   =   1
+                                   OR      KEY-N-PTID
+                                                   NOT =   KEY-O-PTID
+                                   OR      KEY-N-SJKBN
+                                                   NOT =   KEY-O-SJKBN
+                       PERFORM 20022-SRYKBN90-HENSYU-SEC
+                   END-PERFORM
                END-PERFORM
            END-PERFORM
       *
@@ -491,6 +495,35 @@
            DISPLAY "EFFILE F OUT  " CNT-OUT1
            .
        2002-HENSYU-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    ½ç½øÈÖ¹æÊÔ½¸½èÍý¡Ê¿ÇÎÅ¶èÊ¬£¹£°¡Ë
+      *****************************************************************
+       20022-SRYKBN90-HENSYU-SEC                SECTION.
+      *
+           EVALUATE    KEY-N-SJKBN
+               WHEN    "90"
+                   ADD     1                   TO  WRK-RENNUM
+      *
+      *            ¼Â»ÜÆüËè¤Ë½ç½øÈÖ¹æ¤òÀßÄê¤·¤Ê¤ª¤¹
+                   MOVE    KEY-NEW         TO  KEY-OLD
+                   PERFORM UNTIL   FLG-EFOUT   =   1
+                           OR      KEY-NEW NOT =   KEY-OLD
+                       MOVE    RECEDEN-RECEDATA    TO  WRK-EF-REC
+                       MOVE    WRK-RENNUM          TO  WRK-EF-RENNUM
+                       MOVE    WRK-EF-REC          TO  RECEDEN-RECEDATA
+      *
+                       PERFORM 20021-EF-WRITE-SEC
+                       PERFORM 900-EFOUT-READ-SEC
+                   END-PERFORM
+               WHEN    OTHER
+                   PERFORM 20021-EF-WRITE-SEC
+                   PERFORM 900-EFOUT-READ-SEC
+           END-EVALUATE
+      *
+           .
+       20022-SRYKBN90-HENSYU-EXT.
            EXIT. 
       *
       *****************************************************************
@@ -545,29 +578,6 @@
       *
            .
        20021-EF-WRITE-EXT.
-           EXIT. 
-      *
-      *****************************************************************
-      *    ½ç½øÈÖ¹æÊÔ½¸½èÍý¡Ê¿ÇÎÅ¶èÊ¬£¹£°¡Ë
-      *****************************************************************
-       20022-SRYKBN90-HENSYU-SEC                SECTION.
-      *
-           ADD     1                   TO  WRK-RENNUM
-      *
-      *    ¼Â»ÜÆüËè¤Ë½ç½øÈÖ¹æ¤òÀßÄê¤·¤Ê¤ª¤¹
-           MOVE    KEY-NEW         TO  KEY-OLD
-           PERFORM         UNTIL   FLG-EFOUT   =   1
-                           OR      KEY-NEW NOT =   KEY-OLD
-               MOVE    RECEDEN-RECEDATA    TO  WRK-EF-REC
-               MOVE    WRK-RENNUM          TO  WRK-EF-RENNUM
-               MOVE    WRK-EF-REC          TO  RECEDEN-RECEDATA
-      *
-               PERFORM 20021-EF-WRITE-SEC
-               PERFORM 900-EFOUT-READ-SEC
-           END-PERFORM
-      *
-           .
-       20022-SRYKBN90-HENSYU-EXT.
            EXIT. 
       *
       *****************************************************************
@@ -776,6 +786,7 @@
                END-IF
       *
                IF      WRK-NYUGAIKBN       =   "1"
+                   MOVE    RECEDEN-PTID        TO  KEY-N-PTID
                    MOVE    RECEDEN-SJKBN       TO  KEY-N-SJKBN
       *            ¿ÇÎÅ¶èÊ¬£¹£°¤Î¤È¤­¤À¤±¼Â»Ü·îÆü¡Ü½ç½øÈÖ¹æ¤òÀßÄê
                    IF      KEY-N-SJKBN         =   "90"
