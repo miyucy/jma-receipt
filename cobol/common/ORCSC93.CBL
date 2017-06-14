@@ -2743,6 +2743,15 @@
                    END-IF
       *
                END-IF
+      *H29.6
+      *        ¿ÇÎÅ¼ïÊÌÆþÎÏ¤Ç½ªÎ»
+               IF     (SPA-GMN-INPUTCD (IDX-KEN)(1:1)  =   "."
+                                                       OR  "*" )
+                    IF      IDX             >   IDX-KEN
+                        MOVE    ZERO        TO  WRK-KENSA-CNT
+                    END-IF
+               END-IF
+      *
            END-PERFORM
            IF      WRK-KENSA-MAX       =   ZERO
                CONTINUE
