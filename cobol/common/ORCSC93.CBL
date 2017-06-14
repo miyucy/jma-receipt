@@ -2136,21 +2136,6 @@
                            ELSE
                                MOVE    "2062"        TO  SPA-ERRCD
                            END-IF
-      *H30.4
-      *               Ê¬³äÄ´ºÞ
-                       WHEN    "099208101"
-                           IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
-                                                           OR  "22"
-                                                           OR  "23" )
-                              AND (SPA-COM-ZAIEND (IDX - 1)
-                                                            =  SPACE )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           ELSE
-                               MOVE    "0281"        TO  SPA-ERRCD
-                           END-IF
-      *
       *                ¸åÈ¯°åÌôÉÊ¤Ø¤ÎÊÑ¹¹²Ä¡Ê½èÊý¤»¤óËè¡Ë
                        WHEN    "099209902"
       *                ¸åÈ¯°åÌôÉÊ¤Ø¤ÎÊÑ¹¹ÉÔ²Ä
@@ -2694,9 +2679,7 @@
                    MOVE    2             TO  WRK-KENSA-MAX
                WHEN    08
       *            ÆâÉôÈçÉé²Ù»î¸³¤ÎÊñ³ç¡ÊÊÝÎ±¡Ë
-      ****         MOVE    1             TO  WRK-KENSA-MAX
-      *H29.12      ¤Þ¤È¤áÇÑ»ß
-                   MOVE    ZERO          TO  WRK-KENSA-MAX
+                   MOVE    1             TO  WRK-KENSA-MAX
       *Ê¿À®£±£µÇ¯£¹·î
                WHEN    09
       *            ¥¦¥¤¥ë¥¹¹³ÂÎ²Á
@@ -2707,10 +2690,6 @@
       *Ê¿À®£±£¸Ç¯£´·î
                WHEN    11
       *            ÆÃ°ÛÅª£É£Ç£Å
-                   MOVE    2             TO  WRK-KENSA-MAX
-      *Ê¿À®£³£°Ç¯£´·î
-               WHEN    12
-      *            °­À­¼ðáç°äÅÁ»Ò¸¡ºº
                    MOVE    2             TO  WRK-KENSA-MAX
                WHEN    OTHER
                    MOVE    ZERO          TO  WRK-KENSA-MAX
@@ -2768,8 +2747,6 @@
       *        ¿ÇÎÅ¼ïÊÌÆþÎÏ¤Ç½ªÎ»
                IF     (SPA-GMN-INPUTCD (IDX-KEN)(1:1)  =   "."
                                                        OR  "*" )
-                 AND  (SPA-NYUGAIKBN        =   1     )
-                 AND  (FLG-KENSA-CHK        =   1    )
                     IF      IDX             >   IDX-KEN
                         MOVE    ZERO        TO  WRK-KENSA-CNT
                     ELSE
