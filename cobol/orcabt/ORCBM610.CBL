@@ -472,20 +472,7 @@
            END-IF
       *
            PERFORM         UNTIL   FLG-EFOUT   =   1
-               MOVE    ZERO            TO  WRK-RENNUM
-               MOVE    KEY-NEW         TO  KEY-OLD
-               PERFORM         UNTIL   FLG-EFOUT   =   1
-                               OR      KEY-N-PTID
-                                               NOT =   KEY-O-PTID
-                   MOVE    KEY-NEW         TO  KEY-OLD
-                   PERFORM         UNTIL   FLG-EFOUT   =   1
-                                   OR      KEY-N-PTID
-                                                   NOT =   KEY-O-PTID
-                                   OR      KEY-N-SJKBN
-                                                   NOT =   KEY-O-SJKBN
-                       PERFORM 20022-SRYKBN90-HENSYU-SEC
-                   END-PERFORM
-               END-PERFORM
+               PERFORM 20021-EF-HENSYU-SEC
            END-PERFORM
       *
            CLOSE   EFFILE-FILE
@@ -498,38 +485,52 @@
            EXIT. 
       *
       *****************************************************************
-      *    順序番号編集処理（診療区分９０）
+      *    ＥＦファイル順序番号編集処理（入院）
       *****************************************************************
-       20022-SRYKBN90-HENSYU-SEC                SECTION.
+       20021-EF-HENSYU-SEC                SECTION.
       *
-           EVALUATE    KEY-N-SJKBN
-               WHEN    "90"
-                   ADD     1                   TO  WRK-RENNUM
+      *    患者毎に順序番号をクリア
+           MOVE    ZERO            TO  WRK-RENNUM
       *
-      *            実施日毎に順序番号を設定しなおす
+           MOVE    KEY-NEW         TO  KEY-OLD
+           PERFORM         UNTIL   FLG-EFOUT   =   1
+                           OR      KEY-N-PTID
+                                           NOT =   KEY-O-PTID
+               MOVE    KEY-NEW         TO  KEY-OLD
+               PERFORM         UNTIL   FLG-EFOUT   =   1
+                               OR      KEY-N-PTID
+                                               NOT =   KEY-O-PTID
+                               OR      KEY-N-SJKBN
+                                               NOT =   KEY-O-SJKBN
+      *            実施日毎に順序番号を設定しなおす（診療区分９０）
+                   IF      KEY-N-SJKBN     =   "90"
+                       ADD     1               TO  WRK-RENNUM
+                   END-IF
+      *
                    MOVE    KEY-NEW         TO  KEY-OLD
-                   PERFORM UNTIL   FLG-EFOUT   =   1
-                           OR      KEY-NEW NOT =   KEY-OLD
-                       MOVE    RECEDEN-RECEDATA    TO  WRK-EF-REC
-                       MOVE    WRK-RENNUM          TO  WRK-EF-RENNUM
-                       MOVE    WRK-EF-REC          TO  RECEDEN-RECEDATA
+                   PERFORM         UNTIL   FLG-EFOUT   =   1
+                                   OR      KEY-NEW NOT =   KEY-OLD
+                       IF      KEY-N-SJKBN     =   "90"
+                           MOVE    RECEDEN-RECEDATA
+                                                   TO  WRK-EF-REC
+                           MOVE    WRK-RENNUM      TO  WRK-EF-RENNUM
+                           MOVE    WRK-EF-REC      TO  RECEDEN-RECEDATA
+                       END-IF
+                       PERFORM 200211-EF-WRITE-SEC
       *
-                       PERFORM 20021-EF-WRITE-SEC
                        PERFORM 900-EFOUT-READ-SEC
                    END-PERFORM
-               WHEN    OTHER
-                   PERFORM 20021-EF-WRITE-SEC
-                   PERFORM 900-EFOUT-READ-SEC
-           END-EVALUATE
+               END-PERFORM
+           END-PERFORM
       *
            .
-       20022-SRYKBN90-HENSYU-EXT.
+       20021-EF-HENSYU-EXT.
            EXIT. 
       *
       *****************************************************************
       *    ＥＦファイル出力処理（入院）
       *****************************************************************
-       20021-EF-WRITE-SEC          SECTION.
+       200211-EF-WRITE-SEC          SECTION.
       *
            EVALUATE    RECEDEN-RECKBN
                WHEN    "E"
@@ -577,7 +578,7 @@
            END-EVALUATE
       *
            .
-       20021-EF-WRITE-EXT.
+       200211-EF-WRITE-EXT.
            EXIT. 
       *
       *****************************************************************
