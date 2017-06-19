@@ -33,8 +33,6 @@
               05  FMSHOHO-SRYYMD               PIC X(10).
       *       ∏Ú…’∆¸
               05  FMSHOHO-KOFYMD               PIC X(10).
-      *       ≈¡…º»÷πÊ
-              05  FMSHOHO-DENPNUM              PIC X(7).
       *       ø«Œ≈≤ ° ∆¸•Ï•ª°À
               05  FMSHOHO-SRYKA                PIC X(2).
               05  FMSHOHO-SRYKANAME            PIC X(40).
