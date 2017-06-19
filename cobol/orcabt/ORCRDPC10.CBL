@@ -384,7 +384,6 @@
            03  IJ                      PIC 9(02).
            03  IDX-HOUKATU             PIC 9(02).
            03  IDX-COM                 PIC 9(03).
-           03  IDX-TAN                 PIC 9(03).
       *
        01  KEY-AREA                          VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -2578,7 +2577,6 @@
       *                //入院料入力分の包括記録は、平成２９年３月分までは
       *                //特定入院料の下に記録だが、平成２９年４月分からは
       *                //短期滞在未算定日と同様の記録とする
-                       DISPLAY "RECE62-SRYYM = " RECE62-SRYYM
                        IF     RECE62-SRYYM   <=   "201703"
                            PERFORM 20073-ZAI-HENSYU-SEC
                        END-IF
@@ -3720,14 +3718,6 @@
               GO  TO   200731-ZAI-HENSYU-EXT
            END-IF
       *
-           PERFORM    VARYING  IDX-TAN   FROM  1  BY  1
-             UNTIL    IDX-TAN    >   31
-                DISPLAY "IDX-TAN = " IDX-TAN
-                DISPLAY "RECE62-NYUINDAY-KBN= "
-                         RECE62-NYUINDAY-KBN(IDX-TAN)
-                DISPLAY "RECE62-EF-NYUINDAY-KBN= "
-                         RECE62-EF-NYUINDAY-KBN(IDX-TAN)
-           END-PERFORM
       *--- AZU-ADD START 2017.04.12
       *    短期滞在を算定したRECE62-FILE処理時だけ処理を行う
            IF      RECE62-EF-NYUINDAY-TBL   NOT =   SPACE
