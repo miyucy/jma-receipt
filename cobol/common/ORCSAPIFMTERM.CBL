@@ -119,7 +119,7 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           IF    ( SPA-API-FLG     =   1 OR 3 )
+           IF    ( SPA-API-FLG     =   1 OR 2 )
                PERFORM 2001-PUSH-SEC
            END-IF
       *

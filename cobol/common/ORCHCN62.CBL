@@ -1956,7 +1956,7 @@
            MOVE    "okusuri_techo_n"   TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "¤ªÌô¼êÄ¢"          TO  RPMAIN-TITLE
-           MOVE    "fm_medication_note_h"
+           MOVE    "fm_medicine_notebook_h"
                                        TO  MCP-TABLE
            MOVE    FMMNOTEN-DATA       TO  RPMAIN-DATA
            CALL    "ORCRPMAIN"         USING

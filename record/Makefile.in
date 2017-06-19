@@ -536,6 +536,7 @@ RECORD_files = \
 	patientlst6v2.rec \
  	Q05.rec \
  	prescriptionv2.rec \
+ 	medicine_notebookv2.rec \
 
 DEF_files = \
 
@@ -878,7 +879,7 @@ DB_files = \
 	xml_claim_receivev2req.db \
 	xml_claim_receivev2res.db \
 	fm_karte_no1.db \
-	fm_medication_note.db \
+    fm_medicine_notebook.db;
 	xml_formdatagetv2req.db \
 	xml_contraindication_checkv2req.db \
 	xml_contraindication_checkv2res.db \
@@ -994,6 +995,19 @@ DB_files = \
 	xml_patientlst6v2req.db \
 	xml_patientlst6v2res.db \
 	xml_prescriptionv2req.db \
+	fm_discharge_certificate.db \
+	fm_invoice_receipt_h.db \
+	fm_karte_no1_h.db \
+	fm_karte_no3.db \
+	fm_karte_no3_h.db \
+    fm_medicine_notebook_h.db;
+	fm_medicine_information_h.db \
+	fm_order_direction.db \
+	fm_order_injection.db \
+    fm_payment_certificate.db \
+    fm_prescription_h.db \
+    fm_statement_h.db \
+
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

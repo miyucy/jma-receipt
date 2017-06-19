@@ -667,11 +667,12 @@
            03  QR-FILE-TERMID      PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
            03  QR-FILE-SYOHMS      PIC 9(08)   VALUE   ZERO.
-           03  FILLER              PIC X(04)   VALUE   ".qr_".
-           03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
-           03  QR-FILE-IDX         REDEFINES   QR-FILE-ID
-                                   PIC X(02).
-           03  FILLER              PIC X(04)   VALUE   ".png".
+           03  QR-FILE-SUFFIX.
+               05  QR-FILE-TYPE    PIC X(04)   VALUE   SPACE.
+               05  QR-FILE-ID      PIC 9(02)   VALUE   ZERO.
+               05  QR-FILE-EXT     PIC X(24)   VALUE   SPACE.
+           03  QR-FILE-SUFFIX-R    REDEFINES   QR-FILE-SUFFIX.
+               05  QR-FILE-REGEX   PIC X(30).
       *v4.8
       *    ファイル指定領域
        01  QR-FILE-NAME              PIC X(1024).
@@ -1126,7 +1127,7 @@
                MOVE    "0"             TO  PARA-API-DATA
            END-IF
       *    HAORI対応
-           IF      SPA-API-FLG         =   1
+           IF      SPA-API-FLG     NOT =   ZERO
                MOVE    "1"             TO  PARA-API-DATA
            END-IF
       *
@@ -2705,7 +2706,9 @@
                    MOVE    "HC2Q"              TO  QR-FILE-FORM-ID
                    MOVE    SPA-TERMID          TO  QR-FILE-TERMID
                    MOVE    WRK-SYS-TIME        TO  QR-FILE-SYOHMS
+                   MOVE    ".qr_"              TO  QR-FILE-TYPE
                    MOVE    WRK-FILE-CNT        TO  QR-FILE-ID
+                   MOVE    ".png"              TO  QR-FILE-EXT
       *ver.4.8
       *    一時ファイル名取得
                    INITIALIZE                      SGETTEMP-AREA
@@ -5998,7 +6001,9 @@
                 MOVE    "HC2Q"              TO  QR-FILE-FORM-ID
                 MOVE    SPA-TERMID          TO  QR-FILE-TERMID
                 MOVE    WRK-SYS-TIME        TO  QR-FILE-SYOHMS
-                MOVE    "??"                TO  QR-FILE-IDX
+      *         MOVE    "\.qr(.*[0-9][0-9]\.png|\.dat)$"
+                MOVE    "\.qr.*[0-9][0-9]\.png$"
+                                            TO  QR-FILE-REGEX
                 MOVE    QR-FILE-NAME-PARA   TO  SBI-AREA
                 CALL    "ORCSBLOBIMPORT"    USING
                                             SBI-AREA

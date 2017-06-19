@@ -21,7 +21,7 @@ FILELIST=${MCP_TEMPDIR}/filelist.txt.$$
 ID_FILE=${MCP_TEMPDIR}/$2
 
 cd ${MCP_TEMPDIR}  
-find  . -maxdepth 1 -type f -name "$1" -print0 | sort -z | xargs -0 -i basename {} > ${FILELIST}
+find  . -maxdepth 1 -type f  -regextype posix-egrep -regex ".*/$1" -print0 | sort -z | xargs -0 -i basename {} > ${FILELIST}
 if [ -s "${FILELIST}" ]; then
 #  zip ${ZIP_FILE} -j ${FILELIST}
   zip ${ZIP_FILE} -j -@<  ${FILELIST} 

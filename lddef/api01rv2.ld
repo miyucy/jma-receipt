@@ -37,6 +37,7 @@ bindapi	"okusuriputv2"	"OpenCOBOL"	"ORAPIRELR2V2";
 bindapi	"imagegetv2"	"OpenCOBOL"	"ORAPI000R2V2";
 bindapi	"patientlst6v2"	"OpenCOBOL"	"ORAPI012R6V2";
 bindapi	"prescriptionv2"	"OpenCOBOL"	"ORAPI001R2V2";
+bindapi	"medicinenotebookv2"	"OpenCOBOL"	"ORAPI001R3V2";
 
 multiplex_group	api01rv2;
 
@@ -77,6 +78,7 @@ data	{
 	        imagegetv2;
 		patientlst6v2;
 		prescriptionv2;
+		medicinenotebookv2;
 	};
 };
 db "xml2" {
@@ -151,6 +153,8 @@ db "xml2" {
  xml_patientlst6v2res;
  xml_prescriptionv2req;
  fm_prescription;
+ xml_medicine_notebookv2req;
+ fm_medicine_notebook;
 };
 
 #include "orcadb.inc"

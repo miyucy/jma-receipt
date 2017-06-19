@@ -564,7 +564,7 @@
       *
       *H29.6
       *HAORIÂÐ±þ
-           IF      SPA-API-FLG         =   1
+           IF      SPA-API-FLG         NOT =   ZERO
                CALL    "ORCHC62"           USING
                                            SPA-AREA
                                            ORCHC62AREA

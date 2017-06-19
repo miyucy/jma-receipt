@@ -51,7 +51,7 @@ db "xml2" {
  xml_medicalv3res5;
  xml_medicalv3req6;
  xml_medicalv3res6;
- fm_medication_note;
+ fm_medicine_notebook;
  fm_prescription;
  fm_medicine_information;
  fm_appointment_form;

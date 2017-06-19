@@ -77,7 +77,7 @@ data	{
 db "xml2" {
  xml_medicalsetv2req;
  xml_medicalsetv2res;
- fm_medication_note;
+ fm_medicine_notebook;
  fm_prescription;
  fm_medicine_information;
  fm_appointment_form;
