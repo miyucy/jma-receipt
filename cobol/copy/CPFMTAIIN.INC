@@ -49,8 +49,8 @@
               05  FMTAIIN-TAIINYMD             PIC X(10).
               05  FMTAIIN-NYUINRYO-AREA.
                 07  FMTAIIN-NYUINRYO-OCC       OCCURS   3.
-                07  FMTAIIN-NYUINRYO-NAME      PIC X(50).
-                07  FMTAIIN-NYUINRYO-NISSU     PIC X(5).
+                  09  FMTAIIN-NYUINRYO-NAME    PIC X(50).
+                  09  FMTAIIN-NYUINRYO-NISSU   PIC X(5).
               05  FMTAIIN-OTHER-NISSU          PIC X(5).
               05  FMTAIIN-TOTAL-NISSU          PIC X(5).
               05  FMTAIIN-SNTSTYMD             PIC X(10).
