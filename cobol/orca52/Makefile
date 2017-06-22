@@ -8,6 +8,7 @@ SRCS = ORCGG01.CBL \
        ORCGG05.CBL \
        ORCGG07.CBL \
        ORCGG100.CBL \
+       ORAPI052R1V3.CBL \
 
 
 top_builddir = ../..

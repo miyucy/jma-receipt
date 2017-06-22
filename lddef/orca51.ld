@@ -25,6 +25,7 @@ bind	"G100"		"OpenCOBOL"	"ORCGG100";
 bind	"GERR"		"OpenCOBOL"	"ORCGGERR";
 bind	"GID1"		"OpenCOBOL"	"ORCGGID1";
 bind	"GID2"		"OpenCOBOL"	"ORCGGID2";
+bindapi	"diseasemasterlstv3"	"OpenCOBOL"	"ORAPI052R1V3";
 
 multiplex_group	orca51;
 
@@ -53,8 +54,16 @@ data	{
 		GERR;
 		GID1;
 		GID2;
+		diseasemasterlstv3;
 	};
 };
+
+
+db "xml2" {
+ xml_disease_masterlstv3req;
+ xml_disease_masterlstv3res;
+};
+
 
 db	{
 	tbl_syskanri;
@@ -68,6 +77,7 @@ db	{
         tbl_prtctrl; 
 	tbl_dbcatalog;
 	tbl_sysuser;
+	tbl_sysbase;
 };
 
 /* #include "orcadb.inc" */

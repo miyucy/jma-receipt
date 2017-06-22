@@ -537,6 +537,7 @@ RECORD_files = \
  	Q05.rec \
  	prescriptionv2.rec \
  	medicine_notebookv2.rec \
+	diseasemasterlstv3.rec \
 
 DEF_files = \
 
@@ -1007,6 +1008,8 @@ DB_files = \
     fm_payment_certificate.db \
     fm_prescription_h.db \
     fm_statement_h.db \
+	xml_disease_masterlstv3req.db \
+	xml_disease_masterlstv3res.db \
 
 
 shell.db: shell.db.in
