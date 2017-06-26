@@ -534,7 +534,6 @@
       *    Å¾²Ê¡¿Å¾Åï¡¿Å¾¼¼»þ¤Ë¿©Æ²²Ã»»¤òÂàÈò¤¹¤ë¹àÌÜ
            03  WRK-SHOKUDOU-TABLE.
                05  WRK-SHOKUDOU-SRYYM      PIC X(06).
-               05  WRK-SHOKUDOU-DAY        PIC 9(03)  OCCURS  31.
                05  WRK-SHOKUDOU-SKJTBL.
                    07  WRK-SHOKUDOU-SKJ-ARI PIC X(01)  OCCURS  31.
       *
@@ -15531,7 +15530,7 @@
       *****************************************************************
        4801-SHOKUDOU-CLEAR-SEC       SECTION.
       *
-      *    ³ºÅö·î¤Î¿©Æ²²Ã»»»»ÄêÍ­Ìµ¥Á¥§¥Ã¥¯¤ÈÂàÈò
+      *    ³ºÅö·î¤Î¿©Æ²²Ã»»»»ÄêÍ­Ìµ¥Á¥§¥Ã¥¯
            MOVE    ZERO                TO  FLG-SHOKUDOU
            INITIALIZE                      NYUINACCT-REC
            MOVE    PTNYUINRRK-HOSPNUM  TO  NACCT-HOSPNUM
@@ -15543,12 +15542,6 @@
            PERFORM   910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE     1              TO  FLG-SHOKUDOU
-               MOVE     MCPDATA-REC    TO  NYUINACCT-REC
-               PERFORM   VARYING  IDX-SHOKUDOU   FROM  1  BY  1
-                 UNTIL   IDX-SHOKUDOU   >   31
-                    MOVE   NACCT-DAY(IDX-SHOKUDOU)
-                                    TO  WRK-SHOKUDOU-DAY(IDX-SHOKUDOU)
-               END-PERFORM
            END-IF
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key43"             TO  MCP-PATHNAME
@@ -15638,7 +15631,6 @@
                MOVE    "key43"             TO  MCP-PATHNAME
                PERFORM   910-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE     1              TO  FLG-SHOKUDOU
                    MOVE     MCPDATA-REC    TO  NYUINACCT-REC
                    PERFORM   VARYING  IDX-SHOKUDOU   FROM  1  BY  1
                      UNTIL   IDX-SHOKUDOU   >   31
