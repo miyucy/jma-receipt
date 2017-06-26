@@ -15650,10 +15650,10 @@
                    MOVE  ZERO              TO  NACCT-ZAIKAISU
                    PERFORM  VARYING   IDX-SHOKUDOU FROM  1  BY  1
                      UNTIL  IDX-SHOKUDOU   >   31
-                       IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                       IF   NACCT-DAY(IDX-SHOKUDOU)   NOT =  0
                            ADD   1        TO  NACCT-ZAIKAISU
                        END-IF
-                   END-PERFORM   
+                   END-PERFORM
                END-IF
                MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
