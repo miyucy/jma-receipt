@@ -419,6 +419,7 @@
                05  WRK-HOSPADRS1       PIC X(40).
                05  WRK-HOSPADRS2       PIC X(40).
            03  WRK-HOSPTEL             PIC X(15).
+           03  WRK-HOSPPOST            PIC X(07).
       *H28.4
       *    残量確認指示 
            03  WRK-ZANSIJI-G.
@@ -2852,6 +2853,7 @@
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
+           MOVE    SYS-1002-POST       TO  WRK-HOSPPOST
       *    医療機関編集情報
            PERFORM 900-SYS1900-SYORI-SEC
       *
@@ -5886,9 +5888,10 @@
            MOVE    WRK-HOSPADRS1       TO  FMSHOHO-HOSP-ADRS (1)
            MOVE    WRK-HOSPADRS2       TO  FMSHOHO-HOSP-ADRS (2)
       *    医療機関郵便番号
-           MOVE    SYS-1002-POST       TO  FMSHOHO-HOSP-POST
+           MOVE    WRK-HOSPPOST        TO  FMSHOHO-HOSP-POST
       *    医療機関電話
-           MOVE    SYS-1002-TEL        TO  FMSHOHO-HOSP-TEL
+      **** MOVE    SYS-1002-TEL        TO  FMSHOHO-HOSP-TEL
+           MOVE    WRK-HOSPTEL         TO  FMSHOHO-HOSP-TEL
       *    ドクターコード
            MOVE    WRK-DRCD            TO  FMSHOHO-DR-CODE 
       *    医師情報
@@ -5986,6 +5989,10 @@
            END-IF
            IF      WRK-ZANSIJI2        =   "1"
                MOVE    "2"                 TO  FMSHOHO-ZANSIJI
+           END-IF
+           IF     (WRK-ZANSIJI1        =   "1" )
+              AND (WRK-ZANSIJI2        =   "1" )
+               MOVE    "3"                 TO  FMSHOHO-ZANSIJI
            END-IF
       *    麻毒フラグ
            MOVE    FLG-MAYAKU          TO  FMSHOHO-MAYAKU
@@ -6404,6 +6411,7 @@
                MOVE    SYS-1902-ADRS1      TO  WRK-HOSPADRS1
                MOVE    SYS-1902-ADRS2      TO  WRK-HOSPADRS2
                MOVE    SYS-1902-TEL        TO  WRK-HOSPTEL
+               MOVE    SYS-1902-POST       TO  WRK-HOSPPOST
            END-IF
            .
       *
