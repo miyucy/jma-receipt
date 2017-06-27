@@ -418,6 +418,12 @@
            03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
                05  WRK-HOSPADRS1       PIC X(40).
                05  WRK-HOSPADRS2       PIC X(40).
+           03  WRK-API-HOSPNAME-G.
+               05  WRK-API-HOSPNAME    PIC X(120)
+                                       OCCURS 3.
+           03  WRK-API-HOSPADRS-G.
+               05  WRK-API-HOSPADRS    PIC X(120)
+                                       OCCURS 3.
            03  WRK-HOSPTEL             PIC X(15).
            03  WRK-HOSPPOST            PIC X(07).
       *H28.4
@@ -2851,7 +2857,9 @@
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
+                                           WRK-API-HOSPNAME (1)
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
+                                           WRK-API-HOSPADRS (1)
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
            MOVE    SYS-1002-POST       TO  WRK-HOSPPOST
       *    ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û
@@ -5882,11 +5890,13 @@
       *    ∞ÂŒ≈µ°¥ÿ•≥°º•…
            MOVE    SYS-1001-HOSPCD     TO  FMSHOHO-HOSPCD
       *    ∞ÂŒ≈µ°¥ÿÃææŒ
-           MOVE    WRK-HOSPNAME1       TO  FMSHOHO-HOSP-NAME (1)
-           MOVE    WRK-HOSPNAME2       TO  FMSHOHO-HOSP-NAME (2)
+           MOVE    WRK-API-HOSPNAME(1) TO  FMSHOHO-HOSP-NAME (1)
+           MOVE    WRK-API-HOSPNAME(2) TO  FMSHOHO-HOSP-NAME (2)
+           MOVE    WRK-API-HOSPNAME(3) TO  FMSHOHO-HOSP-NAME (3)
       *    ∞ÂŒ≈µ°¥ÿΩªΩÍÃææŒ
-           MOVE    WRK-HOSPADRS1       TO  FMSHOHO-HOSP-ADRS (1)
-           MOVE    WRK-HOSPADRS2       TO  FMSHOHO-HOSP-ADRS (2)
+           MOVE    WRK-API-HOSPADRS(1) TO  FMSHOHO-HOSP-ADRS (1)
+           MOVE    WRK-API-HOSPADRS(2) TO  FMSHOHO-HOSP-ADRS (2)
+           MOVE    WRK-API-HOSPADRS(3) TO  FMSHOHO-HOSP-ADRS (3)
       *    ∞ÂŒ≈µ°¥ÿÕπ ÿ»÷πÊ
            MOVE    WRK-HOSPPOST        TO  FMSHOHO-HOSP-POST
       *    ∞ÂŒ≈µ°¥ÿ≈≈œ√
@@ -6011,7 +6021,9 @@
       *         MOVE    "\.qr(.*[0-9][0-9]\.png|\.dat)$"
                 MOVE    "\.qr.*[0-9][0-9]\.png$"
                                             TO  QR-FILE-REGEX
-                MOVE    QR-FILE-NAME-PARA   TO  SBI-AREA
+                MOVE    FUNCTION SUBSTITUTE(QR-FILE-NAME-PARA ,
+                                            "+", "\+")
+                                            TO  SBI-AREA
                 CALL    "ORCSBLOBIMPORT"    USING
                                             SBI-AREA
                                             SPA-AREA
@@ -6384,6 +6396,11 @@
                MOVE    SYSKANRI-REC        TO  SYS-1901-REC
                MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
                MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
+      *
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-API-HOSPNAME (1)
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-API-HOSPNAME (2)
+               MOVE    SYS-1901-HOSPNAME3  TO  WRK-API-HOSPNAME (3)
+      *
            END-IF
            .
       *
@@ -6412,6 +6429,11 @@
                MOVE    SYS-1902-ADRS2      TO  WRK-HOSPADRS2
                MOVE    SYS-1902-TEL        TO  WRK-HOSPTEL
                MOVE    SYS-1902-POST       TO  WRK-HOSPPOST
+      *
+               MOVE    SYS-1902-ADRS1      TO  WRK-API-HOSPADRS (1)
+               MOVE    SYS-1902-ADRS2      TO  WRK-API-HOSPADRS (2)
+               MOVE    SYS-1902-ADRS3      TO  WRK-API-HOSPADRS (3)
+      *
            END-IF
            .
       *

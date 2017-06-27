@@ -141,8 +141,8 @@ xml_medicalv3res3 {
 		Print_Statement_Class_Name		varchar(30);
 		Print_Medicine_Information_Class	varchar(1);
 		Print_Medicine_Information_Class_Name	varchar(30);
-		Print_Medication_Note_Class		varchar(1);
-		Print_Medication_Note_Class_Name	varchar(30);
+		Print_Medicine_Notebook_Class	varchar(1);
+		Print_Medicine_Notebook_Class_Name	varchar(30);
 		Print_Appointment_Form_Class		varchar(1);
 		Print_Appointment_Form_Class_Name	varchar(30);
 		};

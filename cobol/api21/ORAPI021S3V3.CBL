@@ -2750,7 +2750,7 @@
                INITIALIZE                      ORCSCH30AREA
                MOVE    WRK-DENPNUM         TO  ORCSCH30-DENPNUM
                MOVE    MDCRES-PRINT-YAKUJYO    TO  ORCSCH30-KBN
-               MOVE    "03"                TO  SPA-PRT-FLG
+               MOVE    "04"                TO  SPA-PRT-FLG
                CALL    "ORCSCH30"          USING   SPA-AREA
                                                    ORCSCH30AREA
            END-IF
@@ -2772,7 +2772,7 @@
       *            Ã±ÆÈ
                    MOVE    ZERO                TO  ORCHC04-HAKHOUFLG
                END-IF
-               MOVE    "04"                TO  SPA-PRT-FLG
+               MOVE    "03"                TO  SPA-PRT-FLG
                CALL    "ORCHC04"           USING
                                            SPA-AREA
                                            ORCHC04AREA
@@ -2933,7 +2933,7 @@
       *                                TO  ORCHC03-MATOME-NYUHENKIN-KBN
       *
            MOVE    "02"                TO  SPA-PRT-FLG
-           CALL    "ORCHC03V05"        USING
+           CALL    "ORCHC03V03A5"      USING
                                        SPA-AREA
                                        ORCHC03AREA
            .

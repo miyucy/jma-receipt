@@ -23,12 +23,12 @@ xml_medicalv3req3 {
 		Ad_Money2		varchar(10);
 		Re_Money		varchar(10);
 #--- °õºþ¶èÊ¬
-		Print__Info    {
+		Print_Info    {
 		Print_Prescription_Class	varchar(1);
 		Print_Invoice_Receipt_Class	varchar(1);
 		Print_Statement_Class		varchar(1);
 		Print_Medicine_Information_Class	varchar(1);
-		Print_Medication_Note_Class	varchar(1);
+		Print_Medicine_Notebook_Class	varchar(1);
 		Print_Appointment_Form_Class	varchar(1);
 		};
 	};
