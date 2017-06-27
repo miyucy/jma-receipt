@@ -16985,7 +16985,7 @@
       *
       *    入院会計作成後に食事の算定が無い日の食堂加算をクリアする
       *    処理を追加
-           IF  SPA-NAI-I01-IDOYMD(1:6)  >= "200604"
+           IF  SPA-NAI-I01-MAEIDOYMD(1:6)  >= "200604"
                MOVE      SPACE             TO   WRK-SHOKUDOU-SRYYM
                IF        WRK-TENROOM-SKJ-SRYYM(1)   NOT =   SPACE
                    MOVE  WRK-TENROOM-SKJ-SRYYM(1)
