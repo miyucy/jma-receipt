@@ -52,8 +52,6 @@
       *  04.07.01    NACL-ÃÝÅÄ    07/06/01  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *
       *  04.08.01    NACL-Æ£¸¶    14/08/28  £´¡¥£¸¥ß¥É¥ëÂÐ±þ
-      *
-      *  05.00.01    NACL-Æ£¸¶    17/12/25  £È£Á£Ï£Ò£ÉÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -264,8 +262,6 @@
        01  TOUKEIMEMO-REC.
            COPY  "CPTOUKEIMEMO.INC".
       *
-           COPY    "MONBLOB".
-      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -316,7 +312,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA51SCRAREA.INC".
+           COPY    "L01.INC".
+           COPY    "L02.INC".
+           COPY    "L03.INC".
+           COPY    "L04.INC".
+           COPY    "L06.INC".
+           COPY    "L07.INC".
+           COPY    "L99.INC".
+           COPY    "L100.INC".
+           COPY    "LERR.INC".
+           COPY    "LID1.INC".
+           COPY    "LID2.INC".
+           COPY    "G01.INC".
+           COPY    "G02.INC".
+           COPY    "G03.INC".
+           COPY    "G05.INC".
+           COPY    "G07.INC".
+           COPY    "G99.INC".
+           COPY    "G100.INC".
+           COPY    "GERR.INC".
+           COPY    "GID1.INC".
+           COPY    "GID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -414,11 +430,10 @@
                IF    ( SPA-MOTOPG      =   "XA01" OR "XB01" OR "XC01"
                                                   OR "XG01"           )
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
-                   MOVE    SPA-WORK        TO  SPA-L01KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-L01FREE
                    PERFORM 3001-UPDATE-CHK-SEC
                    IF    ( FLG-UPDATE      =   ZERO )
-                       CONTINUE
+                       INITIALIZE              SPA-L01KYOUTU
                    ELSE
                        PERFORM 310-SPASET-SEC
                    END-IF
@@ -962,11 +977,10 @@
            MOVE    "L01"               TO  LNK-XC01-MOTOPG
            MOVE    SPACE               TO  LNK-XC01-MODE
       *
+           MOVE    LNK-XC01-AREA       TO  SPA-WORK
       *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    LNK-XC01-AREA       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-           MOVE    SPA-L01KYOUTU       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-L01FREE         TO  LNK-SCRSPA
       *
@@ -1568,11 +1582,6 @@
                                                    DELIMITED BY SPACE
                            INTO    WRK-ERRMSG
                            END-STRING
-                           IF      SPA-L01-JOB-PARAM
-                                           NOT =   SPACE
-                               MOVE    IDXA    TO  SPA-L01-PARAHYOJI-1
-                               MOVE    IDXB    TO  SPA-L01-PARAHYOJI-2
-                           END-IF
                            GO  TO  49001-MINYURYOKU-CHK-EXT
                        END-IF
                    END-PERFORM
@@ -2086,10 +2095,6 @@
                    MOVE    "2"             TO  SHELLTBL-ARG17
                  END-IF
                END-EVALUATE
-               IF      SPA-L01-JOB-PARAM
-                                       NOT =   SPACE
-                   MOVE    "7"                 TO  SHELLTBL-ARG17
-               END-IF
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SPA-CLIENT-SHOWDIALOG
                                            TO  SHELLTBL-ARG22
@@ -2101,14 +2106,6 @@
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
-           END-IF
-      *
-      *    monblobapi½èÍý
-           IF      SPA-L01-JOB-PARAM
-                               NOT =   SPACE
-               IF      SPA-ERRCD       =   SPACE
-                   PERFORM 45013-MONBLOBAPI-SEC
-               END-IF
            END-IF
       *
       *    £Ê£Ï£Â£É£Ä¹¹¿·½èÍý
@@ -2198,10 +2195,6 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
-           MOVE    SPA-L01-JOB-KARTE-UID
-                                   TO  JOB-KARTE-UID
-           MOVE    SPA-L01-JOB-ORCA-UID
-                                   TO  JOB-ORCA-UID
            PERFORM 800-ORCSJOB-SEC
       *
            .
@@ -2259,83 +2252,6 @@
            EXIT.
       *
       *****************************************************************
-      *    MONBLOBAPI½èÍý
-      *****************************************************************
-       45013-MONBLOBAPI-SEC        SECTION.
-      *
-           PERFORM 45011-JOBKANRI-HENSYU-SEC
-      *             
-           MOVE    SPACE               TO  SHELLTBL
-           MOVE    "haori_monblobapi.sh"
-                                       TO  SHELLTBL-NAME
-           MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
-           MOVE    WRK-CONS-JOB-JOBID
-                                       TO  SHELLTBL-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  SHELLTBL-SHELLID
-      *
-           MOVE    SPACE               TO  LNK-PRTKANRI-AREA
-           INITIALIZE                      LNK-PRTKANRI-AREA
-           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
-                                       TO  LNK-PRTKANRI-TBL-KEY 
-           MOVE    SPA-L01-TBL-GROUP   TO  LNK-PRTKANRI-TBL-GROUP
-           MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
-           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
-           MOVE    "000000"            TO  LNK-PRTKANRI-SRYYM
-           MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
-           MOVE    "haori_monblobapi.sh"
-                                       TO  LNK-PRTKANRI-SHELLID
-           MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
-           MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
-           MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
-      *
-           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
-           MOVE    LNK-PRTKANRI-TBL-KEY
-                                       TO  SHELLTBL-ARG2
-           MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  SHELLTBL-ARG3
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  SHELLTBL-ARG4
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6
-           MOVE    LNK-PRTKANRI-SHELLID
-                                       TO  SHELLTBL-ARG7
-           MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  SHELLTBL-ARG8
-           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9
-           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
-           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
-           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG12
-           MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  SHELLTBL-ARG13
-           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG14
-           MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG15
-      *
-           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "monblob"           TO  MCP-TABLE
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MONBLOB
-           MOVE    MONBLOB-ID          TO  SPA-L01-MONBLOB-PRINT-ID
-                                           SHELLTBL-ARG16
-           MOVE    SPA-L01-PUSHBA01-EVENT
-                                       TO  SHELLTBL-ARG17
-      *
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "allways"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-      *
-           .
-       45013-MONBLOBAPI-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ¾ðÊóºï½ü²èÌÌ¤Ø
       *****************************************************************
        490-JYOUHOU-DEL-SEC             SECTION.
@@ -2344,7 +2260,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-L01KYOUTU       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-L01FREE         TO  LNK-SCRSPA
       *
@@ -2622,7 +2537,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-L01KYOUTU       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-L01FREE         TO  LNK-SCRSPA
       *
@@ -2655,7 +2569,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-L01KYOUTU       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-L01FREE         TO  LNK-SCRSPA
       *

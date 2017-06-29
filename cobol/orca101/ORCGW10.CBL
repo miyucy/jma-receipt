@@ -556,8 +556,14 @@
                                            SYS-EDYUKYMD
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
                MOVE    SYSKANRI-REC    TO  SYS-3101-REC
-               MOVE    SYS-3101-REPOS-NAME
-                                        TO  SPA-GMN-W10-REPOS-NAME
+               IF    ( SPA-MW          =   SPA-GINBEE )
+                   IF    ( SPA-W10-CUSTOM-ENABLED =   "1" )
+                    OR   ( SYS-3101-REPOS-NAME
+                                       NOT =   SPACE )
+                       MOVE    SYS-3101-REPOS-NAME
+                                           TO  SPA-GMN-W10-REPOS-NAME
+                   END-IF
+               END-IF
       *
                MOVE    SYS-3001-REC        TO  SYSKANRI-REC
                MOVE    SYS-3001-PRGNAME    TO  WRK-PGID
@@ -797,9 +803,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
-               IF    ( SPA-MW  =   SPA-GINBEE )
-                   PERFORM 4102-REPOS-NAME-CHK-SEC
-               END-IF
+               PERFORM 4102-REPOS-NAME-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
@@ -1758,13 +1762,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "　　　　　　　１０" TO  W10-LBLPARA10
            END-IF
       *
-           MOVE    "F"                      TO  W10-REPOS-NAME-VISIBLE
            IF    ( SPA-MW               =   SPA-GINBEE )
                IF    ( SPA-W10-CUSTOM-ENABLED  =   "1" )
                 OR   ( SPA-GMN-W10-REPOS-NAME
                                        NOT =   SPACE )
                    MOVE    "T"              TO  W10-REPOS-NAME-VISIBLE
                    MOVE    "レポジトリ名"   TO  W10-LBLREPOS-NAME
+               ELSE
+                   MOVE    "F"              TO  W10-REPOS-NAME-VISIBLE
                END-IF
            END-IF
       *

@@ -50,7 +50,6 @@
       *  04.05.01    NACL-Æ£¸¶    09/10/01  Åý·×£Ã£Ó£Ö½ÐÎÏÂÐ±þ
       *
       *  04.08.01    NACL-Æ£¸¶    14/08/28  £´¡¥£¸¥ß¥É¥ëÂÐ±þ
-      *  05.00.00    NACL-¿¹ÏÆ    17/11/29  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -298,10 +297,6 @@
       *    ²Ý¶â¥Á¥§¥Ã¥¯
            COPY    "CPORCSBILLINGCHECK.INC".
       *
-      *----(05.00.00)--ADD-START---
-      *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÀ©¸æ
-           COPY    "CPORCSPRTCTRL.INC".
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
@@ -313,7 +308,27 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA51SCRAREA.INC".
+           COPY    "L01.INC".
+           COPY    "L02.INC".
+           COPY    "L03.INC".
+           COPY    "L04.INC".
+           COPY    "L06.INC".
+           COPY    "L07.INC".
+           COPY    "L99.INC".
+           COPY    "L100.INC".
+           COPY    "LERR.INC".
+           COPY    "LID1.INC".
+           COPY    "LID2.INC".
+           COPY    "G01.INC".
+           COPY    "G02.INC".
+           COPY    "G03.INC".
+           COPY    "G05.INC".
+           COPY    "G07.INC".
+           COPY    "G99.INC".
+           COPY    "G100.INC".
+           COPY    "GERR.INC".
+           COPY    "GID1.INC".
+           COPY    "GID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -410,11 +425,10 @@
                IF    ( SPA-MOTOPG      =   "XA01" OR "XB01" OR "XC01"
                                                   OR "XG01"           )
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
-                   MOVE    SPA-WORK        TO  SPA-G01KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-G01FREE
                    PERFORM 3001-UPDATE-CHK-SEC
                    IF    ( FLG-UPDATE      =   ZERO )
-                       CONTINUE
+                       INITIALIZE              SPA-G01KYOUTU
                    ELSE
                        PERFORM 310-SPASET-SEC
                    END-IF
@@ -973,10 +987,10 @@
            MOVE    "G01"               TO  LNK-XC01-MOTOPG
            MOVE    SPACE               TO  LNK-XC01-MODE
       *
-           MOVE    SPACE               TO  LINKAREA
            MOVE    LNK-XC01-AREA       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-           MOVE    SPA-G01KYOUTU       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-G01FREE         TO  LNK-SCRSPA
       *
@@ -2082,17 +2096,9 @@
                    MOVE    "3"             TO  SHELLTBL-ARG17
       *         WHEN    "NO"
       *             MOVE    "3"             TO  SHELLTBL-ARG17
-      *----(05.00.00)--ADD-START---
                WHEN    "OK"
-                   IF      SPA-CLIENT-PRT-FLG  =  2
-                       MOVE    "5"         TO  SHELLTBL-ARG17
-                   ELSE
-                       MOVE    "2"         TO  SHELLTBL-ARG17
-                   END-IF
+                   MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
-               MOVE    SPA-CLIENT-SHOWDIALOG
-                                           TO  SHELLTBL-ARG22
-      *----(05.00.00)--ADD-END-----
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
@@ -2269,7 +2275,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-G01KYOUTU       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-G01FREE         TO  LNK-SCRSPA
       *
@@ -2303,7 +2308,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-G01KYOUTU       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-G01FREE         TO  LNK-SCRSPA
       *
@@ -2527,7 +2531,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-G01KYOUTU       TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-G01FREE         TO  LNK-SCRSPA
       *
