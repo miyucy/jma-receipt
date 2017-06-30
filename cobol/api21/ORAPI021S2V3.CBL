@@ -3437,6 +3437,9 @@
                PERFORM 200222-MEDICAL-HEN-SEC
       *        ¥ê¥¯¥¨¥¹¥È¡á£°£²¤Ø
                MOVE    "02"            TO  MDCRES-RESPONSE-NUMBER
+               IF      WRK-ERRKBN      =   "S"
+                   MOVE    "03"            TO  MDCRES-RESPONSE-NUMBER
+               END-IF
            END-IF
       *
            .
