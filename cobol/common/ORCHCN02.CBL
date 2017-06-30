@@ -1228,6 +1228,8 @@
                    MOVE  LNK-ORCHCN02SUB-SYUBETUMEI(MEISAI-IDX)
                                TO  FMTAIIN-NYUINRYO-NAME(KISAI-IDX)
                    MOVE  LNK-ORCHCN02SUB-NISSU(MEISAI-IDX)
+                                               TO   WRK-Z5
+                   MOVE   WRK-Z5
                                TO  FMTAIIN-NYUINRYO-NISSU(KISAI-IDX)
                END-IF
            END-PERFORM
