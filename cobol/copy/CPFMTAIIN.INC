@@ -60,5 +60,3 @@
                 07  FMTAIIN-BASEYMD            PIC X(10).
               05  FMTAIIN-BYOMEI               PIC X(76)
                                                OCCURS   2.
-              05  FMTAIIN-SONOTA               PIC X(92)
-                                               OCCURS   8.

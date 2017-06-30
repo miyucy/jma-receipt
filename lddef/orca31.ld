@@ -50,6 +50,7 @@ db "xml2" {
  xml_hsacctmodv2res;
  fm_prescription;
  fm_statement_h;
+ fm_discharge_certificate;
 };
 
 #include "orcadb.inc"
