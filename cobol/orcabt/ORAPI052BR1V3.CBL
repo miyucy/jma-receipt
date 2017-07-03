@@ -456,11 +456,11 @@
       *
            CLOSE   BYOMEILST-FILE
       *
-           IF      CNT-OUT         =   ZERO
-               MOVE    "処理対象のデータがありませんでした"
-                                       TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
+      **** IF      CNT-OUT         =   ZERO
+      ****     MOVE    "処理対象のデータがありませんでした"
+      ****                             TO  WRK-RECEERR
+      ****     PERFORM 500-ERR-HENSYU-SEC
+      **** END-IF
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE

@@ -39,3 +39,5 @@
            COPY    "GID1.INC".
            COPY    "GID2.INC".
            COPY    "CPAPILSTV2.INC".
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //APILST02-//.

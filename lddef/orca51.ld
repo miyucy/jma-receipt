@@ -26,6 +26,7 @@ bind	"GERR"		"OpenCOBOL"	"ORCGGERR";
 bind	"GID1"		"OpenCOBOL"	"ORCGGID1";
 bind	"GID2"		"OpenCOBOL"	"ORCGGID2";
 bindapi	"diseasemasterlstv3"	"OpenCOBOL"	"ORAPI052R1V3";
+bindapi	"medicationmasterlstv3"	"OpenCOBOL"	"ORAPI052R2V3";
 
 multiplex_group	orca51;
 
@@ -55,6 +56,7 @@ data	{
 		GID1;
 		GID2;
 		diseasemasterlstv3;
+		medicationmasterlstv3;
 	};
 };
 
@@ -62,6 +64,8 @@ data	{
 db "xml2" {
  xml_disease_masterlstv3req;
  xml_disease_masterlstv3res;
+ xml_medication_masterlstv3req;
+ xml_medication_masterlstv3res;
 };
 
 

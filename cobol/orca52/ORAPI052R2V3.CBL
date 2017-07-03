@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORAPI052R1V3.
+       PROGRAM-ID.         ORAPI052R2V3.
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
       *  サブシステム名    : API連携用モジュール
-      *  コンポーネント名  : 病名マスタ返却  (xml2)
+      *  コンポーネント名  : 点数マスタ返却  (xml2)
       *  管理者            :
       *  作成日付    作業者        記述
       *  17/06/XX    NACL−藤原　新規作成
@@ -137,9 +137,9 @@
            COPY    "CPORCSNUM.INC".
       *
       *    API XML読み込み用定義体
-           COPY    "CPDISEASEMASTERLSTV3REQ.INC".
+           COPY    "CPMEDICATIONMASTERLSTV3REQ.INC".
       *    API XML書き込み用定義体
-           COPY    "CPDISEASEMASTERLSTV3RES.INC".
+           COPY    "CPMEDICATIONMASTERLSTV3RES.INC".
       *
       *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
@@ -195,9 +195,9 @@
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
-           DISPLAY   "**************************"
-           DISPLAY   "* diseasemasterlst start *"
-           DISPLAY   "**************************"
+           DISPLAY   "*****************************"
+           DISPLAY   "* medicationmasterlst start *"
+           DISPLAY   "*****************************"
       *
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
@@ -214,15 +214,15 @@
       *
            IF      WRK-ERRCD           =   "E99"
       *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST-HTTPSTATUS
+               MOVE   404                  TO  APILST02-HTTPSTATUS
            ELSE
       *        返却領域編集
                PERFORM 300-APTXMLMAKE-SEC
            END-IF
       *
-           DISPLAY   "*************************"
-           DISPLAY   "* diseasemasterlst end  *"
-           DISPLAY   "*************************"
+           DISPLAY   "****************************"
+           DISPLAY   "* medicationmasterlst end  *"
+           DISPLAY   "****************************"
            .
        000-MAIN-EXIT.
            EXIT    PROGRAM.
@@ -239,7 +239,7 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           MOVE   "disease master"     TO  LSTRES-RESKEY
+           MOVE   "medication master"  TO  LSTRES-RESKEY
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
@@ -247,10 +247,8 @@
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO
-                                           LSTRES-INFORMATION-DATE
-           MOVE    WRK-HEN-TIME        TO
-                                       LSTRES-INFORMATION-TIME
+           MOVE    WRK-HEN-DATE        TO  LSTRES-INFORMATION-DATE
+           MOVE    WRK-HEN-TIME        TO  LSTRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
@@ -258,7 +256,7 @@
                                        MCPAREA
                                        SPA-AREA
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE   "E99"            TO  WRK-ERRCD
+               MOVE   "E99"                TO  WRK-ERRCD
                GO  TO 100-INIT-EXT
            END-IF
       *    ＳＰＡ共通設定
@@ -271,7 +269,7 @@
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE   "E89"            TO  WRK-ERRCD
+               MOVE   "E89"                TO  WRK-ERRCD
            END-IF
       *
            .
@@ -327,7 +325,7 @@
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
-           IF      APILST-BODY     NOT =   LOW-VALUE
+           IF      APILST02-BODY   NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
@@ -335,12 +333,12 @@
            INITIALIZE                      XML-LSTREQ
       *    XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_disease_masterlstv3req"
+           MOVE    "xml_medication_masterlstv3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST-BODY         TO  APIREQ-OBJECT
+           MOVE    APILST02-BODY       TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
-           MOVE    "disease_masterlstv3req"
+           MOVE    "medication_masterlstv3req"
                                        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -355,11 +353,11 @@
            END-IF
       *
            MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_disease_masterlstv3req"
+           MOVE    "xml_medication_masterlstv3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "disease_masterlstv3req"
+           MOVE    "medication_masterlstv3req"
                                        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -374,7 +372,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_disease_masterlstv3req"
+           MOVE    "xml_medication_masterlstv3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
@@ -434,16 +432,16 @@
       *****************************************************************
        3001-LSTRES-SEC        SECTION.
       *
-           IF      APILST-BODY     NOT =   LOW-VALUE
+           IF      APILST02-BODY   NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_disease_masterlstv3res"
+           MOVE    "xml_medication_masterlstv3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  LSTRES-MODE
-           MOVE    "disease_masterlstv3res"
+           MOVE    "medication_masterlstv3res"
                                        TO  LSTRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -456,10 +454,10 @@
            END-IF
       *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_disease_masterlstv3res"
+           MOVE    "xml_medication_masterlstv3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "disease_masterlstv3res"
+           MOVE    "medication_masterlstv3res"
                                        TO  LSTRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -472,7 +470,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_disease_masterlstv3res"
+           MOVE    "xml_medication_masterlstv3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
@@ -480,11 +478,11 @@
                                        XML-LSTRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    LSTRES-OBJECT       TO  APILST-BODY 
-               MOVE    "application/xml"   TO  APILST-CONTENT-TYPE
+               MOVE    LSTRES-OBJECT       TO  APILST02-BODY 
+               MOVE    "application/xml"   TO  APILST02-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "disease_masterlst xml write failure "
+               DISPLAY "medication_masterlst xml write failure "
            END-IF
       *
           .
@@ -526,7 +524,7 @@
                END-IF
            END-IF
       *
-      *    診療日チェック
+      *    基準日チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PERFORM-CHK-SEC
            END-IF
@@ -751,7 +749,7 @@
                                        TO  LNK-PRTKANRI-TBL-GROUP
            MOVE    "000000"            TO  LNK-PRTKANRI-SRYYM
            MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
-           MOVE    "disease_masterlst.sh"
+           MOVE    "medication_masterlst.sh"
                                        TO  LNK-PRTKANRI-SHELLID
            MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
            MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
@@ -759,7 +757,7 @@
       **** MOVE    SYS-1031-PRTNM (6)  TO  LNK-PRTKANRI-PRTNM
       *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "disease_masterlst.sh"
+           MOVE    "medication_masterlst.sh"
                                        TO  SHELLTBL-NAME
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-JOBID
