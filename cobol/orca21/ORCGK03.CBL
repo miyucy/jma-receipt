@@ -75,7 +75,8 @@
       *  04.07.01    NACL-多々納  12/01/05  クライアント印刷対応
       *  04.07.01    NACL-多々納  13/07/23  お薬手帳ＣＳＶ患者毎対応
       *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
-      * 04.08.00     NACL-多々納  15/08/05  領収・明細　請求書不要対応
+      *  04.08.00    NACL-多々納  15/08/05  領収・明細　請求書不要対応
+      *  05.00.00    NACL-多々納  17/07/XX  HAORI対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -354,6 +355,19 @@
            03  WRK-NAI-HAKYMD          PIC X(08).
            03  WRK-MAE-HAKYMD          PIC X(08).
       *
+      *HAORI
+           03  WRK-HAORI-AREA.
+               05  WRK-NYUKIN-JYOTAI       PIC X(01).
+               05  WRK-NYUKIN-HOHO         PIC X(02).
+               05  WRK-NYUKINKBN           PIC X(01).
+               05  WRK-HR-NYUKIN           PIC S9(07).
+               05  WRK-HR-HENKIN           PIC S9(07).
+               05  FLG-HAORI-NYU           PIC 9(01).
+               05  FLG-HAORI-HEN           PIC 9(01).
+               05  FLG-HAORI-IKT           PIC 9(01).
+               05  WRK-CHOSEI1-X           PIC X(11).
+               05  WRK-CHOSEI2-X           PIC X(11).
+      *
       *    剤テーブル領域
        01  WRK-TBL-ZAINUM-AREA.
            03  WRK-TBL-ZAINUM-G            OCCURS   100.
@@ -575,6 +589,11 @@
       *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
+      *H29.6
+      *HAORI
+               WHEN     "HAOR"           ALSO   SPACE
+                   PERFORM 300-HAORI-SYORI-SEC
+      *
       *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
@@ -817,7 +836,6 @@
                ADD     1                   TO  SPA-GMN-SRYKA-MAX
                MOVE    SPA-GMN-SRYKA-LIST(1)   TO  SPA-GMN-SRYKA-G
            END-IF
-      *
            .
        3004-SRYKAMEI-HEN-EXT.
            EXIT.
@@ -1225,7 +1243,7 @@
                MOVE    SPA-GMN-USERPG-LIST(1)  TO  SPA-GMN-USERPG-G
            END-IF
       *
-            .
+           .
        310-SPA-SET-EXT.
            EXIT.
       *
@@ -1481,7 +1499,7 @@
                    UNTIL       IDX     >   16
                MOVE    SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (IDX)
                ADD     SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (17)
-      *    保険適用外
+      *        保険適用外
                COMPUTE SPA-GMN-TGMONEY (IDX)   =   SYU-TGMONEY (IDX)
                                                +   SYU-TGMONEY-TAX(IDX)
       *    保険適用外
@@ -1715,7 +1733,7 @@
                                            -   SPA-MAE-SKYMONEY-TAX-SAI
                                                                 (IDX)
       *            今回請求額
-                   IF      SYU-SKYMONEY    <   SYU-CHOSEI
+                   IF      SYU-SKYMONEY    <=  SYU-CHOSEI
                        MOVE    ZERO        TO  SPA-TEIKEI-SKYMONEY (IDX)
                    ELSE
                        COMPUTE SPA-TEIKEI-SKYMONEY (IDX)
@@ -1754,7 +1772,7 @@
                                            -   SPA-MAE-SKYMONEY-TAX-SAI
                                                                 (IDX)
       *            今回請求額
-                   IF      SYU-SKYMONEY    <   SYU-CHOSEI
+                   IF      SYU-SKYMONEY    <=   SYU-CHOSEI
                        MOVE    ZERO        TO  SPA-TEIKEI-SKYMONEY (IDX)
                    ELSE
                        COMPUTE SPA-TEIKEI-SKYMONEY (IDX)
@@ -3968,6 +3986,13 @@
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
+      *HAORI
+           IF      SPA-API-FLG       =   1
+               PERFORM 4102-HAORI-KIHON-CHK-SEC
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *HAORI
+      *
       *    発行日
            IF      SPA-HAKYMD-FLG      =   1
                PERFORM 410-HAKYMD-CHK-SEC
@@ -4540,7 +4565,7 @@
                IF     (LNK-SCNYUKIN-HENKINZAN  >=  WRK-SEIKYU)
                    IF      LNK-SCNYUKIN-FURIWAKEZAN   >   ZERO
                        MOVE    "0014"              TO  SPA-ERRCD
-                       MOVE    1                   TO  SPA-GMN-CUR
+                       MOVE    2                   TO  SPA-GMN-CUR
                    END-IF
                ELSE
                    IF     (LNK-SCNYUKIN-FURIWAKEZAN
@@ -4901,8 +4926,9 @@
                    COMPUTE WRK-SEIKYU      =   SPA-GMN-CHOSEI1
                                            +   SPA-GMN-CHOSEI2
                                            +   SPA-NAI-SEIKYU
-                   IF     (WRK-SEIKYU          <   ZERO )  AND
-                          (SPA-NAI-SEIKYU      >   ZERO )
+                   IF     (WRK-SEIKYU          <   ZERO )
+      *H29.7  請求額がなくてもマイナスはエラー
+      *****           AND (SPA-NAI-SEIKYU      >   ZERO )
                        MOVE    "0004"                  TO  SPA-ERRCD
                        MOVE    06                      TO  SPA-GMN-CUR
                    END-IF
@@ -4912,8 +4938,17 @@
                COMPUTE SPA-GMN-CHOSEI      =   SPA-GMN-CHOSEI1
                                            +   SPA-GMN-CHOSEI2
                IF      (SPA-GMN-CHOSEI NOT =   SPA-MAE-CHOSEI)
+      *H29.7
+      *    HAORI対応
+                 IF      SPA-API-FLG       =   1
+      *            HAORI対応
+      *            変更があった時、入金額等を再編集
+                   PERFORM 3OO29-HAORICHOSEI-HENKOU-SEC
+                 ELSE
+      *
       *            変更があった時、入金額等を再編集
                    PERFORM 4101-CHOSEI-HENKOU-SEC
+                 END-IF
                END-IF
            END-IF
            .
@@ -4938,6 +4973,7 @@
            IF     (SPA-NAI-NYUKIN-JYOTAI   =   "2" ) 
                MOVE    ZERO            TO  SPA-GMN-NYUKIN
            END-IF
+      *
       *    訂正時入金可能へ
            IF      SPA-SYORIFLG        =   1
                IF      SPA-GMN-SEIKYU      <   ZERO
@@ -7190,6 +7226,302 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4908-JMAMR-EXT.
            EXIT.
+      *HAORI
+      *****************************************************************
+      *    HAPRI　処理
+      *****************************************************************
+       300-HAORI-SYORI-SEC                SECTION.
+      *
+           IF      SPA-API-FLG     NOT =   1
+               MOVE    "XXXX"          TO  SPA-ERRCD
+               GO      TO  300-HAORI-SYORI-EXT
+           END-IF
+      *
+      *    送信項目保存
+           EVALUATE    SPA-GMN-PAGE
+           WHEN    1
+      *        初期処理
+               PERFORM 3001-HAORI-INI-SEC
+           WHEN    2
+      *        入金額等チェック処理
+               PERFORM 3002-HAORI-CHK-SEC
+           WHEN    3
+      *        更新処理
+               PERFORM 3003-HAORI-UPD-SEC
+           END-EVALUATE
+           .
+       300-HAORI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期処理編集処理
+      *****************************************************************
+       3001-HAORI-INI-SEC         SECTION.
+      *
+           PERFORM 310-SPA-SET-SEC
+      *
+      *
+           .
+       3001-HAORI-INI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入金額等チェック処理
+      *****************************************************************
+       3002-HAORI-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  WRK-HAORI-AREA
+           IF      SPA-GMN-NYUKIN-X(1:1)   =   "*"
+      *        一括入金
+               MOVE    1                   TO  FLG-HAORI-IKT
+           ELSE
+      *        入金金額
+               IF      SPA-GMN-NYUKIN-X        =   "HAORI"
+                   MOVE    SPA-GMN-NYUKIN      TO  WRK-HR-NYUKIN
+                   MOVE    1                   TO  FLG-HAORI-NYU
+               END-IF
+      *        返金金額
+               IF      SPA-GMN-HENKIN-X        =   "HAORI"
+                   MOVE    SPA-GMN-HENKIN      TO  WRK-HR-HENKIN
+                   MOVE    1                   TO  FLG-HAORI-HEN
+               END-IF
+           END-IF
+           MOVE    SPA-GMN-CHOSEI1-X   TO  WRK-CHOSEI1-X
+           MOVE    SPA-GMN-CHOSEI2-X   TO  WRK-CHOSEI2-X
+           MOVE    SPA-GMN-CHOSEI1     TO  WRK-CHOSEI1
+           MOVE    SPA-GMN-CHOSEI2     TO  WRK-CHOSEI2
+      *    収納から画面編集
+           PERFORM 3102-SYUNOU-HEN-SEC
+      *    調整金
+           MOVE    WRK-CHOSEI1-X       TO  SPA-GMN-CHOSEI1-X
+           MOVE    WRK-CHOSEI2-X       TO  SPA-GMN-CHOSEI2-X
+           IF      FLG-HAORI-NYU       =   1
+               MOVE    WRK-HR-NYUKIN       TO  WRK-Z99
+               MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
+               MOVE    WRK-HR-NYUKIN       TO  SPA-GMN-NYUKIN
+           END-IF
+           IF      FLG-HAORI-HEN       =   1
+               MOVE    WRK-HR-HENKIN       TO  WRK-Z99
+               MOVE    WRK-Z99             TO  SPA-GMN-HENKIN-X
+               MOVE    WRK-HR-HENKIN       TO  SPA-GMN-HENKIN
+           END-IF
+      *
+           MOVE    1                   TO  FLG-TOUROKU
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
+      *
+      *    一括入金・返金処理
+           MOVE    SPACE               TO  SPA-IKKATUKBN
+           IF      FLG-HAORI-IKT       =   1
+               IF     (SPA-GMN-NYUKINKBN   =   "1" )
+                 AND  (SPA-SYORIFLG        =   ZERO)
+                   CONTINUE
+               ELSE
+      *            一括返金
+                   PERFORM 409-HENKIN-SYORI-SEC
+               END-IF
+      *        一括入金
+               PERFORM 408-NYUKIN-SYORI-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+      *        エラーメッセージ編集
+               PERFORM 510-ERRSET-SEC
+           END-IF
+           .
+       3002-HAORI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    HAORI 基本チェックと別画面処理
+      *****************************************************************
+       4102-HAORI-KIHON-CHK-SEC          SECTION.
+      *
+      *    発行日（警告チェックなのでなし）
+      **** PERFORM 410-HAKYMD-CHK-SEC
+      *
+      *    調整金
+           IF     (SPA-GMN-HKNCOMBI    =   ZERO )  OR
+                  (SPA-GMN-SRYKA       =   ZERO )
+               CONTINUE
+           ELSE
+               PERFORM 410-CHOSEI-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      4102-HAORI-KIHON-CHK-EXT
+               END-IF
+           END-IF
+      *    返金
+           IF     (SPA-NAI-HENFLG       =   1    )
+               IF      SPA-ERRCD        =   SPACE
+                   PERFORM 450-HENKIN-CHK-SEC
+               END-IF
+           END-IF
+      *    入金
+      *    入金があればそのまま編集
+           IF      FLG-HAORI-NYU       =   1
+               MOVE    WRK-HR-NYUKIN       TO  WRK-Z99
+               MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
+               MOVE    WRK-HR-NYUKIN       TO  SPA-GMN-NYUKIN
+           END-IF
+      *
+           IF    ((SPA-GMN-HKNCOMBI    NOT =   ZERO )  AND
+                  (SPA-GMN-SRYKA       NOT =   ZERO ))  OR
+                  (SPA-NAI-NYUKINFLG       =   1    )
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 450-NYUKIN-CHK-SEC
+               END-IF
+           END-IF
+      *    入金方法
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 450-NYUKINHOU-CHK-SEC
+           END-IF
+      *    入金の取扱い
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 450-NYUKINKBN-CHK-SEC
+           END-IF
+      *
+      *    関連チェック
+      *    変更が無い時
+           IF    ((SPA-GMN-NYUKINKBN   =   SPA-MAE-NYUKINKBN )  AND
+                  (SPA-GMN-NYUKIN      =   SPA-MAE-NYUKIN    )  AND
+                  (SPA-GMN-HENKIN      =   SPA-MAE-HENKIN    )  AND
+                  (SPA-GMN-CHOSEI1     =   SPA-MAE-CHOSEI1   )  AND
+                  (SPA-GMN-CHOSEI2     =   SPA-MAE-CHOSEI2   )  AND
+                  (FLG-TOUROKU         =   ZERO              ))
+              OR  (SPA-ERRCD       NOT =   SPACE             )
+               CONTINUE
+           ELSE
+      *        入金額計算計算処理
+               PERFORM 31051-NYUKIN-KEISAN-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    SPA-GMN-NYUKINKBN   TO  SPA-MAE-NYUKINKBN
+                   MOVE    SPA-GMN-NYUKIN      TO  SPA-MAE-NYUKIN
+                   MOVE    SPA-GMN-HENKIN      TO  SPA-MAE-HENKIN
+                   MOVE    SPA-GMN-CHOSEI1     TO  SPA-MAE-CHOSEI1
+                   MOVE    SPA-GMN-CHOSEI2     TO  SPA-MAE-CHOSEI2
+                   COMPUTE SPA-MAE-CHOSEI      =   SPA-MAE-CHOSEI1
+                                               +   SPA-MAE-CHOSEI2
+               ELSE
+                   MOVE    "E"                 TO  SPA-MAE-NYUKINKBN
+               END-IF
+           END-IF
+      *
+           .
+       4102-HAORI-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    HAORI 調整金から入金額等を再編集処理
+      *****************************************************************
+       3OO29-HAORICHOSEI-HENKOU-SEC         SECTION.
+      *
+      *    今回請求額
+           COMPUTE SPA-GMN-SEIKYU      =  (SPA-NAI-SEIKYU
+                                       +   SPA-GMN-CHOSEI )
+                                       -   SPA-OLD-SEIKYU
+      *
+      *    訂正時入金可能へ
+           IF      SPA-SYORIFLG        =   1
+               IF      SPA-GMN-SEIKYU      <   ZERO
+                   MOVE    1               TO  SPA-NAI-HENFLG
+               ELSE
+                   MOVE    ZERO            TO  SPA-NAI-HENFLG
+               END-IF
+           END-IF
+      *
+           IF      FLG-HAORI-NYU       =   1
+      *        入金額送信ありはそのまま
+               MOVE    SPA-GMN-NYUKIN      TO  WRK-Z99
+               MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
+               GO      TO      3OO29-HAORICHOSEI-HENKOU-EXT
+           END-IF
+      *
+           IF      SPA-GMN-SEIKYU      <   ZERO
+               MOVE    ZERO            TO  SPA-GMN-NYUKIN
+           ELSE
+               MOVE    SPA-GMN-SEIKYU  TO  SPA-GMN-NYUKIN
+           END-IF
+      *    入金状態が未入金の時、ゼロ
+           IF     (SPA-NAI-NYUKIN-JYOTAI   =   "2" ) 
+               MOVE    ZERO            TO  SPA-GMN-NYUKIN
+           END-IF
+      *
+      *    訂正時入金可能へ
+           IF      SPA-SYORIFLG        =   1
+               IF      SPA-GMN-SEIKYU      <   ZERO
+                   MOVE    1               TO  SPA-NAI-HENFLG
+               ELSE
+                   MOVE    ZERO            TO  SPA-NAI-HENFLG
+               END-IF
+           END-IF
+      *!!
+      *
+           IF      (SPA-SYORIFLG       =   0  )
+              AND  (SPA-NAI-NYKHNKKBN  =   "1"  OR  "3" )
+              AND  (SPA-GMN-NYUKINKBN   NOT =   "1"  )
+               IF     (SPA-GMN-SRYKA       =   SPA-GOK-SRYKA ) AND
+                      (SPA-GMN-HKNCOMBI    =   SPA-GOK-HKNCOMBI)
+      *            入金上限額を入金へ
+                   COMPUTE SPA-GMN-NYUKIN  =   SPA-GMN-NYUKIN
+                                           +   SPA-GMN-ZENMISYU
+               END-IF
+           END-IF
+      *
+      *    返金額対応
+           IF      SPA-GMN-HENKIN      >   ZERO
+               IF      SPA-SYORIFLG        =   ZERO
+                   IF      SPA-GMN-NYUKIN  >   SPA-GMN-HENKIN
+                       COMPUTE SPA-GMN-NYUKIN  =   SPA-GMN-NYUKIN
+                                               -   SPA-GMN-HENKIN
+                   END-IF
+               ELSE
+                   IF      SPA-GMN-SEIKYU      >=  ZERO
+                       MOVE    ZERO            TO  SPA-GMN-HENKIN
+                       MOVE    SPA-GMN-HENKIN  TO  SPA-GMN-HENKIN-X
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    SPA-GMN-NYUKIN      TO  WRK-Z99
+           MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
+           .
+       3OO29-HAORICHOSEI-HENKOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    HAORI更新処理
+      *****************************************************************
+       3003-HAORI-UPD-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SPA-MATOME-NYUHENKIN-KBN
+      *
+      *    入金額振り分け処理
+           IF      SPA-GMN-NYUKINKBN   =   "1"
+               MOVE    SPA-GOK-NYUKIN      TO  WRK-NYUKIN
+           ELSE
+      *        未入金が無い場合対象外
+               IF    ((SPA-GMN-ZENMISYU    =   ZERO )  AND
+                      (SPA-GMN-CHOKAKIN    =   ZERO ))
+                  OR ((SPA-GOK-NYUKIN      =   ZERO )  AND
+                      (SPA-GOK-HENKIN      =   ZERO ))
+                   MOVE    SPA-GOK-NYUKIN      TO  WRK-NYUKIN
+               ELSE
+                   PERFORM 450011-NYUKIN-KEISAN-SEC
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+      *        外来更新処理
+               PERFORM 450012-GAIRAI-CALL-SEC
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+      *        エラーメッセージ編集
+               PERFORM 510-ERRSET-SEC
+           END-IF
+      *
+           .
+       3003-HAORI-UPD-EXT.
+           EXIT.
+      *HAORI
       *
       *****************************************************************
       *    自画面編集処理
