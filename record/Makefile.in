@@ -1013,6 +1013,7 @@ DB_files = \
 	xml_disease_masterlstv3res.db \
 	xml_medication_masterlstv3req.db \
 	xml_medication_masterlstv3res.db \
+	push_batch01.db \
 
 
 shell.db: shell.db.in

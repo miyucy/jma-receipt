@@ -324,5 +324,6 @@ db      "blob_body" {
 db "push" {
         push_find;
         push_print001;
+        push_batch01;
 };
 
