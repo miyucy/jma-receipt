@@ -1732,94 +1732,6 @@
            .
        20020-SYUNOU-PARA-EXT.
            EXIT.
-      *****************************************************************
-      *    ÄûÀµÁ°¤Î¼ýÇ¼ÊÔ½¸½èÍý
-      *****************************************************************
-       20025-TEISEI-HENSYU-SEC        SECTION.
-      *
-           INITIALIZE                  TEI-SYUNOU-REC
-           MOVE    LNK-SYUNOU2-REC (1) TO  SYUNOU-REC
-      *
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TEI-SYUNOU-REC
-                   MOVE    ZERO                TO  FLG-SYUNOU
-               ELSE
-                   MOVE    1                   TO  FLG-SYUNOU
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       20025-TEISEI-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ì¤¼ý¶â½¸·×½èÍý
-      *****************************************************************
-       20026-MISYUKIN-SYUKEI-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  WRK-ZENMISYU
-           MOVE    ZERO                TO  WRK-CHOKAKIN
-      *
-           INITIALIZE                      SYUNOU-REC
-           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
-           MOVE    "2"                 TO  SYU-NYUGAIKBN
-           MOVE    SPA-PTID            TO  SYU-PTID
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key13"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key13"             TO  MCP-PATHNAME
-               PERFORM 980-SYUNOU-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYUNOU
-               INITIALIZE              SYUNOU-REC
-           END-IF
-           PERFORM UNTIL     FLG-SYUNOU    NOT =  ZERO
-               IF      SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
-      *            Ì¤¼ý³Û
-                   COMPUTE WRK-ZENMISYU    =   WRK-ZENMISYU
-                                           +  (SYU-SKYMONEY
-                                           -   SYU-NYUKIN-TOTAL)
-               ELSE
-      *            Ä¶²á³Û
-                   COMPUTE WRK-CHOKAKIN    =   WRK-CHOKAKIN
-                                           +  (SYU-NYUKIN-TOTAL
-                                           -   SYU-SKYMONEY     )
-               END-IF
-               MOVE    "key13"             TO  MCP-PATHNAME
-               PERFORM 980-SYUNOU-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key13"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    Ì¤¼ý³Û
-           MOVE    WRK-ZENMISYU        TO  WRK-SURYO
-           PERFORM 810-NUMHENKAN-SEC
-           MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
-                                       TO  MDCRES-MAE-MISYU
-      *    Ä¶²á³Û
-           MOVE    WRK-CHOKAKIN        TO  WRK-SURYO
-           PERFORM 810-NUMHENKAN-SEC
-           MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
-                                       TO  MDCRES-MAE-CHOUKA
-           .
-       20026-MISYUKIN-SYUKEI-EXT.
-           EXIT.
       *
       *****************************************************************
       *    ºÞºï½ü½èÍý
@@ -2012,9 +1924,8 @@
            PERFORM 810-NUMHENKAN-SEC
            MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                        TO  MDCRES-TOTAL-IC-MONEY
-      *??????
+      *
       *    ÊÖ¶â³Û
-      *??? IF      SPA-NAI-HENKBN      =   "1"
            IF      SPA-GMN-HENKIN  NOT =   ZERO
                MOVE    SPA-GMN-HENKIN      TO  WRK-SURYO
                PERFORM 810-NUMHENKAN-SEC
@@ -2029,14 +1940,6 @@
                MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                        TO  MDCRES-MAX-IC-MONEY
            END-IF
-      *    ¹ç·×Ì¤¼ý³Û
-           COMPUTE WRK-KINGAKU         =   SPA-GMN-SEIGOK
-                                       -   SPA-GOK-NYUKIN
-                                       -   SPA-NAI-HENKIN
-           MOVE    WRK-KINGAKU         TO  WRK-SURYO
-           PERFORM 810-NUMHENKAN-SEC
-      ***  MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
-      ***                              TO  MDCRES-MISYU-MONEY
            .
        200231-GMNINIT-HEN-EXT.
            EXIT.
@@ -2206,17 +2109,19 @@
            END-IF
       *    ¸ºÌÈ¶èÊ¬
            IF      SYU-DISCOUNT-TEIRITU    NOT =   SPACE
-               MOVE    SYU-DISCOUNT-TEIRITU
-                                       TO  MDCRES-DISCOUNT-TEIRITU
                EVALUATE    SYU-DISCOUNT-TEIRITU
                WHEN    "1"
-                   MOVE    "¡ó"        TO  MDCRES-DISCOUNT-TEIRITU-NAME
                    MOVE    SYU-DISCOUNT-RATE   TO  WRK-ZZ9
-                   MOVE    WRK-ZZ9             TO  MDCRES-DISCOUNT-RATE
+                   STRING  WRK-ZZ9
+                           "¡ó"            DELIMITED  BY  SIZE
+                                           INTO    MDCRES-DISCOUNT-NAME
+                   END-STRING
                WHEN    "2"
-                   MOVE    "±ß"        TO  MDCRES-DISCOUNT-TEIRITU-NAME
                    MOVE    SYU-DISCOUNT-RATE   TO  WRK-Z97
-                   MOVE    WRK-Z97             TO  MDCRES-DISCOUNT-RATE
+                   STRING  WRK-Z97
+                           "±ß"            DELIMITED  BY  SIZE
+                                           INTO    MDCRES-DISCOUNT-NAME
+                   END-STRING
                END-EVALUATE
            END-IF
       *

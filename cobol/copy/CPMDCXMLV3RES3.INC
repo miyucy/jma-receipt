@@ -251,9 +251,8 @@
       *                     自費消費税（再掲）
                             11  MDCRES-JIHI-TAX    PIC X(10).
       *            減免情報
-                   07  MDCRES-DISCOUNT-TEIRITU     PIC X(01).
-                   07  MDCRES-DISCOUNT-TEIRITU-NAME    PIC X(02).
-                   07  MDCRES-DISCOUNT-RATE        PIC X(03).
+                   07  MDCRES-DISCOUNT-INF.
+                       09  MDCRES-DISCOUNT-NAME        PIC X(12).
       *
       *            訂正前収納情報返却
                    07  MDCRES-OLD-CD-INF.
