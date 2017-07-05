@@ -8251,6 +8251,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    =   ZERO  )
            AND   ( JOB-PARAM   NOT =   SPACE )
                INITIALIZE                  PUSHBA01-REC
+               MOVE    "000"           TO  PUSHBA01API-RESULT
                MOVE    "receipt_make"  TO  PUSHBA01-EVENT
                MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
