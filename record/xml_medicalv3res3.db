@@ -148,7 +148,7 @@ xml_medicalv3res3 {
     	     	    };
     	     };
 #---            減免情報
-	        Discount_Teiritu_Information  {
+	        Discount_Information  {
 		Discount_Name			varchar(12);
         	};
 #---        訂正前情報
