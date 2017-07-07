@@ -77,6 +77,7 @@
       *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
       *  04.08.00    NACL-多々納  15/08/05  領収・明細　請求書不要対応
       *  05.00.00    NACL-多々納  17/07/XX  HAORI対応
+      *  05.00.00    NACL-多々納  17/07/XX  PUSH通信対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -368,6 +369,26 @@
                05  WRK-CHOSEI1-X           PIC X(11).
                05  WRK-CHOSEI2-X           PIC X(11).
       *
+      *H29.7
+      *PUSH通信用
+           03  WRK-HEN-DATE.
+               05  WRK-HEN-YY          PIC X(04).
+               05  WRK-HEN-H1          PIC X(01).
+               05  WRK-HEN-MM          PIC X(02).
+               05  WRK-HEN-H2          PIC X(01).
+               05  WRK-HEN-DD          PIC X(02).
+      *    時間編集
+           03  WRK-THMS.
+               05  WRK-THHH             PIC X(02).
+               05  WRK-THMM             PIC X(02).
+               05  WRK-THSS             PIC X(02).
+           03  WRK-HEN-TIME.
+               05  WRK-HEN-THH         PIC X(02).
+               05  WRK-HEN-T1          PIC X(01).
+               05  WRK-HEN-TMM         PIC X(02).
+               05  WRK-HEN-T2          PIC X(01).
+               05  WRK-HEN-TSS         PIC X(02).
+      *
       *    剤テーブル領域
        01  WRK-TBL-ZAINUM-AREA.
            03  WRK-TBL-ZAINUM-G            OCCURS   100.
@@ -545,6 +566,10 @@
            COPY    "CPSHELLTBL.INC".
       *****COPY    "ORCA-DBPATH".
       *===> For Claim End
+      *
+      *H29.7
+      *PUSH通信
+           COPY    "CPPUSHMEDICAL01.INC".
       *
       *
       *****************************************************************
@@ -6131,6 +6156,12 @@
                PERFORM 49061-API-CLMAI-SEC
            END-IF
       *
+      *H29.7
+      *PUSH通信
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 600-PUSH-SYORI-SEC
+           END-IF
+      *
       *!!!!
       *    ユーザプログラム起動
            IF     (SPA-ERRCD           =   SPACE ) 
@@ -6400,6 +6431,12 @@
                    MOVE    "K001"          TO  SPA-ERRCD
                    MOVE    1               TO  SPA-KEI-FLG
                 END-IF
+           END-IF
+      *
+      *H29.7
+      *PUSH通信
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 600-PUSH-SYORI-SEC
            END-IF
       *
       *    感染症送信
@@ -7522,6 +7559,137 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        3003-HAORI-UPD-EXT.
            EXIT.
       *HAORI
+      *H29.7
+      *PUSH通信
+      *****************************************************************
+      *    PUSH通信処理
+      *****************************************************************
+       600-PUSH-SYORI-SEC             SECTION.
+      *
+           INITIALIZE                      PUSHMD01-REC
+           MOVE    "patient_account"       TO  PUSHMD01-EVENT
+           EVALUATE    SPA-SYORIFLG
+           WHEN    ZERO
+      *        追加
+               MOVE    "add"               TO  PUSHMD01-PMODE
+           WHEN    1
+      *        訂正
+               IF      SPA-IDX-KOUI        =   ZERO
+      *            削除
+                   MOVE    "delete"            TO  PUSHMD01-PMODE
+               ELSE
+      *            更新
+                   MOVE    "modify"            TO  PUSHMD01-PMODE
+               END-IF
+           END-EVALUATE
+      *    処理時間取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
+           MOVE    SMCNDATE-HMS        TO  WRK-THMS
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  PUSHMD01-SYSYMD
+           MOVE    WRK-HEN-TIME        TO  PUSHMD01-SYSTIME
+           MOVE    SPA-PTNUM           TO  PUSHMD01-PTNUM
+      *    診療日付
+           MOVE    SPA-SRYYMD          TO  WRK-SYMD
+           MOVE    SPACE               TO  WRK-THMS
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  PUSHMD01-SRYYMD
+      *
+           IF      SPA-IDX-KOUI        =   ZERO
+      *        削除
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   15  )  OR
+                                  (SPA-TEI-DENPNUM(IDX)   =   ZERO)
+                   MOVE    SPA-TEI-SRYKA(IDX)  TO  PUSHMD01-SRYKA
+                                                          (IDX)
+                   MOVE    SPA-TEI-HKNCOMBI(IDX)
+                                           TO  PUSHMD01-HKNCOMBI
+                                                          (IDX)
+                   MOVE    SPA-TEI-DENPNUM(IDX)
+                                           TO  PUSHMD01-DENPNUM
+                                                          (IDX)
+               END-PERFORM
+               IF      SPA-TEI-DENPNUM(1)  =   ZERO
+      *            単独の時
+                   MOVE    SPA-OLD-SRYKA   TO  PUSHMD01-SRYKA
+                                                          (1)
+                   MOVE    SPA-OLD-HKNCOMBI
+                                           TO  PUSHMD01-HKNCOMBI
+                                                          (1)
+                   MOVE    SPA-DENPNUM     TO  PUSHMD01-DENPNUM
+                                                          (1)
+               END-IF
+           ELSE
+      *        新規・更新
+               MOVE    ZERO                TO  IDX
+               PERFORM VARYING     IDX-S   FROM    1   BY  1
+                       UNTIL      (IDX-S   >   SPA-SYUNOU-MAX )
+                              OR  (IDX     >=  15  )
+                   MOVE    SPA-SYUNOU-REC(IDX-S)   TO  SYUNOU-REC
+                   IF     (SYU-SRYKA           =   ZERO )
+                       OR (SYU-HKNCOMBINUM     =   ZERO )
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  IDX
+                       MOVE    SYU-SRYKA   TO  PUSHMD01-SRYKA
+                                                          (IDX)
+                       MOVE    SYU-HKNCOMBINUM
+                                           TO  PUSHMD01-HKNCOMBI
+                                                          (IDX)
+                       MOVE    SYU-DRCD-G  TO  PUSHMD01-DRCD
+                                                          (IDX)
+                       MOVE    SYU-DENPNUM
+                                           TO  PUSHMD01-DENPNUM
+                                                          (IDX)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           MOVE    PUSHMD01-REC        TO  MCPDATA-REC
+      *
+           MOVE    "PUSHEVENT"         TO  MCP-FUNC
+           MOVE    "push_medical01"    TO  MCP-TABLE
+           MOVE    "push_medical01"    TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       600-PUSH-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日付編集処理
+      *****************************************************************
+       801-DAYHEN01-SEC                SECTION.
+      *
+           IF      WRK-SYMD            =   SPACE
+               MOVE    SPACE           TO  WRK-HEN-DATE
+           ELSE
+               INITIALIZE                  WRK-HEN-DATE
+               MOVE    WRK-SYY             TO  WRK-HEN-YY
+               MOVE    WRK-SMM             TO  WRK-HEN-MM
+               MOVE    WRK-SDD             TO  WRK-HEN-DD
+               MOVE    "-"                 TO  WRK-HEN-H1
+               MOVE    "-"                 TO  WRK-HEN-H2
+               IF      WRK-SYMD            =   "99999999"
+                   MOVE    "12"                TO  WRK-HEN-MM
+                   MOVE    "31"                TO  WRK-HEN-DD
+               END-IF
+           END-IF
+      *
+           INITIALIZE                  WRK-HEN-TIME
+           MOVE    WRK-THHH            TO  WRK-HEN-THH
+           MOVE    WRK-THMM            TO  WRK-HEN-TMM
+           MOVE    WRK-THSS            TO  WRK-HEN-TSS
+           MOVE    ":"                 TO  WRK-HEN-T1
+           MOVE    ":"                 TO  WRK-HEN-T2
+           .
+       801-DAYHEN01-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    自画面編集処理

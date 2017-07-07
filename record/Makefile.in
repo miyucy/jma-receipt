@@ -1015,6 +1015,8 @@ DB_files = \
 	xml_medication_masterlstv3res.db \
 	push_batch01.db \
 	push_accept02.db \
+	push_patient01.db \
+	push_medical01.db \
 
 
 shell.db: shell.db.in
