@@ -5590,8 +5590,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
-           MOVE    SPA-R01-JOB-PARAM
-                                   TO  JOB-PARAM
+           MOVE    SPA-R01-JOB-KARTE-UID
+                                   TO  JOB-KARTE-UID
+           MOVE    SPA-R01-JOB-ORCA-UID
+                                   TO  JOB-ORCA-UID
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    帳票ファイル作成処理

@@ -4592,8 +4592,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-R01-NYUGAIKBN   TO  JOB-NYUGAIKBN
            MOVE    "2"                 TO  JOB-SYOKBN
            MOVE    SPA-R01-SRYYM       TO  JOB-SRYYM
-           MOVE    SPA-TERMID          TO  JOB-TERMID                        
-           MOVE    SPA-R01-JOB-PARAM   TO  JOB-PARAM
+           MOVE    SPA-TERMID          TO  JOB-TERMID
+           MOVE    SPA-R01-JOB-KARTE-UID
+                                       TO  JOB-KARTE-UID
+           MOVE    SPA-R01-JOB-ORCA-UID
+                                       TO  JOB-ORCA-UID
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID

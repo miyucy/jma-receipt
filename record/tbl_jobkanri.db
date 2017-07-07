@@ -32,6 +32,8 @@ tbl_jobkanri	{
 	PID4	 		number(5,0);
 	UPDCNT1			number(10,0);
 	UPDCNT2			number(10,0);
+	KARTE_UID		varchar(36);
+	ORCA_UID		varchar(36);
 	YOBI			varchar(500);
 #-----> 主キー更新用項目
 #	UPSHELLID	char(8),virtual;
@@ -105,7 +107,9 @@ path	upd1	{
 					PID4		=	:PID4,
 					YOBI		=	:YOBI,
 					UPDCNT1		=	:UPDCNT1,
-					UPDCNT2		=	:UPDCNT2
+					UPDCNT2		=	:UPDCNT2,
+					KARTE_UID	=	:KARTE_UID,
+					ORCA_UID	=	:ORCA_UID
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND   SHELLID		=   :SHELLID 
 			AND		JOBID			=  :JOBID

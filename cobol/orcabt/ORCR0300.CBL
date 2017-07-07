@@ -8249,8 +8249,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM 900-CALL-ORCSJOB-SEC
            IF    ( SJOBKANRI-RETURN
                                    =   ZERO  )
-           AND   ( JOB-PARAM   NOT =   SPACE )
+           AND   ( JOB-KARTE-UID
+                               NOT =   SPACE )
                INITIALIZE                  PUSHBA01-REC
+               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
+               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
                MOVE    "000"           TO  PUSHBA01API-RESULT
                MOVE    "receipt_make"  TO  PUSHBA01-EVENT
                MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD

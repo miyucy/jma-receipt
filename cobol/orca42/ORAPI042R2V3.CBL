@@ -109,8 +109,6 @@
       *
            03  WRK-OPID                PIC X(16).
       *
-           03  WRK-PARAM               PIC X(256).
-      *
            03  WRK-X.
                05  WRK-9               PIC 9(05).
       *
@@ -1071,15 +1069,10 @@
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
-      *        パラメータとカルテUID+オルカUID をチェック
-               MOVE    SPACE           TO  WRK-PARAM
-               STRING  RECEPRINTQ-KARTE-UID
-                                           DELIMITED   BY  SPACE
-                       RECEPRINTQ-ORCA-UID DELIMITED   BY  SPACE
-                                           INTO    WRK-PARAM
-               END-STRING
-      *
-               IF    ( WRK-PARAM   NOT =   JOB-PARAM     )
+               IF    ( RECEPRINTQ-KARTE-UID
+                                   NOT =   JOB-KARTE-UID )
+               OR    ( RECEPRINTQ-ORCA-UID
+                                   NOT =   JOB-ORCA-UID  )
                OR    ( SPA-R01-NYUGAIKBN
                                    NOT =   JOB-NYUGAIKBN )
                OR    ( SPA-R01-FILEKBN
@@ -1187,10 +1180,10 @@
                GO  TO  2002-RECEIPT-PRINT-EXT
            END-IF
       *
-           STRING  RECEPRINTQ-KARTE-UID    DELIMITED  BY  SPACE
-                   RECEPRINTQ-ORCA-UID     DELIMITED  BY  SPACE
-                                          INTO    SPA-R01-JOB-PARAM
-           END-STRING
+           MOVE    RECEPRINTQ-KARTE-UID
+                                   TO  SPA-R01-JOB-KARTE-UID
+           MOVE    RECEPRINTQ-ORCA-UID
+                                   TO  SPA-R01-JOB-ORCA-UID
       *
            PERFORM 800-TEMPDIR-SEC
            IF      WRK-ERRCD   NOT =   SPACE
@@ -1232,14 +1225,10 @@
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
-      *        パラメータとカルテUID+オルカUID をチェック
-               MOVE    SPACE           TO WRK-PARAM
-               STRING  RECEPRINTQ-KARTE-UID DELIMITED   BY  SPACE
-                       RECEPRINTQ-ORCA-UID  DELIMITED   BY  SPACE
-                                           INTO    WRK-PARAM
-               END-STRING
-      *
-               IF      WRK-PARAM   NOT =   JOB-PARAM
+               IF    ( RECEPRINTQ-KARTE-UID
+                                   NOT =   JOB-KARTE-UID )
+               OR    ( RECEPRINTQ-ORCA-UID
+                                   NOT =   JOB-ORCA-UID  )
                    MOVE    "E43"           TO  WRK-ERRCD
                    GO  TO  2003-RECEIPT-CHECK-EXT
                END-IF

@@ -1,6 +1,8 @@
 push_batch01 {
 	event		varchar(50);
 	body	{
+		Karte_Uid	varchar(36);
+		Orca_Uid	varchar(36);
 #---> 処理結果
 		Api_Result	varchar(03);
 #---> 診療年月

@@ -18,9 +18,13 @@
        01  PUSHBA01-REC.
            03  PUSHBA01-EVENT                  PIC X(50).
            03  PUSHBA01-BODY.
-      *          処理結果
-             05  PUSHBA01API-RESULT            PIC X(3).
-      *          診療年月
-             05  PUSHBA01-PERFORM-MONTH        PIC X(7).
-      *          処理件数
-             05  PUSHBA01-OUTPUT-COUNT         PIC X(10).
+      *        カルテUID
+               05  PUSHBA01API-KARTE-UID       PIC X(36).
+      *        オルカUID
+               05  PUSHBA01API-ORCA-UID        PIC X(36).
+      *        処理結果
+               05  PUSHBA01API-RESULT          PIC X(3).
+      *        診療年月
+               05  PUSHBA01-PERFORM-MONTH      PIC X(7).
+      *        処理件数
+               05  PUSHBA01-OUTPUT-COUNT       PIC X(10).
