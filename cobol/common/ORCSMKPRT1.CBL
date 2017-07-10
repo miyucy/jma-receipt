@@ -337,11 +337,12 @@
                                        INTO    MKPASS-IN-03
            END-STRING
       *    DEF̾
-           STRING  SHELL-RECORD        DELIMITED  BY  SPACE
-                   MKPRT-DEF           DELIMITED  BY  SPACE
-                                       INTO    MKPASS-IN-04
-           END-STRING
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           IF    ( MKPRT-DEF           =   "__SITE__" )
+               CALL    "ORCSMKPASSSITE"
+                                       USING   ORCSMKPASSAREA
+           ELSE
+               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           END-IF
       *
            PERFORM 201-OFFSET-GET-SEC
       *
@@ -526,8 +527,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-PRT-UUID    TO  SHELLTBL-ARG13
            MOVE    SPA-PTID        TO  SHELLTBL-ARG14
       *    SITE_KBN
-           MOVE    "1"             TO  SHELLTBL-ARG15
-      *    
+           IF    ( MKPRT-DEF           =   "__SITE__" )
+               MOVE    "2"         TO  SHELLTBL-ARG15
+           ELSE
+               MOVE    "1"         TO  SHELLTBL-ARG15
+           END-IF
+      *
            MOVE    SGYOUMU-CODE    TO  SHELLTBL-ARG16
            MOVE    MKPRT-INFO      TO  SHELLTBL-ARG17
       *    DIA
