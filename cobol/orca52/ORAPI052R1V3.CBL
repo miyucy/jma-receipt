@@ -87,8 +87,6 @@
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(03).
       *
-           03  WRK-PARAM               PIC X(256).
-      *
            03  WRK-TEMPDIR-ROOT        PIC X(1024).
       *
            03  WRK-UPDCNT-X.
@@ -690,10 +688,9 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           STRING LSTREQ-KARTE-UID DELIMITED   BY  SPACE
-                  LSTREQ-ORCA-UID  DELIMITED   BY  SPACE
-                                       INTO    JOB-PARAM
-           END-STRING
+           MOVE    LSTREQ-KARTE-UID
+                                   TO  JOB-KARTE-UID
+           MOVE    LSTREQ-ORCA-UID TO  JOB-ORCA-UID
       *
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN    =   ZERO
@@ -830,14 +827,10 @@
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
-      *        パラメータとカルテUID+オルカUID をチェック
-               MOVE    SPACE           TO  WRK-PARAM
-               STRING  LSTREQ-KARTE-UID  DELIMITED   BY  SPACE
-                       LSTREQ-ORCA-UID   DELIMITED   BY  SPACE
-                                           INTO    WRK-PARAM
-               END-STRING
-      *
-               IF      WRK-PARAM   NOT =   JOB-PARAM
+               IF    ( LSTREQ-KARTE-UID
+                                   NOT =   JOB-KARTE-UID )
+               OR    ( LSTREQ-ORCA-UID
+                                   NOT =   JOB-ORCA-UID  )
                    MOVE    "E41"           TO  WRK-ERRCD
                    GO  TO  2003-SYORI-02-EXT
                END-IF

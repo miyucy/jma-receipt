@@ -128,6 +128,10 @@
            03  WRK-RECEERR         PIC X(200).
            03  WRK-ERRMSG          PIC X(300).
       *
+           03  WRK-CNT             PIC 9(10).
+           03  WRK-CNT-X           REDEFINES   WRK-CNT
+                                   PIC X(10).
+      *
            03  WRK-SYMD.
                05  WRK-SYY         PIC X(04).
                05  WRK-SMM         PIC X(02).
@@ -184,6 +188,9 @@
            COPY    "CPORCMCP.INC".
       *
            COPY    "COMMON-SPA".
+      *
+      *    PUSH
+           COPY    "CPPUSHBATCH01.INC".
       *
       *****************************************************************
       *    Ï¢ÍíÎÎ°è
@@ -461,6 +468,9 @@
       ****                             TO  WRK-RECEERR
       ****     PERFORM 500-ERR-HENSYU-SEC
       **** END-IF
+      *
+      *    £Ð£Õ£Ó£ÈÄÌÃÎ½èÍý
+           PERFORM 3001-PUSH-SEC
       *     
       *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -475,6 +485,44 @@
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ð£Õ£Ó£ÈÄÌÃÎ½èÍý
+      *****************************************************************
+       3001-PUSH-SEC        SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           PERFORM 900-CALL-ORCSJOB-SEC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO  )
+           AND   ( JOB-KARTE-UID
+                               NOT =   SPACE )
+               INITIALIZE                  PUSHBA01-REC
+               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
+               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
+               MOVE    "000"           TO  PUSHBA01API-RESULT
+               MOVE    "disease_master_make"
+                                       TO  PUSHBA01-EVENT
+               MOVE    WRK-PARA-BASE-YMD
+                                       TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE    TO  PUSHBA01-PERFORM-DATE
+               MOVE    CNT-OUT         TO  WRK-CNT
+               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
+      *??
+               display "push=" PUSHBA01-REC "#"
+               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
+               MOVE    "PUSHEVENT"     TO  MCP-FUNC
+               MOVE    "push_batch01"  TO  MCP-TABLE
+               MOVE    "push_batch01"  TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"     USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           END-IF
+           .
+       3001-PUSH-EXT.
            EXIT.
       *
       *****************************************************************
