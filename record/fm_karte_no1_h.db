@@ -99,6 +99,13 @@ fm_karte_no1_h {
     Hospital  {
       Name        varchar(60);
     };
+    Doctor{
+      Code                varchar(5);
+      Name                varchar(50);
+      KanaName            varchar(50);
+    }[3];
+    Department_Code       varchar(02);
+    Department_Name       varchar(10);
     Disease_Information  {
       Name                            varchar(160);
       MainDiseaseFlag                  varchar(1);
@@ -107,6 +114,5 @@ fm_karte_no1_h {
       EndDate                          varchar(10);
       OutCome_Class                    varchar(1);
     }[1000];
-    Memo            varchar(100)[5];
   };
 };

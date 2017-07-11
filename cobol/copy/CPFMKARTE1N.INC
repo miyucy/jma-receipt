@@ -116,6 +116,12 @@
                   09  FMKARTE1N-CITYNAME          PIC X(50).
               05  FMKARTE1N-HOSP-G.
                 07  FMKARTE1N-HOSPNAME            PIC X(60).
+              05  FMKARTE1N-DOCTOR-AREA           OCCURS  3.
+                07  FMKARTE1N-DR-CODE             PIC X(5).
+                07  FMKARTE1N-DR-NAME             PIC X(50).
+                07  FMKARTE1N-DR-KANANAME         PIC X(50).
+              05  FMKARTE1N-SRYKA                 PIC X(2).
+              05  FMKARTE1N-SRYKANAME             PIC X(10).
               05  FMKARTE1N-BYOMEI-G              OCCURS  1000.
       *             カルテに記載する（編集後の）病名
                 07  FMKARTE1N-BYOMEI              PIC X(160).
@@ -127,6 +133,3 @@
                 07  FMKARTE1N-TENKIYMD            PIC X(10).
       *             PTBYO-TENKIKBN
                 07  FMKARTE1N-TENKIKBN            PIC X(1).
-      *           備考
-              05  FMKARTE1N-MEMO                  PIC X(100)
-                                                 OCCURS  5.
