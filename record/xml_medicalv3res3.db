@@ -118,8 +118,6 @@ xml_medicalv3res3 {
    	   Ac_Money			varchar(10);
 #---    返金額
 	    Re_Money			varchar(10);
-#---    返金額区分（１：充当分）
-	    Re_Money_Code			varchar(1);
 	    Cd_Ac_Information2  {
 		Ai_Money		varchar(10);
 		Oe_Money		varchar(10);
@@ -137,14 +135,14 @@ xml_medicalv3res3 {
 			Me_Money	varchar(10);
 	 		} [16];
 #---           自費明細
-	        Oe_Money_Information  {
-	             Oe_Money_Info    {
+	        Oe_Etc_Information  {
+	             Oe_Etc_Detal    {
 			Oe_Etc_Name		varchar(20);
 			Oe_Etc_Money_Non_Taxable	varchar(10);
 			Oe_Etc_Money_Taxable		varchar(10);
 	 		} [10];
 #---            自費消費税額（再計）
-	  	    Total_Oe_Money_Tax		varchar(10);
+	  	    Tax_In_Oe_Etc_Ttl_Money_Taxable	varchar(10);
     	     	    };
     	     };
 #---            減免情報

@@ -18,7 +18,7 @@ xml_medicalv3req3 {
 			Delete_Number	varchar(02);
 				} [30];
 #--- 登録処理区分
-		Update_Mode		varchar(03);
+		Reqest_Mode		varchar(06);
 #--- 入金方法
 		Ic_Code			varchar(2);
 #--- 入金取り扱い区分

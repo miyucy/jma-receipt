@@ -933,6 +933,11 @@
       *****************************************************************
        20011-INPUT-CHK05-SEC      SECTION.
       *
+      *    更新区分
+           IF     WRK-ERRCD            =   SPACE
+               PERFORM 20013-REQUEST-MODE-CHK-SEC
+           END-IF
+      *
       *    入金方法
            IF     WRK-ERRCD            =   SPACE
                PERFORM 20013-NYUKIN-HOHO-CHK-SEC
@@ -1258,6 +1263,25 @@
            MOVE    WRK-NYUKIN-HOHO-NAME    TO  MDCRES-IC-CODE-NAME
            .
        20013-NYUKIN-HOHO-CHK-EXT.
+           EXIT.
+      *
+      *H29.6
+      *****************************************************************
+      *    更新区分チェック処理
+      *****************************************************************
+       20013-REQUEST-MODE-CHK-SEC         SECTION.
+      *
+           EVALUATE    MDCREQ-REQUEST-MODE
+               WHEN    SPACE
+               WHEN    "Check"
+                   MOVE    ZERO            TO  FLG-UPDATE
+               WHEN    "Finish"
+                   MOVE    1               TO  FLG-UPDATE
+               WHEN    OTHER
+                   MOVE    "61"            TO  WRK-ERRCD
+           END-EVALUATE
+           .
+       20013-REQUEST-MODE-CHK-EXT.
            EXIT.
       *
       *H29.6
@@ -2255,8 +2279,6 @@
                    PERFORM 810-NUMHENKAN-SEC
                    MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                            TO  MDCRES-RE-MONEY
-                   MOVE    SPA-SYU-HENKBN (IDX)
-                                           TO  MDCRES-RE-MONEY-KBN
                 END-IF
       *         調整金額１
                 MOVE    WRK-CHOSEI1        TO  WRK-SURYO
@@ -2286,8 +2308,6 @@
                    PERFORM 810-NUMHENKAN-SEC
                    MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                            TO  MDCRES-RE-MONEY
-                   MOVE    SPA-SYU-HENKBN (IDX)
-                                           TO  MDCRES-RE-MONEY-KBN
                 END-IF
       *
       *         調整金額１
@@ -2454,13 +2474,6 @@
            ELSE
                MOVE    "09"                TO  WRK-ERRCD
                GO      TO      2003-SYORI-02-EXT
-           END-IF
-      *
-      *    更新区分判定
-           IF      MDCREQ-UPDATE-MODE  =   "Yes"
-               MOVE    1               TO  FLG-UPDATE
-           ELSE
-               MOVE    ZERO            TO  FLG-UPDATE
            END-IF
       *
       *    入金額等編集
@@ -4002,6 +4015,11 @@
                END-STRING
            WHEN    "60"
                STRING  "一括入返金区分は設定できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "61"
+               STRING  "更新処理区分エラーです。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING

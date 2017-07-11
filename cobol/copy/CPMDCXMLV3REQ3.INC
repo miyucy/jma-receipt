@@ -55,8 +55,8 @@
                   07  MDCREQ-DEL-NUMBER        PIC X(02)
                                                OCCURS   30.
       *H29.7
-      *       登録処理区分（Yes:登録）（リクエスト番号=05)
-              05  MDCREQ-UPDATE-MODE       PIC X(03).
+      *       登録処理区分（Finish:登録）（リクエスト番号=05)
+              05  MDCREQ-REQUEST-MODE      PIC X(06).
       *
       *       入金方法
               05  MDCREQ-IC-CODE           PIC X(02).

@@ -190,10 +190,10 @@
       *
       *            今回入金額（合計）
                    07  MDCRES-TOTAL-IC-MONEY      PIC  X(10).
-      *            今回返金額（合計　マイナス編集）
+      *            今回返金額（合計）
                    07  MDCRES-TOTAL-RE-MONEY      PIC  X(10).
       *
-      *            今回入金額上限額（充当分含）
+      *            今回入金額上限額・今回返金額（新規のみ）
                    07  MDCRES-MAX-IC-MONEY        PIC X(10).
       *
       *        収納情報返却
@@ -210,8 +210,6 @@
       *
       *            今回返金額（訂正時以外は充当）
                    07  MDCRES-RE-MONEY          PIC  X(10).
-      *                1:充当分
-                   07  MDCRES-RE-MONEY-KBN      PIC  X(01).
       *
       *            収納情報返却（請求額内訳）
                    07  MDCRES-SYUNOU-AREA.
