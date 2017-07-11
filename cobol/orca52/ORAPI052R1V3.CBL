@@ -96,7 +96,6 @@
            COPY    "CPORCSPRTLNK.INC".
       *
        01  WRK-XML-AREA.
-           03  WRK-BASE-DATE           PIC X(10).
            03  WRK-BASE-YMD            PIC X(08).
       *
        01  WRK-CONS-AREA.
@@ -545,12 +544,6 @@
            MOVE    SPACE               TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD            TO  WRK-BASE-YMD
-      *    未設定時はシステム情報設定
-           IF      WRK-BASE-YMD        =   SPACE
-               MOVE    SMCNDATE-YMD        TO  WRK-BASE-YMD
-               MOVE    LSTRES-INFORMATION-DATE
-                                           TO  LSTRES-BASE-DATE
-           END-IF
       *
            MOVE   LSTREQ-REQUEST-NUMBER
                                        TO  LSTRES-REQUEST-NUMBER
@@ -565,20 +558,21 @@
        20011-PERFORM-CHK-SEC           SECTION.
       *
       *    日付チェックサブ
-           MOVE    SPACE               TO  STS-AREA-DAY
-           INITIALIZE                      STS-AREA-DAY
-           MOVE    SPACE               TO  LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    WRK-BASE-YMD        TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING
-                                       STS-AREA-DAY
-                                       LNK-DAY2-AREA
-           IF      STS-DAY-RC1     NOT =   ZERO
-               MOVE    "E11"               TO  WRK-ERRCD
+           IF      WRK-BASE-YMD        =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  STS-AREA-DAY
+               INITIALIZE                      STS-AREA-DAY
+               MOVE    SPACE               TO  LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-BASE-YMD        TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING
+                                           STS-AREA-DAY
+                                           LNK-DAY2-AREA
+               IF      STS-DAY-RC1     NOT =   ZERO
+                   MOVE    "E11"               TO  WRK-ERRCD
+               END-IF
            END-IF
-           MOVE    WRK-BASE-YMD        TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  WRK-BASE-DATE
       *
            .
        20011-PERFORM-CHK-EXT.
