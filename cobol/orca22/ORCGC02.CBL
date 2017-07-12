@@ -337,6 +337,8 @@
       *                                     変更した時の疾患区分の表示
       *  04.08.11    NACL-藤原    17/04/04  自院病名入力時の補足コメント
       *                                     の表示を行う
+      *  04.08.12    NACL-藤原    17/07/10  病名コード未入力時の補足コメント
+      *                                     のクリア
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -583,14 +585,18 @@
                                    PIC 9(02).
                        09  WRK-NAI-C02-NANBYOCD-O
                                    PIC 9(02).
+                       09  WRK-NAI-C02-HAISIYMD
+                                   PIC 9(08).
                        09  WRK-NAI-C02-US-TOKSKNCD
                                    PIC 9(02).
                        09  WRK-NAI-C02-US-BYOMEIHENFLG
                                    PIC X(01).
                        09  WRK-NAI-C02-US-HKNBYOMEIFLG
                                    PIC X(01).
-                       09  WRK-NAI-C02-HAISIYMD
-                                   PIC 9(08).
+                       09  WRK-NAI-C02-US-HOSOKU-COMMENT
+                                   PIC X(80).
+                       09  WRK-NAI-C02-US-UTAGAIFLG
+                                   PIC X(01).
                        09  WRK-NAI-C02-BYOMEICD-O
                                    PIC X(07)
                                    OCCURS  21.
@@ -3050,7 +3056,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    SPA-NAI-C02-HOSOKU-COMMENT (3)
                                            DELIMITED  BY  SPACE
                                        INTO    WRK-BYOMEI
-                                           
            END-STRING
            MOVE    WRK-BYOMEI      TO  SPA-GMN-C02-HOSOKU-COMMENT
       *
@@ -6753,11 +6758,16 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                        MOVE    USBYO-HOSOKU-COMMENT
                                          TO  SPA-GMN-C02-HOSOKU-COMMENT
                    END-IF
+                   MOVE    USBYO-HOSOKU-COMMENT
+                                         TO
+                                     SPA-NAI-C02-US-HOSOKU-COMMENT (IDZ)
                    MOVE    USBYO-CHARTBYOMEI
                                          TO
                                          SPA-NAI-C02-CHARTBYOMEI  (IDZ)
                    MOVE    USBYO-UTAGAIFLG
                                          TO  SPA-NAI-C02-UTAGAIFLG(IDZ)
+                                             SPA-NAI-C02-US-UTAGAIFLG
+                                                                  (IDZ)
                    MOVE    USBYO-MANSEIKBN
                                          TO  SPA-NAI-C02-US-TOKSKNCD
                                                                   (IDZ)
@@ -7151,6 +7161,12 @@ grpsys                         MOVE    SPA-HOSPNUM
                    END-PERFORM                           
                    PERFORM 41021-BYOMEICD-HENSYU-SEC
                    MOVE    SPACE           TO  WRK-SEIGYO     
+      *            病名コード未入力の時、補足コメントをクリア
+                   IF      SPA-NAI-C02-BYOMEICD-MAX
+                                           =   ZERO
+                       INITIALIZE          SPA-GMN-C02-HOSOKUCD-G
+                                           SPA-GMN-C02-HOSOKU-COMMENT
+                   END-IF
                    GO  TO  4102-BYOMEICD-CHK-EXT
                WHEN    "+"
                    PERFORM VARYING IDX FROM    6   BY  -1
@@ -11314,6 +11330,10 @@ grpsys             PERFORM 900-DBSELECT-SEC
                                           DELIMITED  BY  SPACE
                                    INTO   WRK-PTBYO-CHARTBYOMEI (IDXX)
            END-STRING
+      *
+      *    補足コメント
+           MOVE    SPA-NAI-C02-US-HOSOKU-COMMENT (IDX)
+                                   TO  WRK-PTBYO-HOSOKU-COMMENT (IDXX)
       *
       *    疑いフラグ
            IF      WRK-PTBYO-UTAGAIFLG (IDXX)  =   "3"
