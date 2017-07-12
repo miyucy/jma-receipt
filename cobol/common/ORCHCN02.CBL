@@ -1004,9 +1004,9 @@
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            MOVE    SPACE               TO  WRK-HEN-DATE
            MOVE    WRK-SYMD(1:4)       TO  WRK-HEN-YY
-           MOVE    "."                 TO  WRK-HEN-H1
+           MOVE    "-"                 TO  WRK-HEN-H1
            MOVE    WRK-SYMD(5:2)       TO  WRK-HEN-MM
-           MOVE    "."                 TO  WRK-HEN-H2
+           MOVE    "-"                 TO  WRK-HEN-H2
            MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
            MOVE    WRK-HEN-DATE        TO  FMTAIIN-BIRTHDAY
       *
@@ -1023,9 +1023,9 @@
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            MOVE    SPACE               TO  WRK-HEN-DATE
            MOVE    WRK-SYMD(1:4)       TO  WRK-HEN-YY
-           MOVE    "."                 TO  WRK-HEN-H1
+           MOVE    "-"                 TO  WRK-HEN-H1
            MOVE    WRK-SYMD(5:2)       TO  WRK-HEN-MM
-           MOVE    "."                 TO  WRK-HEN-H2
+           MOVE    "-"                 TO  WRK-HEN-H2
            MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
            MOVE    WRK-HEN-DATE        TO  FMTAIIN-PRTYMD
       *
@@ -1126,9 +1126,9 @@
                                                    WRK-NYUINYMD
                    MOVE    SPACE               TO  WRK-HEN-DATE
                    MOVE    WRK-SYMD(1:4)       TO  WRK-HEN-YY
-                   MOVE    "."                 TO  WRK-HEN-H1
+                   MOVE    "-"                 TO  WRK-HEN-H1
                    MOVE    WRK-SYMD(5:2)       TO  WRK-HEN-MM
-                   MOVE    "."                 TO  WRK-HEN-H2
+                   MOVE    "-"                 TO  WRK-HEN-H2
                    MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
                    MOVE    WRK-HEN-DATE        TO  FMTAIIN-NYUINYMD
       *
@@ -1138,9 +1138,9 @@
                                                    WRK-TAIINYMD
                    MOVE    SPACE               TO  WRK-HEN-DATE
                    MOVE    WRK-SYMD(1:4)       TO  WRK-HEN-YY
-                   MOVE    "."                 TO  WRK-HEN-H1
+                   MOVE    "-"                 TO  WRK-HEN-H1
                    MOVE    WRK-SYMD(5:2)       TO  WRK-HEN-MM
-                   MOVE    "."                 TO  WRK-HEN-H2
+                   MOVE    "-"                 TO  WRK-HEN-H2
                    MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
                    MOVE    WRK-HEN-DATE        TO  FMTAIIN-TAIINYMD
       *
@@ -1176,9 +1176,9 @@
                                                    WRK-NYUINYMD
                    MOVE    SPACE               TO  WRK-HEN-DATE
                    MOVE    WRK-SYMD(1:4)       TO  WRK-HEN-YY
-                   MOVE    "."                 TO  WRK-HEN-H1
+                   MOVE    "-"                 TO  WRK-HEN-H1
                    MOVE    WRK-SYMD(5:2)       TO  WRK-HEN-MM
-                   MOVE    "."                 TO  WRK-HEN-H2
+                   MOVE    "-"                 TO  WRK-HEN-H2
                    MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
                    MOVE    WRK-HEN-DATE        TO  FMTAIIN-NYUINYMD
                                                    FMTAIIN-SNTSTYMD
@@ -1191,9 +1191,9 @@
                                                    WRK-TAIINYMD
                    MOVE    SPACE               TO  WRK-HEN-DATE
                    MOVE    WRK-SYMD(1:4)       TO  WRK-HEN-YY
-                   MOVE    "."                 TO  WRK-HEN-H1
+                   MOVE    "-"                 TO  WRK-HEN-H1
                    MOVE    WRK-SYMD(5:2)       TO  WRK-HEN-MM
-                   MOVE    "."                 TO  WRK-HEN-H2
+                   MOVE    "-"                 TO  WRK-HEN-H2
                    MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
                    MOVE    WRK-HEN-DATE        TO  FMTAIIN-TAIINYMD
                                                    FMTAIIN-SNTEDYMD

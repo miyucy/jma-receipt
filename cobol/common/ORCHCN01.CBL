@@ -1995,9 +1995,9 @@
       *
            MOVE    SPACE               TO  WRK-HEN-DATE
            MOVE    WRK-SYMD(1:4)       TO  WRK-HEN-YY
-           MOVE    "."                 TO  WRK-HEN-H1
+           MOVE    "-"                 TO  WRK-HEN-H1
            MOVE    WRK-SYMD(5:2)       TO  WRK-HEN-MM
-           MOVE    "."                 TO  WRK-HEN-H2
+           MOVE    "-"                 TO  WRK-HEN-H2
            MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
            .
        801-DAYHEN01-EXT.
