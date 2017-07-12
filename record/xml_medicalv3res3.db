@@ -99,8 +99,8 @@ xml_medicalv3res3 {
 	Ic_Code				varchar(2);
 	Ic_Code_Name			varchar(20);
 #--- 入金取り扱い区分
-	Ic_Reqest_Code			varchar(1);
-	Ic_Reqest_Code_Name 		varchar(40);
+	Ic_Request_Code			varchar(1);
+	Ic_Request_Code_Name 		varchar(40);
 #---    今回請求額合計
 	Total_Ac_Money			varchar(10);
 #---    今回入金合計
