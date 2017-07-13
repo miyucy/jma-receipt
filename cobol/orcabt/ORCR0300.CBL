@@ -8260,8 +8260,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE (1:7)
                                        TO  PUSHBA01-PERFORM-MONTH
-               MOVE    CNT-IN          TO  WRK-CNT
+               MOVE    JOB-UPDCNT1     TO  WRK-CNT
                MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
+      *??
+             display "push=" PUSHBA01-REC "#"
+      *??
                MOVE    PUSHBA01-REC    TO  MCPDATA-REC
                MOVE    "PUSHEVENT"     TO  MCP-FUNC
                MOVE    "push_batch01"  TO  MCP-TABLE
