@@ -1975,8 +1975,8 @@
            INITIALIZE                      RPMAIN-AREA
            MOVE    "karte_no1_n"       TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
-           MOVE    "カルテ１号紙（入院）
-                                "      TO  RPMAIN-TITLE
+           MOVE    "カルテ１号紙（入院）"
+                                       TO  RPMAIN-TITLE
            MOVE    "fm_karte_no1_h"
                                        TO  MCP-TABLE
            MOVE    FMKARTE1N-DATA      TO  RPMAIN-DATA
