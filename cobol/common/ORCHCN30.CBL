@@ -2649,6 +2649,7 @@
                MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
                MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
       *----API-ADD-START---
+               MOVE    SYS-1902-POST   TO  WRK-HOSPPOST
                MOVE    SYS-1902-ADRS1  TO  WRK-API-HOSPADRS(1)
                MOVE    SYS-1902-ADRS2  TO  WRK-API-HOSPADRS(2)
                MOVE    SYS-1902-ADRS3  TO  WRK-API-HOSPADRS(3)
