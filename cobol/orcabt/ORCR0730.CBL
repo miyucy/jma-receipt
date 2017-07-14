@@ -239,6 +239,8 @@
       *                                     共済組合を追加
       *  04.08.19    NACL-門脇    17/07/03  （災１）等の記載を括弧なしで
       *                                     記載するよう変更
+      *
+      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -600,6 +602,17 @@
                    07  WRK-TOKKI-O PIC X(02).
                    07  WRK-TOKKINM-O
                                    PIC X(12).
+      *
+           03  WRK-HEN-DATE.
+               05  WRK-HEN-YY      PIC X(04).
+               05  WRK-HEN-H1      PIC X(01).
+               05  WRK-HEN-MM      PIC X(02).
+               05  WRK-HEN-H2      PIC X(01).
+               05  WRK-HEN-DD      PIC X(02).
+      *
+           03  WRK-CNT             PIC 9(10).
+           03  WRK-CNT-X           REDEFINES   WRK-CNT
+                                   PIC X(10).
       *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
@@ -1092,8 +1105,6 @@
            03  WRK-SAIKEI.
                05  WRK-SAIKEIZ     PIC  ZZZZZZ9.
       *
-       01  WRK-CNT                 PIC  9(5).
-      *
       *    ＯＣＲ編集領域
        01  OCR1-AREA.
            03  OCR1-HKNJANUM                           PIC 9(08).
@@ -1414,6 +1425,10 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1444,13 +1459,8 @@
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *****************************************************************
-      *    ファイルレイアウト
-      *****************************************************************
-      *
-      *    ジョブ管理マスタ
-       01  JOBKANRI-REC.
-           COPY    "CPJOBKANRI.INC".
+      *    PUSH
+           COPY    "CPPUSHBATCH01.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -12100,6 +12110,12 @@
                PERFORM 3001-MISEIKYU-FLG-KOUSIN-SEC
            END-IF 
       *
+      *    ＰＵＳＨ通知処理
+           IF    ( WRK-PARA-SHELLID
+                                   NOT =   "RECEPTX" )
+               PERFORM 3001-PUSH-SEC
+           END-IF
+      *
            DISPLAY "*** ORCR0730 IN  RECE62 ="  CNT-RECE62
            DISPLAY "*** ORCR0730 IN  RECE62X="  CNT-RECE62X
            DISPLAY "                 PAGE    "  CNT-OUT
@@ -12109,7 +12125,8 @@
       *        ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-              MOVE    CNT-OUT          TO  JOB-UPDCNT
+               MOVE    CNT-OUT         TO  JOB-UPDCNT
+               MOVE    CNT-RECE62      TO  JOB-UPDCNT1
               PERFORM   900-CALL-ORCSJOB-SEC
            END-IF
       *
@@ -12197,6 +12214,71 @@
            EXIT.
       *
       *****************************************************************
+      *    ＰＵＳＨ通知処理
+      *****************************************************************
+       3001-PUSH-SEC        SECTION.
+      *
+           IF      WRK-PARA-SRYYM  =   ZERO
+               GO  TO  3001-PUSH-EXT
+           END-IF
+      *
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "0"
+                   IF    ( SYS-2005-SYARECEKBN =   "2" OR  "3" )
+                   AND   ( SYS-2005-KKHRECEKBN =   "2" OR  "3" )
+                   AND   ( SYS-200501-KOUIKIRECEKBN
+                                               =   "2" OR  "3" )
+                       GO  TO  3001-PUSH-EXT
+                   END-IF
+               WHEN    "1"
+                   IF      SYS-2005-SYARECEKBN =   "2" OR  "3"
+                       GO  TO  3001-PUSH-EXT
+                   END-IF
+               WHEN    "2"
+                   IF      SYS-2005-KKHRECEKBN =   "2" OR  "3"
+                       GO  TO  3001-PUSH-EXT
+                   END-IF
+               WHEN    "7"
+                   IF      SYS-200501-KOUIKIRECEKBN
+                                               =   "2" OR  "3"
+                       GO  TO  3001-PUSH-EXT
+                   END-IF
+           END-EVALUATE
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           PERFORM 900-CALL-ORCSJOB-SEC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO  )
+           AND   ( JOB-KARTE-UID
+                               NOT =   SPACE )
+               INITIALIZE                  PUSHBA01-REC
+               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
+               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
+               MOVE    "000"           TO  PUSHBA01API-RESULT
+               MOVE    "receipt_make"  TO  PUSHBA01-EVENT
+               MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE (1:7)
+                                       TO  PUSHBA01-PERFORM-MONTH
+               MOVE    CNT-RECE62      TO  WRK-CNT
+               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
+      *??
+             display "push=" PUSHBA01-REC "#"
+      *??
+               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
+               MOVE    "PUSHEVENT"     TO  MCP-FUNC
+               MOVE    "push_batch01"  TO  MCP-TABLE
+               MOVE    "push_batch01"  TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"     USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           END-IF
+           .
+       3001-PUSH-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    一時ファイル名取得処理
       *****************************************************************
        800-FILENM-SET-SEC        SECTION.
@@ -12205,6 +12287,29 @@
            MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
            .
        800-FILENM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日付編集処理
+      *****************************************************************
+       801-DAYHEN01-SEC                SECTION.
+      *
+           IF      WRK-SYMD            =   SPACE
+               MOVE    SPACE               TO  WRK-HEN-DATE
+           ELSE
+               INITIALIZE                  WRK-HEN-DATE
+               MOVE    WRK-SYMD (1:4)      TO  WRK-HEN-YY
+               MOVE    WRK-SYMD (5:2)      TO  WRK-HEN-MM
+               MOVE    WRK-SYMD (7:2)      TO  WRK-HEN-DD
+               MOVE    "-"                 TO  WRK-HEN-H1
+               MOVE    "-"                 TO  WRK-HEN-H2
+               IF      WRK-SYMD            =   "99999999"
+                   MOVE    "12"                TO  WRK-HEN-MM
+                   MOVE    "31"                TO  WRK-HEN-DD
+               END-IF
+           END-IF
+           .
+       801-DAYHEN01-EXT.
            EXIT.
       *
       *****************************************************************
