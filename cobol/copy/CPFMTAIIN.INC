@@ -31,6 +31,9 @@
                 07  FMTAIIN-BIRTHDAY           PIC X(10).
                 07  FMTAIIN-AGE                PIC X(3).
                 07  FMTAIIN-SEX                PIC X(1).
+                07  FMTAIIN-HOME-ADRS          PIC X(100)  OCCURS  2.
+                07  FMTAIIN-HOME-POST          PIC X(7).
+                07  FMTAIIN-HOME-TEL           PIC X(15).
               05  FMTAIIN-HOSP-AREA.
                 07  FMTAIIN-HOSP-NAME-G.
                   09  FMTAIIN-HOSP-NAME        PIC X(120)

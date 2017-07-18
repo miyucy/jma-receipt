@@ -14,6 +14,9 @@ fm_discharge_certificate {
       BirthDate           varchar(10);
       Age                 varchar(3);
       Sex                 varchar(1);
+      Address             varchar(100)[2];
+      ZipCode             varchar(7);
+      PhoneNumber         varchar(15);
     };
     Hospital{
       Name                varchar(120)[3];

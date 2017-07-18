@@ -1019,6 +1019,17 @@
            END-IF
            MOVE    WRK-NENREI          TO  FMTAIIN-AGE
       *
+      *    患者住所
+           MOVE    SPACE               TO  WRK-ADRS
+           STRING  PTINF-HOME-ADRS         DELIMITED   BY  SPACE
+                   PTINF-HOME-BANTI        DELIMITED   BY  SPACE
+                   INTO                    WRK-ADRS
+           END-STRING
+           MOVE    WRK-ADRS            TO  FMTAIIN-HOME-ADRS(1)
+      *
+           MOVE    PTINF-HOME-POST     TO  FMTAIIN-HOME-POST
+           MOVE    PTINF-HOME-TEL1     TO  FMTAIIN-HOME-TEL
+      *
       *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            MOVE    SPACE               TO  WRK-HEN-DATE
