@@ -67,6 +67,8 @@ db	{
 	tbl_list_doctor;
         tbl_generic_price;
 	tbl_santei;
+	tbl_prtdata;
+	tbl_prtkanri;
 };
 db "xml2" {
  fm_medicine_notebook;
