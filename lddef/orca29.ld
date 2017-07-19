@@ -69,6 +69,7 @@ db	{
 	tbl_santei;
 	tbl_prtdata;
 	tbl_prtkanri;
+	tbl_api_para;
 };
 db "xml2" {
  fm_medicine_notebook;
