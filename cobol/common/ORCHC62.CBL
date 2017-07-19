@@ -313,6 +313,9 @@
       *    お薬手帳情報構造体
            COPY    "CPFMMNOTE.INC".
       *
+           COPY    "CPORCSQRCSV62.INC" REPLACING   //ORCSQRCSV62//
+                                       BY          //WQRCSV62//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1604,6 +1607,7 @@
            MOVE    ORCHC62-CNT         TO  ORCSQRCSV62-CNT
            MOVE    ORCHC62-PGKBN       TO  ORCSQRCSV62-PGKBN
       *
+           MOVE    ORCSQRCSV62AREA     TO  WQRCSV62AREA
            CALL    "ORCSQRCSV62"       USING
                                        SPA-AREA
                                        ORCSQRCSV62AREA
@@ -1924,6 +1928,7 @@
            MOVE    ORCHC62-DRCD        TO  FMMNOTE-DR-CODE
       *
       *    明細
+           MOVE    WQRCSV62AREA        TO  ORCSQRCSV62AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   50   )
                            OR (ORCSQRCSV62-SRYKBN (IDX)  =   SPACE )

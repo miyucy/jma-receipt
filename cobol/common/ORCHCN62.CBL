@@ -326,6 +326,9 @@
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
       *
+           COPY    "CPORCSQRCSV62.INC" REPLACING   //ORCSQRCSV62//
+                                       BY          //WQRCSV62//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -690,6 +693,15 @@
                PERFORM 210-KOUNOU-MAIN-SEC
            END-IF
       *----(04.08.02)--ADD-END-----
+      *
+      *H24.9
+      *    ＱＲ印刷
+           MOVE    ORCSQRCSV62AREA     TO  WQRCSV62AREA
+           IF     (WRK-QRKBN           =   "1"  )
+              OR  (ORCHCN62-CSVKBN     NOT =   SPACE )
+      *        ドクターなしは対象外
+               PERFORM 500-QR-SYORI-SEC
+           END-IF
       *----API-ADD-START---
            IF     (PARA-API-DATA       =   "1"  )
             AND   (ORCHCN62-PRTKBN  NOT =   "1"  )
@@ -697,14 +709,6 @@
                PERFORM 600-API-SYORI-SEC
            END-IF
       *----API-ADD-END-----
-      *
-      *H24.9
-      *    ＱＲ印刷
-           IF     (WRK-QRKBN           =   "1"  )
-              OR  (ORCHCN62-CSVKBN     NOT =   SPACE )
-      *        ドクターなしは対象外
-               PERFORM 500-QR-SYORI-SEC
-           END-IF
       *
            .
        200-MAIN-EXT.
@@ -2025,6 +2029,7 @@
            MOVE    ORCHCN62-DRCD       TO  FMMNOTEN-DR-CODE
       *
       *    明細
+           MOVE    WQRCSV62AREA        TO  ORCSQRCSV62AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   50   )
                            OR (ORCSQRCSV62-SRYKBN (IDX)  =   SPACE )

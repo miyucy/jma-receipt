@@ -417,6 +417,7 @@
            MOVE    SYS-1002-ADRS   TO  WRK-HOSPADRS
            MOVE    SYS-1002-ADRS   TO  WRK-API-HOSPADRS(1)
            MOVE    SYS-1002-TEL    TO  WRK-HOSPTEL
+           MOVE    SYS-1002-POST   TO  WRK-HOSPPOST
       *
       *    ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û
            PERFORM 900-1900-READ-SEC
@@ -425,7 +426,6 @@
            PERFORM 900-1010-READ-SEC
       *
       *----(04.08.02)--ADD-START---
-           MOVE    SYS-1002-POST   TO  WRK-HOSPPOST
            MOVE    SYS-1010-NAME   TO  WRK-DRNAME
            MOVE    SYS-1010-KANANAME
                                    TO  WRK-DRKANANAME
@@ -2674,6 +2674,7 @@
                MOVE    SYS-1902-ADRS3  TO  WRK-API-HOSPADRS(3)
       *
                MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
+               MOVE    SYS-1902-POST   TO  WRK-HOSPPOST
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
