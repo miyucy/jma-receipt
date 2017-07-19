@@ -4179,8 +4179,12 @@
            INITIALIZE                      ORCHC19AREA
            MOVE    "N"                 TO  ORCHC19-KBN
            MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-           MOVE    "1"                 TO  SPA-DRCD(1:1)
-           MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+           IF      SPA-GMN-DRCD        =   SPACE
+               MOVE    SPACE               TO  SPA-DRCD
+           ELSE
+               MOVE    "1"                 TO  SPA-DRCD(1:1)
+               MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+           END-IF
            MOVE    SPA-PARA-SRYKA      TO  SPA-SRYKA
            PERFORM 41021-ORCHC19-HENSYU-SEC
       *
@@ -4276,8 +4280,10 @@
            MOVE    SPA-PARA-SRYKA      TO  SPA-SRYKA
       *
            MOVE    "N"                 TO  ORCSHCN30-KBN
-           MOVE    "1"                 TO  ORCSHCN30-DRCD(1:1)
-           MOVE    SPA-GMN-DRCD        TO  ORCSHCN30-DRCD(2:4)
+           IF      SPA-GMN-DRCD    NOT =   SPACE
+               MOVE    "1"                 TO  ORCSHCN30-DRCD(1:1)
+               MOVE    SPA-GMN-DRCD        TO  ORCSHCN30-DRCD(2:4)
+           END-IF
            MOVE    SPA-NAI-BTUNAME     TO  ORCSHCN30-BTUNAME
            MOVE    SPA-NAI-ROOMNO      TO  ORCSHCN30-ROOMNO
            MOVE    SPA-NAI-KOUFUYMD    TO  ORCSHCN30-SRYYMD
@@ -4488,8 +4494,10 @@
            MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
            MOVE    SPA-PARA-SRYKA      TO  SPA-SRYKA
       *
-           MOVE    "1"                 TO  ORCHCN62-DRCD(1:1)
-           MOVE    SPA-GMN-DRCD        TO  ORCHCN62-DRCD(2:4)
+           IF      SPA-GMN-DRCD    NOT =   SPACE
+               MOVE    "1"                 TO  ORCHCN62-DRCD(1:1)
+               MOVE    SPA-GMN-DRCD        TO  ORCHCN62-DRCD(2:4)
+           END-IF
            MOVE    SPA-NAI-KOUFUYMD    TO  ORCHCN62-SRYYMD
            MOVE    SPA-NAI-BTUNAME     TO  ORCHCN62-BTUNAME
            MOVE    SPA-NAI-ROOMNO      TO  ORCHCN62-ROOMNO
@@ -4764,8 +4772,12 @@
            MOVE    SPA-NAI-TAIINYMD    TO  ORCSNYUINSHO-TAIINYMD
            MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
                                        TO  ORCSNYUINSHO-SRYKA (1)
-           MOVE    "1"                 TO  ORCSNYUINSHO-DRCD  (1)(1:1)
-           MOVE    SPA-GMN-DRCD        TO  ORCSNYUINSHO-DRCD  (1)(2:4)
+           IF      SPA-GMN-DRCD    NOT =   SPACE
+               MOVE    "1"                 TO  ORCSNYUINSHO-DRCD
+                                                           (1)(1:1)
+               MOVE    SPA-GMN-DRCD        TO  ORCSNYUINSHO-DRCD
+                                                           (1)(2:4)
+           END-IF
            MOVE    1                   TO  ORCSNYUINSHO-SRYKA-MAX
       *
            MOVE    "02"                TO  SPA-PRT-FLG
