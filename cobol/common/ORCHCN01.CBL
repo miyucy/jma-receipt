@@ -218,7 +218,7 @@
            03  PARA-TAIINYMDKBN        PIC X(01).
       *----API-ADD-START---
            03  PARA-API-DATA           PIC X(01).
-           03  PARA-API-CUSTOM-ID      PIC X(30).
+           03  PARA-API-CUSTOM-ID      PIC X(20).
       *----API-ADD-END-----
       *
            03  WRK-PARA-NAME           PIC X(25).
@@ -1460,16 +1460,7 @@
       *****************************************************************
        710-HEAD-API-SEC            SECTION.
       *
-           INITIALIZE                      FMKARTE1N-REC
-      *    印刷処理区分
-           MOVE    ORCHCN01-PRTKBN     TO  FMKARTE1N-HAKKOKBN
-           MOVE    "karte_no1_n"       TO  FMKARTE1N-FORM-ID
-           MOVE    SYS-1034-PRTNM(1)   TO  FMKARTE1N-PRINTER
-      *
-      *    患者マスターより
-           MOVE    SPA-PTNUM           TO  FMKARTE1N-PTNUM
-           MOVE    PTINF-KANANAME      TO  FMKARTE1N-KANANAME
-           MOVE    PTINF-NAME          TO  FMKARTE1N-NAME
+           PERFORM 710-API-HEAD-SYORI-SEC
       *
            PERFORM 790-API-CALL-SEC
            .
@@ -1480,8 +1471,12 @@
       *****************************************************************
        710-ALL-API-SEC            SECTION.
       *
+           PERFORM 710-API-HEAD-SYORI-SEC
            PERFORM 710-API-PTINF-SYORI-SEC
-           PERFORM 710-API-PTHKN-SYORI-SEC
+      *
+           IF      SPA-HKNCOMBINUM         NOT =  SPACE
+               PERFORM 710-API-PTHKN-SYORI-SEC
+           END-IF
       *
            IF   (  PARA-BYOMEIKBN          NOT =   "2" )
       *        病名を印刷する
@@ -1495,7 +1490,7 @@
       *****************************************************************
       *    ＡＰＩ処理
       *****************************************************************
-       710-API-PTINF-SYORI-SEC     SECTION.
+       710-API-HEAD-SYORI-SEC     SECTION.
       *
            INITIALIZE                      FMKARTE1N-REC
       *    印刷処理区分
@@ -1530,6 +1525,23 @@
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMKARTE1N-BIRTHDAY
+      *
+           .
+       710-API-HEAD-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＡＰＩ処理
+      *****************************************************************
+       710-API-PTINF-SYORI-SEC     SECTION.
+      *
+      *    年齢
+           MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
+           COMPUTE WRK-NENREI          =   WRK-SYSYY
+                                       -   WRK-SYY
+           IF      SPA-SYSYMD(5:4)     <   WRK-SYMD(5:4)
+               COMPUTE WRK-NENREI      =   WRK-NENREI   -   1
+           END-IF
+           MOVE    WRK-NENREI          TO  FMKARTE1N-HOKEN-AGE
       *
       *    診療科
            MOVE    SPA-SRYKA           TO  FMKARTE1N-SRYKA
@@ -1684,13 +1696,9 @@
       *    本人家族区分
            MOVE    PTHKN-HONKZKKBN     TO  FMKARTE1N-HONKZKKBN
       *    資格取得日
-           IF      PTHKN-SKKGETYMD     =   SPACE
-               CONTINUE
-           ELSE
-               MOVE    PTHKN-SKKGETYMD     TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  FMKARTE1N-SKKGETYMD
-           END-IF
+           MOVE    PTHKN-SKKGETYMD     TO  WRK-SYMD
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  FMKARTE1N-SKKGETYMD
       *    適用開始年月日
            MOVE    PTHKN-TEKSTYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
@@ -1749,12 +1757,10 @@
                                            INTO    FMKARTE1N-CITYNAME
                    END-STRING
       *            傷病年月日
-                   IF      PTRSI-SHOBYOYMD NOT =   SPACE
-                       MOVE    PTRSI-SHOBYOYMD     TO  WRK-SYMD
-                       PERFORM 801-DAYHEN01-SEC
-                       MOVE    WRK-HEN-DATE
-                                           TO  FMKARTE1N-RSI-SHOBYOYMD
-                   END-IF
+                   MOVE    PTRSI-SHOBYOYMD     TO  WRK-SYMD
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE
+                                       TO  FMKARTE1N-RSI-SHOBYOYMD
                    IF      PTRSI-HKNKBN    =   "3"
       *            アフターケア
       *                療養開始日
@@ -1802,23 +1808,15 @@
                                    TO  FMKARTE1N-KOH-JKYSNUM(IDY)
                    END-IF
       *            開始年月日
-                   IF      PTKOH-TEKSTYMD      =   SPACE  OR  ALL "0"
-                       CONTINUE
-                   ELSE
-                       MOVE    PTKOH-TEKSTYMD      TO  WRK-SYMD
-                       PERFORM 801-DAYHEN01-SEC
-                       MOVE    WRK-HEN-DATE
-                                       TO  FMKARTE1N-KOH-TEKSTYMD(IDY)
-                   END-IF
+                   MOVE    PTKOH-TEKSTYMD      TO  WRK-SYMD
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE
+                                   TO  FMKARTE1N-KOH-TEKSTYMD(IDY)
       *            終了年月日
-                   IF      PTKOH-TEKEDYMD      =   SPACE  OR  ALL "9"
-                       CONTINUE
-                   ELSE
-                       MOVE    PTKOH-TEKEDYMD      TO  WRK-SYMD
-                       PERFORM 801-DAYHEN01-SEC
-                       MOVE    WRK-HEN-DATE
-                                       TO  FMKARTE1N-KOH-TEKSTYMD(IDY)
-                   END-IF
+                   MOVE    PTKOH-TEKEDYMD      TO  WRK-SYMD
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE
+                                   TO  FMKARTE1N-KOH-TEKSTYMD(IDY)
                END-IF
            END-PERFORM
            .
@@ -1828,6 +1826,29 @@
       *    ＡＰＩ病名編集処理
       *****************************************************************
        710-API-BYOMEIHEN-SEC         SECTION.
+      *
+      *    保険組合せテーブル編集
+           INITIALIZE                  TBL-HKNCOMBI-AREA
+           IF      SPA-HKNCOMBINUM     =   ZERO
+               MOVE    SPACE               TO  WRK-COMB-HKNNUM
+           ELSE
+               MOVE    COMB-HKNNUM         TO  WRK-COMB-HKNNUM
+      *ver.4.7
+      *        第三者
+               IF      COMB-KOH1HKNNUM     =   "970"
+                   MOVE    COMB-KOH1HKNNUM TO  WRK-COMB-HKNNUM
+                   MOVE    COMB-KOH1ID     TO  WRK-COMB-KOHID
+               END-IF
+           END-IF
+           IF     (PARA-HKNCOMBIKBN    =   "1"
+                                       OR  "2" )
+               PERFORM 2009-HKNCOMBI-HEN-SEC
+           END-IF
+      *
+      *    患者病名マスタより編集
+           MOVE    MAX-LINE1           TO  CNT-MEI
+           MOVE    ZERO                TO  IDX
+           MOVE    1                   TO  WRK-PRT-CNT
       *
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
@@ -1844,10 +1865,9 @@
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
            END-IF
+           PERFORM 
+                   UNTIL   FLG-PTBYOMEI    NOT =   ZERO
       *
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL   FLG-PTBYOMEI    NOT =   ZERO
-                   OR      IDX         >   1000
                ADD     1               TO  IDX
       *
       *        病名編集
@@ -1877,17 +1897,13 @@
                MOVE    PTBYO-UTAGAIFLG TO  FMKARTE1N-UTAGAIFLG(IDX)
       *
       *        開始年月日（診療年月日）
-               IF      PTBYO-SRYYMD    NOT =   SPACE
-                   MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE    TO  FMKARTE1N-SRYYMD(IDX)
-               END-IF
+               MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE    TO  FMKARTE1N-SRYYMD(IDX)
       *        転帰日付
-               IF      PTBYO-TENKIYMD  NOT =   SPACE
-                   MOVE    PTBYO-TENKIYMD  TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE    TO  FMKARTE1N-TENKIYMD(IDX)
-               END-IF
+               MOVE    PTBYO-TENKIYMD  TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE    TO  FMKARTE1N-TENKIYMD(IDX)
       *        転帰区分
                MOVE    PTBYO-TENKIKBN  TO  FMKARTE1N-TENKIKBN(IDX)
       *
@@ -1993,12 +2009,20 @@
       *****************************************************************
        801-DAYHEN01-SEC            SECTION.
       *
-           MOVE    SPACE               TO  WRK-HEN-DATE
-           MOVE    WRK-SYMD(1:4)       TO  WRK-HEN-YY
-           MOVE    "-"                 TO  WRK-HEN-H1
-           MOVE    WRK-SYMD(5:2)       TO  WRK-HEN-MM
-           MOVE    "-"                 TO  WRK-HEN-H2
-           MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
+           IF      WRK-SYMD            =   SPACE
+               MOVE    SPACE           TO  WRK-HEN-DATE
+           ELSE
+               INITIALIZE                  WRK-HEN-DATE
+               MOVE    WRK-SYY             TO  WRK-HEN-YY
+               MOVE    WRK-SMM             TO  WRK-HEN-MM
+               MOVE    WRK-SDD             TO  WRK-HEN-DD
+               MOVE    "-"                 TO  WRK-HEN-H1
+               MOVE    "-"                 TO  WRK-HEN-H2
+               IF      WRK-SYMD            =   "99999999"
+                   MOVE    "12"                TO  WRK-HEN-MM
+                   MOVE    "31"                TO  WRK-HEN-DD
+               END-IF
+           END-IF
            .
        801-DAYHEN01-EXT.
            EXIT.
