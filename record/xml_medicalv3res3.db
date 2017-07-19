@@ -130,13 +130,13 @@ xml_medicalv3res3 {
 	    Ac_Point_Information  {
 		Ac_Ttl_Point	varchar(10);
 		Ac_Point_Detail   {
-			AC_Point_Name	varchar(30);
-			AC_Point	varchar(10);
+			Ac_Point_Name	varchar(30);
+			Ac_Point	varchar(10);
 			Me_Money	varchar(10);
 	 		} [16];
 #---           ¼«ÈñÌÀºÙ
 	        Oe_Etc_Information  {
-	             Oe_Etc_Detal    {
+	             Oe_Etc_Detail    {
 			Oe_Etc_Name		varchar(20);
 			Oe_Etc_Money_Non_Taxable	varchar(10);
 			Oe_Etc_Money_Taxable		varchar(10);
