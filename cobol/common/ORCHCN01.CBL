@@ -1816,7 +1816,7 @@
                    MOVE    PTKOH-TEKEDYMD      TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE
-                                   TO  FMKARTE1N-KOH-TEKSTYMD(IDY)
+                                   TO  FMKARTE1N-KOH-TEKEDYMD(IDY)
                END-IF
            END-PERFORM
            .
