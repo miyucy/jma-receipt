@@ -165,7 +165,7 @@ xml_medicalv3res3 {
     		};
     	};
 #--- °õºþ¶èÊ¬
-	Print__Info    {
+	Print_Info    {
 		Print_Prescription_Class		varchar(1);
 		Print_Prescription_Class_Name		varchar(30);
 		Print_Invoice_Receipt_Class		varchar(1);
