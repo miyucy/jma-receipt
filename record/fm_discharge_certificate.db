@@ -44,6 +44,6 @@ fm_discharge_certificate {
       Days                varchar(5);
       Base_Date           varchar(10);
     };
-    Disease_Name          varchar(76)[2];
+    Disease_Name          varchar(76);
   };
 };
