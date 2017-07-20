@@ -287,9 +287,12 @@
            03  QR-FILE-TERMID      PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
            03  QR-FILE-SYOHMS      PIC 9(08)   VALUE   ZERO.
-           03  FILLER              PIC X(04)   VALUE   ".qr_".
-           03  QR-FILE-ID          PIC 9(02)   VALUE   ZERO.
-           03  FILLER              PIC X(04)   VALUE   ".png".
+           03  QR-FILE-SUFFIX.
+               05  QR-FILE-TYPE    PIC X(04)   VALUE   SPACE.
+               05  QR-FILE-ID      PIC 9(02)   VALUE   ZERO.
+               05  QR-FILE-EXT     PIC X(24)   VALUE   SPACE.
+           03  QR-FILE-SUFFIX-R    REDEFINES   QR-FILE-SUFFIX.
+               05  QR-FILE-REGEX   PIC X(30).
       *v4.8
        01  QR-FILE-NAME            PIC X(1024).
       *
@@ -411,6 +414,7 @@
            COPY    "CPFMMNOTEN.INC".
       *
            COPY    "CPORCRPMAIN.INC".
+           COPY    "CPORCSBLOBIMPORT.INC".
       *----API-ADD-END-----
       *
       *****************************************************************
@@ -457,6 +461,9 @@
            MOVE    ZERO                TO  IDX-QRB
       *
            ACCEPT  SYS-TIME    FROM    TIME
+      *    時間
+           COMPUTE WRK-SYS-TIME        =   SYS-TIME
+                                       +   ORCHCN62-CNT
       *
       *    出力先プリンタ名割り当て情報
            INITIALIZE                     SYS-1034-REC
@@ -1678,9 +1685,6 @@
            MOVE    SPA-KANANAME        TO  ORCSQRCSV62-KANANAME
            MOVE    SPA-SEX             TO  ORCSQRCSV62-SEX
            MOVE    SPA-BIRTHDAY        TO  ORCSQRCSV62-BIRTHDAY
-      *    時間
-           COMPUTE WRK-SYS-TIME        =   SYS-TIME
-                                       +   ORCHCN62-CNT
       *    ファイル名
            MOVE    CONS-FORM-ID        TO  ORCSQRCSV62-FORM-ID
       *    ファイル名組み立て項目
@@ -1705,9 +1709,6 @@
       *    ＱＲイメージ印刷
            IF     (ORCSQRCSV62-RET-COUNT   >   ZERO)
              AND  (ORCSQRCSV62-RET-COUNT   <=  12  )
-      *----API-ADD-START---
-             AND  (PARA-API-DATA           =   "0"  )
-      *----API-ADD-END-----
                PERFORM 5003-QRIMAGE-HEN-SEC
            END-IF
            .
@@ -1766,9 +1767,13 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-QROK            =   1
-      *        帳票出力処理
-               PERFORM 50031-QRPRT-WRITE-SEC
+           IF      PARA-API-DATA       =   "1"
+               CONTINUE
+           ELSE
+               IF      FLG-QROK        =   1
+      *            帳票出力処理
+                   PERFORM 50031-QRPRT-WRITE-SEC
+               END-IF
            END-IF
            .
        5003-QRIMAGE-HEN-EXT.
@@ -2103,6 +2108,23 @@
                MOVE    ORCSQRCSV62-BIKOU (IDX)
                                        TO  FMMNOTEN-MEMO (IDX)
            END-PERFORM
+      *
+      *    QR
+           IF    ( FLG-QROK                 =   1 )
+                INITIALIZE                      SBI-AREA
+                MOVE    SPA-HOSPNUM         TO  QR-FILE-HOSPNUM
+                MOVE    CONS-FORM-ID        TO  QR-FILE-FORM-ID
+                MOVE    SPA-TERMID          TO  QR-FILE-TERMID
+                MOVE    WRK-SYS-TIME        TO  QR-FILE-SYOHMS
+                MOVE    "\.qr(.*[0-9][0-9]\.png|\.dat)$"
+                                            TO  QR-FILE-REGEX
+                MOVE    QR-FILE-NAME-PARA   TO  SBI-AREA
+                CALL    "ORCSBLOBIMPORT"    USING
+                                            SBI-AREA
+                                            SPA-AREA
+                MOVE    SBI-BLOB-ID         TO  FMMNOTEN-QR-ID
+           END-IF
+      *
            .
        600-API-SYORI-EXT.
            EXIT.

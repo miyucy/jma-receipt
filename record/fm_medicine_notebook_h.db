@@ -41,5 +41,6 @@ fm_medicine_notebook_h {
 			}[50];
 		}[50];
 		Memo						varchar(80)[10];
+		Qr_ID   					varchar(80);
 	};
 };

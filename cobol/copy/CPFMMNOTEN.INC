@@ -86,3 +86,5 @@
                        09  FMMNOTEN-SRYCD           PIC X(9).
       *        îıçl
                05  FMMNOTEN-MEMO    PIC X(80)       OCCURS  10 TIMES.
+      *        ÇpÇqéÊìæópÇhÇc
+               05  FMMNOTEN-QR-ID   PIC X(80).
