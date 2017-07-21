@@ -37,8 +37,6 @@
       *
       * 04.06.01     NACL-門脇    13/02/18  自賠責救急医療管理加算点数追加
       * 04.08.01     NACL-門脇    17/07/14  チェック用ＩＤＸ追加
-      * 04.08.02     NACL-門脇    17/12/15  第三者行為現物給付に関わる
-      *                                     負担金計算対応
       ************************************************************
        01  LNK-ORCS01-REC.
       *
@@ -58,8 +56,6 @@
            03  LNK-S01-SINSATUFLG2         PIC  X(01).
       *時間外受診フラグ（地方公費用）
            03  LNK-S01-JIKANGAI            PIC  X(01).
-      *第三者行為分計算優先フラグ
-           03  LNK-S01-DAISANYUSENFLG      PIC  X(01).
       *一括再計算順
            03  LNK-S01-IKTSORTKBN          PIC  X(01).
       *一括再計算方法
@@ -72,8 +68,6 @@
            03  LNK-S01-IKTGENMKJFLG        PIC  X(01).
       *一括再計算実施フラグ
            03  LNK-S01-IKTJISSIFLG         PIC  X(01).
-      *一括再計算該当者チェックフラグ
-           03  LNK-S01-IKTCHECKFLG         PIC  X(01).
       *現物給付メッセージフラグ
            03  LNK-S01-GENBUTU-MSG-FLG     PIC  X(01).
       *
