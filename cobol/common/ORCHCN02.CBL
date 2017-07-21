@@ -314,7 +314,6 @@
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
-      *    ファイルＯＰＥＮ
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HCN2"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
@@ -326,8 +325,6 @@
            MOVE    HC01PARA            TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
-      *
-           OPEN    OUTPUT              PRT-FILE
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -408,10 +405,11 @@
            END-IF
       *----API-ADD-END-----
       *　　印刷用データ出力
+      *
+            OPEN   OUTPUT                  PRT-FILE
             MOVE   HCN02               TO  PRT-REC
             WRITE  PRT-REC
-      *
-            CLOSE                       PRT-FILE
+            CLOSE                          PRT-FILE
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
