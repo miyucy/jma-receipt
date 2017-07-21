@@ -1059,6 +1059,7 @@
            END-IF
       *
            MOVE    SPACE       TO  WRK-BYOMEI-G
+      *
       *    ½ýÉÂÌ¾
            IF   SYS-5000-TAIKSIKBN     =   "4"  OR  "5"
                INITIALIZE                      PTBYOMEI-REC
@@ -1283,6 +1284,38 @@
       *
            MOVE   WRK-YOBI-NISSU   TO   WRK-Z5
            MOVE   WRK-Z5           TO   FMTAIIN-OTHER-NISSU
+      *
+      *    °õºþÂÐ¾Ý³°²Õ½ê¤Î½é´ü²½
+           IF   SYS-5000-TAIKSIKBN     =   "2"
+               MOVE   SPACE        TO  FMTAIIN-IPPAN-NISSU
+               MOVE   SPACE        TO  FMTAIIN-BASEYMD
+           END-IF
+      *
+           IF   SYS-5000-TAIKSIKBN     =   "3"
+               PERFORM    VARYING   IDX   FROM  1  BY  1
+                 UNTIL    IDX   >   3
+                     MOVE   SPACE  TO  FMTAIIN-NYUINRYO-NAME(IDX)
+                     MOVE   SPACE  TO  FMTAIIN-NYUINRYO-NISSU(IDX)
+               END-PERFORM
+               MOVE   SPACE        TO  FMTAIIN-TOTAL-NISSU
+               MOVE   SPACE        TO  FMTAIIN-SNTSTYMD
+               MOVE   SPACE        TO  FMTAIIN-SNTEDYMD
+               MOVE   SPACE        TO  FMTAIIN-OTHER-NISSU
+           END-IF
+      *
+           IF   SYS-5000-TAIKSIKBN     =   "4"
+               PERFORM    VARYING   IDX   FROM  1  BY  1
+                 UNTIL    IDX   >   3
+                     MOVE   SPACE  TO  FMTAIIN-NYUINRYO-NAME(IDX)
+                     MOVE   SPACE  TO  FMTAIIN-NYUINRYO-NISSU(IDX)
+               END-PERFORM
+               MOVE   SPACE        TO  FMTAIIN-TOTAL-NISSU
+               MOVE   SPACE        TO  FMTAIIN-SNTSTYMD
+               MOVE   SPACE        TO  FMTAIIN-SNTEDYMD
+               MOVE   SPACE        TO  FMTAIIN-OTHER-NISSU
+               MOVE   SPACE        TO  FMTAIIN-IPPAN-NISSU
+               MOVE   SPACE        TO  FMTAIIN-BASEYMD
+           END-IF
       *
            .
        710-API-NTYMD-HEN2-EXT.
