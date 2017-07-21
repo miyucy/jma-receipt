@@ -63,4 +63,4 @@
               05  FMTAIIN-IPPAN-AREA.
                 07  FMTAIIN-IPPAN-NISSU        PIC X(5).
                 07  FMTAIIN-BASEYMD            PIC X(10).
-              05  FMTAIIN-BYOMEI               PIC X(76).
+              05  FMTAIIN-BYOMEI               PIC X(160).
