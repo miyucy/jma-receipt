@@ -1107,7 +1107,7 @@
                PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
       *
-           MOVE    WRK-BYOMEI(1)   TO  FMTAIIN-BYOMEI
+           MOVE    WRK-BYOMEI-G   TO  FMTAIIN-BYOMEI
       *
            PERFORM 790-API-CALL-SEC
       *
