@@ -32,14 +32,18 @@ fm_discharge_certificate {
     IssuedDate            varchar(10);
     Admission_Date        varchar(10);
     Discharge_Date        varchar(10);
-    Hospital_Charge{
-      Name                varchar(50);
-      Days                varchar(5);
-    }[3];
-    Other_Days            varchar(5);
-    Sum_Days              varchar(5);
-    Sum_Start_Date        varchar(10);
-    Sum_End_Date          varchar(10);
+    Hospital_Charge_And_Term{
+      Hospital_Charge{
+        Name                varchar(50);
+        Days                varchar(5);
+      }[3];
+      Other_Days            varchar(5);
+      Term{
+        Days                varchar(5);
+        Start_Date     varchar(10);
+        End_Date       varchar(10);
+      };
+    };
     General_Hospital_Charge{
       Days                varchar(5);
       Base_Date           varchar(10);

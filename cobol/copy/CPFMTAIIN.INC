@@ -50,14 +50,16 @@
               05  FMTAIIN-PRTYMD               PIC X(10).
               05  FMTAIIN-NYUINYMD             PIC X(10).
               05  FMTAIIN-TAIINYMD             PIC X(10).
-              05  FMTAIIN-NYUINRYO-AREA.
-                07  FMTAIIN-NYUINRYO-OCC       OCCURS   3.
-                  09  FMTAIIN-NYUINRYO-NAME    PIC X(50).
-                  09  FMTAIIN-NYUINRYO-NISSU   PIC X(5).
-              05  FMTAIIN-OTHER-NISSU          PIC X(5).
-              05  FMTAIIN-TOTAL-NISSU          PIC X(5).
-              05  FMTAIIN-SNTSTYMD             PIC X(10).
-              05  FMTAIIN-SNTEDYMD             PIC X(10).
+              05  FMTAIIN-NYUINRYO-INF-AREA.
+                07  FMTAIIN-NYUINRYO-AREA.
+                  09  FMTAIIN-NYUINRYO-OCC       OCCURS   3.
+                    11  FMTAIIN-NYUINRYO-NAME    PIC X(50).
+                    11  FMTAIIN-NYUINRYO-NISSU   PIC X(5).
+                07  FMTAIIN-OTHER-NISSU          PIC X(5).
+                07  FMTAIIN-SANTEI-KIKAN-AREA.
+                  09  FMTAIIN-TOTAL-NISSU        PIC X(5).
+                  09  FMTAIIN-SNTSTYMD           PIC X(10).
+                  09  FMTAIIN-SNTEDYMD           PIC X(10).
               05  FMTAIIN-IPPAN-AREA.
                 07  FMTAIIN-IPPAN-NISSU        PIC X(5).
                 07  FMTAIIN-BASEYMD            PIC X(10).
