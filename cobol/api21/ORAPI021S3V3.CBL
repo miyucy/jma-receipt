@@ -1272,10 +1272,11 @@
        20013-REQUEST-MODE-CHK-SEC         SECTION.
       *
            EVALUATE    MDCREQ-REQUEST-MODE
-               WHEN    SPACE
+      ******** WHEN    SPACE
                WHEN    "Check"
                    MOVE    ZERO            TO  FLG-UPDATE
                WHEN    "Finish"
+               WHEN    SPACE
                    MOVE    1               TO  FLG-UPDATE
                WHEN    OTHER
                    MOVE    "61"            TO  WRK-ERRCD
