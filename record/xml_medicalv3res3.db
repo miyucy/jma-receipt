@@ -109,7 +109,7 @@ xml_medicalv3res3 {
 	Total_Re_Money			varchar(10);
 #---    今回入金額上限
 	Max_Ac_Money			varchar(10);
-	Cd_Ac_Information  {
+#--DD1	Cd_Ac_Information2 {
 #---    今回入金額
 	   Ic_Money			varchar(10);
 	   Ad_Money1			varchar(10);
@@ -118,7 +118,7 @@ xml_medicalv3res3 {
    	   Ac_Money			varchar(10);
 #---    返金額
 	    Re_Money			varchar(10);
-	    Cd_Ac_Information2  {
+	    Cd_Ac_Information  {
 		Ai_Money		varchar(10);
 		Oe_Money		varchar(10);
 		Dg_Smoney		varchar(10);
@@ -134,6 +134,7 @@ xml_medicalv3res3 {
 			Ac_Point	varchar(10);
 			Me_Money	varchar(10);
 	 		} [16];
+   	 	 };
 #---           自費明細
 	        Oe_Etc_Information  {
 	             Oe_Etc_Detail    {
@@ -143,27 +144,26 @@ xml_medicalv3res3 {
 	 		} [10];
 #---            自費消費税額（再計）
 	  	    Tax_In_Oe_Etc_Ttl_Money_Taxable	varchar(10);
-    	     	    };
-    	     };
-#---            減免情報
-	        Discount_Information  {
-		Discount_Name			varchar(12);
-        	};
+    	         };
 #---        訂正前情報
-	   Old_Money_Information  {
+#--DD2 	    Old_Money_Information  {
 		Old_Ic_Money			varchar(10);
 		Old_Ac_Money			varchar(10);
 		Old_Ad_Money1			varchar(10);
 		Old_Ad_Money2			varchar(10);
+#--DD2  	};
+#--DD1      };
+#---        減免情報
+	    Discount_Information  {
+		Discount_Name			varchar(12);
         	};
-            };
-        Old_Total_Information  {
-#---           前回までの未収金
+            Old_Total_Information  {
+#---            前回までの未収金
 		Old_Total_Re_Money		varchar(10);
 #---            前回までの過入金
 		Old_Total_Ov_Money		varchar(10);
     		};
-    	};
+	};
 #--- 印刷区分
 	Print_Info    {
 		Print_Prescription_Class		varchar(1);

@@ -26,12 +26,12 @@ xml_medicalv3req3 {
 #--- ∞Ï≥Á∆˛ ÷∂‚∂Ë ¨
 		Ic_All_Code		varchar(1);
 #--- º˝«º∆‚Õ∆
-		Cd_Information    {
+#--DD		Cd_Information    {
 		Ad_Money1		varchar(10);
 		Ad_Money2		varchar(10);
 		Ic_Money		varchar(10);
 		Re_Money		varchar(10);
-		};
+#--DD		}; 
 #--- ∞ı∫˛∂Ë ¨
 		Print_Info    {
 		Print_Prescription_Class	varchar(1);

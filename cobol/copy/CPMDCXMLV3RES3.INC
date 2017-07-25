@@ -239,18 +239,15 @@
       *                         Å¬ÍÑ³°¶â³Û
                                 13  MDCRES-AC-TGMONEY      PIC  X(10).
       *              ¼«ÈñÌÀºÙ
-                        09  MDCRES-JIHI-G.
-                            11  MDCRES-JIHI-TBL      OCCURS   10.
-                                13  MDCRES-JIHI-NAME       PIC  X(20).
-      *                         ¼«Èñ¶â³Û
-                                13  MDCRES-JIHI-MONEY      PIC  X(10).
-      *                         ¼«Èñ¶â³Û¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
-                                13  MDCRES-JIHI-MONEY-TAX  PIC  X(10).
-      *                     ¼«Èñ¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
-                            11  MDCRES-JIHI-TAX    PIC X(10).
-      *            ¸ºÌÈ¾ðÊó
-                   07  MDCRES-DISCOUNT-INF.
-                       09  MDCRES-DISCOUNT-NAME        PIC X(12).
+                     07  MDCRES-JIHI-G.
+                         09  MDCRES-JIHI-TBL      OCCURS   10.
+                             11  MDCRES-JIHI-NAME       PIC  X(20).
+      *                      ¼«Èñ¶â³Û
+                             11  MDCRES-JIHI-MONEY      PIC  X(10).
+      *                      ¼«Èñ¶â³Û¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
+                             11  MDCRES-JIHI-MONEY-TAX  PIC  X(10).
+      *                  ¼«Èñ¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+                         09  MDCRES-JIHI-TAX    PIC X(10).
       *
       *            ÄûÀµÁ°¼ýÇ¼¾ðÊóÊÖµÑ
                    07  MDCRES-OLD-CD-INF.
@@ -263,6 +260,9 @@
       *                Á°²óÄ´À°¶â³Û£²
                        09  MDCRES-OLD-AD-MONEY2        PIC  X(10).
       *H29.6
+      *        ¸ºÌÈ¾ðÊó
+               05  MDCRES-DISCOUNT-INF.
+                   07  MDCRES-DISCOUNT-NAME        PIC X(12).
                05  MDCRES-MAE-CD-INF.
       *            Á°²ó¤Þ¤Ç¤ÎÌ¤¼ý³Û
                    07  MDCRES-MAE-MISYU             PIC X(10).
