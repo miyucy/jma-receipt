@@ -1018,12 +1018,8 @@
            MOVE    WRK-NENREI          TO  FMTAIIN-AGE
       *
       *    ´µ¼Ô½»½ê
-           MOVE    SPACE               TO  WRK-ADRS
-           STRING  PTINF-HOME-ADRS         DELIMITED   BY  SPACE
-                   PTINF-HOME-BANTI        DELIMITED   BY  SPACE
-                   INTO                    WRK-ADRS
-           END-STRING
-           MOVE    WRK-ADRS            TO  FMTAIIN-HOME-ADRS(1)
+           MOVE    PTINF-HOME-ADRS     TO  FMTAIIN-HOME-ADRS(1)
+           MOVE    PTINF-HOME-BANTI    TO  FMTAIIN-HOME-ADRS(2)
       *
            MOVE    PTINF-HOME-POST     TO  FMTAIIN-HOME-POST
            MOVE    PTINF-HOME-TEL1     TO  FMTAIIN-HOME-TEL
