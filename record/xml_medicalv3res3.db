@@ -109,7 +109,7 @@ xml_medicalv3res3 {
 	Total_Re_Money			varchar(10);
 #---    今回入金額上限
 	Max_Ac_Money			varchar(10);
-#--DD1	Cd_Ac_Information2 {
+	Cd_Information2 {
 #---    今回入金額
 	   Ic_Money			varchar(10);
 	   Ad_Money1			varchar(10);
@@ -146,13 +146,13 @@ xml_medicalv3res3 {
 	  	    Tax_In_Oe_Etc_Ttl_Money_Taxable	varchar(10);
     	         };
 #---        訂正前情報
-#--DD2 	    Old_Money_Information  {
+	    Old_Money_Information  {
 		Old_Ic_Money			varchar(10);
 		Old_Ac_Money			varchar(10);
 		Old_Ad_Money1			varchar(10);
 		Old_Ad_Money2			varchar(10);
-#--DD2  	};
-#--DD1      };
+	 	};
+ 	    };
 #---        減免情報
 	    Discount_Information  {
 		Discount_Name			varchar(12);
@@ -165,7 +165,7 @@ xml_medicalv3res3 {
     		};
 	};
 #--- 印刷区分
-	Print_Info    {
+	Print_Information    {
 		Print_Prescription_Class		varchar(1);
 		Print_Prescription_Class_Name		varchar(30);
 		Print_Invoice_Receipt_Class		varchar(1);
