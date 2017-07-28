@@ -566,9 +566,6 @@
       *    請求書兼領収書まとめサブ
            COPY    "CPORCHCN03S02.INC".
       *
-      *    入退院登録PUSH通知
-           COPY    "CPORCSI03.INC".
-      *
        01  UIDIO-AREA.
            03  C-RET                   PIC X(2).
            03  C-UID                   PIC X(36).
@@ -2562,13 +2559,17 @@
            END-PERFORM
       *
       *    ユーザープログラム
-           MOVE    SPA-GMN-I04-USERPG      TO  I04-USERPG
-           MOVE    SPA-GMN-I04-USERPG-CNT  TO  I04-USERPG-CNT
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   SPA-GMN-I04-USERPG-CNT   )
-               MOVE    SPA-GMN-I04-USERPG-ITM (IDX1)
-                                           TO  I04-USERPG-ITM (IDX1)
-           END-PERFORM
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-I04-USERPG      TO  I04-USERPG
+               MOVE    SPA-GMN-I04-USERPG-CNT  TO  I04-USERPG-CNT
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL     ( IDX1    >   SPA-GMN-I04-USERPG-CNT   )
+                   MOVE    SPA-GMN-I04-USERPG-ITM (IDX1)
+                                               TO  I04-USERPG-ITM (IDX1)
+               END-PERFORM
+           END-IF
       *!!
       *    院外処方せん印刷
            MOVE    SPA-GMN-I04-SHOHOU      TO  I04-SHOHOSEN
@@ -2828,6 +2829,12 @@
                    MOVE    WIDGET-INSENSITIVE
                                    TO  I04-NYUKIN-STT
                END-IF
+           END-IF
+      *
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  I04-USERPG-STT
+                                       I04-USERPG-ITM-STT
            END-IF
       *
            .
@@ -3183,8 +3190,12 @@
            END-IF
       *
       *    ユーザープログラムチェック処理
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4100-USERPG-CHK-SEC
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4100-USERPG-CHK-SEC
+               END-IF
            END-IF
       *
            .
@@ -4789,9 +4800,6 @@
       *        ユーザープログラム
                PERFORM 4801-USERPG-SEC
       *
-      *        PUSH通知
-               PERFORM 4801-PUSH-HOSPITAL-STAY-SEC
-      *
                IF    ( FLG-END         =   ZERO )
                    IF    ( SPA-I01-I04-BUNBENFTN-FLG   =   1 )
                        PERFORM 220-S08-SENI-SEC
@@ -5117,9 +5125,6 @@
       *
       *    ユーザープログラム
            PERFORM 4801-USERPG-SEC
-      *
-      *    PUSH通知
-           PERFORM 4801-PUSH-HOSPITAL-STAY-SEC
       *
            IF    ( FLG-END         =   ZERO )
                IF    ( SPA-I01-I04-BUNBENFTN-FLG   =   1 )
@@ -6704,7 +6709,11 @@
       *****************************************************************
        4801-USERPG-SEC                 SECTION.
       *
-           PERFORM 48011-USERPG-SEC
+           IF    ( SPA-MW          =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               PERFORM 48011-USERPG-SEC
+           END-IF
       *
            .
        4801-USERPG-EXT.
@@ -6804,28 +6813,6 @@
       *
            .
        48011-XD01-SENI-EXT.
-           EXIT.
-      *****************************************************************
-      *    PUSH通知処理
-      *****************************************************************
-       4801-PUSH-HOSPITAL-STAY-SEC         SECTION.
-      *
-           INITIALIZE                      SI03-AREA
-      *
-           MOVE    SPA-I01-I04-SYORIKBN
-                                       TO  SI03-REQNUM
-           MOVE    SPA-GMN-I01-PTNUM   TO  SI03-PTNUM
-           MOVE    WKPTNYUINRRK-NYUINYMD TO  SI03-NYUINYMD
-           IF    ( WKPTNYUINRRK-TAIINYMD NOT =   "99999999" )
-               MOVE    WKPTNYUINRRK-TAIINYMD
-                                       TO  SI03-TAIINYMD
-           END-IF
-           CALL    "ORCSI03"           USING
-                                       SI03-AREA
-                                       SPA-AREA
-      *
-           .
-       4801-PUSH-HOSPITAL-STAY-EXT.
            EXIT.
       *****************************************************************
       *    自画面編集処理
