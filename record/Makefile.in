@@ -539,6 +539,7 @@ RECORD_files = \
  	medicine_notebookv2.rec \
 	diseasemasterlstv3.rec \
 	medicationmasterlstv3.rec \
+	tmedicalmodv2.rec \
 
 DEF_files = \
 
@@ -1017,6 +1018,8 @@ DB_files = \
 	push_accept02.db \
 	push_patient01.db \
 	push_medical01.db \
+	xml_tmedicalmodv2req.db \
+	xml_tmedicalmodv2res.db \
 
 
 shell.db: shell.db.in
