@@ -339,6 +339,8 @@
       *                                     の表示を行う
       *  04.08.12    NACL-藤原    17/07/10  病名コード未入力時の補足コメント
       *                                     のクリア
+      *  04.08.13    NACL-藤原    17/07/25  自院コード検索より戻った時の
+      *                                     疾患区分等の表示をする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2872,7 +2874,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    PERFORM 410112-USERBYOMEI-HENSYU-SEC
                    IF      SPA-NAI-C04-BYOMEI-CHG (IDZ)
                                            NOT =   SPACE
-                       INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDZ)
+      *??              INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDZ)
+                       INITIALIZE      SPA-NAI-C02-BYOMEI   (IDZ)
+                                       SPA-NAI-C02-US-BYOMEIHENFLG
+                                                            (IDZ)
+                                       SPA-NAI-C02-TOKSKNCD (IDZ)
+                                       SPA-NAI-C02-NANBYOCD-O
+                                                            (IDZ)
+                       PERFORM VARYING IDX3    FROM    1   BY  1
+                               UNTIL   IDX3    >       21
+                           INITIALIZE      SPA-NAI-C02-BYOMEICD-O
+                                                           (IDZ IDX3)
+                                           SPA-NAI-C02-BYOMEI-O
+                                                           (IDZ IDX3)
+                                           SPA-NAI-C02-HAISIYMD-O
+                                                           (IDZ IDX3)
+                                           SPA-NAI-C02-TANDOKUKBN-O
+                                                           (IDZ IDX3)
+                       END-PERFORM
                    END-IF
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       6
@@ -2880,7 +2899,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                =   IDX
                            IF      SPA-NAI-C04-BYOMEI-CHG (IDZ)
                                                NOT =   SPACE
-                               INITIALIZE      SPA-NAI-C02-BYOMEI-G(IDZ)
+      *??                      INITIALIZE      SPA-NAI-C02-BYOMEI-G(IDZ)
+                               INITIALIZE  SPA-NAI-C02-BYOMEI   (IDZ)
+                                           SPA-NAI-C02-US-BYOMEIHENFLG
+                                                                (IDZ)
+                                           SPA-NAI-C02-TOKSKNCD (IDZ)
+                                           SPA-NAI-C02-NANBYOCD-O
+                                                                (IDZ)
+                               PERFORM VARYING IDX3    FROM    1   BY  1
+                                       UNTIL   IDX3    >       21
+                                   INITIALIZE  SPA-NAI-C02-BYOMEICD-O
+                                                           (IDZ IDX3)
+                                               SPA-NAI-C02-BYOMEI-O
+                                                           (IDZ IDX3)
+                                               SPA-NAI-C02-HAISIYMD-O
+                                                           (IDZ IDX3)
+                                               SPA-NAI-C02-TANDOKUKBN-O
+                                                           (IDZ IDX3)
+                               END-PERFORM
                            END-IF
                            PERFORM VARYING IDX3    FROM    1   BY  1
                                    UNTIL   IDX3    >       21
@@ -2909,8 +2945,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-NAI-C02-TOKSKNCD (IDZ)
                                        MOVE    BYO-NANBYOCD    TO
                                            SPA-NAI-C02-NANBYOCD-O(IDZ)
-                                       MOVE    BYO-UTAGAIFLG   TO
-                                           SPA-NAI-C02-UTAGAIFLG (IDZ)
+      **                               MOVE    BYO-UTAGAIFLG   TO
+      **                                   SPA-NAI-C02-UTAGAIFLG (IDZ)
                                    END-IF 
                                END-IF
                                MOVE    SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
@@ -3863,7 +3899,25 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                                UNTIL   IDXX    >
                                        SPA-C02-CHANGE-INDEX-ED
       ****                 INITIALIZE      SPA-GMN-C02-BYOMEICD (IDXX)
-                           INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDXX)
+      *??                  INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDXX)
+                           INITIALIZE      SPA-NAI-C02-BYOMEI   (IDXX)
+                                           SPA-NAI-C02-US-BYOMEIHENFLG
+                                                                (IDXX)
+                                           SPA-NAI-C02-TOKSKNCD (IDXX)
+                                           SPA-NAI-C02-NANBYOCD-O
+                                                                (IDXX)
+                           PERFORM VARYING IDZ     FROM   1   BY  1
+                                   UNTIL   IDZ     >      21
+                               INITIALIZE  SPA-NAI-C02-BYOMEICD-O
+                                                             (IDXX IDZ)
+                                           SPA-NAI-C02-BYOMEI-O
+                                                             (IDXX IDZ)
+                                           SPA-NAI-C02-HAISIYMD-O
+                                                             (IDXX IDZ)
+                                           SPA-NAI-C02-TANDOKUKBN-O
+                                                             (IDXX IDZ)
+                           END-PERFORM
+      *??
                            MOVE    SPA-CID6-FLG    TO
                                            SPA-NAI-C02-BYOMEI-CHG (IDXX)
                        END-PERFORM
@@ -6760,7 +6814,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                    END-IF
                    MOVE    USBYO-HOSOKU-COMMENT
                                          TO
-                                     SPA-NAI-C02-US-HOSOKU-COMMENT (IDZ)
+                                     SPA-NAI-C02-US-HOSOKU-COMMENT(IDZ)
                    MOVE    USBYO-CHARTBYOMEI
                                          TO
                                          SPA-NAI-C02-CHARTBYOMEI  (IDZ)
