@@ -49,13 +49,6 @@
                                                OCCURS   3.
       *         医療機関電話番号
                 07  FMSEIKYUN-HOSP-TEL         PIC X(15).
-      *
-      *       実日数
-              05  FMSEIKYUN-JNISSU             PIC X(03).
-      *       診療期間区分
-              05  FMSEIKYUN-SRYKIKANKBN        PIC X(01).
-      *       診療年月
-              05  FMSEIKYUN-SRYYM              PIC X(07).
       *       開始診療日
               05  FMSEIKYUN-STSRYYMD           PIC X(10).
       *       終了診療日
@@ -89,51 +82,53 @@
       *           請求項目名
                   07  FMSEIKYUN-HKNTEN-NAME    PIC X(20).
       *           請求点数
-                  07  FMSEIKYUN-HKNTEN         PIC X(08).
+                  07  FMSEIKYUN-HKNTEN         PIC X(10).
       *           請求金額（保険適用外）
-                  07  FMSEIKYUN-TGMONEY        PIC X(08).
+                  07  FMSEIKYUN-TGMONEY        PIC X(10).
       *       点数合計
-              05  FMSEIKYUN-TOTAL-TEN          PIC X(08).
+              05  FMSEIKYUN-TOTAL-TEN          PIC X(10).
       *       患者一部負担金
-              05  FMSEIKYUN-HKNTEKMONEY                 PIC X(08).
+              05  FMSEIKYUN-HKNTEKMONEY                 PIC X(10).
       *       患者一部負担金ラベル（労災診療料等再掲）
               05  FMSEIKYUN-LBL-RSI-TOTAL               PIC X(20).
       *       患者一部負担金（労災診療料等再掲）
-              05  FMSEIKYUN-RSI-TOTAL                   PIC X(08).
+              05  FMSEIKYUN-RSI-TOTAL                   PIC X(10).
       *       食事・生活負担金
-              05  FMSEIKYUN-SKJ-FTN                     PIC X(08).
+              05  FMSEIKYUN-SKJ-FTN                     PIC X(10).
       *       公費一部負担金
-              05  FMSEIKYUN-KOH-FTN                     PIC X(08).
+              05  FMSEIKYUN-KOH-FTN                     PIC X(10).
       *       保険適用外合計
-              05  FMSEIKYUN-TOTAL-TGMONEY               PIC X(08).
+              05  FMSEIKYUN-TOTAL-TGMONEY               PIC X(10).
       *       保険適用外合計消費税再掲
-              05  FMSEIKYUN-TOTAL-TGMONEY-TAX           PIC X(08).
+              05  FMSEIKYUN-TOTAL-TGMONEY-TAX           PIC X(10).
       *       その他自費
               05  FMSEIKYUN-JIHI-OCC                    OCCURS  10.
       *             その他自費名称
                 07  FMSEIKYUN-JIHI-NAME                 PIC X(20).
       *             その他自費金額
-                07  FMSEIKYUN-JIHI                      PIC X(08).
+                07  FMSEIKYUN-JIHI                      PIC X(10).
       *       その他自費合計金額
-              05  FMSEIKYUN-JIHI-TOTAL                  PIC X(08).
+              05  FMSEIKYUN-JIHI-TOTAL                  PIC X(10).
       *       その他自費合計金額消費税再掲
-              05  FMSEIKYUN-JIHI-TOTAL-TAX              PIC X(08).
+              05  FMSEIKYUN-JIHI-TOTAL-TAX              PIC X(10).
       *       室料差額
-              05  FMSEIKYUN-RMSAGAKU                    PIC X(08).
+              05  FMSEIKYUN-RMSAGAKU                    PIC X(10).
+      *       室料差額消費税再掲
+              05  FMSEIKYUN-RMSAGAKU-TAX                PIC X(10).
       *       調整金１
-              05  FMSEIKYUN-CHOSEI1                     PIC X(08).
+              05  FMSEIKYUN-CHOSEI1                     PIC X(10).
       *       調整金２
-              05  FMSEIKYUN-CHOSEI2                     PIC X(08).
+              05  FMSEIKYUN-CHOSEI2                     PIC X(10).
       *       今回請求額
-              05  FMSEIKYUN-SKYMONEY                    PIC X(08).
+              05  FMSEIKYUN-SKYMONEY                    PIC X(10).
       *       今回請求額消費税再掲
-              05  FMSEIKYUN-SKYMONEY-TAX                PIC X(08).
+              05  FMSEIKYUN-SKYMONEY-TAX                PIC X(10).
       *       今回入金額
-              05  FMSEIKYUN-NYUKIN                      PIC X(08).
+              05  FMSEIKYUN-NYUKIN                      PIC X(10).
       *       入院未収額
-              05  FMSEIKYUN-NYU-MISYU                   PIC X(08).
+              05  FMSEIKYUN-NYU-MISYU                   PIC X(10).
       *       外来未収額
-              05  FMSEIKYUN-GAI-MISYU                   PIC X(08).
+              05  FMSEIKYUN-GAI-MISYU                   PIC X(10).
       *
       *       注意書き（請求書部分）
               05  FMSEIKYUN-SKY-CAUTION                 PIC X(100).

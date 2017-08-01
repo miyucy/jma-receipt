@@ -52,6 +52,7 @@ db "xml2" {
  fm_statement_h;
  fm_discharge_certificate;
  fm_karte_no1_h;
+ fm_invoice_receipt_h;
 };
 
 #include "orcadb.inc"
