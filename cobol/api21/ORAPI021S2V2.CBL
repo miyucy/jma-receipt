@@ -1071,6 +1071,13 @@
                    MOVE    ORAPISUB2-PRSCRPT-ATAI-G (IDX IDY)
                                        TO  TMDCRES-PRSCRPT-ATAI-G
                                                             (IDX IDY)
+      *            単位コード
+                   MOVE    ORAPISUB2-PRSCRPT-TANICD (IDX IDY)
+                                       TO  TMDCRES-PRSCRPT-TANICD
+                                                            (IDX IDY)
+                   MOVE    ORAPISUB2-PRSCRPT-TANICD-NAME (IDX IDY)
+                                       TO  TMDCRES-PRSCRPT-TANICD-NAME
+                                                            (IDX IDY)
       *            フィルム分画数
                    MOVE    ORAPISUB2-PRSCRPT-FILMNUM (IDX IDY)
                                        TO  TMDCRES-PRSCRPT-FILMNUM
