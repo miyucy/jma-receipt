@@ -36,6 +36,7 @@
       *  04.02.00    NACL-ÂÀÅÄ    08/03/07  ²þÀµÂÐ±þ
       *  04.03.00    NACL-ÂÀÅÄ    08/09/17  ²þÀµÂÐ±þ
       *  04.04.00    NACL-¿¹ÏÆ    09/01/14  ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥óÂÐ±þ
+      *  05.00.00    NACL-¿¹ÏÆ    17/07/27  API½ÐÎÏ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -179,6 +180,16 @@
                05  WRK-HOSPADRS2       PIC X(50).
            03  WRK-HOSPTEL             PIC X(15).
       *----(03.04.01)--ADD-END-----
+      *----API-ADD-START---
+           03  WRK-HOSPPOST            PIC X(7).
+      *    ÆüÉÕÊÔ½¸
+           03  WRK-HEN-DATE.
+               05  WRK-HEN-YY          PIC X(04).
+               05  WRK-HEN-H1          PIC X(01).
+               05  WRK-HEN-MM          PIC X(02).
+               05  WRK-HEN-H2          PIC X(01).
+               05  WRK-HEN-DD          PIC X(02).
+      *----API-ADD-END-----
       *
            03  WRK-MEMOID-G.
                05  WRK-MEMOID          PIC X(04).
@@ -229,6 +240,10 @@
            03  TPARA-CHUI-YUKOSTYMD     PIC X(08).
            03  TPARA-CHUI-YUKOEDYMD     PIC X(08).
            03  TPARA-CHUI               PIC X(100).
+      *----API-ADD-START---
+           03  TPARA-API-DATA           PIC X(01).
+           03  TPARA-API-CUSTOM-ID      PIC X(30).
+      *----API-ADD-END-----
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -355,6 +370,12 @@
       *
       *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
            COPY    "CPORCSGETTEMP.INC".
+      *----API-ADD-START---
+      *    Æþ±¡ÀÁµá½ñapi
+           COPY    "CPFMSEIKYUN.INC".
+      *
+           COPY    "CPORCRPMAIN.INC".
+      *----API-ADD-END-----
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -477,6 +498,9 @@
       *
            MOVE    SYS-5000-SKYMISYUPRTKBN
                                        TO  WRK-SKYMISYUPRTKBN
+      *----API-ADD-START---
+           MOVE    SYS-1002-POST       TO  WRK-HOSPPOST
+      *----API-ADD-END-----
       *----(03.04.01)--ADD-START---
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
@@ -637,6 +661,22 @@
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA        TO  TPARA-CHUI
       *
+      *----API-ADD-START---
+      *    £Á£Ð£ÉÊÖµÑ¥Ç¡¼¥¿¡Ê1:ºîÀ®¤¹¤ë Ä¢É¼°õºþ¤Ê¤·¡Ë
+           MOVE    "API_DATA"      TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)   TO  TPARA-API-DATA
+           IF     (TPARA-API-DATA      =   "1"       )
+               CONTINUE
+           ELSE
+      *        APIÁ÷¿®¤Ê¤·
+               MOVE    "0"             TO  TPARA-API-DATA
+           END-IF
+      *    £Á£Ð£É¥«¥¹¥¿¥à£É£Ä
+           MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA            TO  TPARA-API-CUSTOM-ID
+      *----API-ADD-END-----
            .
        100-OPTION-SELECT-EXT.
            EXIT.
@@ -800,6 +840,14 @@
            CALL    "ORCHCN03S03"       USING
                                        SPA-AREA
                                        ORCHCN03S03AREA
+      *
+      *----API-ADD-START---
+           IF      TPARA-API-DATA      =   "1"
+      *        £Á£Ð£É½èÍý
+               PERFORM 700-API-SYORI-SEC
+               GO  TO  2001-HCN03-HEN-EXT
+           END-IF
+      *----API-ADD-END-----
       *
            INITIALIZE                  HCN03
       *
@@ -1923,6 +1971,13 @@
       *
            CLOSE   PRT-FILE
       *
+      *----API-ADD-START---
+           IF      TPARA-API-DATA      =   "1"
+      *        £Á£Ð£É½èÍý
+               GO  TO  300-PRINT-EXT
+           END-IF
+      *----API-ADD-END-----
+      *
            CALL    "ORCHCN03S01"   USING   ORCHCN03AREA
                                            ASGNPARA
                                            SPA-AREA
@@ -1987,6 +2042,449 @@
        800-MCNDATE-EXT.
            EXIT.
       *
+      *----API--ADD-START---
+      *****************************************************************
+      *    £Á£Ð£É½èÍý
+      *****************************************************************
+       700-API-SYORI-SEC           SECTION.
+      *
+           INITIALIZE              FMSEIKYUN-REC
+      *
+           MOVE    "seikyusho_n"       TO  FMSEIKYUN-FORM-ID
+      *    ¥×¥ê¥ó¥¿Ì¾
+           MOVE    SYS-1034-PRTNM(3)   TO  FMSEIKYUN-PRINTER
+      *
+      *    °ÍÍê¸µ¶ÈÌ³
+           MOVE    ORCHCN03-MOTOID     TO  FMSEIKYUN-MOTOID
+      *    ³µ»»½ñÈ¯¹Ô¥Õ¥é¥°¡©
+           MOVE    ORCHCN03-GAISAN-FLG TO  FMSEIKYUN-KARIKEISANKBN
+      *
+      *    ´µ¼ÔÈÖ¹æ
+           MOVE    ORCHCN03-PTNUM(IDX-M)
+                                       TO  FMSEIKYUN-PTNUM
+      *    ´µ¼ÔÌ¾¾Î
+           MOVE    PTINF-NAME          TO  FMSEIKYUN-NAME
+      *    ¥«¥Ê»áÌ¾
+           IF    ( TPARA-KANANAME      =   "1" )
+               MOVE    PTINF-KANANAME  TO  FMSEIKYUN-KANANAME
+           END-IF
+      *
+      *    °åÎÅµ¡´ØÌ¾¾Î
+           MOVE    WRK-HOSPNAME1       TO  FMSEIKYUN-HOSP-NAME(1)
+           MOVE    WRK-HOSPNAME2       TO  FMSEIKYUN-HOSP-NAME(2)
+      *    ½»½ê
+           MOVE    WRK-HOSPPOST        TO  FMSEIKYUN-HOSP-POST
+           MOVE    WRK-HOSPADRS1       TO  FMSEIKYUN-HOSP-ADRS(1)
+           MOVE    WRK-HOSPADRS2       TO  FMSEIKYUN-HOSP-ADRS(2)
+      *    ÅÅÏÃÈÖ¹æ
+           MOVE    WRK-HOSPTEL         TO  FMSEIKYUN-HOSP-TEL
+      *
+      *    ÀÁµá³«»ÏÆü
+           MOVE    ORCHCN03S03-SKYSTYMD    TO  WRK-SYMD
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE            TO  FMSEIKYUN-STSRYYMD
+      *    ÀÁµá½ªÎ»Æü
+           MOVE    ORCHCN03S03-SKYEDYMD    TO  WRK-SYMD
+           PERFORM 801-DAYHEN01-SEC 
+           MOVE    WRK-HEN-DATE            TO  FMSEIKYUN-EDSRYYMD
+      *    È¯¹ÔÆü
+           IF    ( ORCHCN03-MOTOID     =   1 OR 3 OR 4)
+            AND  ( TPARA-HAKKOUBIKBN   =   "1" )
+               MOVE    ORCHCN03-SYSYMD     TO  WRK-SYMD
+           ELSE
+               MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+           END-IF
+           PERFORM 801-DAYHEN01-SEC 
+           MOVE    WRK-HEN-DATE            TO  FMSEIKYUN-DENPPRTYMD
+      *
+           IF    ( TPARA-ROOMKBN       =   "1" )
+      *        ÉÂÅï¡¦ÉÂ¼¼Ì¾ÊÔ½¸½èÍý
+               PERFORM 3102-ROOM-HEN-SEC
+               MOVE    WRK-BTUNUM          TO  FMSEIKYUN-BTUNUM
+               MOVE    SYS-5001-BTU-NAME   TO  FMSEIKYUN-BTUNAME
+               MOVE    WRK-BRMNUM          TO  FMSEIKYUN-BRMNUM
+           END-IF
+      *
+      *    ¿ÇÎÅ²ÊÌ¾¸¡º÷½èÍý
+           PERFORM 3102-SRYKA-SEL-SEC
+      *    ¿ÇÎÅ²Ê
+           IF    ( TPARA-SRYKA         =   "1" )
+               MOVE    SYS-1005-SRYKANAME2  TO  FMSEIKYUN-SRYKANAME
+           END-IF
+      *
+      *    ÊÝ¸±¾ðÊó
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    ORCHCN03-HOSPNUM(IDX-M)
+                                       TO  COMB-HOSPNUM
+           MOVE    ORCHCN03-PTID(IDX-M)
+                                       TO  COMB-PTID
+           MOVE    SYU-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+           PERFORM 910-HKNCOMBI-READ-SEC
+           IF      FLG-HKNCOMBI        =   1
+                DISPLAY "*** HKNCOMBI  ERR:"   COMB-KEY "."
+                INITIALIZE             HKNCOMBI-REC
+           END-IF
+      *
+           INITIALIZE                      PTHKNINF-REC
+           MOVE    ORCHCN03-HOSPNUM(IDX-M)
+                                       TO  PTHKN-HOSPNUM
+           MOVE    ORCHCN03-PTID  (IDX-M)
+                                       TO  PTHKN-PTID
+           MOVE    COMB-HKNID          TO  PTHKN-HKNID
+           PERFORM 910-PTHKNINF-KEY-SEL-SEC
+      *
+           IF    ( COMB-HKNNUM         =   "971" OR "973" )
+      *        ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó¸¡º÷
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    ORCHCN03-HOSPNUM(IDX-M)
+                                           TO  PTRSI-HOSPNUM
+               MOVE    ORCHCN03-PTID  (IDX-M)
+                                           TO  PTRSI-PTID
+               MOVE    COMB-HKNID          TO  PTRSI-HKNID
+               PERFORM 910-PTRSIINF-READ-SEC
+           ELSE
+               INITIALIZE                      PTRSIINF-REC
+           END-IF
+      *
+      *    ÊÝ¸±ÁÈ¹ç¤»Ì¾¾ÎÊÔ½¸½èÍý
+           PERFORM 3102-HKNCOMBI-HEN-SEC
+      *
+      *    ÊÝ¸±¼ïÊÌ
+           MOVE    WRK-HKNCOMBI        TO  FMSEIKYUN-HOKENNAME
+      *    ÉéÃ´³ä¹ç
+           IF    ( SYU-SRYYMD         >=   CONST-H200401 )
+               EVALUATE    TPARA-FTNKBN
+               WHEN    "1"
+                   MOVE    "¡ó"            TO  FMSEIKYUN-FUTANMEI
+                   MOVE    SYU-PTFTNRATE   TO  FMSEIKYUN-FUTAN
+               WHEN    "2"
+                   MOVE    "³ä"            TO  FMSEIKYUN-FUTANMEI
+                   COMPUTE WRK-WARI        =   SYU-PTFTNRATE   /   10
+                   IF      SYU-PTFTNRATE(3:1)  =   ZERO
+                       MOVE    WRK-WARI            TO  WRK-HKNFTN
+                       MOVE    WRK-HKNFTN(4:3)     TO  FMSEIKYUN-FUTAN
+                   ELSE
+                       MOVE    WRK-WARI            TO  WRK-HKNFTN2
+                       MOVE    WRK-HKNFTN2(4:3)    TO  FMSEIKYUN-FUTAN
+                   END-IF
+               END-EVALUATE
+           ELSE
+               COMPUTE WRK-WARI        =   SYU-PTFTNRATE   /   10
+               IF      SYU-PTFTNRATE(3:1)  =   ZERO
+                   MOVE    WRK-WARI            TO  WRK-HKNFTN
+                   MOVE    WRK-HKNFTN(4:3)     TO  FMSEIKYUN-FUTAN
+               ELSE
+                   MOVE    WRK-WARI            TO  WRK-HKNFTN2
+                   MOVE    WRK-HKNFTN2(4:3)    TO  FMSEIKYUN-FUTAN
+               END-IF
+           END-IF
+      *
+           IF    ( ORCHCN03S02-FUKUSU-COMBI   =    1 )
+               MOVE    "Ê£¿ôÊÝ¸±»ÈÍÑ"  TO  FMSEIKYUN-HOKENNAME
+               MOVE    SPACE           TO  FMSEIKYUN-FUTAN
+           END-IF
+      *
+           IF    ( TPARA-HKNMEI        =   "0" )
+               MOVE    SPACE           TO  FMSEIKYUN-HOKENNAME
+           END-IF
+           IF    ( TPARA-FTNKBN        =   "0" )
+               MOVE    SPACE           TO  FMSEIKYUN-FUTAN
+                                           FMSEIKYUN-FUTANMEI
+           END-IF
+      *
+      *    ÅÁÉ¼ÈÖ¹æ
+           MOVE    SYU-DENPNUM         TO  FMSEIKYUN-DENPNUM
+      *    ÄûÀµÉ½¼¨¶èÊ¬
+           MOVE    TPARA-TEISEIKBN     TO  FMSEIKYUN-TEISEI-KBN
+      *
+      *    ÀÁµá¹àÌÜÌ¾
+           MOVE    "½é ¡¦ ºÆ ¿Ç ÎÁ"    TO  FMSEIKYUN-HKNTEN-NAME(1)
+           MOVE    "°å ³Ø ´É Íý Åù"    TO  FMSEIKYUN-HKNTEN-NAME(2)
+           MOVE    "ºß¡¡Âð¡¡°å¡¡ÎÅ"    TO  FMSEIKYUN-HKNTEN-NAME(3)
+           MOVE    "Åê¡¡¡¡¡¡¡¡¡¡Ìô"    TO  FMSEIKYUN-HKNTEN-NAME(4)
+           MOVE    "Ãí¡¡¡¡¡¡¡¡¡¡¼Í"    TO  FMSEIKYUN-HKNTEN-NAME(5)
+           MOVE    "½è¡¡¡¡¡¡¡¡¡¡ÃÖ"    TO  FMSEIKYUN-HKNTEN-NAME(6)
+           MOVE    "¼ê¡¡¡¡¡¡¡¡¡¡½Ñ"    TO  FMSEIKYUN-HKNTEN-NAME(7)
+           MOVE    "Ëã¡¡¡¡¡¡¡¡¡¡¿ì"    TO  FMSEIKYUN-HKNTEN-NAME(8)
+           MOVE    "¸¡¡¡¡¡¡¡¡¡¡¡ºº"    TO  FMSEIKYUN-HKNTEN-NAME(9)
+           MOVE    "²è¡¡Áü¡¡¿Ç¡¡ÃÇ"    TO  FMSEIKYUN-HKNTEN-NAME(10)
+           MOVE    "¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó"
+                                       TO  FMSEIKYUN-HKNTEN-NAME(11)
+           MOVE    "Àº¿À²ÊÀìÌçÎÅË¡"    TO  FMSEIKYUN-HKNTEN-NAME(12)
+           MOVE    "Êü ¼Í Àþ ¼£ ÎÅ"    TO  FMSEIKYUN-HKNTEN-NAME(13)
+           MOVE    "ÉÂ¡¡Íý¡¡¿Ç¡¡ÃÇ"    TO  FMSEIKYUN-HKNTEN-NAME(14)
+           MOVE    "Æþ¡¡±¡¡¡ÎÁ¡¡Åù"    TO  FMSEIKYUN-HKNTEN-NAME(15)
+           MOVE    "ÎÅÍÜÃ´Åö¼êÅö"      TO  FMSEIKYUN-HKNTEN-NAME(16)
+           MOVE    "A00"               TO  FMSEIKYUN-HKNTEN-KBN(1)
+           MOVE    "B00"               TO  FMSEIKYUN-HKNTEN-KBN(2)
+           MOVE    "C00"               TO  FMSEIKYUN-HKNTEN-KBN(3)
+           MOVE    "F00"               TO  FMSEIKYUN-HKNTEN-KBN(4)
+           MOVE    "G00"               TO  FMSEIKYUN-HKNTEN-KBN(5)
+           MOVE    "J00"               TO  FMSEIKYUN-HKNTEN-KBN(6)
+           MOVE    "K00"               TO  FMSEIKYUN-HKNTEN-KBN(7)
+           MOVE    "L00"               TO  FMSEIKYUN-HKNTEN-KBN(8)
+           MOVE    "D00"               TO  FMSEIKYUN-HKNTEN-KBN(9)
+           MOVE    "E00"               TO  FMSEIKYUN-HKNTEN-KBN(10)
+           MOVE    "H00"               TO  FMSEIKYUN-HKNTEN-KBN(11)
+           MOVE    "I00"               TO  FMSEIKYUN-HKNTEN-KBN(12)
+           MOVE    "M00"               TO  FMSEIKYUN-HKNTEN-KBN(13)
+           MOVE    "N00"               TO  FMSEIKYUN-HKNTEN-KBN(14)
+           MOVE    "A10"               TO  FMSEIKYUN-HKNTEN-KBN(15)
+           MOVE    "001"               TO  FMSEIKYUN-HKNTEN-KBN(16)
+           IF    ( SYU-HKNTEN (16)     =   ZERO )
+            AND  ( SYU-TGMONEY(16)     =   ZERO )
+            AND  ( SYU-TGMONEY-TAX(16) =   ZERO )
+               MOVE    SPACE           TO  FMSEIKYUN-HKNTEN-NAME(16)
+                                           FMSEIKYUN-HKNTEN-KBN(16)
+           END-IF
+      *
+      *    Ï«ºÒ¡¦¼«Çå¤Ç´µ¼ÔÀÁµá¤¬Ìµ¤¤¾ì¹ç¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
+           IF    ( COMB-HKNNUM             =    "971"
+               AND PTRSI-HKNKBN        NOT =    "5"
+               AND SYS-4001-RSIIRYOKBN     =    "1" )
+            OR   ( COMB-HKNNUM             =    "971"
+               AND PTRSI-HKNKBN            =    "5"
+               AND SYU-PTFTNRATE           =    ZERO )
+            OR   ( COMB-HKNNUM             =    "973"
+               AND SYU-PTFTNRATE           =    ZERO )
+               MOVE    ALL "*"             TO  FMSEIKYUN-TOTAL-TEN
+           ELSE
+               PERFORM VARYING     IDX1    FROM  1   BY  1
+                       UNTIL       IDX1    >     16
+                   MOVE    SYU-HKNTEN(IDX1)
+                                           TO  FMSEIKYUN-HKNTEN(IDX1)
+               END-PERFORM
+               MOVE    SYU-HKNTEN(17)      TO  FMSEIKYUN-TOTAL-TEN
+           END-IF
+      *
+      *    ÊÝ¸±Å¬ÍÑ³°ÆâÌõÊÔ½¸
+           PERFORM     VARYING   IDX-JIHI FROM  1  BY  1
+                       UNTIL     IDX-JIHI  >  16
+               COMPUTE WRK-KINGAKU-Z   =   SYU-TGMONEY(IDX-JIHI)
+                                       +   SYU-TGMONEY-TAX(IDX-JIHI)
+               MOVE    WRK-KINGAKU-Z   TO  FMSEIKYUN-TGMONEY(IDX-JIHI)
+           END-PERFORM
+      *
+      *    ÊÝ¸±Å¬ÍÑÊ¬
+           MOVE    SYU-HKNTEKMONEY         TO  FMSEIKYUN-HKNTEKMONEY
+      *
+      *    Ï«ºÒ¡¦¼«Çå¤Î¿Ç»¡ÎÁÅù¤Îµ­ºÜ
+           IF   (SYU-RSI-TOTAL     NOT =   ZERO) AND
+                (SYS-4001-RSIPRTKBN    =   "2")
+               EVALUATE    COMB-HKNNUM
+                   WHEN    "971"
+                       MOVE  "¡ÊÆâÏ«ºÒ¿Ç»¡Åù¡Ë"
+                                           TO  FMSEIKYUN-LBL-RSI-TOTAL
+                   WHEN    "973"
+                       MOVE  "¡ÊÆâ¼«Çå¿Ç»¡Åù¡Ë"
+                                           TO  FMSEIKYUN-LBL-RSI-TOTAL
+                   WHEN    OTHER
+                       IF    ( COMB-KOHHKNNUM (1)   =   "970" )
+                           MOVE  "¡ÊÆâ¼«ÇåÊ¸½ñÅù¡Ë"
+                                           TO  FMSEIKYUN-LBL-RSI-TOTAL
+                       END-IF
+               END-EVALUATE
+               MOVE    SYU-RSI-TOTAL          TO  FMSEIKYUN-RSI-TOTAL
+           END-IF
+      *
+      *    ¿©»ö¡¦Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û
+           COMPUTE WRK-SKYMONEY-SKJ
+               =   SYU-SKYMONEY-SKJ-KEI
+               +   SYU-SKYMONEY-SKJ-JIHI-KEI
+               +   SYU-SKYMONEY-LIFE-KEI
+               +   SYU-SKYMONEY-LIFE-JIHI-KEI
+           MOVE    WRK-SKYMONEY-SKJ    TO  FMSEIKYUN-SKJ-FTN
+      
+      *    ¸øÈñ°ìÉôÉéÃ´¶â
+           MOVE    SYU-KOH-FTN         TO  FMSEIKYUN-KOH-FTN
+      *
+      *    ÊÝ¸±Å¬ÍÑ³°Ê¬
+           COMPUTE WRK-GOKTEN
+               =   SYU-TOTAL-TGMONEY
+               +   SYU-TOTAL-TGMONEY-TAX
+           MOVE    WRK-GOKTEN          TO  FMSEIKYUN-TOTAL-TGMONEY
+      *
+      *    ÊÝ¸±Å¬ÍÑ³°¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+           MOVE    SYU-TGMONEY-TAX-SAI TO  FMSEIKYUN-TOTAL-TGMONEY-TAX 
+      *
+      *    ¼«ÈñÌ¾¾ÎÊÔ½¸
+           PERFORM 710-API-JIHIMSG-HEN-SEC
+      *    ¼«Èñ
+           MOVE    ZERO                TO  WRK-JIHI-REC
+           PERFORM VARYING     IDX1     FROM    1   BY  1
+                   UNTIL       IDX1     >   10
+               COMPUTE WRK-JIHI (IDX1)     =   SYU-JIHI-TAXNASI (IDX1)
+                                           +   SYU-JIHI-TAXARI  (IDX1)
+               MOVE    WRK-JIHI (IDX1)     TO  FMSEIKYUN-JIHI(IDX1)
+           END-PERFORM
+      *
+      *    ¼«Èñ·×
+           COMPUTE WRK-JIHI-TOTAL      =   SYU-JIHI-TOTAL
+                                       +   SYU-JIHI-TOTAL-TAX
+           MOVE    WRK-JIHI-TOTAL      TO  FMSEIKYUN-JIHI-TOTAL
+      *    ¼«Èñ¾ÃÈñÀÇ
+           MOVE    SYU-JIHI-TAX        TO  FMSEIKYUN-JIHI-TOTAL-TAX
+      *
+      *    ¼¼ÎÁº¹³Û
+           MOVE    SYU-RMSAGAKU        TO  FMSEIKYUN-RMSAGAKU
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+           MOVE    SYU-RMSAGAKU-TAX-SAI
+                                       TO  FMSEIKYUN-RMSAGAKU-TAX
+      *    Ä´À°¶â
+           MOVE    SYU-CHOSEI1         TO  FMSEIKYUN-CHOSEI1
+           MOVE    SYU-CHOSEI2         TO  FMSEIKYUN-CHOSEI2
+      *    º£²óÀÁµá³Û
+           MOVE    ORCHCN03-SEIKYU(IDX-M)
+                                       TO  FMSEIKYUN-SKYMONEY
+      *    º£²óÀÁµá³Û¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+           MOVE    ORCHCN03-SEIKYU-TAX-SAI (IDX-M)
+                                       TO  FMSEIKYUN-SKYMONEY-TAX
+      *    º£²óÆþ¶â³Û
+           MOVE    ORCHCN03-NYUKIN(IDX-M)
+                                       TO  FMSEIKYUN-NYUKIN
+      *
+           IF    ( WRK-SKYMISYUPRTKBN  =   "1" )
+      *        Ì¤¼ý³ÛÊÔ½¸½èÍý
+               PERFORM 3102-MISYU-EDIT-SEC
+               MOVE    WRK-GAI-MISYU   TO  FMSEIKYUN-GAI-MISYU
+               MOVE    WRK-NYU-MISYU   TO  FMSEIKYUN-NYU-MISYU
+           END-IF
+      *
+      *    Ãí°Õ½ñ¤­
+           IF    ( SMCNDATE-YMD        >=  TPARA-CHUI-YUKOSTYMD )
+            AND  ( SMCNDATE-YMD        <=  TPARA-CHUI-YUKOEDYMD )
+               MOVE    TPARA-CHUI      TO  FMSEIKYUN-SKY-CAUTION
+           END-IF
+      *
+      *    ¥á¥â
+           IF    ( SMCNDATE-YMD        >=  TPARA-YUKOSTYMD )
+            AND  ( SMCNDATE-YMD        <=  TPARA-YUKOEDYMD )
+               PERFORM VARYING IDX-MEMO    FROM    1   BY  1
+                       UNTIL ( IDX-MEMO    >   CONST-MEMO-MAX )
+                   IF    ( ORCHCN03-GAISAN-FLG     =   1 )
+                       MOVE    TPARA-GAISAN-MEMO(IDX-MEMO)
+                                           TO  FMSEIKYUN-MEMO(IDX-MEMO)
+                   ELSE
+                       MOVE    TPARA-MEMO(IDX-MEMO)
+                                           TO  FMSEIKYUN-MEMO(IDX-MEMO)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           PERFORM 790-API-CALL-SEC
+      *
+           .
+       700-API-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼«ÈñÌ¾¾ÎÊÔ½¸½èÍý
+      *****************************************************************
+       710-API-JIHIMSG-HEN-SEC        SECTION.
+      *
+      *    °åÎÅµ¡´Ø¾ðÊó¡Ý½êºßÃÏ¡¢Ï¢ÍíÀè
+           MOVE    SPACE               TO  SYS-1013-REC
+           MOVE    "1013"              TO  SYS-1013-KANRICD
+           MOVE    ORCHCN03-KJNYMD (IDX-M)
+                                       TO  SYS-1013-STYUKYMD
+                                           SYS-1013-EDYUKYMD
+           MOVE    SYS-1013-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-1013-REC
+      *
+           PERFORM UNTIL       FLG-SYSKANRI    =   1
+               IF      ORCHCN03-NYUGAIKBN (IDX-M)
+                                       =   SYS-1013-KBNCD(1:1)
+                   EVALUATE    SYS-1013-KBNCD(2:1)
+                       WHEN    "1"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(1)
+                       WHEN    "2"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(2)
+                       WHEN    "3"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(3)
+                       WHEN    "4"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(4)
+                       WHEN    "5"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(5)
+                       WHEN    "6"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(6)
+                       WHEN    "7"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(7)
+                       WHEN    "8"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(8)
+                       WHEN    "9"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(9)
+                       WHEN    "0"
+                           MOVE    SYS-1013-JIHINAME
+                                       TO  FMSEIKYUN-JIHI-NAME(10)
+                   END-EVALUATE
+               END-IF
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-1013-REC
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       710-API-JIHIMSG-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Á£Ð£ÉÁ÷¿®½èÍý
+      *****************************************************************
+       790-API-CALL-SEC            SECTION.
+      *
+      *    ¥«¥¹¥¿¥à£É£Ä
+           MOVE    TPARA-API-CUSTOM-ID TO  FMSEIKYUN-CUSTOM-ID
+      *
+           INITIALIZE                      RPMAIN-AREA
+           MOVE    "seikyusho_n"       TO  RPMAIN-ID
+           MOVE    TPARA-API-CUSTOM-ID TO  RPMAIN-CUSTOM-ID
+           MOVE    "Æþ±¡ÀÁµá½ñ"        TO  RPMAIN-TITLE
+           MOVE    "fm_invoice_receipt_h"
+                                       TO  MCP-TABLE
+           MOVE    FMSEIKYUN-DATA      TO  RPMAIN-DATA
+           CALL    "ORCRPMAIN"             USING
+                                           MCPAREA
+                                           RPMAIN-AREA
+                                           SPA-AREA
+      *
+           .
+       790-API-CALL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÆüÉÕÊÑ´¹½èÍý
+      *****************************************************************
+       801-DAYHEN01-SEC            SECTION.
+      *
+           IF      WRK-SYMD            =   SPACE
+               MOVE    SPACE           TO  WRK-HEN-DATE
+           ELSE
+               INITIALIZE                  WRK-HEN-DATE
+               MOVE    WRK-SYY             TO  WRK-HEN-YY
+               MOVE    WRK-SMM             TO  WRK-HEN-MM
+               MOVE    WRK-SDD             TO  WRK-HEN-DD
+               MOVE    "-"                 TO  WRK-HEN-H1
+               MOVE    "-"                 TO  WRK-HEN-H2
+               IF      WRK-SYMD            =   "99999999"
+                   MOVE    "12"                TO  WRK-HEN-MM
+                   MOVE    "31"                TO  WRK-HEN-DD
+               END-IF
+           END-IF
+           .
+       801-DAYHEN01-EXT.
+           EXIT.
+      *----API--ADD-END-----
       *----(03.04.01)--ADD-START---
       *****************************************************************
       *    °åÎÅµ¡´ØÊÔ½¸¾ðÊóÆÉ¤ß¹þ¤ß
@@ -2065,6 +2563,9 @@
                MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
                MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
                MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
+      *----API-ADD-START---
+               MOVE    SYS-1902-POST   TO  WRK-HOSPPOST
+      *----API-ADD-END-----
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
