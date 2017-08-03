@@ -181,6 +181,7 @@
            03  WRK-HOSPTEL             PIC X(15).
       *----(03.04.01)--ADD-END-----
       *----API-ADD-START---
+           03  WRK-API-SUUJI           PIC S9(07).
            03  WRK-HOSPPOST            PIC X(7).
       *    ∆¸…’ ‘Ω∏
            03  WRK-HEN-DATE.
@@ -2260,9 +2261,9 @@
       *     ›∏±≈¨Õ—≥∞∆‚Ãı ‘Ω∏
            PERFORM     VARYING   IDX-JIHI FROM  1  BY  1
                        UNTIL     IDX-JIHI  >  16
-               COMPUTE WRK-KINGAKU-Z   =   SYU-TGMONEY(IDX-JIHI)
+               COMPUTE WRK-API-SUUJI   =   SYU-TGMONEY(IDX-JIHI)
                                        +   SYU-TGMONEY-TAX(IDX-JIHI)
-               MOVE    WRK-KINGAKU-Z   TO  FMSEIKYUN-TGMONEY(IDX-JIHI)
+               MOVE    WRK-API-SUUJI   TO  FMSEIKYUN-TGMONEY(IDX-JIHI)
            END-PERFORM
       *
       *     ›∏±≈¨Õ— ¨
@@ -2288,21 +2289,21 @@
            END-IF
       *
       *    ø©ªˆ°¶∆˛±°ª˛¿∏≥ËŒ≈Õ‹»Ò…È√¥≥€
-           COMPUTE WRK-SKYMONEY-SKJ
+           COMPUTE WRK-API-SUUJI
                =   SYU-SKYMONEY-SKJ-KEI
                +   SYU-SKYMONEY-SKJ-JIHI-KEI
                +   SYU-SKYMONEY-LIFE-KEI
                +   SYU-SKYMONEY-LIFE-JIHI-KEI
-           MOVE    WRK-SKYMONEY-SKJ    TO  FMSEIKYUN-SKJ-FTN
+           MOVE    WRK-API-SUUJI       TO  FMSEIKYUN-SKJ-FTN
       
       *    ∏¯»Ò∞Ï…Ù…È√¥∂‚
            MOVE    SYU-KOH-FTN         TO  FMSEIKYUN-KOH-FTN
       *
       *     ›∏±≈¨Õ—≥∞ ¨
-           COMPUTE WRK-GOKTEN
+           COMPUTE WRK-API-SUUJI
                =   SYU-TOTAL-TGMONEY
                +   SYU-TOTAL-TGMONEY-TAX
-           MOVE    WRK-GOKTEN          TO  FMSEIKYUN-TOTAL-TGMONEY
+           MOVE    WRK-API-SUUJI       TO  FMSEIKYUN-TOTAL-TGMONEY
       *
       *     ›∏±≈¨Õ—≥∞æ√»Ò¿«° ∫∆∑«°À
            MOVE    SYU-TGMONEY-TAX-SAI TO  FMSEIKYUN-TOTAL-TGMONEY-TAX 
@@ -2319,9 +2320,9 @@
            END-PERFORM
       *
       *    º´»Ò∑◊
-           COMPUTE WRK-JIHI-TOTAL      =   SYU-JIHI-TOTAL
+           COMPUTE WRK-API-SUUJI       =   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
-           MOVE    WRK-JIHI-TOTAL      TO  FMSEIKYUN-JIHI-TOTAL
+           MOVE    WRK-API-SUUJI       TO  FMSEIKYUN-JIHI-TOTAL
       *    º´»Òæ√»Ò¿«
            MOVE    SYU-JIHI-TAX        TO  FMSEIKYUN-JIHI-TOTAL-TAX
       *
@@ -2346,8 +2347,10 @@
            IF    ( WRK-SKYMISYUPRTKBN  =   "1" )
       *        Ã§º˝≥€ ‘Ω∏ΩËÕ˝
                PERFORM 3102-MISYU-EDIT-SEC
-               MOVE    WRK-GAI-MISYU   TO  FMSEIKYUN-GAI-MISYU
-               MOVE    WRK-NYU-MISYU   TO  FMSEIKYUN-NYU-MISYU
+               MOVE    WRK-GAI-MISYU   TO  WRK-API-SUUJI
+               MOVE    WRK-API-SUUJI   TO  FMSEIKYUN-GAI-MISYU
+               MOVE    WRK-NYU-MISYU   TO  WRK-API-SUUJI
+               MOVE    WRK-API-SUUJI   TO  FMSEIKYUN-NYU-MISYU
            END-IF
       *
       *    √Ì∞’ΩÒ§≠
