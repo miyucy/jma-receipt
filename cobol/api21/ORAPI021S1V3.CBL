@@ -2712,6 +2712,9 @@
            MOVE    WRK-DRCD-NAME       TO  MDCRES-APPOINT-DR-NAME
       *
            MOVE    SPACE               TO  MDCRES-ORCA-UID
+      *    時間外区分なし
+           MOVE    SPACE               TO  MDCREQ-OFFTIME
+           MOVE    SPACE               TO  MDCRES-OFFTIME
       *
            .
        40012-MDCRES-HEN-EXT.
