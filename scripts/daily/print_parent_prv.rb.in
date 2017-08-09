@@ -269,6 +269,9 @@ class Jma_print
     end
 
     File.delete(out_file) if File.exist?(out_file)
+    pdf_files.each do |pdf_file|
+      File.delete(pdf_file) if File.exist?(pdf_file)
+    end
   end
 
   def concatenate_pdf
