@@ -3353,7 +3353,7 @@
       *    PERFORM 4001-DB-KENSAKU-SEC
       *
       *
-           MOVE    "meisaisho"         TO  FMMEISAIN-FORM-ID
+           MOVE    "meisaisho_n"       TO  FMMEISAIN-FORM-ID
       *    プリンタ名
            MOVE    SYS-1034-PRTNM(09)  TO  FMMEISAIN-PRINTER
       *    伝票番号
@@ -3436,7 +3436,7 @@
            MOVE    PARA-API-CUSTOM-ID  TO  FMMEISAIN-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
-           MOVE    "meisaisho"         TO  RPMAIN-ID
+           MOVE    "meisaisho_n"       TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
            MOVE    "入院診療費明細書"  TO  RPMAIN-TITLE
            MOVE    "fm_statement_h"
