@@ -3631,11 +3631,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *v4.8
       *    ginbeeÂÐ±þ
-           IF      SPA-MW              =   SPA-GINBEE
-               MOVE    WIDGET-INSENSITIVE  TO  P02-P02-USERPG-STATE
-           ELSE
+      *    IF      SPA-MW              =   SPA-GINBEE
+      *        MOVE    WIDGET-INSENSITIVE  TO  P02-P02-USERPG-STATE
+      ***  ELSE
                MOVE    WIDGET-NORMAL       TO  P02-P02-USERPG-STATE
-           END-IF
+      **** END-IF
            .
        200-P02-SET-EXT.
            EXIT.
