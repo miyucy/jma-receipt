@@ -312,6 +312,7 @@ bind	"ORAPI052BR2V3"	"OpenCOBOL";
 
 db "xml2" {
  fm_payment_certificate;
+ fm_invoice_receipt_h;
 };
 
 #include "orcadb.inc"
