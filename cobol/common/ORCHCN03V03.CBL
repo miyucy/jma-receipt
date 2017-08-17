@@ -184,6 +184,7 @@
            03  WRK-API-SUUJI           PIC S9(09).
            03  WRK-KINGAKU-X.
                05  WRK-KINGAKU-Z1      PIC ----------.
+           03  WRK-BRMNUMZ             PIC ZZZZZZ.
            03  WRK-HOSPPOST            PIC X(7).
       *    ÆüÉÕÊÔ½¸
            03  WRK-HEN-DATE.
@@ -2105,7 +2106,8 @@
                PERFORM 3102-ROOM-HEN-SEC
                MOVE    WRK-BTUNUM          TO  FMSEIKYUN-BTUNUM
                MOVE    SYS-5001-BTU-NAME   TO  FMSEIKYUN-BTUNAME
-               MOVE    WRK-BRMNUM          TO  FMSEIKYUN-BRMNUM
+               MOVE    WRK-BRMNUM          TO  WRK-BRMNUMZ
+               MOVE    WRK-BRMNUMZ         TO  FMSEIKYUN-BRMNUM
            END-IF
       *
       *    ¿ÇÎÅ²ÊÌ¾¸¡º÷½èÍý

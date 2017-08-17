@@ -216,6 +216,8 @@
       *----api-add-start---
            03  WRK-KINGAKU-X.
                05  WRK-KINGAKU-Z1      PIC -(8)9.
+           03  WRK-BRMNUMZ             PIC ZZZZZZ.
+           03  WRK-BTUNAME             PIC X(50).
       *----api-add-end-----
       *
            03  WRK-HKNCOMBIMEI         PIC X(40).
@@ -1366,6 +1368,9 @@
                                        INTO    WRK-ROOM
                END-STRING
            END-IF
+      *----API-ADD-START---
+           MOVE    SYS-5001-BTU-NAME   TO  WRK-BTUNAME
+      *----API-ADD-END-----
       *
            .
        20013-BYOTO-HEN-EXT.
@@ -3411,9 +3416,10 @@
       *    病棟番号
            MOVE    WRK-BTUNUM          TO  FMMEISAIN-BTUNUM
       *    病棟名称
-           MOVE    WRK-ROOM            TO  FMMEISAIN-BTUNAME
+           MOVE    WRK-BTUNAME         TO  FMMEISAIN-BTUNAME
       *    病室番号
-           MOVE    WRK-BRMNUM          TO  FMMEISAIN-BRMNUM
+           MOVE    WRK-BRMNUM          TO  WRK-BRMNUMZ
+           MOVE    WRK-BRMNUMZ         TO  FMMEISAIN-BRMNUM
       *
            IF      PARA-GOKEITANI      =   "1"
       *        点数表示
