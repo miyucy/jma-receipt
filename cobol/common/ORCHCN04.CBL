@@ -213,6 +213,10 @@
            03  WRK-WARI                PIC 9(02)V9.
            03  WRK-Z6                  PIC ZZ9.
            03  WRK-Z62                 PIC Z9.9.
+      *----api-add-start---
+           03  WRK-KINGAKU-X.
+               05  WRK-KINGAKU-Z1      PIC -(8)9.
+      *----api-add-end-----
       *
            03  WRK-HKNCOMBIMEI         PIC X(40).
            03  WRK-HEN-SRYYM           PIC X(16).
@@ -3285,8 +3289,16 @@
                MOVE    TBL-HA-KAISU (IDX3) TO  FMMEISAIN-KAISU
                                                          (IDX-API)
       *        ¹ç·×
-               MOVE    TBL-HA-KINGAKU(IDX3) TO  FMMEISAIN-TOTAL
-                                                         (IDX-API)
+      *----api-upd-start---
+               IF    ( TBL-HA-KINGAKU(IDX3)    NOT =   SPACE )
+                   MOVE    FUNCTION NUMVAL(TBL-HA-KINGAKU(IDX3))
+                                           TO  WRK-KINGAKU-Z1
+                   MOVE    WRK-KINGAKU-X   TO  FMMEISAIN-TOTAL
+                                                     (IDX-API)
+               END-IF
+      *         MOVE    TBL-HA-KINGAKU(IDX3) TO  FMMEISAIN-TOTAL
+      *                                                   (IDX-API)
+      *----api-upd-end-----
       *        ºÞ½ªÎ»
                MOVE    TBL-HA-ZAIEND(IDX3)  TO  FMMEISAIN-ZAIEND
                                                          (IDX-API)
