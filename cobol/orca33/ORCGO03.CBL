@@ -1834,15 +1834,9 @@
       *    WHEN    "NO"
       *         MOVE    "3"                TO  SHELLTBL-ARG17
            WHEN    "OK"
-               IF    SPA-CLIENT-PRT-FLG  =  2
-                 MOVE    "5"             TO  SHELLTBL-ARG17
-               ELSE
-                 MOVE    "2"             TO  SHELLTBL-ARG17
-               END-IF
+                MOVE    "2"                TO  SHELLTBL-ARG17
            END-EVALUATE
            MOVE    SPA-HOSPNUM             TO  SHELLTBL-ARG18
-           MOVE    SPA-CLIENT-SHOWDIALOG
-                                           TO  SHELLTBL-ARG22
       *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
@@ -2194,9 +2188,12 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           DISPLAY "SPA-GMN-O03-CUR:" SPA-GMN-O03-CUR
+      *
            IF    ( SPA-GMN-O03-CUR         =   ZERO )
                PERFORM 50011-GMN-CUR-SET-SEC
            END-IF
+           DISPLAY "SPA-GMN-O03-CUR::" SPA-GMN-O03-CUR
       *
            PERFORM 50011-GMN-CUR-SKIP-SEC
       *
