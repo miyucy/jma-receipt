@@ -353,8 +353,8 @@
            COPY    "K01COMMON-SPA".
       *
       *    画面スパ領域
-           COPY    "K02SCR-SPA"     REPLACING
-                                       //SPA-// BY //K02-SPA-//.
+      *    COPY    "K02SCR-SPA"     REPLACING
+      *                                //SPA-// BY //K02-SPA-//.
       *
       *
       *    画面スパ領域
@@ -498,6 +498,7 @@
            INITIALIZE                      WRK-AREA
            INITIALIZE                      SPA-AREA
            INITIALIZE                      CNT-AREA
+           INITIALIZE                      SPA-K03
       *
            MOVE    MCP-TERM            TO  WRK-MCP-TERM
       *
