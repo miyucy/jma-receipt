@@ -54,6 +54,10 @@
       *                                     ƒ´√ÎÕº§À ¨≥‰
       *                                   °¶∆Ò…¬°¢ÀÙ§œæÆª˘À˝¿≠∆√ƒÍº¿¥µ§œ
       *                                     ∞ÂŒ≈≈Ÿ§Œπ‚§§¥µº‘§»§π§Î
+      * ø¿Æ£≤£π«Ø£±£∞∑Ó≤˛¿µ¬–±˛
+      *  05.00.00    NACL-æÆ∆¶¬Ù  17/08/16  µÔΩª»Ò∂‚≥€ —ππ¬–±˛
+      *                                     ∂≠≥¶¡ÿ¬–±˛
+      *                                     ¿∏≥ËŒ≈Õ‹…È√¥•≥°º•… ¨≥‰¬–±˛
       *****************************************************************
       *
       *
@@ -965,6 +969,13 @@
                IF    LNK-SYOTOKU-RC    =        ZERO
                     PERFORM   VARYING   IDX1   FROM   1  BY  1
                               UNTIL     IDX1   >    31
+      *                  DISPLAY "IDX1 = " IDX1
+      *                  DISPLAY "AGEKBN,SKJKBN,KKSKBN = "
+      *                           LNK-SYOTOKU-AGEKBN(IDX1)
+      *                          ","
+      *                           LNK-SYOTOKU-SKJKBN(IDX1)
+      *                          ","
+      *                           LNK-SYOTOKU-KKSKBN(IDX1)
                         EVALUATE   LNK-SYOTOKU-SKJKBN(IDX1)
                             WHEN  "1"
                                 MOVE  "3"  TO LNK-NYULIFE2-FTNKBN1(IDX1)
@@ -1202,7 +1213,9 @@
             END-PERFORM
       *
       *      ¿∏≥ËŒ≈Õ‹¥ƒ∂≠Œ≈Õ‹…∏Ω‡…È√¥≥€¿ﬂƒÍ
-             PERFORM   VARYING   IDX1   FROM   1  BY  1
+             IF   LNK-NYULIFE2-SANTEIYM <=  "201709"
+      *         ø¿Æ£≤£π«Ø£π∑ÓÀ¯
+               PERFORM   VARYING   IDX1   FROM   1  BY  1
                UNTIL   IDX1   >    31
                 IF   LNK-NYULIFE2-KBN(IDX1)   =   "1"
                     IF  LNK-NYULIFE2-FTNKBN2(IDX1)   =   SPACE
@@ -1223,7 +1236,45 @@
                         MOVE  ZERO   TO  LNK-NYULIFE2-KANFTN-MONEY(IDX1)
                     END-IF
                 END-IF
-             END-PERFORM
+               END-PERFORM
+             ELSE
+      *         ø¿Æ£≤£π«Ø£±£∞∑Ó∞ πﬂ
+               PERFORM   VARYING   IDX1   FROM   1  BY  1
+               UNTIL   IDX1   >    31
+                IF   LNK-NYULIFE2-KBN(IDX1)   =   "1"
+      *             ∞ÂŒ≈∂Ë ¨£±° £±∆¸£≥£∑£∞±ﬂ°À
+                    IF  LNK-NYULIFE2-FTNKBN2(IDX1)   =   SPACE
+                        MOVE  "197001910"       TO
+                                        LNK-NYULIFE2-KANFTN-SRYCD(IDX1)
+                        MOVE  370       TO
+                                        LNK-NYULIFE2-KANFTN-MONEY(IDX1)
+                    END-IF
+      *             ∞ÂŒ≈∂Ë ¨£≤°¢£≥° £±∆¸£≤£∞£∞±ﬂ°À
+                    IF  LNK-NYULIFE2-FTNKBN2(IDX1)   =  "1"
+                        MOVE  "197003810"       TO
+                                        LNK-NYULIFE2-KANFTN-SRYCD(IDX1)
+                        MOVE  200       TO
+                                        LNK-NYULIFE2-KANFTN-MONEY(IDX1)
+                    END-IF
+      *             ∂≠≥¶¡ÿ¥µº‘§œ¥ƒ∂≠Œ≈Õ‹¥µº‘…È√¥Ãµ§∑§À√÷¥π§®
+                    IF  LNK-SYOTOKU-KKSKBN(IDX1)   =   "1"
+                        MOVE  SPACE  TO  LNK-NYULIFE2-KANFTN-SRYCD(IDX1)
+                        MOVE  ZERO   TO  LNK-NYULIFE2-KANFTN-MONEY(IDX1)
+                    END-IF
+      *             œ∑Œ °ª„«Ø∂‚ºıµÎº‘§œ¥ƒ∂≠Œ≈Õ‹¥µº‘…È√¥Ãµ§∑§À√÷¥π§®
+                    IF  LNK-NYULIFE2-FTNKBN1(IDX1)   =   "4"
+                        MOVE  SPACE  TO  LNK-NYULIFE2-KANFTN-SRYCD(IDX1)
+                        MOVE  ZERO   TO  LNK-NYULIFE2-KANFTN-MONEY(IDX1)
+                    END-IF
+      *             ªÿƒÍ∆Ò…¬§«∞ÂŒ≈∂Ë ¨£≤°¢£≥§œ¥µº‘…È√¥Ãµ§∑§À√÷¥π§®
+                    IF (LNK-NYULIFE2-FTNKBN2(IDX1)   =  "1")   AND
+                       (LNK-SKJKEEP-KBN(IDX1)        =  "1")
+                        MOVE  SPACE  TO  LNK-NYULIFE2-KANFTN-SRYCD(IDX1)
+                        MOVE  ZERO   TO  LNK-NYULIFE2-KANFTN-MONEY(IDX1)
+                    END-IF
+                END-IF
+               END-PERFORM
+             END-IF
       *
       *°›°›°›°›ø©ªˆ…È√¥°¢¥ƒ∂≠Œ≈Õ‹…È√¥•≥°º•…°¢√±≤¡¿ﬂƒÍ§≥§≥§ﬁ§«°›°›°›
       *
@@ -1236,6 +1287,10 @@
       *     PERFORM   VARYING  IDX1   FROM  1   BY  1
       *               UNTIL  IDX1   >   31
       *          DISPLAY "IDX1 = " IDX1
+      *          DISPLAY "LNK-SKJKEEP-KBN(IDX1) = "
+      *                   LNK-SKJKEEP-KBN(IDX1)
+      *          DISPLAY "LNK-NYULIFE2-KBN(IDX1) = " 
+      *                   LNK-NYULIFE2-KBN(IDX1)
       *          DISPLAY "LNK-NYULIFE2-FTNKBN1(IDX1) = " 
       *                   LNK-NYULIFE2-FTNKBN1(IDX1)
       *          DISPLAY "LNK-NYULIFE2-FTNKBN2(IDX1) = " 
