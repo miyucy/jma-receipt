@@ -66,7 +66,7 @@ xml_tmedicalmodv2res {
 			Medication_Unit_Code_Name	varchar(24);
 			Medication_Money 		varchar(07);
 			Medication_Input_Info {
-				Medication_Input	varchar(08);
+				Medication_Input_Code	varchar(08);
 			} [5];
 #----->                 ƒtƒBƒ‹ƒ€•ª‰æ”
 			Medication_Film_Comp_Number	varchar(03);
