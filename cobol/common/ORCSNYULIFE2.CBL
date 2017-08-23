@@ -1074,7 +1074,7 @@
       *°›°›°›°›ø©ªˆŒ≈Õ‹°¢¥ƒ∂≠Œ≈Õ‹•≥°º•…°¢√±≤¡¿ﬂƒÍ§≥§≥§ﬁ§«°›°›°›°›°›
       *
       *°›°›°›°›ø©ªˆ…È√¥°¢¥ƒ∂≠Œ≈Õ‹…È√¥•≥°º•…°¢√±≤¡¿ﬂƒÍ§≥§≥§´§È°›°›°›
-      *        ¿∏≥ËŒ≈Õ‹ø©ªˆ…∏Ω‡…È√¥≥€¿ﬂƒÍ° ∞Ï»Ã°À
+      *        ¿∏≥ËŒ≈Õ‹ø©ªˆ…∏Ω‡…È√¥≥€¿ﬂƒÍ° ∞Ï»ÃΩÍ∆¿º‘°À
                PERFORM   VARYING   IDX1   FROM   1  BY  1
                  UNTIL   IDX1   >    31
                  IF   LNK-NYULIFE2-KBN(IDX1)   =   "1"
@@ -1097,8 +1097,9 @@
                  END-IF
                END-PERFORM
       *
-      *        ¿∏≥ËŒ≈Õ‹ø©ªˆ…∏Ω‡…È√¥≥€¿ﬂƒÍ° ∑⁄∏∫§¢§Í§Œ¥µº‘°À
-               PERFORM   VARYING   IDX1   FROM   1  BY  1
+      *        ¿∏≥ËŒ≈Õ‹ø©ªˆ…∏Ω‡…È√¥≥€¿ﬂƒÍ° ∑⁄∏∫§¢§Í§Œ¥µº‘°À°  ø¿Æ£≤£π«Ø£π∑ÓÀ¯°À
+               IF   LNK-NYULIFE2-SANTEIYM <=  "201709"
+                PERFORM   VARYING   IDX1   FROM   1  BY  1
                  UNTIL   IDX1   >    31
                  IF   LNK-NYULIFE2-KBN(IDX1)   =   "1"
                     EVALUATE  LNK-NYULIFE2-FTNKBN2(IDX1)
@@ -1209,7 +1210,260 @@
                             END-EVALUATE
                     END-EVALUATE
                  END-IF
-               END-PERFORM
+                END-PERFORM
+               END-IF
+      *
+      *        ¿∏≥ËŒ≈Õ‹ø©ªˆ…∏Ω‡…È√¥≥€¿ﬂƒÍ° ∑⁄∏∫§¢§Í§Œ¥µº‘°À°  ø¿Æ£≤£π«Ø£±£∞∑Ó∞ πﬂ°À
+               IF   LNK-NYULIFE2-SANTEIYM >=  "201710"
+                PERFORM   VARYING   IDX1   FROM   1  BY  1
+                 UNTIL   IDX1   >    31
+                 IF   LNK-NYULIFE2-KBN(IDX1)   =   "1"
+                    EVALUATE  LNK-NYULIFE2-FTNKBN2(IDX1)
+      *             ° ∞ÂŒ≈∂Ë ¨£±°À
+                      WHEN  SPACE
+                        EVALUATE    LNK-SYOTOKU-AGEKBN(IDX1)
+      *                   £∑£∞∫–Ã§À˛
+                          WHEN    "2"
+                            EVALUATE   LNK-NYULIFE2-FTNKBN1(IDX1)
+      *                         ƒ„ΩÍ∆¿•™
+                                WHEN   "1"
+                                WHEN   "2"
+                                    MOVE  "197003910"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                    MOVE   210          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+      *                             ∂≠≥¶¡ÿ¥µº‘
+                                    IF   LNK-SYOTOKU-KKSKBN(IDX1) = "1"
+                                      MOVE  "197004010"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                      MOVE   100          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-IF
+                            END-EVALUATE
+      *                   £∑£∞∫–∞ æÂ
+                          WHEN    "1"
+                            EVALUATE   LNK-NYULIFE2-FTNKBN1(IDX1)
+      *                         ƒ„ΩÍ∆¿£≤
+                                WHEN   "1"
+                                WHEN   "2"
+                                    MOVE  "197002210"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                    MOVE   210          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+      *                         ƒ„ΩÍ∆¿£±
+                                WHEN   "3"
+                                    IF  (FLG-RJN         =  0)   AND
+                                        (WRK-RJN(IDX1)   =  0)                                        
+                                       MOVE  "197002310"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                       MOVE   130          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    ELSE
+                                       MOVE  "197002410"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                       MOVE   130          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-IF
+      *                             ∂≠≥¶¡ÿ¥µº‘
+                                    IF   LNK-SYOTOKU-KKSKBN(IDX1) = "1"
+                                      MOVE  "197004110"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                      MOVE   100          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-IF
+      *                         ƒ„ΩÍ∆¿£±°›œ∑Œ °ª„«Ø∂‚ºıµÎº‘
+                                WHEN   "4"
+                                    MOVE  "197002510"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                    MOVE   100          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                            END-EVALUATE
+                        END-EVALUATE
+      *             ° ∞ÂŒ≈∂Ë ¨£≤°¢£≥°À
+                      WHEN  "1"
+      *                   ∞Ï»ÃΩÍ∆¿º‘
+                          IF   LNK-NYULIFE2-FTNKBN1(IDX1)  =  SPACE
+                              MOVE  "197002710"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                              IF    (LNK-NYULIFE2-SANTEIYM
+                                                      >= "201604") AND
+                                    (LNK-NYULIFE2-SANTEIYM
+                                                      <= "201803")
+                                       MOVE   360      TO
+                                           LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                              ELSE
+                                  IF    (LNK-NYULIFE2-SANTEIYM
+                                                        >= "201804")
+                                          MOVE   460      TO
+                                             LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                  END-IF
+                              END-IF
+      *                       ∆Ò…¬≈˘ø¯§®√÷§≠¥µº‘§Œ√÷¥π
+                              EVALUATE     LNK-SKJKEEP-KBN(IDX1)
+                                  WHEN     "1"
+                                      MOVE  "197003610"   TO
+                                              LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                      MOVE   260      TO
+                                             LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                  WHEN     "2"
+                                      MOVE  "197003710"   TO
+                                              LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                      MOVE   260      TO
+                                             LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                              END-EVALUATE
+                          END-IF
+      *
+                          EVALUATE    LNK-SYOTOKU-AGEKBN(IDX1)
+      *                     £∑£∞∫–Ã§À˛
+                            WHEN    "2"
+                              EVALUATE   LNK-NYULIFE2-FTNKBN1(IDX1)
+      *                         ƒ„ΩÍ∆¿•™°°£π£∞∆¸∞ ≤º
+                                WHEN   "1"
+                                    MOVE  "197004210"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                    MOVE   210          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+      *                             ∆Ò…¬¥µº‘§Œ√÷¥π
+                                    IF   LNK-SKJKEEP-KBN(IDX1)  =  "1"
+                                       MOVE  "197004310"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                       MOVE   210          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-IF
+      *                         ƒ„ΩÍ∆¿•™°°£π£∞∆¸ƒ∂
+                                WHEN   "2"
+                                    MOVE  "197004410"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                    MOVE   160          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+      *                             ∆Ò…¬¥µº‘§Œ√÷¥π
+                                    IF   LNK-SKJKEEP-KBN(IDX1)  =  "1"
+                                       MOVE  "197004510"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                       MOVE   160          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-IF
+                              END-EVALUATE
+      *                       ∂≠≥¶¡ÿ¥µº‘
+                              IF  (LNK-NYULIFE2-FTNKBN1(IDX1) = "1" OR
+                                                                "2") AND 
+                                  (LNK-SYOTOKU-KKSKBN(IDX1)   = "1")
+                                  MOVE  "197004610"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                        (IDX1 IDX-T)
+                                  MOVE   100          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                              END-IF
+      *
+      *                     £∑£∞∫–∞ æÂ
+                            WHEN    "1"
+                              EVALUATE   LNK-NYULIFE2-FTNKBN1(IDX1)
+      *                         ƒ„ΩÍ∆¿£≤°°£π£∞∆¸∞ ≤º
+                                WHEN   "1"
+                                    MOVE  "197002810"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                    MOVE   210          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+      *                             ∆Ò…¬¥µº‘§Œ√÷¥π
+                                    IF   LNK-SKJKEEP-KBN(IDX1)  =  "1"
+                                       MOVE  "197004710"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                       MOVE   210          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-IF
+      *                         ƒ„ΩÍ∆¿£≤°°£π£∞∆¸ƒ∂
+                                WHEN   "2"
+                                    MOVE  "197002910"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                    MOVE   160          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+      *                             ∆Ò…¬¥µº‘§Œ√÷¥π
+                                    IF   LNK-SKJKEEP-KBN(IDX1)  =  "1"
+                                       MOVE  "197004810"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                       MOVE   160          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-IF
+      *                         ƒ„ΩÍ∆¿£±
+                                WHEN   "3"
+                                    MOVE  "197003010"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                    MOVE   100          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+      *                             ∆Ò…¬¥µº‘§Œ√÷¥π
+                                    IF   LNK-SKJKEEP-KBN(IDX1)  =  "1"
+                                      MOVE  "197004910"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                      MOVE   100          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-IF
+      *                             ∂≠≥¶¡ÿ¥µº‘
+                                    IF   LNK-SYOTOKU-KKSKBN(IDX1) = "1"
+                                      MOVE  "197005010"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                      MOVE   100          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                    END-IF
+      *                         ƒ„ΩÍ∆¿£±°›œ∑Œ °ª„«Ø∂‚ºıµÎº‘
+                                WHEN   "4"
+                                    MOVE  "197002510"   TO
+                                         LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                    MOVE   100          TO
+                                         LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                              END-EVALUATE
+      *
+                          END-EVALUATE
+                    END-EVALUATE
+                 END-IF
+                END-PERFORM
+               END-IF
+      *
             END-PERFORM
       *
       *      ¿∏≥ËŒ≈Õ‹¥ƒ∂≠Œ≈Õ‹…∏Ω‡…È√¥≥€¿ﬂƒÍ

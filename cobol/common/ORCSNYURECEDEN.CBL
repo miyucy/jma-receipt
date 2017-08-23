@@ -13197,6 +13197,163 @@
                                       MOVE  300  TO 
                                          LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
                                END-EVALUATE
+      *               §≥§≥§´§È ø¿Æ£≤£π«Ø£±£∞∑Ó•≥°º•…ƒ…≤√ ¨
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ƒ„°À
+                            WHEN   "197003910"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  210  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  420  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  630  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∂≠≥¶¡ÿ≥∫≈ˆ°À° ƒ„°À
+                            WHEN   "197004010"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  100  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  200  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  300  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∂≠≥¶¡ÿ≥∫≈ˆ°À° ƒ„£±°À
+                            WHEN   "197004110"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  100  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  200  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  300  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„°¶£π£∞∆¸∞ ≤º°À
+                            WHEN   "197004210"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  210  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  420  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  630  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ªÿƒÍ∆Ò…¬°À° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„°¶£π£∞∆¸∞ ≤º°À
+                            WHEN   "197004310"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  210  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  420  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  630  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„°¶£π£∞∆¸ƒ∂°À
+                            WHEN   "197004410"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  160  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  320  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  480  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ªÿƒÍ∆Ò…¬°À° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„°¶£π£∞∆¸ƒ∂°À
+                            WHEN   "197004510"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  160  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  320  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  480  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∂≠≥¶¡ÿ≥∫≈ˆ°À° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„°À
+                            WHEN   "197004610"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  100  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  200  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  300  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ªÿƒÍ∆Ò…¬°À° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„£≤°¶£π£∞∆¸∞ ≤º°À
+                            WHEN   "197004710"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  210  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  420  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  630  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ªÿƒÍ∆Ò…¬°À° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„£≤°¶£π£∞∆¸ƒ∂°À
+                            WHEN   "197004810"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  160  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  320  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  480  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ªÿƒÍ∆Ò…¬°À° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„£±°À
+                            WHEN   "197004910"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  100  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  200  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  300  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
+      *               ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∂≠≥¶¡ÿ≥∫≈ˆ°À° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„£±°À
+                            WHEN   "197005010"
+                               EVALUATE   WRK-SKJ7-SKJFTN-SU(IDX1)
+                                   WHEN   1
+                                      MOVE  100  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   2
+                                      MOVE  200  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                                   WHEN   3
+                                      MOVE  300  TO 
+                                         LNK-NYURECEDEN-TEN(4 IDX3 IDX5)
+                               END-EVALUATE
       *
                         END-EVALUATE
       *
