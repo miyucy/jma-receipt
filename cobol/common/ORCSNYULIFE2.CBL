@@ -58,6 +58,9 @@
       *  05.00.00    NACL-小豆沢  17/08/16  居住費金額変更対応
       *                                     境界層対応
       *                                     生活療養負担コード分割対応
+      *  05.00.00    NACL-小豆沢  17/08/24  特定入院料の算定要件外で算定
+      *                                     する療養病棟入院基本料Ｉの
+      *                                     コード判定追加
       *****************************************************************
       *
       *
@@ -809,7 +812,8 @@
       **                         DISPLAY "IDX1 = " IDX1
       **                         DISPLAY "WRK-SANTEIYOUKENKBN = "
       **                                 WRK-SANTEIYOUKENKBN(IDX1)
-                               IF (IDX-SEI2       =  47  OR  50)  AND
+                               IF (IDX-SEI2       =  47 OR 50 OR
+                                                     53 OR 56 OR 59) AND
                                  ((SS008-MEDKBNDAY(IDX1) = "2" OR
                                                            "3"))  AND
                                   (WRK-SANTEIYOUKENKBN(IDX1) = "1")
