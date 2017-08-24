@@ -392,10 +392,11 @@
                MOVE    ZERO                TO  STOCKRES-API-RESULT
                EVALUATE    FLG-SYORI
                    WHEN    1
-                       MOVE    "処理を起動しました"
+                       MOVE    "処理実施終了"
                                            TO  STOCKRES-API-RESULT-MSG
                    WHEN    2
-                       MOVE    "処理終了"  TO  STOCKRES-API-RESULT-MSG
+                       MOVE    "処理確認終了"
+                                           TO  STOCKRES-API-RESULT-MSG
                END-EVALUATE
            ELSE
                MOVE    "01"                TO  STOCKRES-RESPONSE-NUMBER
