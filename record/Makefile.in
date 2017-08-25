@@ -1020,6 +1020,8 @@ DB_files = \
 	push_medical01.db \
 	xml_tmedicalmodv2req.db \
 	xml_tmedicalmodv2res.db \
+	tbl_srycdchg_user.db \
+	tbl_srycdchg_master.db \
 
 
 shell.db: shell.db.in

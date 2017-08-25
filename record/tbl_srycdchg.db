@@ -1,12 +1,16 @@
 tbl_srycdchg {
-	HOSPNUM				number(2,0);
-	IPNSRYCD   		char(9);
-	RJNSRYCD  		char(9);
+	HOSPNUM			number(2,0);
+	IPNSRYCD   		varchar(9);
+	RJNSRYCD  		varchar(9);
 	TERMID  		varchar(16);
 	OPID    		varchar(16);
-	CREYMD  		char(8);
-	UPYMD   		char(8);
-	UPHMS			char(6);
+	CREYMD  		varchar(8);
+	UPYMD   		varchar(8);
+	UPHMS			varchar(6);
+#-----> 主キー更新用
+	UPHOSPNUM		number(2,0),virtual;
+	UPIPNSRYCD   		varchar(9),virtual;
+	UPRJNSRYCD  		varchar(9),virtual;
 };
 primary	{
 	HOSPNUM,IPNSRYCD,RJNSRYCD;

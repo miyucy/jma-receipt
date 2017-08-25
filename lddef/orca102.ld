@@ -104,6 +104,8 @@ db	{
 	tbl_tensuplus2;
 	tbl_yakujyo;
 	tbl_material_h;
+	tbl_srycdchg_user;
+	tbl_srycdchg_master;
 };
 
 /* #include "orcadb.inc" */

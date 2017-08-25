@@ -218,6 +218,8 @@
       *
                05  SPA-GMN-CHNGCD              PIC X(09).
                05  SPA-GMN-CHNGCDNAME          PIC X(100).
+               05  SPA-GMN-CHNGCDU             PIC X(09).
+               05  SPA-GMN-CHNGCDNAMEU         PIC X(100).
       *H28.4
       *        規格単位数
                05  SPA-GMN-KIKAKUTANI          PIC 9(05).
@@ -305,6 +307,8 @@
       *
                05  SPA-NAI-CHNGCD              PIC X(09).
                05  SPA-MAE-CHNGCD              PIC X(09).
+               05  SPA-NAI-CHNGCDU             PIC X(09).
+               05  SPA-MAE-CHNGCDU             PIC X(09).
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -322,6 +326,8 @@
            03  FLG-TENSUPLUS2-CHK                PIC 9(01).
            03  FLG-NENREI-CD                     PIC 9(01).
            03  FLG-TENSU-OK                      PIC 9(01).
+           03  FLG-SRYCDCHGU                     PIC 9(01).
+           03  FLG-CHNGEU                        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -369,6 +375,7 @@
            03  WRK-LEN             PIC 9(04).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-FLGSAVE         PIC 9(01).
       *
            03  WRK-TANINAME        PIC X(24).
            03  WRK-KANZANCHI       PIC ZZZZ9.9(5).
@@ -389,6 +396,8 @@
       *    更新テーブル名称
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
+      *
+           03  WRK-TABLE           PIC X(64).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1146,30 +1155,67 @@
       *****************************************************************
       *    経過措置コード処理
       *****************************************************************
-       3101-SRYCDCHG-HEN-SEC            SECTION.
+       3101-SRYCDCHG-HEN-SEC           SECTION.
       *
            INITIALIZE                  SRYCDCHG-REC 
            MOVE    SPA-Z01-SRYCD       TO  CHG-IPNSRYCD
-      *
            MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
+           MOVE    "tbl_srycdchg_master"
+                                       TO  WRK-TABLE
+           PERFORM 31011-SRYCDCHG-HEN-SEC
+           IF     (FLG-SRYCDCHG        =   ZERO)   AND
+                  (FLG-TENSU           =   ZERO)
+               MOVE    CHG-RJNSRYCD        TO  SPA-GMN-CHNGCD
+               MOVE    TNS-NAME            TO  SPA-GMN-CHNGCDNAME
+           END-IF
+           MOVE    SPA-GMN-CHNGCD      TO  SPA-NAI-CHNGCD
+           MOVE    SPA-GMN-CHNGCD      TO  SPA-MAE-CHNGCD
+           MOVE    FLG-SRYCDCHG        TO  WRK-FLGSAVE
+      *
+           INITIALIZE                  SRYCDCHG-REC 
+           MOVE    SPA-Z01-SRYCD       TO  CHG-IPNSRYCD
+           MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
+           MOVE    "tbl_srycdchg_user" TO  WRK-TABLE
+           PERFORM 31011-SRYCDCHG-HEN-SEC
+           IF     (FLG-SRYCDCHG        =   ZERO)   AND
+                  (FLG-TENSU           =   ZERO)
+               MOVE    CHG-RJNSRYCD        TO  SPA-GMN-CHNGCDU
+               MOVE    TNS-NAME            TO  SPA-GMN-CHNGCDNAMEU
+           END-IF
+           MOVE    SPA-GMN-CHNGCDU     TO  SPA-NAI-CHNGCDU
+           MOVE    SPA-GMN-CHNGCDU     TO  SPA-MAE-CHNGCDU
+           MOVE    FLG-SRYCDCHG        TO  FLG-SRYCDCHGU
+           MOVE    WRK-FLGSAVE         TO  FLG-SRYCDCHG
+           .
+      *
+       3101-SRYCDCHG-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    経過措置コード処理
+      *****************************************************************
+       31011-SRYCDCHG-HEN-SEC          SECTION.
+      *
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    WRK-TABLE           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    WRK-TABLE           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 990-SRYCDCHG-READ-SEC
            ELSE
                INITIALIZE                  SRYCDCHG-REC
                MOVE    1               TO  FLG-SRYCDCHG
            END-IF
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    WRK-TABLE           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SRYCDCHG        =   ZERO
-               MOVE    CHG-RJNSRYCD        TO  SPA-GMN-CHNGCD
+             IF      CHG-RJNSRYCD        =   "999999999"
+               MOVE    SPACE               TO  TNS-NAME
+               MOVE    ZERO                TO  FLG-TENSU
+             ELSE
       *        点数マスタ編集
                MOVE    CHG-RJNSRYCD        TO  TNS-SRYCD
                MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
@@ -1188,12 +1234,8 @@
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key24"             TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
-               IF      FLG-TENSU           =   ZERO
-                   MOVE    TNS-NAME        TO  SPA-GMN-CHNGCDNAME
-               END-IF
+             END-IF
            END-IF
-           MOVE    SPA-GMN-CHNGCD      TO  SPA-NAI-CHNGCD
-           MOVE    SPA-GMN-CHNGCD      TO  SPA-MAE-CHNGCD
            .
       *
        3101-SRYCDCHG-HEN-EXT.
@@ -1566,10 +1608,18 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    Z04-TUKIJGNTOUYORYO     TO  SPA-GMN-TUKIJGNTOUYORYO
       *
            MOVE    ZERO                TO  FLG-CHNGE
-           IF      Z04-CHNGCD      NOT =   SPA-NAI-CHNGCD
-               MOVE    1               TO  FLG-CHNGE
+           IF      SPA-MENTE-OK        =   1
+               IF      Z04-CHNGCD      NOT =   SPA-NAI-CHNGCD
+                   MOVE    1               TO  FLG-CHNGE
+               END-IF
+               MOVE    Z04-CHNGCD          TO  SPA-GMN-CHNGCD
            END-IF
-           MOVE    Z04-CHNGCD          TO  SPA-GMN-CHNGCD
+      *
+           MOVE    ZERO                TO  FLG-CHNGEU
+           IF      Z04-CHNGCDU     NOT =   SPA-NAI-CHNGCDU
+               MOVE    1               TO  FLG-CHNGEU
+           END-IF
+           MOVE    Z04-CHNGCDU         TO  SPA-GMN-CHNGCDU
            .
        41011-GMN-SPA-SET02-EXT.
            EXIT.
@@ -1702,9 +1752,13 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            IF      SPA-ERRCD           =   SPACE
                PERFORM 524-TOUYO-CHK-SEC
            END-IF
-      *    経過措置
+      *    経過措置（標準）
            IF      FLG-CHNGE           =   1
                PERFORM 524-CHNGCD-CHK-SEC
+           END-IF
+      *    経過措置（自院）
+           IF      FLG-CHNGEU          =   1
+               PERFORM 524-CHNGCDU-CHK-SEC
            END-IF
            .
       *
@@ -1855,21 +1909,50 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-Z01-SRYCD       TO  CHG-IPNSRYCD
                MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
                MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
-               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    "tbl_srycdchg_master"
+                                           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+                   MOVE    "tbl_srycdchg_master"
+                                               TO  MCP-TABLE
                    MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 990-SRYCDCHG-READ-SEC
                ELSE
                    INITIALIZE                  SRYCDCHG-REC
                    MOVE    1               TO  FLG-SRYCDCHG
                END-IF
-               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    "tbl_srycdchg_master"
+                                           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
                IF      FLG-SRYCDCHG        =   ZERO
+                   MOVE    "tbl_srycdchg_master"
+                                               TO  WRK-TABLE
+                   PERFORM 41291-SRYCDCHG-DEL-SEC
+               END-IF
+           END-IF
+           IF      SPA-MAE-CHNGCDU     NOT =   SPACE
+               INITIALIZE                  SRYCDCHG-REC 
+               MOVE    SPA-Z01-SRYCD       TO  CHG-IPNSRYCD
+               MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
+               MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
+               MOVE    "tbl_srycdchg_user" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_srycdchg_user" TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 990-SRYCDCHG-READ-SEC
+               ELSE
+                   INITIALIZE                  SRYCDCHG-REC
+                   MOVE    1               TO  FLG-SRYCDCHG
+               END-IF
+               MOVE    "tbl_srycdchg_user" TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+               IF      FLG-SRYCDCHG        =   ZERO
+                   MOVE    "tbl_srycdchg_user" TO  WRK-TABLE
                    PERFORM 41291-SRYCDCHG-DEL-SEC
                END-IF
            END-IF
@@ -2332,8 +2415,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            SPAAREA
            END-IF
       *    置換えマスタ更新
+      *    ユーザーマスタなので標準の更新は要らない
+      *    IF      SPA-ERRCD           =   SPACE
+      *        IF      SPA-GMN-CHNGCD  NOT =   SPA-MAE-CHNGCD
+      *            MOVE    "tbl_srycdchg_master"
+      *                                        TO  WRK-TABLE
+      *            PERFORM 4129-SRYCDCHG-UPD-SEC
+      *        END-IF
+      *    END-IF
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-GMN-CHNGCD  NOT =   SPA-MAE-CHNGCD
+               IF      SPA-GMN-CHNGCDU NOT =   SPA-MAE-CHNGCDU
+                   MOVE    "tbl_srycdchg_user" TO  WRK-TABLE
                    PERFORM 4129-SRYCDCHG-UPD-SEC
                END-IF
            END-IF
@@ -2386,6 +2478,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    置換えマスタ更新
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-CHNGCD  NOT =   SPA-MAE-CHNGCD
+                   MOVE    "tbl_srycdchg_master"
+                                               TO  WRK-TABLE
+                   PERFORM 4129-SRYCDCHG-UPD-SEC
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-CHNGCDU NOT =   SPA-MAE-CHNGCDU
+                   MOVE    "tbl_srycdchg_user" TO  WRK-TABLE
                    PERFORM 4129-SRYCDCHG-UPD-SEC
                END-IF
            END-IF
@@ -2913,23 +3013,28 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    WRK-TABLE           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    WRK-TABLE           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 990-SRYCDCHG-READ-SEC
            ELSE
                INITIALIZE                  SRYCDCHG-REC
                MOVE    1               TO  FLG-SRYCDCHG
            END-IF
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    WRK-TABLE           TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SRYCDCHG        =   ZERO
-               IF      SPA-GMN-CHNGCD      =   SPACE
+               IF    ((WRK-TABLE           =
+                                       "tbl_srycdchg_master")  AND
+                      (SPA-GMN-CHNGCD      =   SPACE))   OR
+                     ((WRK-TABLE           =
+                                       "tbl_srycdchg_user")  AND
+                      (SPA-GMN-CHNGCDU     =   SPACE))
       *            削除
                    PERFORM 41291-SRYCDCHG-DEL-SEC
                ELSE
@@ -2952,7 +3057,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                  SRYCDCHG-REC
            MOVE    SPA-Z01-SRYCD       TO  CHG-IPNSRYCD
-           MOVE    SPA-GMN-CHNGCD      TO  CHG-RJNSRYCD
+           IF      WRK-TABLE           =   "tbl_srycdchg_user"
+               MOVE    SPA-GMN-CHNGCDU     TO  CHG-RJNSRYCD
+           ELSE
+               MOVE    SPA-GMN-CHNGCD      TO  CHG-RJNSRYCD
+           END-IF
            MOVE    SMCNDATE-YMD        TO  CHG-CREYMD
            MOVE    SMCNDATE-YMD        TO  CHG-UPYMD
            MOVE    SMCNDATE-HMS        TO  CHG-UPHMS
@@ -2961,7 +3070,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    WRK-TABLE           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -2982,17 +3091,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41292-SRYCDCHG-UPDATE-SEC             SECTION.
       *
-           MOVE    SPA-GMN-CHNGCD      TO  CHG-RJNSRYCD
+           MOVE    CHG-KEY             TO  CHG-UPKEY
+           IF      WRK-TABLE           =   "tbl_srycdchg_user"
+               MOVE    SPA-GMN-CHNGCDU     TO  CHG-RJNSRYCD
+           ELSE
+               MOVE    SPA-GMN-CHNGCD      TO  CHG-RJNSRYCD
+           END-IF
       *
            MOVE    SPA-OPID            TO  CHG-OPID
            MOVE    SMCNDATE-YMD        TO  CHG-UPYMD
            MOVE    SMCNDATE-HMS        TO  CHG-UPHMS
       *
-           MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
+      **   MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-TABLE           TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
@@ -3013,7 +3127,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    WRK-TABLE           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -3959,7 +4073,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
            IF      SPA-ERRCD           =   SPACE
-               PERFORM 5241-SRYCDCHG-CHK-SEC
+               IF      SPA-Z01-SRYCD (1:1) NOT =   "6"
+                   PERFORM 5241-SRYCDCHG-CHK-SEC
+               END-IF
            END-IF
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPA-GMN-CHNGCD      TO  SPA-NAI-CHNGCD
@@ -3967,6 +4083,64 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        524-CHNGCD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    経過措置コードチェック処理
+      *****************************************************************
+       524-CHNGCDU-CHK-SEC            SECTION.
+      *
+           IF     (SPA-GMN-CHNGCDU     =   SPACE)  OR
+                 ((SPA-GMN-CHNGCDU     =   "999999999")    AND
+                  (SPA-GMN-CHNGCD  NOT =   SPACE))
+               MOVE    SPACE               TO  SPA-GMN-CHNGCDNAMEU
+           ELSE
+               IF     (SPA-NAI-YUKOEDYMD   =   "99999999" )  OR
+                      (SPA-NAI-KEIKASOCHIYMD
+                                      NOT  =   SPA-NAI-YUKOEDYMD)
+                   MOVE    "8002"              TO  SPA-ERRCD
+                   MOVE    48                  TO  SPA-GMN-CUR
+               ELSE
+      *            点数マスタ編集
+                   INITIALIZE                      TNS-TENSU-REC
+                   MOVE    SPA-GMN-CHNGCDU     TO  TNS-SRYCD
+                   MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+                   MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+                   MOVE    "tbl_tensu"         TO  MCP-TABLE
+                   MOVE    "key24"             TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "tbl_tensu"         TO  MCP-TABLE
+                       MOVE    "key24"             TO  MCP-PATHNAME
+                       PERFORM 900-TENSU-READ-SEC
+                   ELSE
+                       MOVE    1                   TO  FLG-TENSU
+                       INITIALIZE                      TNS-TENSU-REC
+                   END-IF
+                   MOVE    "tbl_tensu"         TO  MCP-TABLE
+                   MOVE    "key24"             TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
+                   IF      FLG-TENSU           =   ZERO
+                       MOVE    TNS-NAME        TO  SPA-GMN-CHNGCDNAMEU
+                       IF      TNS-YUKOEDYMD   <=  SPA-NAI-YUKOEDYMD
+                           MOVE    "8001"          TO  SPA-ERRCD
+                           MOVE    48              TO  SPA-GMN-CUR
+                       END-IF
+                   ELSE
+                       MOVE    "8000"          TO  SPA-ERRCD
+                       MOVE    48              TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *    IF      SPA-ERRCD           =   SPACE
+      *        PERFORM 5241-SRYCDCHG-CHK-SEC
+      *    END-IF
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-GMN-CHNGCDU     TO  SPA-NAI-CHNGCDU
+           END-IF
+      *
+           .
+       524-CHNGCDU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4157,6 +4331,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-GMN-CHNGCD      TO  Z04-CHNGCD
            MOVE    SPA-GMN-CHNGCDNAME  TO  Z04-CHNGENAME
+           MOVE    SPA-GMN-CHNGCDU     TO  Z04-CHNGCDU
+           MOVE    SPA-GMN-CHNGCDNAMEU TO  Z04-CHNGENAMEU
       *
       *    全数量記載区分
            PERFORM VARYING IDXX    FROM    1   BY  1
@@ -4371,6 +4547,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE  "SIPRYOU2"         TO  MCP-WIDGET
                   WHEN   47
                       MOVE  "SIPIRISU2"        TO  MCP-WIDGET
+                  WHEN   48
+                      MOVE  "CHNGCDU"          TO  MCP-WIDGET
       *
                    WHEN   110  THRU   119
                        COMPUTE ID1             =   SPA-GMN-CUR  -  110
@@ -4536,6 +4714,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    111         TO  SPA-GMN-CUR
       *
                WHEN    "CHNGCD"
+                   MOVE    48          TO  SPA-GMN-CUR
+               WHEN    "CHNGCDU"
                    MOVE    99          TO  SPA-GMN-CUR
                WHEN    "TUKIJGNKAISU"
                    MOVE    151             TO  SPA-GMN-CUR

@@ -31,6 +31,7 @@
       * 01.00.01     NACL-小豆沢  06/05/22  MONFUNC対応
       * 01.00.02     NACL-伊藤    07/05/08  重複チェック見直し
       * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
+      * 05.01.00     NACL-伊藤    17/08/24  マスター分離対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -355,11 +356,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    CHGWK-RJNSRYCD      TO  CHG-RJNSRYCD
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    "tbl_srycdchg_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-SRYCDCHG-READ-SEC
            ELSE
@@ -367,8 +370,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
-           MOVE    "key"              TO  MCP-PATHNAME
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    あればそのまま
@@ -386,11 +390,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    CHGWK-RJNSRYCD      TO  CHG-RJNSRYCD
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    "tbl_srycdchg_master"
+                                           TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-SRYCDCHG-READ-SEC
            ELSE
@@ -398,7 +404,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
@@ -416,11 +423,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    CHGWK-RJNSRYCD      TO  CHG-RJNSRYCD
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    "tbl_srycdchg_master"
+                                           TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM                     910-SRYCDCHG-READ-SEC
            ELSE
@@ -428,7 +437,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
@@ -500,7 +510,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    LNK-MNTHMS          TO  CHG-UPHMS
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -527,11 +538,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    CHGWK-RJNSRYCD      TO  CHG-RJNSRYCD
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    "tbl_srycdchg_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-SRYCDCHG-READ-SEC
            ELSE
@@ -539,7 +552,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
@@ -569,7 +583,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    CHGWK-RJNSRYCD      TO  CHG-RJNSRYCD
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "tbl_srycdchg_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO

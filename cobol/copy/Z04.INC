@@ -128,6 +128,10 @@
                 04  Z04-VALUE   PIC X(9).
               03  Z04-CHNGENAME.
                 04  Z04-VALUE   PIC X(100).
+              03  Z04-CHNGCDU.
+                04  Z04-VALUE   PIC X(9).
+              03  Z04-CHNGENAMEU.
+                04  Z04-VALUE   PIC X(100).
               03  Z04-CHOKINISSU.
                 04  Z04-VALUE   PIC S9(3).
               03  Z04-CHOKIKIGEN.

@@ -810,8 +810,8 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>CHNGCD</name>
-        <x>184</x>
-        <y>680</y>
+        <x>202</x>
+        <y>668</y>
         <width>84</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -836,8 +836,60 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>CHNGENAME</name>
-        <x>276</x>
-        <y>680</y>
+        <x>292</x>
+        <y>668</y>
+        <width>650</width>
+        <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <editable>False</editable>
+        <text_max_length>100</text_max_length>
+        <text></text>
+        <input_mode>XIM</input_mode>
+        <xim_enabled>False</xim_enabled>
+        <signal>
+          <name>changed</name>
+          <handler>entry_changed</handler>
+          <data>CHANGED</data>
+        </signal>
+        <signal>
+          <name>activate</name>
+          <handler>send_event</handler>
+          <data>ACTIVATE</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkPandaEntry</class>
+        <name>CHNGCDU</name>
+        <x>202</x>
+        <y>690</y>
+        <width>84</width>
+        <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <editable>True</editable>
+        <text_max_length>9</text_max_length>
+        <text>123456789</text>
+        <input_mode>ASCII</input_mode>
+        <xim_enabled>False</xim_enabled>
+        <signal>
+          <name>changed</name>
+          <handler>entry_changed</handler>
+          <data>CHANGED</data>
+        </signal>
+        <signal>
+          <name>activate</name>
+          <handler>send_event</handler>
+          <data>ACTIVATE</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkPandaEntry</class>
+        <name>CHNGENAMEU</name>
+        <x>292</x>
+        <y>690</y>
         <width>650</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -1937,19 +1989,55 @@
       <widget>
         <class>GtkLabel</class>
         <name>label43</name>
-        <x>24</x>
-        <y>680</y>
-        <width>157</width>
+        <x>8</x>
+        <y>668</y>
+        <width>204</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
-        <xalign>0.5</xalign>
+        <xalign>0</xalign>
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
         <label>経過措置品目移行コード</label>
-        <justify>GTK_JUSTIFY_CENTER</justify>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>label74</name>
+        <x>162</x>
+        <y>668</y>
+        <width>48</width>
+        <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>標準</label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>label75</name>
+        <x>162</x>
+        <y>690</y>
+        <width>48</width>
+        <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>自院</label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
         <wrap>False</wrap>
       </widget>
       <widget>
@@ -3713,7 +3801,7 @@
         <class>GtkHSeparator</class>
         <name>hseparator4</name>
         <x>4</x>
-        <y>660</y>
+        <y>652</y>
         <width>1020</width>
         <height>16</height>
         <sensitive>True</sensitive>
