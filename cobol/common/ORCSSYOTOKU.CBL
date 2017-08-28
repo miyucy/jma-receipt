@@ -32,6 +32,7 @@
       *  04.08.01    NACL-ÌçÏÆ    15/10/21  ¸½ÊªµëÉÕÂÐ¾Ý³°¤ÎÄã½êÆÀ¡Ê¿©»ö¡ËÂÐ±þ
       *  04.08.02    NACL-ÌçÏÆ    17/08/01  Ê¿À®£²£¹Ç¯£±£°·î²þÀµ
       *                                     ¡ÊÆþ±¡»þÀ¸³èÎÅÍÜÈñ¤Î¸«Ä¾¤·¡Ë
+      *  04.08.03    NACL-ÌçÏÆ    17/08/28  £·£°ºÐÌ¤Ëþ¤ÎÄã£±¥Á¥§¥Ã¥¯
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -88,18 +89,29 @@
                07  WRK-DAY-KOH968      PIC X(01).
                07  WRK-DAY-KOH976      PIC X(01).
       *
-               07  WRK-DAY-HKNCOMBI    PIC 9(04).
+               07  WRK-DAY-HKNCOMBI              PIC 9(04).
                07  WRK-DAY-HKNCOMBIINF.
-                 09  WRK-DAY-HKNNUM         PIC X(03).
-                 09  WRK-DAY-KOH1HKNNUM     PIC X(03).
-                 09  WRK-DAY-KOH2HKNNUM     PIC X(03).
-                 09  WRK-DAY-KOH3HKNNUM     PIC X(03).
-                 09  WRK-DAY-KOH4HKNNUM     PIC X(03).
-                 09  WRK-DAY-HKNKOHSBTKBN   PIC X(01).
-                 09  WRK-DAY-HOJOKBN        PIC X(01).
-                 09  WRK-DAY-SETFLG         PIC 9(01).
+                 09  WRK-DAY-HKNNUM              PIC X(03).
+                 09  WRK-DAY-KOH1HKNNUM          PIC X(03).
+                 09  WRK-DAY-KOH2HKNNUM          PIC X(03).
+                 09  WRK-DAY-KOH3HKNNUM          PIC X(03).
+                 09  WRK-DAY-KOH4HKNNUM          PIC X(03).
+                 09  WRK-DAY-HKNKOHSBTKBN        PIC X(01).
+                 09  WRK-DAY-HOJOKBN             PIC X(01).
+                 09  WRK-DAY-SETFLG              PIC 9(01).
+               07  WRK-DAY-NENREIFLG             PIC X(01).
       *
-               07  WRK-DAY-NENREIFLG   PIC X(01).
+               07  WRK-DAY-HKNCOMBI-IRYO         PIC 9(04).
+               07  WRK-DAY-HKNCOMBIINF-IRYO.
+                 09  WRK-DAY-HKNNUM-IRYO         PIC X(03).
+                 09  WRK-DAY-KOH1HKNNUM-IRYO     PIC X(03).
+                 09  WRK-DAY-KOH2HKNNUM-IRYO     PIC X(03).
+                 09  WRK-DAY-KOH3HKNNUM-IRYO     PIC X(03).
+                 09  WRK-DAY-KOH4HKNNUM-IRYO     PIC X(03).
+                 09  WRK-DAY-HKNKOHSBTKBN-IRYO   PIC X(01).
+                 09  WRK-DAY-HOJOKBN-IRYO        PIC X(01).
+                 09  WRK-DAY-SETFLG-IRYO         PIC 9(01).
+               07  WRK-DAY-NENREIFLG-IRYO        PIC X(01).
       *
            03  WRK-SYOTOKU-YMD.
                05  WRK-SYOTOKU-YM      PIC 9(06).
@@ -389,7 +401,7 @@
                        MOVE   "4"     TO    LNK-SYOTOKU-SKJKBN(IDX)
               END-EVALUATE
       *
-      *       ¡ã¿©»öÍÑ¡ä¶­³¦ÁØ¶èÊ¬
+      *       ¡Ú¿©»öÍÑ¡Û¶­³¦ÁØ¶èÊ¬
               EVALUATE WRK-DAY-KKS-TSY(IDX) ALSO WRK-DAY-KKS-TNK(IDX)
                  WHEN    SPACE              ALSO    SPACE
                        MOVE   SPACE   TO    LNK-SYOTOKU-KKSKBN(IDX)
@@ -410,13 +422,7 @@
       *
              END-PERFORM
       *
-             PERFORM   VARYING   IDX     FROM    1   BY  1
-                        UNTIL    IDX      >     31
-                 MOVE  LNK-SYOTOKU-SKJKBN(IDX)
-                                      TO    LNK-SYOTOKU-SKJKBN-OLD(IDX)
-             END-PERFORM
-      *
-      *      ¿©»ö¶èÊ¬¥Á¥§¥Ã¥¯¡Ü¡ã¿©»öÍÑ¡äÊÖµÑ¹àÌÜÊÔ½¸
+      *      ¿©»ö¶èÊ¬¥Á¥§¥Ã¥¯¡Ü¡Ú¿©»öÍÑ¡ÛÊÖµÑ¹àÌÜÊÔ½¸
              IF  (LNK-SYOTOKU-SRYYM      >=  "201501")
              AND (LNK-SYOTOKU-SKJCHKFLG   =  "1"     )
                PERFORM  230-SKJKBN-CHECK-SEC
@@ -612,7 +618,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿©»ö¶èÊ¬¥Á¥§¥Ã¥¯¡Ü¡ã¿©»öÍÑ¡äÊÖµÑ¹àÌÜÊÔ½¸
+      *    ¿©»ö¶èÊ¬¥Á¥§¥Ã¥¯¡Ü¡Ú¿©»öÍÑ¡ÛÊÖµÑ¹àÌÜÊÔ½¸
       *****************************************************************
        230-SKJKBN-CHECK-SEC            SECTION.
       *
@@ -652,6 +658,8 @@
                            UNTIL    IDX2     >     31
                    IF     NACCT-DAY(IDX2) NOT =  ZERO 
                      MOVE NACCT-DAY(IDX2) TO  WRK-DAY-HKNCOMBI(IDX2)
+                     MOVE NACCT-DAY(IDX2) TO
+                                         WRK-DAY-HKNCOMBI-IRYO(IDX2)
                    END-IF
                 END-PERFORM
               END-IF
@@ -822,6 +830,123 @@
                   MOVE   WRK-DAY-NENREIFLG(IDX2)
                                  TO  LNK-SYOTOKU-AGEKBN(IDX2)
                 END-IF
+              END-IF
+           END-PERFORM
+      *
+      *    £·£°ºÐÌ¤Ëþ¤ÎÄã£±¥Á¥§¥Ã¥¯
+           PERFORM   VARYING   IDX2   FROM   1   BY   1
+                      UNTIL    IDX2     >   31
+              IF   (WRK-DAY-HKNCOMBI-IRYO(IDX2)  NOT =  ZERO    )
+              AND  (WRK-DAY-HKNCOMBI-IRYO(IDX2)      =
+                                          WRK-DAY-HKNCOMBI(IDX2))
+                 MOVE  WRK-DAY-HKNCOMBIINF(IDX2)
+                                 TO  WRK-DAY-HKNCOMBIINF-IRYO(IDX2)
+              END-IF
+           END-PERFORM
+      *
+           PERFORM   VARYING   IDX2   FROM   1   BY   1
+                      UNTIL    IDX2     >   31
+              IF   WRK-DAY-HKNCOMBI-IRYO(IDX2)  NOT =  ZERO
+              AND  WRK-DAY-SETFLG-IRYO(IDX2)        =  ZERO
+                INITIALIZE                         HKNCOMBI-REC
+                MOVE    LNK-SYOTOKU-HOSPNUM    TO  COMB-HOSPNUM
+                MOVE    LNK-SYOTOKU-PTID       TO  COMB-PTID
+                MOVE    WRK-DAY-HKNCOMBI-IRYO(IDX2)
+                                               TO  COMB-HKNCOMBINUM
+                MOVE    HKNCOMBI-REC           TO  MCPDATA-REC
+                MOVE    "DBSELECT"             TO  MCP-FUNC
+                MOVE    "tbl_hkncombi"         TO  MCP-TABLE
+                MOVE    "key"                  TO  MCP-PATHNAME
+                CALL    "ORCDBMAIN"            USING  MCPAREA
+                                                      MCPDATA-REC
+                                                      SPA-AREA
+                IF      MCP-RC  =  ZERO
+                   MOVE      "tbl_hkncombi"    TO  MCP-TABLE
+                   MOVE      "key"             TO  MCP-PATHNAME
+                   PERFORM    910-HKNCOMBI-READ-SEC
+                   IF   FLG-HKNCOMBI  =  ZERO
+                     MOVE  COMB-HKNNUM
+                                   TO WRK-DAY-HKNNUM-IRYO(IDX2)
+                     MOVE  COMB-KOH1HKNNUM
+                                   TO WRK-DAY-KOH1HKNNUM-IRYO(IDX2)
+                     MOVE  COMB-KOH2HKNNUM
+                                   TO WRK-DAY-KOH2HKNNUM-IRYO(IDX2)
+                     MOVE  COMB-KOH3HKNNUM
+                                   TO WRK-DAY-KOH3HKNNUM-IRYO(IDX2)
+                     MOVE  COMB-KOH4HKNNUM
+                                   TO WRK-DAY-KOH4HKNNUM-IRYO(IDX2)
+                     MOVE  COMB-SYU-HKNKOHSBTKBN
+                                   TO WRK-DAY-HKNKOHSBTKBN-IRYO(IDX2)
+                     MOVE  COMB-HOJOKBN
+                                   TO WRK-DAY-HOJOKBN-IRYO(IDX2)
+                     MOVE  1       TO WRK-DAY-SETFLG-IRYO(IDX2)
+                   END-IF
+                END-IF
+                MOVE    "tbl_hkncombi"         TO  MCP-TABLE
+                MOVE    "key"                  TO  MCP-PATHNAME
+                PERFORM  910-DB-CLOSE-SEC
+      *
+                COMPUTE   IDX4 = IDX2 + 1
+                PERFORM   VARYING   IDX3   FROM   IDX4   BY   1
+                           UNTIL    IDX3     >     31
+                   IF   WRK-DAY-HKNCOMBI-IRYO(IDX2) =
+                                      WRK-DAY-HKNCOMBI-IRYO(IDX3)
+                     MOVE  WRK-DAY-HKNCOMBIINF-IRYO(IDX2)
+                                   TO WRK-DAY-HKNCOMBIINF-IRYO(IDX3)
+                   END-IF
+                END-PERFORM
+              END-IF
+           END-PERFORM
+      *
+           PERFORM   VARYING   IDX2    FROM    1   BY  1
+                      UNTIL    IDX2     >     31
+              IF   WRK-DAY-HKNCOMBI-IRYO(IDX2)  NOT =  ZERO
+                 IF  (WRK-DAY-HKNKOHSBTKBN-IRYO(IDX2) =  "8" OR "9")
+                 OR  (WRK-DAY-HKNNUM-IRYO(IDX2)       =
+                                "971" OR "973" OR "975" OR
+                                "068" OR "069" OR "040"            )
+                     MOVE   "9"      TO  WRK-DAY-NENREIFLG-IRYO(IDX2)
+                 ELSE
+                   IF  ( WRK-NENREI                       >=  70   )
+                   OR  ((WRK-DAY-HKNNUM-IRYO(IDX2)         = SPACE) AND
+                        (WRK-DAY-KOH1HKNNUM-IRYO(IDX2) NOT = SPACE) AND
+                        (WRK-DAY-KOH968(IDX2)              = "1"  ))
+                   OR  ( WRK-DAY-HKNNUM-IRYO(IDX2)         = "039" )
+                     MOVE   "1"      TO  WRK-DAY-NENREIFLG-IRYO(IDX2)
+                   ELSE
+                     MOVE   "2"      TO  WRK-DAY-NENREIFLG-IRYO(IDX2)
+                   END-IF
+                 END-IF
+      *
+                 IF      WRK-DAY-NENREIFLG-IRYO(IDX2)  =  "1"
+                   IF    WRK-DAY-HKNNUM-IRYO(IDX2)  =  SPACE OR "039"
+                     CONTINUE
+                   ELSE
+                     IF  ( WRK-DAY-HKNNUM-IRYO(IDX2)     =
+                                                   "060" OR  "067" )
+                     OR  ((WRK-DAY-HKNNUM-IRYO(IDX2) NOT =
+                                                   "060" AND "067") AND
+                          (WRK-DAY-HOJOKBN-IRYO(IDX2)    =  SPACE ))
+                       IF  WRK-DAY-KOH976(IDX2) = "1"
+                          MOVE  "2"  TO  WRK-DAY-NENREIFLG-IRYO(IDX2)
+                       END-IF
+                     END-IF
+                   END-IF
+                 END-IF
+              END-IF
+           END-PERFORM
+      *
+           PERFORM   VARYING   IDX2    FROM    1   BY  1
+                      UNTIL    IDX2     >     31
+      *       °åÎÅÈñ
+              IF   (WRK-DAY-NENREIFLG-IRYO(IDX2) = "2"       )
+              AND  (LNK-SYOTOKU-SYUKBN(IDX2)     = "1" OR "4")
+                 MOVE   "1"   TO   LNK-SYOTOKU-TNKCHKFLG
+              END-IF
+      *       ¿©»ö
+              IF   (LNK-SYOTOKU-AGEKBN(IDX2)     = "2"       )
+              AND  (LNK-SYOTOKU-SKJKBN(IDX2)     = "1" OR "4")
+                 MOVE   "1"   TO   LNK-SYOTOKU-TNKCHKFLG
               END-IF
            END-PERFORM
       *

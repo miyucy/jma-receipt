@@ -439,6 +439,9 @@
       *                                     ¡Ê¸ºÌÈ¡Ê¸º³Û¡Ê³ä¡Ë¡ËÅ¬ÍÑ»þ¡Ë
       *  04.08.15    NACL-ÌçÏÆ    17/06/29  Ê¿À®£²£¹Ç¯£¸·î²þÀµ
       *                                     ¡Ê¹â³ÛÎÅÍÜÈñÀ©ÅÙ¤Î¸«Ä¾¤·¡Ë
+      *  04.08.16    NACL-ÌçÏÆ    17/08/28  £·£°ºÐÌ¤Ëþ¤ÎÄã£±¥Á¥§¥Ã¥¯¤È
+      *                                     ¥·¥¹¥Æ¥à´ÉÍý£µ£°£°£°¡Ý¡ÖÆþ±¡»þ
+      *                                     ¿©»öÎÅÍÜ¡×¤ÎÌ¤ÀßÄê¥Á¥§¥Ã¥¯
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1067,6 +1070,9 @@
            03  WK-GEN70-YMD.
                05  WK-GEN70-YM             PIC  9(06).
                05  WK-GEN70-DD             PIC  9(02).
+           03  WK-GEN70-YMD-ED.
+               05  WK-GEN70-YM-ED          PIC  9(06).
+               05  WK-GEN70-DD-ED          PIC  9(02).
       *
            03  WK-SYOUKAN-FTNRATE          PIC  9(03).
            03  WK-MARUTOARI-COMPFTN        PIC  9(07).
@@ -3506,6 +3512,17 @@
                        MOVE  SPACE  TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
                    END-IF
                 END-PERFORM
+      *         £·£°ºÐÌ¤Ëþ¤ÇÄã£±³ºÅö¤ÎÆü¤¬¤¢¤ì¤Ð¥¨¥é¡¼
+                IF    (LNK-SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                                        OR "068" OR "069" OR "040"  )
+                OR    (LNK-SYU-SYUHKNNUM(1:2) = "98" OR "90" OR "91")
+                   CONTINUE
+                ELSE
+                   IF   (LNK-SYU-SRYYMD(1:6)   >=  "201710")
+                   AND  (LNK-SYOTOKU-TNKCHKFLG  =  "1"     )
+                       MOVE   34    TO  LNK-S02-RC
+                   END-IF
+                END-IF
            END-IF
       *
            EVALUATE   FLG-SANSHOU2
@@ -4580,6 +4597,7 @@
            MOVE      ZERO     TO    FLG-GENBUTU70
            MOVE      ZERO     TO    FLG-GENBUTU70-KBN
            MOVE      SPACE    TO    WK-GEN70-YMD
+           MOVE      SPACE    TO    WK-GEN70-YMD-ED
            IF     LNK-SYU-SRYYMD(1:6)       >=  "200704"
              IF  (LNK-S02-KOUREI-NYUIN-KBN   =   "1"     )
              OR  (FLG-KOREI-TANYUIN          =    1      )
@@ -4687,12 +4705,20 @@
                  OR   (FLG-MARUKO     NOT =  ZERO)
                    MOVE  LNK-SYU-SRYYMD(1:6)    TO  WK-GEN70-YM
                    MOVE  01                     TO  WK-GEN70-DD
+                   MOVE  LNK-SYU-SRYYMD(1:6)    TO  WK-GEN70-YM-ED
+                   MOVE  31                     TO  WK-GEN70-DD-ED
                  ELSE
                    MOVE  LNK-SYU-SRYYMD(1:6)    TO  WK-GEN70-YM
-                   IF   PTKOH-TEKSTYMD(1:6)  >=  LNK-SYU-SRYYMD(1:6)
+                   IF   PTKOH-TEKSTYMD(1:6)   =  LNK-SYU-SRYYMD(1:6)
                       MOVE  PTKOH-TEKSTYMD(7:2) TO  WK-GEN70-DD
                    ELSE
                       MOVE  01                  TO  WK-GEN70-DD
+                   END-IF
+                   MOVE  LNK-SYU-SRYYMD(1:6)    TO  WK-GEN70-YM-ED
+                   IF   LNK-SYU-SRYYMD(1:6)   =  PTKOH-TEKEDYMD(1:6)
+                      MOVE  PTKOH-TEKEDYMD(7:2) TO  WK-GEN70-DD-ED
+                   ELSE
+                      MOVE  31                  TO  WK-GEN70-DD-ED
                    END-IF
                  END-IF
                END-IF
@@ -13628,11 +13654,13 @@
       *
            IF  FLG-GENBUTU70    NOT =  ZERO
                IF    WK-HKNJANUM-TBL  =  WK-HKNJANUM2-TBL
-                 IF  ((SYU-SRYYMD  <  WK-GEN70-YMD  ) AND
-                      (SYU-SKJ-FTNGAKU(2)     = ZERO))
-                 OR  ((SYU-SKJ-FTNGAKU(2) NOT = ZERO) AND
+                 IF  ((SYU-SRYYMD  <  WK-GEN70-YMD   ) AND
+                      (SYU-SKJ-FTNGAKU(2)     = ZERO ))
+                 OR  ((SYU-SRYYMD  >  WK-GEN70-YMD-ED) AND
+                      (SYU-SKJ-FTNGAKU(2)     = ZERO ))
+                 OR  ((SYU-SKJ-FTNGAKU(2) NOT = ZERO ) AND
                       (SYU-SKJ-FTNGAKU(2) NOT =
-                             LNK-SYU-SKJ-FTNGAKU(2) ))
+                             LNK-SYU-SKJ-FTNGAKU(2)  ))
                     MOVE   "9"   TO   WK-HONKZKKBN2
                     MOVE  SPACE  TO   WK-KIGO2
                     MOVE  SPACE  TO   WK-NUM2
@@ -13645,6 +13673,19 @@
                  IF   (SYU-SKJ-FTNGAKU(2) NOT = ZERO)
                  AND  (SYU-SKJ-FTNGAKU(2) NOT =
                              LNK-SYU-SKJ-FTNGAKU(2) )
+                    MOVE   "9"   TO   WK-HONKZKKBN2
+                    MOVE  SPACE  TO   WK-KIGO2
+                    MOVE  SPACE  TO   WK-NUM2
+                 END-IF
+               END-IF
+           END-IF.
+           IF  (LNK-S02-KOUREI-NYUIN-KBN    =  "1" )
+           OR  (FLG-KOREI-TANYUIN           =   1  )
+           OR  (FLG-GENBUTU70           NOT =  ZERO)
+               CONTINUE
+           ELSE
+               IF    WK-HKNJANUM-TBL  =  WK-HKNJANUM2-TBL
+                 IF    SYU-SKJ-FTNGAKU(2) NOT = ZERO
                     MOVE   "9"   TO   WK-HONKZKKBN2
                     MOVE  SPACE  TO   WK-KIGO2
                     MOVE  SPACE  TO   WK-NUM2
@@ -23077,6 +23118,11 @@
                      MOVE   SYS-5000-BRMSGK-TAXKBN
                                           TO   WK-BRMSGK-TAXKBN
       *
+      *              ¥·¥¹¥Æ¥à´ÉÍý£µ£°£°£°¡Ý¡ÖÆþ±¡»þ¿©»öÎÅÍÜ¡×¤¬Ì¤ÀßÄê»þ¤Ï¥¨¥é¡¼
+                     IF     SYS-5000-SHOKUJIRYOYOCD = SPACE
+                          MOVE    33      TO   LNK-S02-RC
+                     END-IF
+      *
                    END-IF
            END-IF
       *
@@ -23123,6 +23169,12 @@
                           MOVE    ZERO    TO   WK-TOKUKANRIKASAN(IDX3)
                       END-EVALUATE
                    END-PERFORM
+      *
+      *            ¥·¥¹¥Æ¥à´ÉÍý£µ£°£°£°¡Ý¡ÖÆþ±¡»þ¿©»öÎÅÍÜ¡×¤¬Ì¤ÀßÄê»þ¤Ï¥¨¥é¡¼
+                   IF     SYS-5000-SHOKUJIRYOYOCD = SPACE
+                          MOVE    33      TO   LNK-S02-RC
+                   END-IF
+      *
                    MOVE    "tbl_syskanri" TO   MCP-TABLE
                    MOVE    "key11"        TO   MCP-PATHNAME
                    PERFORM  SYSKANRI-READ-SEC
@@ -23132,6 +23184,15 @@
            MOVE     "tbl_syskanri"        TO   MCP-TABLE
            MOVE     "key11"               TO   MCP-PATHNAME
            PERFORM   DB-CLOSE-SEC
+      *
+      *    ¡ÖÆþ±¡»þ¿©»öÎÅÍÜ¡×Ì¤ÀßÄêÆü¤¬¤¢¤ì¤Ð¥¨¥é¡¼
+           PERFORM   VARYING   IDX3   FROM   1   BY   1
+                      UNTIL    IDX3     >   31
+               IF    WK-SHOKUJIRYOYO(IDX3)  =  ZERO
+                  MOVE    33      TO   LNK-S02-RC
+               END-IF
+           END-PERFORM
+      *
            .
       *
        23045-SYS-5000-CHK-EXT.

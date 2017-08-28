@@ -747,6 +747,8 @@
       *  04.08.39    NACL-ÌçÏÆ    17/08/02  Ê¿À®£²£¹Ç¯£¸·î²þÀµÂÐ±þ¤Î½¤Àµ
       *  04.08.40    NACL-ÌçÏÆ    17/08/03  Ê¿À®£²£¹Ç¯£¸·î²þÀµ
       *                                     ¡Ê¹â³ÛÎÅÍÜÈñÀ©ÅÙ¤Î¸«Ä¾¤·¡Ë
+      *  04.08.41    NACL-ÌçÏÆ    17/08/28  Ê¿À®£²£¹Ç¯£±£°·î²þÀµ
+      *                                     ¡ÊÆþ±¡»þÀ¸³èÎÅÍÜ¤Î¸«Ä¾¤·¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -26876,27 +26878,23 @@
            AND    (RECE62-TEISYOTOKU   NOT = SPACE)
                EVALUATE    RECE62-TEISYOTOKU
                    WHEN    "1"
+                   WHEN    "4"
                        MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
                    WHEN    "2"
                        MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
                        IF   RECE62-TEISYOTOKU3 = "3"
                          MOVE  "2"   TO   RECE62-SHOKUJIFTNKBN
                        END-IF
-      **           WHEN    "3"
-      **               MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
-                   WHEN    "4"
-                       MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
                END-EVALUATE
            ELSE
                EVALUATE    RECE62-TEISYOTOKU3
                    WHEN    "1"
+                   WHEN    "4"
                        MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
                    WHEN    "2"
                        MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
                    WHEN    "3"
                        MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
-                   WHEN    "4"
-                       MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
                END-EVALUATE
            END-IF
            PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
@@ -26906,10 +26904,6 @@
                  MOVE   "3"  TO   RECE62-SHOKUJIFTNKBN2(KOHFTN-IDX)
                WHEN    "2"
                  MOVE   "1"  TO   RECE62-SHOKUJIFTNKBN2(KOHFTN-IDX)
-      **       WHEN    "3"
-      **         MOVE   "2"  TO   RECE62-SHOKUJIFTNKBN2(KOHFTN-IDX)
-      **       WHEN    "4"
-      **         MOVE   "4"  TO   RECE62-SHOKUJIFTNKBN2(KOHFTN-IDX)
              END-EVALUATE
            END-PERFORM
       *
