@@ -84,8 +84,6 @@
            03  FLG-PTKOHINF                PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-OK                      PIC 9(01).
-           03  FLG-TSYRRK                  PIC 9(01).
-           03  FLG-TNKRRK                  PIC 9(01).
            03  FLG-RJN                     PIC 9(01).
            03  FLG-SEI                     PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
@@ -375,10 +373,6 @@
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
-      *
-      *    低所得
-       01  TSYRRK-REC.
-           COPY    "CPTSYRRK.INC".
       *
       *    年金
        01  TNKRRK-REC.
@@ -1797,76 +1791,6 @@
       *
            .
        910-NYUINACCT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    低所得マスター検索
-      *****************************************************************
-       910-TSYRRK-SELECT-SEC        SECTION.
-      *
-           MOVE    TSYRRK-REC          TO  MCPDATA-REC
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-TSYRRK
-           ELSE
-               MOVE    1                  TO  FLG-TSYRRK
-           END-IF
-      *
-           .
-       910-TSYRRK-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    低所得マスター読込
-      *****************************************************************
-       910-TSYRRK-READ-SEC        SECTION.
-      *
-           PERFORM   900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  TSYRRK-REC
-               MOVE    ZERO               TO  FLG-TSYRRK
-           ELSE
-               INITIALIZE                     TSYRRK-REC
-               MOVE    1                  TO  FLG-TSYRRK
-           END-IF
-      *
-           .
-       910-TSYRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    低年金マスター検索
-      *****************************************************************
-       910-TNKRRK-SELECT-SEC        SECTION.
-      *
-           MOVE    TNKRRK-REC          TO  MCPDATA-REC
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-TNKRRK
-           ELSE
-               MOVE    1                  TO  FLG-TNKRRK
-           END-IF
-      *
-           .
-       910-TNKRRK-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    低年金マスター読込
-      *****************************************************************
-       910-TNKRRK-READ-SEC        SECTION.
-      *
-           PERFORM   900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  TNKRRK-REC
-               MOVE    ZERO               TO  FLG-TNKRRK
-           ELSE
-               INITIALIZE                     TNKRRK-REC
-               MOVE    1                  TO  FLG-TNKRRK
-           END-IF
-      *
-           .
-       910-TNKRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
