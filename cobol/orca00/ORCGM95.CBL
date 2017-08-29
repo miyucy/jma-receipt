@@ -38,7 +38,6 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/15  ¾®»ù²ÊÆÃÎã»þ´Ö³°¶èÊ¬ÄÉ²Ã
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/01/26  ÇØ·Ê¿§ÊÑ¹¹ÄÉ²Ã
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/05/28  ¥¿¥Ö¥é¥Ù¥ëÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  18/03/XX  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -93,8 +92,6 @@
                        09  SPA-MAE-SRYKA        PIC X(02).
                        09  SPA-M95GMN-SRYKAMEI  PIC X(20).
                        09  SPA-M95-KOUSIN       PIC 9(01).
-      *H29.10
-                       09  SPA-M95-DELONL       PIC 9(01).
       *
                        09  SPA-M95GMN-INPUT-G.
                            11  SPA-M95GMN-RENNUM       PIC X(04).
@@ -519,27 +516,10 @@
            MOVE    5                   TO  SPA-JIKANKBN-MAX
       *
            IF      WRK-JIKANTOKU-NYU   =   1
-                                       OR  2
                MOVE    "5 ¾®»ù²ÊÆÃÎãÌë´Ö"  TO  SPA-GMN-JIKANKBN-LST(6)
                MOVE    "6 ¾®»ù²ÊÆÃÎãµÙÆü"  TO  SPA-GMN-JIKANKBN-LST(7)
                MOVE    "7 ¾®»ù²ÊÆÃÎã¿¼Ìë"  TO  SPA-GMN-JIKANKBN-LST(8)
                ADD     3                   TO  SPA-JIKANKBN-MAX
-           END-IF
-      *
-      *H30.4
-      *    »º²Ê¡¦»ºÉØ¿Í²Ê
-           IF     (SPA-NAI-SYSYMD      >=  "20180401" )
-               IF      WRK-JIKANTOKU-NYU   =   1
-                                           OR  2
-                                           OR  3
-                   MOVE    "5 ¾®»ù¡¦»º¡¦»ºÉØ¿Í²ÊÆÃÎãÌë´Ö"
-                                           TO  SPA-GMN-JIKANKBN-LST(6)
-                   MOVE    "6 ¾®»ù¡¦»º¡¦»ºÉØ¿Í²ÊÆÃÎãµÙÆü"
-                                           TO  SPA-GMN-JIKANKBN-LST(7)
-                   MOVE    "7 ¾®»ù¡¦»º¡¦»ºÉØ¿Í²ÊÆÃÎã¿¼Ìë"
-                                           TO  SPA-GMN-JIKANKBN-LST(8)
-                   MOVE    8               TO  SPA-JIKANKBN-MAX
-               END-IF
            END-IF
       *
            IF      WRK-YAKANKBN        =   1
@@ -869,7 +849,7 @@
       *****************************************************************
       *     ¿ÇÎÅ²ÊÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       4110-SRYKA-CHK-SEC              SECTION.
+       4110-SRYKA-CHK-SEC                 SECTION.
       *
            MOVE    M95-SRYKA           TO  SPA-M95GMN-SRYKA
       *H29.9
@@ -882,37 +862,13 @@
                   (SNUM-MINKBN     NOT =   SPACE )   OR
                   (SNUM-SYOKBN     NOT =   SPACE )
                MOVE    "0101"              TO  SPA-ERRCD
-               MOVE    10                  TO  SPA-M95-CUR
-               GO      TO      4110-SRYKA-CHK-EXT
            ELSE
                MOVE    SNUM-OUTEDT(14:2)   TO  SPA-M95GMN-SRYKA
            END-IF
       *
            MOVE    ZERO                TO  FLG-CHK
-      *
-      *H29.10
-      *    £±·å¤Î¿ÇÎÅ²ÊÅÐÏ¿¥Á¥§¥Ã¥¯
-           MOVE    ZERO            TO  SPA-M95-DELONL
-           IF     (M95-SRYKA       NOT =   SPA-M95GMN-SRYKA)
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   SPA-M95GMN-MAX )
-                               OR (FLG-CHK     =   1          )
-                   IF      M95-SRYKA       =   SPA-M95GMN-TSRYKA
-                                                          (IDX)
-                       MOVE    SPA-M95GMN-TSRYKAMEI (IDX)
-                                               TO  WRK-SRYKAMEI
-                       MOVE    IDX             TO  IDX-S
-                       MOVE    1               TO  FLG-CHK
-                       MOVE    1               TO  SPA-M95-DELONL
-                       MOVE    M95-SRYKA       TO  SPA-M95GMN-SRYKA
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-M95GMN-MAX )
-                          OR  (FLG-CHK =   1    )
+                   UNTIL       IDX     >   SPA-M95GMN-MAX
                IF      SPA-M95GMN-SRYKA    =   SPA-M95GMN-TSRYKA
                                                           (IDX)
                    MOVE    SPA-M95GMN-TSRYKAMEI (IDX)
@@ -922,7 +878,6 @@
                    MOVE    SPA-M95GMN-MAX  TO  IDX
                END-IF
            END-PERFORM
-      *
            PERFORM VARYING     IDX     FROM    1       BY  1
                    UNTIL      (IDX     >   SPA-SRYKA-MAX )
                           OR  (FLG-CHK =   1    )
@@ -933,7 +888,6 @@
                    MOVE    IDX             TO  IDX-S
                END-IF
            END-PERFORM
-      *
       *
            IF      SPA-M95-SYORI       =   2
                IF      SPA-M95GMN-SRYKA    NOT =   SPA-MAE-SRYKA
@@ -976,10 +930,6 @@
                    MOVE    ORCSDR-IN-DRCD-G    TO  SPA-M95GMN-DRCD-G 
       *
                    MOVE    11                  TO  SPA-M95-CUR
-      *H29.10
-                   IF      SPA-M95-DELONL      =   1
-                       MOVE    21                  TO  SPA-M95-CUR
-                   END-IF
                END-IF
            END-IF
       *
@@ -1045,14 +995,6 @@
       *     ¿ÇÎÅ²ÊÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4120-RENNUM-CHK-SEC                 SECTION.
-      *
-      *H29.10
-           IF      SPA-M95-DELONL      =   1
-               MOVE    21                  TO  SPA-M95-CUR
-               MOVE    "0107"              TO  SPA-ERRCD
-               MOVE    SPACE               TO  SPA-M95GMN-RENNUM
-               GO      TO      4120-RENNUM-CHK-EXT
-           END-IF
       *
            MOVE    M95-RENNUM          TO  SPA-M95GMN-RENNUM
            MOVE    ZERO                TO  FLG-CHK
@@ -2287,8 +2229,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE  "DRCD"      TO  MCP-WIDGET
                WHEN    20
                    MOVE  "B10"       TO  MCP-WIDGET
-               WHEN    21
-                   MOVE  "B04"       TO  MCP-WIDGET
       *        Â¾±¡ÀÚÂØ
                WHEN    31
                    MOVE  "TAINNUM"   TO  MCP-WIDGET
@@ -2324,12 +2264,6 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                WHEN    "0106"
                    MOVE    "¿ÇÎÅ²Ê¤ÏÊÑ¹¹¤Ç¤­¤Þ¤»¤ó¡£"
                                                TO  SPA-ERRMSG
-               WHEN    "0107"
-                   STRING  "¿ÇÎÅ²Ê¤¬£²·å¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó¡£"
-                           "ºï½ü¤·¤Æ²¼¤µ¤¤¡£"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
                WHEN    "0109"
                    STRING  "£²£°·ï°Ê¾å¤Ë¤Ê¤ê¤Þ¤¹¡£"
                            "¤³¤ì°Ê¾åÅÐÏ¿¤Ç¤­¤Þ¤»¤ó¡£"
