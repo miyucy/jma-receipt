@@ -461,7 +461,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SMCNDATE-HMS    TO  MSTKANRI-UPHMS
                MOVE    MSTKANRI-REC    TO  MCPDATA-REC
                IF      MSTKANRI-KANRICD (7:2)  =           "01"
-                                OR "02" OR "04"         OR "09"
+                                OR "02"                 OR "09"
                                 OR "10" OR "15" OR "16"
                    MOVE    "tbl_mstkanri_public"
                                    TO  MCP-TABLE

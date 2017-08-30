@@ -379,11 +379,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
@@ -391,7 +391,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
@@ -446,11 +446,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
@@ -466,13 +466,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    PERFORM 20102-CHK-UPD-SEC
                END-IF
       *
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
@@ -496,11 +496,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
@@ -512,14 +512,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 2040-ERR-SYORI-SEC
       *
                MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
                GO      TO      20101-CHK-INS-EXT
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
@@ -539,7 +539,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -562,7 +562,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -593,11 +593,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
@@ -605,7 +605,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
@@ -656,11 +656,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM                     910-CHK-READ-SEC
            ELSE
@@ -668,7 +668,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
@@ -702,7 +702,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO

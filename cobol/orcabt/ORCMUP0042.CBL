@@ -427,18 +427,18 @@
            MOVE    CHKWK-CD            TO  CHK-CD
       *
            MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-CHK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-CHK
            END-IF
       *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -512,7 +512,7 @@
            MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -533,7 +533,7 @@
            MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "upd1"              TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -610,7 +610,7 @@
       *
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -638,11 +638,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            CHK-YUKOEDYMD
       *
            MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 910-CHK-READ-SEC
            ELSE
@@ -662,12 +662,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        ADD     1               TO  CNT-HEN
                    END-IF
                END-IF
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_master"    TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 910-CHK-READ-SEC
            END-PERFORM
       *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *

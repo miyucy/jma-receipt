@@ -265,4 +265,6 @@ db	{
 	tbl_material_k_master;
 	tbl_srycdchg_user;
 	tbl_srycdchg_master;
+	tbl_chk_user;
+	tbl_chk_master;
 };
