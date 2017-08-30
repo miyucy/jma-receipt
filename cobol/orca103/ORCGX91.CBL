@@ -328,6 +328,7 @@
            COPY    "X05.INC".
            COPY    "X06.INC".
            COPY    "X07.INC".
+           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -2687,6 +2688,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  XID1
            INITIALIZE                      XID1
            MOVE    SPA-XIDCD           TO  XID1-ID1CODE
+           MOVE    "Ã·§Î"              TO  XID1-B01
+           MOVE    "£œ£À"              TO  XID1-B12
+      *
            MOVE    WRK-XIDMSG          TO  XID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
       *

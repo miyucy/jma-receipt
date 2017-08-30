@@ -535,3 +535,17 @@ path	key22	{
 	};
 };
 
+
+path	key23	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key23_csr CURSOR FOR
+		SELECT  *
+		FROM tbl_chk
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+                       ORDER BY YUKOSTYMD DESC
+		;
+	};
+};
+

@@ -292,6 +292,7 @@
            COPY    "X05.INC".
            COPY    "X06.INC".
            COPY    "X07.INC".
+           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -2727,6 +2728,9 @@
            INITIALIZE                       XID1
            MOVE    SPA-XIDCD            TO  XID1-ID1CODE
            MOVE    WRK-XIDMSG           TO  XID1-ID1MSG
+           MOVE    "Ã·§Î"               TO  XID1-B01
+           MOVE    "£œ£À"               TO  XID1-B12
+      *
            MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "X05"                TO  SPA-MOTOPG

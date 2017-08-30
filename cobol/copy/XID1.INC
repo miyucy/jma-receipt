@@ -25,3 +25,7 @@
                 04  XID1-VALUE  PIC X(10).
               03  XID1-ID1MSG.
                 04  XID1-VALUE  PIC X(80).
+              03  XID1-B01.
+                04  XID1-LABEL  PIC X(4).
+              03  XID1-B12.
+                04  XID1-LABEL  PIC X(4).

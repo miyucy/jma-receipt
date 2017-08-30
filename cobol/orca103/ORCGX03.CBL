@@ -340,6 +340,7 @@
            COPY    "X05.INC".
            COPY    "X06.INC".
            COPY    "X07.INC".
+           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -2919,6 +2920,13 @@
            WHEN    "8"
            WHEN    "9"
                MOVE    "X05"           TO  SPA-SAKIPG
+      *H29.9
+      *GNGEE
+           WHEN    "5"
+           WHEN    "A"
+           WHEN    "B"
+               MOVE    "X08"           TO  SPA-SAKIPG
+      * 
            WHEN    OTHER
                MOVE    "X02"           TO  SPA-SAKIPG
            END-EVALUATE
@@ -3035,6 +3043,13 @@
            WHEN    "8"
            WHEN    "9"
                MOVE    "X05"           TO  SPA-SAKIPG
+      *H29.9
+      *GNGEE
+           WHEN    "5"
+           WHEN    "A"
+           WHEN    "B"
+               MOVE    "X08"           TO  SPA-SAKIPG
+      * 
            WHEN    OTHER
                MOVE    "X02"           TO  SPA-SAKIPG
            END-EVALUATE
