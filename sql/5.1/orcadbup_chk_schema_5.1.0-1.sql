@@ -1,5 +1,41 @@
 \set ON_ERROR_STOP
 
+SET client_encoding = 'EUC_JP';
+
+-- マスタ管理（一時）テーブルを作成する
+CREATE TABLE IF NOT EXISTS tbl_mstkanri_org (
+    hospnum numeric(2,0) NOT NULL,
+    kanricd character(8) NOT NULL,
+    dbrversion1 character varying(64),
+    dbrversion2 character varying(64),
+    termid character varying(32),
+    opid character varying(16),
+    creymd character(8),
+    upymd character(8),
+    uphms character(6),
+    name character varying(64)
+);
+
+--ALTER TABLE ONLY tbl_mstkanri_org
+--    ADD CONSTRAINT tbl_mstkanri_org_primary_key PRIMARY KEY (hospnum, kanricd);
+
+-- マスタ管理レコードを移動 --
+INSERT INTO
+    tbl_mstkanri_org
+SELECT
+    *
+FROM
+    tbl_mstkanri_public
+WHERE
+    kanricd = 'ORCADB04'
+;
+
+DELETE FROM
+    tbl_mstkanri_public
+WHERE
+    kanricd = 'ORCADB04'
+;
+
 -- 現行テーブル名を変更する
 
 ALTER TABLE IF EXISTS tbl_chk DROP CONSTRAINT tbl_chk_primary_key;
