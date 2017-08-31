@@ -1148,20 +1148,11 @@
                                     MOVE  "197002710"   TO
                                          LNK-NYULIFE2-SKJFTN-SRYCD
                                                             (IDX1 IDX-T)
-                                    IF    (LNK-NYULIFE2-SANTEIYM
-                                                        >= "201604") AND
-                                          (LNK-NYULIFE2-SANTEIYM
-                                                        <= "201803")
+                                    IF    LNK-NYULIFE2-SANTEIYM
+                                                        >= "201604"
                                        MOVE   360      TO
                                            LNK-NYULIFE2-SKJFTN-MONEY
                                                             (IDX1 IDX-T)
-                                    ELSE
-                                       IF    (LNK-NYULIFE2-SANTEIYM
-                                                        >= "201804")
-                                          MOVE   460      TO
-                                             LNK-NYULIFE2-SKJFTN-MONEY
-                                                            (IDX1 IDX-T)
-                                       END-IF
                                     END-IF
       *                             難病等据え置き患者の置換
                                     EVALUATE     LNK-SKJKEEP-KBN(IDX1)
@@ -1298,20 +1289,11 @@
                               MOVE  "197002710"   TO
                                          LNK-NYULIFE2-SKJFTN-SRYCD
                                                             (IDX1 IDX-T)
-                              IF    (LNK-NYULIFE2-SANTEIYM
-                                                      >= "201604") AND
-                                    (LNK-NYULIFE2-SANTEIYM
-                                                      <= "201803")
+                              IF    LNK-NYULIFE2-SANTEIYM
+                                                      >= "201604"
                                        MOVE   360      TO
                                            LNK-NYULIFE2-SKJFTN-MONEY
                                                             (IDX1 IDX-T)
-                              ELSE
-                                  IF    (LNK-NYULIFE2-SANTEIYM
-                                                        >= "201804")
-                                          MOVE   460      TO
-                                             LNK-NYULIFE2-SKJFTN-MONEY
-                                                            (IDX1 IDX-T)
-                                  END-IF
                               END-IF
       *                       難病等据え置き患者の置換
                               EVALUATE     LNK-SKJKEEP-KBN(IDX1)
