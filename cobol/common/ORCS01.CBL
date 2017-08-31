@@ -4301,8 +4301,8 @@
       *    £·£°ºÐÌ¤Ëþ¹â³Û¸½ÊªµëÉÕÂÐ¾Ý¼Ô
            MOVE      ZERO     TO    FLG-GENBUTU70
            MOVE      ZERO     TO    FLG-GENBUTU70-KBN
-           MOVE      SPACE    TO    WK-GEN70-YMD
-           MOVE      SPACE    TO    WK-GEN70-YMD-ED
+           MOVE   "00000000"  TO    WK-GEN70-YMD
+           MOVE   "99999999"  TO    WK-GEN70-YMD-ED
            IF     LNK-SYU-SRYYMD(1:6)       >=  "200704"
              IF  (FLG-KOUREI-KBN             =   "1"     )
              OR  (COMB-HKNNUM                =   SPACE   )
@@ -20399,7 +20399,8 @@
              MOVE   WK-HKNJANUM2-TBL  TO  WK-HKNJANUM3-TBL
            END-IF
       *
-           IF  FLG-GENBUTU70    NOT =  ZERO
+           IF  (FLG-GENBUTU70    NOT =  ZERO)
+           AND (FLG-OITA-GENBUTU70   =  ZERO)
                IF    WK-HKNJANUM-TBL  =  WK-HKNJANUM2-TBL
                  IF  ((SYU-SRYYMD  <  WK-GEN70-YMD   ) AND
                       (SYU-SKJ-FTNGAKU(2)     = ZERO ))
@@ -20426,9 +20427,10 @@
                  END-IF
                END-IF
            END-IF
-           IF  (LNK-S01-KOUREI-ZAITAKU-KBN  =  "1" )
-           OR  (FLG-KOUREI-KBN              =  "1" )
-           OR  (FLG-GENBUTU70           NOT =  ZERO)
+           IF  ( LNK-S01-KOUREI-ZAITAKU-KBN  =  "1"  )
+           OR  ( FLG-KOUREI-KBN              =  "1"  )
+           OR  ((FLG-GENBUTU70           NOT =  ZERO) AND
+                (FLG-OITA-GENBUTU70          =  ZERO))
                CONTINUE
            ELSE
                IF    WK-HKNJANUM-TBL  =  WK-HKNJANUM2-TBL

@@ -572,6 +572,7 @@
            03  IDX21                   PIC  9(03).
            03  IDX22                   PIC  9(02).
            03  IDX23                   PIC  9(02).
+           03  IDX24                   PIC  9(02).
            03  IDX-ST                  PIC  9(02)  VALUE  ZERO.
            03  IDX-ED                  PIC  9(02)  VALUE  ZERO.
            03  IDY                     PIC  9(02)  VALUE  ZERO.
@@ -973,6 +974,8 @@
       *
            03  WK-SYOTOKU-SKJKBN-TBL.
                05  WK-SYOTOKU-SKJKBN       PIC  X(01)  OCCURS  31.
+           03  WK-SYOTOKU-SYUKBN-TBL.
+               05  WK-SYOTOKU-SYUKBN       PIC  X(01)  OCCURS  31.
       *
            03  WK-GENTAI-SKYMONEY          PIC  9(07).
            03  WK-GENTAI-SKYMONEY2         PIC  9(07).
@@ -2122,6 +2125,27 @@
       *
       *    ´µ¼ÔÉéÃ´³Û¤Î»»Äê
            PERFORM       200-HKNFTN-SANTEI-SEC.
+      *
+      *    £·£°ºÐÌ¤Ëþ¤ÎÄã£±¥Á¥§¥Ã¥¯
+           IF      LNK-SYU-SRYYMD(1:6)   >=  "201710"
+             IF (LNK-SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                                  OR "068" OR "069" OR "040"  )
+             OR (LNK-SYU-SYUHKNNUM(1:2) = "98" OR "90" OR "91")
+             OR (LNK-S02-KOUREI-NYUIN-KBN = "1"               )
+             OR (FLG-KOREI-TANYUIN        =  1                )
+               CONTINUE
+             ELSE
+               PERFORM   VARYING   IDX24    FROM    1   BY  1
+                          UNTIL    IDX24     >     31
+                 IF   LNK-SYU-DAY(IDX24) = "1" OR "2" OR "8" OR "9"
+                   IF  (WK-SYOTOKU-SYUKBN(IDX24) = "1" OR "4")
+                   OR  (WK-SYOTOKU-SKJKBN(IDX24) = "1" OR "4")
+                      MOVE   34    TO  LNK-S02-RC
+                   END-IF
+                 END-IF
+               END-PERFORM
+             END-IF
+           END-IF.
       *
       *    »»½ÐÀÁµá³Û¤Î£±£°±ßÌ¤Ëþ»Í¼Î¸ÞÆþ¡ÊÌôºÞ°ìÉôÉéÃ´¶â¤â´Þ¤à¡Ë
       *    ¢¨Ï«ºÒÊÝ¸±¤Î¾ì¹ç¤Ï»Í¼Î¸ÞÆþ¤ò¹Ô¤ï¤Ê¤¤
@@ -3479,6 +3503,7 @@
            MOVE    SPACE              TO  FLG-SANSHOU2
            MOVE    SPACE              TO  FLG-SANSHOU3
            INITIALIZE                     WK-SYOTOKU-SKJKBN-TBL
+           INITIALIZE                     WK-SYOTOKU-SYUKBN-TBL
       *
            INITIALIZE                     ORCSSYOTOKUAREA
            MOVE  LNK-SYU-HOSPNUM      TO  LNK-SYOTOKU-HOSPNUM
@@ -3506,23 +3531,15 @@
                            UNTIL    SYOTOKU-IDX     >    31
                    MOVE   LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
                                     TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
+                   MOVE   LNK-SYOTOKU-SYUKBN(SYOTOKU-IDX)
+                                    TO  WK-SYOTOKU-SYUKBN(SYOTOKU-IDX)
                    IF (LNK-SYU-SYUHKNNUM = "971" OR "973" OR "975"
                                         OR "068" OR "069" OR "040"  )
                    OR (LNK-SYU-SYUHKNNUM(1:2) = "98" OR "90" OR "91")
                        MOVE  SPACE  TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
+                       MOVE  SPACE  TO  WK-SYOTOKU-SYUKBN(SYOTOKU-IDX)
                    END-IF
                 END-PERFORM
-      *         £·£°ºÐÌ¤Ëþ¤ÇÄã£±³ºÅö¤ÎÆü¤¬¤¢¤ì¤Ð¥¨¥é¡¼
-                IF    (LNK-SYU-SYUHKNNUM = "971" OR "973" OR "975"
-                                        OR "068" OR "069" OR "040"  )
-                OR    (LNK-SYU-SYUHKNNUM(1:2) = "98" OR "90" OR "91")
-                   CONTINUE
-                ELSE
-                   IF   (LNK-SYU-SRYYMD(1:6)   >=  "201710")
-                   AND  (LNK-SYOTOKU-TNKCHKFLG  =  "1"     )
-                       MOVE   34    TO  LNK-S02-RC
-                   END-IF
-                END-IF
            END-IF
       *
            EVALUATE   FLG-SANSHOU2
@@ -4596,8 +4613,8 @@
       *    £·£°ºÐÌ¤Ëþ¹â³Û¸½ÊªµëÉÕÂÐ¾Ý¼Ô
            MOVE      ZERO     TO    FLG-GENBUTU70
            MOVE      ZERO     TO    FLG-GENBUTU70-KBN
-           MOVE      SPACE    TO    WK-GEN70-YMD
-           MOVE      SPACE    TO    WK-GEN70-YMD-ED
+           MOVE   "00000000"  TO    WK-GEN70-YMD
+           MOVE   "99999999"  TO    WK-GEN70-YMD-ED
            IF     LNK-SYU-SRYYMD(1:6)       >=  "200704"
              IF  (LNK-S02-KOUREI-NYUIN-KBN   =   "1"     )
              OR  (FLG-KOREI-TANYUIN          =    1      )
@@ -13652,7 +13669,8 @@
              MOVE   WK-HKNJANUM2-TBL  TO  WK-HKNJANUM3-TBL
            END-IF.
       *
-           IF  FLG-GENBUTU70    NOT =  ZERO
+           IF  (FLG-GENBUTU70    NOT =  ZERO)
+           AND (FLG-OITA-GENBUTU70   =  ZERO)
                IF    WK-HKNJANUM-TBL  =  WK-HKNJANUM2-TBL
                  IF  ((SYU-SRYYMD  <  WK-GEN70-YMD   ) AND
                       (SYU-SKJ-FTNGAKU(2)     = ZERO ))
@@ -13679,9 +13697,10 @@
                  END-IF
                END-IF
            END-IF.
-           IF  (LNK-S02-KOUREI-NYUIN-KBN    =  "1" )
-           OR  (FLG-KOREI-TANYUIN           =   1  )
-           OR  (FLG-GENBUTU70           NOT =  ZERO)
+           IF  ( LNK-S02-KOUREI-NYUIN-KBN    =  "1"  )
+           OR  ( FLG-KOREI-TANYUIN           =   1   )
+           OR  ((FLG-GENBUTU70           NOT =  ZERO) AND
+                (FLG-OITA-GENBUTU70          =  ZERO))
                CONTINUE
            ELSE
                IF    WK-HKNJANUM-TBL  =  WK-HKNJANUM2-TBL
