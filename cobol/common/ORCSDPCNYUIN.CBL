@@ -1824,6 +1824,33 @@
       *    病棟番号（病棟区分）の編集
            PERFORM   2105-BTUNUM-HENSHU-SEC
       *
+      *    生活療養食事テスト表示
+           DISPLAY "SEIKATSU-SOKUJI"
+           PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+                DISPLAY  "IDX1 = " IDX1
+                DISPLAY  "SRYKBN   = " LNK-DPCNYUIN-SRYKBN(4 IDX1)
+                DISPLAY  "RECSKB = " LNK-DPCNYUIN-RECSKB(4 IDX1)
+                DISPLAY  "SRYCD,TEN,KAISU(1) = " 
+                                           LNK-DPCNYUIN-SRYCD(4 IDX1 1)
+                                           ","
+                                           LNK-DPCNYUIN-TEN(4 IDX1 1)
+                                           ","
+                                           LNK-DPCNYUIN-KAISU(4 IDX1 1)
+                DISPLAY  "SRYCD,TEN,KAISU(2) = " 
+                                           LNK-DPCNYUIN-SRYCD(4 IDX1 2)
+                                           ","
+                                           LNK-DPCNYUIN-TEN(4 IDX1 2)
+                                           ","
+                                           LNK-DPCNYUIN-KAISU(4 IDX1 2)
+                DISPLAY  "SRYCD,TEN,KAISU(3) = " 
+                                           LNK-DPCNYUIN-SRYCD(4 IDX1 3)
+                                           ","
+                                           LNK-DPCNYUIN-TEN(4 IDX1 3)
+                                           ","
+                                           LNK-DPCNYUIN-KAISU(4 IDX1 3)
+           END-PERFORM
+      *
            .
        200-MAIN-EXT.
            EXIT.
