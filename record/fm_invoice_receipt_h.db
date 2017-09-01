@@ -42,7 +42,10 @@ fm_invoice_receipt {
     Label_Lsi_Total_Money    varchar(20);
     Lsi_Total_Money_In_Ai_Money varchar(10);
     Pi_Smoney            varchar(10);
+    Meal_Cost            varchar(10);
     Meal_Smoney          varchar(10);
+    Living_Cost          varchar(10);
+    Living_Smoney        varchar(10);
     Total_Me_Money       varchar(10);
     Tax_In_Total_Me_Money varchar(10);
     Oe_Etc{

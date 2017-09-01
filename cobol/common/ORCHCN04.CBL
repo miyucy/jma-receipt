@@ -276,6 +276,13 @@
                05  WRK-HOSPADRS1       PIC X(50).
                05  WRK-HOSPADRS2       PIC X(50).
            03  WRK-HOSPTEL             PIC X(15).
+           03  WRK-HOSPPOST            PIC X(07).
+           03  WRK-API-HOSPNAME-G.
+               05  WRK-API-HOSPNAME    PIC X(120)
+                                       OCCURS 3.
+           03  WRK-API-HOSPADRS-G.
+               05  WRK-API-HOSPADRS    PIC X(120)
+                                       OCCURS 3.
       *
       *H26.10
       *    •≥•·•Û•»•≥°º•…»œ∞œ
@@ -890,8 +897,11 @@
       *
       *----(03.04.01)--ADD-START---
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
+                                           WRK-API-HOSPNAME (1)
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
+                                           WRK-API-HOSPADRS (1)
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
+           MOVE    SYS-1002-POST       TO  WRK-HOSPPOST
       *    ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û
            PERFORM 900-1900-READ-SEC
       *----(03.04.01)--ADD-END-----
@@ -3406,11 +3416,15 @@
            MOVE    WRK-HEN-DATE        TO  FMMEISAIN-DENPPRTYMD
       *
       *    ∞ÂŒ≈µ°¥ÿÃææŒ
-           MOVE    WRK-HOSPNAME        TO  FMMEISAIN-HOSP-NAME-G
+           MOVE    WRK-API-HOSPNAME(1) TO  FMMEISAIN-HOSP-NAME(1)
+           MOVE    WRK-API-HOSPNAME(2) TO  FMMEISAIN-HOSP-NAME(2)
+           MOVE    WRK-API-HOSPNAME(3) TO  FMMEISAIN-HOSP-NAME(3)
       *    ∞ÂŒ≈µ°¥ÿΩªΩÍÃææŒ
-           MOVE    WRK-HOSPADRS        TO  FMMEISAIN-HOSP-ADRS-G
+           MOVE    WRK-API-HOSPADRS(1) TO  FMMEISAIN-HOSP-ADRS(1)
+           MOVE    WRK-API-HOSPADRS(2) TO  FMMEISAIN-HOSP-ADRS(2)
+           MOVE    WRK-API-HOSPADRS(3) TO  FMMEISAIN-HOSP-ADRS(3)
       *    ∞ÂŒ≈µ°¥ÿÕπ ÿ»÷πÊ
-           MOVE    SYS-1002-POST       TO  FMMEISAIN-HOSP-POST
+           MOVE    WRK-HOSPPOST        TO  FMMEISAIN-HOSP-POST
       *    ∞ÂŒ≈µ°¥ÿ≈≈œ√
            MOVE    WRK-HOSPTEL         TO  FMMEISAIN-HOSP-TEL
       *    …¬≈Ô»÷πÊ
@@ -3608,6 +3622,9 @@
                MOVE    SYSKANRI-REC        TO  SYS-1901-REC
                MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
                MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-API-HOSPNAME(1)
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-API-HOSPNAME(2)
+               MOVE    SYS-1901-HOSPNAME3  TO  WRK-API-HOSPNAME(3)
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -3636,7 +3653,11 @@
                MOVE    SYSKANRI-REC        TO  SYS-1902-REC
                MOVE    SYS-1902-ADRS1      TO  WRK-HOSPADRS1
                MOVE    SYS-1902-ADRS2      TO  WRK-HOSPADRS2
+               MOVE    SYS-1902-ADRS1      TO  WRK-API-HOSPADRS(1)
+               MOVE    SYS-1902-ADRS2      TO  WRK-API-HOSPADRS(2)
+               MOVE    SYS-1902-ADRS3      TO  WRK-API-HOSPADRS(3)
                MOVE    SYS-1902-TEL        TO  WRK-HOSPTEL
+               MOVE    SYS-1902-POST       TO  WRK-HOSPPOST
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF

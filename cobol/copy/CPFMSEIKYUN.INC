@@ -93,10 +93,16 @@
               05  FMSEIKYUN-LBL-RSI-TOTAL               PIC X(20).
       *       患者一部負担金（労災診療料等再掲）
               05  FMSEIKYUN-RSI-TOTAL                   PIC X(10).
-      *       食事・生活負担金
-              05  FMSEIKYUN-SKJ-FTN                     PIC X(10).
       *       公費一部負担金
               05  FMSEIKYUN-KOH-FTN                     PIC X(10).
+      *       食事療養費
+              05  FMSEIKYUN-SKJRYOYO                    PIC X(10).
+      *       食事負担金
+              05  FMSEIKYUN-SKJ-FTN                     PIC X(10).
+      *       生活療養費
+              05  FMSEIKYUN-LIFERYOYO                    PIC X(10).
+      *       生活負担金
+              05  FMSEIKYUN-LIFE-FTN                     PIC X(10).
       *       保険適用外合計
               05  FMSEIKYUN-TOTAL-TGMONEY               PIC X(10).
       *       保険適用外合計消費税再掲

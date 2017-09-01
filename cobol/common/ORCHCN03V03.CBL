@@ -93,6 +93,7 @@
       *
            03  FLG-SP              PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-EDIT            PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -132,6 +133,8 @@
            03  WRK-WARI            PIC 9(02)V9.
            03  WRK-HKNFTN              PIC ZZZZZ9.
            03  WRK-HKNFTN2             PIC ZZZ9.9.
+           03  WRK-API-HKNFTN          PIC ZZ9.
+           03  WRK-API-HKNFTN2         PIC Z9.9.
       *
            03  WRK-ZZZ             PIC ZZZ.
            03  WRK-NO              PIC Z(7).
@@ -184,8 +187,17 @@
            03  WRK-API-SUUJI           PIC S9(09).
            03  WRK-KINGAKU-X.
                05  WRK-KINGAKU-Z1      PIC ----------.
+               05  WRK-KINGAKU-Z9      REDEFINES WRK-KINGAKU-Z1
+                                       PIC ---------9.
+                                       
            03  WRK-BRMNUMZ             PIC ZZZZZZ.
            03  WRK-HOSPPOST            PIC X(7).
+           03  WRK-API-HOSPNAME-G.
+               05  WRK-API-HOSPNAME    PIC X(120)
+                                       OCCURS 3.
+           03  WRK-API-HOSPADRS-G.
+               05  WRK-API-HOSPADRS    PIC X(120)
+                                       OCCURS 3.
       *    ÆüÉÕÊÔ½¸
            03  WRK-HEN-DATE.
                05  WRK-HEN-YY          PIC X(04).
@@ -507,7 +519,9 @@
       *----API-ADD-END-----
       *----(03.04.01)--ADD-START---
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
+                                           WRK-API-HOSPNAME (1)
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
+                                           WRK-API-HOSPADRS (1)
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
       *    °åÎÅµ¡´ØÊÔ½¸¾ðÊó
            PERFORM 900-1900-READ-SEC
@@ -667,14 +681,19 @@
       *
       *----API-ADD-START---
       *    £Á£Ð£ÉÊÖµÑ¥Ç¡¼¥¿¡Ê1:ºîÀ®¤¹¤ë Ä¢É¼°õºþ¤Ê¤·¡Ë
-           MOVE    "API_DATA"      TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:1)   TO  TPARA-API-DATA
-           IF     (TPARA-API-DATA      =   "1"       )
+           IF    ( ORCHCN03-SIZE   =   "V1" OR "V2" )
+            OR   ( ORCHCN03-PRTKBN =   "1" )
                CONTINUE
            ELSE
-      *        APIÁ÷¿®¤Ê¤·
-               MOVE    "0"             TO  TPARA-API-DATA
+               MOVE    "API_DATA"      TO  WRK-PARA-NAME
+               PERFORM 1001-OPTION-CALL-SEC
+               MOVE    WRK-PARA(1:1)   TO  TPARA-API-DATA
+               IF     (TPARA-API-DATA      =   "1"       )
+                   CONTINUE
+               ELSE
+      *            APIÁ÷¿®¤Ê¤·
+                   MOVE    "0"         TO  TPARA-API-DATA
+               END-IF
            END-IF
       *    £Á£Ð£É¥«¥¹¥¿¥à£É£Ä
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
@@ -845,13 +864,21 @@
                                        SPA-AREA
                                        ORCHCN03S03AREA
       *
-      *----API-ADD-START---
            IF      TPARA-API-DATA      =   "1"
       *        £Á£Ð£É½èÍý
                PERFORM 700-API-SYORI-SEC
-               GO  TO  2001-HCN03-HEN-EXT
+           ELSE
+               PERFORM 20011-HCN03-HEN-SEC
            END-IF
-      *----API-ADD-END-----
+      *
+           .
+       2001-HCN03-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ä¢É¼ÊÔ½¸½èÍý
+      *****************************************************************
+       20011-HCN03-HEN-SEC              SECTION.
       *
            INITIALIZE                  HCN03
       *
@@ -1351,9 +1378,8 @@
            WRITE   PRT-REC
       *
            .
-       2001-HCN03-HEN-EXT.
+       20011-HCN03-HEN-EXT.
            EXIT.
-      *
       *****************************************************************
       *    ¥ì¥¤¥ä¡¼¥ª¥×¥·¥ç¥óÊÔ½¸½èÍý
       *****************************************************************
@@ -1658,6 +1684,8 @@
       *
            MOVE    SYU-BYOTONUM        TO  WRK-BTUNUM
            MOVE    SYU-ROOMNUM (3:)    TO  WRK-BRMNUM
+      *
+           MOVE    SPACE               TO  WRK-BRMNUM-NAME
       *
       *    Æþ±¡ÍúÎò¸¡º÷½èÍý
            PERFORM 900-PTNYUINRRK-KEY45-SEL-SEC
@@ -1977,14 +2005,15 @@
       *
       *----API-ADD-START---
            IF      TPARA-API-DATA      =   "1"
-      *        £Á£Ð£É½èÍý
-               GO  TO  300-PRINT-EXT
+               CONTINUE
+           ELSE
+               CALL    "ORCHCN03S01"   USING
+                                       ORCHCN03AREA
+                                       ASGNPARA
+                                       SPA-AREA
            END-IF
       *----API-ADD-END-----
       *
-           CALL    "ORCHCN03S01"   USING   ORCHCN03AREA
-                                           ASGNPARA
-                                           SPA-AREA
       *
            .
        300-PRINT-EXT.
@@ -2074,12 +2103,14 @@
            END-IF
       *
       *    °åÎÅµ¡´ØÌ¾¾Î
-           MOVE    WRK-HOSPNAME1       TO  FMSEIKYUN-HOSP-NAME(1)
-           MOVE    WRK-HOSPNAME2       TO  FMSEIKYUN-HOSP-NAME(2)
+           MOVE    WRK-API-HOSPNAME(1) TO  FMSEIKYUN-HOSP-NAME(1)
+           MOVE    WRK-API-HOSPNAME(2) TO  FMSEIKYUN-HOSP-NAME(2)
+           MOVE    WRK-API-HOSPNAME(3) TO  FMSEIKYUN-HOSP-NAME(3)
       *    ½»½ê
            MOVE    WRK-HOSPPOST        TO  FMSEIKYUN-HOSP-POST
-           MOVE    WRK-HOSPADRS1       TO  FMSEIKYUN-HOSP-ADRS(1)
-           MOVE    WRK-HOSPADRS2       TO  FMSEIKYUN-HOSP-ADRS(2)
+           MOVE    WRK-API-HOSPADRS(1) TO  FMSEIKYUN-HOSP-ADRS(1)
+           MOVE    WRK-API-HOSPADRS(2) TO  FMSEIKYUN-HOSP-ADRS(2)
+           MOVE    WRK-API-HOSPADRS(3) TO  FMSEIKYUN-HOSP-ADRS(3)
       *    ÅÅÏÃÈÖ¹æ
            MOVE    WRK-HOSPTEL         TO  FMSEIKYUN-HOSP-TEL
       *
@@ -2106,8 +2137,7 @@
                PERFORM 3102-ROOM-HEN-SEC
                MOVE    WRK-BTUNUM          TO  FMSEIKYUN-BTUNUM
                MOVE    SYS-5001-BTU-NAME   TO  FMSEIKYUN-BTUNAME
-               MOVE    WRK-BRMNUM          TO  WRK-BRMNUMZ
-               MOVE    WRK-BRMNUMZ         TO  FMSEIKYUN-BRMNUM
+               MOVE    WRK-BRMNUM-OT       TO  FMSEIKYUN-BRMNUM
            END-IF
       *
       *    ¿ÇÎÅ²ÊÌ¾¸¡º÷½èÍý
@@ -2161,16 +2191,17 @@
                EVALUATE    TPARA-FTNKBN
                WHEN    "1"
                    MOVE    "¡ó"            TO  FMSEIKYUN-FUTANMEI
-                   MOVE    SYU-PTFTNRATE   TO  FMSEIKYUN-FUTAN
+                   MOVE    SYU-PTFTNRATE   TO  WRK-API-HKNFTN
+                   MOVE    WRK-API-HKNFTN  TO  FMSEIKYUN-FUTAN
                WHEN    "2"
                    MOVE    "³ä"            TO  FMSEIKYUN-FUTANMEI
                    COMPUTE WRK-WARI        =   SYU-PTFTNRATE   /   10
                    IF      SYU-PTFTNRATE(3:1)  =   ZERO
-                       MOVE    WRK-WARI            TO  WRK-HKNFTN
-                       MOVE    WRK-HKNFTN(4:3)     TO  FMSEIKYUN-FUTAN
+                       MOVE    WRK-WARI            TO  WRK-API-HKNFTN
+                       MOVE    WRK-API-HKNFTN      TO  FMSEIKYUN-FUTAN
                    ELSE
-                       MOVE    WRK-WARI            TO  WRK-HKNFTN2
-                       MOVE    WRK-HKNFTN2(4:3)    TO  FMSEIKYUN-FUTAN
+                       MOVE    WRK-WARI            TO  WRK-API-HKNFTN2
+                       MOVE    WRK-API-HKNFTN2     TO  FMSEIKYUN-FUTAN
                    END-IF
                END-EVALUATE
            ELSE
@@ -2200,8 +2231,17 @@
       *    ÅÁÉ¼ÈÖ¹æ
            MOVE    SYU-DENPNUM         TO  WRK-NO
            MOVE    WRK-NO              TO  FMSEIKYUN-DENPNUM
+      *
       *    ÄûÀµÉ½¼¨¶èÊ¬
-           MOVE    TPARA-TEISEIKBN     TO  FMSEIKYUN-TEISEI-KBN
+           EVALUATE    ORCHCN03-HAKKOFLG (IDX-M)
+      *    WHEN    1
+      *        MOVE    "¡ÊºÆ¡Ë"        TO  HCN03-MIDASHI
+           WHEN    2
+               IF    ( TPARA-TEISEIKBN =   "1" )
+                   MOVE    TPARA-TEISEIKBN
+                                       TO  FMSEIKYUN-TEISEI-KBN
+               END-IF
+           END-EVALUATE
       *
       *    ÀÁµá¹àÌÜÌ¾
            MOVE    "½é ¡¦ ºÆ ¿Ç ÎÁ"    TO  FMSEIKYUN-HKNTEN-NAME(1)
@@ -2245,14 +2285,21 @@
            END-IF
       *
       *    Ï«ºÒ¡¦¼«Çå¤Ç´µ¼ÔÀÁµá¤¬Ìµ¤¤¾ì¹ç¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
-           IF    ( COMB-HKNNUM             =    "971"
-               AND PTRSI-HKNKBN        NOT =    "5"
-               AND SYS-4001-RSIIRYOKBN     =    "1" )
-            OR   ( COMB-HKNNUM             =    "971"
-               AND PTRSI-HKNKBN            =    "5"
-               AND SYU-PTFTNRATE           =    ZERO )
-            OR   ( COMB-HKNNUM             =    "973"
-               AND SYU-PTFTNRATE           =    ZERO )
+           MOVE    1                   TO  FLG-EDIT
+           IF    ( TPARA-API-DATA      NOT =   "1" )
+               IF    ( COMB-HKNNUM             =    "971"
+                   AND PTRSI-HKNKBN        NOT =    "5"
+                   AND SYS-4001-RSIIRYOKBN     =    "1" )
+                OR   ( COMB-HKNNUM             =    "971"
+                   AND PTRSI-HKNKBN            =    "5"
+                   AND SYU-PTFTNRATE           =    ZERO )
+                OR   ( COMB-HKNNUM             =    "973"
+                   AND SYU-PTFTNRATE           =    ZERO )
+                   MOVE    ZERO        TO  FLG-EDIT
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-EDIT            =   ZERO )
                MOVE    ALL "*"             TO  FMSEIKYUN-TOTAL-TEN
            ELSE
                PERFORM VARYING     IDX1    FROM  1   BY  1
@@ -2278,6 +2325,60 @@
            MOVE    SYU-HKNTEKMONEY     TO  WRK-KINGAKU-Z1
            MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-HKNTEKMONEY
       *
+      *    ¸øÈñ°ìÉôÉéÃ´¶â
+           MOVE    SYU-KOH-FTN         TO  WRK-KINGAKU-Z1
+           MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-KOH-FTN
+      *
+      *    ¿©»öÎÅÍÜÈñ
+           MOVE    SYU-RYOYOHI-SKJ     TO  WRK-KINGAKU-Z1
+           MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-SKJRYOYO
+      *
+      *    ¿©»öÉéÃ´¶â
+           COMPUTE WRK-API-SUUJI
+               =   SYU-SKYMONEY-SKJ-KEI
+               +   SYU-SKYMONEY-SKJ-JIHI-KEI
+           MOVE    WRK-API-SUUJI       TO  WRK-KINGAKU-Z1
+           MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-SKJ-FTN
+      *
+      *    À¸³èÎÅÍÜÈñ
+           MOVE    SYU-RYOYOHI-LIFE    TO  WRK-KINGAKU-Z1
+           MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-LIFERYOYO
+      *
+      *    À¸³èÉéÃ´¶â
+           COMPUTE WRK-API-SUUJI
+               =   SYU-SKYMONEY-LIFE-KEI
+               +   SYU-SKYMONEY-LIFE-JIHI-KEI
+           MOVE    WRK-API-SUUJI       TO  WRK-KINGAKU-Z1
+           MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-LIFE-FTN
+      *
+      *    Ï«ºÒ¡¦¼«Çå¤Î»þ¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
+           IF    ( COMB-HKNNUM             =    "971"
+                                           OR   "973" )
+            OR   ( COMB-KOHHKNNUM (1)      =    "970"
+              AND  SYU-PTFTNRATE       NOT =     ZERO )
+               IF    ( COMB-HKNNUM             =    "971"
+                   AND PTRSI-HKNKBN        NOT =    "5"
+                   AND SYS-4001-RSIIRYOKBN     =    "1" )
+                OR   ( COMB-HKNNUM             =    "971"
+                   AND PTRSI-HKNKBN            =    "5"
+                   AND SYU-PTFTNRATE           =    ZERO )
+                OR   ( COMB-HKNNUM             =    "973"
+                   AND SYU-PTFTNRATE           =    ZERO )
+                   MOVE    SPACE       TO  FMSEIKYUN-HKNTEKMONEY
+                                           FMSEIKYUN-SKJ-FTN
+                                           FMSEIKYUN-LIFE-FTN
+               ELSE
+                   COMPUTE WRK-GOKTEN  =    SYU-HKNTEKMONEY
+                                       +    SYU-RSISHOSHIN-MONEY
+                                       +    SYU-RSISAISHIN-MONEY
+                                       +    SYU-RSISDO-MONEY
+                                       +    SYU-RSIETC-MONEY
+                                       +    SYU-KOH-FTN
+                   MOVE    WRK-GOKTEN       TO  WRK-KINGAKU-Z1
+                   MOVE    WRK-KINGAKU-X    TO  FMSEIKYUN-HKNTEKMONEY
+               END-IF
+           END-IF
+      *
       *    Ï«ºÒ¡¦¼«Çå¤Î¿Ç»¡ÎÁÅù¤Îµ­ºÜ
            IF   (SYU-RSI-TOTAL     NOT =   ZERO) AND
                 (SYS-4001-RSIPRTKBN    =   "2")
@@ -2294,22 +2395,9 @@
                                            TO  FMSEIKYUN-LBL-RSI-TOTAL
                        END-IF
                END-EVALUATE
-               MOVE    SYU-RSI-TOTAL          TO  WRK-KINGAKU-Z1
+               MOVE    SYU-RSI-TOTAL       TO  WRK-KINGAKU-Z1
                MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-RSI-TOTAL
            END-IF
-      *
-      *    ¿©»ö¡¦Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û
-           COMPUTE WRK-API-SUUJI
-               =   SYU-SKYMONEY-SKJ-KEI
-               +   SYU-SKYMONEY-SKJ-JIHI-KEI
-               +   SYU-SKYMONEY-LIFE-KEI
-               +   SYU-SKYMONEY-LIFE-JIHI-KEI
-           MOVE    WRK-API-SUUJI       TO  WRK-KINGAKU-Z1
-           MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-SKJ-FTN
-      
-      *    ¸øÈñ°ìÉôÉéÃ´¶â
-           MOVE    SYU-KOH-FTN         TO  WRK-KINGAKU-Z1
-           MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-KOH-FTN
       *
       *    ÊÝ¸±Å¬ÍÑ³°Ê¬
            COMPUTE WRK-API-SUUJI
@@ -2357,23 +2445,23 @@
            MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-CHOSEI2
       *    º£²óÀÁµá³Û
            MOVE    ORCHCN03-SEIKYU(IDX-M)
-                                       TO  WRK-KINGAKU-Z1
+                                       TO  WRK-KINGAKU-Z9
            MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-SKYMONEY
       *    º£²óÀÁµá³Û¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            MOVE    ORCHCN03-SEIKYU-TAX-SAI (IDX-M)
-                                       TO  WRK-KINGAKU-Z1
+                                       TO  WRK-KINGAKU-Z9
            MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-SKYMONEY-TAX
       *    º£²óÆþ¶â³Û
            MOVE    ORCHCN03-NYUKIN(IDX-M)
-                                       TO  WRK-KINGAKU-Z1
+                                       TO  WRK-KINGAKU-Z9
            MOVE    WRK-KINGAKU-X       TO  FMSEIKYUN-NYUKIN
       *
            IF    ( WRK-SKYMISYUPRTKBN  =   "1" )
       *        Ì¤¼ý³ÛÊÔ½¸½èÍý
                PERFORM 3102-MISYU-EDIT-SEC
-               MOVE    WRK-GAI-MISYU   TO  WRK-KINGAKU-Z1
+               MOVE    WRK-GAI-MISYU   TO  WRK-KINGAKU-Z9
                MOVE    WRK-KINGAKU-X   TO  FMSEIKYUN-GAI-MISYU
-               MOVE    WRK-NYU-MISYU   TO  WRK-KINGAKU-Z1
+               MOVE    WRK-NYU-MISYU   TO  WRK-KINGAKU-Z9
                MOVE    WRK-KINGAKU-X   TO  FMSEIKYUN-NYU-MISYU
            END-IF
       *
@@ -2477,7 +2565,8 @@
            INITIALIZE                      RPMAIN-AREA
            MOVE    "seikyusho_n"       TO  RPMAIN-ID
            MOVE    TPARA-API-CUSTOM-ID TO  RPMAIN-CUSTOM-ID
-           MOVE    "Æþ±¡ÀÁµá½ñ"        TO  RPMAIN-TITLE
+           MOVE    "Æþ±¡ÀÁµá½ñ·óÎÎ¼ý½ñ"
+                                       TO  RPMAIN-TITLE
            MOVE    "fm_invoice_receipt_h"
                                        TO  MCP-TABLE
            MOVE    FMSEIKYUN-DATA      TO  RPMAIN-DATA
@@ -2562,6 +2651,9 @@
                MOVE    SYSKANRI-REC        TO  SYS-1901-REC
                MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
                MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-API-HOSPNAME (1)
+               MOVE    SYS-1901-HOSPNAME2  TO  WRK-API-HOSPNAME (2)
+               MOVE    SYS-1901-HOSPNAME3  TO  WRK-API-HOSPNAME (3)
            ELSE
                INITIALIZE                  SYS-1901-REC
            END-IF
@@ -2589,6 +2681,9 @@
                MOVE    SYSKANRI-REC    TO  SYS-1902-REC
                MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
                MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
+               MOVE    SYS-1902-ADRS1  TO  WRK-API-HOSPADRS (1)
+               MOVE    SYS-1902-ADRS2  TO  WRK-API-HOSPADRS (2)
+               MOVE    SYS-1902-ADRS3  TO  WRK-API-HOSPADRS (3)
                MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
       *----API-ADD-START---
                MOVE    SYS-1902-POST   TO  WRK-HOSPPOST
