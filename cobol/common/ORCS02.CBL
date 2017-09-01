@@ -974,8 +974,6 @@
       *
            03  WK-SYOTOKU-SKJKBN-TBL.
                05  WK-SYOTOKU-SKJKBN       PIC  X(01)  OCCURS  31.
-           03  WK-SYOTOKU-SYUKBN-TBL.
-               05  WK-SYOTOKU-SYUKBN       PIC  X(01)  OCCURS  31.
       *
            03  WK-GENTAI-SKYMONEY          PIC  9(07).
            03  WK-GENTAI-SKYMONEY2         PIC  9(07).
@@ -2135,11 +2133,14 @@
              OR (FLG-KOREI-TANYUIN        =  1                )
                CONTINUE
              ELSE
+               IF     FLG-SANSHOU3 = "1" OR "4"
+                      MOVE   34    TO  LNK-S02-RC
+               END-IF
                PERFORM   VARYING   IDX24    FROM    1   BY  1
                           UNTIL    IDX24     >     31
-                 IF   LNK-SYU-DAY(IDX24) = "1" OR "2" OR "8" OR "9"
-                   IF  (WK-SYOTOKU-SYUKBN(IDX24) = "1" OR "4")
-                   OR  (WK-SYOTOKU-SKJKBN(IDX24) = "1" OR "4")
+                 IF  (LNK-SYU-DAY(IDX24)          =  "1" OR "9")
+                 OR  (LNK-S02-NYUINDAY-KBN(IDX24) =  "1"       )
+                   IF   WK-SYOTOKU-SKJKBN(IDX24)  =  "1" OR "4"
                       MOVE   34    TO  LNK-S02-RC
                    END-IF
                  END-IF
@@ -3503,7 +3504,6 @@
            MOVE    SPACE              TO  FLG-SANSHOU2
            MOVE    SPACE              TO  FLG-SANSHOU3
            INITIALIZE                     WK-SYOTOKU-SKJKBN-TBL
-           INITIALIZE                     WK-SYOTOKU-SYUKBN-TBL
       *
            INITIALIZE                     ORCSSYOTOKUAREA
            MOVE  LNK-SYU-HOSPNUM      TO  LNK-SYOTOKU-HOSPNUM
@@ -3531,13 +3531,10 @@
                            UNTIL    SYOTOKU-IDX     >    31
                    MOVE   LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
                                     TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
-                   MOVE   LNK-SYOTOKU-SYUKBN(SYOTOKU-IDX)
-                                    TO  WK-SYOTOKU-SYUKBN(SYOTOKU-IDX)
                    IF (LNK-SYU-SYUHKNNUM = "971" OR "973" OR "975"
                                         OR "068" OR "069" OR "040"  )
                    OR (LNK-SYU-SYUHKNNUM(1:2) = "98" OR "90" OR "91")
                        MOVE  SPACE  TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
-                       MOVE  SPACE  TO  WK-SYOTOKU-SYUKBN(SYOTOKU-IDX)
                    END-IF
                 END-PERFORM
            END-IF
