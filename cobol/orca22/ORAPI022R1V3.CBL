@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  05.00.01    NACL-藤原    17/08/03  補足コメントの設定方法修正
+      *  05.00.02    NACL-藤原    17/08/31  補足コメントのチェック修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1246,26 +1247,33 @@
                    END-PERFORM
                    EVALUATE    WRK-LENGTH
                        WHEN    4
-                           MOVE    SPACE       TO  WRK-BYOMEICD
-                           MOVE    "ZZZ"       TO  WRK-BYOMEICD (1:3)
-                           MOVE    WRK-THOSOKUCD (IDY)(1:4)
-                                               TO  WRK-BYOMEICD (4:4)
-                           MOVE    WRK-BYOMEICD
-                                               TO  WRK-THOSOKUCD (IDY)
                        WHEN    7
                            CONTINUE
                        WHEN    OTHER
                            MOVE    1           TO  FLG-HOSOKU-CHK
                    END-EVALUATE
-      *
       *            病名マスタチェック
                    IF      FLG-HOSOKU-CHK      =   ZERO
                        INITIALIZE                      BYOMEI-REC
-                       MOVE    WRK-THOSOKUCD (IDY) TO  BYO-BYOMEICD
+                       EVALUATE    WRK-LENGTH
+                           WHEN    4
+                               MOVE    SPACE       TO  WRK-BYOMEICD
+                               MOVE    "ZZZ"       TO  WRK-BYOMEICD(1:3)
+                               MOVE    WRK-THOSOKUCD (IDY)(1:4)
+                                                   TO  WRK-BYOMEICD(4:4)
+                               MOVE    WRK-BYOMEICD
+                                                   TO  BYO-BYOMEICD
+                           WHEN    7
+                               MOVE    WRK-THOSOKUCD (IDY)
+                                                   TO  BYO-BYOMEICD
+                       END-EVALUATE
                        PERFORM 900-BYOMEI-READ-SEC
                        IF      FLG-BYOMEI          =   ZERO  
                            MOVE    BYO-BYOMEI      TO
-                                           WRK-THOSOKU-COMMENT (IDY)
+                                               WRK-THOSOKU-COMMENT (IDY)
+                           MOVE    BYO-BYOMEICD
+                                                   TO
+                                               WRK-THOSOKUCD (IDY)
                        ELSE
                            MOVE    1               TO  FLG-HOSOKU-CHK
                        END-IF
