@@ -267,4 +267,6 @@ db	{
 	tbl_srycdchg_master;
 	tbl_chk_user;
 	tbl_chk_master;
+	tbl_adrs_user;
+	tbl_adrs_master;
 };

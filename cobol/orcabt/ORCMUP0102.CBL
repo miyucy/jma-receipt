@@ -336,17 +336,20 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRSWK-EDANUM   TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "tbl_adrs_master"
+                                       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            ELSE
                MOVE    1               TO  FLG-ADRS
            END-IF
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -377,7 +380,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
 grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -401,17 +405,20 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRSWK-EDANUM   TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "tbl_adrs_master"
+                                       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            ELSE
                MOVE    1               TO  FLG-ADRS
            END-IF
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -442,7 +449,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
 grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -466,17 +474,20 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRSWK-EDANUM   TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "tbl_adrs_master"
+                                       TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            ELSE
                MOVE    1               TO  FLG-ADRS
            END-IF
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -501,7 +512,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -527,11 +539,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRSWK-POST     TO  ADRS-POST
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key7"          TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "tbl_adrs_master"
+                                       TO  MCP-TABLE
                MOVE    "key7"          TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            ELSE
@@ -541,11 +555,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM UNTIL   FLG-ADRS    NOT =   ZERO
       *        £Ä£Âºï½ü
                PERFORM 20101-ADRS-DEL-SEC
-               MOVE    "tbl_adrs"      TO  MCP-TABLE
+               MOVE    "tbl_adrs_master"
+                                       TO  MCP-TABLE
                MOVE    "key7"          TO  MCP-PATHNAME
                PERFORM 910-ADRS-READ-SEC
            END-PERFORM
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_master"
+                                   TO  MCP-TABLE
            MOVE    "key7"          TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
