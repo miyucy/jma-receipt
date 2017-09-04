@@ -22,8 +22,10 @@ N31 {
             column3 varchar(7);
             column4 varchar(100);
             column5 varchar(600);
-          }[100];
-          selectdata bool[100];
+          }[200];
+          selectdata bool[200];
+          fgcolor varchar(16)[200];
+          bgcolor varchar(16)[200];
       };
     };
     SELNUM {

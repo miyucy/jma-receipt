@@ -58,6 +58,8 @@ db	{
 	tbl_syskanri;
 	tbl_help;
 	tbl_spa_tmp;
+	tbl_adrs_master;
+	tbl_adrs_user;
 };
 
  db	"shell"	{

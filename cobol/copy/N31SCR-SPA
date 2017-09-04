@@ -45,6 +45,8 @@
                        09  SPA-GMN-TOWNNAME       PIC X(50).
       *            ƒÃ§ÍÃæ
                        09  SPA-GMN-TOWNNAME2      PIC X(600).
+      *            •«°º•ø∂Ë ¨
+                       09  SPA-NAI-DATAKBN        PIC X(01).
       *            ≈‘∆ª…‹∏©£√£ƒ
                    07  SPA-GMN-PREFCD-G.
                        09  SPA-GMN-PREFCD         PIC X(02).
@@ -62,7 +64,7 @@
                    07  SPA-GMN-PREFCD-MAX         PIC 9(03).
       *            ƒÆ∞Ë•Í•π•»
                    07  SPA-GMN-CYOIKI-G.
-                       09  SPA-GMN-CYOIKI-TBL     OCCURS  100.
+                       09  SPA-GMN-CYOIKI-TBL     OCCURS  200.
                            11  SPA-GMN-CYO-HEN        PIC X(02).
                            11  SPA-GMN-CYO-CD         PIC 9(03).
                            11  SPA-GMN-CYO-POST       PIC X(07).
@@ -70,6 +72,9 @@
                            11  SPA-GMN-CYO-TOWNNAME2  PIC X(600).
                            11  SPA-GMN-CYO-LPUBCD     PIC X(05).
                            11  SPA-GMN-CYO-EDANUM     PIC 9(02).
+      *H29.9               •«°º•ø∂Ë ¨
+                           11  SPA-NAI-TDATAKBN       PIC X(01).
+      *
                        09  SPA-GMN-CYOIKI-MAX         PIC 9(04).
       *        ∆‚…ÙŒŒ∞Ë
                05  SPA-NAI-AREA.
@@ -79,7 +84,6 @@
                    07  SPA-NAI-NEXTKBN         PIC 9(01).
       *            •∑•π•∆•‡¥…Õ˝°°≈‘∆ª…‹∏©•≥°º•…
                    07  SPA-NAI-PREFNUM         PIC X(02).
-      *
       *            07  SPA-NAI-BACK            PIC 9(05).
       *            07  SPA-NAI-NEXT            PIC 9(05).
       *            07  SPA-NAI-BACK2           PIC 9(05).

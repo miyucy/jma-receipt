@@ -12,14 +12,18 @@
                     06  N31-VALUE   PIC X(2).
                   05  N31-CYOIKI-COUNT   PIC S9(9)   BINARY.
                   05  N31-CYOIKI-ROW PIC S9(9)   BINARY.
-                  05  N31-ITEM        OCCURS  100 TIMES.
+                  05  N31-ITEM        OCCURS  200 TIMES.
                     06  N31-CYO-HEN PIC X(2).
                     06  N31-CYO-CD  PIC X(4).
                     06  N31-CYO-POST PIC X(7).
                     06  N31-CYO-ADRS  PIC X(100).
                     06  N31-CYO-TOWNNAME2  PIC X(600).
                   05  N31-CYOIKI-SELECT
-                          PIC X       OCCURS  100 TIMES.
+                          PIC X       OCCURS  200 TIMES.
+                  05  N31-CYOIKI-FGCOLOR
+                          PIC X(16)   OCCURS  200 TIMES.
+                  05  N31-CYOIKI-BGCOLOR
+                          PIC X(16)   OCCURS  200 TIMES.
               03  N31-SELNUM.
                 04  N31-VALUE   PIC S9(3).
               03  N31-PREFCDCOMBO.

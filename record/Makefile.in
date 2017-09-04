@@ -1028,6 +1028,8 @@ DB_files = \
 	tbl_chk_user.db \
 	xml_diseasev3req.db \
 	xml_diseasev3res.db \
+	tbl_adrs_master.db \
+	tbl_adrs_user.db \
 
 
 shell.db: shell.db.in

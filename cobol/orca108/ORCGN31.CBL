@@ -31,6 +31,7 @@
       * 04.06.00     NACL-多々納   11/03/02  通り名称追加
       *                                      一括取り込み他追加
       * 04.06.00     NACL-多々納   11/03/22  LD104 ,LD105,LD106,LD108,LD109　統合
+      * 05.01.00     NACL-多々納   17/09/XX  マスター分離対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,9 +57,11 @@
            03  FLG-END             PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-ADRS            PIC 9(01).
+           03  FLG-USERADRS        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-TOUROKU         PIC 9(01).
+           03  FLG-SYORI-END       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -79,6 +82,18 @@
            03  WRK-RENNUM          PIC 9(02).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
+      *
+       01  WRK-KEY-AREA.
+           03  WRK-ADRS-KEY.
+               05  WRK-ADRS-POST           PIC X(07).
+               05  WRK-ADRS-LPUBCD         PIC X(05).
+               05  WRK-ADRS-EDANUM         PIC 9(02).
+      *
+           03  WRK-USER-KEY.
+               05  WRK-USER-POST           PIC X(07).
+               05  WRK-USER-LPUBCD         PIC X(05).
+               05  WRK-USER-EDANUM         PIC 9(02).
+      *
       *
        01  WRK-ADRS-AREA.
            03  WRK-ADRS-G.
@@ -182,6 +197,10 @@
                    07  WRK-ADRSKANA        PIC X(20).
                    07  WRK-ADRSNAME        PIC X(10).
       *
+      *
+       01  CONS-AREA.
+           03  CONS-LINE-MAX               PIC 9(03)   VALUE   200.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -192,6 +211,16 @@
       *    住所マスタ
        01  ADRS-REC.
            COPY    "CPADRS.INC".
+      *
+      *    住所マスタ（ユーザ）
+       01  USER-ADRS-REC.
+           COPY    "CPADRS.INC"    REPLACING
+                                       //ADRS-// BY //USER-ADRS-//.
+      *    住所マスタ（ワーク）
+       01  HEN-ADRS-REC.
+           COPY    "CPADRS.INC"    REPLACING
+                                       //ADRS-// BY //HEN-ADRS-//.
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -259,6 +288,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  WRK-KEY-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-N31KYOUTU
@@ -655,7 +685,7 @@
            MOVE    ZERO            TO  IDX2
       *
            COMPUTE IDX-STR         =   (SPA-NAI-PAGE   -   1 )
-                                   *   100
+                                   *   CONS-LINE-MAX
                                    +   1
            MOVE    ZERO            TO  SPA-NAI-NEXTKBN
       *
@@ -666,38 +696,36 @@
                                        ORCSADDSIGNAREA
            MOVE    SADDSIGN-STR    TO  ADRS-POST
            MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
+      *    ユーザ検索
+           MOVE    ADRS-REC        TO  USER-ADRS-REC
+      *
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
-           MOVE    "key6"          TO  WRK-PATH-PATHNAME
+           MOVE    "tbl_adrs_master"   TO  WRK-PATH-TABLE
+           MOVE    "key2"          TO  WRK-PATH-PATHNAME
            PERFORM 900-ADRS-SELECT-SEC
+      *    標準キー編集
+           PERFORM 41009-ADRS-KEY-SEC
       *
-           PERFORM UNTIL  (FLG-ADRS        =   1  )  OR
-                          (SPA-NAI-NEXTKBN =   1  )
-               ADD     1               TO  IDX2
-               IF      IDX-STR         <=  IDX2
-                   ADD     1               TO  IDX
-                   IF      IDX             >   100
-                       MOVE    1               TO  SPA-NAI-NEXTKBN
-                   ELSE
-                       PERFORM 41001-CYOIKILST-HEN-SEC
-                   END-IF
-               END-IF
-               PERFORM 900-ADRS-FETCH-SEC
-           END-PERFORM
+      *    ユーザ検索
+           MOVE    USER-ADRS-REC   TO  MCPDATA-REC
+           PERFORM 902-USER-ADRS-SELECT-SEC
       *
+           MOVE    ZERO            TO  FLG-SYORI-END
+      *
+           IF     (FLG-ADRS           =   1  )
+             AND  (FLG-USERADRS       =   1  )
+               MOVE    1              TO  FLG-SYORI-END
+           END-IF
+      *
+           PERFORM 41002-ADRS-HENSYU-SEC
+                   UNTIL      (FLG-SYORI-END   =   1  )
+                          OR  (SPA-NAI-NEXTKBN =   1  )
+      *    CLOSE
            PERFORM 900-ADRS-CLOSE-SEC
       *
-      *    該当する町域が１００件以上のとき次ページ使用可
-      *    IF    ( SPA-GMN-CYOIKI-MAX      =   100  )  AND
-      *          ( FLG-ADRS                =   ZERO )
-      *        MOVE    SPA-NAI-NEXT    TO  SPA-NAI-BACK
-      *                                    SPA-NAI-NEXT2
-      *                                    SPA-NAI-BACK2
-      *        MOVE    IDX2            TO  SPA-NAI-NEXT
-      *    ELSE
-      *        MOVE    SPA-NAI-NEXT    TO  SPA-NAI-NEXT2
-      *        MOVE    ZERO            TO  SPA-NAI-NEXT
-      *    END-IF
+           MOVE    "tbl_adrs_user"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
       *
       *    該当する町域がないときは新規登録
            EVALUATE    SPA-GMN-CYOIKI-MAX
@@ -715,19 +743,112 @@
            EXIT.
       *
       *****************************************************************
+      *    標準キー編集
+      *****************************************************************
+       41009-ADRS-KEY-SEC      SECTION.
+      *
+           IF      FLG-ADRS        =   ZERO
+               MOVE    ADRS-POST       TO  WRK-ADRS-POST
+               MOVE    ADRS-LPUBCD     TO  WRK-ADRS-LPUBCD
+               MOVE    ADRS-EDANUM     TO  WRK-ADRS-EDANUM
+           ELSE
+               MOVE    ALL "9"         TO  WRK-ADRS-KEY
+           END-IF
+           .
+       41009-ADRS-KEYEXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    町域リストセット
+      *****************************************************************
+       41002-ADRS-HENSYU-SEC      SECTION.
+      *
+           EVALUATE    TRUE
+               WHEN    WRK-ADRS-KEY        =   WRK-USER-KEY
+                   PERFORM 4100021-MAST-ADRS-SEC
+                   IF      SPA-NAI-NEXTKBN     =   ZERO
+                       PERFORM 4100022-USER-ADRS-SEC
+                       PERFORM 900-USERADRS-FETCH-SEC
+                   END-IF
+                   PERFORM 900-ADRS-FETCH-SEC
+      *            標準キー編集
+                   PERFORM 41009-ADRS-KEY-SEC
+               WHEN    WRK-ADRS-KEY       <   WRK-USER-KEY
+      *            標準のみ
+                   PERFORM 4100021-MAST-ADRS-SEC
+                   PERFORM 900-ADRS-FETCH-SEC
+      *            標準キー編集
+                   PERFORM 41009-ADRS-KEY-SEC
+               WHEN    WRK-ADRS-KEY        >   WRK-USER-KEY
+      *            ユーザのみ
+                   PERFORM 4100022-USER-ADRS-SEC
+                   PERFORM 900-USERADRS-FETCH-SEC
+           END-EVALUATE
+      *
+           IF     (FLG-ADRS           =   1  )
+             AND  (FLG-USERADRS       =   1  )
+               MOVE    1              TO  FLG-SYORI-END
+           END-IF
+           .
+       41002-ADRS-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    標準　住所編集処理
+      *****************************************************************
+       4100021-MAST-ADRS-SEC      SECTION.
+      *
+           ADD     1               TO  IDX2
+           IF      IDX-STR         <=  IDX2
+               ADD     1               TO  IDX
+               IF      IDX             >   CONS-LINE-MAX
+                   MOVE    1               TO  SPA-NAI-NEXTKBN
+               ELSE
+                   MOVE    ADRS-REC        TO  HEN-ADRS-REC
+                   PERFORM 41001-CYOIKILST-HEN-SEC
+                   MOVE    "1"         TO  SPA-NAI-TDATAKBN
+                                                          (IDX)
+               END-IF
+           END-IF
+           .
+       4100021-MAST-ADRS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザ　住所編集処理
+      *****************************************************************
+       4100022-USER-ADRS-SEC      SECTION.
+      *
+           ADD     1               TO  IDX2
+           IF      IDX-STR         <=  IDX2
+               ADD     1               TO  IDX
+               IF      IDX             >   CONS-LINE-MAX
+                   MOVE    1               TO  SPA-NAI-NEXTKBN
+               ELSE
+                   MOVE    USER-ADRS-REC   TO  HEN-ADRS-REC
+                   PERFORM 41001-CYOIKILST-HEN-SEC
+                   MOVE    "2"             TO  SPA-NAI-TDATAKBN
+                                                          (IDX)
+               END-IF
+           END-IF
+           .
+       4100022-USER-ADRS-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    町域リストセット
       *****************************************************************
        41001-CYOIKILST-HEN-SEC      SECTION.
       *
            MOVE    IDX                 TO  SPA-GMN-CYOIKI-MAX
            MOVE    IDX                 TO  SPA-GMN-CYO-CD    (IDX)
-           MOVE    ADRS-POST           TO  SPA-GMN-CYO-POST  (IDX)
-           MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN-CYO-ADRS  (IDX)
-           MOVE    ADRS-LPUBCD         TO  SPA-GMN-CYO-LPUBCD(IDX)
-           MOVE    ADRS-EDANUM         TO  SPA-GMN-CYO-EDANUM(IDX)
-           MOVE    ADRS-TOWNNAME2      TO  SPA-GMN-CYO-TOWNNAME2
+           MOVE    HEN-ADRS-POST           TO  SPA-GMN-CYO-POST  (IDX)
+           MOVE    HEN-ADRS-EDITADRS-NAME  TO  SPA-GMN-CYO-ADRS  (IDX)
+           MOVE    HEN-ADRS-LPUBCD         TO  SPA-GMN-CYO-LPUBCD(IDX)
+           MOVE    HEN-ADRS-EDANUM         TO  SPA-GMN-CYO-EDANUM(IDX)
+           MOVE    HEN-ADRS-TOWNNAME2      TO  SPA-GMN-CYO-TOWNNAME2
                                                               (IDX)
-           IF      ADRS-LPUBCD         =   "00000"
+           IF      HEN-ADRS-LPUBCD         =   "00000"
                MOVE    "ユ"            TO  SPA-GMN-CYO-HEN(IDX)
            END-IF
       *
@@ -741,10 +862,10 @@
       *
       *    行選択
            PERFORM VARYING     IDXL    FROM    1   BY  1
-                   UNTIL       IDXL    >       100
+                   UNTIL       IDXL    >       CONS-LINE-MAX
                IF    N31-CYOIKI-SELECT(IDXL)   =   "T"
                    MOVE    IDXL            TO  SPA-GMN-SELNUM
-                   MOVE    100             TO  IDXL
+                   MOVE    CONS-LINE-MAX   TO  IDXL
                END-IF
            END-PERFORM
       *
@@ -765,6 +886,7 @@
            MOVE    N31-SELNUM      TO  SPA-GMN-SELNUM
       *
            IF    ( SPA-GMN-SELNUM      =   ZERO )
+               MOVE    SPACE               TO  SPA-NAI-DATAKBN
                GO  TO  4100-SELNUM-SET-EXT
            END-IF
       *
@@ -785,8 +907,15 @@
            MOVE    SPA-GMN-CYO-EDANUM(SPA-GMN-SELNUM)
                                    TO  ADRS-EDANUM
            MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
+      *H29.9
+      *    検索対象判定
+           IF      SPA-NAI-TDATAKBN(SPA-GMN-SELNUM)
+                                       =   "1"
+               MOVE    "tbl_adrs_master"   TO  WRK-PATH-TABLE
+           ELSE
+               MOVE    "tbl_adrs_user"     TO  WRK-PATH-TABLE
+           END-IF
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
            MOVE    "key"           TO  WRK-PATH-PATHNAME
            PERFORM 900-ADRS-SELECT-SEC
       *
@@ -804,6 +933,8 @@
            MOVE    ADRS-CITYNAME       TO  SPA-GMN-CITYNAME
            MOVE    ADRS-TOWNNAME       TO  SPA-GMN-TOWNNAME
            MOVE    ADRS-TOWNNAME2      TO  SPA-GMN-TOWNNAME2
+           MOVE    SPA-NAI-TDATAKBN(SPA-GMN-SELNUM)
+                                       TO  SPA-NAI-DATAKBN
       *    都道府県編集
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL   IDXC    >       SPA-GMN-PREFCD-MAX
@@ -828,6 +959,7 @@
            IF      ADRS-LPUBCD         =   "00000"
                MOVE    "ユ"            TO  SPA-GMN-CYO-HEN(1)
            END-IF
+           MOVE    SPA-NAI-DATAKBN     TO  SPA-NAI-TDATAKBN(1)
       *
            MOVE    1               TO  SPA-NAI-PAGE
            MOVE    ZERO            TO  SPA-NAI-NEXTKBN
@@ -1005,19 +1137,68 @@
       *****************************************************************
        4109-TOUROKU-CHK-SEC        SECTION.
       *
-      *    郵便番号は全桁であること
-      *    IF    ( SPA-GMN-POST(1:)    =   SPACE ) OR
-      *          ( SPA-GMN-POST(2:)    =   SPACE ) OR
-      *          ( SPA-GMN-POST(3:)    =   SPACE ) OR
-      *          ( SPA-GMN-POST(4:)    =   SPACE ) OR
-      *          ( SPA-GMN-POST(5:)    =   SPACE ) OR
-      *          ( SPA-GMN-POST(6:)    =   SPACE ) OR
-      *          ( SPA-GMN-POST(7:)    =   SPACE )
-      *        MOVE    "0011"          TO  SPA-ERRCD
-      *        MOVE    1               TO  SPA-GMN-CUR
-      *    END-IF
       *    郵便番号チェック
            PERFORM 4100-POST-CHK-SEC
+      *
+           IF     (SPA-ERRCD       NOT =   SPACE)
+               GO      TO      4109-TOUROKU-CHK-EXT
+           END-IF
+      *
+      *    標準はユーザに登録済みであれば、更新なし
+           IF      SPA-NAI-DATAKBN     =   "1"
+               CONTINUE
+           ELSE
+               GO      TO      4109-TOUROKU-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                  ADRS-REC
+           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
+           MOVE    SPA-GMN-POST        TO  ADRS-POST
+           MOVE    SPA-GMN-CYO-LPUBCD(1)
+                                       TO  ADRS-LPUBCD
+           MOVE    SPA-GMN-CYO-EDANUM(1)
+                                       TO  ADRS-EDANUM
+           MOVE    ADRS-REC            TO  MCPDATA-REC
+      *    検索対象判定
+           MOVE    "tbl_adrs_user"     TO  WRK-PATH-TABLE
+           MOVE    "key"               TO  WRK-PATH-PATHNAME
+           PERFORM 900-ADRS-SELECT-SEC
+      *
+           PERFORM 900-ADRS-CLOSE-SEC
+      *
+           IF      FLG-ADRS            =   ZERO
+      *        ユーザで登録があればエラー
+               MOVE    "0015"              TO  SPA-ERRCD
+               MOVE    98                  TO  SPA-GMN-CUR
+               GO      TO      4109-TOUROKU-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                  ADRS-REC
+           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
+           MOVE    SPA-GMN-POST        TO  ADRS-POST
+           MOVE    SPA-GMN-CYO-LPUBCD(1)
+                                       TO  ADRS-LPUBCD
+           MOVE    SPA-GMN-CYO-EDANUM(1)
+                                       TO  ADRS-EDANUM
+           MOVE    ADRS-REC            TO  MCPDATA-REC
+      *    検索対象判定
+           MOVE    "tbl_adrs_master"   TO  WRK-PATH-TABLE
+           MOVE    "key"               TO  WRK-PATH-PATHNAME
+           PERFORM 900-ADRS-SELECT-SEC
+      *
+           PERFORM 900-ADRS-CLOSE-SEC
+           IF      FLG-ADRS            =   ZERO
+      *        変更があること
+                IF      (ADRS-CITYKANA     =   SPA-GMN-CITYKANA)
+                   AND  (ADRS-TOWNKANA     =   SPA-GMN-TOWNKANA)
+                   AND  (ADRS-CITYNAME     =   SPA-GMN-CITYNAME)
+                   AND  (ADRS-TOWNNAME     =   SPA-GMN-TOWNNAME)
+                   AND  (ADRS-TOWNNAME2    =   SPA-GMN-TOWNNAME2)
+                   MOVE    "0016"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-GMN-CUR
+                   GO      TO      4109-TOUROKU-CHK-EXT
+               END-IF
+           END-IF
       *
            .
        4109-TOUROKU-CHK-EXT.
@@ -1084,8 +1265,8 @@
            END-IF
       *
            IF      SPA-ERRCD       =   SPACE
-               IF      SPA-GMN-CYO-HEN(SPA-GMN-SELNUM)
-                                   NOT =   "ユ"
+               IF     (SPA-NAI-TDATAKBN (SPA-GMN-SELNUM)
+                                       =   "1"    )
                    MOVE    "0014"          TO  SPA-ERRCD
                    MOVE    2               TO  SPA-GMN-CUR
                END-IF
@@ -1113,7 +1294,8 @@
            MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+     ****  MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_user" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"     USING
                                        MCPAREA
@@ -1195,7 +1377,8 @@
                MOVE    WRK-LPUBCD      TO  ADRS-LPUBCD
                MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
                MOVE    ADRS-REC        TO  MCPDATA-REC
-               MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
+      *****    MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
+               MOVE    "tbl_adrs_user" TO  WRK-PATH-TABLE
                MOVE    "key7"          TO  WRK-PATH-PATHNAME
                PERFORM 900-ADRS-SELECT-SEC
                PERFORM 900-ADRS-CLOSE-SEC
@@ -1240,8 +1423,10 @@
            MOVE    SPA-GMN-POST    TO  ADRS-POST
            MOVE    WRK-RENNUM      TO  ADRS-EDANUM
            MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
+      *
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
+      **** MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
+           MOVE    "tbl_adrs_user" TO  WRK-PATH-TABLE
            MOVE    "key"           TO  WRK-PATH-PATHNAME
            PERFORM 900-ADRS-SELECT-SEC
            PERFORM 900-ADRS-CLOSE-SEC
@@ -1266,7 +1451,8 @@
            PERFORM 4902-ADRS-HENSYU-SEC
       *
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+      **** MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_user" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            CALL    "ORCDBMAIN"     USING
@@ -1296,7 +1482,8 @@
            PERFORM 4902-ADRS-HENSYU-SEC
       *
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+     ***** MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "tbl_adrs_user" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            MOVE    "DBINSERT"      TO  MCP-FUNC
            CALL    "ORCDBMAIN"     USING
@@ -1436,6 +1623,17 @@
                                        TO  N31-CYO-ADRS(IDXL)
                MOVE    SPA-GMN-CYO-TOWNNAME2(IDXL)
                                        TO  N31-CYO-TOWNNAME2(IDXL)
+      *H29.9
+               IF     (SPA-NAI-TDATAKBN (IDXL)   =   "2"   )
+                 AND  (SPA-GMN-CYO-HEN(IDXL)     =   SPACE )
+                  MOVE    "更"         TO  N31-CYO-HEN(IDXL)
+               END-IF
+      *        背景色
+               IF      SPA-NAI-TDATAKBN (IDXL)   =   "2"
+                   MOVE    "#FFCC99"       TO  N31-CYOIKI-BGCOLOR
+                                                       (IDXL)
+               END-IF
+      *H29.9
       *        IF      IDXL     =   SPA-GMN-SELNUM
       *            MOVE    "T"         TO  N31-CYOIKI-SELECT(IDXL)
       *        ELSE
@@ -1526,6 +1724,17 @@
              WHEN      "0014"
                MOVE    "この住所は削除が許可されていません"
                                        TO  SPA-ERRMSG
+      *H29.9
+             WHEN      "0015"
+                 STRING    "すでにユーザ登録されています。"
+                           "ユーザ登録分を更新して下さい。"
+                                       INTO  SPA-ERRMSG
+                 END-STRING
+             WHEN      "0016"
+                 STRING    "変更箇所がありません。"
+                           "更新できません。"
+                                       INTO  SPA-ERRMSG
+                 END-STRING
              WHEN      "1001"
                MOVE    "更新処理ができませんでした"
                                        TO  SPA-ERRMSG
@@ -1616,6 +1825,8 @@
                MOVE    "TOWNNAME"       TO   MCP-WIDGET
            WHEN    08
                MOVE    "TOWNNAME2"      TO   MCP-WIDGET
+           WHEN    98
+               MOVE    "B02"            TO   MCP-WIDGET
            WHEN    99
                MOVE    "B12"            TO   MCP-WIDGET
            END-EVALUATE
@@ -1725,6 +1936,48 @@
            .
       *
        900-ADRS-FETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザ住所マスター読込
+      *****************************************************************
+       902-USER-ADRS-SELECT-SEC         SECTION.
+      *
+           MOVE    "tbl_adrs_user"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 900-USERADRS-FETCH-SEC
+           ELSE
+               MOVE    1               TO  FLG-USERADRS
+           END-IF
+           .
+      *
+       902-USER-ADRS-SELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザ住所マスターFETCH
+      *****************************************************************
+       900-USERADRS-FETCH-SEC          SECTION.
+      *
+           MOVE    "tbl_adrs_user"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-USERADRS
+               MOVE    MCPDATA-REC     TO  USER-ADRS-REC
+      *        キー編集
+               MOVE    USER-ADRS-POST      TO  WRK-USER-POST
+               MOVE    USER-ADRS-LPUBCD    TO  WRK-USER-LPUBCD
+               MOVE    USER-ADRS-EDANUM    TO  WRK-USER-EDANUM
+           ELSE
+               MOVE    1               TO  FLG-USERADRS
+      *        キー編集
+               MOVE     ALL "9"         TO  WRK-USER-KEY
+           END-IF
+           .
+      *
+       900-USERADRS-FETCH-EXT.
            EXIT.
       *
       *****************************************************************
