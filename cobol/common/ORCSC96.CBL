@@ -2227,6 +2227,13 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H29.9
+               WHEN    "0542"
+                   STRING  "手術の複数の手技で通則加算が違います。"
+                           "手技毎に剤分離して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
