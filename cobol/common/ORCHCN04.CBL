@@ -172,6 +172,7 @@
            03  WRK-ROOMNUM-NAME        PIC X(12).
            03  WRK-BTUNUM              PIC X(02).
            03  WRK-BRMNUM              PIC X(06).
+           03  WRK-API-BRMNUM          PIC X(06).
       *
            03  WRK-SRYKA               PIC X(02).
            03  WRK-SRYKA-MEI           PIC X(30).
@@ -1347,11 +1348,13 @@
            END-IF
       *    病室名編集処理
            MOVE    SPACE               TO  WRK-ROOMNUM-NAME
+           MOVE    SPACE               TO  WRK-API-BRMNUM
            INITIALIZE                      ORCSBRMNUMAREA
            MOVE    "1"                 TO  SBRMNUM-IN-PROCKBN
            MOVE    WRK-BRMNUM          TO  SBRMNUM-IN-BRMNUM
            CALL    "ORCSBRMNUM"        USING    ORCSBRMNUMAREA
            IF       SBRMNUM-RC         =   ZERO
+               MOVE    SBRMNUM-OT-BRMNUM   TO  WRK-API-BRMNUM
       *        全角編集処理
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "2"                 TO  KANACHK-SYORI
@@ -3295,8 +3298,10 @@
                MOVE    TBL-HA-NAME  (IDX3) TO  FMMEISAIN-SRYNAME
                                                          (IDX-API)
       *        点数記載円立てフラグ
-               MOVE    TBL-HA-EN    (IDX3) TO  FMMEISAIN-TENSU-MARK
+               IF    ( PARA-GOKEITANI      =   "1" )
+                   MOVE    TBL-HA-EN    (IDX3) TO  FMMEISAIN-TENSU-MARK
                                                          (IDX-API)
+               END-IF
       *        点数
                MOVE    TBL-HA-TENSU (IDX3) TO  FMMEISAIN-TENSU
                                                          (IDX-API)
@@ -3432,8 +3437,7 @@
       *    病棟名称
            MOVE    WRK-BTUNAME         TO  FMMEISAIN-BTUNAME
       *    病室番号
-           MOVE    WRK-BRMNUM          TO  WRK-BRMNUMZ
-           MOVE    WRK-BRMNUMZ         TO  FMMEISAIN-BRMNUM
+           MOVE    WRK-API-BRMNUM      TO  FMMEISAIN-BRMNUM
       *
            IF      PARA-GOKEITANI      =   "1"
       *        点数表示

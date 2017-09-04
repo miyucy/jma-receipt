@@ -22,6 +22,7 @@ data	{
 
 db "xml2" {
  fm_invoice_receipt_h;
+ fm_statement_h;
 };
 
 #include "orcadb.inc"
