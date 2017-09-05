@@ -27669,11 +27669,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬¤ÎÊÔ½¸
       *
-           IF    ((RECE02-SRYYM          >=  "201204") AND
-                  (RECE02-ZAITAKU     NOT =   SPACE  ) AND
-                  (RECE02-TEISYOTOKU  NOT =   SPACE  ))
-           OR    ((RECE02-SRYYM          <   "201204") AND
-                  (RECE02-TEISYOTOKU  NOT =   SPACE  ))
+           IF    ((RECE02-SRYYM            >=  "201204") AND
+                  (RECE02-ZAITAKU       NOT =   SPACE  ) AND
+                  (RECE02-TEISYOTOKU    NOT =   SPACE  ))
+           OR    ((RECE02-SRYYM            <   "201204") AND
+                  (RECE02-SRYYM            >=  "200210") AND
+                  (RECE02-KOUREI-HANTEIFLG  =  "1"     ) AND
+                  (RECE02-TEISYOTOKU    NOT =   SPACE  ))
+           OR    ((RECE02-SRYYM            <   "201204") AND
+                  (RECE02-SRYYM            >=  "200704") AND
+                  (RECE02-KOUREI-HANTEIFLG  =   SPACE  ) AND
+                  (RECE02-TEISYOTOKU    NOT =   SPACE  ))
                EVALUATE    RECE02-TEISYOTOKU
                    WHEN    "1"
                    WHEN    "4"
@@ -27681,12 +27687,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "2"
                        MOVE    "1"   TO   RECE02-SHOKUJIFTNKBN
                END-EVALUATE
-               IF   (RECE02-SRYYM     >= "201710"  )
-               AND  (RECE02-ZAITAKU    = "2" OR "3")
-               AND  (RECE02-TEISYOTOKU = "1" OR "4")
-                       MOVE    "1"   TO   RECE02-SHOKUJIFTNKBN
-                       DISPLAY "£·£°ºÐÌ¤Ëþ¤ÎÊý¤ËÄã½êÆÀ£±¤ÎÆþÎÏÍ­"
-               END-IF
            END-IF
            PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
                      UNTIL    KOHFTN-IDX     >    4
