@@ -27669,17 +27669,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬¤ÎÊÔ½¸
       *
-           IF    ((RECE02-SRYYM            >=  "201204") AND
-                  (RECE02-ZAITAKU       NOT =   SPACE  ) AND
-                  (RECE02-TEISYOTOKU    NOT =   SPACE  ))
-           OR    ((RECE02-SRYYM            <   "201204") AND
-                  (RECE02-SRYYM            >=  "200210") AND
-                  (RECE02-KOUREI-HANTEIFLG  =  "1"     ) AND
-                  (RECE02-TEISYOTOKU    NOT =   SPACE  ))
-           OR    ((RECE02-SRYYM            <   "201204") AND
-                  (RECE02-SRYYM            >=  "200704") AND
-                  (RECE02-KOUREI-HANTEIFLG  =   SPACE  ) AND
-                  (RECE02-TEISYOTOKU    NOT =   SPACE  ))
+           IF    ((RECE02-SRYYM          >=  "201204") AND
+                  (RECE02-ZAITAKU     NOT =   SPACE  ) AND
+                  (RECE02-TEISYOTOKU  NOT =   SPACE  ))
+           OR    ((RECE02-SRYYM          <   "201204") AND
+                  (RECE02-TEISYOTOKU  NOT =   SPACE  ))
                EVALUATE    RECE02-TEISYOTOKU
                    WHEN    "1"
                    WHEN    "4"
