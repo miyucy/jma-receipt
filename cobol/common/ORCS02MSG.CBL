@@ -173,7 +173,7 @@
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    34
-               STRING  "７０歳未満で低所得１の入力があります"
+               STRING  "適用できない低所得１の入力があります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING

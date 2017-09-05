@@ -845,8 +845,8 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
            05 PIC  X(06)   VALUE   "990039".
-           05 PIC  X(30)   VALUE   "患者負担額が計算できません。７".
-           05 PIC  X(30)   VALUE   "０歳未満で低所得１の入力があり".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。適".
+           05 PIC  X(30)   VALUE   "用できない低所得１の入力があり".
            05 PIC  X(30)   VALUE   "ます                          ".
            05 PIC  X(30)   VALUE   "                              ".
       *
