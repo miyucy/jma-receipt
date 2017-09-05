@@ -1412,7 +1412,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                       MOVE "入院基本設定「入院時食事療養」が未設定です"
                                           TO  ERR-ERRMSG
                     WHEN       34
-                      MOVE "７０歳未満の方に低所得１の入力有"
+                      MOVE "適用できない低所得１の入力有"
                                           TO  ERR-ERRMSG
       *
                     WHEN      101
