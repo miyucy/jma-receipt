@@ -3923,10 +3923,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        3001-PUSH-SEC        SECTION.
       *
-           IF      WRK-PARA-SRYYM  =   ZERO
-               GO  TO  3001-PUSH-EXT
-           END-IF
-      *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            PERFORM 900-CALL-ORCSJOB-SEC
@@ -3939,10 +3935,14 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
                MOVE    "000"           TO  PUSHBA01API-RESULT
                MOVE    "receipt_make"  TO  PUSHBA01-EVENT
-               MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE (1:7)
-                                       TO  PUSHBA01-PERFORM-MONTH
+               IF      WRK-PARA-SRYYM  =   ZERO
+                   MOVE    "9999-12"       TO  PUSHBA01-PERFORM-MONTH
+               ELSE
+                   MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE (1:7)
+                                           TO  PUSHBA01-PERFORM-MONTH
+               END-IF
                MOVE    CNT-RECE41      TO  WRK-CNT
                MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
       *??
