@@ -2133,9 +2133,6 @@
              OR (FLG-KOREI-TANYUIN        =  1                )
                CONTINUE
              ELSE
-               IF     FLG-SANSHOU3 = "1" OR "4"
-                      MOVE   34    TO  LNK-S02-RC
-               END-IF
                PERFORM   VARYING   IDX24    FROM    1   BY  1
                           UNTIL    IDX24     >     31
                  IF  (LNK-SYU-DAY(IDX24)          =  "1" OR "9")
