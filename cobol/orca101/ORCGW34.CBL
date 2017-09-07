@@ -121,6 +121,7 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-GMN-INIT        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -151,6 +152,7 @@
            03  WRK-SELNUM          PIC 9(03).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-PRGLST-ROW      PIC S9(9)   BINARY.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -337,6 +339,7 @@
                    PERFORM 330-WID1-SET-SEC
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
+                   MOVE    1               TO  FLG-GMN-INIT
            END-EVALUATE
       *
            .
@@ -381,6 +384,7 @@
       *
            MOVE    1                   TO  SPA-GMN-PAGE
            PERFORM 3101-PGLIST-HEN-SEC
+      *
            . 
        310-SPASET-EXT.
            EXIT.
@@ -901,6 +905,7 @@
       *
            IF      SPA-GMN-SELNUM      =   ZERO
                PERFORM 310-SPASET-SEC
+               MOVE    1                   TO  FLG-GMN-INIT
            ELSE
                MOVE    SPACE               TO  SPA-GMN-PRGID
                INITIALIZE                  SPA-GMN-INPUT-G
@@ -1360,8 +1365,14 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           MOVE    W34-ROW             TO  WRK-PRGLST-ROW
+      *
            MOVE    SPACE               TO  W34
            INITIALIZE                      W34
+      *
+           IF    ( FLG-GMN-INIT        =   ZERO )
+               MOVE    WRK-PRGLST-ROW  TO  W34-ROW
+           END-IF
       *
            MOVE    SPA-GMN-PRGID       TO  W34-PRGID
            MOVE    SPA-GMN-EXPLANTION  TO  W34-EXPLANTION
