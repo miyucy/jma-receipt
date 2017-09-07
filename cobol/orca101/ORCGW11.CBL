@@ -383,7 +383,7 @@
       *    出力先プリンタ割り当て情報
            WHEN    "1031"
       *----(05.00.00)--ADD-START---
-               IF      MCP-MIDDLEWARE-NAME =   "ginbee"
+               IF    ( SPA-MW      =   SPA-GINBEE )
       *            PUSH通知情報
                    PERFORM 3101-SYS9901-SYOKI-SEC
                END-IF
@@ -2550,7 +2550,7 @@
                    PERFORM 4902-SYS1031-SYOUIN-SEC
                END-IF
       *----(05.00.00)--ADD-START---
-               IF      MCP-MIDDLEWARE-NAME =   "ginbee"
+               IF    ( SPA-MW      =   SPA-GINBEE )
       *            PUSH通知情報
                    PERFORM 490-SYS-9901-KOUSHIN-SEC
                END-IF
@@ -3678,7 +3678,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-USE-PRINT-SERVER
                                         TO  W11-USE-PRINT-SERVER
            IF    ( SPA-W01-KANRICD      =   "1031" )   AND
-                 ( MCP-MIDDLEWARE-NAME  =   "ginbee" )
+                 ( SPA-MW               =   SPA-GINBEE )
                MOVE    WIDGET-NORMAL    TO  W11-USE-PRINT-SERVER-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE
