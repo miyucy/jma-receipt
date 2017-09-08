@@ -26886,6 +26886,12 @@
                          MOVE  "2"   TO   RECE62-SHOKUJIFTNKBN
                        END-IF
                END-EVALUATE
+               IF   (RECE62-SRYYM      >=  "201204"  )
+               AND  (RECE62-KOUREI      =  "2" OR "3")
+               AND  (RECE62-TEISYOTOKU  =  "1" OR "4")
+                       MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
+                       DISPLAY "SHOKUJIFTNKBN OKIKAE"
+               END-IF
            ELSE
                EVALUATE    RECE62-TEISYOTOKU3
                    WHEN    "1"
