@@ -180,6 +180,7 @@
       *              NACL-小豆沢  17/08/17  生活療養標準負担額コード追加対応
       *              NACL-小豆沢  17/09/07  同日再入院日の入退院日記録修正時の
       *                                     不具合修正
+      *              NACL-小豆沢  17/09/08  きざみ計算の出来高実績点数端数処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6218,7 +6219,7 @@
                   (WRK-KZM-TEN2        >   ZERO )
                MOVE    WRK-KZM-TEN2    TO  WRK-FEDT-DEKIDAKA-TEN
            ELSE
-               MOVE    TNS-TEN         TO  WRK-FEDT-DEKIDAKA-TEN
+               COMPUTE    WRK-FEDT-DEKIDAKA-TEN   =  TNS-TEN  + 0.5
            END-IF
            .
        200799-KZM-DEKIDAKA-EXT.
