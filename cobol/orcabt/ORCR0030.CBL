@@ -27681,12 +27681,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "2"
                        MOVE    "1"   TO   RECE02-SHOKUJIFTNKBN
                END-EVALUATE
-               IF   (RECE02-SRYYM      >=  "201204"  )
-               AND  (RECE02-ZAITAKU     =  "2" OR "3")
-               AND  (RECE02-TEISYOTOKU  =  "1" OR "4")
-                       MOVE    "1"   TO   RECE02-SHOKUJIFTNKBN
-                       DISPLAY "SHOKUJIFTNKBN OKIKAE"
-               END-IF
+      **@      IF   (RECE02-SRYYM      >=  "201204"  )
+      **@      AND  (RECE02-ZAITAKU     =  "2" OR "3")
+      **@      AND  (RECE02-TEISYOTOKU  =  "1" OR "4")
+      **@              MOVE    "1"   TO   RECE02-SHOKUJIFTNKBN
+      **@              DISPLAY "SHOKUJIFTNKBN OKIKAE"
+      **@      END-IF
            END-IF
            PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
                      UNTIL    KOHFTN-IDX     >    4
