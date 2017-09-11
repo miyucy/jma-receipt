@@ -213,6 +213,7 @@
       *  04.09.02    NACL-藤原    17/02/24  レポジトリ名設定時は地方公費
       *                                     処理スクリプトの存在チェック
       *                                     を行わない
+      *  04.09.03    NACL-藤原    17/08/01  ＨＡＯＲＩ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -429,8 +430,8 @@
            03  WRK-T99-MSG.
                05  WRK-T99-MSG1    PIC X(24)   VALUE
                    "処理は正常に終了しました".
-               05  FILLER          PIC X(16)   VALUE
-                   "　レセプト総件数".
+               05  FILLER          PIC X(10)   VALUE
+                   "　レセプト".
                05  WRK-T99-MSG-KENSU
                                    PIC ZZZZZ9.
                05  FILLER          PIC X(02)   VALUE   "件".
@@ -607,22 +608,7 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "T01.INC".
-           COPY    "T02.INC".
-           COPY    "T03.INC".
-           COPY    "T04.INC".
-           COPY    "T05.INC".
-           COPY    "T06.INC".
-           COPY    "T07.INC".
-           COPY    "T08.INC".
-           COPY    "T09.INC".
-           COPY    "T91.INC".
-           COPY    "T98.INC".
-           COPY    "T99.INC".
-           COPY    "TERR.INC".
-           COPY    "TID1.INC".
-           COPY    "TID2.INC".
-           COPY    "TID3.INC".
+           COPY    "ORCA44SCRAREA.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -5046,6 +5032,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
+           MOVE    SPA-T01-JOB-KARTE-UID
+                                   TO  JOB-KARTE-UID
+           MOVE    SPA-T01-JOB-ORCA-UID
+                                   TO  JOB-ORCA-UID
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
@@ -6049,7 +6039,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                    TO  SHELLTBL-ARG15         
            MOVE    ERRFLPARA-BASENAME
                                    TO  SHELLTBL-ARG16
-           MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
+      *    ＨＡＯＲＩのとき「９」を設定
+           IF      SPA-T01-JOB-PARAM
+                                   NOT =   SPACE
+               MOVE    "9"             TO  SHELLTBL-ARG17
+           ELSE
+               MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
+           END-IF
            MOVE    SPA-GMN-NYUGAIKBN
                                    TO  SHELLTBL-ARG19
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
@@ -7132,6 +7128,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
+      *??
+           display "T01 490-KAKUNIN-SEC"
+      *??
       *
            MOVE    ZERO                TO  WRK-PRT-PAGE
                                            WRK-PRT-PAGE1
@@ -7883,6 +7882,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "9999"
                    MOVE    WRK-RECEERR                 TO  TERR-ERRMSG
            END-EVALUATE
+      *
+           MOVE    TERR-ERRMSG          TO  SPA-ERRMSG
+      *
            MOVE    "B01"                TO  MCP-WIDGET
       *
            MOVE    "T01"                TO  SPA-MOTOPG

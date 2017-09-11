@@ -38,6 +38,26 @@ fi
 #            該当診療年月の開始、終了
 #-------------------------------------------#
 
+        echo "window  ${MCP_WINDOW}"
+
+        if  [ "${MCP_WINDOW}" == "receiptdatamakev3" ]; then
+            mkdir -p  ${MCP_TEMPDIR}
+        fi
+
+cleanup(){
+##      パラメータファイル削除
+        if  [ -e "${PARA_FILE_FULL}" ]; then
+            rm   ${PARA_FILE_FULL}
+        fi
+##      MCP_WINDOW がAPI のとき、一時ディレクトリを削除
+##        if  [ "${MCP_WINDOW}" == "receiptdatamakev3" ]; then
+##            echo "remove!! ${MCP_TEMPDIR}"
+##            rm  -rf ${MCP_TEMPDIR}
+##        fi
+}
+trap cleanup EXIT
+
+
     if  [ ${21} -eq '6' ] || [ ${21} -eq '7' ]; then
         LOG_FILE="/var/log/jma-receipt/${20}recept4_renkei.log"
     else
@@ -346,6 +366,7 @@ fi
             exit
 	fi
     fi
+
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15},${20}
 
