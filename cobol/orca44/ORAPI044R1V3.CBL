@@ -1019,15 +1019,15 @@
                END-EVALUATE
            END-IF
       *
-           MOVE    RECEDMAKEQ-KARTE-UID
-                                   TO  SPA-T01-JOB-KARTE-UID
-           MOVE    RECEDMAKEQ-ORCA-UID
-                                   TO  SPA-T01-JOB-ORCA-UID
-      *
       *    更新前チェック
            MOVE    SPACE           TO  LINKAREA
                                        SPA-MOTOPG
            INITIALIZE                  SPA-T01KYOUTU
+      *
+           MOVE    RECEDMAKEQ-KARTE-UID
+                                   TO  SPA-T01-JOB-KARTE-UID
+           MOVE    RECEDMAKEQ-ORCA-UID
+                                   TO  SPA-T01-JOB-ORCA-UID
       *
            MOVE    "PUTG"          TO  MCP-STATUS
            MOVE    "CLICKED"       TO  MCP-EVENT
@@ -1424,7 +1424,7 @@
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
            MOVE    "monthly"           TO  MCP-PATHNAME
-      *??? PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            .
        20023-MONBLOBAPI-EXT.
