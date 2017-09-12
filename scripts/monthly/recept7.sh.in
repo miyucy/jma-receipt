@@ -45,10 +45,10 @@ cleanup(){
             rm   ${PARA_FILE_FULL}
         fi
 ##      MCP_WINDOW がAPI のとき、一時ディレクトリを削除
-        if  [ "${MCP_WINDOW}" == "receiptprintv3" ]; then
-            echo "remove!! ${MCP_TEMPDIR}"
-            rm  -rf ${MCP_TEMPDIR}
-        fi
+##      if  [ "${MCP_WINDOW}" == "receiptprintv3" ]; then
+##          echo "remove!! ${MCP_TEMPDIR}"
+##          rm  -rf ${MCP_TEMPDIR}
+##      fi
 }
 trap cleanup EXIT
 

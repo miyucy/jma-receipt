@@ -869,7 +869,12 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
       *
            MOVE    "1"                 TO  PRT-SITEKBN
-           MOVE    WRK-PARA-PRTKBN     TO  PRT-PRTKBN
+      *    £È£Á£Ï£Ò£É¤Î¤È¤­¡Ö£·¡×¤òÀßÄê
+           IF      WRK-PARA-JOB-PARAM  =   SPACE
+               MOVE    WRK-PARA-PRTKBN     TO  PRT-PRTKBN
+           ELSE
+               MOVE    "7"                 TO  PRT-PRTKBN
+           END-IF
       **** MOVE    "/var/lib/jma-receipt/orca_ps/"
            MOVE    WRK-SGETTEMP-TEMPDIR
                                        TO  PRT-OUT
