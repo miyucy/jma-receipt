@@ -82,8 +82,7 @@
       *
       *  04.08.01    NACL-ÌçÏÆ    16/03/28  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.02    NACL-¾®Æ¦Âô  16/08/25  Ê¿À®£²£¸Ç¯£±£°·î»ý»²ÌôÂÐ±þ
-      *  04.08.03    NACL-¾®Æ¦Âô  17/08/17  À¸³èÎÅÍÜÉ¸½àÉéÃ´³Û¥³¡¼¥ÉÄÉ²ÃÂÐ±þ
-      *  04.08.04    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  05.00.01    NACL-¾®Æ¦Âô  17/08/17  À¸³èÎÅÍÜÉ¸½àÉéÃ´³Û¥³¡¼¥ÉÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -623,13 +622,6 @@
       *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
                05  WRK-CONS-HYOJYUN-FUTAN33
                                       PIC X(09)   VALUE   "197005010".
-      *        Ê¿À®£³£°Ç¯£´·î²þÄê¤ÎÄÉ²ÃÊ¬
-      *        À¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN34
-                                      PIC X(09)   VALUE   "197005110".
-      *        À¸³èÎÅÍÜ¡Ê£²¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN35
-                                      PIC X(09)   VALUE   "197005210".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1397,11 +1389,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                    MOVE    "1"             TO  LNK-NYURECEDEN-HKNKBN
                END-IF
            END-IF
-           PERFORM  VARYING   IDZ1    FROM   1   BY  1
-             UNTIL  IDZ1    >    10
-               MOVE   COLDAT01-HKNCOMBI(IDZ1)
-                                  TO  LNK-NYURECEDEN-SET-HKNCOMBI(IDZ1)
-           END-PERFORM
            CALL    "ORCSNYURECEDEN"    USING   ORCSNYURECEDEN-AREA
                                                SPA-AREA
            IF      LNK-NYURECEDEN-RC   NOT =   ZERO
@@ -1462,9 +1449,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                                        OR  WRK-CONS-HYOJYUN-FUTAN30
                                        OR  WRK-CONS-HYOJYUN-FUTAN31
                                        OR  WRK-CONS-HYOJYUN-FUTAN32
-                                       OR  WRK-CONS-HYOJYUN-FUTAN33
-                                       OR  WRK-CONS-HYOJYUN-FUTAN34
-                                       OR  WRK-CONS-HYOJYUN-FUTAN35 )
+                                       OR  WRK-CONS-HYOJYUN-FUTAN33 )
                    MOVE    SPACE           TO  COLDAT02-REC
                    INITIALIZE                  COLDAT02-REC
       *            ¿ÇÎÅ²ñ·×¥Ç¡¼¥¿ÊÔ½¸
@@ -4091,10 +4076,7 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
       *
                                               OR "113018410"
                                               OR "111012810"
-                                              OR "112017610"
-                                              OR "113024810"
-                                              OR "113025710"
-                                              OR "112023210"      )
+                                              OR "112017610"      )
                        OR ( (SRY-SRYCD(IDX2)  =  "101120100" ) AND
                             (SRY-SRYYM       <=  "201306"    )    )
                        OR ( (SRY-SRYCD(IDX2)  =  "101120040"

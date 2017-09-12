@@ -61,12 +61,6 @@
       *  05.00.00    NACL-小豆沢  17/08/24  特定入院料の算定要件外で算定
       *                                     する療養病棟入院基本料Ｉの
       *                                     コード判定追加
-      *  05.00.00    NACL-小豆沢  17/11/22  患者年齢６３歳以下は生活療養
-      *                                     対象外のリターンコード返却
-      *平成３０年４月改正対応
-      *  05.00.00    NACL-小豆沢  18/02/27  生活療養食事負担額変更対応
-      *                                     居住費負担額変更対応
-      *  05.00.00    NACL-小豆沢  18/03/07  生活療養の医療度判定変更
       *****************************************************************
       *
       *
@@ -326,218 +320,6 @@
        01  TBL-H28-SEIKATSU-R     REDEFINES  TBL-H28-SEIKATSU-AREA.
            03   TBL-H28-SEISRYCD           PIC X(09)  OCCURS  103.
       *
-      *
-      *    平成３０年度改定生活療養判定用
-      *  （医療度の高い生活療養を上位にまとめているので、データの並びに注意すること）
-      *  （特別入院基本料は特別な判定があることからデータの最後とする）
-       01  TBL-H30-SEIKATSU-AREA.
-      *  医療度の高い生活療養
-      *    回復期リハビリテーション病棟入院料１（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190208010".
-      *    回復期リハビリテーション病棟入院料２（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190208210".
-      *    回復期リハビリテーション病棟入院料３（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190208410".
-      *    回復期リハビリテーション病棟入院料４（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190208610".
-      *    回復期リハビリテーション病棟入院料５（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190208810".
-      *    回復期リハビリテーション病棟入院料６（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190209010".
-      *    短期滞在手術基本料２（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190125310".
-      *    有床診療所療養病床入院基本料Ａ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190124310".
-      *    有床診療所療養病床入院基本料Ｂ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190124410".
-      *10  有床診療所療養病床入院基本料Ｃ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190124510".
-      *    療養病床以外・有床診療所療養病床入院Ａ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190155410".
-      *    療養病床以外・有床診療所療養病床入院Ｂ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190155810".
-      *    療養病床以外・有床診療所療養病床入院Ｃ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190156210".
-      *    療養病棟入院料１（入院料Ａ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190123710".
-      *    療養病棟入院料１（入院料Ｂ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190123810".
-      *    療養病棟入院料１（入院料Ｃ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190123910".
-      *    療養病棟入院料１（入院料Ｄ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190124010".
-      *    療養病棟入院料１（入院料Ｅ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190124110".
-      *    療養病棟入院料１（入院料Ｆ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190131710".
-      *20  療養病棟入院料２（入院料Ａ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190132510".
-      *    療養病棟入院料２（入院料Ｂ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190132710".
-      *    療養病棟入院料２（入院料Ｃ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190132910".
-      *    療養病棟入院料２（入院料Ｄ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190133110".
-      *    療養病棟入院料２（入院料Ｅ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190133310".
-      *    療養病棟入院料２（入院料Ｆ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190133510".
-      *    療養病棟入院料２（入院料Ａ）（生活療養）（経過措置２）
-           03   FILLER                     PIC X(09) VALUE "190202610".
-      *    療養病棟入院料２（入院料Ｂ）（生活療養）（経過措置２）
-           03   FILLER                     PIC X(09) VALUE "190202810".
-      *    療養病棟入院料２（入院料Ｃ）（生活療養）（経過措置２）
-           03   FILLER                     PIC X(09) VALUE "190203010".
-      *    療養病棟入院料２（入院料Ｄ）（生活療養）（経過措置２）
-           03   FILLER                     PIC X(09) VALUE "190203210".
-      *30  療養病棟入院料２（入院料Ｅ）（生活療養）（経過措置２）
-           03   FILLER                     PIC X(09) VALUE "190203410".
-      *    療養病棟入院料２（入院料Ｆ）（生活療養）（経過措置２）
-           03   FILLER                     PIC X(09) VALUE "190203610".
-      *    療養病棟入院料２（入院基本料Ａ）（生活療養）（経過措置１）
-           03   FILLER                     PIC X(09) VALUE "190215210".
-      *    療養病棟入院料２（入院基本料Ｂ）（生活療養）（経過措置１）
-           03   FILLER                     PIC X(09) VALUE "190215410".
-      *    療養病棟入院料２（入院基本料Ｃ）（生活療養）（経過措置１）
-           03   FILLER                     PIC X(09) VALUE "190215610".
-      *    療養病棟入院料２（入院基本料Ｄ）（生活療養）（経過措置１）
-           03   FILLER                     PIC X(09) VALUE "190215810".
-      *    療養病棟入院料２（入院基本料Ｅ）（生活療養）（経過措置１）
-           03   FILLER                     PIC X(09) VALUE "190216010".
-      *37  療養病棟入院料２（入院基本料Ｆ）（生活療養）（経過措置１）
-           03   FILLER                     PIC X(09) VALUE "190216210".
-      *
-      *  医療度の高くない生活療養
-      *38  有床診療所療養病床入院基本料Ｄ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190124610".
-      *    有床診療所療養病床入院基本料Ｅ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190124710".
-      *40  療養病床以外・有床診療所療養病床入院Ｄ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190156610".
-      *    療養病床以外・有床診療所療養病床入院Ｅ（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190157010".
-      *    療養病棟入院料１（入院料Ｇ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190131910".
-      *    療養病棟入院料１（入院料Ｈ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190132110".
-      *    療養病棟入院料１（入院料Ｉ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190132310".
-      *    療養病棟入院料２（入院料Ｇ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190133710".
-      *    療養病棟入院料２（入院料Ｈ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190133910".
-      *    療養病棟入院料２（入院料Ｉ）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190134110".
-      *    療養病棟入院料２（入院料Ｇ）（生活療養）（経過措置２）
-           03   FILLER                     PIC X(09) VALUE "190203810".
-      *    療養病棟入院料２（入院料Ｈ）（生活療養）（経過措置２）
-           03   FILLER                     PIC X(09) VALUE "190204010".
-      *50  療養病棟入院料２（入院料Ｉ）（生活療養）（経過措置２）
-           03   FILLER                     PIC X(09) VALUE "190204210".
-      *    療養病棟入院料２（入院料Ｉ）（生活療養）（経過措置２・通則８）
-           03   FILLER                     PIC X(09) VALUE "190204410".
-      *    療養病棟入院料２（入院料Ｇ）（生活療養）（経過措置１）
-           03   FILLER                     PIC X(09) VALUE "190216410".
-      *    療養病棟入院料２（入院料Ｈ）（生活療養）（経過措置１）
-           03   FILLER                     PIC X(09) VALUE "190216610".
-      *    療養病棟入院料２（入院料Ｉ）（生活療養）（経過措置１）
-           03   FILLER                     PIC X(09) VALUE "190216810".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190178110".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190178310".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190178510".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190178910".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190179110".
-      *60  短手３
-           03   FILLER                     PIC X(09) VALUE "190179310".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190179710".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190179910".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190180110".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190180310".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190180710".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190181110".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190181310".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190181510".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190181710".
-      *70  短手３
-           03   FILLER                     PIC X(09) VALUE "190181910".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190182110".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190196010".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190196410".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190196810".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190196910".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190197010".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190197410".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190197510".
-      *    短手３
-           03   FILLER                     PIC X(09) VALUE "190197610".
-      *80  短手３
-           03   FILLER                     PIC X(09) VALUE "190197810".
-      *81  短手３
-           03   FILLER                     PIC X(09) VALUE "190198010".
-      *82  地域包括ケア病棟入院料１（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190209210".
-      *    地域包括ケア入院医療管理料１（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190209410".
-      *    地域包括ケア病棟入院料２（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190209610".
-      *    地域包括ケア入院医療管理料２（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190209810".
-      *    地域包括ケア病棟入院料３（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190210010".
-      *    地域包括ケア入院医療管理料３（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190210210".
-      *    地域包括ケア病棟入院料４（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190210410".
-      *    地域包括ケア入院医療管理料４（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190210610".
-      *90  地域包括ケア病棟入院料１（生活療養）（特定地域）
-           03   FILLER                     PIC X(09) VALUE "190210810".
-      *    地域包括ケア入院医療管理料１（生活療養）（特定地域）
-           03   FILLER                     PIC X(09) VALUE "190211010".
-      *    地域包括ケア病棟入院料２（生活療養）（特定地域）
-           03   FILLER                     PIC X(09) VALUE "190211210".
-      *    地域包括ケア入院医療管理料２（生活療養）（特定地域）
-           03   FILLER                     PIC X(09) VALUE "190211410".
-      *    地域包括ケア病棟入院料３（生活療養）（特定地域）
-           03   FILLER                     PIC X(09) VALUE "190211610".
-      *    地域包括ケア入院医療管理料３（生活療養）（特定地域）
-           03   FILLER                     PIC X(09) VALUE "190211810".
-      *    地域包括ケア病棟入院料４（生活療養）（特定地域）
-           03   FILLER                     PIC X(09) VALUE "190212010".
-      *97  地域包括ケア入院医療管理料４（生活療養）（特定地域）
-           03   FILLER                     PIC X(09) VALUE "190212210".
-      *
-      *98  有床診療所療養病床入院基本料（特別入院基本料）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190124810".
-      *99  療養病棟入院基本料（特別入院基本料）（生活療養）
-           03   FILLER                     PIC X(09) VALUE "190124210".
-      *
-       01  TBL-H30-SEIKATSU-R     REDEFINES  TBL-H30-SEIKATSU-AREA.
-           03   TBL-H30-SEISRYCD           PIC X(09)  OCCURS  99.
-      *
-      *
       *    一時領域
        01  WRK-AREA.
       *
@@ -709,20 +491,6 @@
            IF      FLG-PTINF            NOT =   ZERO
                MOVE    2                TO  LNK-NYULIFE2-RC
                GO  TO  100-PRM-CHK-EXT
-           ELSE
-      *        保険年齢のチェック（入院会計マスター検索）
-               INITIALIZE                   ORCSAGECHKAREA
-               MOVE    LNK-NYULIFE2-HOSPNUM  TO  AGECHK-HOSPNUM
-               MOVE    LNK-NYULIFE2-PTID     TO  AGECHK-PTID
-               MOVE    LNK-NYULIFE2-SANTEIYM TO  AGECHK-SRYYMD(1:6)
-               MOVE    "01"                  TO  AGECHK-SRYYMD(7:2)
-               MOVE    PTINF-BIRTHDAY        TO  AGECHK-BIRTHDAY
-               CALL   "ORCSAGECHK"    USING      ORCSAGECHKAREA
-                                                 SPA-AREA
-               IF      AGECHK-NENREI         <=  63
-                   MOVE    4                TO  LNK-NYULIFE2-RC
-                   GO  TO  100-PRM-CHK-EXT
-               END-IF
            END-IF
       *
       *    入院中のチェック（入院会計マスター検索）
@@ -751,6 +519,7 @@
                     MOVE    3           TO  LNK-NYULIFE2-RC
                END-IF
            END-IF
+      *
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
@@ -948,9 +717,8 @@
                    IF    NACCT-SRYCDTOTAL     =    99999916
                        CONTINUE
                    ELSE
-      *             （平成２８年４月から平成３０年３月まで）
-                     IF  (LNK-NYULIFE2-SANTEIYM >=  "201604")  AND
-                         (LNK-NYULIFE2-SANTEIYM <=  "201803")
+      *            （平成２８年４月から）
+                     IF  LNK-NYULIFE2-SANTEIYM >=  "201604"
       *                生活療養に該当する入院料を判定し、
       *                返却値の対象区分を設定する
                        PERFORM    210-NYUINACT-GET-SEC
@@ -1040,115 +808,6 @@
       **                                 WRK-SANTEIYOUKENKBN(IDX1)
                                IF (IDX-SEI2       =  47 OR 50 OR
                                                      53 OR 56 OR 59) AND
-                                 ((SS008-MEDKBNDAY(IDX1) = "2" OR
-                                                           "3"))  AND
-                                  (WRK-SANTEIYOUKENKBN(IDX1) = "1")
-                                 MOVE   ZERO       TO   FLG-NANBYO
-                                 IF  LNK-SKJKEEP-KBN(IDX1)  =   "1"
-                                     MOVE  1    TO   FLG-NANBYO
-                                 END-IF
-                                 IF  FLG-NANBYO          =   1 
-                                   MOVE   "1"   TO   
-                                             LNK-NYULIFE2-FTNKBN2(IDX1)
-                                 END-IF
-                               END-IF
-                            END-IF
-                          END-PERFORM
-                       END-IF
-                     END-IF
-      *
-      *             （平成３０年４月から）
-                     IF  LNK-NYULIFE2-SANTEIYM >=  "201804"
-      *                生活療養に該当する入院料を判定し、
-      *                返却値の対象区分を設定する
-                       PERFORM    210-NYUINACT-GET-SEC
-                       MOVE       ZERO        TO   FLG-SEI
-                                                   IDX-SEI2
-                       PERFORM    VARYING   IDX-SEI  FROM 1  BY  1
-                         UNTIL   (IDX-SEI   >  99)    OR
-                                 (FLG-SEI   =    1)
-                             IF  NSRY-SRYCD(1) = TBL-H30-SEISRYCD
-                                                        (IDX-SEI)
-                                 MOVE   1        TO   FLG-SEI
-                                 MOVE   IDX-SEI  TO   IDX-SEI2
-                             END-IF
-                       END-PERFORM
-                       IF   FLG-SEI    =    1
-                          PERFORM    VARYING   IDX1   FROM   1   BY   1
-                                  UNTIL     IDX1   >   31
-                            IF     NACCT-DAY(IDX1)  NOT =  ZERO
-                               MOVE   "1"    TO   LNK-NYULIFE2-KBN(IDX1)
-                               MOVE    1     TO   FLG-OK
-      *                        病状の程度、治療の内容をしん酌して標準
-      *                        負担額を軽減する患者の判定（入院料判断）
-                               IF  (IDX-SEI2   >=   1 )   AND
-                                   (IDX-SEI2   <=   37)
-                                   MOVE   "1"   TO   
-                                             LNK-NYULIFE2-FTNKBN2(IDX1)
-                               END-IF
-      *                        難病公費の判定追加（以下入院料の場合のみ）
-      *                        ・地域包括ケア病棟入院料
-      *                        ・地域包括ケア入院医療管理料
-                               IF  (IDX-SEI2   >=   82)   AND
-                                   (IDX-SEI2   <=   97)
-      *                          難病公費を使用されているか判定
-                                 MOVE   ZERO       TO   FLG-NANBYO
-                                 IF  WRK-HKNCOMBI-DAY(IDX1) NOT =  ZERO
-                                     INITIALIZE            HKNCOMBI-REC
-                                     MOVE   LNK-NYULIFE2-HOSPNUM
-                                                   TO  COMB-HOSPNUM
-                                     MOVE   LNK-NYULIFE2-PTID 
-                                                   TO  COMB-PTID
-                                     MOVE   WRK-HKNCOMBI-DAY(IDX1)
-                                                   TO  COMB-HKNCOMBINUM
-                                     MOVE   "tbl_hkncombi"
-                                                   TO  MCP-TABLE
-                                     MOVE    "key" TO  MCP-PATHNAME
-                                     PERFORM 910-HKNCOMBI-SELECT-SEC
-                                     IF   FLG-HKNCOMBI      =   ZERO
-                                       MOVE  "tbl_hkncombi"
-                                                   TO  MCP-TABLE
-                                       MOVE  "key"  TO  MCP-PATHNAME
-                                       PERFORM   910-HKNCOMBI-READ-SEC
-                                       IF  FLG-HKNCOMBI         =  ZERO
-                                         IF  (COMB-KOHHKNNUM(1) = "054")
-                                          OR (COMB-KOHHKNNUM(2) = "054")
-                                          OR (COMB-KOHHKNNUM(3) = "054")
-                                          OR (COMB-KOHHKNNUM(4) = "054")
-                                             MOVE  1    TO   FLG-NANBYO
-                                         END-IF
-                                       END-IF
-                                     END-IF
-      *                              保険組合せクローズ
-                                     MOVE    "tbl_hkncombi"
-                                                        TO  MCP-TABLE
-                                     MOVE    "key"      TO  MCP-PATHNAME
-                                     PERFORM   900-CLOSE-SEC
-                                 END-IF
-      *
-                                 IF   FLG-NANBYO  =   1
-                                   MOVE   "1"   TO   
-                                             LNK-NYULIFE2-FTNKBN2(IDX1)
-                                 END-IF
-                               END-IF
-      *                        病状の程度、治療の内容をしん酌して標準
-      *                        負担額を軽減する患者の判定（特別入院基本料算定時の
-      *                                                    ＡＤＬ入力判断）
-                               IF (IDX-SEI2   =  98  OR  99)    AND
-                                  (SS008-MEDKBNDAY(IDX1)  =  "2" OR
-                                                             "3" )
-                                   MOVE   "1"   TO   
-                                             LNK-NYULIFE2-FTNKBN2(IDX1)
-                               END-IF
-      *                        算定要件外で療養病棟入院基本料のＩを算定時
-      *                        は医療区分と難病公費のダブルチェック
-      **                         DISPLAY "IDX-SEI2 = " IDX-SEI2
-      **                         DISPLAY "IDX1 = " IDX1
-      **                         DISPLAY "WRK-SANTEIYOUKENKBN = "
-      **                                 WRK-SANTEIYOUKENKBN(IDX1)
-                               IF (IDX-SEI2       =  44 OR 47 OR
-                                                     50 OR 51 OR
-                                                     54) AND
                                  ((SS008-MEDKBNDAY(IDX1) = "2" OR
                                                            "3"))  AND
                                   (WRK-SANTEIYOUKENKBN(IDX1) = "1")
@@ -1636,25 +1295,6 @@
                                            LNK-NYULIFE2-SKJFTN-MONEY
                                                             (IDX1 IDX-T)
                               END-IF
-      *                       平成３０年改正
-                              IF    LNK-NYULIFE2-SANTEIYM
-                                                      >= "201804"
-                                  IF   LNK-NYULIFE2-SKJKBN(IDX1)  =  "1"
-                                       MOVE  "197005110"   TO
-                                             LNK-NYULIFE2-SKJFTN-SRYCD
-                                                            (IDX1 IDX-T)
-                                       MOVE   460      TO
-                                           LNK-NYULIFE2-SKJFTN-MONEY
-                                                            (IDX1 IDX-T)
-                                  ELSE
-                                       MOVE  "197005210"   TO
-                                             LNK-NYULIFE2-SKJFTN-SRYCD
-                                                            (IDX1 IDX-T)
-                                       MOVE   420      TO
-                                           LNK-NYULIFE2-SKJFTN-MONEY
-                                                            (IDX1 IDX-T)
-                                  END-IF
-                              END-IF
       *                       難病等据え置き患者の置換
                               EVALUATE     LNK-SKJKEEP-KBN(IDX1)
                                   WHEN     "1"
@@ -1849,11 +1489,6 @@
                                         LNK-NYULIFE2-KANFTN-SRYCD(IDX1)
                         MOVE  200       TO
                                         LNK-NYULIFE2-KANFTN-MONEY(IDX1)
-      *                 平成３０年改正　医療区分２、３（１日３７０円）
-                        IF   LNK-NYULIFE2-SANTEIYM >=  "201804"
-                             MOVE  370       TO
-                                        LNK-NYULIFE2-KANFTN-MONEY(IDX1)
-                        END-IF
                     END-IF
       *             境界層患者は環境療養患者負担無しに置換え
                     IF  LNK-SYOTOKU-KKSKBN(IDX1)   =   "1"
