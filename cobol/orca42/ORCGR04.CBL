@@ -1878,11 +1878,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG23
            END-EVALUATE
-      *    £È£Á£Ï£Ò£É¤Î¤È¤­¡Ö£·¡×¤òÀßÄê
-           IF      SPA-R01-JOB-PARAM
-                               NOT =   SPACE
-               MOVE    "7"                 TO  SHELLTBL-ARG23
-           END-IF
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG25
            MOVE    SPA-R01-RECE07-RECEKBN
                                    TO  SHELLTBL-ARG26
