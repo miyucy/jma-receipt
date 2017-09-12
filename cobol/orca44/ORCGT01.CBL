@@ -3838,14 +3838,19 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                        END-IF
                    END-IF    
                WHEN    "B17"
-                   IF      SPA-GMN-DATAKBN =   "3"
-                       MOVE    "0013"          TO  SPA-ERRCD
-                       MOVE    4               TO  SPA-GMN-CUR
-                   END-IF
-                   IF      SPA-GMN-PRTKBN  =   "6" OR  "7" OR  "8" OR
-                                               "9"
-                       MOVE    "0014"          TO  SPA-ERRCD
-                       MOVE    4               TO  SPA-GMN-CUR
+                   IF      SPA-T01-JOB-PARAM
+                                           NOT =   SPACE
+                       CONTINUE
+                   ELSE
+                       IF      SPA-GMN-DATAKBN =   "3"
+                           MOVE    "0013"          TO  SPA-ERRCD
+                           MOVE    4               TO  SPA-GMN-CUR
+                       END-IF
+                       IF      SPA-GMN-PRTKBN  =   "6" OR  "7" OR  "8"
+                                               OR  "9"
+                           MOVE    "0014"          TO  SPA-ERRCD
+                           MOVE    4               TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                WHEN    "B06"
                WHEN    "B07"
@@ -6352,7 +6357,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                    TO  SHELLTBL-ARG15         
            MOVE    ERRFLPARA-BASENAME
                                    TO  SHELLTBL-ARG16
-           MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
+      *    ＨＡＯＲＩのとき「９」を設定
+           IF      SPA-T01-JOB-PARAM
+                                   NOT =   SPACE
+               MOVE    "9"             TO  SHELLTBL-ARG17
+           ELSE
+               MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
+           END-IF
       *ipアドレス取得
       *****PERFORM 900-SYSTEM-GET-SEC
       *****MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG18
@@ -7128,9 +7139,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
-      *??
-           display "T01 490-KAKUNIN-SEC"
-      *??
       *
            MOVE    ZERO                TO  WRK-PRT-PAGE
                                            WRK-PRT-PAGE1
