@@ -50,6 +50,7 @@
       * 04.08.00     NACL-多々納  16/09/XX  労災四肢加算区分対応
       *                                     端数処理対応
       *                                     K142（脊椎固定術等）きざみ値対応
+      * 04.08.00     NACL-多々納  17/09/12  複数手技料チェック対応
       *****************************************************************
       *
       *
@@ -1797,6 +1798,10 @@
                       (WRK-COM-DATAKBN(IDXF)       =   "2")  AND
                       (WRK-COM-TENSIKIBETU(IDXF)   =   5  )  AND
                       (WRK-COM-TSUSOKUAGE(IDXF)    =   "1")
+                   MOVE    1               TO  FLG-KASAN-ARI2
+               END-IF
+      *        中心静脈乳幼児加算
+               IF     (WRK-COM-INPUTCD(IDXF)       =   "130009870")
                    MOVE    1               TO  FLG-KASAN-ARI2
                END-IF
            END-PERFORM
