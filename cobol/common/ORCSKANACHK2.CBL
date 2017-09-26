@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.06.00    NACL-多々納  10/10/01  入力・出力領域をX(5000)へ
+      *  05.01.00    NACL-多々納  17/09/26  改行コード判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -162,6 +163,10 @@
       *            全角置換処理
                    PERFORM 200-ZENKAKU-HENKAN-SEC
                END-EVALUATE
+      *H29.9
+      *        改行コードチェック
+               PERFORM 1009-KAIGYO-CHK-SEC
+      *
            END-IF
       *TEST
       *    DISPLAY "KANACHK2-MAE-INPUT:" KANACHK2-MAE-INPUT (1:50)
@@ -222,6 +227,27 @@
            .
        1000-KOUMOKU-CHK-EXT.
            EXIT.
+      *
+      *H29.9
+      *****************************************************************
+      *    改行判定処理
+      *****************************************************************
+       1009-KAIGYO-CHK-SEC           SECTION.
+      *
+      *    改行判定
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
+           MOVE    X"0A"               TO  ORCSSTR-STRING2
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1    NOT =   ZERO
+               MOVE    1                   TO  KANACHK2-RC5
+           END-IF
+           .
+       1009-KAIGYO-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    全角判定処理
