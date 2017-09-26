@@ -30,6 +30,7 @@
       *  04.08.00    NACL-多々納  15/11/XX  セット登録対応他
       *  04.08.00    NACL-多々納  17/05/XX  包括検査数、単位コード対応
       *                                     フィルム分画数等対応
+      *  05.01.00    NACL-多々納  19/09/XX  改行コードエラー
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -1262,6 +1263,8 @@
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
            IF     (KANACHK-RC      NOT =   ZERO  )
+      *H29.9   改行エラー
+              OR  (KANACHK-RC4     NOT =   ZERO  )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE

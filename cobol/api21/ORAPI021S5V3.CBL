@@ -3305,6 +3305,8 @@
            MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
+      *H29.9   改行エラー
+              OR  (KANACHK-RC4     NOT =   ZERO  )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE
