@@ -51,7 +51,6 @@ db	{
 	tbl_passwd;
 	tbl_dbcatalog;
 	tbl_api_para;
-	tbl_teikirrk;
 };
 
 db "xml2" {
