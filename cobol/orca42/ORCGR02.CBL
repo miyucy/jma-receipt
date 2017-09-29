@@ -489,6 +489,8 @@
       *    プリンタ名取得サブ
            COPY  "CPORCSPRTNMGET.INC".
       *
+           COPY    "MONBLOB".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -5959,9 +5961,23 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG30
            IF      SPA-R01-JOB-PARAM
                                NOT =   SPACE
-               MOVE    SPA-R01-JOB-PARAM   TO  SHELLTBL-ARG31
+               MOVE    SPA-R01-JOB-PARAM
+                                       TO  SHELLTBL-ARG31
+      *
+               MOVE    "MONBLOBNEW"    TO  MCP-FUNC
+               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "monblob"       TO  MCP-TABLE
+               CALL    "MONFUNC"       USING
+                                           MCPAREA
+                                           MONBLOB
+               MOVE    MONBLOB-ID      TO  SHELLTBL-ARG32
+                                           SPA-R01-MONBLOB-ID
+      *
+               DISPLAY "SPA-R01-MONBLOB-ID=" SPA-R01-MONBLOB-ID "#"
+           ELSE
+               MOVE    "orca"          TO  SHELLTBL-ARG31
            END-IF
-      *     
+      *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE

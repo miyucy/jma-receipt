@@ -1042,6 +1042,7 @@ DB_files = \
 	xml_medicalv3res7.db \
 	xml_hsfindv3req.db \
 	xml_hsfindv3res.db \
+	monblob.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

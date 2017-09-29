@@ -1686,9 +1686,6 @@
       *
            MOVE    SPA-TERMID      TO  WRK-SPA-TERMID
       *
-           INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
-           MOVE    SPACE           TO  SPA-TERMID (37:)
-      *
       *    一時ディレクトリのルートディレクトリ取得
            ACCEPT  WRK-TEMPDIR-ROOT
                                FROM    ENVIRONMENT "MCP_TEMPDIR_ROOT"

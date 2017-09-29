@@ -309,11 +309,16 @@ bind	"ORCBSTC001"	"OpenCOBOL";
 bind	"ORCBAPIFMTERM"	"OpenCOBOL";
 bind	"ORAPI052BR1V3"	"OpenCOBOL";
 bind	"ORAPI052BR2V3"	"OpenCOBOL";
+bind    "ORCBBLOBIMPORT"    "OpenCOBOL";
 
 db "xml2" {
  fm_payment_certificate;
  fm_invoice_receipt_h;
 };
+
+#db "monblob" {
+# monblob;
+#};
 
 #include "orcadb.inc"
 db "shell" {

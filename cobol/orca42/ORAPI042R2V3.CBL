@@ -466,6 +466,11 @@
            MOVE    RECEPRINTQ-PERFORM-MONTH
                                        TO  RECEPRINTS-PERFORM-MONTH
       *
+           IF      RECEPRINTQ-REQUEST-NUMBER
+                                       =   "01"
+               MOVE    SPA-R01-MONBLOB-ID   TO  RECEPRINTS-PRINT-ID (1)
+           END-IF
+      *
            IF      APILST03-BODY   NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
@@ -1440,9 +1445,6 @@
        800-TEMPDIR-SEC             SECTION.
       *
            MOVE    SPA-TERMID      TO  WRK-SPA-TERMID
-      *
-           INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
-           MOVE    SPACE           TO  SPA-TERMID (37:)
       *
       *    一時ディレクトリのルートディレクトリ取得
            ACCEPT  WRK-TEMPDIR-ROOT
