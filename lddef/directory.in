@@ -36,9 +36,6 @@ db_group "xml" {
 db_group "xml2" {
  type    "XMLIO2";
 };
-db_group "monblob" {
- type    "MONBLOB";
-};
 
 ld	{
 	session  1;
