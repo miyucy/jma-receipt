@@ -103,7 +103,10 @@ trap cleanup EXIT
                           else
                               FILENM="${13}${14}.pdf"
                               echo "filenm=[" $FILENM "]"
-                              $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter $FILENM,"pdf",${28}
+                              $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter ${12},${13},${14},$rennum,${16},${17},${18},${19},${20},${21},${22},$1,$2,${6},${25},$FILENM,"pdf",${28}
+                              if  [ -e ${MCP_TEMPDIR}/${6} ]; then
+                                 exit
+                              fi
                           fi
 	                  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$1$2,${25}
                        fi
