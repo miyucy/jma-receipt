@@ -105,9 +105,6 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
-      *
       *    印刷用呼出SHELL
            COPY    "CPHCMLSHELL.INC".
       *
@@ -1799,11 +1796,7 @@
       *****    MOVE    "/usr/local/orca/scripts/allways/print.sh"
       *****                                TO  SHELLTBL-NAME
       *        ファイルデイレクトリ位置指定
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    "scripts/allways/print_prv.sh"
-                                           TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+               MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
                MOVE    SPACE               TO  LNK-PRTKANRI-AREA
                INITIALIZE                      LNK-PRTKANRI-AREA
                MOVE    WRK-CONS-PRTKANRI-TBL-KEY
@@ -1857,7 +1850,7 @@
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "shell"             TO  MCP-PATHNAME
+               MOVE    "allways"           TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING
                                                MCPAREA
                                                MCPDATA-REC
@@ -1902,11 +1895,7 @@
            MOVE    SPACE               TO  SHELLTBL 
       *****MOVE    WRK-SHELL           TO  SHELLTBL-NAME
       *    ファイルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    "scripts/allways/tensu.sh"
-                                   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "tensu.sh"      TO  SHELLTBL-NAME
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG1       
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -1946,8 +1935,8 @@
       *             
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"             TO  MCP-PATHNAME
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "allways"       TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
