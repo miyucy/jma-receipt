@@ -1239,12 +1239,16 @@
                END-IF
       *
       *??
-               DISPLAY "JOB-UPDCNT=" JOB-UPDCNT 
+               DISPLAY "JOB-UPDCNT=" JOB-UPDCNT "#" JOB-ERRCD
       *??
                IF      JOB-UPDCNT      >   ZERO
                    MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
                    MOVE    WRK-UPDCNT-X    TO
                                        RECEPRINTS-ALL-NUMBER-OF-SHEETS
+                   IF      JOB-ERRCD   NOT =   SPACE
+                       MOVE    "E31"           TO  WRK-ERRCD
+                       MOVE    JOB-YOBI        TO  WRK-ERRMSG
+                   END-IF
                ELSE
                    IF      JOB-ENDYMD      =   SPACE
                        MOVE    "E70"           TO  WRK-ERRCD
