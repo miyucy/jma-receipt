@@ -51,7 +51,6 @@
       *  04.03.01    NACL-森脇    08/06/13  ＣＳＶ出力対応
       *  04.08.01    NACL-森脇    14/08/21  一時ファイルディレクトリ設定
       *                           14/09/03  GINBEE対応
-      *  05.00.00    NACL-森脇    17/11/29  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -221,10 +220,6 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *----(05.00.00)--ADD-START---
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -235,7 +230,26 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA102SCRAREA.INC".
+           COPY    "Z01.INC".
+           COPY    "Z02.INC".
+           COPY    "Z03.INC".
+           COPY    "Z04.INC".
+           COPY    "Z05.INC".
+           COPY    "Z06.INC".
+           COPY    "Z07.INC".
+           COPY    "Z08.INC".
+           COPY    "Z90.INC".
+           COPY    "Z91.INC".
+           COPY    "Z97.INC".
+           COPY    "Z98.INC".
+           COPY    "Z99.INC".
+           COPY    "ZERR.INC".
+           COPY    "ZID1.INC".
+           COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
+           COPY    "Z100.INC".
+           COPY    "CPAPIMOD.INC".
+           COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE               DIVISION    USING
            MCPAREA
@@ -1846,17 +1860,9 @@
                    MOVE    "3"             TO  SHELLTBL-ARG17
       *         WHEN    "NO"
       *             MOVE    "3"             TO  SHELLTBL-ARG17
-      *----(05.00.00)--ADD-START---
                WHEN    "OK"
-                   IF      SPA-CLIENT-PRT-FLG  =  2
-                       MOVE    "5"         TO  SHELLTBL-ARG17
-                   ELSE
-                       MOVE    "2"         TO  SHELLTBL-ARG17
-                   END-IF
+                   MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
-               MOVE    SPA-CLIENT-SHOWDIALOG
-                                           TO  SHELLTBL-ARG22
-      *----(05.00.00)--ADD-END-----
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SPACE               TO  SHELLTBL-ARG19
                MOVE    SPACE               TO  SHELLTBL-ARG20
