@@ -100,8 +100,8 @@
            COPY    "CPAPILSTV2.INC"    REPLACING
                                        //APILST-// BY //APILST26-//.
       *ORAPI052R4V2
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST27-//.
+      **   COPY    "CPAPILSTV2.INC"    REPLACING
+      **                               //APILST-// BY //APILST27-//.
       *ORAPIRELR1V2
            COPY    "CPAPILSTV2.INC"    REPLACING
                                        //APILST-// BY //APILST28-//.
