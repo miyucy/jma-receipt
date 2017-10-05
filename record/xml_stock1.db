@@ -13,6 +13,7 @@ xml_stock1 {
 			Medication_Name		varchar(80);
 			Medication_KanaName	varchar(80);
 			Medication_Number	varchar(15);
+			Unit_Price		varchar(9);
 			Unit_Code		varchar(3);
 			Unit_Code_Name		varchar(20);
 		} [200];
