@@ -793,9 +793,6 @@
            MOVE    MONBLOB-ID          TO  SHELLTBL-ARG18
                                            WRK-MONBLOB-ID
       *
-           MOVE    STOCKREQ-KARTE-UID  TO  SHELLTBL-ARG19
-           MOVE    STOCKREQ-ORCA-UID   TO  SHELLTBL-ARG20
-      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -902,7 +899,7 @@
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL ( IDX >       SYS-3003-JOBID )
       *            ジョブ管理チェック処理
-                   MOVE    "CH2"           TO  SJOBKANRI-MODE
+                   MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    MOVE    IDX             TO  JOB-JOBID

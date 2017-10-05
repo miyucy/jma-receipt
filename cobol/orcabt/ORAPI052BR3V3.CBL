@@ -111,8 +111,6 @@
            03  WRK-PARA-NYUGAIKBN      PIC X(01).
            03  WRK-PARA-ERRFILE        PIC X(64).
            03  WRK-PARA-MONBLOB-ID     PIC X(37).
-           03  WRK-PARA-KARTE-UID      PIC X(36).
-           03  WRK-PARA-ORCA-UID       PIC X(36).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -347,8 +345,6 @@
                                                WRK-PARA-BASE-YMD
                                                WRK-PARA-NYUGAIKBN
                                                WRK-PARA-MONBLOB-ID
-                                               WRK-PARA-KARTE-UID
-                                               WRK-PARA-ORCA-UID 
            END-UNSTRING
       *
            DISPLAY "NYUGAIKBN =" WRK-PARA-NYUGAIKBN
@@ -864,30 +860,36 @@
       *****************************************************************
        3001-PUSH-SEC        SECTION.
       *
-           INITIALIZE                  PUSHBA01-REC
-           MOVE    WRK-PARA-KARTE-UID
-                                   TO  PUSHBA01API-KARTE-UID
-           MOVE    WRK-PARA-ORCA-UID
-                                   TO  PUSHBA01API-ORCA-UID
-           MOVE    "000"           TO  PUSHBA01API-RESULT
-           MOVE    "stock1"        TO  PUSHBA01-EVENT
-           MOVE    WRK-PARA-BASE-YMD
-                                   TO  WRK-SYMD
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE    TO  PUSHBA01-PERFORM-DATE
-           MOVE    CNT-OUT         TO  WRK-CNT
-           MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           PERFORM 900-CALL-ORCSJOB-SEC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO  )
+           AND   ( JOB-KARTE-UID
+                               NOT =   SPACE )
+               INITIALIZE                  PUSHBA01-REC
+               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
+               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
+               MOVE    "000"           TO  PUSHBA01API-RESULT
+               MOVE    "stock1"        TO  PUSHBA01-EVENT
+               MOVE    WRK-PARA-BASE-YMD
+                                       TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE    TO  PUSHBA01-PERFORM-DATE
+               MOVE    CNT-OUT         TO  WRK-CNT
+               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
       *??
              display "push=" PUSHBA01-REC "#"
       *??
-           MOVE    PUSHBA01-REC    TO  MCPDATA-REC
-           MOVE    "PUSHEVENT"     TO  MCP-FUNC
-           MOVE    "push_batch01"  TO  MCP-TABLE
-           MOVE    "push_batch01"  TO  MCP-PATHNAME
-           MOVE    "push_batch01"  TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
+               MOVE    "PUSHEVENT"     TO  MCP-FUNC
+               MOVE    "push_batch01"  TO  MCP-TABLE
+               MOVE    "push_batch01"  TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"     USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           END-IF
            .
        3001-PUSH-EXT.
            EXIT.
