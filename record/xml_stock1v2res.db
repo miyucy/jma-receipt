@@ -16,5 +16,9 @@ xml_stock1v2res {
 		Base_Date		varchar(10);
 		InOut			varchar(1);
 		Output_Count		varchar(10);
+		Data_Id_Information {
+			Data_Id         varchar(37);
+			Print_Id        varchar(37);
+		} [10];
 	};
 };

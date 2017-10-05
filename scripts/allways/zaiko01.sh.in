@@ -18,20 +18,23 @@ fi
 #        ${15} エラーファイル名 
 #        ${16} 基準日
 #        ${17} 入外区分
+#        ${18} MONBLOB-ID
+#        ${19} KARTE-UID
+#        ${20} ORCA-UID
 #-------------------------------------------#
 
 cleanup(){
-echo "${PARA_FILE_FULL}" >> $LOG
 ##      パラメータファイル削除
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi
 ##      環境変数［ORCA_UID］が設定されていた場合、一時ディレクトリを削除
         if  [ -n "${ORCA_UID}" ]; then
+            echo "remove!! ${MCP_TEMPDIR}"
             rm  -rf ${MCP_TEMPDIR}
         fi
 }
-trap cleanup 1 2 3 15
+trap cleanup EXIT
 
 RENNUM=0
 
@@ -45,11 +48,19 @@ echo $(basename ${LOG_FILE})
 [ -e ${ERR_FILE_FULL} ] && rm  ${ERR_FILE_FULL} 
 
 echo $#
+echo "arg18  = [" ${18} "]" 
 
 RENNUM=$(expr $RENNUM + 1) 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBSTC001 -parameter "$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17}"
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBSTC001 -parameter "$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20}"
 if  [ -e ${ERR_FILE_FULL} ]; then
-	exit
+     exit
+else
+     FILENM="stock1.xml"
+     echo "filenm=[" $FILENM "]"
+     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},$FILENM,"xml",${18}
+     if  [ -e ${ERR_FILE_FULL} ]; then
+         exit
+     fi
 fi
     
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE${12}${13},${14}"

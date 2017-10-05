@@ -88,12 +88,12 @@
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(03).
       *
-           03  WRK-PARAM               PIC X(256).
-      *
            03  WRK-TEMPDIR-ROOT        PIC X(1024).
       *
            03  WRK-UPDCNT-X.
                05  WRK-UPDCNT          PIC 9(10).
+      *
+           03  WRK-MONBLOB-ID          PIC X(37).
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".
@@ -142,6 +142,8 @@
       *
       *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
+      *
+           COPY    "MONBLOB".
       *
       *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
@@ -413,6 +415,7 @@
                IF      WRK-ERRCD           =   SPACE
                    MOVE    STOCKREQ-ORCA-UID   TO  STOCKRES-ORCA-UID
                END-IF
+               MOVE    WRK-MONBLOB-ID          TO  STOCKRES-DATA-ID (1)
            ELSE
                MOVE    STOCKREQ-ORCA-UID   TO  STOCKRES-ORCA-UID
            END-IF
@@ -656,10 +659,10 @@
                                    TO  JOB-JOBID
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
-           STRING  STOCKREQ-KARTE-UID  DELIMITED  BY  SPACE
-                   STOCKREQ-ORCA-UID   DELIMITED  BY  SPACE
-                                       INTO    JOB-PARAM
-           END-STRING
+           MOVE    STOCKREQ-KARTE-UID
+                                   TO  JOB-KARTE-UID
+           MOVE    STOCKREQ-ORCA-UID
+                                   TO  JOB-ORCA-UID
       *
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN    =   ZERO
@@ -734,6 +737,18 @@
       *****END-EVALUATE
            MOVE    "2"                 TO  SHELLTBL-ARG17
       *
+           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "monblob"           TO  MCP-TABLE
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MONBLOB
+           MOVE    MONBLOB-ID          TO  SHELLTBL-ARG18
+                                           WRK-MONBLOB-ID
+      *
+           MOVE    STOCKREQ-KARTE-UID  TO  SHELLTBL-ARG19
+           MOVE    STOCKREQ-ORCA-UID   TO  SHELLTBL-ARG20
+      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -776,13 +791,10 @@
            IF      SJOBKANRI-RETURN
                                    =   ZERO
       *        パラメータとカルテUID+オルカUID をチェック
-               MOVE    SPACE           TO  WRK-PARAM
-               STRING  STOCKREQ-KARTE-UID  DELIMITED   BY  SPACE
-                       STOCKREQ-ORCA-UID   DELIMITED   BY  SPACE
-                                           INTO    WRK-PARAM
-               END-STRING
-      *
-               IF      WRK-PARAM   NOT =   JOB-PARAM
+               IF    ( STOCKREQ-KARTE-UID
+                                   NOT =   JOB-KARTE-UID )
+               OR    ( STOCKREQ-ORCA-UID
+                                   NOT =   JOB-ORCA-UID  )
                    MOVE    "E41"           TO  WRK-ERRCD
                    GO  TO  2003-SYORI-02-EXT
                END-IF

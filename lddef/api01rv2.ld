@@ -166,5 +166,9 @@ db "xml2" {
 
 db "push" {
   push_print001;
+  push_batch01;
 };
 
+#db "monblob" {
+# monblob;
+#};

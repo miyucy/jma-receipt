@@ -314,6 +314,7 @@ bind    "ORCBBLOBIMPORT"    "OpenCOBOL";
 db "xml2" {
  fm_payment_certificate;
  fm_invoice_receipt_h;
+ xml_stock1;
 };
 
 #db "monblob" {
