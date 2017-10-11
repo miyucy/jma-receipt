@@ -848,8 +848,8 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "*** ORCBST001 OUT:" CNT-OUT
-           DISPLAY "*** ORCBST001 END ***"
+           DISPLAY "*** ORAPI052BR3V3 OUT:" CNT-OUT
+           DISPLAY "*** ORAPI052BR3V3 END ***"
       *
            .
        300-END-EXT.
