@@ -107,7 +107,6 @@ tbl_tensu {
 	KUBUNBANGOU		varchar(30);
 	ROSAIKBN		number(1,0);
 	SISIKSN			number(1,0);
-	AKUSEIBYORIKSN		number(1,0);
 	OLDTENSKB			number(1,0);
 	OLDTEN   			number(11,2);
 	MADOKUKBN  			number(1,0);
@@ -156,7 +155,6 @@ tbl_tensu {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-	MASTER_CLASS		number(1,0);
 #-----> 主キー更新用項目
 	UPHOSPNUM			number(2,0),virtual;
 	UPSRYCD				char(9),virtual;
@@ -591,7 +589,6 @@ path	upd1	{
 	KUBUNBANGOU		=	:KUBUNBANGOU,
 	ROSAIKBN		=	:ROSAIKBN,
 	SISIKSN			=	:SISIKSN,
-	AKUSEIBYORIKSN		=	:AKUSEIBYORIKSN,
 	OLDTENSKB		=	:OLDTENSKB,
 	OLDTEN 			=	:OLDTEN,
 	MADOKUKBN 		=	:MADOKUKBN,
@@ -1672,42 +1669,6 @@ path	key35 	{
 			WHERE HOSPNUM    =   :HOSPNUM
 			AND   UPYMD      >=  :UPYMD
 			ORDER  BY  SRYCD
-		;
-	};
-};
-
-path	key36 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key36_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-			AND   CHUKSNCD   =   :CHUKSNCD
-			AND   CHUKSNTSUBAN =  :CHUKSNTSUBAN
- 			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			ORDER  BY  SRYCD
-		;
-	};
-};
-
-path	last_update1 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_last_update1_csr CURSOR FOR
-		SELECT MAX(UPYMD||UPHMS) AS TERMID
-		FROM tbl_tensu
-		;
-	};
-};
-
-path	last_update2	{
-	DBSELECT	{
-		DECLARE tbl_tensu_last_update2_csr CURSOR FOR
-		SELECT UPYMD||TO_CHAR(COUNT(*), 'FM00000000') AS TERMID
-		FROM tbl_tensu
-        GROUP BY UPYMD
-        ORDER BY UPYMD DESC
-        LIMIT 5
 		;
 	};
 };
