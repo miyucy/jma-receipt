@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
       *  サブシステム名    : API連携用モジュール
-      *  コンポーネント名  : 薬剤情報返却  (xml2)
+      *  コンポーネント名  : 在庫管理情報返却  (xml2)
       *  管理者            :
       *  作成日付    作業者        記述
       *  17/01/XX    NACL−多々納　新規作成
@@ -899,7 +899,7 @@
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL ( IDX >       SYS-3003-JOBID )
       *            ジョブ管理チェック処理
-                   MOVE    "CHK"           TO  SJOBKANRI-MODE
+                   MOVE    "CH2"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    MOVE    IDX             TO  JOB-JOBID

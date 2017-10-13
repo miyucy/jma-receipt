@@ -139,6 +139,10 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
+           INITIALIZE              COUNT-AREA
+                                   FLG-AREA
+                                   WRK-AREA
+      *
       *    チェック
            IF    ( SAPIFILE-IN-DIRNAME
                                    =   SPACE )
@@ -210,6 +214,7 @@
       *    入力ファイルからの編集処理
            PERFORM VARYING IDX FROM    SAPIFILE-IN-RENNUM   BY  1
                    UNTIL   IDX >       SAPIFILE-IN-COUNT
+                   OR      SAPIFILE-RC >   0
                PERFORM 2001-XMLFILE-HENSYU-SEC
            END-PERFORM
       *
@@ -247,6 +252,8 @@
                MOVE    XMLPARA             TO  WRK-ERR-FILE-NM
                MOVE    STS-XMLFILE         TO  WRK-ERR-FILE-STS
                PERFORM 500-FILE-ERR-ABORT-SEC
+               CLOSE   XML-FILE
+               GO  TO  2001-XMLFILE-HENSYU-EXT
            END-IF
       *
            MOVE    ZERO                TO  CNT-IN
@@ -295,6 +302,10 @@
                            PERFORM 20012-WRITE-SEC
                        END-IF
                END-EVALUATE
+      *
+               IF      SAPIFILE-RC >   0
+                   MOVE     1          TO  FLG-XMLFILE
+               END-IF
            END-PERFORM
       *
            CLOSE   XML-FILE
@@ -308,8 +319,9 @@
        20012-WRITE-SEC         SECTION.
       *
            WRITE   OUT-REC
+      *
            IF      STS-OUTFILE         =   "00"
-               CONTINUE
+               ADD     1                   TO  CNT-OUT
            ELSE
                MOVE  40                    TO  SAPIFILE-RC
       *
@@ -320,8 +332,6 @@
                MOVE    STS-OUTFILE         TO  WRK-ERR-FILE-STS
                PERFORM 500-FILE-ERR-ABORT-SEC
            END-IF
-      *
-           ADD     1                   TO  CNT-OUT
       *
            .
        20012-WRITE-EXT.
@@ -355,17 +365,24 @@
                                            TO  WRK-ERR-FILE-MSG1
            END-EVALUATE
       *
-           STRING  WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
-                   " FILE="                DELIMITED   BY  SIZE
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
                    WRK-ERR-FILE-NM         DELIMITED   BY  SPACE
-                   "  STS="                DELIMITED   BY  SIZE
+                   " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
-                   LOW-VALUE               DELIMITED   BY  SIZE
-                                           INTO    WRK-ERRMSG
+                                           INTO    WRK-RECEERR
            END-STRING
+           DISPLAY "ORCSAPIFILE " WRK-RECEERR
+      *
+      *****STRING  WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+      *****        " FILE="                DELIMITED   BY  SIZE
+      *****        WRK-ERR-FILE-NM         DELIMITED   BY  SPACE
+      *****        "  STS="                DELIMITED   BY  SIZE
+      *****        WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+      *****        LOW-VALUE               DELIMITED   BY  SIZE
+      *****                                INTO    WRK-ERRMSG
+      ***** END-STRING
       *
       *****PERFORM 500-COBABORT-SEC
-           DISPLAY "ORCSAPIFILE " WRK-ERRMSG
       *
            .
        500-FILE-ERR-ABORT-EXT.
@@ -389,7 +406,7 @@
       *
            READ    XML-FILE    NEXT
                AT  END
-                   MOVE    1               TO    FLG-XMLFILE
+                   MOVE    1               TO  FLG-XMLFILE
                NOT  AT  END
                    IF      STS-XMLFILE     =   "00"
                        CONTINUE
@@ -400,6 +417,8 @@
                        MOVE    XMLPARA         TO  WRK-ERR-FILE-NM
                        MOVE    STS-XMLFILE     TO  WRK-ERR-FILE-STS
                        PERFORM 500-FILE-ERR-ABORT-SEC
+      *
+                       MOVE    1               TO  FLG-XMLFILE
                    END-IF
            END-READ
            .
