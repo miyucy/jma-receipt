@@ -2308,7 +2308,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                                TO  SPA-ERRMSG
                WHEN    "0107"
                    STRING  "診療科が２桁ではありません。"
-                           "診療科削除のみ行ってください。"
+                           "削除して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
