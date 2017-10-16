@@ -89,6 +89,7 @@
       * 04.08.00     NACL-多々納  16/12/XX  指導料等自動算定対応
       * 04.08.00     NACL-多々納  17/02/XX  在宅実績加算２削除対応
       * 04.08.00     NACL-多々納  17/03/XX  平成２９年４月改正対応
+      * 04.08.00     NACL-多々納  17/10/17  小児科外来診療料同日時間外加算対応
       *****************************************************************
       *
       *
@@ -5866,6 +5867,22 @@
                                                        =   "2" )
                                MOVE    1           TO  FLG-OK
                            END-IF
+      *TEST
+      *H29.10
+      *                    同日算定済みであれば、時間外加算のみOK
+                           IF     (SPA-COM-SRYKBN(IDX) =   "12" )
+                             AND  (SPA-COM-DATAKBN(IDX) =   "2" )
+                             AND  (SPA-COM-TIMEKSNKBN (IDX) NOT =  ZERO)
+                             AND  (SPA-SYONIKA-ARI2    =   1   )
+                               MOVE    1           TO  FLG-OK
+                           END-IF
+      *                    種別のみはＯＫ
+                           IF     (SPA-GMN-INPUTCD(IDX)(1:4) =  ".124")
+                             AND  (SPA-SYONIKA-ARI2    =   1   )
+                               MOVE    1           TO  FLG-OK
+                           END-IF
+      *TEST
+      *
                            IF      FLG-OK          =   1
                                CONTINUE
                            ELSE
