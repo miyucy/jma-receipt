@@ -5873,12 +5873,14 @@
                            IF     (SPA-COM-SRYKBN(IDX) =   "12" )
                              AND  (SPA-COM-DATAKBN(IDX) =   "2" )
                              AND  (SPA-COM-TIMEKSNKBN (IDX) NOT =  ZERO)
-                             AND  (SPA-SYONIKA-ARI2    =   1   )
+                             AND ((SPA-SYONIKA-ARI2    =   1  ) OR
+                                  (SPA-SYONIKKR-ARI2   =   1  ))
                                MOVE    1           TO  FLG-OK
                            END-IF
       *                    種別のみはＯＫ
                            IF     (SPA-GMN-INPUTCD(IDX)(1:4) =  ".124")
-                             AND  (SPA-SYONIKA-ARI2    =   1   )
+                             AND ((SPA-SYONIKA-ARI2    =   1  ) OR
+                                  (SPA-SYONIKKR-ARI2   =   1  ))
                                MOVE    1           TO  FLG-OK
                            END-IF
       *TEST
