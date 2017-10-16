@@ -55,10 +55,6 @@ db "xml2" {
  xml_receipt_printv3res;
 };
 
-db "monblob" {
- monblob;
-};
-
 db	{
 	tbl_btpara;
 	tbl_hkncombi;
@@ -109,3 +105,7 @@ db	{
 
 /* #include "orcadb.inc" */
 #include "orcadbh.inc"
+
+#db "monblob" {
+# monblob;
+#};
