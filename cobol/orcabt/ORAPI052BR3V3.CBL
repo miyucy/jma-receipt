@@ -738,9 +738,6 @@
            CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  ORCA-BLOB-FILE
-      *??
-           display "ORCA-BLOB-FILE="  ORCA-BLOB-FILE
-      *??
            MOVE    "BLOBEXPORT"    TO  MCP-FUNC
            CALL    "MONFUNC"       USING
                                        MCPAREA

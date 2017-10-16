@@ -186,7 +186,6 @@
                     SAPIFILE-OT-FILENAME   DELIMITED  BY  SPACE
                                            INTO    OUTPARA
            END-STRING
-           DISPLAY "ORCSAPIFILE OUTPARA=" OUTPARA
       *
            INITIALIZE                  SACCESS-AREA
            MOVE    "W"             TO  SACCESS-MODE
@@ -238,7 +237,6 @@
                     ".xml"                 DELIMITED  BY SIZE
                                            INTO    XMLPARA
            END-STRING
-           DISPLAY "ORCSAPIFILE XMLPARA=" XMLPARA
       *
            OPEN    INPUT               XML-FILE
            IF      STS-XMLFILE         =   "00"
