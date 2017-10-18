@@ -46,10 +46,10 @@
        FILE                    SECTION.
       *
        FD  XML-FILE.
-       01  XML-REC             PIC X(1000000).
+       01  XML-REC             PIC X(10000).
       *
        FD  OUT-FILE.
-       01  OUT-REC             PIC X(1000000).
+       01  OUT-REC             PIC X(10000).
       *
        WORKING-STORAGE         SECTION.
       *
@@ -89,8 +89,8 @@
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
       *
-       01  WRK-XML-REC         PIC X(1000000).
-       01  WRK-XML-REC1        PIC X(1000000).
+       01  WRK-XML-REC         PIC X(10000).
+       01  WRK-XML-REC1        PIC X(10000).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -102,7 +102,7 @@
       *
       *    ファイル出力可能チェックサブ
            COPY    "CPORCSACCESS.INC".
-      *     
+      *
       ******************************************************************
        LINKAGE                 SECTION.
       *
