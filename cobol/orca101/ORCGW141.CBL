@@ -204,7 +204,7 @@
                    MOVE    SPA-GMN-NAME-BACK (SPA-NAI-SELCD)
                                        TO  SPA-GMN-NAME (SPA-NAI-SELCD)
                    PERFORM  210-BACK
-      *        クリア
+      *        削除
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 410-DELETE-SEC
       *        登録
@@ -334,13 +334,13 @@
            EXIT.
      *
       *****************************************************************
-      *    クリア処理
+      *    削除処理
       *****************************************************************
        410-DELETE-SEC              SECTION.
       *
            MOVE    SPACE           TO  SPA-GMN-NAME (SPA-NAI-SELCD)
       *
-           MOVE    1               TO  SPA-W141-GMN-CUR
+           PERFORM 210-BACK
            .
        410-DELETE-EXT.
            EXIT.
