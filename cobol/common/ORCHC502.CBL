@@ -33,7 +33,8 @@
       * 04.01.00     NACL-多々納  07/11/22  器材商品名コード対応
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       * 04.08.00     NACL-多々納  14/08/01  一時ディレクトリ対応
-      * 05.00.00     NACL-多々納  19/05/XX  API(GINBEE）対応
+      * 05.00.00     NACL-多々納  17/05/XX  API(GINBEE）対応
+      * 05.00.00     NACL-太田    17/10/11  API(GINBEE）対応
       *****************************************************************
       *
       *
@@ -103,6 +104,7 @@
            03  IDX-LINE            PIC 9(04).
       *
            03  IDXM                PIC 9(02).
+           03  IDXN                PIC 9(02).
       *
            03  KETA                PIC 9(04).
       *API
@@ -189,6 +191,7 @@
            03  WRK-BTUNAME             PIC X(20).
            03  WRK-ROOMNO              PIC X(06).
            03  WRK-SYSYMD              PIC X(22).
+           03  WRK-PRINTYMD            PIC X(08).
            03  WRK-TIME-G.
                05  WRK-TIME-HH         PIC X(02).
                05  WRK-TIME-P          PIC X(01).
@@ -723,6 +726,7 @@
            END-IF
       *
       *    処方時間
+           MOVE    ORCHC502-PRINTYMD    TO  WRK-PRINTYMD
            MOVE    ORCHC502-PRINTHMS(1:2)
                                         TO  WRK-TIME-HH
            MOVE    ORCHC502-PRINTHMS(3:2)
@@ -731,20 +735,13 @@
       *
       *H29.5
       *API GINGEE対応
-           IF      PARA-API-DATA        =   "1"
-               IF      ORCHC502-PRINTYMD   =   SPACE
-      *            頭書き
-                   MOVE    SPACE               TO  WRK-API-SYSYMD
-                   MOVE    SPACE               TO  WRK-API-SYSTIME
-               ELSE
-      *           処理日
-                   MOVE    ORCHC502-PRINTYMD   TO  WRK-SYMD
-                   MOVE    ORCHC502-PRINTHMS   TO  WRK-THMS
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE        TO  WRK-API-SYSYMD
-                   MOVE    WRK-HEN-TIME        TO  WRK-API-SYSTIME
-               END-IF
-           END-IF
+      *    処理日
+           MOVE    ORCHC502-PRINTYMD   TO  WRK-SYMD
+           MOVE    ORCHC502-PRINTHMS   TO  WRK-THMS
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  WRK-API-SYSYMD
+           MOVE    WRK-HEN-TIME        TO  WRK-API-SYSTIME
+      *
            .
        2001-HEAD-HENSYU-EXT.
            EXIT.
@@ -1303,7 +1300,7 @@
                MOVE    "麻"                TO  HC502-MAYAKU
            END-IF
       *    発行日
-           MOVE    ORCHC502-PRINTYMD   TO  HC502-SYSYMD
+           MOVE    WRK-PRINTYMD        TO  HC502-SYSYMD
       *    発行時間
            MOVE    WRK-TIME-G          TO  HC502-TIME
       *    診療科
@@ -1371,6 +1368,7 @@
            PERFORM 2002-DRCD-HENSYU-SEC
       *    処方日・時間はクリア
            MOVE    SPACE               TO  WRK-SYSYMD
+           MOVE    SPACE               TO  WRK-PRINTYMD
            MOVE    SPACE               TO  WRK-TIME-G
       *    年齢
            MOVE    SPACE               TO  WRK-AGE-HEN
@@ -1502,19 +1500,12 @@
       *
            MOVE    SPACE               TO  WRK-KAISU-HENSYU
            MOVE    SPACE               TO  WRK-API-KAISU-X
-      *    回数分印刷する
-           IF      WRK-KAISU           >   1
-               PERFORM VARYING     IDX-KAI FROM    1   BY  1
-                       UNTIL       IDX-KAI >   WRK-KAISU
-      *            回数
-                   MOVE    IDX-KAI         TO  WRK-API-KAISU-9
-                   PERFORM 3002-KAISU-HENSYU-SEC
       *
-                   PERFORM 70021-API-DAYCALL-SEC
-               END-PERFORM
-           ELSE
-               PERFORM 70021-API-DAYCALL-SEC
-           END-IF
+      *    回数
+           MOVE    WRK-KAISU           TO  WRK-API-KAISU-9
+           PERFORM 3002-KAISU-HENSYU-SEC
+      *
+           PERFORM 70021-API-DAYCALL-SEC
       *
            .
        7002-API-DAYSYORI-EXT.
@@ -1531,33 +1522,37 @@
               PERFORM 2003-MAYAKU-HEN-SEC
            END-IF
       *
+           INITIALIZE                  FMCHUSYA-REC
+      *
       *    発行区分毎に印刷
+           MOVE    ZERO                TO  IDXN
            PERFORM VARYING     IDX-P   FROM    1   BY  1
                    UNTIL       IDX-P   >   4
                IF      ORCHC502-CHKPRT (IDX-P) =   1
+                   COMPUTE IDXN    =   IDXN    +   1
                    IF      IDX-H           =   2
                        MOVE    WRK-SIJISEN-HEAD2(IDX-P)
-                                               TO  WRK-SIJISEN-HEAD
+                                               TO  FMCHUSYA-TITLE (IDXN)
                        MOVE    WRK-SIJISEN-PRT2 (IDX-P)
-                                               TO  WRK-SIJISEN-PRT
+                                               TO  FMCHUSYA-MAISU (IDXN)
                    ELSE
                        MOVE    WRK-SIJISEN-HEAD1(IDX-P)
-                                               TO  WRK-SIJISEN-HEAD
+                                               TO  FMCHUSYA-TITLE (IDXN)
                        MOVE    WRK-SIJISEN-PRT1 (IDX-P)
-                                               TO  WRK-SIJISEN-PRT
+                                               TO  FMCHUSYA-MAISU (IDXN)
                    END-IF
-                   PERFORM VARYING     IDX-P2  FROM    1   BY  1
-                           UNTIL       IDX-P2  >   WRK-SIJISEN-PRT
-      *                ＡＰＩ送信内容編集処理
-                       PERFORM 7004-APIMEI-HENSYU-SEC
-      *                ＡＰＩ送信処理
-                       PERFORM 7009-API-CALLSYORI-SEC
-                   END-PERFORM
                END-IF
-           END-PERFORM
+            END-PERFORM
+      *
+           IF    ( IDXN    >   ZERO )
+      *        ＡＰＩ送信内容編集処理
+               PERFORM 7004-APIMEI-HENSYU-SEC
+      *        ＡＰＩ送信処理
+               PERFORM 7009-API-CALLSYORI-SEC
+           END-IF
       *
            .
-       7004-APIMEI-HENSYU-EXT.
+       70021-API-DAYCALL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1565,11 +1560,15 @@
       *****************************************************************
        7004-APIMEI-HENSYU-SEC      SECTION.
       *
-           INITIALIZE                  FMCHUSYA-REC
-      *
-           MOVE    "chusyasen"         TO  FMCHUSYA-FORM-ID
+           MOVE    "chushasen_n"       TO  FMCHUSYA-FORM-ID
       *    プリンタ名
            MOVE    SYS-1034-PRTNM(7)   TO  FMCHUSYA-PRINTER
+      *
+           IF      ORCHC502-SYORIKBN   =   "1"
+               MOVE    "2"             TO  FMCHUSYA-HAKKOKBN
+           ELSE
+               MOVE    "1"             TO  FMCHUSYA-HAKKOKBN
+           END-IF
       *
       *    処理日
            MOVE    WRK-API-SYSYMD      TO  FMCHUSYA-SYSYMD
@@ -1597,7 +1596,7 @@
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMCHUSYA-BIRTHDAY
       *    年齢
-           MOVE    WRK-AGE-HEN         TO  FMCHUSYA-NENREI
+      *    MOVE    WRK-AGE-HEN         TO  FMCHUSYA-NENREI
       *
       *    病棟番号
            MOVE    WRK-BTUNUM          TO  FMCHUSYA-BTUNUM
@@ -1612,9 +1611,7 @@
       *
       *    回数
            MOVE    WRK-API-KAISU-X     TO  FMCHUSYA-KAI-RENNUM
-           MOVE    WRK-KAISU-HENSYU    TO  FMCHUSYA-KAI-HENSYU
-      *    帳票タイトル
-           MOVE    WRK-SIJISEN-HEAD    TO  FMCHUSYA-TITLE
+      *
       *    注射内容
            MOVE    WRK-CHUSYAMEI       TO  FMCHUSYA-CHUSYA-NAME
            MOVE    WRK-API-CHUSYACD    TO  FMCHUSYA-CHUSYA-SRYCD
@@ -1727,9 +1724,9 @@
            MOVE    PARA-API-CUSTOM-ID  TO  FMCHUSYA-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
-           MOVE    "chusyasen"         TO  RPMAIN-ID
+           MOVE    "chushasen_n"       TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
-           MOVE    "注射処方箋"        TO  RPMAIN-TITLE
+           MOVE    "注射処方せん"      TO  RPMAIN-TITLE
            MOVE    "fm_order_injection"
                                        TO  MCP-TABLE
            MOVE    FMCHUSYA-DATA       TO  RPMAIN-DATA
@@ -1751,6 +1748,7 @@
            INITIALIZE                  LNK-ORDERPRT-MAX
            MOVE    SPACE               TO  WRK-KAISU-HENSYU
            MOVE    SPACE               TO  WRK-KAISU-X
+           MOVE    1                   TO  WRK-API-KAISU-9
            MOVE    SPACE               TO  WRK-SRYYMD
            INITIALIZE                  WRK-API-SYOHOU-AREA
            MOVE    ZERO                TO  IDX-AP

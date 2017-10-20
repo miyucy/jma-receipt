@@ -36,8 +36,9 @@
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       * 04.06.00     NACL-多々納  11/02/22  用法コメント対応
       * 04.08.00     NACL-多々納  14/08/01  一時ディレクトリ対応
-      * 04.08.00     NACL-多々納  19/01/16  プログラムオプション対応
-      * 05.00.00     NACL-多々納  19/05/XX  API(GINBEE）対応
+      * 04.08.00     NACL-多々納  17/01/16  プログラムオプション対応
+      * 05.00.00     NACL-多々納  17/05/XX  API(GINBEE）対応
+      * 05.00.00     NACL-太田    17/10/11  API(GINBEE）対応
       *****************************************************************
       *
       *
@@ -106,6 +107,7 @@
            03  IDX-LINE            PIC 9(04).
       *
            03  IDXM                PIC 9(02).
+           03  IDXN                PIC 9(02).
       *
            03  KETA                PIC 9(04).
            03  IDX-B2              PIC 9(04).
@@ -194,6 +196,7 @@
            03  WRK-BTUNAME             PIC X(20).
            03  WRK-ROOMNO              PIC X(06).
            03  WRK-SYSYMD              PIC X(22).
+           03  WRK-PRINTYMD            PIC X(08).
            03  WRK-TIME-G.
                05  WRK-TIME-HH         PIC X(02).
                05  WRK-TIME-P          PIC X(01).
@@ -438,11 +441,16 @@
        100-OPTION-SELECT-SEC             SECTION.
       *
            INITIALIZE                  PARA-AREA
+      *
+           MOVE    "0"                 TO  PARA-PAGECNT
+      *
            MOVE    ZERO                TO  WRK-PARA-MAX
       *    剤表示
            MOVE    "PAGECNT"           TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:1)       TO  PARA-PAGECNT
+           IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
+               MOVE    WRK-PARA(1:1)   TO  PARA-PAGECNT
+           END-IF
       *
       *H29.5
       *API対応
@@ -766,6 +774,7 @@
            PERFORM 510-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-SYSYMD
       *    処方時間
+           MOVE    ORCHC501-PRINTYMD    TO  WRK-PRINTYMD
            MOVE    ORCHC501-PRINTHMS(1:2)
                                         TO  WRK-TIME-HH
            MOVE    ORCHC501-PRINTHMS(3:2)
@@ -1546,7 +1555,7 @@
                MOVE    "○"                TO  HC501-RINJI
            END-IF
       *    発行日
-           MOVE    ORCHC501-PRINTYMD   TO  HC501-SYSYMD
+           MOVE    WRK-PRINTYMD        TO  HC501-SYSYMD
       *    発行時間
            MOVE    WRK-TIME-G          TO  HC501-TIME
       *    診療科
@@ -1612,6 +1621,7 @@
            PERFORM 2002-DRCD-HENSYU-SEC
       *    処方日・時間はクリア
            MOVE    SPACE               TO  WRK-SYSYMD
+           MOVE    SPACE               TO  WRK-PRINTYMD
            MOVE    SPACE               TO  WRK-TIME-G
            INITIALIZE                      WRK-TIME-G
       *    年齢
@@ -1713,27 +1723,28 @@
            END-PERFORM
       *
       *
-           MOVE    "shohosen"          TO  FMSHOHON-FORM-ID
+           MOVE    "shohosen_n"        TO  FMSHOHON-FORM-ID
       *    プリンタ名
            MOVE    SYS-1034-PRTNM(6)   TO  FMSHOHON-PRINTER
       *
-           IF      ORCHC501-PRINTYMD   =   SPACE
+           IF      ORCHC501-SYORIKBN   =   1
       *    頭書き
-               MOVE    SPACE               TO  FMSHOHON-SYSYMD
-               MOVE    SPACE               TO  FMSHOHON-SYSTIME
+               MOVE    "2"                 TO  FMSHOHON-HAKKOKBN
                MOVE    SPACE               TO  FMSHOHON-SRYYMD
            ELSE
-      *    処理日
-               MOVE    ORCHC501-PRINTYMD   TO  WRK-SYMD
-               MOVE    ORCHC501-PRINTHMS   TO  WRK-THMS
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE        TO  FMSHOHON-SYSYMD
-               MOVE    WRK-HEN-TIME        TO  FMSHOHON-SYSTIME
+               MOVE    "1"                 TO  FMSHOHON-HAKKOKBN
       *    処方日
                MOVE    ORCHC501-SYSYMD     TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  FMSHOHON-SRYYMD
            END-IF
+      *
+      *    処理日
+           MOVE    ORCHC501-PRINTYMD   TO  WRK-SYMD
+           MOVE    ORCHC501-PRINTHMS   TO  WRK-THMS
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  FMSHOHON-SYSYMD
+           MOVE    WRK-HEN-TIME        TO  FMSHOHON-SYSTIME
       *
       *    診療科
            MOVE    ORCHC501-SRYKA      TO  FMSHOHON-SRYKA
@@ -1755,14 +1766,15 @@
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMSHOHON-BIRTHDAY
       *    年齢
-           MOVE    WRK-AGE-HEN         TO  FMSHOHON-NENREI
+      *    MOVE    WRK-AGE-HEN         TO  FMSHOHON-NENREI
       *
       *    病棟番号
            MOVE    WRK-BTUNUM          TO  FMSHOHON-BTUNUM
       *    病棟名称
            MOVE    WRK-BTUNAME         TO  FMSHOHON-BTUNAME
       *    病室番号
-           MOVE    WRK-ROOMNO          TO  FMSHOHON-BRMNUM
+           MOVE    FUNCTION TRIM(WRK-ROOMNO)
+                                       TO  FMSHOHON-BRMNUM
       *    麻薬
            IF      IDX-H               =   2
                MOVE    "1"             TO  FMSHOHON-MAYAKU
@@ -1773,31 +1785,34 @@
            END-IF
       *
            MOVE    SPA-OPID            TO  FMSHOHON-OPID
+           MOVE    PARA-PAGECNT        TO  FMSHOHON-PARA-PAGECNT
       *
+           MOVE    ZERO                TO  IDXN
       *    発行区分毎に印刷
            PERFORM VARYING     IDX-P   FROM    1   BY  1
                    UNTIL       IDX-P   >   4
                IF      ORCHC501-CHKPRT (IDX-P) =   1
+      *
+                   COMPUTE IDXN    =   IDXN    +   1
+      *
                    IF      IDX-H           =   2
                        MOVE    WRK-SIJISEN-HEAD2(IDX-P)
-                                               TO  WRK-SIJISEN-HEAD
+                                               TO  FMSHOHON-TITLE (IDXN)
                        MOVE    WRK-SIJISEN-PRT2 (IDX-P)
-                                               TO  WRK-SIJISEN-PRT
+                                               TO  FMSHOHON-MAISU (IDXN)
                    ELSE
                        MOVE    WRK-SIJISEN-HEAD1(IDX-P)
-                                               TO  WRK-SIJISEN-HEAD
+                                               TO  FMSHOHON-TITLE (IDXN)
                        MOVE    WRK-SIJISEN-PRT1 (IDX-P)
-                                               TO  WRK-SIJISEN-PRT
+                                               TO  FMSHOHON-MAISU (IDXN)
                    END-IF
-                   PERFORM VARYING     IDX-P2  FROM    1   BY  1
-                           UNTIL       IDX-P2  >   WRK-SIJISEN-PRT
-      *                帳票タイトル
-                       MOVE    WRK-SIJISEN-HEAD    TO  FMSHOHON-TITLE
-      *                ＡＰＩ送信処理
-                       PERFORM 7009-API-CALLSYORI-SEC
-                   END-PERFORM
                END-IF
            END-PERFORM
+      *
+           IF    ( IDXN                >   ZERO )
+      *        ＡＰＩ送信処理
+               PERFORM 7009-API-CALLSYORI-SEC
+           END-IF
       *
            .
        700-API-SYORI-EXT.
@@ -1902,8 +1917,8 @@
                                                    (IDX-AP1 IDX-APD)
            MOVE    WRK-KAISU           TO  FMSHOHON-KAISU
                                                    (IDX-AP1 IDX-APD)
-           MOVE    WRK-DAY-HENSYU      TO  FMSHOHON-ZAITANINAME
-                                                   (IDX-AP1 IDX-APD)
+      *    MOVE    WRK-DAY-HENSYU      TO  FMSHOHON-ZAITANINAME
+      *                                            (IDX-AP1 IDX-APD)
       *
            MOVE    ZERO                TO  WRK-DAY
            MOVE    ZERO                TO  WRK-KAISU
@@ -2037,9 +2052,9 @@
            MOVE    PARA-API-CUSTOM-ID  TO  FMSHOHON-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
-           MOVE    "shohosen"          TO  RPMAIN-ID
+           MOVE    "shohosen_n"        TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
-           MOVE    "入院処方箋"        TO  RPMAIN-TITLE
+           MOVE    "入院処方せん"      TO  RPMAIN-TITLE
            MOVE    "fm_prescription_h"
                                        TO  MCP-TABLE
            MOVE    FMSHOHON-DATA       TO  RPMAIN-DATA

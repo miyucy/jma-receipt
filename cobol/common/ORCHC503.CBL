@@ -34,6 +34,7 @@
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.08.00    NACL-多々納  14/08/01  一時ディレクトリ対応
       *  05.00.00    NACL-多々納  19/05/XX  API(GINBEE）対応
+      *  05.00.00    NACL-太田    17/10/11  API(GINBEE）対応
       *****************************************************************
       *
       *
@@ -100,6 +101,7 @@
            03  IDX-LINE            PIC 9(04).
       *
            03  IDXM                PIC 9(02).
+           03  IDXN                PIC 9(02).
       *
            03  KETA                PIC 9(04).
       *API
@@ -735,24 +737,17 @@
       *H29.5
       *API GINGEE対応
            IF      PARA-API-DATA        =   "1"
-               IF      ORCHC503-SYSYMD   =   SPACE
-      *            頭書き
-                   MOVE    SPACE               TO  WRK-API-SYSYMD
-                   MOVE    SPACE               TO  WRK-API-SYSTIME
-                   MOVE    SPACE               TO  WRK-API-SRYYMD
-               ELSE
-      *            処理日
-                   MOVE    ORCHC503-PRINTYMD   TO  WRK-SYMD
-                   MOVE    ORCHC503-PRINTHMS   TO  WRK-THMS
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE        TO  WRK-API-SYSYMD
-                   MOVE    WRK-HEN-TIME        TO  WRK-API-SYSTIME
-      *            処理日
-                   MOVE    ORCHC503-SYSYMD     TO  WRK-SYMD
-                   MOVE    SPACE               TO  WRK-THMS
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE        TO  WRK-API-SRYYMD
-               END-IF
+      *        処理日
+               MOVE    ORCHC503-PRINTYMD   TO  WRK-SYMD
+               MOVE    ORCHC503-PRINTHMS   TO  WRK-THMS
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  WRK-API-SYSYMD
+               MOVE    WRK-HEN-TIME        TO  WRK-API-SYSTIME
+      *        処理日
+               MOVE    ORCHC503-SYSYMD     TO  WRK-SYMD
+               MOVE    SPACE               TO  WRK-THMS
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  WRK-API-SRYYMD
            END-IF
       *
            .
@@ -1528,16 +1523,12 @@
       *
            MOVE    LNK-ORDERPRT-DAY (1 IDX2)  TO  WRK-KAISU
       *    回数編集
-           IF      WRK-KAISU           >   1
-               MOVE    WRK-KAISU           TO  WRK-KAISU-Z9
-               MOVE    WRK-KAISU-X         TO  WRK-MOJI
-               PERFORM 500-HENKAN-SEC
-               MOVE    WRK-ZENKAKU-G(1:4)  TO  WRK-KAISU-N
-               MOVE    "回"                TO  WRK-KAISU-H2
-           ELSE
-               MOVE    SPACE               TO  WRK-KAISU-HENSYU
-               MOVE    SPACE               TO  WRK-KAISU-X
-           END-IF
+           MOVE    WRK-KAISU           TO  WRK-KAISU-Z9
+           MOVE    WRK-KAISU-X         TO  WRK-MOJI
+           PERFORM 500-HENKAN-SEC
+           MOVE    WRK-ZENKAKU-G(1:4)  TO  WRK-KAISU-N
+           MOVE    "回"                TO  WRK-KAISU-H2
+      *
       *    最終件数
            MOVE    WRK-API-ZAI-MAX (IDX2)  TO  IDX-AP1
       *
@@ -1574,10 +1565,16 @@
            MOVE    WRK-HEN-DATE        TO  WRK-API-JISIYMD
            MOVE    SPACE               TO  WRK-BIKOH-AREA
       *
+           INITIALIZE                  FMSHIJI-REC
+      *
+           MOVE    ZERO                TO  IDXN
       *    発行区分毎に印刷
            PERFORM VARYING     IDX-P   FROM    1   BY  1
                    UNTIL       IDX-P   >   4
                IF      ORCHC503-CHKPRT (IDX-P) =   1
+      *
+                   COMPUTE IDXN    =   IDXN    +   1
+      *
                    EVALUATE    WRK-SRYKBN
                        WHEN    "40"
                            MOVE    "処置"          TO  WRK-SRYKBNMEI
@@ -1589,19 +1586,20 @@
                    STRING  WRK-SRYKBNMEI       DELIMITED  BY  SPACE
                            WRK-SIJISEN-HEAD1(IDX-P)
                                                DELIMITED  BY  SPACE
-                                           INTO    WRK-SIJISEN-HEAD
+                                           INTO    FMSHIJI-TITLE (IDXN)
                    END-STRING
                    MOVE    WRK-SIJISEN-PRT1 (IDX-P)
-                                               TO  WRK-SIJISEN-PRT
-                   PERFORM VARYING     IDX-P2  FROM    1   BY  1
-                           UNTIL       IDX-P2  >   WRK-SIJISEN-PRT
-      *                ＡＰＩ送信内容編集処理
-                       PERFORM 7004-APIMEI-HENSYU-SEC
-      *                ＡＰＩ送信処理
-                       PERFORM 7009-API-CALLSYORI-SEC
-                   END-PERFORM
+                                               TO  FMSHIJI-MAISU (IDXN)
                END-IF
+      *
            END-PERFORM
+      *
+           IF    ( IDXN    >   ZERO )
+      *        ＡＰＩ送信内容編集処理
+               PERFORM 7004-APIMEI-HENSYU-SEC
+      *        ＡＰＩ送信処理
+               PERFORM 7009-API-CALLSYORI-SEC
+           END-IF
       *
            .
        70021-API-DAYCALL-EXT.
@@ -1613,11 +1611,15 @@
        7004-APIMEI-HENSYU-SEC          SECTION.
       *
       *
-           INITIALIZE                  FMSHIJI-REC
-      *
-           MOVE    "sijisen"           TO  FMSHIJI-FORM-ID
+           MOVE    "shijisen_n"        TO  FMSHIJI-FORM-ID
       *    プリンタ名
            MOVE    SYS-1034-PRTNM(8)   TO  FMSHIJI-PRINTER
+      *
+           IF      ORCHC503-SYORIKBN   =   1
+               MOVE    "2"             TO  FMSHIJI-HAKKOKBN
+           ELSE
+               MOVE    "1"             TO  FMSHIJI-HAKKOKBN
+           END-IF
       *
       *    処理日
            MOVE    WRK-API-SYSYMD      TO  FMSHIJI-SYSYMD
@@ -1645,7 +1647,7 @@
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMSHIJI-BIRTHDAY
       *    年齢
-           MOVE    WRK-AGE-HEN         TO  FMSHIJI-NENREI
+      *    MOVE    WRK-AGE-HEN         TO  FMSHIJI-NENREI
       *
       *    病棟番号
            MOVE    WRK-BTUNUM          TO  FMSHIJI-BTUNUM
@@ -1653,25 +1655,24 @@
            MOVE    WRK-BTUNAME         TO  FMSHIJI-BTUNAME
       *    病室番号
            MOVE    WRK-ROOMNO          TO  FMSHIJI-BRMNUM
-      *
-      *    帳票タイトル
-           MOVE    WRK-SIJISEN-HEAD    TO  FMSHIJI-TITLE
       *    実施日
            MOVE    WRK-API-JISIYMD     TO  FMSHIJI-JISIYMD
       *    診療区分
-           MOVE    WRK-SRYKBN          TO  FMSHIJI-SRYKBN
       *
            MOVE    WRK-API-ZAI-MAX (IDX2)  TO  IDX-MAX
            PERFORM VARYING     IDX-AP1     FROM    1   BY  1
                    UNTIL      (IDX-AP1     >   50  )
                            OR (IDX-AP1     >   IDX-MAX )
+      *
+               MOVE    WRK-SRYKBN          TO  FMSHIJI-SRYKBN
+                                                          (IDX-AP1)
       *        回数
                MOVE    WRK-API-KAISU (IDX2 IDX-AP1)
                                            TO  FMSHIJI-KAISU
                                                           (IDX-AP1)
-               MOVE    WRK-API-KAISU-MEI (IDX2 IDX-AP1)
-                                           TO  FMSHIJI-KAISU-MEI
-                                                          (IDX-AP1)
+      *        MOVE    WRK-API-KAISU-MEI (IDX2 IDX-AP1)
+      *                                    TO  FMSHIJI-KAISU-MEI
+      *                                                   (IDX-AP1)
       *        処方内容
                PERFORM VARYING     IDX-AP2     FROM    1   BY  1
                        UNTIL       IDX-AP2     >   50
@@ -1691,12 +1692,12 @@
            END-PERFORM
       *
       *    備考欄
-           PERFORM VARYING     IDX-B   FROM    1   BY  1
-                   UNTIL       IDX-B   >   3
-               IF      WRK-BIKOH  (IDX-B)  NOT =   SPACE
-                   MOVE    WRK-BIKOH  (IDX-B)  TO  FMSHIJI-MEMO(IDX-B)
-               END-IF
-           END-PERFORM
+      *    PERFORM VARYING     IDX-B   FROM    1   BY  1
+      *            UNTIL       IDX-B   >   3
+      *        IF      WRK-BIKOH  (IDX-B)  NOT =   SPACE
+      *            MOVE    WRK-BIKOH  (IDX-B)  TO  FMSHIJI-MEMO(IDX-B)
+      *        END-IF
+      *    END-PERFORM
       *
            MOVE    SPA-OPID            TO  FMSHIJI-OPID
       *
@@ -1713,9 +1714,9 @@
            MOVE    PARA-API-CUSTOM-ID  TO  FMSHIJI-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
-           MOVE    "sijisen"           TO  RPMAIN-ID
+           MOVE    "shijisen_n"        TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
-           MOVE    "入院指示箋"        TO  RPMAIN-TITLE
+           MOVE    "入院指示せん"      TO  RPMAIN-TITLE
            MOVE    "fm_order_direction"
                                        TO  MCP-TABLE
            MOVE    FMSHIJI-DATA        TO  RPMAIN-DATA
