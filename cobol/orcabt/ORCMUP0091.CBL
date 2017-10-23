@@ -365,17 +365,20 @@ grpsys     MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    IN-HKNJANUM(2)      TO  HKNJA-HKNJANUM
            MOVE    HKNJA-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+               MOVE    "tbl_hknjainf_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-HKNJA-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-HKNJA
            END-IF
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -409,7 +412,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    LNK-MNTHMS          TO  HKNJA-UPHMS
            MOVE    HKNJA-REC           TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -431,17 +435,20 @@ grpsys     MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    IN-HKNJANUM(1)      TO  HKNJA-HKNJANUM
            MOVE    HKNJA-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+               MOVE    "tbl_hknjainf_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-HKNJA-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-HKNJA
            END-IF
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -480,7 +487,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    LNK-MNTHMS          TO  HKNJA-UPHMS
            MOVE    HKNJA-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -502,17 +510,20 @@ grpsys     MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    IN-HKNJANUM(1)      TO  HKNJA-HKNJANUM
            MOVE    HKNJA-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+               MOVE    "tbl_hknjainf_master"
+                                           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM                     910-HKNJA-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-HKNJA
            END-IF
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_master"
+                                       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -543,7 +554,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    HKNJA-REC       TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_hknjainf"  TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_master"
+                                   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
