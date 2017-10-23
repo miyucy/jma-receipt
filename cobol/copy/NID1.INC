@@ -23,4 +23,4 @@
               03  NID1-ID1CODE.
                 04  NID1-VALUE  PIC X(11).
               03  NID1-ID1MSG.
-                04  NID1-VALUE  PIC X(71).
+                04  NID1-VALUE  PIC X(80).

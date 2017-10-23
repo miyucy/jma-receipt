@@ -79,5 +79,19 @@ N01 {
     IDOYMD {
       textdata varchar(10);
     };
+    MIDASHI { #GtkLabel
+      style varchar(20);
+      textdata varchar(20);
+    };
+    MIDASHI02 { #GtkLabel
+      style varchar(20);
+      textdata varchar(20);
+    };
+    B03 {
+      state int;
+    };
+    B12 {
+      state int;
+    };
   };
 };

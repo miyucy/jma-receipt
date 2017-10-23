@@ -37,6 +37,7 @@
       *  02.01.02    NACL-多々納  04/07/27  検証番号チェックの修正
       *  04.06.00    NACL-多々納  11/03/22  LD104 ,LD105,LD106,LD108,LD109　統合
       *  04.07.00    NACL-多々納  14/02/03  介護保険対応
+      *  05.01.00    NACL-多々納  17/10/XX  ginbee対応（マスター分離）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -152,6 +153,14 @@
       *
                    07  SPA-NAI-HKNKOHSBTKBN   PIC X(01).
                    07  SPA-NAI-KENSNUMCHKKBN  PIC X(01).
+      *H29.10
+      *            ユーザー
+                   07  SPA-NAI-USER-FLG       PIC 9(01).
+                   07  SPA-NAI-MAST-FLG       PIC 9(01).
+      *            処理区分
+                   07  SPA-NAI-SYORIKBN       PIC 9(01).
+      *        前回コード
+               05  SPA-MAE-HKNJANUM           PIC X(08).
       *
            COPY    "ENUM-VALUE".
       *
@@ -180,7 +189,7 @@
            03  WRK-PATH-TABLE      PIC X(64).
            03  WRK-PATH-PATHNAME   PIC X(64).
            03  WRK-HENFLG          PIC 9(01).
-           03  WRK-NIDMSG          PIC X(70). 
+           03  WRK-NIDMSG          PIC X(80). 
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -191,6 +200,8 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *
+           03  WRK-HKNJANUM        PIC X(08).
       *
            03  WRK-MAE-INPUT       PIC X(400).
            03  WRK-ATO-INPUT       PIC X(400).
@@ -244,6 +255,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -394,16 +408,33 @@
       *****************************************************************
        330-NID1-SET-SEC            SECTION.
       *
-           IF      SPA-NID1-FLG    =   "OK"
-               IF      SPA-NIDCD            =   "1002"
-                   PERFORM 4031-DEL-SEC
-               ELSE
-                   PERFORM 490-KOUSHIN-SEC
-               END-IF
-           END-IF
+           EVALUATE    SPA-NIDCD
+               WHEN    "1001"
+      *        登録
+                   IF      SPA-NID1-FLG    =   "OK"
+                       PERFORM 490-KOUSHIN-SEC
+                   END-IF
+               WHEN    "1002"
+      *        削除
+                   IF      SPA-NID1-FLG    =   "OK"
+                       PERFORM 4031-DEL-SEC
+                   END-IF
+               WHEN    "1010"
+      *        ユーザ登録
+                   IF      SPA-NID1-FLG    =   "OK"
+                       PERFORM 490-KOUSHIN-SEC
+                   END-IF
+               WHEN    "1005"
+      *        ユーザ複写
+                   IF      SPA-NID1-FLG    =   "OK"
+      *                新規とする
+                       MOVE    1               TO  SPA-NAI-USER-FLG
+                       MOVE    ZERO            TO  SPA-NAI-UPDFLG
+                   END-IF
+           END-EVALUATE
       *
            MOVE    SPACE           TO  SPA-NID1-FLG
-           MOVE    SPACE           TO  SPA-NIDCD      
+           MOVE    SPACE           TO  SPA-NIDCD
            .
        330-NID1-SET-EXT.
            EXIT.
@@ -478,7 +509,7 @@
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
-      *TEST
+      *
            IF     SPA-GMN-HKNIDX       <   100
                ADD    1                    TO  SPA-GMN-HKNIDX
            ELSE
@@ -539,6 +570,14 @@
       *        削除
                WHEN    "CLICKED"       ALSO    "B03"
                    PERFORM  403-DEL-SEC
+      *!
+      *        前回ＣＤ
+               WHEN    "CLICKED"       ALSO    "B04"
+                   PERFORM  404-MAECD-SYORI-SEC
+      *        ユーザー複写
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM  410-USER-SYORI-SEC
+      *!
       *        付加設定（システム管理）
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 450-W65-SENI-SEC
@@ -615,21 +654,66 @@
                       OR       (SPA-GMN-HKNJANUM(IDX:1)  =   SPACE)
                ADD     1                 TO  SPA-HKNJANUM-LEN
            END-PERFORM
-      *    存在チェック
+      *H29.10
+           MOVE    ZERO                TO  SPA-NAI-USER-FLG
+           MOVE    ZERO                TO  SPA-NAI-SYORIKBN
+           MOVE    ZERO                TO  SPA-NAI-MAST-FLG
+      *    ユーザー登録チェック
            MOVE    SPACE               TO  HKNJAINF-REC
            INITIALIZE                      HKNJAINF-REC
-      *****MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
            MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
            MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
-           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_hknjainf_user" TO  WRK-PATH-TABLE
            PERFORM 900-HKNJAINF-INV-SEC
            IF      FLG-HKNJAINF        =   ZERO
+      *        ユーザー登録あり
+               MOVE    1                   TO  SPA-NAI-USER-FLG
+               MOVE    ZERO                TO  SPA-NAI-MAST-FLG
+               MOVE    ZERO                TO  SPA-NAI-SYORIKBN
                PERFORM 41001-HKNJA-HEN-SEC
-           ELSE
-               PERFORM 41002-HKNJA-ADD-SEC
            END-IF
+      *    マスター登録チェック
+           MOVE    SPACE               TO  HKNJAINF-REC
+           INITIALIZE                      HKNJAINF-REC
+           MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
+           MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+           PERFORM 900-HKNJAINF-MAST-INV-SEC
+           IF      FLG-HKNJAINF        =   ZERO
+               MOVE    1                   TO  SPA-NAI-MAST-FLG
+      *        ユーザーなし
+               IF      SPA-NAI-USER-FLG    =   ZERO
+                   MOVE    ZERO                TO  SPA-NAI-USER-FLG
+                   MOVE    ZERO                TO  SPA-NAI-SYORIKBN
+                   PERFORM 41001-HKNJA-HEN-SEC
+               END-IF
+           ELSE
+      *        ユーザーなし
+               IF      SPA-NAI-USER-FLG    =   ZERO
+      *            新規追加
+                   MOVE    1                   TO  SPA-NAI-USER-FLG
+                   MOVE    1                   TO  SPA-NAI-SYORIKBN
+                   MOVE    ZERO                TO  SPA-NAI-MAST-FLG
+                   PERFORM 41002-HKNJA-ADD-SEC
+               END-IF
+           END-IF
+      *    存在チェック
+      *    MOVE    SPACE               TO  HKNJAINF-REC
+      *    INITIALIZE                      HKNJAINF-REC
+      *    MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
+      *    MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+      *    MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+      *    PERFORM 900-HKNJAINF-INV-SEC
+      *    IF      FLG-HKNJAINF        =   ZERO
+      *        PERFORM 41001-HKNJA-HEN-SEC
+      *    ELSE
+      *        PERFORM 41002-HKNJA-ADD-SEC
+      **** END-IF
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41003-HKNJANUM-INIT-SEC
+      *        前回ＣＤへ保存
+               MOVE    SPA-GMN-HKNJANUM    TO  SPA-MAE-HKNJANUM
+      *
                MOVE    2                   TO  SPA-GMN-CUR
            END-IF
            .
@@ -1594,6 +1678,10 @@
            INITIALIZE                      SPA-NAI-IDOYMD
       *
            MOVE    ZERO                TO  SPA-NAI-UPDFLG
+      *H29.10
+           MOVE    ZERO                TO  SPA-NAI-USER-FLG
+           MOVE    ZERO                TO  SPA-NAI-MAST-FLG
+           MOVE    ZERO                TO  SPA-NAI-SYORIKBN
       *          
            MOVE    1                   TO  SPA-GMN-CUR
       *
@@ -1605,6 +1693,10 @@
       *    削除確認画面表示処理
       *****************************************************************
        403-DEL-SEC                               SECTION.
+      *
+           IF      SPA-NAI-USER-FLG    =   ZERO
+               GO      TO      403-DEL-EXT
+           END-IF
       *
            IF      SPA-NAI-UPDFLG      =   ZERO
                MOVE    "0010"              TO  SPA-ERRCD
@@ -1623,12 +1715,13 @@
       *
            MOVE    SPACE               TO  HKNJAINF-REC
            INITIALIZE                      HKNJAINF-REC
-      *****MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
            MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
            MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+      *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+     ****  MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_user" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
@@ -1640,9 +1733,48 @@
                GO  TO  4031-DEL-EXT
            END-IF
       *
+      *    前回ＣＤへ保存
+           MOVE    SPA-GMN-HKNJANUM    TO  WRK-HKNJANUM
+      *
            PERFORM 310-SPASET-SEC
+      *    前回ＣＤへ保存
+           MOVE    WRK-HKNJANUM        TO  SPA-MAE-HKNJANUM
            .
        4031-DEL-EXT.
+           EXIT.
+      *
+      *H29.10
+      *****************************************************************
+      *       前回ＣＤ処理
+      *****************************************************************
+       404-MAECD-SYORI-SEC              SECTION.
+      *
+           PERFORM 402-CLEAR-SEC
+      *
+           IF      SPA-MAE-HKNJANUM    NOT =   SPACE
+               MOVE    SPA-MAE-HKNJANUM        TO  N01-HKNJANUM
+               PERFORM 4100-HKNJANUM-CHK-SEC
+           END-IF
+           .
+       404-MAECD-SYORI-EXT.
+           EXIT.
+      *H29.10
+      *****************************************************************
+      *     ユーザー複写処理
+      *****************************************************************
+       410-USER-SYORI-SEC              SECTION.
+      *
+           IF     (SPA-GMN-HKNJANUM    NOT =   SPACE )
+              AND (SPA-NAI-UPDFLG          =   1     )
+              AND (SPA-NAI-USER-FLG        =   ZERO  )
+               MOVE    "1005"              TO  SPA-NIDCD
+     **        MOVE    1                   TO  SPA-NAI-USER-FLG
+      *        新規とする
+      **       MOVE    ZERO                TO  SPA-NAI-UPDFLG
+           END-IF
+      *
+           .
+       410-USER-SYORI-EXT.
            EXIT.
       *
       *
@@ -1650,6 +1782,10 @@
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
+      *
+           IF      SPA-NAI-USER-FLG    =   ZERO
+               GO      TO      490-TOUROKU-EXT
+           END-IF
       *
            MOVE    SPACE               TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
@@ -1661,6 +1797,14 @@
            END-IF
       *
            MOVE    "1001"          TO  SPA-NIDCD
+      *H29.10
+      *    ユーザー登録へ複写追加
+           IF     (SPA-NAI-USER-FLG    =   1    )
+             AND  (SPA-NAI-SYORIKBN    =   ZERO )
+             AND  (SPA-NAI-UPDFLG      =   ZERO )
+               MOVE    "1010"          TO  SPA-NIDCD
+               GO      TO   490-TOUROKU-EXT
+           END-IF
       *
       *----(02.01.01)--ADD-START---
       *    本人給付割合チェック
@@ -1702,12 +1846,20 @@
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+      *
            MOVE    SPACE               TO  HKNJAINF-REC
            INITIALIZE                      HKNJAINF-REC
       *****MOVE    SPA-HOSPID          TO  HKNJA-HOSPID
            MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
            MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+      *
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hknjainf_user" TO  WRK-PATH-TABLE
            PERFORM 900-HKNJAINF-INV-SEC
       *
            IF      FLG-HKNJAINF        =   ZERO
@@ -1783,8 +1935,17 @@
            MOVE    SPA-NAI-IDOYMD      TO  HKNJA-IDOYMD
       *
            MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+      *
+           MOVE    SPA-OPID            TO  HKNJA-OPID
+           MOVE    SMCNDATE-YMD        TO  HKNJA-UPYMD
+           MOVE    SMCNDATE-HMS        TO  HKNJA-UPHMS
+           IF      FLG-HKNJAINF        =   1
+               MOVE    SMCNDATE-YMD        TO  HKNJA-CREYMD
+           END-IF
+      *
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+      **** MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "tbl_hknjainf_user" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -1805,9 +1966,14 @@
                MOVE    "1001"                  TO  SPA-ERRCD
            END-IF
       *
+      *    前回ＣＤへ保存
+           MOVE    SPA-GMN-HKNJANUM    TO  WRK-HKNJANUM
+      *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 310-SPASET-SEC 
            END-IF
+      *    前回ＣＤへ保存
+           MOVE    WRK-HKNJANUM        TO  SPA-MAE-HKNJANUM
            .
        490-KOUSHIN-EXT.
            EXIT.
@@ -1872,7 +2038,10 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
-      * 
+      *
+           MOVE    SPACE                 TO  N01
+           INITIALIZE                        N01
+      *
            MOVE    SPA-GMN-HKNJANUM      TO  N01-HKNJANUM
            MOVE    SPA-GMN-HKNJANAME     TO  N01-HKNJANAME
            MOVE    SPA-GMN-HKNJANAMETAN1 TO  N01-HKNJANAMETAN1
@@ -1956,6 +2125,27 @@
                                                N01-KNKYURATE-STATE
            END-IF
       *----(02.01.01)--ADD-END-----
+      *H29.10
+      *    ユーザー判定
+           IF      SPA-NAI-USER-FLG    =   ZERO
+      *        マスター登録
+               MOVE    SPACE               TO  N01-MIDASHI-DATA
+               MOVE    SPACE               TO  N01-MIDASHI-STYLE
+               MOVE    WIDGET-INSENSITIVE  TO  N01-B03-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  N01-B12-STATE
+           ELSE
+      *        ユーザー登録
+               MOVE    "【ユーザ―管理】"  TO  N01-MIDASHI-DATA
+               MOVE    "red"               TO  N01-MIDASHI-STYLE
+               MOVE    WIDGET-NORMAL       TO  N01-B03-STATE
+               MOVE    WIDGET-NORMAL       TO  N01-B12-STATE
+      *        マスター登録あり
+               IF      SPA-NAI-MAST-FLG    =   1
+                   MOVE    "【提供マスター有】"
+                                           TO  N01-MIDASHI02-DATA
+                   MOVE    "blue"          TO  N01-MIDASHI02-STYLE
+               END-IF
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2042,14 +2232,38 @@
       *
            EVALUATE    SPA-NIDCD
                WHEN    "1001"
-                   MOVE    "登録処理をします"    TO  WRK-NIDMSG
+      ****         MOVE    "登録処理をします。"    TO  WRK-NIDMSG
+                   STRING  "登録処理をします。"
+                           "よろしいですか？"
+                                                   DELIMITED BY  SIZE
+                                               INTO    WRK-NIDMSG
+                   END-STRING
       *----(02.01.01)--ADD-START---
                WHEN    "1011"
                    MOVE    "想定外の給付割合です。登録処理をしますか？"
                                                  TO  WRK-NIDMSG
       *----(02.01.01)--ADD-END-----
                WHEN    "1002"
-                   MOVE    "削除処理をします"    TO  WRK-NIDMSG
+      ****         MOVE    "削除処理をします。"    TO  WRK-NIDMSG
+                   STRING  "削除処理をします。"
+                           "よろしいですか？"
+                                                   DELIMITED BY  SIZE
+                                               INTO    WRK-NIDMSG
+                   END-STRING
+      *
+               WHEN    "1005"
+                   STRING  "マスターをユーザーへ複写します。"
+                           "よろしいですか？"
+                                                   DELIMITED BY  SIZE
+                                               INTO    WRK-NIDMSG
+                   END-STRING
+               WHEN    "1010"
+                   STRING  "ユーザー管理となりますので、"
+                           "マスター更新の対象外となります。"
+                           "登録処理をしますか？"
+                                                   DELIMITED BY  SIZE
+                                               INTO    WRK-NIDMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  NID1
@@ -2290,21 +2504,15 @@
       *****************************************************************
        900-HKNJAINF-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+      *
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 910-DBMAIN-SELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+               MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+               PERFORM 920-DBMAIN-FETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-HKNJAINF
                    MOVE    MCPDATA-REC         TO  HKNJAINF-REC
@@ -2314,39 +2522,39 @@
            ELSE
                MOVE    1                   TO  FLG-HKNJAINF
            END-IF
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 990-DBLOSEC-SEC
       *
            .
        900-HKNJAINF-INV-EXT.
            EXIT.
+      *****************************************************************
+      *    管理マスター読込（マスター）
+      *****************************************************************
+       900-HKNJAINF-MAST-INV-SEC         SECTION.
+      *
+           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_hknjainf_master"   TO  WRK-PATH-TABLE
+           PERFORM 900-HKNJAINF-INV-SEC
+      *
+           .
+       900-HKNJAINF-MAST-INV-EXT.
+           EXIT.
       *
       *****************************************************************
-      *    管理マスター読込（キー）
+      *    住所マスター読込
       *****************************************************************
        900-ADRS-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 910-DBMAIN-SELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_adrs"          TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+               PERFORM 920-DBMAIN-FETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-ADRS
                    MOVE    MCPDATA-REC         TO  ADRS-REC
@@ -2357,13 +2565,9 @@
                MOVE    1                   TO  FLG-ADRS
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 990-DBLOSEC-SEC
       *
            .
        900-ADRS-INV-EXT.
@@ -2374,13 +2578,9 @@
       *****************************************************************
        900-HKNNUM-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 910-DBMAIN-SELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
                MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
@@ -2389,13 +2589,9 @@
                MOVE    1                   TO  FLG-HKNNUM
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
            MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 990-DBLOSEC-SEC
       *
            .
        900-HKNNUM-INV-EXT.
@@ -2406,11 +2602,7 @@
       *****************************************************************
        921-HKNMST-NEXT-SEC              SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 920-DBMAIN-FETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
@@ -2420,6 +2612,45 @@
            END-IF
            .
        921-HKNMST-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBMAIN-SELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       910-DBMAIN-SELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBMAIN-FETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       920-DBMAIN-FETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *   ＤＢクローズ処理
+      *****************************************************************
+       990-DBLOSEC-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       990-DBLOSEC-EXT.
            EXIT.
       *
       *****************************************************************

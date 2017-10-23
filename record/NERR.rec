@@ -4,7 +4,7 @@ NERR {
       textdata varchar(11);
     };
     ERRMSG {
-      textdata varchar(61);
+      textdata varchar(80);
     };
   };
 };

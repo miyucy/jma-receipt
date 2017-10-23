@@ -62,3 +62,14 @@
                         PIC X(30)   OCCURS  10 TIMES.
               03  N01-IDOYMD.
                 04  N01-VALUE   PIC X(10).
+              03  N01-MIDASHI.
+                04  N01-MIDASHI-STYLE   PIC X(20).
+                04  N01-MIDASHI-DATA    PIC X(20).
+              03  N01-MIDASHI02.
+                04  N01-MIDASHI02-STYLE   PIC X(20).
+                04  N01-MIDASHI02-DATA    PIC X(20).
+              03  N01-B03.
+                04  N01-B03-STATE   PIC S9(9)   BINARY.
+              03  N01-B12.
+                04  N01-B12-STATE   PIC S9(9)   BINARY.
+

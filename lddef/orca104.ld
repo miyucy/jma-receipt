@@ -60,6 +60,8 @@ db	{
 	tbl_spa_tmp;
 	tbl_adrs_master;
 	tbl_adrs_user;
+	tbl_hknjainf_master;
+	tbl_hknjainf_user;
 };
 
  db	"shell"	{

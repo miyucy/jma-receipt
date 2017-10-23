@@ -22,4 +22,4 @@
          02  NERR.
             03  NERR-FIXED1.
               04  NERR-ERRCODE    PIC X(11).
-              04  NERR-ERRMSG PIC X(61).
+              04  NERR-ERRMSG PIC X(80).

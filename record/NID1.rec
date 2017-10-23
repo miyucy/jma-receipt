@@ -4,7 +4,7 @@ NID1 {
       textdata varchar(11);
     };
     ID1MSG {
-      textdata varchar(71);
+      textdata varchar(80);
     };
   };
 };
