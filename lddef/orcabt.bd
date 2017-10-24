@@ -317,6 +317,7 @@ db "xml2" {
  fm_invoice_receipt_h;
  xml_stock1;
  xml_disease_masterlst;
+ xml_medication_masterlst;
 };
 
 db "monblob" {
