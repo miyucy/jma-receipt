@@ -532,11 +532,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
            MOVE    IN-IDOKBN           TO  HKNJA-IDOKBN
            MOVE    IN-IDOYMD           TO  HKNJA-IDOYMD
-           MOVE    IN-TERMID           TO  HKNJA-TERMID
-           MOVE    IN-OPID             TO  HKNJA-OPID
-           MOVE    IN-CREYMD           TO  HKNJA-CREYMD
-           MOVE    IN-UPYMD            TO  HKNJA-UPYMD
-           MOVE    IN-UPHMS            TO  HKNJA-UPHMS
+      **   MOVE    IN-TERMID           TO  HKNJA-TERMID
+      **   MOVE    IN-OPID             TO  HKNJA-OPID
+      **   MOVE    IN-CREYMD           TO  HKNJA-CREYMD
+      **   MOVE    IN-UPYMD            TO  HKNJA-UPYMD
+      **   MOVE    IN-UPHMS            TO  HKNJA-UPHMS
            .
        2099-HKNJA-SET-EXT.
            EXIT.
@@ -765,9 +765,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    MCPDATA-REC     TO  HKNJA-REC
                MOVE    SPACE           TO  HKNJA-TERMID
                MOVE    SPACE           TO  HKNJA-OPID
-               MOVE    SPACE           TO  HKNJA-CREYMD
-               MOVE    SPACE           TO  HKNJA-UPYMD
-               MOVE    SPACE           TO  HKNJA-UPHMS
+      **       MOVE    SPACE           TO  HKNJA-CREYMD
+      **       MOVE    SPACE           TO  HKNJA-UPYMD
+      **       MOVE    SPACE           TO  HKNJA-UPHMS
                MOVE    ZERO            TO  FLG-HKNJA
            ELSE
                INITIALIZE                  HKNJA-REC

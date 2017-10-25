@@ -1,7 +1,7 @@
 tbl_adrs_master {
 	HOSPNUM				number(2,0);
-	LPUBCD				char(5);
-	POST				char(7);
+	LPUBCD				varchar(5);
+	POST				varchar(7);
 	RENNUM				number(2);
 	PREFKANA			varchar(40);
 	CITYKANA			varchar(200);
@@ -11,8 +11,8 @@ tbl_adrs_master {
 	TOWNNAME			varchar(200);
 	EDITADRS_KANA		varchar(640);
 	EDITADRS_NAME		varchar(320);
-	TOWNDIVFLG			char(1);
-	MANYTOWNFLG			char(1);
+	TOWNDIVFLG			varchar(1);
+	MANYTOWNFLG			varchar(1);
 	TOWNNAME2			varchar(1200);
 };
 
@@ -51,6 +51,31 @@ path	key		{
 				:HOSPNUM,
 				:TOWNNAME2
 			)
+		;
+	};
+
+	DBUPDATE		{
+		UPDATE master.tbl_adrs_master
+			SET
+				LPUBCD = :LPUBCD,
+				POST   = :POST,
+				RENNUM = :RENNUM,
+				PREFKANA = :PREFKANA,
+				CITYKANA = :CITYKANA,
+				TOWNKANA = :TOWNKANA,
+				PREFNAME = :PREFNAME,
+				CITYNAME = :CITYNAME,
+				TOWNNAME = :TOWNNAME,
+				EDITADRS_KANA = :EDITADRS_KANA,
+				EDITADRS_NAME = :EDITADRS_NAME,
+				TOWNDIVFLG = :TOWNDIVFLG,
+				MANYTOWNFLG = :MANYTOWNFLG,
+				HOSPNUM = :HOSPNUM,
+				TOWNNAME2 = :TOWNNAME2
+		WHERE   HOSPNUM = :HOSPNUM
+			AND LPUBCD = :LPUBCD
+			AND POST   = :POST
+			AND RENNUM = :RENNUM
 		;
 	};
 
