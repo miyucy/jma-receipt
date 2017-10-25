@@ -38,7 +38,7 @@ RENNUM=0
 ERR_FILE_BASE=$(basename ${15})
 ERR_FILE_FULL=${MCP_TEMPDIR}/${ERR_FILE_BASE}
 
-LOG_FILE=/var/log/jma-receipt/${14}disease_masterlst.log
+LOG_FILE=/var/log/jma-receipt/${14}medication_masterlst.log
 [ -e ${LOG_FILE} ] && rm ${LOG_FILE}
 echo $(basename ${LOG_FILE})
 
@@ -51,9 +51,19 @@ $DBSTUB -dir $LDDIRECTORY -bd orcabt ORAPI052BR2V3 -parameter "$1,$2,$3,$RENNUM,
 if  [ -e ${ERR_FILE_FULL} ]; then
      exit
 else
-     FILENM="medication_masterlst.xml"
-     echo "filenm=[" $FILENM "]"
-     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},$FILENM,"xml",${17}
+    cd ${MCP_TEMPDIR}/
+    FILENM="medication_masterlst.zip"
+    echo "filenm=[" $FILENM "]"
+    zip -r ${FILENM} medication_masterlst.xml
+    RC=$?
+    echo "--- zip end   ---[" $RC  "]" 
+    if  [ $RC -ne '0' ]; then
+        ERRCD='0000'$RC
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${12}${13}'  '${ERRCD:${#ERRCD}-4:4},${14} 
+        echo "--- zip err   ---" 
+        exit
+     fi
+     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},$FILENM,"zip",${17}
      if  [ -e ${ERR_FILE_FULL} ]; then
          exit
      fi
