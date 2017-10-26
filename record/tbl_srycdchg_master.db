@@ -66,7 +66,7 @@ path	key3 	{
 	DBSELECT	{
 		DECLARE tbl_srycdchg_master_key3_csr CURSOR FOR
 		SELECT *
-		FROM tbl_srycdchg
+		FROM master.tbl_srycdchg_master
 		WHERE	HOSPNUM = :HOSPNUM
 			AND RJNSRYCD = :RJNSRYCD
 		;
