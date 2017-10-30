@@ -311,6 +311,7 @@ bind	"ORAPI052BR2V3"	"OpenCOBOL";
 bind    "ORCBBLOBIMPORT"    "OpenCOBOL";
 bind	"ORAPI052BR3V3"	"OpenCOBOL";
 bind	"ORCBUPMAIN"	"OpenCOBOL";
+bind	"ORAPI052BR4V3"	"OpenCOBOL";
 
 db "xml2" {
  fm_payment_certificate;
@@ -318,6 +319,7 @@ db "xml2" {
  xml_stock1;
  xml_disease_masterlst;
  xml_medication_masterlst;
+ xml_ptbasis_migration;
 };
 
 db "monblob" {

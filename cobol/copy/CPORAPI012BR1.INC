@@ -123,7 +123,7 @@
       *        ＦＡＸ番号
                05  PTINFLST-FAX                PIC  X(15).
       *        電子メールアドレス
-               05  PTINFLST-EMAIL              PIC  X(050).
+               05  PTINFLST-EMAIL              PIC  X(50).
       *        減免事由
                05  PTINFLST-DISCOUNTKBN        PIC  X(02).
                05  PTINFLST-DISCOUNTKBN-NAME   PIC  X(20).
@@ -173,11 +173,11 @@
       *        保険情報
                05  PTINFLST-MAIN-INSURANCE-INFO.
       *            保険の種類
-                   07  PTINFLST-MAIN-CLASS            PIC X(03).
-      *            保険の種類名称
-                   07  PTINFLST-MAIN-NAME              PIC X(20).
+                   07  PTINFLST-MAIN-CLASS             PIC X(03).
       *            保険者番号
                    07  PTINFLST-INSURANCE-NUMBER       PIC X(08).
+      *            保険の種類名称
+                   07  PTINFLST-MAIN-NAME              PIC X(20).
       *            記号
                    07  PTINFLST-MAIN-MARK              PIC X(80).
       *            番号
@@ -209,21 +209,21 @@
       *                公費の種類名称
                        09  PTINFLST-PUBLIC-NAME            PIC X(20).
       *                負担者番号
-                       09  PTINFLST-PROVIDER-NUMBER         PIC X(08).
+                       09  PTINFLST-PROVIDER-NUMBER        PIC X(08).
       *                受給者番号
-                       09  PTINFLST-RECIPIENT-NUMBER        PIC X(20).
+                       09  PTINFLST-RECIPIENT-NUMBER       PIC X(20).
       *                入院−負担率（割）
-                       09  PTINFLST-RATE-ADMISSION          PIC X(04).
+                       09  PTINFLST-RATE-ADMISSION         PIC X(04).
       *                入院−固定額
-                       09  PTINFLST-MONEY-ADMISSION         PIC X(06).
+                       09  PTINFLST-MONEY-ADMISSION        PIC X(06).
       *                外来−負担率（割）
-                       09  PTINFLST-RATE-OUTPATIENT         PIC X(04).
+                       09  PTINFLST-RATE-OUTPATIENT        PIC X(04).
       *                外来−固定額
-                       09  PTINFLST-MONEY-OUTPATIENT        PIC X(06).
+                       09  PTINFLST-MONEY-OUTPATIENT       PIC X(06).
       *                有効開始日
-                       09  PTINFLST-PUBLIC-START-DATE       PIC X(10).
+                       09  PTINFLST-PUBLIC-START-DATE      PIC X(10).
       *                有効終了日
-                       09  PTINFLST-PUBLIC-END-DATE         PIC X(10).
+                       09  PTINFLST-PUBLIC-END-DATE        PIC X(10).
       *労災情報
                05  PTINFLST-ACCIDENT-INF-G.
       *            労災保険名称（記号と同じ内容）
