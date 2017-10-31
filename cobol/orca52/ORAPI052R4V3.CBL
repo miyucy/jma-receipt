@@ -596,6 +596,11 @@
            END-IF
            MOVE    LSTREQ-START-DATE   TO  LSTRES-START-DATE
       *
+           MOVE   LSTREQ-START-DATE    TO  WRK-HEN-DATE
+           MOVE    SPACE               TO  WRK-HEN-TIME
+           PERFORM 802-DAYHEN02-SEC
+           MOVE    WRK-SYMD            TO  WRK-START-YMD
+      *
       *    ½ªÎ»Æü
            IF      LSTREQ-END-DATE     =   SPACE
                MOVE    "9999-99-99"        TO  LSTREQ-END-DATE
@@ -603,17 +608,16 @@
            IF      LSTREQ-START-DATE   >   LSTREQ-END-DATE
                MOVE    LSTREQ-START-DATE   TO  LSTREQ-END-DATE
            END-IF
-           MOVE    LSTREQ-END-DATE     TO  LSTRES-END-DATE
       *
-           MOVE   LSTREQ-START-DATE    TO  WRK-HEN-DATE
-           MOVE    SPACE               TO  WRK-HEN-TIME
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD            TO  WRK-START-YMD
-      *
-           MOVE   LSTREQ-END-DATE     TO  WRK-HEN-DATE
+           MOVE   LSTREQ-END-DATE      TO  WRK-HEN-DATE
            MOVE    SPACE               TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD            TO  WRK-END-YMD
+      *
+           MOVE    WRK-END-YMD         TO  WRK-SYMD
+           MOVE    SPACE               TO  WRK-THMS
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  LSTRES-END-DATE
       *
            MOVE   LSTREQ-REQUEST-NUMBER
                                        TO  LSTRES-REQUEST-NUMBER
@@ -1015,7 +1019,7 @@
            MOVE    WRK-HEN-YY          TO  WRK-SYY
            MOVE    WRK-HEN-MM          TO  WRK-SMM
            MOVE    WRK-HEN-DD          TO  WRK-SDD
-           IF      WRK-SYMD            =   "99999999"
+           IF      WRK-SYMD            =   "99991231"
                MOVE    "99"                TO  WRK-SMM
                MOVE    "99"                TO  WRK-SDD
            END-IF
