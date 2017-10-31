@@ -183,6 +183,8 @@
       *  04.08.06    NACL-門脇    17/04/06  入院期間外の入院診療行為入力
       *                                     チェック
       *  04.08.07    NACL-門脇    17/10/12  大阪府地方公費対応
+      *  04.08.08    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
+      *                                     での食事算定対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -300,6 +302,14 @@
               03 WRK-DOJITUSKJST-FLG       PIC X(01)  OCCURS  31.
               03 WRK-DOJITUSKJED-FLG       PIC X(01)  OCCURS  31.
       *
+      *    入院料と異なる食事算定保険組み合わせ
+       01  WRK-SKJHKN-TABLE.
+           02  WRK-SKJHKN-TBL    OCCURS   10.
+              03  WRK-SKJHKN-HKNCOMBI      PIC X(04)  OCCURS  31.
+              03  WRK-SKJHKN-HKNCOMBI-DOU  PIC X(04)  OCCURS  31.
+              03  WRK-SKJHKN-HKNCOMBI-DOU-XXX
+                                           PIC X(04)  OCCURS  31.
+      *
       *    日別点数
        01  WRK-DAYTEN-TABLE.
            02  WRK-DAYTEN-TBL    OCCURS  10.
@@ -319,6 +329,13 @@
                                            PIC 9(04)  OCCURS  31.
               03  WRK-NYUINDAY-TAIHI-DOU-SKJKBN
                                            PIC X(01)  OCCURS  31.
+      *
+       01  WRK-SKJHKN-TAIHI-TABLE.
+           02  WRK-SKJHKN-TAIHI-TBL        OCCURS    2.
+              03  WRK-SKJHKN-TAIHI-HKNCOMBI
+                                           PIC X(04)  OCCURS  31.
+              03  WRK-SKJHKN-TAIHI-HKNCOMBI-DOU
+                                           PIC X(04)  OCCURS  31.
       *
        01  WRK-TAISYOGAI-HANTEI-TABLE.
            02  WRK-TAISYOGAI-HANTEI-TBL    OCCURS   10.
@@ -751,6 +768,9 @@
       *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
+      *    入院料と異なる食事算定保険組み合わせ取得サブ
+           COPY    "CPORCSSKJHKN.INC".
+      *
       /
       ***
        LINKAGE             SECTION.
@@ -814,6 +834,8 @@
                          WRK-KAIKEING2-TABLE
                          WRK-KOREI-TANYUIN-TABLE
                          WRK-YAKTEN-TABLE
+                         WRK-SKJHKN-TABLE
+                         WRK-SKJHKN-TAIHI-TABLE
                          FLG-AREA
                          CNT-AREA.
       *
@@ -916,6 +938,8 @@
                                               TO  LNK-S02-KOREI-TANYUIN
       *
                 MOVE     WRK-DOJITU-TBL(IDX)  TO  LNK-S02-DOJITU
+      *
+                MOVE     WRK-SKJHKN-TBL(IDX)  TO  LNK-S02-SKJHKN
       *
                 MOVE     WRK-DAYTEN-TABLE     TO  LNK-S02-DAYTEN
                 MOVE     IDX                  TO  LNK-S02-IDX
@@ -1096,6 +1120,10 @@
                AND  (LNK-SYU-JIHI-TOTAL(IDX)             =  ZERO)
                AND  (LNK-SYU-JIHI-TOTAL-TAX(IDX)         =  ZERO)
                AND  (LNK-SYU-RSIJIBAI-SKYMONEY(IDX)      =  ZERO)
+               AND  (LNK-SYU-RYOYOHI-SKJ(IDX)            =  ZERO)
+               AND  (LNK-SYU-RYOYOHI-SKJ-JIHI(IDX)       =  ZERO)
+               AND  (LNK-SYU-RYOYOHI-LIFE(IDX)           =  ZERO)
+               AND  (LNK-SYU-RYOYOHI-LIFE-JIHI(IDX)      =  ZERO)
                     CONTINUE
                ELSE
                     MOVE     ZERO    TO    WRK-TAISYOGAI-HANTEI(IDX)
@@ -1182,6 +1210,8 @@
                                               TO  LNK-S02-KOREI-TANYUIN
       *
                 MOVE     WRK-DOJITU-TBL(IDX)  TO  LNK-S02-DOJITU
+      *
+                MOVE     WRK-SKJHKN-TBL(IDX)  TO  LNK-S02-SKJHKN
       *
                 MOVE     WRK-DAYTEN-TABLE     TO  LNK-S02-DAYTEN
                 MOVE     IDX                  TO  LNK-S02-IDX
@@ -1374,6 +1404,31 @@
                    MOVE  LNK-NYUINDAY-DOUJITSU-SKJKBN(IDY) TO
                            WRK-NYUINDAY-TAIHI-DOU-SKJKBN(IDX IDY)
                  END-PERFORM
+              END-IF
+      *
+           END-PERFORM.
+      *
+      *    入院料と異なる食事算定保険組み合わせ取得
+           PERFORM    VARYING   IDX    FROM   1   BY   1
+                              UNTIL    (IDX            >     2)
+                                OR     (WRK-SKYYM(IDX) =  SPACE)
+      *
+              IF   WRK-SKYYM(IDX)  >=  "201710"
+                INITIALIZE                   ORCSSKJHKN-AREA
+                MOVE    LNK-S02-HOSPNUM  TO  LNK-SKJHKN-HOSPNUM
+                MOVE    LNK-S02-PTID     TO  LNK-SKJHKN-PTID
+                MOVE    WRK-SKYYM(IDX)   TO  LNK-SKJHKN-SANTEIYM
+                CALL    "ORCSSKJHKN"     USING   ORCSSKJHKN-AREA
+                                                 SPA-AREA
+                IF      LNK-SKJHKN-RC    =   ZERO
+                   PERFORM    VARYING   IDY   FROM   1   BY   1
+                               UNTIL    IDY    >    31
+                     MOVE  LNK-SKJHKN-HKNCOMBINUM(IDY 1) TO
+                             WRK-SKJHKN-TAIHI-HKNCOMBI(IDX IDY)
+                     MOVE  LNK-SKJHKN-HKNCOMBINUM(IDY 2) TO
+                             WRK-SKJHKN-TAIHI-HKNCOMBI-DOU(IDX IDY)
+                   END-PERFORM
+                END-IF
               END-IF
       *
            END-PERFORM.
@@ -2563,9 +2618,10 @@
                              IF   IDX-ST  =  IDY
                                MOVE   8   TO  WRK-DOJITU-FLG (IDX IDY)
                                MOVE  "8"  TO  LNK-SYU-DAY(IDX IDY)
-                             END-IF
-                             IF   IDX-ED  =  IDY
-                               MOVE   7   TO  WRK-DOJITU-FLG (IDX IDY)
+                             ELSE
+                               IF   IDX-ED  =  IDY
+                                 MOVE 7   TO  WRK-DOJITU-FLG (IDX IDY)
+                               END-IF
                              END-IF
                              MOVE     1   TO  WRK-TAISYOGAI-HANTEI(IDX)
                            END-IF
@@ -2584,6 +2640,17 @@
                     WHEN     "3"
                       MOVE "2"  TO   WRK-DOJITUSKJED-FLG(IDX IDY)
                   END-EVALUATE
+                END-IF
+      *
+                MOVE  WRK-SKJHKN-TAIHI-HKNCOMBI(IDX7 IDY)
+                          TO   WRK-SKJHKN-HKNCOMBI(IDX IDY)
+                MOVE  WRK-SKJHKN-TAIHI-HKNCOMBI-DOU(IDX7 IDY)
+                          TO   WRK-SKJHKN-HKNCOMBI-DOU(IDX IDY)
+      *
+                IF    WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX7 IDY)
+                                                           NOT = ZERO
+                  MOVE  WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX7 IDY)
+                          TO   WRK-SKJHKN-HKNCOMBI-DOU-XXX(IDX IDY)
                 END-IF
       *
               END-PERFORM

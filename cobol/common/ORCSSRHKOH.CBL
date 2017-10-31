@@ -37,6 +37,8 @@
       *  04.07.03    NACL-門脇    15/06/08  難病の実施機関番号追加対応（６０２）
       *
       *  04.08.01    NACL-門脇    15/10/21  現物給付対象外の低所得（食事）対応
+      *  04.08.02    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
+      *                                     での食事算定対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -53,6 +55,7 @@
        01  FLG-AREA.
            03  FLG-PTINF               PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
+           03  FLG-SRYACT              PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-PTHKNINF            PIC 9(01).
            03  FLG-PTKOHINF            PIC 9(01).
@@ -109,19 +112,23 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    患者マスタ
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    診療会計マスター
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    患者保険マスタ
+      *    診療行為
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
+      *    患者保険情報
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    患者公費マスタ
+      *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
@@ -133,7 +140,7 @@
        01  NACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    システム管理マスタ
+      *    システム管理
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1001.INC".
       *
@@ -261,6 +268,13 @@
            IF    ( SSRHKOH-RC      =   ZERO )
                IF    ( SSRHKOH-NYUGAIKBN   =   "1" )
                    PERFORM 2001-NACCTHKN-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF    ( SSRHKOH-RC      =   ZERO )
+               IF    ( SSRHKOH-NYUGAIKBN   =   "1"      )
+               AND   ( SSRHKOH-SRYYM      >=   "201710" )
+                   PERFORM 2001-ACCT-CHK-SEC
                END-IF
            END-IF
       *
@@ -398,6 +412,47 @@
       *
            .
        2001-NACCTHKN-CHK2-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計チェック処理
+      *****************************************************************
+       2001-ACCT-CHK-SEC           SECTION.
+      *
+           PERFORM 900-SRYACT-KEY7-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SRYACT  NOT =   ZERO )
+                    OR   ( SSRHKOH-RC  NOT =   ZERO )
+      *
+               PERFORM 900-SRYACCT-KEY31-SEL-SEC
+               IF  FLG-SRYACCT  =  ZERO
+                 PERFORM   VARYING   IDX1    FROM    1   BY  1
+                            UNTIL   (IDX1            >    31 )
+                             OR     (SSRHKOH-RC  NOT =   ZERO)
+                   IF     ACCT-DAY(1 IDX1)  NOT =  ZERO
+                      IF  ((WRK-DAY1(IDX1)  NOT = ZERO) AND
+                           (WRK-DAY5(IDX1)  NOT = ZERO))
+                      OR  ((WRK-DAY-MI(IDX1)    = "1" ) AND
+                           (WRK-DAY5(IDX1)  NOT = ZERO))
+                        MOVE    ACCT-HKNCOMBI   TO  WRK-HKNCOMBI
+                        PERFORM 2001-H2105KAISEI-CHK-SEC
+                      END-IF
+                   END-IF
+                 END-PERFORM
+               END-IF
+               MOVE    "tbl_sryacct"   TO  MCP-TABLE
+               MOVE    "key31"         TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               PERFORM 900-SRYACT-KEY7-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       2001-ACCT-CHK-EXT.
            EXIT.
       *****************************************************************
       *    平成２１年５月改正対象公費存在チェック処理
@@ -715,6 +770,85 @@
       *
            .
        900-SRYACCT-KEY53-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計検索処理
+      *****************************************************************
+       900-SRYACCT-KEY31-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+      *
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SSRHKOH-NYUGAIKBN   TO  ACCT-NYUGAIKBN
+           MOVE    SSRHKOH-PTID        TO  ACCT-PTID
+           MOVE    SRY-SRYKA           TO  ACCT-SRYKA
+           MOVE    SSRHKOH-SRYYM       TO  ACCT-SRYYM
+           MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key31"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       900-SRYACCT-KEY31-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為検索処理
+      *****************************************************************
+       900-SRYACT-KEY7-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACT
+      *
+           INITIALIZE                      SRYACT-REC
+           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
+           MOVE    SSRHKOH-NYUGAIKBN   TO  SRY-NYUGAIKBN
+           MOVE    SSRHKOH-PTID        TO  SRY-PTID
+           MOVE    SSRHKOH-SRYYM       TO  SRY-SRYYM
+           MOVE    "099999930"         TO  SRY-SRYCD(1)
+           MOVE    "099999930"         TO  SRY-SRYCD(2)
+           MOVE    "099999930"         TO  SRY-SRYCD(3)
+           MOVE    "099999930"         TO  SRY-SRYCD(4)
+           MOVE    "099999930"         TO  SRY-SRYCD(5)
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       900-SRYACT-KEY7-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為FETCH処理
+      *****************************************************************
+       900-SRYACT-KEY7-FET-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACT
+      *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       900-SRYACT-KEY7-FET-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ取得処理

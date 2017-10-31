@@ -32,6 +32,8 @@
       *  04.08.01    NACL-門脇    15/10/21  現物給付対象外の低所得（食事）対応
       *  04.08.02    NACL-門脇    17/08/01  平成２９年１０月改正
       *                                     （入院時生活療養費の見直し）
+      *  04.08.03    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
+      *                                     での食事算定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -57,6 +59,8 @@
            03  FLG-CHECK             PIC 9(01).
            03  FLG-ARI               PIC 9(01).
            03  FLG-OK                PIC 9(01).
+           03  FLG-PARA              PIC 9(01).
+           03  FLG-OKIKAE            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -101,6 +105,8 @@
                07  WRK-DAY-NENREIFLG             PIC X(01).
       *
                07  WRK-DAY-HKNCOMBI-DOU          PIC 9(04).
+               07  WRK-DAY-HKNCOMBI-SKJHKN       PIC 9(04).
+               07  WRK-DAY-HKNCOMBI-SKJHKN-DOU   PIC 9(04).
       *
            03  WRK-SYOTOKU-YMD.
                05  WRK-SYOTOKU-YM      PIC 9(06).
@@ -116,6 +122,8 @@
              05  WRK-CHECK-T           OCCURS   31.
                07  WRK-CHECK-HKNCOMBI  PIC 9(04).
                07  WRK-CHECK-FLG       PIC 9(01).
+      *
+           03  WRK-TAIHI-HKNCOMBI      PIC 9(04).
       *
       *    固定値
        01  WRK-CONS-AREA.
@@ -168,6 +176,9 @@
       *
       *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
+      *
+      *    入院料と異なる食事算定保険組み合わせ取得サブ
+           COPY    "CPORCSSKJHKN.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -694,11 +705,37 @@
                                 TO  LNK-SYOTOKU-SKJHKNCOMBI-DOU(IDX2)
            END-PERFORM
       *
+      *    入院料と異なる食事算定保険組み合わせ取得
+           IF   LNK-SYOTOKU-SRYYM   >=   "201710"
+              INITIALIZE                     ORCSSKJHKN-AREA
+              MOVE  LNK-SYOTOKU-HOSPNUM  TO  LNK-SKJHKN-HOSPNUM
+              MOVE  LNK-SYOTOKU-PTID     TO  LNK-SKJHKN-PTID
+              MOVE  LNK-SYOTOKU-SRYYM    TO  LNK-SKJHKN-SANTEIYM
+              CALL  "ORCSSKJHKN"         USING   ORCSSKJHKN-AREA
+                                                 SPA-AREA
+              IF      LNK-SKJHKN-RC    =   ZERO
+                 PERFORM    VARYING   IDX2   FROM   1   BY   1
+                             UNTIL    IDX2    >    31
+                   IF   LNK-SKJHKN-HKNCOMBINUM(IDX2 1) NOT = SPACE
+                     MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX2 1) TO
+                                   WRK-DAY-HKNCOMBI-SKJHKN(IDX2)
+                   END-IF
+                   IF   LNK-SKJHKN-HKNCOMBINUM(IDX2 2) NOT = SPACE
+                     MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX2 2) TO
+                                   WRK-DAY-HKNCOMBI-SKJHKN-DOU(IDX2)
+                   END-IF
+                 END-PERFORM
+              END-IF
+           END-IF
+      *
       *    保険組み合わせ情報編集
            PERFORM   VARYING   IDX2   FROM   1   BY   1
                       UNTIL    IDX2     >   31
               IF   WRK-DAY-HKNCOMBI(IDX2)  NOT =  ZERO
               AND  WRK-DAY-SETFLG(IDX2)        =  ZERO
+                MOVE    1      TO  FLG-PARA
+                MOVE    WRK-DAY-HKNCOMBI(IDX2)
+                               TO  WRK-TAIHI-HKNCOMBI
                 PERFORM 2304-HKNCOMBI-KENSAKU-SEC
       *
                 COMPUTE   IDX4 = IDX2 + 1
@@ -713,17 +750,36 @@
            END-PERFORM
       *
       *    同日再入院の保険組み合わせ情報置き換え編集
+      *    入院料と異なる食事算定保険組み合わせ情報置き換え編集
            PERFORM   VARYING   IDX2    FROM    1   BY  1
                       UNTIL    IDX2     >     31
               IF   WRK-DAY-HKNCOMBI(IDX2)      NOT =  ZERO
-              AND  WRK-DAY-HKNCOMBI-DOU(IDX2)  NOT =  ZERO
                  IF  (WRK-DAY-HKNKOHSBTKBN(IDX2) =  "8" OR "9")
                  OR  (WRK-DAY-HKNNUM(IDX2)       =
                                 "971" OR "973" OR "975" OR
                                 "068" OR "069" OR "040"       )
-                    MOVE    WRK-DAY-HKNCOMBI-DOU(IDX2)
-                                           TO WRK-DAY-HKNCOMBI(IDX2)
-                    PERFORM 2304-HKNCOMBI-KENSAKU-SEC
+                    MOVE     ZERO    TO  FLG-OKIKAE
+                    IF  (WRK-DAY-HKNCOMBI-DOU(IDX2) NOT = ZERO)
+                    AND (FLG-OKIKAE                     = ZERO)
+                      MOVE    2      TO  FLG-PARA
+                      MOVE    WRK-DAY-HKNCOMBI-DOU(IDX2)
+                                     TO  WRK-TAIHI-HKNCOMBI
+                      PERFORM 2304-HKNCOMBI-KENSAKU-SEC
+                    END-IF
+                    IF  (WRK-DAY-HKNCOMBI-SKJHKN(IDX2) NOT = ZERO)
+                    AND (FLG-OKIKAE                        = ZERO)
+                      MOVE    2      TO  FLG-PARA
+                      MOVE    WRK-DAY-HKNCOMBI-SKJHKN(IDX2)
+                                     TO  WRK-TAIHI-HKNCOMBI
+                      PERFORM 2304-HKNCOMBI-KENSAKU-SEC
+                    END-IF
+                    IF  (WRK-DAY-HKNCOMBI-SKJHKN-DOU(IDX2) NOT = ZERO)
+                    AND (FLG-OKIKAE                            = ZERO)
+                      MOVE    2      TO  FLG-PARA
+                      MOVE    WRK-DAY-HKNCOMBI-SKJHKN-DOU(IDX2)
+                                     TO  WRK-TAIHI-HKNCOMBI
+                      PERFORM 2304-HKNCOMBI-KENSAKU-SEC
+                    END-IF
                  END-IF
               END-IF
            END-PERFORM
@@ -1171,7 +1227,7 @@
            INITIALIZE                         HKNCOMBI-REC
            MOVE    LNK-SYOTOKU-HOSPNUM    TO  COMB-HOSPNUM
            MOVE    LNK-SYOTOKU-PTID       TO  COMB-PTID
-           MOVE    WRK-DAY-HKNCOMBI(IDX2) TO  COMB-HKNCOMBINUM
+           MOVE    WRK-TAIHI-HKNCOMBI     TO  COMB-HKNCOMBINUM
            MOVE    HKNCOMBI-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"             TO  MCP-FUNC
            MOVE    "tbl_hkncombi"         TO  MCP-TABLE
@@ -1184,15 +1240,40 @@
               MOVE      "key"             TO  MCP-PATHNAME
               PERFORM    910-HKNCOMBI-READ-SEC
               IF   FLG-HKNCOMBI  =  ZERO
-                MOVE  COMB-HKNNUM      TO WRK-DAY-HKNNUM(IDX2)
-                MOVE  COMB-KOH1HKNNUM  TO WRK-DAY-KOH1HKNNUM(IDX2)
-                MOVE  COMB-KOH2HKNNUM  TO WRK-DAY-KOH2HKNNUM(IDX2)
-                MOVE  COMB-KOH3HKNNUM  TO WRK-DAY-KOH3HKNNUM(IDX2)
-                MOVE  COMB-KOH4HKNNUM  TO WRK-DAY-KOH4HKNNUM(IDX2)
-                MOVE  COMB-SYU-HKNKOHSBTKBN
-                                  TO WRK-DAY-HKNKOHSBTKBN(IDX2)
-                MOVE  COMB-HOJOKBN     TO WRK-DAY-HOJOKBN(IDX2)
-                MOVE  1                TO WRK-DAY-SETFLG(IDX2)
+                EVALUATE  FLG-PARA
+                  WHEN       1
+                    MOVE COMB-HKNNUM       TO WRK-DAY-HKNNUM(IDX2)
+                    MOVE COMB-KOH1HKNNUM   TO WRK-DAY-KOH1HKNNUM(IDX2)
+                    MOVE COMB-KOH2HKNNUM   TO WRK-DAY-KOH2HKNNUM(IDX2)
+                    MOVE COMB-KOH3HKNNUM   TO WRK-DAY-KOH3HKNNUM(IDX2)
+                    MOVE COMB-KOH4HKNNUM   TO WRK-DAY-KOH4HKNNUM(IDX2)
+                    MOVE COMB-SYU-HKNKOHSBTKBN
+                                           TO WRK-DAY-HKNKOHSBTKBN(IDX2)
+                    MOVE COMB-HOJOKBN      TO WRK-DAY-HOJOKBN(IDX2)
+                    MOVE 1                 TO WRK-DAY-SETFLG(IDX2)
+                  WHEN       2
+                    IF  (COMB-SYU-HKNKOHSBTKBN =  "8" OR "9")
+                    OR  (COMB-HKNNUM           =
+                              "971" OR "973" OR "975" OR
+                              "068" OR "069" OR "040"       )
+                      CONTINUE
+                    ELSE
+                      MOVE WRK-TAIHI-HKNCOMBI
+                                           TO WRK-DAY-HKNCOMBI(IDX2)
+      *
+                      MOVE COMB-HKNNUM     TO WRK-DAY-HKNNUM(IDX2)
+                      MOVE COMB-KOH1HKNNUM TO WRK-DAY-KOH1HKNNUM(IDX2)
+                      MOVE COMB-KOH2HKNNUM TO WRK-DAY-KOH2HKNNUM(IDX2)
+                      MOVE COMB-KOH3HKNNUM TO WRK-DAY-KOH3HKNNUM(IDX2)
+                      MOVE COMB-KOH4HKNNUM TO WRK-DAY-KOH4HKNNUM(IDX2)
+                      MOVE COMB-SYU-HKNKOHSBTKBN
+                                           TO WRK-DAY-HKNKOHSBTKBN(IDX2)
+                      MOVE COMB-HOJOKBN    TO WRK-DAY-HOJOKBN(IDX2)
+                      MOVE 1               TO WRK-DAY-SETFLG(IDX2)
+      *
+                      MOVE 1               TO FLG-OKIKAE
+                    END-IF
+                END-EVALUATE
               END-IF
            END-IF
            MOVE    "tbl_hkncombi"         TO  MCP-TABLE
