@@ -134,9 +134,9 @@
            COPY    "CPORCSNUM.INC".
       *
       *    API XML読み込み用定義体
-           COPY    "CPPTBASIS-MIGRATIONV3REQ.INC".
+           COPY    "CPPATIENT-BASIS-ALLV3REQ.INC".
       *    API XML書き込み用定義体
-           COPY    "CPPTBASIS-MIGRATIONV3RES.INC".
+           COPY    "CPPATIENT-BASIS-ALLV3RES.INC".
       *
       *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
@@ -198,7 +198,7 @@
        000-MAIN-SEC                SECTION.
       *
            DISPLAY   "**************************"
-           DISPLAY   "* ptbasismigration start *"
+           DISPLAY   "* patientbasisall  start *"
            DISPLAY   "**************************"
       *
            INITIALIZE                      FLG-AREA
@@ -222,7 +222,7 @@
            END-IF
       *
            DISPLAY   "*************************"
-           DISPLAY   "* ptbasismigration end  *"
+           DISPLAY   "* patientbasisall  end  *"
            DISPLAY   "*************************"
            .
        000-MAIN-EXIT.
@@ -241,7 +241,7 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           MOVE   "ptbasis migration"  TO  LSTRES-RESKEY
+           MOVE   "patientbasis all"   TO  LSTRES-RESKEY
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
@@ -335,12 +335,12 @@
            INITIALIZE                      XML-LSTREQ
       *    XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_ptbasis_migrationv3req"
+           MOVE    "xml_patient_basis_allv3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    APILST04-BODY         TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
-           MOVE    "ptbasis_migrationv3req"
+           MOVE    "patient_basis_allv3req"
                                        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -355,11 +355,11 @@
            END-IF
       *
            MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_ptbasis_migrationv3req"
+           MOVE    "xml_patient_basis_allv3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "ptbasis_migrationv3req"
+           MOVE    "patient_basis_allv3req"
                                        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -373,7 +373,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_ptbasis_migrationv3req"
+           MOVE    "xml_patient_basis_allv3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
@@ -440,11 +440,11 @@
            END-IF
       *
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_ptbasis_migrationv3res"
+           MOVE    "xml_patient_basis_allv3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  LSTRES-MODE
-           MOVE    "ptbasis_migrationv3res"
+           MOVE    "patient_basis_allv3res"
                                        TO  LSTRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -457,10 +457,10 @@
            END-IF
       *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_ptbasis_migrationv3res"
+           MOVE    "xml_patient_basis_allv3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "ptbasis_migrationv3res"
+           MOVE    "patient_basis_allv3res"
                                        TO  LSTRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -473,7 +473,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_ptbasis_migrationv3res"
+           MOVE    "xml_patient_basis_allv3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
@@ -485,7 +485,7 @@
                MOVE    "application/xml"   TO  APILST04-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "ptbasis_migration xml write failure "
+               DISPLAY "patient_basis_all xml write failure "
            END-IF
       *
           .
@@ -787,7 +787,7 @@
                                        TO  LNK-PRTKANRI-TBL-GROUP
            MOVE    "000000"            TO  LNK-PRTKANRI-SRYYM
            MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
-           MOVE    "ptbasis_migration.sh"
+           MOVE    "patient_basis_all.sh"
                                        TO  LNK-PRTKANRI-SHELLID
            MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
            MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
@@ -795,7 +795,7 @@
       **** MOVE    SYS-1031-PRTNM (6)  TO  LNK-PRTKANRI-PRTNM
       *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "ptbasis_migration.sh"
+           MOVE    "patient_basis_all.sh"
                                        TO  SHELLTBL-NAME
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-JOBID

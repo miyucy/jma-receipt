@@ -113,7 +113,6 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-ERRMSG          PIC X(300).
       *
            03  WRK-CNT             PIC 9(10).
            03  WRK-CNT-X           REDEFINES   WRK-CNT
@@ -977,7 +976,7 @@
            MOVE   PTINFLST-REC     TO  XMLDATA-DATA
       *
            MOVE    1               TO  XMLDATA-MODE
-           MOVE    "xml_ptbasis_migration"
+           MOVE    "xml_patient_basis_all"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            MOVE    "XMLOPEN"       TO  MCP-FUNC
@@ -985,7 +984,7 @@
                                        MCPAREA
                                        XMLDATA-REC
       *
-           MOVE    "ptbasis_migration"
+           MOVE    "Patient_Basis_All"
                                    TO  XMLDATA-RECORDNAME
            MOVE    "XMLWRITE"      TO  MCP-FUNC
            CALL    "MONFUNC"           USING
@@ -997,7 +996,7 @@
            MOVE    "blob"          TO  MCP-TABLE
            MOVE    XMLDATA-OBJECT  TO  ORCA-BLOB-OBJECT
            INITIALIZE                  SGETTEMP-AREA
-           STRING  "ptbasis_migration"
+           STRING  "patient_basis_all"
                                    DELIMITED   BY  SIZE
                    CNT-XMLCOUNT    DELIMITED   BY  SIZE
                    ".xml"          DELIMITED   BY  SIZE
@@ -1071,12 +1070,14 @@
        300-END-SEC                 SECTION.
       *
            IF      CNT-OUT         =   ZERO
-               CONTINUE 
+               MOVE    "処理対象のデータがありませんでした"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
            ELSE
                INITIALIZE                 ORCSAPIFILEAREA
                MOVE    SGETTEMP-TEMPDIR
                                        TO  SAPIFILE-IN-DIRNAME
-               MOVE    "ptbasis_migration"
+               MOVE    "patient_basis_all"
                                        TO  SAPIFILE-IN-FILENAME
                MOVE    "xml"           TO  SAPIFILE-IN-FILE-TYPE
                move    "2"             TO  SAPIFILE-IN-KBN
@@ -1084,7 +1085,7 @@
                MOVE    CNT-XMLCOUNT    TO  SAPIFILE-IN-COUNT
                MOVE    SGETTEMP-TEMPDIR
                                        TO  SAPIFILE-OT-DIRNAME
-               MOVE    "ptbasis_migration.xml"
+               MOVE    "patient_basis_all.xml"
                                        TO  SAPIFILE-OT-FILENAME
                CALL    "ORCSAPIFILE"   USING   ORCSAPIFILEAREA
       *

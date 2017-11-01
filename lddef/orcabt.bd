@@ -319,7 +319,7 @@ db "xml2" {
  xml_stock1;
  xml_disease_masterlst;
  xml_medication_masterlst;
- xml_ptbasis_migration;
+ xml_patient_basis_all;
 };
 
 db "monblob" {
