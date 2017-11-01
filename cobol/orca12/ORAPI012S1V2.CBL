@@ -191,6 +191,11 @@
       *    画面非表示
            COPY    "ENUM-VALUE".
       *
+      * 保険・公費最大件数
+       01  CONS-AREA.
+           03  TBL-MAX-KOH             PIC 9(02)  VALUE    60.
+           03  TBL-MAX-HKN             PIC 9(02)  VALUE    40.
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1958,6 +1963,12 @@
                GO      TO    200212-PTHKNINF-CHK-EXT
            END-IF
            MOVE    1                   TO  FLG-DATA
+      *H29.11
+           IF      SPA-PTHKN-MAX       >=  TBL-MAX-HKN
+               MOVE    "64"            TO  WRK-ERRCD
+               GO      TO    200212-PTHKNINF-CHK-EXT
+           END-IF
+      *!!
       *
            ADD     1                   TO  SPA-PTHKN-MAX
            ADD     1                   TO  SPA-PTNUM-HKNID
@@ -2219,7 +2230,8 @@
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   4
+                   UNTIL      (IDX     >   4   )
+                          OR  (WRK-ERRCD   NOT =   SPACE )
                IF     (PTMODREQ-INSURANCE-CLASS(IDX)   =   SPACE)
                   AND (PTMODREQ-PROVIDER-NUMBER(IDX)   =   SPACE)
                   AND (PTMODREQ-RECIPIENT-NUMBER(IDX)  =   SPACE)
@@ -2229,6 +2241,12 @@
                ELSE
                    MOVE    1               TO  FLG-DATA
       *            公費編集
+      *H29.11
+                   IF      SPA-PTKOH-MAX       >=  TBL-MAX-KOH
+                       MOVE    "65"            TO  WRK-ERRCD
+                   ELSE
+      *!!
+      *
                    ADD     1               TO  SPA-PTKOH-MAX
                    MOVE    SPA-PTKOH-MAX   TO  IDY
       *            新規の時公費ＩＤ取得
@@ -2281,6 +2299,8 @@
                                                =   "970"
                        MOVE    "39"                TO  WRK-ERRCD
                    END-IF
+      *
+               END-IF
       *
                END-IF
            END-PERFORM
@@ -3902,6 +3922,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
+      *H29.10
+              OR  (KANACHK-RC4     NOT =   ZERO  )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE
@@ -3942,6 +3964,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    KANACHK2-MAE-INPUT  TO  WRK-MAE-INPUT
            IF     (KANACHK2-RC     NOT =   ZERO  )  OR
                   (KANACHK2-SYUBETU    =   1     )
+      *H29.10
+              OR  (KANACHK2-RC5     NOT =   ZERO  )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK2-MAE-INPUT  TO  WRK-ATO-INPUT
            ELSE
@@ -3965,6 +3989,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
            IF     (KANACHK-RC      NOT =   ZERO  )
+      *H29.10
+              OR  (KANACHK-RC4     NOT =   ZERO  )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE
@@ -4148,6 +4174,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
+           WHEN    "64"
+               MOVE    "保険が４０件以上となります。登録できません。"
+                                               TO  WRK-ERRMSG
+           WHEN    "65"
+               MOVE    "公費が６０件以上となります。登録できません。"
+                                               TO  WRK-ERRMSG
       *警告
            WHEN    "K1"
                STRING  "警告！自動採番の患者番号が最大値です。"
