@@ -1133,7 +1133,7 @@
                MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
                MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
                MOVE    "000"           TO  PUSHBA01API-RESULT
-               MOVE    "ptbasis_migration_make"
+               MOVE    "patient_basis_all_make"
                                        TO  PUSHBA01-EVENT
                MOVE    WRK-PARA-SYS-YMD
                                        TO  WRK-SYMD
