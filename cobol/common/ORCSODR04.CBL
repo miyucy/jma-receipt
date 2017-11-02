@@ -281,8 +281,10 @@
            PERFORM 900-NYUINACCT-KEY58-SEL-SEC
            IF    ( FLG-NYUINACCT           =   ZERO )
                MOVE    NACCT-SRYYM         TO  WRK-NACCTYM
-               IF    ( WRK-NACCTYM     <   WRK-LASTYM )
-                   MOVE    1               TO  FLG-NACCT-NOT-FOUND
+               IF    ( SODR-ORDERID        =   NORDERID-FOODID )
+                   IF    ( WRK-NACCTYM     <   WRK-LASTYM )
+                       MOVE    1           TO  FLG-NACCT-NOT-FOUND
+                   END-IF
                END-IF
            ELSE
                MOVE    1                   TO  FLG-NACCT-NOT-FOUND
@@ -833,6 +835,9 @@
       *****************************************************************
        2003-KANREN-CHK-SEC             SECTION.
       *
+           IF    ( FLG-NACCT-NOT-FOUND NOT =   ZERO )
+               MOVE    "0195"          TO  ERRCD-ORDER
+           END-IF
       *
            .
        2003-KANREN-CHK-EXT.
@@ -1072,6 +1077,9 @@
                    PERFORM 800-CALENDAR-SEC
                    MOVE    WRK-KEISANYMD (1:6)
                                            TO  SODRS04-ENDYM
+                   IF    ( WRK-ENDYM       <   SODRS04-ENDYM )
+                       MOVE    WRK-ENDYM   TO  SODRS04-ENDYM
+                   END-IF
                END-IF
       *
                CALL    "ORCSODRS04"            USING
@@ -1276,7 +1284,9 @@
            INITIALIZE                      NYUINACCT-REC
            MOVE    SODR-HOSPNUM        TO  NACCT-HOSPNUM
            MOVE    SODR-PTID           TO  NACCT-PTID
-           MOVE    "99999999"          TO  NACCT-UPYMD
+           IF    ( SODR-ORDERID        =   NORDERID-FOODID )
+               MOVE    "99999999"      TO  NACCT-UPYMD
+           END-IF
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key58"             TO  MCP-PATHNAME

@@ -523,14 +523,11 @@
                MOVE    "診療年月の設定に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0101"
-               MOVE    "入院中の患者情報が存在しませんでした。"
+               MOVE    "入院中の患者情報が存在しません。"
                                        TO  SPA-ERRMSG
            WHEN    "0102"
-               STRING  "該当患者は既に退院済みか"  DELIMITED BY SIZE
-                       "入院情報が存在しませんでした。"
-                                                   DELIMITED BY SIZE
-               INTO    SPA-ERRMSG
-               END-STRING
+               MOVE    "既に退院済みか入院情報が存在しません。"
+                                       TO  SPA-ERRMSG
            WHEN    "0103"
                MOVE    "未作成の入院会計は存在しませんでした。"
                                        TO  SPA-ERRMSG
