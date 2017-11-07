@@ -122,8 +122,32 @@
               05  LNK-S02-SKJHKN-HKNCOMBI  PIC  X(04)   OCCURS  31.
               05  LNK-S02-SKJHKN-HKNCOMBI-DOU
                                            PIC  X(04)   OCCURS  31.
+      *
+      *       同日再入院分の保険組み合わせ
               05  LNK-S02-SKJHKN-HKNCOMBI-DOU-XXX
                                            PIC  X(04)   OCCURS  31.
+      *       同日再入院日の食事算定保険組み合わせ（入院分）
+              05  LNK-S02-SKJHKN-HKNCOMBI-AAA
+                                           PIC  X(04)   OCCURS  31.
+      *       同日再入院日の食事算定保険組み合わせ（同日再入院分）
+              05  LNK-S02-SKJHKN-HKNCOMBI-BBB
+                                           PIC  X(04)   OCCURS  31.
+      *
+      *同日再入院日の食事算定フラグ
+           03  LNK-S02-SKJ-SANTEI.
+              05  LNK-S02-SKJ-SANTEI-OCC        OCCURS  10.
+                07  LNK-S02-SKJHKN-AAA-TAIFLG   PIC  X(01)  OCCURS  31.
+                07  LNK-S02-SKJHKN-AAA-ARIFLG   PIC  X(01)  OCCURS  31.
+                07  LNK-S02-SKJHKN-BBB-TAIFLG   PIC  X(01)  OCCURS  31.
+                07  LNK-S02-SKJHKN-BBB-ARIFLG   PIC  X(01)  OCCURS  31.
+      *
+      *入院料と異なる保険組み合わせでの食事算定フラグ
+           03  LNK-S02-SKJ-SANTEI2.
+              05  LNK-S02-SKJ-SANTEI2-OCC       OCCURS  10.
+                07  LNK-S02-SKJHKN-AAA-TAIFLG2  PIC  X(01)  OCCURS  31.
+                07  LNK-S02-SKJHKN-AAA-ARIFLG2  PIC  X(01)  OCCURS  31.
+                07  LNK-S02-SKJHKN-BBB-TAIFLG2  PIC  X(01)  OCCURS  31.
+                07  LNK-S02-SKJHKN-BBB-ARIFLG2  PIC  X(01)  OCCURS  31.
       *
       *高齢者他保険入院フラグ
            03  LNK-S02-KOREI-TANYUIN       PIC  X(01).

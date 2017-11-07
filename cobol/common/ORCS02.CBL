@@ -553,6 +553,7 @@
            03  FLG-ARI                 PIC 9(01).
            03  FLG-CYOKEIKBN-N         PIC 9(01).
            03  FLG-GENGAKU-HENSYU      PIC 9(01).
+           03  FLG-SET                 PIC 9(01).
       *
       *    添え字領域
        01  IDX-AREA.
@@ -22559,6 +22560,8 @@
                   PERFORM     23048-SHOKUJI-CHECK-SEC
            END-IF
       *
+           PERFORM            23049-SKJ-SANTEIFLG-KURIA-SEC
+      *
            .
       *
        2304-SHOKUJI-KEISAN200604-EXT.
@@ -23632,90 +23635,6 @@
       ******************************************************************
        23046-SHOKUJI-FURIWAKE-SEC                 SECTION.
       *
-           INITIALIZE      WK-SKJHKN-TBL
-      *
-           PERFORM    VARYING   IDY   FROM   1   BY   1
-                       UNTIL    IDY    >    31
-      *
-              IF   LNK-S02-SKJHKN-HKNCOMBI(IDY)     = SPACE
-              AND  LNK-S02-SKJHKN-HKNCOMBI-DOU(IDY) = SPACE
-                IF  LNK-S02-DOJITU-DAY(IDY)  =  9
-                      PERFORM   230461-SHOKUJI-FURIWAKE-SEC
-                END-IF
-                IF  LNK-S02-DOJITU-DAY(IDY)  =  1
-                      PERFORM   230462-SHOKUJI-FURIWAKE2-SEC
-                END-IF
-                IF  LNK-S02-DOJITU-DAY(IDY)  =  7 OR 8
-                      PERFORM   230463-SHOKUJI-FURIWAKE3-SEC
-                END-IF
-              ELSE
-                IF  LNK-S02-SKJHKN-HKNCOMBI-DOU-XXX(IDY) = SPACE
-                   IF   LNK-S02-SKJHKN-HKNCOMBI(IDY) NOT = SPACE
-                     IF   LNK-S02-SKJHKN-HKNCOMBI(IDY)   =
-                                                LNK-SYU-HKNCOMBINUM
-                       MOVE   "1"   TO   WK-SKJHKN-SANTEIFLG(IDY)
-                     ELSE
-                       PERFORM  230463-SHOKUJI-FURIWAKE3-SEC
-                     END-IF
-                   END-IF
-                ELSE
-                   IF  ( LNK-S02-TEIKI-KBN        =   "X" )
-                   OR  ((LNK-S02-TEIKI-KBN        =   "Y") AND
-                        (LNK-S02-DOJITU-DAY2(IDY) =   "1"))
-                      PERFORM   230464-SHOKUJI-FURIWAKE4-SEC
-                   ELSE
-                      PERFORM   230465-SHOKUJI-FURIWAKE5-SEC
-                   END-IF
-                END-IF
-              END-IF
-      *
-           END-PERFORM
-      *
-           PERFORM    VARYING   IDY   FROM   1   BY   1
-                       UNTIL    IDY    >    31
-      *
-              EVALUATE   WK-SHOKUJI-ASA (IDY)
-                WHEN        1
-                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
-                                     WK-SHOKUJI-NYUINJI2(IDY)
-                WHEN        2
-                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
-                                     WK-SHOKUJI-TOKUSYO(IDY)
-                                     WK-SHOKUJI-NYUINJI2(IDY)
-                WHEN        3
-                  IF    LNK-SYU-SRYYMD(1:6)  >=  "201604"
-                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
-                  END-IF
-              END-EVALUATE
-              EVALUATE   WK-SHOKUJI-HIRU(IDY)
-                WHEN        1
-                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
-                                     WK-SHOKUJI-NYUINJI2(IDY)
-                WHEN        2
-                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
-                                     WK-SHOKUJI-TOKUSYO(IDY)
-                                     WK-SHOKUJI-NYUINJI2(IDY)
-                WHEN        3
-                  IF    LNK-SYU-SRYYMD(1:6)  >=  "201604"
-                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
-                  END-IF
-              END-EVALUATE
-              EVALUATE   WK-SHOKUJI-YORU(IDY)
-                WHEN        1
-                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
-                                     WK-SHOKUJI-NYUINJI2(IDY)
-                WHEN        2
-                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
-                                     WK-SHOKUJI-TOKUSYO(IDY)
-                                     WK-SHOKUJI-NYUINJI2(IDY)
-                WHEN        3
-                  IF    LNK-SYU-SRYYMD(1:6)  >=  "201604"
-                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
-                  END-IF
-              END-EVALUATE
-      *
-           END-PERFORM
-      *
       *    入院時生活療養費負担額取得
       *    食事負担据え置き対象取得
            IF    LNK-SYU-SRYYMD(1:6)  >=  "201604"
@@ -23847,6 +23766,130 @@
                END-IF
              END-IF
            END-IF
+      *
+      *****
+      *
+           INITIALIZE      WK-SKJHKN-TBL
+      *
+           PERFORM    VARYING   IDY   FROM   1   BY   1
+                       UNTIL    IDY    >    31
+      *
+              IF   LNK-SYU-HKNCOMBINUM =
+                                    LNK-S02-SKJHKN-HKNCOMBI-AAA(IDY)
+                MOVE "1" TO LNK-S02-SKJHKN-AAA-TAIFLG(LNK-S02-IDX IDY)
+                PERFORM   230466-SKJ-SANTEIFLG-SET-SEC
+                IF   FLG-SET  =  1
+                  MOVE "1"
+                         TO LNK-S02-SKJHKN-AAA-ARIFLG(LNK-S02-IDX IDY)
+                END-IF
+              END-IF
+              IF   LNK-SYU-HKNCOMBINUM =
+                                    LNK-S02-SKJHKN-HKNCOMBI-BBB(IDY)
+                MOVE "1" TO LNK-S02-SKJHKN-BBB-TAIFLG(LNK-S02-IDX IDY)
+                PERFORM   230467-SKJ-SANTEIFLG-SET2-SEC
+                IF   FLG-SET  =  1
+                  MOVE "1"
+                         TO LNK-S02-SKJHKN-BBB-ARIFLG(LNK-S02-IDX IDY)
+                END-IF
+              END-IF
+      *
+              IF   LNK-SYU-HKNCOMBINUM =
+                                    LNK-S02-SKJHKN-HKNCOMBI(IDY)
+                MOVE "1" TO LNK-S02-SKJHKN-AAA-TAIFLG2(LNK-S02-IDX IDY)
+                PERFORM   230466-SKJ-SANTEIFLG-SET-SEC
+                IF   FLG-SET  =  1
+                  MOVE "1"
+                         TO LNK-S02-SKJHKN-AAA-ARIFLG2(LNK-S02-IDX IDY)
+                END-IF
+              END-IF
+              IF   LNK-SYU-HKNCOMBINUM =
+                                    LNK-S02-SKJHKN-HKNCOMBI-DOU(IDY)
+                MOVE "1" TO LNK-S02-SKJHKN-BBB-TAIFLG2(LNK-S02-IDX IDY)
+                PERFORM   230467-SKJ-SANTEIFLG-SET2-SEC
+                IF   FLG-SET  =  1
+                  MOVE "1"
+                         TO LNK-S02-SKJHKN-BBB-ARIFLG2(LNK-S02-IDX IDY)
+                END-IF
+              END-IF
+      *
+              IF   LNK-S02-SKJHKN-HKNCOMBI(IDY)     = SPACE
+              AND  LNK-S02-SKJHKN-HKNCOMBI-DOU(IDY) = SPACE
+                IF  LNK-S02-DOJITU-DAY(IDY)  =  9
+                      PERFORM   230461-SHOKUJI-FURIWAKE-SEC
+                END-IF
+                IF  LNK-S02-DOJITU-DAY(IDY)  =  1
+                      PERFORM   230462-SHOKUJI-FURIWAKE2-SEC
+                END-IF
+                IF  LNK-S02-DOJITU-DAY(IDY)  =  7 OR 8
+                      PERFORM   230463-SHOKUJI-FURIWAKE3-SEC
+                END-IF
+              ELSE
+                IF  LNK-S02-SKJHKN-HKNCOMBI-DOU-XXX(IDY) = SPACE
+                   IF   LNK-S02-SKJHKN-HKNCOMBI(IDY) NOT = SPACE
+                     IF   LNK-S02-SKJHKN-HKNCOMBI(IDY)   =
+                                                LNK-SYU-HKNCOMBINUM
+                       MOVE   "1"   TO   WK-SKJHKN-SANTEIFLG(IDY)
+                     ELSE
+                       PERFORM  230463-SHOKUJI-FURIWAKE3-SEC
+                     END-IF
+                   END-IF
+                ELSE
+                   IF  ( LNK-S02-TEIKI-KBN        =   "X" )
+                   OR  ((LNK-S02-TEIKI-KBN        =   "Y") AND
+                        (LNK-S02-DOJITU-DAY2(IDY) =   "1"))
+                      PERFORM   230464-SHOKUJI-FURIWAKE4-SEC
+                   ELSE
+                      PERFORM   230465-SHOKUJI-FURIWAKE5-SEC
+                   END-IF
+                END-IF
+              END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM    VARYING   IDY   FROM   1   BY   1
+                       UNTIL    IDY    >    31
+      *
+              EVALUATE   WK-SHOKUJI-ASA (IDY)
+                WHEN        1
+                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
+                                     WK-SHOKUJI-NYUINJI2(IDY)
+                WHEN        2
+                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
+                                     WK-SHOKUJI-TOKUSYO(IDY)
+                                     WK-SHOKUJI-NYUINJI2(IDY)
+                WHEN        3
+                  IF    LNK-SYU-SRYYMD(1:6)  >=  "201604"
+                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
+                  END-IF
+              END-EVALUATE
+              EVALUATE   WK-SHOKUJI-HIRU(IDY)
+                WHEN        1
+                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
+                                     WK-SHOKUJI-NYUINJI2(IDY)
+                WHEN        2
+                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
+                                     WK-SHOKUJI-TOKUSYO(IDY)
+                                     WK-SHOKUJI-NYUINJI2(IDY)
+                WHEN        3
+                  IF    LNK-SYU-SRYYMD(1:6)  >=  "201604"
+                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
+                  END-IF
+              END-EVALUATE
+              EVALUATE   WK-SHOKUJI-YORU(IDY)
+                WHEN        1
+                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
+                                     WK-SHOKUJI-NYUINJI2(IDY)
+                WHEN        2
+                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
+                                     WK-SHOKUJI-TOKUSYO(IDY)
+                                     WK-SHOKUJI-NYUINJI2(IDY)
+                WHEN        3
+                  IF    LNK-SYU-SRYYMD(1:6)  >=  "201604"
+                    ADD   1     TO   WK-SHOKUJI-NYUINJI(IDY)
+                  END-IF
+              END-EVALUATE
+      *
+           END-PERFORM
       *
            .
       *
@@ -24058,6 +24101,81 @@
            .
       *
        230465-SHOKUJI-FURIWAKE5-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    同日再入院日の食事算定フラグ編集
+      *    入院料と異なる保険組み合わせでの食事算定フラグ編集
+      ******************************************************************
+       230466-SKJ-SANTEIFLG-SET-SEC                 SECTION.
+      *
+           MOVE      ZERO       TO    FLG-SET
+           IF    LNK-S02-SKJHKN-HKNCOMBI-DOU-XXX(IDY) = SPACE
+                 IF   WK-SHOKUJI-ASA (IDY)  NOT = ZERO
+                 OR   WK-SHOKUJI-HIRU(IDY)  NOT = ZERO
+                 OR   WK-SHOKUJI-YORU(IDY)  NOT = ZERO
+                   MOVE    1    TO    FLG-SET
+                 END-IF
+           ELSE
+             EVALUATE  LNK-S02-DOJITU-SKJED(IDY)
+               WHEN     "0"
+                 CONTINUE
+               WHEN     "1"
+                 IF   WK-SHOKUJI-ASA (IDY)  NOT = ZERO
+                   MOVE    1    TO    FLG-SET
+                 END-IF
+               WHEN     "2"
+                 IF   WK-SHOKUJI-ASA (IDY)  NOT = ZERO
+                 OR   WK-SHOKUJI-HIRU(IDY)  NOT = ZERO
+                   MOVE    1    TO    FLG-SET
+                 END-IF
+               WHEN     "3"
+                 IF   WK-SHOKUJI-ASA (IDY)  NOT = ZERO
+                 OR   WK-SHOKUJI-HIRU(IDY)  NOT = ZERO
+                 OR   WK-SHOKUJI-YORU(IDY)  NOT = ZERO
+                   MOVE    1    TO    FLG-SET
+                 END-IF
+             END-EVALUATE
+           END-IF
+           IF         WK-NYULIFE-KBN(IDY)   NOT = SPACE
+                   MOVE    1    TO    FLG-SET
+           END-IF
+      *
+           .
+      *
+       230466-SKJ-SANTEIFLG-SET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    同日再入院日の食事算定フラグ編集
+      *    入院料と異なる保険組み合わせでの食事算定フラグ編集
+      ******************************************************************
+       230467-SKJ-SANTEIFLG-SET2-SEC                 SECTION.
+      *
+           MOVE      ZERO     TO    FLG-SET
+           EVALUATE  LNK-S02-DOJITU-SKJST(IDY)
+             WHEN     "0"
+               CONTINUE
+             WHEN     "1"
+               IF   WK-SHOKUJI-ASA (IDY)  NOT = ZERO
+               OR   WK-SHOKUJI-HIRU(IDY)  NOT = ZERO
+               OR   WK-SHOKUJI-YORU(IDY)  NOT = ZERO
+                 MOVE    1    TO    FLG-SET
+               END-IF
+             WHEN     "2"
+               IF   WK-SHOKUJI-HIRU(IDY)  NOT = ZERO
+               OR   WK-SHOKUJI-YORU(IDY)  NOT = ZERO
+                 MOVE    1    TO    FLG-SET
+               END-IF
+             WHEN     "3"
+               IF   WK-SHOKUJI-YORU(IDY)  NOT = ZERO
+                 MOVE    1    TO    FLG-SET
+               END-IF
+           END-EVALUATE
+      *
+           .
+      *
+       230467-SKJ-SANTEIFLG-SET2-EXT.
            EXIT.
       *
       ******************************************************************
@@ -25433,6 +25551,40 @@
            .
       *
        23048-SHOKUJI-CHECK-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    同日再入院日の食事算定フラグ編集（クリア）
+      *    入院料と異なる保険組み合わせでの食事算定フラグ編集（クリア）
+      ******************************************************************
+       23049-SKJ-SANTEIFLG-KURIA-SEC         SECTION.
+      *
+           MOVE       LNK-SYU-SKYSTYMD(7:2)  TO   IDX-ST
+           MOVE       LNK-SYU-SKYEDYMD(7:2)  TO   IDX-ED
+      *
+           PERFORM    VARYING   IDX25   FROM   IDX-ST   BY   1
+                       UNTIL    IDX25     >    IDX-ED
+      *
+             IF   ( LNK-S02-NYUSANTEI-KBN(IDX25)    =  "1"  )
+             AND  ((WK-GAIHAKU(IDX25)        =  ZERO       ) OR
+                   (WK-GAIHAKU(IDX25)       >=   4         ))
+               CONTINUE
+             ELSE
+               MOVE  SPACE  TO
+                        LNK-S02-SKJHKN-AAA-ARIFLG(LNK-S02-IDX IDX25)
+               MOVE  SPACE  TO
+                        LNK-S02-SKJHKN-BBB-ARIFLG(LNK-S02-IDX IDX25)
+               MOVE  SPACE  TO
+                        LNK-S02-SKJHKN-AAA-ARIFLG2(LNK-S02-IDX IDX25)
+               MOVE  SPACE  TO
+                        LNK-S02-SKJHKN-BBB-ARIFLG2(LNK-S02-IDX IDX25)
+             END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       23049-SKJ-SANTEIFLG-KURIA-EXT.
            EXIT.
       *
       ******************************************************************
