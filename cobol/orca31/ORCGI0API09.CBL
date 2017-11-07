@@ -424,7 +424,12 @@
       *****************************************************************
        1001-CRENACCT-SEC            SECTION.
       *
-           PERFORM 1001-INIT-CHECK-SEC
+           MOVE    HSACCTMREQ-SAVEREQ
+                                       TO  REG-SAVEREQ
+      *
+           PERFORM 10011-PTNUM-CHECK-SEC
+      *
+           PERFORM 10011-NYUINYMD-CHECK-SEC
       *
            .
        1001-CRENACCT-EXT.
@@ -435,21 +440,34 @@
        10011-NYUINYMD-CHECK-SEC       SECTION.
       *
            IF    ( HSACCTMREQ-NYUINYMD =   SPACE )
-               MOVE    "8001"           TO  WRK-ERRCD
+               MOVE    "8001"          TO  WRK-ERRCD
                PERFORM 990-ERROR-EDIT-SEC
            ELSE
                MOVE    HSACCTMREQ-NYUINYMD
-                                      TO  WRK-DATE
+                                       TO  WRK-DATE
                PERFORM 800-SYMD-SEC
                PERFORM 800-HIZUKE-SEC
-               IF    ( WRK-EDTYMD1    =   SPACE )
-                   MOVE    "8001"     TO  WRK-ERRCD
+               IF    ( WRK-EDTYMD1     =   SPACE )
+                   MOVE    "8001"      TO  WRK-ERRCD
                    PERFORM 990-ERROR-EDIT-SEC
                ELSE
-                   MOVE    WRK-SYMD   TO  REG-NYUINYMD
+                   MOVE    WRK-SYMD    TO  REG-NYUINYMD
+                   IF    ( HSACCTMREQ-REQNUM   =   "9" )
+                       MOVE    WRK-SYMD    TO  REG-SRYYMD
+                   END-IF
                END-IF
       *
            END-IF
+      *
+           PERFORM 100111-NYUINYMD-CHECK-SEC
+      *
+           .
+       10011-NYUINYMD-CHECK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院日チェック処理
+      *****************************************************************
+       100111-NYUINYMD-CHECK-SEC       SECTION.
       *
            IF    ( WRK-ERRCD           =   SPACE )
                PERFORM 900-PTNYUINRRK-KEY42-SEL-SEC
@@ -478,13 +496,17 @@
                        PERFORM 990-ERROR-EDIT-SEC
                    END-IF
                ELSE
-                   MOVE    "8010"  TO  WRK-ERRCD
+                   IF    ( HSACCTMREQ-REQNUM   =   "9" )
+                       MOVE    "8005"  TO  WRK-ERRCD
+                   ELSE
+                       MOVE    "8010"  TO  WRK-ERRCD
+                   END-IF
                    PERFORM 990-ERROR-EDIT-SEC
                END-IF
            END-IF
       *
            .
-       10011-NYUINYMD-CHECK-EXT.
+       100111-NYUINYMD-CHECK-EXT.
            EXIT.
       *****************************************************************
       *    診療日チェック処理

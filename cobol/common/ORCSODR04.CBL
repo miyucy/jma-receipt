@@ -264,7 +264,17 @@
                MOVE    PTNYUINRRK-HKNCOMBINUM
                                            TO  SODR-HKNCOMBI
                                                ITEM-HKNCOMBI
+               PERFORM 1001-NACCT-SEC
            END-IF
+      *
+           .
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計チェック処理
+      *****************************************************************
+       1001-NACCT-SEC                  SECTION.
       *
            MOVE    SPA-SYSYMD              TO  WRK-SYMD
            MOVE    "2"                     TO  WRK-ZOGENPTN
@@ -282,8 +292,14 @@
            IF    ( FLG-NYUINACCT           =   ZERO )
                MOVE    NACCT-SRYYM         TO  WRK-NACCTYM
                IF    ( SODR-ORDERID        =   NORDERID-FOODID )
-                   IF    ( WRK-NACCTYM     <   WRK-LASTYM )
-                       MOVE    1           TO  FLG-NACCT-NOT-FOUND
+                   IF    ( PTNYUINRRK-TAIINYMD =   "99999999" )
+                       IF    ( WRK-NACCTYM <   WRK-LASTYM )
+                           MOVE    1           TO  FLG-NACCT-NOT-FOUND
+                       END-IF
+                   ELSE
+                       IF    ( WRK-NACCTYM <   PTNYUINRRK-TAIINYMD(1:6))
+                           MOVE    1           TO  FLG-NACCT-NOT-FOUND
+                       END-IF
                    END-IF
                END-IF
            ELSE
@@ -291,9 +307,8 @@
            END-IF
       *
            .
-       100-INIT-EXT.
+       1001-NACCT-EXT.
            EXIT.
-      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -836,6 +851,7 @@
        2003-KANREN-CHK-SEC             SECTION.
       *
            IF    ( FLG-NACCT-NOT-FOUND NOT =   ZERO )
+            OR   ( TRRK-TAIINYMD       NOT =   "99999999" )
                MOVE    "0195"          TO  ERRCD-ORDER
            END-IF
       *
@@ -1035,17 +1051,18 @@
       *****************************************************************
        2101-ORCSODRNACCT-CALL-SEC      SECTION.
       *
-           IF    ( SODR-ORDERID    =   NORDERID-FOODID
-                                    OR NORDERID-CRENACCTID
-                                        )
+           EVALUATE     SODR-ORDERID
+           WHEN    NORDERID-FOODID
                PERFORM 21011-CREATE-NACCT-SEC
-           END-IF
+           WHEN    NORDERID-CRENACCTID
+               PERFORM 21012-CREATE-NACCT-SEC
+           END-EVALUATE
       *
            IF    ( FLG-END         =   ZERO )
                IF    ( SODR-ORDERID    =   NORDERID-CRENACCTID )
                    CONTINUE
                ELSE
-                   PERFORM 21012-ORCSODRNACCT-CALL-SEC
+                   PERFORM 21011-ORCSODRNACCT-CALL-SEC
                END-IF
            END-IF
       *
@@ -1057,7 +1074,7 @@
       *****************************************************************
        21011-CREATE-NACCT-SEC          SECTION.
       *
-           IF    ( WRK-NACCTYM             >=  WRK-ENDYM )
+           IF    ( WRK-NACCTYM   >=    SODR-SRYYMD(1:6) )
                CONTINUE
            ELSE
                INITIALIZE                      SODRS04-AREA
@@ -1067,20 +1084,7 @@
                MOVE    1                   TO  WRK-ZOGEN
                PERFORM 800-CALENDAR-SEC
                MOVE    WRK-KEISANYMD (1:6) TO  SODRS04-STARTYM
-               IF    ( SODR-ORDERID    =   NORDERID-FOODID )
-                   MOVE    WRK-ENDYM       TO  SODRS04-ENDYM
-               ELSE
-                   MOVE    WRK-NACCTYM     TO  WRK-SYMD
-                   MOVE    "01"            TO  WRK-SYMD(7:2)
-                   MOVE    "2"             TO  WRK-ZOGENPTN
-                   MOVE    3               TO  WRK-ZOGEN
-                   PERFORM 800-CALENDAR-SEC
-                   MOVE    WRK-KEISANYMD (1:6)
-                                           TO  SODRS04-ENDYM
-                   IF    ( WRK-ENDYM       <   SODRS04-ENDYM )
-                       MOVE    WRK-ENDYM   TO  SODRS04-ENDYM
-                   END-IF
-               END-IF
+               MOVE    SODR-SRYYMD(1:6)    TO  SODRS04-ENDYM
       *
                CALL    "ORCSODRS04"            USING
                                                SODR-AREA
@@ -1096,9 +1100,48 @@
        21011-CREATE-NACCT-EXT.
            EXIT.
       *****************************************************************
+      *    入院会計作成処理
+      *****************************************************************
+       21012-CREATE-NACCT-SEC          SECTION.
+      *
+           IF    ( WRK-NACCTYM             >=  WRK-ENDYM )
+               CONTINUE
+           ELSE
+               INITIALIZE                      SODRS04-AREA
+               MOVE    WRK-NACCTYM         TO  WRK-SYMD
+               MOVE    "01"                TO  WRK-SYMD(7:2)
+               MOVE    "2"                 TO  WRK-ZOGENPTN
+               MOVE    1                   TO  WRK-ZOGEN
+               PERFORM 800-CALENDAR-SEC
+               MOVE    WRK-KEISANYMD (1:6) TO  SODRS04-STARTYM
+               MOVE    WRK-NACCTYM     TO  WRK-SYMD
+               MOVE    "01"            TO  WRK-SYMD(7:2)
+               MOVE    "2"             TO  WRK-ZOGENPTN
+               MOVE    3               TO  WRK-ZOGEN
+               PERFORM 800-CALENDAR-SEC
+               MOVE    WRK-KEISANYMD (1:6)
+                                       TO  SODRS04-ENDYM
+               IF    ( WRK-ENDYM       <   SODRS04-ENDYM )
+                   MOVE    WRK-ENDYM   TO  SODRS04-ENDYM
+               END-IF
+      *
+               CALL    "ORCSODRS04"            USING
+                                               SODR-AREA
+                                               SODRS04-AREA
+                                               TRRK-REC
+                                               SPA-AREA
+               IF    ( SODRS04-RC      NOT =   ZERO )
+                   MOVE    1               TO  FLG-END
+               END-IF
+           END-IF
+      *
+           .
+       21012-CREATE-NACCT-EXT.
+           EXIT.
+      *****************************************************************
       *    入院会計作成サブ呼出
       *****************************************************************
-       21012-ORCSODRNACCT-CALL-SEC     SECTION.
+       21011-ORCSODRNACCT-CALL-SEC     SECTION.
       *
            IF    ( SODR-ORDERID        =   NORDERID-FOODID )
       *
@@ -1122,23 +1165,23 @@
                                    TO  WRK-ORDERID
                    END-EVALUATE
       *
-                   PERFORM 21011-ORCSODRNACCT-CALL-SEC
+                   PERFORM 210111-ORCSODRNACCT-CALL-SEC
       *
                END-PERFORM
       *
            ELSE
                MOVE    SODR-ORDERID    TO  WRK-ORDERID
                MOVE    1               TO  IDXA
-               PERFORM 21011-ORCSODRNACCT-CALL-SEC
+               PERFORM 210111-ORCSODRNACCT-CALL-SEC
            END-IF
       *
            .
-       21012-ORCSODRNACCT-CALL-EXT.
+       21011-ORCSODRNACCT-CALL-EXT.
            EXIT.
       *****************************************************************
       *    入院会計作成サブ呼出
       *****************************************************************
-       21011-ORCSODRNACCT-CALL-SEC     SECTION.
+       210111-ORCSODRNACCT-CALL-SEC     SECTION.
       *
            INITIALIZE                  SODRNACCT-AREA
            MOVE    WRK-ORDERID     TO  SODRNACCT-ORDERID
@@ -1166,7 +1209,7 @@
            END-IF
       *
            .
-       21011-ORCSODRNACCT-CALL-EXT.
+       210111-ORCSODRNACCT-CALL-EXT.
            EXIT.
       *****************************************************************
       *    終了処理

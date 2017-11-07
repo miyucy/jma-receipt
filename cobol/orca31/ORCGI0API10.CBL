@@ -272,18 +272,15 @@
       *****************************************************************
        2001-INPUT-CHK-SEC              SECTION.
       *
-           IF    ( HSPMMREQ-PTID   =   SPACE )
-            AND  ( HSPMMREQ-SRYYM  =   SPACE )
-               CONTINUE
-           ELSE
+           IF    ( SPA-ERRCD       =   SPACE )
                IF    ( HSPMMREQ-PTID   NOT =   SPACE )
-                   IF    ( SPA-ERRCD       =   SPACE )
-                       PERFORM 2001-PTNUM-CHK-SEC
-                   END-IF
-               ELSE
-                   IF    ( SPA-ERRCD       =   SPACE )
-                       PERFORM 2001-SRYYM-CHK-SEC
-                   END-IF
+                   PERFORM 2001-PTNUM-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( HSPMMREQ-SRYYM  NOT =   SPACE )
+                   PERFORM 2001-SRYYM-CHK-SEC
                END-IF
            END-IF
       *
@@ -344,7 +341,39 @@
       *****************************************************************
        2003-RESPONSE-EDIT-SEC              SECTION.
       *
-           MOVE    SPA-PTNUM           TO  HSPMMRES-PTNUM (1)
+           IF    ( HSPMMREQ-PTID   NOT =   SPACE )
+            AND  ( HSPMMREQ-SRYYM  NOT =   SPACE )
+               PERFORM 20031-RESPONSE-EDIT-SEC
+           ELSE
+               PERFORM 20032-RESPONSE-EDIT-SEC
+           END-IF
+      *
+           .
+       2003-RESPONSE-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    レスポンス編集処理
+      *****************************************************************
+       20031-RESPONSE-EDIT-SEC         SECTION.
+      *
+           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
+           IF    ( FLG-NACCT       =   ZERO )
+      *
+               MOVE    1           TO  IDXL
+      *
+               PERFORM 200311-RESPONSE-EDIT-SEC
+           ELSE
+               MOVE    "0104"      TO  SPA-ERRCD
+           END-IF
+      *
+      *
+           .
+       20031-RESPONSE-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    レスポンス編集処理
+      *****************************************************************
+       20032-RESPONSE-EDIT-SEC         SECTION.
       *
            PERFORM 900-NYUINACCT-KEY58-SEL-SEC
       *
@@ -354,18 +383,7 @@
       *
                COMPUTE IDXL = IDXL + 1
       *
-               PERFORM 900-PTNUM-KEY-SEL-SEC
-      *
-               PERFORM 900-PTINF-KEY-SEL-SEC
-      *
-               MOVE    PTNUM-PTNUM TO  HSPMMRES-PTNUM (IDXL)
-               IF    ( PTINF-TSTPTNUMKBN = "1" )
-                   MOVE    "1"     TO  HSPMMRES-TSTPTNUMKBN (IDXL)
-               END-IF
-      *
-               MOVE    NACCT-SRYYM TO  WRK-SYMD
-               PERFORM 800-DATE-SEC
-               MOVE    WRK-DATE    TO  HSPMMRES-SRYYM (IDXL)
+               PERFORM 200311-RESPONSE-EDIT-SEC
       *
                PERFORM 900-NYUINACCT-KEY58-FET-SEC
       *
@@ -387,7 +405,25 @@
            END-IF
       *
            .
-       2003-RESPONSE-EDIT-EXT.
+       20032-RESPONSE-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    レスポンス編集処理
+      *****************************************************************
+       200311-RESPONSE-EDIT-SEC        SECTION.
+      *
+           PERFORM 900-PTNUM-KEY-SEL-SEC
+      *
+           PERFORM 900-PTINF-KEY-SEL-SEC
+      *
+           MOVE    PTNUM-PTNUM TO  HSPMMRES-PTNUM (IDXL)
+      *
+           MOVE    NACCT-SRYYM TO  WRK-SYMD
+           PERFORM 800-DATE-SEC
+           MOVE    WRK-DATE    TO  HSPMMRES-SRYYM (IDXL)
+      *
+           .
+       200311-RESPONSE-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -517,19 +553,22 @@
                MOVE    "正常終了"
                                        TO  SPA-ERRMSG
            WHEN    "0001"
-               MOVE    "患者番号の設定に誤りがあります。"
+               MOVE    "患者番号の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "診療年月の設定に誤りがあります。"
+               MOVE    "診療年月の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0101"
                MOVE    "入院中の患者情報が存在しません。"
                                        TO  SPA-ERRMSG
            WHEN    "0102"
-               MOVE    "既に退院済みか入院情報が存在しません。"
+               MOVE    "入院会計が存在しません。"
                                        TO  SPA-ERRMSG
            WHEN    "0103"
                MOVE    "未作成の入院会計は存在しませんでした。"
+                                       TO  SPA-ERRMSG
+           WHEN    "0104"
+               MOVE    "入院会計が存在しません。"
                                        TO  SPA-ERRMSG
            WHEN    "8900"
                MOVE    "システム項目が設定できません。"
@@ -675,13 +714,47 @@
       *****************************************************************
       *    入院会計検索処理
       *****************************************************************
-       900-NYUINACCT-KEY58-SEL-SEC         SECTION.
+       900-NYUINACCT-KEY17-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-NACCT
       *
            INITIALIZE                      NACCT-REC
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SPA-PTID            TO  NACCT-PTID
+           MOVE    SPA-SRYYMD (1:6)    TO  NACCT-SRYYM
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+           MOVE    NACCT-REC           TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  NACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NACCT
+               INITIALIZE                  NACCT-REC
+           END-IF
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-NYUINACCT-KEY17-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計検索処理
+      *****************************************************************
+       900-NYUINACCT-KEY58-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NACCT
+      *
+           INITIALIZE                      NACCT-REC
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           IF    ( SPA-PTID            NOT =   ZERO )
+               MOVE    SPA-PTID        TO  NACCT-PTID
+               MOVE    "99999999"      TO  NACCT-UPYMD
+           END-IF
            MOVE    NACCT-REC           TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key58"             TO  MCP-PATHNAME

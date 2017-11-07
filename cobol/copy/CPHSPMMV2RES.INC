@@ -28,5 +28,4 @@
            03  HSPMMRES-SRYYM-MAX-G.
              04  HSPMMRES-SRYYM-MAX-OCC        OCCURS  1000.
                05  HSPMMRES-PTNUM              PIC X(20).
-               05  HSPMMRES-TSTPTNUMKBN        PIC X(1).
                05  HSPMMRES-SRYYM              PIC X(7).

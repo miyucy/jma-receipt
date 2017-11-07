@@ -799,7 +799,11 @@
       *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "0195".
                05                      PIC X(80)   VALUE
-                   "既に退院済みか入院情報が存在しません".
+                   "既に退院済みか入院履歴が存在しません".
+      *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "8001".
+               05                      PIC X(80)   VALUE
+                   "入院日の入力に誤りがあります".
       *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "8002".
                05                      PIC X(80)   VALUE
@@ -1034,7 +1038,7 @@
                    "処理終了".
       *
            03  NCLAIMERRCD-R   REDEFINES   NCLAIMERRCD-VAL.
-               05  NCLAIMERRCD-OCC     OCCURS  251.
+               05  NCLAIMERRCD-OCC     OCCURS  252.
                    07  NCLAIMERRCDL    PIC X(04).
                    07  NCLAIMERRCDLMEI PIC X(80).
-           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   251.
+           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   252.

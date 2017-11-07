@@ -10,7 +10,6 @@ xml_hspmmv2res{
 		Api_Result_Message	varchar(100);
 		Perform_Month_Max_Information{
 			Patient_ID					varchar(20);
-			TestPatient_Flag		    varchar(1);
 			Perform_Month				varchar(7);
 		}[1000];
 	};

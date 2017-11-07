@@ -249,7 +249,17 @@
                MOVE    PTNYUINRRK-HKNCOMBINUM
                                            TO  SODR-HKNCOMBI
                                                ITEM-HKNCOMBI
+               PERFORM 1001-NACCT-CHK-SEC
            END-IF
+      *
+           .
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計チェック処理
+      *****************************************************************
+       1001-NACCT-CHK-SEC              SECTION.
       *
            MOVE    SPA-SYSYMD              TO  WRK-SYMD
            MOVE    "2"                     TO  WRK-ZOGENPTN
@@ -266,17 +276,24 @@
            PERFORM 900-NYUINACCT-KEY58-SEL-SEC
            IF    ( FLG-NYUINACCT           =   ZERO )
                MOVE    NACCT-SRYYM         TO  WRK-NACCTYM
-               IF    ( WRK-NACCTYM     <   WRK-LASTYM )
-                   MOVE    1               TO  FLG-NACCT-NOT-FOUND
+               IF    ( SODR-ORDERID        =   NORDERID-GPTSTID )
+                   IF    ( PTNYUINRRK-TAIINYMD =   "99999999" )
+                       IF    ( WRK-NACCTYM <   WRK-LASTYM )
+                           MOVE    1           TO  FLG-NACCT-NOT-FOUND
+                       END-IF
+                   ELSE
+                       IF    ( WRK-NACCTYM <   PTNYUINRRK-TAIINYMD(1:6))
+                           MOVE    1           TO  FLG-NACCT-NOT-FOUND
+                       END-IF
+                   END-IF
                END-IF
            ELSE
                MOVE    1                   TO  FLG-NACCT-NOT-FOUND
            END-IF
       *
            .
-       100-INIT-EXT.
+       1001-NACCT-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -797,7 +814,7 @@
            END-IF
       *
            IF    ( FLG-END         =   ZERO )
-               PERFORM 21012-ORCSODRNACCT-CALL-SEC
+               PERFORM 21011-ORCSODRNACCT-CALL-SEC
            END-IF
       *
            .
@@ -808,7 +825,7 @@
       *****************************************************************
        21011-CREATE-NACCT-SEC          SECTION.
       *
-           IF    ( WRK-NACCTYM   >=   WRK-ENDYM )
+           IF    ( WRK-NACCTYM   >=    SODR-SRYYMD(1:6) )
                CONTINUE
            ELSE
                INITIALIZE                      SODRS04-AREA
@@ -818,7 +835,7 @@
                MOVE    1                   TO  WRK-ZOGEN
                PERFORM 800-CALENDAR-SEC
                MOVE    WRK-KEISANYMD (1:6) TO  SODRS04-STARTYM
-               MOVE    WRK-ENDYM           TO  SODRS04-ENDYM
+               MOVE    SODR-SRYYMD(1:6)    TO  SODRS04-ENDYM
       *
                CALL    "ORCSODRS04"            USING
                                                SODR-AREA
@@ -836,7 +853,7 @@
       *****************************************************************
       *    入院会計作成サブ呼出
       *****************************************************************
-       21012-ORCSODRNACCT-CALL-SEC     SECTION.
+       21011-ORCSODRNACCT-CALL-SEC     SECTION.
       *
            INITIALIZE                  SODRNACCT-AREA
            EVALUATE    SODR-ORDERID
@@ -900,7 +917,7 @@
            END-IF
       *
            .
-       21012-ORCSODRNACCT-CALL-EXT.
+       21011-ORCSODRNACCT-CALL-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
