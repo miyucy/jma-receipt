@@ -105,6 +105,7 @@
       *  05.00.00    NACL-小豆沢  17/08/16  居住費金額変更対応
       *                                     境界層対応
       *                                     生活療養負担コード分割対応
+      *  05.00.01    NACL-小豆沢  17/11/07  同日再入院の食事記録修正
       *****************************************************************
       *
       *
@@ -524,6 +525,10 @@
            03  WRK-SYS5000-SKJ             OCCURS  5.
                05  WRK-SYS5000-SHOKUCD     PIC X(09) OCCURS 31.
       *    食事ワーク
+           03  WRK-SKJ-ASA                 PIC 9(03) OCCURS 31.
+           03  WRK-SKJ-HIRU                PIC 9(03) OCCURS 31.
+           03  WRK-SKJ-YORU                PIC 9(03) OCCURS 31.
+      *
            03  WRK-SKJ-TABLE.
                05  WRK-SKJ-TBL           OCCURS  31.
                    07  WRK-SKJ-HKNCOMBI-DAY    PIC 9(03).
@@ -782,6 +787,9 @@
       *
       *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
+      *
+      *    食事保険取得サブ
+           COPY    "CPORCSSKJHKN.INC".
       *
       *    食事負担据え置き対象取得パラメタ
            COPY    "CPORCSSKJKEEP.INC".
@@ -4215,6 +4223,14 @@
            MOVE    LNK-NYURECEDEN-PTID        TO  LNK-NYUINDAY-PTID
            MOVE    LNK-NYURECEDEN-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
            CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
+                                                  SPA-AREA
+      *
+      *食事の保険組合せ取得
+           INITIALIZE                             ORCSSKJHKN-AREA
+           MOVE    LNK-NYURECEDEN-HOSPNUM     TO  LNK-SKJHKN-HOSPNUM
+           MOVE    LNK-NYURECEDEN-PTID        TO  LNK-SKJHKN-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM    TO  LNK-SKJHKN-SANTEIYM
+           CALL    "ORCSSKJHKN"         USING     ORCSSKJHKN-AREA
                                                   SPA-AREA
       *
            MOVE    SPACE                      TO  WRK-SAIGAI-AREA2
@@ -11593,6 +11609,8 @@
                PERFORM   VARYING   IDX1   FROM  1   BY  1
                          UNTIL     IDX1   >    31
       *
+                   MOVE   NACCT-DAY(IDX1)  TO  WRK-SKJ-ASA(IDX1)
+      *
       *            同日再入院で退院日の食事無しであれば、会計をクリアする
                    IF (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1") AND
                       (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2") AND
@@ -11613,6 +11631,11 @@
       *                                     WRK-SKJ5-HKNCOMBI-DAY(IDX1)
       *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX1)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)
+      *-----TEST-----
+      *                 IF   IDX1   =   1
+      *                     MOVE   5   TO  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
+      *                 END-IF
+      *--------------
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
@@ -11663,7 +11686,8 @@
                    END-IF
       *
       *            同日再入院日（朝から）
-                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" OR
+                                                                  "3")
                                                                      AND
                          (LNK-NYURECEDEN-HKNKBN
                               =  LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1)) AND
@@ -11728,7 +11752,7 @@
                    END-IF
       *
       *            同日再入院日に他保険で食事の算定がある場合に
-      *            食堂加算をクリアする
+      *            食堂加算をクリアする（医保以外から医保の同日再入院）
                    IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
                                                                      AND
                        (LNK-NYURECEDEN-HKNKBN   NOT =
@@ -11741,6 +11765,32 @@
                        (WRK-GAIHAKU-KBN(IDX1)   >=  4))
       *                食堂加算クリアフラグのセット
                         MOVE  "1"    TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+                   END-IF
+      *            食堂加算をクリアする（医保から医保の同日再入院）
+                   IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1")
+                                                                     AND
+                       (NACCT-DAY(IDX1)    NOT =  ZERO)              AND
+                       (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "1"   OR
+                                                               "2"   OR
+                                                               "3")  AND
+                      ((WRK-GAIHAKU-KBN(IDX1)    =  ZERO)            OR
+                       (WRK-GAIHAKU-KBN(IDX1)   >=  4))
+      *                食堂加算クリアフラグのセット
+                          IF (LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1) =
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(1)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(2)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(3)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(4)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(5)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(6)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(7)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(8)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(9)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(10))
+                             CONTINUE
+                          ELSE
+                             MOVE "1" TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+                          END-IF
                    END-IF
       *
       *
@@ -11768,6 +11818,8 @@
                          UNTIL     IDX1   >    31
                    COMPUTE   IDX2   =    IDX1   +   31
       *
+                   MOVE   NACCT-DAY(IDX1)  TO  WRK-SKJ-HIRU(IDX1)
+      *
       *            同日再入院で退院日の食事無しであれば、会計をクリアする
                    IF (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1") AND
                       (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2") AND
@@ -11789,6 +11841,11 @@
       *                                     WRK-SKJ5-HKNCOMBI-DAY(IDX2)
       *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX2)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX2)
+      *-----TEST-----
+      *                 IF   IDX2   =   32
+      *                     MOVE   5   TO  WRK-SKJ4-HKNCOMBI-DAY(IDX2)
+      *                 END-IF
+      *--------------
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
@@ -11839,7 +11896,8 @@
                    END-IF
       *
       *            同日再入院日（昼から）
-                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" OR
+                                                                  "3")
                                                                      AND
                          (LNK-NYURECEDEN-HKNKBN
                               =  LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1)) AND
@@ -11905,7 +11963,7 @@
                    END-IF
       *
       *            同日再入院日に他保険で食事の算定がある場合に
-      *            食堂加算をクリアする
+      *            食堂加算をクリアする（医保以外から医保の同日再入院）
                    IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
                                                                      AND
                        (LNK-NYURECEDEN-HKNKBN   NOT =
@@ -11917,6 +11975,31 @@
                        (WRK-GAIHAKU-KBN(IDX1)   >=  4))
       *                食堂加算クリアフラグのセット
                         MOVE  "1"    TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+                   END-IF
+      *            食堂加算をクリアする（医保から医保の同日再入院）
+                   IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1")
+                                                                     AND
+                       (NACCT-DAY(IDX1)    NOT =  ZERO)              AND
+                       (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "2"   OR
+                                                               "3")  AND
+                      ((WRK-GAIHAKU-KBN(IDX1)    =  ZERO)            OR
+                       (WRK-GAIHAKU-KBN(IDX1)   >=  4))
+      *                食堂加算クリアフラグのセット
+                          IF (LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1) =
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(1)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(2)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(3)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(4)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(5)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(6)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(7)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(8)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(9)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(10))
+                             CONTINUE
+                          ELSE
+                             MOVE "1" TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+                          END-IF
                    END-IF
       *
       *
@@ -11944,6 +12027,8 @@
                          UNTIL     IDX1   >    31
                    COMPUTE   IDX3   =    IDX1   +   62
       *
+                   MOVE   NACCT-DAY(IDX1)  TO  WRK-SKJ-YORU(IDX1)
+      *
       *            同日再入院で退院日の食事無しであれば、会計をクリアする
                    IF (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1") AND
                       (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2") AND
@@ -11966,6 +12051,11 @@
       *                                     WRK-SKJ5-HKNCOMBI-DAY(IDX3)
       *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX3)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX3)
+      *-----TEST-----
+      *                 IF   IDX3   =   63
+      *                     MOVE   5   TO  WRK-SKJ4-HKNCOMBI-DAY(IDX3)
+      *                 END-IF
+      *--------------
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
@@ -12016,7 +12106,8 @@
                    END-IF
       *
       *            同日再入院日（夕から）
-                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" OR
+                                                                  "3")
                                                                      AND
                          (LNK-NYURECEDEN-HKNKBN
                               =  LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1)) AND
@@ -12083,7 +12174,7 @@
                    END-IF
       *
       *            同日再入院日に他保険で食事の算定がある場合に
-      *            食堂加算をクリアする
+      *            食堂加算をクリアする（医保以外から医保の同日再入院）
                    IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
                                                                      AND
                        (LNK-NYURECEDEN-HKNKBN   NOT =
@@ -12095,10 +12186,58 @@
       *                食堂加算クリアフラグのセット
                         MOVE  "1"    TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
                    END-IF
+      *            食堂加算をクリアする（医保から医保の同日再入院）
+                   IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1")
+                                                                     AND
+                       (NACCT-DAY(IDX1)    NOT =  ZERO)              AND
+                       (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "3")  AND
+                      ((WRK-GAIHAKU-KBN(IDX1)    =  ZERO)            OR
+                       (WRK-GAIHAKU-KBN(IDX1)   >=  4))
+      *                食堂加算クリアフラグのセット
+                          IF (LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1) =
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(1)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(2)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(3)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(4)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(5)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(6)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(7)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(8)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(9)  OR
+                                 LNK-NYURECEDEN-SET-HKNCOMBI(10))
+                             CONTINUE
+                          ELSE
+                             MOVE "1" TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+                          END-IF
+                   END-IF
       *
       *
                END-PERFORM
            END-IF
+      *
+      *    引数でセットされた保険組合せ番号以外はSKJ4領域の
+      *    セット内容をクリアする
+           PERFORM    VARYING  IDX1   FROM 1 BY 1
+             UNTIL    IDX1 > 93
+                 IF   WRK-SKJ4-HKNCOMBI-DAY(IDX1)  NOT =  ZERO
+                   IF   WRK-SKJ4-HKNCOMBI-DAY(IDX1)  =
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(1)  OR
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(2)  OR
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(3)  OR
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(4)  OR
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(5)  OR
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(6)  OR
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(7)  OR
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(8)  OR
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(9)  OR
+                                  LNK-NYURECEDEN-SET-HKNCOMBI(10)
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE   TO   WRK-SKJ4-TBL(IDX1)
+                       INITIALIZE           WRK-SKJ4-TBL(IDX1)
+                   END-IF
+                 END-IF
+           END-PERFORM
       *
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
