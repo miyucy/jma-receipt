@@ -7281,7 +7281,7 @@
                                    TO  WRK-EDYMD
            END-IF
            IF    SODRNACCT-ORDERID  =  "9901"
-               MOVE    SODRNACCT-STARTYMD (1:6)
+               MOVE    SODRNACCT-STARTYMD
                                    TO  WRK-STYMD
                MOVE    SODRNACCT-STARTYMD (1:6)
                                    TO  WRK-EDYMD
