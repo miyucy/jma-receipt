@@ -1350,6 +1350,9 @@
            WHEN    "4"
                MOVE    "食事"
                                TO  HSACCTMRES-REQNUM-NAME
+           WHEN    "9"
+               MOVE    "入院会計作成"
+                               TO  HSACCTMRES-REQNUM-NAME
            END-EVALUATE
       *
            PERFORM 9001-XML-WRITE-SEC
