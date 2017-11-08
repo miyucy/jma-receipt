@@ -1138,10 +1138,16 @@
                MOVE    "000"           TO  PUSHBA01API-RESULT
                MOVE    "patient_basis_all_make"
                                        TO  PUSHBA01-EVENT
-               MOVE    WRK-PARA-SYS-YMD
+               MOVE    WRK-PARA-SYORIKBN
+                                       TO  PUSHBA01-REQUEST-MODE
+               MOVE    WRK-PARA-START-YMD
                                        TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  PUSHBA01-PERFORM-DATE
+               MOVE    WRK-HEN-DATE    TO  PUSHBA01-START-DATE
+               MOVE    WRK-PARA-END-YMD
+                                       TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE    TO  PUSHBA01-END-DATE
                MOVE    CNT-OUT         TO  WRK-CNT
                MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
       *??
