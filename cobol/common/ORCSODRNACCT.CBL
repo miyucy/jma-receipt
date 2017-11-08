@@ -7280,6 +7280,10 @@
                MOVE    SODRNACCT-STARTYMD (1:6)
                                    TO  WRK-EDYMD
            END-IF
+           IF    SODRNACCT-ORDERID  =  "9901"
+               MOVE    SODRNACCT-STARTYMD (1:6)
+                                   TO  WRK-EDYMD
+           END-IF
       *
            IF    ( WRK-EDYMD       =   SPACE )
                DISPLAY "SELECT FAILED [NYUINACCT] PTID:"
