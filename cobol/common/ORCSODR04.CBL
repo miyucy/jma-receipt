@@ -1117,7 +1117,7 @@
                MOVE    WRK-NACCTYM     TO  WRK-SYMD
                MOVE    "01"            TO  WRK-SYMD(7:2)
                MOVE    "2"             TO  WRK-ZOGENPTN
-               MOVE    3               TO  WRK-ZOGEN
+               MOVE    6               TO  WRK-ZOGEN
                PERFORM 800-CALENDAR-SEC
                MOVE    WRK-KEISANYMD (1:6)
                                        TO  SODRS04-ENDYM
