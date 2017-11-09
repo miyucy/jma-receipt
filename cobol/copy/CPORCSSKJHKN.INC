@@ -40,10 +40,14 @@
            03  LNK-SKJHKN-HENKYAKU-AREA.
       *入院区分
              05  LNK-SKJHKN-TBL.
-               07  LNK-SKJHKN-DAY            OCCURS  31.
-      *      （添字１：入院分　添字２：同日再入院分）
-      *      （空白：入力無し）
+               07  LNK-SKJHKN-DAY             OCCURS  31.
+      *          保険組合せ番号
+      *        （添字１：入院分　添字２：同日再入院分　空白：入力無し）
                  09  LNK-SKJHKN-HKNCOMBINUM   PIC X(04)  OCCURS  2.
+      *          保険種類
+      *        （１：社保　２：国保　３：後期高齢　４：労災　５：自賠
+      *          ６：公害　７：自費　８：治験　空白：入力無し）
+                 09  LNK-SKJHKN-HKNSYU        PIC X(01)  OCCURS  2.
       *
       *復帰コード（１：算定年月エラー　２：患者検索エラー
       *            ３：入院なし　４：システム予約入力なし

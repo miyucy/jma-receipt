@@ -68,6 +68,9 @@
       *    一時領域
        01  WRK-AREA.
       *
+           03  WRK-HKNCOMBINUM             PIC X(04).
+           03  WRK-HKNSYU                  PIC X(01).
+      *
            03  WRK-NACCT-DAY9              PIC 9(04)   OCCURS 31.
            03  WRK-NACCT-DAY               PIC X(04)   OCCURS 31.
       *
@@ -182,14 +185,18 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-      *     PERFORM    VARYING IDX   FROM   1   BY  1
-      *                UNTIL IDX   >   31
-      *       DISPLAY "IDX = " IDX
-      *               " NYUIN = "
-      *                LNK-SKJHKN-HKNCOMBINUM(IDX 1)
-      *               " DOUJITSU = " 
-      *                LNK-SKJHKN-HKNCOMBINUM(IDX 2)
-      *     END-PERFORM
+           PERFORM    VARYING IDX   FROM   1   BY  1
+                      UNTIL IDX   >   31
+             DISPLAY "IDX = " IDX
+                     " NYUIN-HKNCOMBI = "
+                      LNK-SKJHKN-HKNCOMBINUM(IDX 1)
+                     " HKNSYU = "
+                      LNK-SKJHKN-HKNSYU(IDX 1)
+                     " DOUJITSU-HKNCOMBI = "
+                      LNK-SKJHKN-HKNCOMBINUM(IDX 2)
+                     " HKNSYU = "
+                      LNK-SKJHKN-HKNSYU(IDX 2)
+           END-PERFORM
       *
            .
        000-PROC-EXT.
@@ -244,12 +251,12 @@
                   END-PERFORM
                END-IF
            END-IF
-           PERFORM    VARYING IDX   FROM   1   BY  1
-                      UNTIL IDX   >   31
-             DISPLAY "IDX = " IDX
-                     " WRK-NACCT-DAY = "
-                      WRK-NACCT-DAY(IDX)
-           END-PERFORM
+      **     PERFORM    VARYING IDX   FROM   1   BY  1
+      **                UNTIL IDX   >   31
+      **       DISPLAY "IDX = " IDX
+      **               " WRK-NACCT-DAY = "
+      **                WRK-NACCT-DAY(IDX)
+      **     END-PERFORM
       *
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"        TO  MCP-TABLE
@@ -282,16 +289,16 @@
            MOVE    LNK-SKJHKN-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
            CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
                                                   SPA-AREA
-           PERFORM    VARYING IDX   FROM   1   BY  1
-                      UNTIL IDX   >   31
-             DISPLAY "IDX = " IDX
-                     " DOUJITSU = "
-                      LNK-NYUINDAY-DOUJITSU-KBN(IDX)
-                     " TAI = "
-                      LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX)
-                     " SAINYU = "
-                      LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX)
-           END-PERFORM
+      **     PERFORM    VARYING IDX   FROM   1   BY  1
+      **                UNTIL IDX   >   31
+      **       DISPLAY "IDX = " IDX
+      **               " DOUJITSU = "
+      **                LNK-NYUINDAY-DOUJITSU-KBN(IDX)
+      **               " TAI = "
+      **                LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX)
+      **               " SAINYU = "
+      **                LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX)
+      **     END-PERFORM
       *
       *    システム予約の入力を取得
            INITIALIZE                          SRYACT-REC
@@ -344,9 +351,9 @@
                              END-IF
       *                      同日再入院分
                              IF   ACCT-DAY(3 IDX)   NOT =   ZERO
-                                 DISPLAY "IDX = " IDX
-                                         "ACCT-HKMCOMBI = "
-                                          ACCT-HKNCOMBI
+      **                           DISPLAY "IDX = " IDX
+      **                                   "ACCT-HKMCOMBI = "
+      **                                    ACCT-HKNCOMBI
                                  IF   ACCT-HKNCOMBI  NOT =
                                      LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX)
                                      IF   LNK-SKJHKN-HKNCOMBINUM(IDX 2)
@@ -379,15 +386,22 @@
            MOVE    "key7"                  TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
+      *    保険種類のセット
            PERFORM    VARYING IDX   FROM   1   BY  1
                       UNTIL IDX   >   31
-             DISPLAY "IDX = " IDX
-                     " NYUIN-HKNCOMBI = "
-                      LNK-SKJHKN-HKNCOMBINUM(IDX 1)
-                     " DOUJITSU-HKNCOMBI = "
-                      LNK-SKJHKN-HKNCOMBINUM(IDX 2)
+              IF  LNK-SKJHKN-HKNCOMBINUM (IDX 1)  NOT = SPACE
+                 MOVE    LNK-SKJHKN-HKNCOMBINUM (IDX 1)
+                                           TO  WRK-HKNCOMBINUM
+                 PERFORM   210-HKNSYURUI-GET-SEC
+                 MOVE    WRK-HKNSYU        TO  LNK-SKJHKN-HKNSYU(IDX 1)
+              END-IF
+              IF  LNK-SKJHKN-HKNCOMBINUM (IDX 2)  NOT = SPACE
+                 MOVE    LNK-SKJHKN-HKNCOMBINUM (IDX 2)
+                                           TO  WRK-HKNCOMBINUM
+                 PERFORM   210-HKNSYURUI-GET-SEC
+                 MOVE    WRK-HKNSYU        TO  LNK-SKJHKN-HKNSYU(IDX 2)
+              END-IF
            END-PERFORM
-      *
       *
            IF       LNK-SKJHKN-TBL     =    SPACE
                MOVE     4              TO   LNK-SKJHKN-RC
@@ -396,6 +410,75 @@
       *
            .
        200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同日再入院（入院分）の保険種類取得
+      *****************************************************************
+       210-HKNSYURUI-GET-SEC            SECTION.
+      *
+           MOVE    SPACE                TO   WRK-HKNSYU
+           MOVE    "1"                  TO   WRK-HKNSYU
+      *
+           INITIALIZE                          HKNCOMBI-REC
+           MOVE    LNK-SKJHKN-HOSPNUM      TO  COMB-HOSPNUM
+           MOVE    LNK-SKJHKN-PTID         TO  COMB-PTID
+           MOVE    WRK-HKNCOMBINUM         TO  COMB-HKNCOMBINUM
+           MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+           MOVE    "key"                   TO  MCP-PATHNAME
+           PERFORM 910-HKNCOMBI-SELECT-SEC
+           IF      FLG-HKNCOMBI            =   ZERO
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM   910-HKNCOMBI-READ-SEC
+               IF   FLG-HKNCOMBI           =   ZERO
+      *            国保
+                   IF   COMB-HKNNUM        =   "060"  OR
+                                               "067"  OR
+                                               "068"  OR
+                                               "069"
+                       MOVE    "2"         TO  WRK-HKNSYU
+                   END-IF
+      *            後期高齢者
+                   IF   COMB-HKNNUM        =   "039"  OR
+                                               "040"
+                       MOVE    "3"         TO  WRK-HKNSYU
+                   END-IF
+      *            労災保険
+                   IF   COMB-HKNNUM        =   "971"
+                       MOVE    "4"         TO  WRK-HKNSYU
+                   END-IF
+      *            自賠責保険
+                   IF   COMB-HKNNUM        =   "973"
+                       MOVE    "5"         TO  WRK-HKNSYU
+                   END-IF
+      *            公害保険
+                   IF   COMB-HKNNUM        =   "975"
+                       MOVE    "6"         TO  WRK-HKNSYU
+                   END-IF
+      *            自費
+                   IF   COMB-HKNNUM(1:2)   =   "98"
+                       MOVE    "7"         TO  WRK-HKNSYU
+                   END-IF
+      *            治験
+                   IF   COMB-HKNNUM(1:2)   =   "90"  OR
+                                               "91"
+                       MOVE    "8"         TO  WRK-HKNSYU
+                   END-IF
+               END-IF
+      *        保険組合せクローズ
+               MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
+               PERFORM   900-CLOSE-SEC
+           ELSE
+      *        保険組合せクローズ
+               MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
+               PERFORM   900-CLOSE-SEC
+           END-IF
+      *
+           .
+       210-HKNSYURUI-GET-EXT.
            EXIT.
       *
       *****************************************************************
