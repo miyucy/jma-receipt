@@ -1422,9 +1422,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                     WHEN       36
                       MOVE "食事保険指定コードの入力日に食事の算定なし"
                                           TO  ERR-ERRMSG
-                    WHEN       37
-                      MOVE "同日再入院日の食事算定保険組合せ確認"
-                                          TO  ERR-ERRMSG
       *
                     WHEN      101
                       MOVE "包括入院期間に算定できない入院料加算有"

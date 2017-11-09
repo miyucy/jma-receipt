@@ -23774,43 +23774,7 @@
            PERFORM    VARYING   IDY   FROM   1   BY   1
                        UNTIL    IDY    >    31
       *
-              IF   LNK-SYU-HKNCOMBINUM =
-                                    LNK-S02-SKJHKN-HKNCOMBI-AAA(IDY)
-                MOVE "1" TO LNK-S02-SKJHKN-AAA-TAIFLG(LNK-S02-IDX IDY)
-                PERFORM   230466-SKJ-SANTEIFLG-SET-SEC
-                IF   FLG-SET  =  1
-                  MOVE "1"
-                         TO LNK-S02-SKJHKN-AAA-ARIFLG(LNK-S02-IDX IDY)
-                END-IF
-              END-IF
-              IF   LNK-SYU-HKNCOMBINUM =
-                                    LNK-S02-SKJHKN-HKNCOMBI-BBB(IDY)
-                MOVE "1" TO LNK-S02-SKJHKN-BBB-TAIFLG(LNK-S02-IDX IDY)
-                PERFORM   230467-SKJ-SANTEIFLG-SET2-SEC
-                IF   FLG-SET  =  1
-                  MOVE "1"
-                         TO LNK-S02-SKJHKN-BBB-ARIFLG(LNK-S02-IDX IDY)
-                END-IF
-              END-IF
-      *
-              IF   LNK-SYU-HKNCOMBINUM =
-                                    LNK-S02-SKJHKN-HKNCOMBI(IDY)
-                MOVE "1" TO LNK-S02-SKJHKN-AAA-TAIFLG2(LNK-S02-IDX IDY)
-                PERFORM   230466-SKJ-SANTEIFLG-SET-SEC
-                IF   FLG-SET  =  1
-                  MOVE "1"
-                         TO LNK-S02-SKJHKN-AAA-ARIFLG2(LNK-S02-IDX IDY)
-                END-IF
-              END-IF
-              IF   LNK-SYU-HKNCOMBINUM =
-                                    LNK-S02-SKJHKN-HKNCOMBI-DOU(IDY)
-                MOVE "1" TO LNK-S02-SKJHKN-BBB-TAIFLG2(LNK-S02-IDX IDY)
-                PERFORM   230467-SKJ-SANTEIFLG-SET2-SEC
-                IF   FLG-SET  =  1
-                  MOVE "1"
-                         TO LNK-S02-SKJHKN-BBB-ARIFLG2(LNK-S02-IDX IDY)
-                END-IF
-              END-IF
+              PERFORM   230466-SKJ-SANTEIFLG-SET-SEC
       *
               IF   LNK-S02-SKJHKN-HKNCOMBI(IDY)     = SPACE
               AND  LNK-S02-SKJHKN-HKNCOMBI-DOU(IDY) = SPACE
@@ -24104,10 +24068,65 @@
            EXIT.
       *
       ******************************************************************
-      *    同日再入院日の食事算定フラグ編集
-      *    入院料と異なる保険組み合わせでの食事算定フラグ編集
+      *    入院料と異なる保険組み合わせでの食事算定チェックテーブル編集
       ******************************************************************
        230466-SKJ-SANTEIFLG-SET-SEC                 SECTION.
+      *
+           IF   (LNK-S02-SKJHKN-SRYYM(1) = SPACE              )
+           OR   (LNK-SYU-SRYYMD(1:6) = LNK-S02-SKJHKN-SRYYM(1))
+             IF    LNK-S02-SKJHKN-SET(1 IDY) = SPACE
+               MOVE  LNK-SYU-SRYYMD(1:6)
+                            TO  LNK-S02-SKJHKN-SRYYM(1)
+               MOVE  "1"    TO  LNK-S02-SKJHKN-SET(1 IDY)
+               IF  LNK-S02-SKJHKN-HKNCOMBI(IDY) NOT = SPACE
+                 MOVE   "1" TO LNK-S02-SKJHKN-AAA-TAIFLG(1 IDY)
+                 PERFORM   2304661-SKJ-SANTEIFLG-SET1-SEC
+                 IF   FLG-SET  =  1
+                   MOVE "1" TO LNK-S02-SKJHKN-AAA-ARIFLG(1 IDY)
+                 END-IF
+               END-IF
+               IF  LNK-S02-SKJHKN-HKNCOMBI-DOU(IDY) NOT = SPACE
+                 MOVE   "1" TO LNK-S02-SKJHKN-BBB-TAIFLG(1 IDY)
+                 PERFORM   2304662-SKJ-SANTEIFLG-SET2-SEC
+                 IF   FLG-SET  =  1
+                   MOVE "1" TO LNK-S02-SKJHKN-BBB-ARIFLG(1 IDY)
+                 END-IF
+               END-IF
+             END-IF
+           ELSE
+             IF   (LNK-S02-SKJHKN-SRYYM(2) = SPACE              )
+             OR   (LNK-SYU-SRYYMD(1:6) = LNK-S02-SKJHKN-SRYYM(2))
+               IF    LNK-S02-SKJHKN-SET(2 IDY) = SPACE
+                 MOVE  LNK-SYU-SRYYMD(1:6)
+                              TO  LNK-S02-SKJHKN-SRYYM(2)
+                 MOVE  "1"    TO  LNK-S02-SKJHKN-SET(2 IDY)
+                 IF  LNK-S02-SKJHKN-HKNCOMBI(IDY) NOT = SPACE
+                   MOVE   "1" TO LNK-S02-SKJHKN-AAA-TAIFLG(2 IDY)
+                   PERFORM   2304661-SKJ-SANTEIFLG-SET1-SEC
+                   IF   FLG-SET  =  1
+                     MOVE "1" TO LNK-S02-SKJHKN-AAA-ARIFLG(2 IDY)
+                   END-IF
+                 END-IF
+                 IF  LNK-S02-SKJHKN-HKNCOMBI-DOU(IDY) NOT = SPACE
+                   MOVE   "1" TO LNK-S02-SKJHKN-BBB-TAIFLG(2 IDY)
+                   PERFORM   2304662-SKJ-SANTEIFLG-SET2-SEC
+                   IF   FLG-SET  =  1
+                     MOVE "1" TO LNK-S02-SKJHKN-BBB-ARIFLG(2 IDY)
+                   END-IF
+                 END-IF
+               END-IF
+             END-IF
+           END-IF
+      *
+           .
+      *
+       230466-SKJ-SANTEIFLG-SET-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    入院料と異なる保険組み合わせでの食事算定チェックテーブル編集
+      ******************************************************************
+       2304661-SKJ-SANTEIFLG-SET1-SEC                 SECTION.
       *
            MOVE      ZERO       TO    FLG-SET
            IF    LNK-S02-SKJHKN-HKNCOMBI-DOU-XXX(IDY) = SPACE
@@ -24143,14 +24162,13 @@
       *
            .
       *
-       230466-SKJ-SANTEIFLG-SET-EXT.
+       2304661-SKJ-SANTEIFLG-SET1-EXT.
            EXIT.
       *
       ******************************************************************
-      *    同日再入院日の食事算定フラグ編集
-      *    入院料と異なる保険組み合わせでの食事算定フラグ編集
+      *    入院料と異なる保険組み合わせでの食事算定チェックテーブル編集
       ******************************************************************
-       230467-SKJ-SANTEIFLG-SET2-SEC                 SECTION.
+       2304662-SKJ-SANTEIFLG-SET2-SEC                 SECTION.
       *
            MOVE      ZERO     TO    FLG-SET
            EVALUATE  LNK-S02-DOJITU-SKJST(IDY)
@@ -24175,7 +24193,7 @@
       *
            .
       *
-       230467-SKJ-SANTEIFLG-SET2-EXT.
+       2304662-SKJ-SANTEIFLG-SET2-EXT.
            EXIT.
       *
       ******************************************************************
@@ -25554,30 +25572,31 @@
            EXIT.
       *
       ******************************************************************
-      *    同日再入院日の食事算定フラグ編集（クリア）
-      *    入院料と異なる保険組み合わせでの食事算定フラグ編集（クリア）
+      *    入院料と異なる保険組み合わせでの食事算定チェックテーブル編集
+      *    （クリア）
       ******************************************************************
        23049-SKJ-SANTEIFLG-KURIA-SEC         SECTION.
       *
-           MOVE       LNK-SYU-SKYSTYMD(7:2)  TO   IDX-ST
-           MOVE       LNK-SYU-SKYEDYMD(7:2)  TO   IDX-ED
-      *
-           PERFORM    VARYING   IDX25   FROM   IDX-ST   BY   1
-                       UNTIL    IDX25     >    IDX-ED
+           PERFORM    VARYING   IDX25   FROM   1   BY   1
+                       UNTIL    IDX25    >    31
       *
              IF   ( LNK-S02-NYUSANTEI-KBN(IDX25)    =  "1"  )
              AND  ((WK-GAIHAKU(IDX25)        =  ZERO       ) OR
                    (WK-GAIHAKU(IDX25)       >=   4         ))
                CONTINUE
              ELSE
-               MOVE  SPACE  TO
-                        LNK-S02-SKJHKN-AAA-ARIFLG(LNK-S02-IDX IDX25)
-               MOVE  SPACE  TO
-                        LNK-S02-SKJHKN-BBB-ARIFLG(LNK-S02-IDX IDX25)
-               MOVE  SPACE  TO
-                        LNK-S02-SKJHKN-AAA-ARIFLG2(LNK-S02-IDX IDX25)
-               MOVE  SPACE  TO
-                        LNK-S02-SKJHKN-BBB-ARIFLG2(LNK-S02-IDX IDX25)
+               IF    LNK-SYU-SRYYMD(1:6) = LNK-S02-SKJHKN-SRYYM(1)
+                 MOVE  SPACE  TO
+                        LNK-S02-SKJHKN-AAA-ARIFLG(1 IDX25)
+                 MOVE  SPACE  TO
+                        LNK-S02-SKJHKN-BBB-ARIFLG(1 IDX25)
+               END-IF
+               IF    LNK-SYU-SRYYMD(1:6) = LNK-S02-SKJHKN-SRYYM(2)
+                 MOVE  SPACE  TO
+                        LNK-S02-SKJHKN-AAA-ARIFLG(2 IDX25)
+                 MOVE  SPACE  TO
+                        LNK-S02-SKJHKN-BBB-ARIFLG(2 IDX25)
+               END-IF
              END-IF
       *
            END-PERFORM
