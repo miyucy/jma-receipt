@@ -752,6 +752,8 @@
       *  04.08.42    NACL-ÌçÏÆ    17/09/26  Ê¿À®£²£¹Ç¯£±£°·î²þÀµ
       *                                     ¡ÊÆþ±¡»þÀ¸³èÎÅÍÜ¤Î¸«Ä¾¤·¡Ë
       *  04.08.43    NACL-ÌçÏÆ    17/11/01  ¿ÇÎÅ¶èÊ¬ÊÌÅÀ¿ôÊÔ½¸½¤Àµ
+      *  04.08.44    NACL-ÌçÏÆ    17/10/18  Æþ±¡ÎÁ¤È°Û¤Ê¤ëÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *                                     ¤Ç¤Î¿©»ö»»ÄêÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7721,7 +7723,8 @@
                   MOVE    1     TO    FLG-HENSYU-NG
                END-IF
             END-IF
-            IF       SRY-SRYCD(IDX2)   =  "099999923" OR "099999924"
+            IF       SRY-SRYCD(IDX2)   =  "099999923" OR "099999924" OR
+                                          "099999925" OR "099999930"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
             IF       SRY-SRYCD(IDX2)   =  "099999929"
@@ -12425,6 +12428,9 @@
                                                  NOT  =  ZERO   )
                             AND ((WRK-DAY2(IDY)  =  ZERO       ) OR
                                  (WRK-DAY2(IDY) >=   4         ))
+                            AND ((WRK-DAY1(IDY)  NOT  =  ZERO  ) OR
+                                 (RECE62-NYUINDAY-KBN(IDY)
+                                                      =  "1"   ))
                             AND (RECE62-SRYYM >= "200604"       )
                              IF  NACCT-SRYCDTOTAL = 099999918
                                                  OR 099999919

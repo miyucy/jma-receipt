@@ -147,6 +147,8 @@
       *  04.08.12    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
       *                                     （記録）対応修正
       *  04.08.13    NACL-門脇    17/03/27  請求金額０円レセプト作成対応
+      *  04.08.14    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
+      *                                     での食事算定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2110,11 +2112,9 @@
       *
             IF       SRY-SRYCD(IDX2)   =  "099999909" OR "099999910" OR
                                           "099999921" OR "099999922" OR
-                                          "099999923" OR "099999924"
-                  MOVE    1     TO    FLG-HENSYU-NG
-            END-IF
-      *
-            IF       SRY-SRYCD(IDX2)   =  "099999929"
+                                          "099999923" OR "099999924" OR
+                                          "099999925" OR "099999929" OR
+                                          "099999930"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
       *
@@ -4523,6 +4523,9 @@
                                                   NOT  =  ZERO   )
                             AND ((WRK-DAY2(IDY)   =  ZERO       ) OR
                                  (WRK-DAY2(IDY)  >=   4         ))
+                            AND ((WRK-DAY1(IDY)   NOT  =  ZERO  ) OR
+                                 (RECE200-NYUINDAY-KBN(IDY)
+                                                       =  "1"   ))
                             AND (RECE200-SRYYM >= "200604"       )
                              IF  NACCT-SRYCDTOTAL = 099999918
                                                  OR 099999919
