@@ -95,21 +95,21 @@
                    07  PTINFLST-KISEI-HPONE         PIC X(15).
       *
       *        ¶Ø´÷£±
-               05  PTINFLST-TABOO-1            PIC  X(200).
+               05  PTINFLST-TABOO-1            PIC  X(100).
       *        ¶Ø´÷£²
-               05  PTINFLST-TABOO-2            PIC  X(200).
+               05  PTINFLST-TABOO-2            PIC  X(100).
       *        ¥¢¥ì¥ë¥®¡¼£±
-               05  PTINFLST-ALLERGY-1          PIC  X(200).
+               05  PTINFLST-ALLERGY-1          PIC  X(100).
       *        ¥¢¥ì¥ë¥®¡¼£²
-               05  PTINFLST-ALLERGY-2          PIC  X(200).
+               05  PTINFLST-ALLERGY-2          PIC  X(100).
       *        ´¶À÷¾É£±
-               05  PTINFLST-KANSENSYO-1        PIC  X(200).
+               05  PTINFLST-KANSENSYO-1        PIC  X(100).
       *        ´¶À÷¾É£²
-               05  PTINFLST-KANSENSYO-2        PIC  X(200).
+               05  PTINFLST-KANSENSYO-2        PIC  X(100).
       *        ¥³¥á¥ó¥È£±
-               05  PTINFLST-COMMENT-1          PIC  X(200).
+               05  PTINFLST-COMMENT-1          PIC  X(100).
       *        ¥³¥á¥ó¥È£²
-               05  PTINFLST-COMMENT-2          PIC  X(200).
+               05  PTINFLST-COMMENT-2          PIC  X(100).
       *        ¥Æ¥¹¥È´µ¼Ô¶èÊ¬
                05  PTMODRES-TEST-PATIENT       PIC  X(01).
       *        »àË´¶èÊ¬

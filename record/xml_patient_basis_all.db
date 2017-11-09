@@ -46,14 +46,14 @@ xml_patient_basis_all {
 			WholeAddress2		varchar(100);
 			PhoneNumber		varchar(15);
         	};
-		Contraindication1		varchar(200);
-		Contraindication2		varchar(200);
-		Allergy1			varchar(200);
-		Allergy2			varchar(200);
-		Infection1			varchar(200);
-		Infection2			varchar(200);
-		Comment1			varchar(200);
-		Comment2			varchar(200);
+		Contraindication1		varchar(100);
+		Contraindication2		varchar(100);
+		Allergy1			varchar(100);
+		Allergy2			varchar(100);
+		Infection1			varchar(100);
+		Infection2			varchar(100);
+		Comment1			varchar(100);
+		Comment2			varchar(100);
 #-----> テスト患者区分
 		TestPatient_Flag		varchar(01);
 #-----> 死亡区分
