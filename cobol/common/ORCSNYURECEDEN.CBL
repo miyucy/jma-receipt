@@ -11597,6 +11597,29 @@
       *****************************************************************
        2103-SHOKUJI-HENSHU5-SEC        SECTION.
       *
+      *同日再入院分の食事開始時間区分を置き換え
+           PERFORM    VARYING   IDX1  FROM  1  BY  1
+             UNTIL   IDX1   >   31
+      *        他保険（医保を含む）から医保へ同日再入院時に他保険で
+      *        システム予約入力時
+               IF   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
+                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" OR "3")
+                                                                   AND
+                    (LNK-NYURECEDEN-HKNKBN =  LNK-SKJHKN-HKNSYU(IDX1 1))
+                  MOVE   "1"  TO   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
+                  MOVE   "0"  TO   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
+               END-IF
+      *        医保から他保険（医保を含む）へ同日再入院時に他保険で
+      *        システム予約入力
+               IF   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
+                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" OR "2")
+                                                                   AND
+                    (LNK-NYURECEDEN-HKNKBN =  LNK-SKJHKN-HKNSYU(IDX1 2))
+                  MOVE   "0"  TO   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
+                  MOVE   "3"  TO   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
+               END-IF
+           END-PERFORM
+      *
       *食事情報の取得（朝食）（入院会計）
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-NYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
@@ -11635,9 +11658,12 @@
       *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX1)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)
       *-----TEST-----
-      *                 IF   IDX1   =   1
-      *                     MOVE   5   TO  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
-      *                 END-IF
+      *                システム予約による食事の保険変更
+                       IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  NOT = SPACE
+                           MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)
+                                      TO  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
+                                          WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)
+                       END-IF
       *--------------
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
@@ -11697,7 +11723,7 @@
                          (NACCT-DAY(IDX1)    NOT =  ZERO)            AND
                          (LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1) = "1")  AND
       ***                  ((WRK-NYUINKHN(IDX1) NOT =  SPACE)    OR
-      ***                   (LNK-NYUINDAY-KBN(IDX1) =  "1"  ))          AND
+      ***                   (LNK-NYUINDAY-KBN(IDX1) =  "1"  ))   AND
                            ((WRK-GAIHAKU-KBN(IDX1)  =  ZERO)     OR
                             (WRK-GAIHAKU-KBN(IDX1) >=  4))
                        MOVE   LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)
@@ -11705,6 +11731,14 @@
       *                                     WRK-SKJ5-HKNCOMBI-DAY(IDX1)
       *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX1)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)
+      *-----TEST-----
+      *                システム予約による食事の保険変更
+                       IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)  NOT = SPACE
+                           MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)(2:3)
+                                      TO  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
+                                          WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)
+                       END-IF
+      *--------------
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
@@ -11845,9 +11879,12 @@
       *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX2)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX2)
       *-----TEST-----
-      *                 IF   IDX2   =   32
-      *                     MOVE   5   TO  WRK-SKJ4-HKNCOMBI-DAY(IDX2)
-      *                 END-IF
+      *                システム予約による食事の保険変更
+                       IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  NOT = SPACE
+                           MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)
+                                      TO  WRK-SKJ4-HKNCOMBI-DAY(IDX2)
+                                          WRK-SKJFTN2-HKNCOMBI-DAY(IDX2)
+                       END-IF
       *--------------
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
@@ -11916,6 +11953,14 @@
       *                                     WRK-SKJ5-HKNCOMBI-DAY(IDX2)
       *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX2)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX2)
+      *-----TEST-----
+      *                システム予約による食事の保険変更
+                       IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)  NOT = SPACE
+                           MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)(2:3)
+                                      TO  WRK-SKJ4-HKNCOMBI-DAY(IDX2)
+                                          WRK-SKJFTN2-HKNCOMBI-DAY(IDX2)
+                       END-IF
+      *--------------
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
@@ -12055,9 +12100,12 @@
       *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX3)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX3)
       *-----TEST-----
-      *                 IF   IDX3   =   63
-      *                     MOVE   5   TO  WRK-SKJ4-HKNCOMBI-DAY(IDX3)
-      *                 END-IF
+      *                システム予約による食事の保険変更
+                       IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  NOT = SPACE
+                           MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)
+                                      TO  WRK-SKJ4-HKNCOMBI-DAY(IDX3)
+                                          WRK-SKJFTN2-HKNCOMBI-DAY(IDX3)
+                       END-IF
       *--------------
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
@@ -12127,6 +12175,14 @@
       *                                     WRK-SKJ5-HKNCOMBI-DAY(IDX3)
       *                                     WRK-SKJ6-HKNCOMBI-DAY(IDX3)
                                         WRK-SKJFTN2-HKNCOMBI-DAY(IDX3)
+      *-----TEST-----
+      *                システム予約による食事の保険変更
+                       IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)  NOT = SPACE
+                           MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)(2:3)
+                                      TO  WRK-SKJ4-HKNCOMBI-DAY(IDX3)
+                                          WRK-SKJFTN2-HKNCOMBI-DAY(IDX3)
+                       END-IF
+      *--------------
                        EVALUATE   NACCT-DAY(IDX1)
                            WHEN   1
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
