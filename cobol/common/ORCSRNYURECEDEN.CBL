@@ -3278,13 +3278,20 @@
       *****************************************************************
        2103-SHOKUJI-HENSHU-SEC        SECTION.
       *
+       DISPLAY "2103-SHOKUJI-HENSHU-SEC"
+       DISPLAY "LNK-RNYURECEDEN-HKNCOMBI = " LNK-RNYURECEDEN-HKNCOMBI
       *同日再入院分の食事開始時間区分を置き換え
            PERFORM    VARYING   IDX1  FROM  1  BY  1
              UNTIL   IDX1   >   31
+               DISPLAY "IDX1 = " IDX1
+               DISPLAY "LNK-NYUINDAY-DOUJITSU-KBN(IDX1) = "
+                        LNK-NYUINDAY-DOUJITSU-KBN(IDX1)
+               DISPLAY "LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "
+                        LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1)
       *        他保険（労災含む）から労災へ同日再入院時に他保険で
       *        労災保険の食事算定をシステム予約入力時
                IF  (LNK-RNYURECEDEN-HKNCOMBI  =
-                                   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)) AND
+                             LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)) AND
                    (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)        = "1")  AND
                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2" OR "4")
                                                                    AND
@@ -3298,8 +3305,8 @@
       *        他保険（労災含む）から労災へ同日再入院時に労災で
       *        他保険の食事算定をシステム予約入力時
                IF  (LNK-RNYURECEDEN-HKNCOMBI  =
-                                   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)) AND
-                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)        = "1")  AND
+                             LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)) AND
+                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2" OR "4")
                  IF   (LNK-SKJHKN-HKNSYU(IDX1 2)   NOT =    SPACE)  AND
                    (LNK-RNYURECEDEN-HKNCOMBI  NOT =
@@ -3311,8 +3318,8 @@
       *        労災から他保険（労災を含む）へ同日再入院時に他保険で
       *        労災保険の食事算定をシステム予約入力
                IF  (LNK-RNYURECEDEN-HKNCOMBI  =
-                                   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)) AND
-                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
+                           LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1)) AND
+                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")   AND
                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3" OR "4")
                                                                    AND
                    (LNK-RNYURECEDEN-HKNKBN =  LNK-SKJHKN-HKNSYU(IDX1 2))
@@ -3325,8 +3332,8 @@
       *        労災から他保険（労災を含む）へ同日再入院時に労災で
       *        他保険（労災を含む）の食事算定をシステム予約入力
                IF  (LNK-RNYURECEDEN-HKNCOMBI  =
-                                   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)) AND
-                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
+                           LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1)) AND
+                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")   AND
                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3" OR "4")
                  IF   (LNK-SKJHKN-HKNSYU(IDX1 1)   NOT =    SPACE)  AND
                    (LNK-RNYURECEDEN-HKNCOMBI  NOT =
