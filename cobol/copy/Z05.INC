@@ -143,3 +143,6 @@
                 04  Z05-BS03-STATE   PIC S9(9)   BINARY.
               03  Z05-BS12.
                 04  Z05-BS12-STATE   PIC S9(9)   BINARY.
+              04  Z05-PRICEMSG.
+                05  Z05-PRICEMSG-STYLE  PIC X(20).
+                05  Z05-PRICEMSG-DATA   PIC X(80).

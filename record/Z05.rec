@@ -175,5 +175,9 @@ Z05 {
     BS12 { #GtkButton
       state int;
     };
+    PRICEMSG { #GtkLabel
+      style varchar(20);
+      textdata varchar(80);
+    };
   };
 };

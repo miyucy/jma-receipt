@@ -199,6 +199,8 @@
            03  WRK-MATERH-SNAME        PIC X(200).
            03  WRK-MATERH-KIKAKU       PIC X(120).
       *
+           03  WRK-MCP-TABLE       PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -512,18 +514,64 @@
       *****************************************************************
        30011-IDOKANREN-HEN-SEC            SECTION.
       *
+      *H29.11
+      *    ユーザーで検索
+           MOVE    "tbl_tensu_user"    TO  WRK-MCP-TABLE
+           PERFORM 300111-IDOKANREN-TENSU-SEC
+           IF      WRK-TNS-NAME        =   SPACE
+      *        マスターで検索
+               MOVE    "tbl_tensu_master"  TO  WRK-MCP-TABLE
+               PERFORM 300111-IDOKANREN-TENSU-SEC
+           END-IF
+      *
+           MOVE    WRK-TNS-NAME        TO  SPA-GMN-IDOKANRENNAME
+           MOVE    WRK-TNS-YUKOSTYMD   TO  SPA-NAI-IDOSTYMD
+           MOVE    WRK-TNS-YUKOEDYMD   TO  SPA-NAI-IDOEDYMD
+           MOVE    WRK-TNS-TENSIKIBETU TO  SPA-NAI-TENSIKIBETU
+           MOVE    WRK-TNS-TANICD      TO  SPA-NAI-TANICD
+           IF      WRK-TNS-YUKOSTYMD   =   SPACE
+               MOVE    SPACE               TO  SPA-GMN-IDOKIKAN
+           ELSE
+      *        期間編集
+               MOVE    SPACE               TO  SPA-GMN-IDOKIKAN
+               MOVE    WRK-TNS-YUKOSTYMD   TO  WRK-LNKYMD
+               PERFORM 832-YMDCONV21-SEC
+               MOVE    WRK-HENYMDG         TO  WRK-HEN-STYMD
+               MOVE    WRK-TNS-YUKOEDYMD   TO  WRK-LNKYMD
+               PERFORM 832-YMDCONV21-SEC
+               MOVE    WRK-HENYMDG         TO  WRK-HEN-EDYMD
+               STRING  WRK-HEN-STYMD
+                       "〜"
+                       WRK-HEN-EDYMD       DELIMITED  BY  SIZE
+                                           INTO  SPA-GMN-IDOKIKAN
+               END-STRING
+           END-IF
+      *    金額・点数識別・単位編集
+           PERFORM 30011-MSGLABELHEN-SEC
+           .
+      *
+       30011-IDOKANREN-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   関連算定コード編集処理
+      *****************************************************************
+       300111-IDOKANREN-TENSU-SEC      SECTION.
+      *
            MOVE    SPACE               TO  TNS-TENSU-REC
            INITIALIZE                      TNS-TENSU-REC
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    SPA-GMN-IDOKANREN   TO  TNS-SRYCD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
       *
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
+      ******   MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-TENSU-READ-SEC
            ELSE
@@ -562,42 +610,19 @@
                END-IF
                IF     (SPA-ERRCD               =   SPACE )  AND
                       (FLG-TENSU               =   ZERO  )
-                   MOVE    "tbl_tensu"         TO  MCP-TABLE
+      **           MOVE    "tbl_tensu"         TO  MCP-TABLE
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                    MOVE    "key4"              TO  MCP-PATHNAME
                    PERFORM 900-TENSU-READ-SEC
                END-IF
            END-PERFORM
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
+     ***** MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBLOSEC-SEC
-      *
-           MOVE    WRK-TNS-NAME        TO  SPA-GMN-IDOKANRENNAME
-           MOVE    WRK-TNS-YUKOSTYMD   TO  SPA-NAI-IDOSTYMD
-           MOVE    WRK-TNS-YUKOEDYMD   TO  SPA-NAI-IDOEDYMD
-           MOVE    WRK-TNS-TENSIKIBETU TO  SPA-NAI-TENSIKIBETU
-           MOVE    WRK-TNS-TANICD      TO  SPA-NAI-TANICD
-           IF      WRK-TNS-YUKOSTYMD   =   SPACE
-               MOVE    SPACE               TO  SPA-GMN-IDOKIKAN
-           ELSE
-      *        期間編集
-               MOVE    SPACE               TO  SPA-GMN-IDOKIKAN
-               MOVE    WRK-TNS-YUKOSTYMD   TO  WRK-LNKYMD
-               PERFORM 832-YMDCONV21-SEC
-               MOVE    WRK-HENYMDG         TO  WRK-HEN-STYMD
-               MOVE    WRK-TNS-YUKOEDYMD   TO  WRK-LNKYMD
-               PERFORM 832-YMDCONV21-SEC
-               MOVE    WRK-HENYMDG         TO  WRK-HEN-EDYMD
-               STRING  WRK-HEN-STYMD
-                       "〜"
-                       WRK-HEN-EDYMD       DELIMITED  BY  SIZE
-                                           INTO  SPA-GMN-IDOKIKAN
-               END-STRING
-           END-IF
-      *    金額・点数識別・単位編集
-           PERFORM 30011-MSGLABELHEN-SEC
            .
       *
-       30011-IDOKANREN-HEN-EXT.
+       300111-IDOKANREN-TENSU-EXT.
            EXIT.
       *
       *****************************************************************

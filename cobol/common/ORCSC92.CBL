@@ -5994,18 +5994,18 @@
       *
       *H29.1
       *    ¥Ô∫‡•Ê°º•∂°º∂‚≥€ ‘Ω∏° ª¿¡«≈˘°À
-           IF     (TNS-SRYCD(1:1)      =   "7" )
+      *    IF     (TNS-SRYCD(1:1)      =   "7" )
       *        ª¿¡«≈˘°¢≈‘∆ª…‹∏©πÿ∆˛≤¡≥ 
-              AND ((TNS-TOKUKIZAISBT1  =   "2"
-                                       OR  "3"
-                                       OR  "4" )  OR
-                   (TNS-TENSIKIBETU    =   "2" ))
-               PERFORM 9103-TENSUPRICE-READ-SEC
-               IF    ( FLG-TENSUPRICE      =   ZERO )
-                 AND ( TNSPR-PRICE     NOT =   ZERO )
-                   MOVE    TNSPR-PRICE         TO  TNS-TEN
-               END-IF
-           END-IF
+      *       AND ((TNS-TOKUKIZAISBT1  =   "2"
+      *                                OR  "3"
+      *                                OR  "4" )  OR
+      *            (TNS-TENSIKIBETU    =   "2" ))
+      *        PERFORM 9103-TENSUPRICE-READ-SEC
+      *        IF    ( FLG-TENSUPRICE      =   ZERO )
+      *          AND ( TNSPR-PRICE     NOT =   ZERO )
+      *            MOVE    TNSPR-PRICE         TO  TNS-TEN
+      *        END-IF
+      *****END-IF
            .
        910-TENSU-READ-EXT.
            EXIT.

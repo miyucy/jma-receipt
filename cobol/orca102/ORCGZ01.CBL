@@ -170,6 +170,8 @@
       *    パス名
            03  WRK-PATH                PIC X(64).
       *
+           03  WRK-MCP-TABLE           PIC X(64).
+      *
            03  WRK-SRYCD               PIC X(09).
            03  WRK-Z08-SRYCD           PIC X(09).
       *
@@ -666,6 +668,19 @@
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBLOSEC-SEC
       *
+      *
+      *H29.11
+      *    金額テーブルを反映しない為、それぞれのテーブルで検索する。
+           IF      SPA-Z01GMN-SRYCD(1:1)   =   "7"
+               IF      SPA-Z01NAI-MASTER-CLASS   =   2
+                   MOVE    "tbl_tensu_user"    TO  WRK-MCP-TABLE
+               ELSE
+                   MOVE    "tbl_tensu_master"  TO  WRK-MCP-TABLE
+               END-IF
+               PERFORM 50119-TENSU-HEN7-SEC
+           END-IF
+      *
+      *
            IF     (SPA-Z01GMN-SRYCD(1:1)   =   "1"
                                            OR  "6"
                                            OR  "7" )
@@ -710,6 +725,85 @@
            .
        5011-TENSU-HEN-EXT.
            EXIT.
+      *
+      *H29.11
+      *****************************************************************
+      *  コード内容判定処理
+      *****************************************************************
+       50119-TENSU-HEN7-SEC                       SECTION.
+      *
+           INITIALIZE                      SPA-Z01GMN-SELTBL
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-Z01GMN-SRYCD        TO  TNS-SRYCD
+           MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
+           MOVE    TNS-TENSU-REC           TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 910-TENSU-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+               INITIALIZE                      TNS-TENSU-REC
+           END-IF
+           MOVE    ZERO                TO  IDXX
+           PERFORM UNTIL    (FLG-TENSU     =   1  )  OR
+                            (IDXX          >=  30 )
+               ADD     1                   TO  IDXX
+               MOVE    IDXX                TO  SPA-Z01NAI-COUNT
+               MOVE    TNS-NAME            TO  SPA-Z01GMN-NAME
+      *
+               MOVE    IDXX                TO  SPA-Z01GMN-TRENNUM
+                                                              (IDXX)
+               MOVE    TNS-NAME            TO  SPA-Z01NAI-NAME
+                                                              (IDXX)
+               MOVE    TNS-YUKOSTYMD       TO  SPA-Z01NAI-TYUKOSTYMD
+                                                              (IDXX)
+               MOVE    TNS-YUKOEDYMD       TO  SPA-Z01NAI-TYUKOEDYMD
+                                                               (IDXX)
+               MOVE    TNS-YUKOSTYMD       TO  WRK-LNKYMD
+               PERFORM  832-YMDCONV21-SEC
+               MOVE  WRK-HENYMDG           TO  SPA-Z01GMN-TYUKOSTYMD
+                                                                (IDXX)
+      *
+               MOVE    TNS-YUKOEDYMD       TO  WRK-LNKYMD
+               PERFORM  832-YMDCONV21-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-Z01GMN-TYUKOEDYMD
+                                                                (IDXX)
+      *
+               PERFORM VARYING IDXY    FROM    1   BY  1
+                       UNTIL ( IDXY    >=  IDXX )
+                   IF    ( SPA-Z01NAI-TYUKOEDYMD (IDXY)
+                               <  SPA-Z01NAI-TYUKOSTYMD (IDXX))
+                   OR    ( SPA-Z01NAI-TYUKOSTYMD (IDXY)
+                               >  SPA-Z01NAI-TYUKOEDYMD (IDXX))
+                       CONTINUE
+                   ELSE
+                       MOVE    1   TO  SPA-Z01NAI-TCHOFUKU (IDXX)
+                       MOVE    1   TO  SPA-Z01NAI-TCHOFUKU (IDXY)
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 910-TENSU-NEXT-SEC
+           END-PERFORM
+      *    MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
+      *
+           .
+       50119-TENSU-HEN7-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *  コード内容判定処理
       *****************************************************************
