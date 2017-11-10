@@ -4349,6 +4349,17 @@
               END-IF
            END-IF
       *
+      *    食事保険指定で記録対象となる入力があるか確認
+           PERFORM    VARYING  IDX1   FROM  1  BY  1
+             UNTIL    IDX1     >   31
+                IF LNK-NYURECEDEN-HKNKBN  =  LNK-SKJHKN-HKNSYU(IDX1 1)
+                    MOVE      "1"              TO  WRK-DOUJITSU-KBN
+                END-IF
+                IF LNK-NYURECEDEN-HKNKBN  =  LNK-SKJHKN-HKNSYU(IDX1 2)
+                    MOVE      "1"              TO  WRK-DOUJITSU-KBN
+                END-IF
+           END-PERFORM
+      *
       *入院料の取得
            MOVE    ZERO                    TO  FLG-OK
            INITIALIZE                          NYUINACCT-REC
@@ -11596,10 +11607,20 @@
       *                  （生活療養負担コード分割対応）
       *****************************************************************
        2103-SHOKUJI-HENSHU5-SEC        SECTION.
+           DISPLAY "2103-SHOKUJI-HENSHU5-SEC"
       *
       *同日再入院分の食事開始時間区分を置き換え
            PERFORM    VARYING   IDX1  FROM  1  BY  1
              UNTIL   IDX1   >   31
+      *-----TEST-----
+      *        システム予約による食事の保険置き換え
+               IF  (LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  NOT = SPACE)  AND
+                   (LNK-SKJHKN-HKNSYU(IDX1 1)  =  LNK-NYURECEDEN-HKNKBN)
+                    MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)
+                                      TO  WRK-HKNCOMBI-DAY(IDX1)
+                    MOVE   "1"        TO  WRK-NYUINKHN(IDX1)
+               END-IF
+      *--------------
       *        他保険（医保を含む）から医保へ同日再入院時に他保険で
       *        医保分の食事算定をシステム予約入力時
                IF   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
