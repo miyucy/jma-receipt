@@ -3283,7 +3283,9 @@
              UNTIL   IDX1   >   31
       *        他保険（労災含む）から労災へ同日再入院時に他保険で
       *        労災保険の食事算定をシステム予約入力時
-               IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)        = "1")  AND
+               IF  (LNK-RNYURECEDEN-HKNCOMBI  =
+                                   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)) AND
+                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)        = "1")  AND
                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2" OR "4")
                                                                    AND
                    (LNK-RNYURECEDEN-HKNKBN =  LNK-SKJHKN-HKNSYU(IDX1 1))
@@ -3295,7 +3297,9 @@
                END-IF
       *        他保険（労災含む）から労災へ同日再入院時に労災で
       *        他保険の食事算定をシステム予約入力時
-               IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)        = "1")  AND
+               IF  (LNK-RNYURECEDEN-HKNCOMBI  =
+                                   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)) AND
+                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)        = "1")  AND
                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2" OR "4")
                  IF   (LNK-SKJHKN-HKNSYU(IDX1 2)   NOT =    SPACE)  AND
                    (LNK-RNYURECEDEN-HKNCOMBI  NOT =
@@ -3306,7 +3310,9 @@
                END-IF
       *        労災から他保険（労災を含む）へ同日再入院時に他保険で
       *        労災保険の食事算定をシステム予約入力
-               IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
+               IF  (LNK-RNYURECEDEN-HKNCOMBI  =
+                                   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)) AND
+                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3" OR "4")
                                                                    AND
                    (LNK-RNYURECEDEN-HKNKBN =  LNK-SKJHKN-HKNSYU(IDX1 2))
@@ -3318,7 +3324,9 @@
                END-IF
       *        労災から他保険（労災を含む）へ同日再入院時に労災で
       *        他保険（労災を含む）の食事算定をシステム予約入力
-               IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
+               IF  (LNK-RNYURECEDEN-HKNCOMBI  =
+                                   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)) AND
+                   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3" OR "4")
                  IF   (LNK-SKJHKN-HKNSYU(IDX1 1)   NOT =    SPACE)  AND
                    (LNK-RNYURECEDEN-HKNCOMBI  NOT =
