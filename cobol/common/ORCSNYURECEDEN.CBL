@@ -11601,7 +11601,7 @@
            PERFORM    VARYING   IDX1  FROM  1  BY  1
              UNTIL   IDX1   >   31
       *        他保険（医保を含む）から医保へ同日再入院時に他保険で
-      *        システム予約入力時
+      *        医保分の食事算定をシステム予約入力時
                IF   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
                     (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" OR "3")
                                                                    AND
@@ -11609,14 +11609,36 @@
                   MOVE   "1"  TO   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
                   MOVE   "0"  TO   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
                END-IF
+      *        他保険（医保を含む）から医保へ同日再入院時に医保で
+      *        他保険（医保を含む）の食事算定をシステム予約入力時
+               IF   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
+                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" OR "3")
+                 IF   (LNK-SKJHKN-HKNSYU(IDX1 2)   NOT =    SPACE)  AND
+                   (LNK-NYURECEDEN-HKNKBN  NOT =
+                                         LNK-SKJHKN-HKNSYU(IDX1 2))
+                  MOVE   "0"  TO   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
+                  MOVE   "1"  TO   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
+                 END-IF
+               END-IF
       *        医保から他保険（医保を含む）へ同日再入院時に他保険で
-      *        システム予約入力
+      *        医保分の食事算定をシステム予約入力
                IF   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
                     (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" OR "2")
                                                                    AND
                     (LNK-NYURECEDEN-HKNKBN =  LNK-SKJHKN-HKNSYU(IDX1 2))
                   MOVE   "0"  TO   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
-                  MOVE   "3"  TO   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
+                  MOVE   "1"  TO   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
+               END-IF
+      *        医保から他保険（医保を含む）へ同日再入院時に医保で
+      *        他保険（医保を含む）の食事算定をシステム予約入力
+               IF   (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1")  AND
+                    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" OR "2")
+                 IF   (LNK-SKJHKN-HKNSYU(IDX1 1)   NOT =    SPACE)  AND
+                   (LNK-NYURECEDEN-HKNKBN  NOT =
+                                         LNK-SKJHKN-HKNSYU(IDX1 1))
+                  MOVE   "1"  TO   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
+                  MOVE   "0"  TO   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
+                 END-IF
                END-IF
            END-PERFORM
       *
