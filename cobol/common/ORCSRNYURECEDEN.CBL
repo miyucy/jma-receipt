@@ -3301,8 +3301,9 @@
       *         DISPLAY "LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "
       *                  LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1)
       *-----TEST-----
-      *        システム予約による食事の保険置き換え
-               IF  (LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  NOT = SPACE)  AND
+      *        同日再入院日以外でシステム予約による食事の保険置き換え
+               IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1) =     SPACE)  AND
+                   (LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  NOT = SPACE)  AND
                    (LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  =  
                                           LNK-RNYURECEDEN-HKNCOMBI)
                     MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)

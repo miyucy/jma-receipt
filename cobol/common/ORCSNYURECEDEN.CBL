@@ -11613,8 +11613,9 @@
            PERFORM    VARYING   IDX1  FROM  1  BY  1
              UNTIL   IDX1   >   31
       *-----TEST-----
-      *        システム予約による食事の保険置き換え
-               IF  (LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  NOT = SPACE)  AND
+      *        同日再入院日以外でシステム予約による食事の保険置き換え
+               IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1) =     SPACE)  AND
+                   (LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  NOT = SPACE)  AND
                    (LNK-SKJHKN-HKNSYU(IDX1 1)  =  LNK-NYURECEDEN-HKNKBN)
                     MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)
                                       TO  WRK-HKNCOMBI-DAY(IDX1)
