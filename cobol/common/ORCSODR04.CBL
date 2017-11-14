@@ -278,7 +278,7 @@
       *
            MOVE    SPA-SYSYMD              TO  WRK-SYMD
            MOVE    "2"                     TO  WRK-ZOGENPTN
-           MOVE    2                       TO  WRK-ZOGEN
+           MOVE    3                       TO  WRK-ZOGEN
            PERFORM 800-CALENDAR-SEC
            MOVE    WRK-KEISANYMD(1:6)      TO  WRK-ENDYM
       *
