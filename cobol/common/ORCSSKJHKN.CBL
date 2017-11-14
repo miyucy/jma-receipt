@@ -166,7 +166,6 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
-           DISPLAY "=== ORCSSKJHKN ===="
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
@@ -185,18 +184,18 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           PERFORM    VARYING IDX   FROM   1   BY  1
-                      UNTIL IDX   >   31
-             DISPLAY "IDX = " IDX
-                     " NYUIN-HKNCOMBI = "
-                      LNK-SKJHKN-HKNCOMBINUM(IDX 1)
-                     " HKNSYU = "
-                      LNK-SKJHKN-HKNSYU(IDX 1)
-                     " DOUJITSU-HKNCOMBI = "
-                      LNK-SKJHKN-HKNCOMBINUM(IDX 2)
-                     " HKNSYU = "
-                      LNK-SKJHKN-HKNSYU(IDX 2)
-           END-PERFORM
+      *     PERFORM    VARYING IDX   FROM   1   BY  1
+      *                UNTIL IDX   >   31
+      *       DISPLAY "IDX = " IDX
+      *               " NYUIN-HKNCOMBI = "
+      *                LNK-SKJHKN-HKNCOMBINUM(IDX 1)
+      *               " HKNSYU = "
+      *                LNK-SKJHKN-HKNSYU(IDX 1)
+      *               " DOUJITSU-HKNCOMBI = "
+      *                LNK-SKJHKN-HKNCOMBINUM(IDX 2)
+      *               " HKNSYU = "
+      *                LNK-SKJHKN-HKNSYU(IDX 2)
+      *     END-PERFORM
       *
            .
        000-PROC-EXT.
