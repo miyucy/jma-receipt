@@ -594,6 +594,64 @@
           <data>CLICKED</data>
         </signal>
       </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>LABEL3</name>
+        <x>452</x>
+        <y>64</y>
+        <width>248</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>連携基盤用データ作成（当日受診分）</label>
+        <justify>GTK_JUSTIFY_RIGHT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkPandaCombo</class>
+        <name>COOPBASE2_COMB</name>
+        <x>720</x>
+        <y>64</y>
+        <width>192</width>
+        <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <border_width>0</border_width>
+        <items>
+        </items>
+        <case_sensitive>False</case_sensitive>
+        <use_arrows>True</use_arrows>
+        <widget>
+          <class>GtkPandaEntry</class>
+          <child_name>GtkPandaCombo:entry</child_name>
+          <name>COOPBASE2</name>
+          <sensitive>True</sensitive>
+          <can_focus>True</can_focus>
+          <has_focus>False</has_focus>
+          <editable>True</editable>
+          <text_max_length>20</text_max_length>
+          <text></text>
+          <input_mode>XIM</input_mode>
+          <xim_enabled>False</xim_enabled>
+          <signal>
+            <name>changed</name>
+            <handler>entry_changed</handler>
+            <data>CHANGED</data>
+          </signal>
+          <signal>
+            <name>activate</name>
+            <handler>send_event</handler>
+            <data>ACTIVATE</data>
+          </signal>
+        </widget>
+      </widget>
     </widget>
   </widget>
 </GTK-Interface>
