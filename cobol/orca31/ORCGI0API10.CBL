@@ -54,8 +54,6 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-ERRCD               PIC X(04).
-           03  WRK-ERRMSG              PIC X(100).
            03  WRK-YMD                 PIC X(10). 
            03  WRK-ZOGENPTN            PIC X(01).
            03  WRK-ZOGEN               PIC S9(05).
@@ -638,11 +636,11 @@
                    MOVE     XML-APIREQ      TO  XML-HSPMMREQ
                ELSE
                    DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "0098"            TO  WRK-ERRCD
+                   MOVE   "0098"            TO  SPA-ERRCD
                END-IF
            ELSE
                DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "0097"               TO  WRK-ERRCD
+               MOVE   "0097"               TO  SPA-ERRCD
            END-IF
       *
            MOVE    "xml_hspmmv2req"   TO  MCP-TABLE
