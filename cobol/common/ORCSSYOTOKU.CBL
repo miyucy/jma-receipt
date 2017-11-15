@@ -680,54 +680,6 @@
            MOVE    "key17"                TO  MCP-PATHNAME
            PERFORM  910-DB-CLOSE-SEC
       *
-      *    同日再入院の保険組み合わせ
-           INITIALIZE                         ORCSNYUINDAY-AREA
-           MOVE    LNK-SYOTOKU-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    LNK-SYOTOKU-PTID       TO  LNK-NYUINDAY-PTID
-           MOVE    LNK-SYOTOKU-SRYYM      TO  LNK-NYUINDAY-SANTEIYM
-           CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
-                                                  SPA-AREA
-           IF      LNK-NYUINDAY-RC  =   ZERO
-             PERFORM   VARYING   IDX2    FROM    1   BY  1
-                        UNTIL    IDX2     >     31
-                MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX2)
-                                          TO  WRK-DAY-HKNCOMBI-DOU(IDX2)
-             END-PERFORM
-           END-IF
-      *
-      *    【食事用】食事算定保険組み合わせ
-      *    【食事用】食事算定保険組み合わせ（同日再入院）
-           PERFORM   VARYING   IDX2    FROM    1   BY  1
-                      UNTIL    IDX2     >     31
-              MOVE  WRK-DAY-HKNCOMBI(IDX2)
-                                TO  LNK-SYOTOKU-SKJHKNCOMBI(IDX2)
-              MOVE  WRK-DAY-HKNCOMBI-DOU(IDX2)
-                                TO  LNK-SYOTOKU-SKJHKNCOMBI-DOU(IDX2)
-           END-PERFORM
-      *
-      *    入院料と異なる食事算定保険組み合わせ取得
-           IF   LNK-SYOTOKU-SRYYM   >=   "201710"
-              INITIALIZE                     ORCSSKJHKN-AREA
-              MOVE  LNK-SYOTOKU-HOSPNUM  TO  LNK-SKJHKN-HOSPNUM
-              MOVE  LNK-SYOTOKU-PTID     TO  LNK-SKJHKN-PTID
-              MOVE  LNK-SYOTOKU-SRYYM    TO  LNK-SKJHKN-SANTEIYM
-              CALL  "ORCSSKJHKN"         USING   ORCSSKJHKN-AREA
-                                                 SPA-AREA
-              IF      LNK-SKJHKN-RC    =   ZERO
-                 PERFORM    VARYING   IDX2   FROM   1   BY   1
-                             UNTIL    IDX2    >    31
-                   IF   LNK-SKJHKN-HKNCOMBINUM(IDX2 1) NOT = SPACE
-                     MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX2 1) TO
-                                   WRK-DAY-HKNCOMBI-SKJHKN(IDX2)
-                   END-IF
-                   IF   LNK-SKJHKN-HKNCOMBINUM(IDX2 2) NOT = SPACE
-                     MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX2 2) TO
-                                   WRK-DAY-HKNCOMBI-SKJHKN-DOU(IDX2)
-                   END-IF
-                 END-PERFORM
-              END-IF
-           END-IF
-      *
       *    保険組み合わせ情報編集
            PERFORM   VARYING   IDX2   FROM   1   BY   1
                       UNTIL    IDX2     >   31
@@ -749,40 +701,8 @@
               END-IF
            END-PERFORM
       *
-      *    同日再入院の保険組み合わせ情報置き換え編集
-      *    入院料と異なる食事算定保険組み合わせ情報置き換え編集
-           PERFORM   VARYING   IDX2    FROM    1   BY  1
-                      UNTIL    IDX2     >     31
-              IF   WRK-DAY-HKNCOMBI(IDX2)      NOT =  ZERO
-                 IF  (WRK-DAY-HKNKOHSBTKBN(IDX2) =  "8" OR "9")
-                 OR  (WRK-DAY-HKNNUM(IDX2)       =
-                                "971" OR "973" OR "975" OR
-                                "068" OR "069" OR "040"       )
-                    MOVE     ZERO    TO  FLG-OKIKAE
-                    IF  (WRK-DAY-HKNCOMBI-DOU(IDX2) NOT = ZERO)
-                    AND (FLG-OKIKAE                     = ZERO)
-                      MOVE    2      TO  FLG-PARA
-                      MOVE    WRK-DAY-HKNCOMBI-DOU(IDX2)
-                                     TO  WRK-TAIHI-HKNCOMBI
-                      PERFORM 2304-HKNCOMBI-KENSAKU-SEC
-                    END-IF
-                    IF  (WRK-DAY-HKNCOMBI-SKJHKN(IDX2) NOT = ZERO)
-                    AND (FLG-OKIKAE                        = ZERO)
-                      MOVE    2      TO  FLG-PARA
-                      MOVE    WRK-DAY-HKNCOMBI-SKJHKN(IDX2)
-                                     TO  WRK-TAIHI-HKNCOMBI
-                      PERFORM 2304-HKNCOMBI-KENSAKU-SEC
-                    END-IF
-                    IF  (WRK-DAY-HKNCOMBI-SKJHKN-DOU(IDX2) NOT = ZERO)
-                    AND (FLG-OKIKAE                            = ZERO)
-                      MOVE    2      TO  FLG-PARA
-                      MOVE    WRK-DAY-HKNCOMBI-SKJHKN-DOU(IDX2)
-                                     TO  WRK-TAIHI-HKNCOMBI
-                      PERFORM 2304-HKNCOMBI-KENSAKU-SEC
-                    END-IF
-                 END-IF
-              END-IF
-           END-PERFORM
+      *    保険組み合わせ情報編集（置き換え）
+           PERFORM   2305-HKNCOMBI-OKIKAE-HENSYU-SEC
       *
       *    年齢区分編集
            PERFORM   VARYING   IDX2    FROM    1   BY  1
@@ -1282,6 +1202,127 @@
       *
            .
        2304-HKNCOMBI-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組み合わせ情報編集（置き換え）
+      *****************************************************************
+       2305-HKNCOMBI-OKIKAE-HENSYU-SEC            SECTION.
+      *
+           MOVE    ZERO       TO    FLG-CHECK
+           PERFORM   VARYING   IDX2    FROM    1   BY  1
+                      UNTIL    IDX2     >     31
+             IF   WRK-DAY-HKNCOMBI(IDX2)      NOT =  ZERO
+               IF  (WRK-DAY-HKNKOHSBTKBN(IDX2) =  "8" OR "9")
+               OR  (WRK-DAY-HKNNUM(IDX2)       =
+                              "971" OR "973" OR "975" OR
+                              "068" OR "069" OR "040"       )
+                 MOVE    1    TO    FLG-CHECK
+                 MOVE   31    TO    IDX2
+               END-IF
+             END-IF
+           END-PERFORM
+      *
+           IF    FLG-CHECK  =  1
+      *      同日再入院の保険組み合わせ取得
+             INITIALIZE                        ORCSNYUINDAY-AREA
+             MOVE     LNK-SYOTOKU-HOSPNUM  TO  LNK-NYUINDAY-HOSPNUM
+             MOVE     LNK-SYOTOKU-PTID     TO  LNK-NYUINDAY-PTID
+             MOVE     LNK-SYOTOKU-SRYYM    TO  LNK-NYUINDAY-SANTEIYM
+             CALL     "ORCSNYUINDAY"       USING   ORCSNYUINDAY-AREA
+                                                   SPA-AREA
+             IF       LNK-NYUINDAY-RC  =  ZERO
+               PERFORM   VARYING   IDX2    FROM    1   BY  1
+                          UNTIL    IDX2     >     31
+                 MOVE   LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX2)
+                                 TO  WRK-DAY-HKNCOMBI-DOU(IDX2)
+               END-PERFORM
+             END-IF
+      *      同日再入院の保険組み合わせ置き換え編集
+             PERFORM   VARYING   IDX2    FROM    1   BY  1
+                        UNTIL    IDX2     >     31
+               IF   WRK-DAY-HKNCOMBI(IDX2)      NOT =  ZERO
+                 IF  (WRK-DAY-HKNKOHSBTKBN(IDX2) =  "8" OR "9")
+                 OR  (WRK-DAY-HKNNUM(IDX2)       =
+                                "971" OR "973" OR "975" OR
+                                "068" OR "069" OR "040"       )
+                   IF   WRK-DAY-HKNCOMBI-DOU(IDX2) NOT = ZERO
+                     MOVE    2      TO  FLG-PARA
+                     MOVE    WRK-DAY-HKNCOMBI-DOU(IDX2)
+                                    TO  WRK-TAIHI-HKNCOMBI
+                     PERFORM 2304-HKNCOMBI-KENSAKU-SEC
+                   END-IF
+                 END-IF
+               END-IF
+             END-PERFORM
+           END-IF
+      *
+           MOVE    ZERO       TO    FLG-CHECK
+           PERFORM   VARYING   IDX2    FROM    1   BY  1
+                      UNTIL    IDX2     >     31
+             IF   WRK-DAY-HKNCOMBI(IDX2)      NOT =  ZERO
+               IF  (WRK-DAY-HKNKOHSBTKBN(IDX2) =  "8" OR "9")
+               OR  (WRK-DAY-HKNNUM(IDX2)       =
+                              "971" OR "973" OR "975" OR
+                              "068" OR "069" OR "040"       )
+                 MOVE    1    TO    FLG-CHECK
+                 MOVE   31    TO    IDX2
+               END-IF
+             END-IF
+           END-PERFORM
+      *
+           IF   (FLG-CHECK           =   1      )
+           AND  (LNK-SYOTOKU-SRYYM  >=  "201710")
+      *      入院料と異なる食事算定保険組み合わせ取得
+             INITIALIZE                      ORCSSKJHKN-AREA
+             MOVE   LNK-SYOTOKU-HOSPNUM  TO  LNK-SKJHKN-HOSPNUM
+             MOVE   LNK-SYOTOKU-PTID     TO  LNK-SKJHKN-PTID
+             MOVE   LNK-SYOTOKU-SRYYM    TO  LNK-SKJHKN-SANTEIYM
+             CALL   "ORCSSKJHKN"         USING   ORCSSKJHKN-AREA
+                                                 SPA-AREA
+             IF     LNK-SKJHKN-RC  =  ZERO
+               PERFORM    VARYING   IDX2   FROM   1   BY   1
+                           UNTIL    IDX2    >    31
+                 IF   LNK-SKJHKN-HKNCOMBINUM(IDX2 1) NOT = SPACE
+                   MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX2 1)
+                               TO  WRK-DAY-HKNCOMBI-SKJHKN(IDX2)
+                 END-IF
+                 IF   LNK-SKJHKN-HKNCOMBINUM(IDX2 2) NOT = SPACE
+                   MOVE   LNK-SKJHKN-HKNCOMBINUM(IDX2 2)
+                               TO  WRK-DAY-HKNCOMBI-SKJHKN-DOU(IDX2)
+                 END-IF
+               END-PERFORM
+             END-IF
+      *      入院料と異なる食事算定保険組み合わせ置き換え編集
+             PERFORM   VARYING   IDX2    FROM    1   BY  1
+                        UNTIL    IDX2     >     31
+               IF   WRK-DAY-HKNCOMBI(IDX2)      NOT =  ZERO
+                 IF  (WRK-DAY-HKNKOHSBTKBN(IDX2) =  "8" OR "9")
+                 OR  (WRK-DAY-HKNNUM(IDX2)       =
+                                "971" OR "973" OR "975" OR
+                                "068" OR "069" OR "040"       )
+                   MOVE    ZERO     TO  FLG-OKIKAE
+                   IF  (WRK-DAY-HKNCOMBI-SKJHKN(IDX2) NOT = ZERO)
+                   AND (FLG-OKIKAE                        = ZERO)
+                     MOVE    2      TO  FLG-PARA
+                     MOVE    WRK-DAY-HKNCOMBI-SKJHKN(IDX2)
+                                    TO  WRK-TAIHI-HKNCOMBI
+                     PERFORM 2304-HKNCOMBI-KENSAKU-SEC
+                   END-IF
+                   IF  (WRK-DAY-HKNCOMBI-SKJHKN-DOU(IDX2) NOT = ZERO)
+                   AND (FLG-OKIKAE                            = ZERO)
+                     MOVE    2      TO  FLG-PARA
+                     MOVE    WRK-DAY-HKNCOMBI-SKJHKN-DOU(IDX2)
+                                    TO  WRK-TAIHI-HKNCOMBI
+                     PERFORM 2304-HKNCOMBI-KENSAKU-SEC
+                   END-IF
+                 END-IF
+               END-IF
+             END-PERFORM
+           END-IF
+      *
+           .
+       2305-HKNCOMBI-OKIKAE-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
