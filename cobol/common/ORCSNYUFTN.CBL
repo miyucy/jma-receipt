@@ -309,6 +309,8 @@
            02  WRK-SKJHKN-TBL    OCCURS   10.
               03  WRK-SKJHKN-HKNCOMBI      PIC X(04)  OCCURS  31.
               03  WRK-SKJHKN-HKNCOMBI-DOU  PIC X(04)  OCCURS  31.
+      *       入院分の保険組み合わせ
+              03  WRK-SKJHKN-HKNCOMBI-XXX  PIC X(04)  OCCURS  31.
       *       同日再入院分の保険組み合わせ
               03  WRK-SKJHKN-HKNCOMBI-DOU-XXX
                                            PIC X(04)  OCCURS  31.
@@ -2711,6 +2713,10 @@
                 MOVE  WRK-SKJHKN-TAIHI-HKNCOMBI-DOU(IDX7 IDY)
                           TO   WRK-SKJHKN-HKNCOMBI-DOU(IDX IDY)
       *
+                IF    WRK-DAY5X(IDX7 IDY)  NOT = ZERO
+                  MOVE  WRK-DAY5X(IDX7 IDY)
+                          TO   WRK-SKJHKN-HKNCOMBI-XXX(IDX IDY)
+                END-IF
                 IF    WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX7 IDY)
                                                            NOT = ZERO
                   MOVE  WRK-NYUINDAY-TAIHI-DOU-HKNCOMBI(IDX7 IDY)

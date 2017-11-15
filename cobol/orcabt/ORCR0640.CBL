@@ -1445,6 +1445,11 @@
            03  WRK-SKJKEEP-AREA                        OCCURS   31.
                05  WRK-SKJKEEP-KBN                     PIC X(01).
       *
+       01  WRK-SKJHKN-TABLE.
+           03  WRK-SKJHKN-AREA                         OCCURS   31.
+               05  WRK-SKJHKN-HKNCOMBI                 PIC X(04).
+               05  WRK-SKJHKN-HKNCOMBI-DOU             PIC X(04).
+      *
        01  WRK-TENTEKI2-TABLE.
            03  WRK-TENTEKI2-AREA                       OCCURS   10.
              04  WRK-TENTEKI2-HKNCOMBI                 PIC 9(04).
@@ -2744,12 +2749,15 @@
            COPY    "CPORCSSRHKOH.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
+      *
       *    院外処方一般名編集サブ
            COPY    "CPORCSGETGENERIC.INC".
       *    入院時生活療養費負担額取得サブ２
            COPY    "CPORCSNYULIFE2.INC".
       *    食事負担据え置き対象取得サブ
            COPY    "CPORCSSKJKEEP.INC".
+      *    入院料と異なる食事算定保険組み合わせ取得サブ
+           COPY    "CPORCSSKJHKN.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -3572,6 +3580,7 @@
                                WRK-NYULIFE-TABLE
                                WRK-TENTEKI2-TABLE
                                WRK-SKJKEEP-TABLE
+                               WRK-SKJHKN-TABLE
       *
            INITIALIZE          RECE6G-REC
            INITIALIZE          RECE6C-REC
@@ -12246,9 +12255,9 @@
              END-IF
            END-PERFORM
       *
-      *
            PERFORM      210202-SENTEI-KEISU-GET-SEC
       *
+           PERFORM      210225-SKJHKN-GET-SEC
       *
            MOVE    ZERO    TO    WRK-ZAINUM-CNT2
            MOVE    ZERO    TO    FLG-DOJITU
@@ -12373,85 +12382,10 @@
       *************************MOVE   1     TO   FLG-DAY22
                             END-IF
       *                     *食事
-                            IF  ((WRK-DAY1(IDY)   NOT  =  ZERO  ) OR
-                                 (RECE62-NYUINDAY-KBN(IDY) = "1"))
-                            AND ( NACCT-ZAITEN         =  ZERO   )
-                            AND ( NACCT-ZAISKBKBN      =  "4"    )
-                            AND ( NACCT-DAY(IDY)  NOT  =  ZERO   )
-                            AND ( WRK-SHOKUJIRYOYO(IDY)
-                                                  NOT  =  ZERO   )
-                               IF (WRK-DAY2(IDY)  =  ZERO)
-                               OR (WRK-DAY2(IDY) >=   4  )
-                                IF   RECE62-SRYYM  >= "200604"
-                                 IF  NACCT-SRYCDTOTAL = 099999918
-                                                    OR  099999919
-                                                    OR  099999920
-                                  MOVE   NACCT-DAY(IDY)  
-                                            TO   WRK-DAY24(IDY) 
-                                  PERFORM      210204-NYUINACCT-SYU2-SEC
-                                 END-IF
-                                ELSE
-                                 IF  NACCT-SRYCDTOTAL = 099999913
-                                  MOVE   NACCT-DAY(IDY)  
-                                            TO   WRK-DAY24(IDY) 
-                                  PERFORM      210204-NYUINACCT-SYU2-SEC
-                                  ADD    1     TO   CNT-DAY24
-                                  MOVE   1     TO   FLG-DAY24
-                                 END-IF
-                                END-IF
-                               END-IF
-                            END-IF
-                            IF     RECE62-SRYYM        >= "200610"
-                              IF  ((WRK-DAY1(IDY)   NOT  =  ZERO  ) OR
-                                   (RECE62-NYUINDAY-KBN(IDY) = "1"))
-                              AND ( NACCT-ZAITEN         =  ZERO   )
-                              AND ( NACCT-ZAISKBKBN      =  "4"    )
-      ***                     AND ( NACCT-DAY(IDY)  NOT  =  ZERO   )
-                              AND ( WRK-SHOKUJIRYOYO(IDY)
-                                                    NOT  =  ZERO   )
-                              AND ( NACCT-SRYCDTOTAL = 099999918
-                                                   OR  099999919
-                                                   OR  099999920   )
-                              AND ((WRK-DAY2(IDY)  =  ZERO        ) OR
-                                   (WRK-DAY2(IDY) >=   4          ))
-                                PERFORM   210218-NYUINACCT-SYU2-KAN-SEC
-                              END-IF
-                            END-IF
+                            PERFORM      210226-SKJ-HENSYU-SEC
                          ELSE
       *                     *食事
-                            IF  (RECE62-HKNCOMBI(IDX1)   =
-                                   RECE62-DOUJITSU-HKNCOMBI(IDY))
-                            AND (NACCT-ZAITEN         =  ZERO   )
-                            AND (NACCT-ZAISKBKBN      =  "4"    )
-                            AND (NACCT-DAY(IDY)  NOT  =  ZERO   )
-                            AND (WRK-SHOKUJIRYOYO(IDY)
-                                                 NOT  =  ZERO   )
-                            AND ((WRK-DAY2(IDY)  =  ZERO       ) OR
-                                 (WRK-DAY2(IDY) >=   4         ))
-                            AND ((WRK-DAY1(IDY)  NOT  =  ZERO  ) OR
-                                 (RECE62-NYUINDAY-KBN(IDY)
-                                                      =  "1"   ))
-                            AND (RECE62-SRYYM >= "200604"       )
-                             IF  NACCT-SRYCDTOTAL = 099999918
-                                                 OR 099999919
-                                                 OR 099999920
-                              MOVE  1 TO  FLG-DOJITU
-                              MOVE  1 TO  WRK-SKJ-DOJITU-KBN (IDX1 IDY)
-                              EVALUATE   NACCT-SRYCDTOTAL
-                                WHEN  099999918
-                                  MOVE  NACCT-DAY(IDY) TO
-                                          WRK-SKJ-DOJITU-ASA (IDX1 IDY)
-                                WHEN  099999919
-                                  MOVE  NACCT-DAY(IDY) TO
-                                          WRK-SKJ-DOJITU-HIRU(IDX1 IDY)
-                                WHEN  099999920
-                                  MOVE  NACCT-DAY(IDY) TO
-                                          WRK-SKJ-DOJITU-YORU(IDX1 IDY)
-                              END-EVALUATE
-                              MOVE  RECE62-HKNCOMBI(IDX1)
-                                  TO  WRK-SKJ-DOJITU-HKNCOMBI(IDX1 IDY)
-                             END-IF
-                            END-IF
+                            PERFORM      210227-SKJ-HENSYU2-SEC
                          END-IF
       *
                       END-PERFORM
@@ -12794,13 +12728,14 @@
                         END-IF
                      END-IF
       *
-                     IF   WRK-SKJ200604-DAY-KAN(IDX1 SYUKEI-IDX3)
+                     IF   WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
+                       IF    WRK-SKJ200604-DAY-KAN(IDX1 SYUKEI-IDX3)
                                                         NOT =  ZERO
-                     AND  WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
-                       PERFORM 210219-RECE64-TENSOU2-KAN-SEC
-                       PERFORM 210220-RECE65-HENSYU2-KAN-SEC
-                       PERFORM RECE65-WRITE-SEC
-                       PERFORM RECE64-WRITE-SEC
+                         PERFORM 210219-RECE64-TENSOU2-KAN-SEC
+                         PERFORM 210220-RECE65-HENSYU2-KAN-SEC
+                         PERFORM RECE65-WRITE-SEC
+                         PERFORM RECE64-WRITE-SEC
+                       END-IF
       *
                        IF  FLG-SKJFTNNASI  =  ZERO
                         IF   WRK-NYULIFE-SKJFTN-SRYCD(SYUKEI-IDX3)
@@ -12816,7 +12751,9 @@
                           PERFORM RECE65-WRITE-SEC
                           PERFORM RECE64-WRITE-SEC
                         END-IF
-                        IF   WRK-NYULIFE-KANFTN-SRYCD(SYUKEI-IDX3)
+                        IF   WRK-SKJ200604-DAY-KAN(IDX1 SYUKEI-IDX3)
+                                                        NOT =  ZERO
+                        AND  WRK-NYULIFE-KANFTN-SRYCD(SYUKEI-IDX3)
                                                         NOT =  SPACE
                         AND  WRK-NYULIFE-KANFTN-MONEY(SYUKEI-IDX3)
                                                         NOT =  ZERO
@@ -14211,15 +14148,192 @@
        2102031-NYUINACCT-SYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入院料と異なる食事算定保険組み合わせ取得
+      *****************************************************************
+       210225-SKJHKN-GET-SEC                SECTION.
+      *
+           IF   RECE62-SRYYM  >=  "201710"
+             INITIALIZE                   ORCSSKJHKN-AREA
+             MOVE    RECE62-HOSPNUM   TO  LNK-SKJHKN-HOSPNUM
+             MOVE    RECE62-PTID      TO  LNK-SKJHKN-PTID
+             MOVE    RECE62-SRYYM     TO  LNK-SKJHKN-SANTEIYM
+             CALL    "ORCSSKJHKN"     USING   ORCSSKJHKN-AREA
+                                              SPA-AREA
+             IF      LNK-SKJHKN-RC    =   ZERO
+                PERFORM    VARYING   IDY   FROM   1   BY   1
+                            UNTIL    IDY    >    31
+                  MOVE  LNK-SKJHKN-HKNCOMBINUM(IDY 1) TO
+                                          WRK-SKJHKN-HKNCOMBI(IDY)
+                  MOVE  LNK-SKJHKN-HKNCOMBINUM(IDY 2) TO
+                                          WRK-SKJHKN-HKNCOMBI-DOU(IDY)
+                END-PERFORM
+             END-IF
+           END-IF
+      *
+           .
+       210225-SKJHKN-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    食事編集
+      *****************************************************************
+       210226-SKJ-HENSYU-SEC                SECTION.
+      *
+           IF  ((WRK-DAY1(IDY)         NOT =  ZERO) OR
+                (RECE62-NYUINDAY-KBN(IDY)  =  "1" ))
+           AND ( NACCT-ZAITEN              =  ZERO )
+           AND ( NACCT-ZAISKBKBN           =  "4"  )
+           AND ( NACCT-DAY(IDY)        NOT =  ZERO )
+           AND ( WRK-SHOKUJIRYOYO(IDY) NOT =  ZERO )
+           AND ((WRK-DAY2(IDY)             =  ZERO) OR
+                (WRK-DAY2(IDY)            >=   4  ))
+             IF   RECE62-SRYYM  >= "200604"
+               IF  NACCT-SRYCDTOTAL = 099999918 OR 099999919
+                                                OR 099999920
+                 IF    WRK-SKJHKN-HKNCOMBI(IDY)  =  SPACE
+                   MOVE  NACCT-DAY(IDY)  TO  WRK-DAY24(IDY)
+                   PERFORM  210204-NYUINACCT-SYU2-SEC
+                 ELSE
+                   PERFORM  210227-SKJ-HENSYU2-SEC
+                 END-IF
+               END-IF
+             ELSE
+               IF  NACCT-SRYCDTOTAL = 099999913
+                 MOVE  NACCT-DAY(IDY)  TO  WRK-DAY24(IDY)
+                 PERFORM  210204-NYUINACCT-SYU2-SEC
+                 ADD    1     TO   CNT-DAY24
+                 MOVE   1     TO   FLG-DAY24
+               END-IF
+             END-IF
+           END-IF
+           IF  ( RECE62-SRYYM             >=  "200610"     )
+           AND ((WRK-DAY1(IDY)         NOT =  ZERO        ) OR
+                (RECE62-NYUINDAY-KBN(IDY)  =  "1"         ))
+           AND ( NACCT-ZAITEN              =  ZERO         )
+           AND ( NACCT-ZAISKBKBN           =  "4"          )
+      ***  AND ( NACCT-DAY(IDY)        NOT =  ZERO         )
+           AND ( WRK-SHOKUJIRYOYO(IDY) NOT =  ZERO         )
+           AND ( NACCT-SRYCDTOTAL = 099999918 OR 099999919
+                                              OR 099999920 )
+           AND ((WRK-DAY2(IDY)             =  ZERO        ) OR
+                (WRK-DAY2(IDY)            >=   4          ))
+               PERFORM  210218-NYUINACCT-SYU2-KAN-SEC
+           END-IF
+      *
+           .
+       210226-SKJ-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    食事編集
+      *****************************************************************
+       210227-SKJ-HENSYU2-SEC                SECTION.
+      *
+           IF  ( RECE62-SRYYM             >=  "200604"     )
+           AND ( NACCT-ZAITEN              =  ZERO         )
+           AND ( NACCT-ZAISKBKBN           =  "4"          )
+           AND ( NACCT-DAY(IDY)        NOT =  ZERO         )
+           AND ( WRK-SHOKUJIRYOYO(IDY) NOT =  ZERO         )
+           AND ((WRK-DAY2(IDY)             =  ZERO        ) OR
+                (WRK-DAY2(IDY)            >=   4          ))
+           AND ((WRK-DAY1(IDY)         NOT =  ZERO        ) OR
+                (RECE62-NYUINDAY-KBN(IDY)  =  "1"         ))
+           AND ( NACCT-SRYCDTOTAL = 099999918 OR 099999919
+                                              OR 099999920 )
+      *
+             IF  ( WRK-SKJHKN-HKNCOMBI(IDY)      = SPACE )
+             OR  ((WRK-SKJHKN-HKNCOMBI(IDY)  NOT = SPACE) AND
+                  (RECE62-HKNCOMBI(IDX1)     NOT =
+                                WRK-SKJHKN-HKNCOMBI(IDY)))
+               IF ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
+                   (RECE62-HKNCOMBI(IDX1)       =
+                                     RECE62-DOUJITSU-HKNCOMBI(IDY)) AND
+                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)       = SPACE    ))
+               OR ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
+                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)   NOT = SPACE    ) AND
+                   (RECE62-HKNCOMBI(IDX1)       =
+                                     WRK-SKJHKN-HKNCOMBI-DOU(IDY) ))
+                 MOVE    1    TO  FLG-DOJITU
+                 MOVE    1    TO  WRK-SKJ-DOJITU-KBN (IDX1 IDY)
+                 EVALUATE   NACCT-SRYCDTOTAL
+                   WHEN  099999918
+                     MOVE  NACCT-DAY(IDY)
+                              TO  WRK-SKJ-DOJITU-ASA (IDX1 IDY)
+                   WHEN  099999919
+                     MOVE  NACCT-DAY(IDY)
+                              TO  WRK-SKJ-DOJITU-HIRU(IDX1 IDY)
+                   WHEN  099999920
+                     MOVE  NACCT-DAY(IDY)
+                              TO  WRK-SKJ-DOJITU-YORU(IDX1 IDY)
+                 END-EVALUATE
+                 MOVE  RECE62-HKNCOMBI(IDX1)
+                              TO  WRK-SKJ-DOJITU-HKNCOMBI(IDX1 IDY)
+               END-IF
+             END-IF
+      *
+             IF   (WRK-SKJHKN-HKNCOMBI(IDY)  NOT = SPACE)
+             AND  (RECE62-HKNCOMBI(IDX1)         =
+                                WRK-SKJHKN-HKNCOMBI(IDY))
+               IF ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
+                   (RECE62-HKNCOMBI(IDX1)       =
+                                     RECE62-DOUJITSU-HKNCOMBI(IDY)) AND
+                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)       = SPACE    ))
+               OR ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
+                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)   NOT = SPACE    ) AND
+                   (RECE62-HKNCOMBI(IDX1)       =
+                                     WRK-SKJHKN-HKNCOMBI-DOU(IDY) ))
+               OR ( RECE62-DOUJITSU-HKNCOMBI(IDY)      = ZERO      )
+                 MOVE  NACCT-DAY(IDY)  TO  WRK-DAY24(IDY)
+                 PERFORM  210204-NYUINACCT-SYU2-SEC
+               END-IF
+      *
+               IF ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
+                   (RECE62-HKNCOMBI(IDX1)   NOT =
+                                     RECE62-DOUJITSU-HKNCOMBI(IDY)) AND
+                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)       = SPACE    ))
+               OR ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
+                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)   NOT = SPACE    ) AND
+                   (RECE62-HKNCOMBI(IDX1)   NOT =
+                                     WRK-SKJHKN-HKNCOMBI-DOU(IDY) ))
+                 MOVE    1    TO  FLG-DOJITU
+                 MOVE    2    TO  WRK-SKJ-DOJITU-KBN (IDX1 IDY)
+                 EVALUATE   NACCT-SRYCDTOTAL
+                   WHEN  099999918
+                     MOVE  NACCT-DAY(IDY)
+                              TO  WRK-SKJ-DOJITU-ASA (IDX1 IDY)
+                   WHEN  099999919
+                     MOVE  NACCT-DAY(IDY)
+                              TO  WRK-SKJ-DOJITU-HIRU(IDX1 IDY)
+                   WHEN  099999920
+                     MOVE  NACCT-DAY(IDY)
+                              TO  WRK-SKJ-DOJITU-YORU(IDX1 IDY)
+                 END-EVALUATE
+                 MOVE  RECE62-HKNCOMBI(IDX1)
+                              TO  WRK-SKJ-DOJITU-HKNCOMBI(IDX1 IDY)
+               END-IF
+             END-IF
+      *
+           END-IF
+      *
+           .
+       210227-SKJ-HENSYU2-EXT.
+           EXIT.
+      *
       **************************************************************
       *    食事療養費の集計
       **************************************************************
        210204-NYUINACCT-SYU2-SEC           SECTION.
       *
            IF   RECE62-SRYYM  >= "200604"
-            IF  RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO
-            AND RECE62-HKNCOMBI(IDX1)   NOT =
-                                        RECE62-DOUJITSU-HKNCOMBI(IDY)
+            IF  ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
+                 (RECE62-HKNCOMBI(IDX1)   NOT =
+                                   RECE62-DOUJITSU-HKNCOMBI(IDY)) AND
+                 (WRK-SKJHKN-HKNCOMBI-DOU(IDY)       = SPACE    ))
+            OR  ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
+                 (WRK-SKJHKN-HKNCOMBI-DOU(IDY)   NOT = SPACE    ) AND
+                 (RECE62-HKNCOMBI(IDX1)   NOT =
+                                   WRK-SKJHKN-HKNCOMBI-DOU(IDY) ))
              MOVE    1    TO  FLG-DOJITU
              MOVE    2    TO  WRK-SKJ-DOJITU-KBN (IDX1 IDY)
              EVALUATE   NACCT-SRYCDTOTAL

@@ -22656,11 +22656,11 @@
                     MOVE     1     TO     IDX26
                     PERFORM    230431-ROSAITOKU-TAIHI11-SEC
                  END-IF
-                 IF     LNK-S02-DOJITU-DAY(IDY)  =   7
+                 IF     LNK-S02-DOJITU-DAY(IDY)  =   1 OR 7
                     MOVE     2     TO     IDX26
                     PERFORM    230431-ROSAITOKU-TAIHI11-SEC
                  END-IF
-                 IF     LNK-S02-DOJITU-DAY(IDY)  =   8
+                 IF     LNK-S02-DOJITU-DAY(IDY)  =   8 OR 9
                     MOVE     3     TO     IDX26
                     PERFORM    230431-ROSAITOKU-TAIHI11-SEC
                  END-IF
@@ -22719,11 +22719,11 @@
                     MOVE     1     TO     IDX26
                     PERFORM    230431-ROSAITOKU-TAIHI21-SEC
                  END-IF
-                 IF     LNK-S02-DOJITU-DAY(IDY)  =   7
+                 IF     LNK-S02-DOJITU-DAY(IDY)  =   1 OR 7
                     MOVE     2     TO     IDX26
                     PERFORM    230431-ROSAITOKU-TAIHI21-SEC
                  END-IF
-                 IF     LNK-S02-DOJITU-DAY(IDY)  =   8
+                 IF     LNK-S02-DOJITU-DAY(IDY)  =   8 OR 9
                     MOVE     3     TO     IDX26
                     PERFORM    230431-ROSAITOKU-TAIHI21-SEC
                  END-IF
@@ -22805,11 +22805,11 @@
                           MOVE     1     TO     IDX26
                           PERFORM    230431-ROSAITOKU-TAIHI31-SEC
                        END-IF
-                       IF     LNK-S02-DOJITU-DAY(IDY)  =   7
+                       IF     LNK-S02-DOJITU-DAY(IDY)  =   1 OR 7
                           MOVE     2     TO     IDX26
                           PERFORM    230431-ROSAITOKU-TAIHI31-SEC
                        END-IF
-                       IF     LNK-S02-DOJITU-DAY(IDY)  =   8
+                       IF     LNK-S02-DOJITU-DAY(IDY)  =   8 OR 9
                           MOVE     3     TO     IDX26
                           PERFORM    230431-ROSAITOKU-TAIHI31-SEC
                        END-IF
@@ -23806,6 +23806,15 @@
                       PERFORM   230465-SHOKUJI-FURIWAKE5-SEC
                    END-IF
                 END-IF
+      *         入院時生活療養（環境）は入院会計の保険組み合わせで算定
+                IF  (LNK-S02-SKJHKN-HKNCOMBI-XXX(IDY) NOT = SPACE)
+                AND (LNK-S02-SKJHKN-HKNCOMBI-XXX(IDY)     =
+                                              LNK-SYU-HKNCOMBINUM)
+                AND (LNK-S02-DOJITU-DAY(IDY)  =  0 OR 1          )
+                   MOVE   ZERO  TO   WK-SHOKUJI-KANFLG(IDY)
+                ELSE
+                   MOVE    1    TO   WK-SHOKUJI-KANFLG(IDY)
+                END-IF
               END-IF
       *
            END-PERFORM
@@ -24156,9 +24165,11 @@
                  END-IF
              END-EVALUATE
            END-IF
-           IF         WK-NYULIFE-KBN(IDY)   NOT = SPACE
-                   MOVE    1    TO    FLG-SET
-           END-IF
+      *    入院時生活療養（環境）は入院会計の保険組み合わせで算定
+      *    するため、この部分はコメントアウト
+      ****>IF         WK-NYULIFE-KBN(IDY)   NOT = SPACE
+      ****>        MOVE    1    TO    FLG-SET
+      ****>END-IF
       *
            .
       *

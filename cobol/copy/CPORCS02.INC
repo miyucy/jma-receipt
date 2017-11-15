@@ -122,6 +122,9 @@
               05  LNK-S02-SKJHKN-HKNCOMBI  PIC  X(04)   OCCURS  31.
               05  LNK-S02-SKJHKN-HKNCOMBI-DOU
                                            PIC  X(04)   OCCURS  31.
+      *       入院分の保険組み合わせ
+              05  LNK-S02-SKJHKN-HKNCOMBI-XXX
+                                           PIC  X(04)   OCCURS  31.
       *       同日再入院分の保険組み合わせ
               05  LNK-S02-SKJHKN-HKNCOMBI-DOU-XXX
                                            PIC  X(04)   OCCURS  31.
