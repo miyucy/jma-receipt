@@ -933,3 +933,17 @@ path	key50		{
 		;
 	};
 };
+
+path	key51		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key51_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND ( TENKIKBN     =   ' '  OR
+			      TENKIYMD     >=  :TENKIYMD )
+			AND   DLTFLG       =   ' '
+			ORDER  BY  PTID,SRYYMD DESC,SEQNUM,SRYKA,RENNUM
+		;
+	};
+};

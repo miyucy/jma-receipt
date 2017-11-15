@@ -548,6 +548,7 @@ RECORD_files = \
 	hsfindv3.rec \
 	patientbasisallv3.rec \
 	hspmmv2.rec \
+	patientdiseaseallv3.rec \
 
 DEF_files = \
 
@@ -1056,6 +1057,9 @@ DB_files = \
 	xml_patient_basis_all.db \
 	xml_hspmmv2req.db \
 	xml_hspmmv2res.db \
+	xml_patient_disease_allv3req.db \
+	xml_patient_disease_allv3res.db \
+	xml_patient_disease_all.db \
 
 
 shell.db: shell.db.in
