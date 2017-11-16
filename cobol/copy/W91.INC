@@ -39,3 +39,5 @@
                 05  W91-COOPBASE2-COUNT  PIC S9(9)   BINARY.
                 05  W91-COOPBASE2-ITEM
                         PIC X(20)   OCCURS  10 TIMES.
+              04  W91-LABEL3.
+                05  W91-LABEL3-STATE     PIC S9(9)   BINARY.
