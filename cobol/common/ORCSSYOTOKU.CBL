@@ -57,10 +57,13 @@
            03  FLG-NYUINACCT         PIC 9(01).
            03  FLG-HKNCOMBI          PIC 9(01).
            03  FLG-CHECK             PIC 9(01).
+           03  FLG-CHECK2            PIC 9(01).
            03  FLG-ARI               PIC 9(01).
            03  FLG-OK                PIC 9(01).
            03  FLG-PARA              PIC 9(01).
            03  FLG-OKIKAE            PIC 9(01).
+           03  FLG-SRYACCT           PIC 9(01).
+           03  FLG-SRYACT            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -161,6 +164,14 @@
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
+      *
+      *    診療会計
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
+      *    診療行為
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -702,7 +713,7 @@
            END-PERFORM
       *
       *    保険組み合わせ情報編集（置き換え）
-           PERFORM   2305-HKNCOMBI-OKIKAE-HENSYU-SEC
+           PERFORM   2305-HKNCOMBI-OKIKAE-SEC
       *
       *    年齢区分編集
            PERFORM   VARYING   IDX2    FROM    1   BY  1
@@ -1207,7 +1218,7 @@
       *****************************************************************
       *    保険組み合わせ情報編集（置き換え）
       *****************************************************************
-       2305-HKNCOMBI-OKIKAE-HENSYU-SEC            SECTION.
+       2305-HKNCOMBI-OKIKAE-SEC            SECTION.
       *
            MOVE    ZERO       TO    FLG-CHECK
            PERFORM   VARYING   IDX2    FROM    1   BY  1
@@ -1273,6 +1284,81 @@
       *
            IF   (FLG-CHECK           =   1      )
            AND  (LNK-SYOTOKU-SRYYM  >=  "201710")
+             PERFORM 23051-HKNCOMBI-OKIKAE2-SEC
+           END-IF
+      *
+           .
+       2305-HKNCOMBI-OKIKAE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組み合わせ情報編集（置き換え）
+      *****************************************************************
+       23051-HKNCOMBI-OKIKAE2-SEC            SECTION.
+      *
+           MOVE    ZERO     TO    FLG-CHECK2
+      *
+           INITIALIZE                       SRYACT-REC
+           MOVE    LNK-SYOTOKU-HOSPNUM  TO  SRY-HOSPNUM
+           MOVE    "1"                  TO  SRY-NYUGAIKBN
+           MOVE    LNK-SYOTOKU-PTID     TO  SRY-PTID
+           MOVE    LNK-SYOTOKU-SRYYM    TO  SRY-SRYYM
+           MOVE    "099999930"          TO  SRY-SRYCD(1)
+           MOVE    "099999930"          TO  SRY-SRYCD(2)
+           MOVE    "099999930"          TO  SRY-SRYCD(3)
+           MOVE    "099999930"          TO  SRY-SRYCD(4)
+           MOVE    "099999930"          TO  SRY-SRYCD(5)
+           MOVE    SRYACT-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"           TO  MCP-FUNC
+           MOVE    "tbl_sryact"         TO  MCP-TABLE
+           MOVE    "key7"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"          USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
+           IF      MCP-RC  =  ZERO
+             MOVE    "tbl_sryact"       TO  MCP-TABLE
+             MOVE    "key7"             TO  MCP-PATHNAME
+             PERFORM  910-SRYACT-READ-SEC
+             PERFORM  UNTIL (FLG-SRYACT  =  1)
+                       OR   (FLG-CHECK2  =  1)
+               INITIALIZE                   SRYACCT-REC
+               MOVE    SRY-HOSPNUM      TO  ACCT-HOSPNUM
+               MOVE    SRY-NYUGAIKBN    TO  ACCT-NYUGAIKBN
+               MOVE    SRY-SRYKA        TO  ACCT-SRYKA
+               MOVE    SRY-PTID         TO  ACCT-PTID
+               MOVE    SRY-SRYYM        TO  ACCT-SRYYM
+               MOVE    SRY-ZAINUM       TO  ACCT-ZAINUM
+               MOVE    SRYACCT-REC      TO  MCPDATA-REC
+               MOVE    "DBSELECT"       TO  MCP-FUNC
+               MOVE    "tbl_sryacct"    TO  MCP-TABLE
+               MOVE    "key31"          TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"      USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
+               IF      MCP-RC  =  ZERO
+                 MOVE    "tbl_sryacct"  TO  MCP-TABLE
+                 MOVE    "key31"        TO  MCP-PATHNAME
+                 PERFORM  910-SRYACCT-READ-SEC
+                 IF    FLG-SRYACCT  =  ZERO
+                   IF  ACCT-ZAIKAISU  NOT =  ZERO
+                     MOVE   1   TO   FLG-CHECK2
+                   END-IF
+                 END-IF
+               END-IF
+               MOVE    "tbl_sryacct"    TO  MCP-TABLE
+               MOVE    "key31"          TO  MCP-PATHNAME
+               PERFORM  910-DB-CLOSE-SEC
+      *
+               MOVE    "tbl_sryact"     TO  MCP-TABLE
+               MOVE    "key7"           TO  MCP-PATHNAME
+               PERFORM  910-SRYACT-READ-SEC
+             END-PERFORM
+           END-IF
+           MOVE    "tbl_sryact"         TO  MCP-TABLE
+           MOVE    "key7"               TO  MCP-PATHNAME
+           PERFORM  910-DB-CLOSE-SEC
+      *
+           IF    FLG-CHECK2  =  1
       *      入院料と異なる食事算定保険組み合わせ取得
              INITIALIZE                      ORCSSKJHKN-AREA
              MOVE   LNK-SYOTOKU-HOSPNUM  TO  LNK-SKJHKN-HOSPNUM
@@ -1322,7 +1408,7 @@
            END-IF
       *
            .
-       2305-HKNCOMBI-OKIKAE-HENSYU-EXT.
+       23051-HKNCOMBI-OKIKAE2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1449,6 +1535,48 @@
       *
            .
        910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計読込
+      *****************************************************************
+       910-SRYACCT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               MOVE    ZERO            TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       910-SRYACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為読込
+      *****************************************************************
+       910-SRYACT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    ZERO            TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       910-SRYACT-READ-EXT.
            EXIT.
       *
       *****************************************************************
