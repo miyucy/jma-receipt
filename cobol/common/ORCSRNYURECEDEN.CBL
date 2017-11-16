@@ -1162,6 +1162,21 @@
                            END-IF
                        END-IF
                    END-PERFORM
+      *            食堂加算の退避（食事の保険指定入力日）
+                   PERFORM    VARYING   IDX1   FROM   1   BY   1
+                              UNTIL     IDX1   >   31
+                       IF ((WRK-SKJ-HKNCOMBI-ASA(IDX1)  NOT =  ZERO) OR
+                           (WRK-SKJ-HKNCOMBI-HIRU(IDX1) NOT =  ZERO) OR
+                           (WRK-SKJ-HKNCOMBI-YORU(IDX1) NOT =  ZERO))
+                       AND (NACCT-DAY(IDX1)    NOT =  ZERO)
+      *                  入院時食事療養（１）の場合のみセット
+                           IF  WRK-SYS5000-SHOKUCD(1 IDX1)  =
+                                                          "197000110"
+                               MOVE  "197000570"
+                                       TO WRK-SYS5000-SHOKUCD(3 IDX1)
+                           END-IF
+                       END-IF
+                   END-PERFORM
                  END-IF
                  MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                  MOVE    "key43"                 TO  MCP-PATHNAME
@@ -3775,6 +3790,8 @@
       *    食堂加算クリアフラグによる食堂加算領域のクリア
            PERFORM      VARYING   IDX1   FROM   1  BY  1
              UNTIL      IDX1     >    31
+      **       DISPLAY "IDX1 = " IDX1 " WRK-TAHOKEN-SHOKUDOU-FLG = "
+      **                WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
              IF    WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)  =   "1"
                  MOVE    SPACE     TO  WRK-SKJ6-SHOKUDOU(IDX1)
              END-IF
