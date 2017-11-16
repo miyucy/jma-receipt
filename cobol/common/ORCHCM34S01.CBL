@@ -1293,18 +1293,21 @@
                                            TO  WRK-HKNCOMBI-SND-G
                    END-IF
       *
-                   IF    ( WRK-HKNCOMBI-SND        =  HCM34S01-HKNCOMBI)
+                   EVALUATE    TRUE
+                   WHEN  ( WRK-HKNCOMBI-SND        =  HCM34S01-HKNCOMBI)
                      AND ( WRK-HKNCOMBI-FST    NOT =  HCM34S01-HKNCOMBI)
                        MOVE    2           TO  FLG-SKJDAY(IDXD)
                        MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN(IDXD)
                                            TO  WRK-DOJITUST (IDXD)
-                   END-IF
-      *
-                   IF    ( WRK-HKNCOMBI-SND    NOT =  HCM34S01-HKNCOMBI)
+                   WHEN  ( WRK-HKNCOMBI-SND    NOT =  HCM34S01-HKNCOMBI)
                      AND ( WRK-HKNCOMBI-FST        =  HCM34S01-HKNCOMBI)
                        MOVE    LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDXD)
                                            TO  WRK-DOJITUED (IDXD)
-                   END-IF
+                   WHEN  ( WRK-HKNCOMBI-SND    NOT =  HCM34S01-HKNCOMBI)
+                     AND ( WRK-HKNCOMBI-FST    NOT =  HCM34S01-HKNCOMBI)
+                       MOVE    ZERO        TO  FLG-SKJDAY (IDXD)
+                   END-EVALUATE
+      *
                END-IF
       *
            END-PERFORM
