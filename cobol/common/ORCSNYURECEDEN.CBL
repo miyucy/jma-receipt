@@ -12123,6 +12123,11 @@
                END-PERFORM
            END-IF
       *
+      *    入院会計クローズ
+           MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
+           MOVE    "key32"                     TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
       *     DISPLAY "---------SKJ4 SKJ2 CLEAR MAE -----------------"
       *     PERFORM    VARYING  IDX1   FROM 1 BY 1
       *       UNTIL    IDX1 > 93
@@ -12201,11 +12206,6 @@
       *                    " WRK-SKJFTN2-HKNCOMBI-DAY = "
       *                    WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)
       *     END-PERFORM
-      *
-      *    入院会計クローズ
-           MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
-           MOVE    "key32"                     TO  MCP-PATHNAME
-           PERFORM   900-CLOSE-SEC
       *
       *    同日再入院日に他保険で食事の算定がある場合に
       *    食堂加算をクリアする
