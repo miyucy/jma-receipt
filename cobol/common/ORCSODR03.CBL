@@ -277,7 +277,6 @@
            IF    ( FLG-NYUINACCT           =   ZERO )
                MOVE    NACCT-SRYYM         TO  WRK-NACCTYM
                IF    ( SODR-ORDERID        =   NORDERID-GPTSTID )
-                AND  ( WRK-NACCTYM         <   SODR-SRYYMD (1:6))
                    IF    ( PTNYUINRRK-TAIINYMD =   "99999999" )
                        IF    ( WRK-NACCTYM <   WRK-LASTYM )
                            MOVE    1           TO  FLG-NACCT-NOT-FOUND
@@ -576,7 +575,6 @@
        20021-NACCT-CHK-SEC             SECTION.
       *
            IF    ( SODR-ORDERID        =   NORDERID-GPTSTID )
-            AND  ( WRK-NACCTYM         <   SODR-SRYYMD (1:6))
                IF    ( FLG-NACCT-NOT-FOUND NOT =   ZERO )
                    MOVE    "0076"      TO  ERRCD-ORDER
                END-IF
@@ -874,13 +872,13 @@
                    MOVE    NORDERID-GSENTID
                                    TO  SODRNACCT-ORDERID
                WHEN    "04"
-                   MOVE    NORDERID-TAIJUSHIN40ID
+                   MOVE    NORDERID-TAIJUSHIN70ID
                                    TO  SODRNACCT-ORDERID
                WHEN    "05"
-                   MOVE    NORDERID-TAIJUSHIN10ID
+                   MOVE    NORDERID-TAIJUSHIN30ID
                                    TO  SODRNACCT-ORDERID
                WHEN    "06"
-                   MOVE    NORDERID-TAIJUSHIN20ID
+                   MOVE    NORDERID-TAIJUSHIN55ID
                                    TO  SODRNACCT-ORDERID
                WHEN    "07"
                    MOVE    NORDERID-TAIJUSHIN15ID
@@ -893,18 +891,6 @@
                                    TO  SODRNACCT-ORDERID
                WHEN    "13"
                    MOVE    NORDERID-YOBI2GENID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "14"
-                   MOVE    NORDERID-H30TAIJUSHIN5ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "15"
-                   MOVE    NORDERID-H30TAIJUSHIN35ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "16"
-                   MOVE    NORDERID-H30TAIJUSHIN15ID
-                                   TO  SODRNACCT-ORDERID
-               WHEN    "17"
-                   MOVE    NORDERID-H30YOBIGENID
                                    TO  SODRNACCT-ORDERID
                WHEN    "99"
                    MOVE    NORDERID-GCANCELID
