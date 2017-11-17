@@ -730,11 +730,11 @@
       *食事保険指定で記録対象となる入力があれば保険組合せ番号をセット
            PERFORM    VARYING  IDX1   FROM  1  BY  1
              UNTIL    IDX1     >   31
-                DISPLAY "IDX1 = " IDX1 
-                        " T-SKJKBN = " 
-                        LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
-                        " SAI-SKJKBN = " 
-                        LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
+      **          DISPLAY "IDX1 = " IDX1 
+      **                  " T-SKJKBN = " 
+      **                  LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
+      **                  " SAI-SKJKBN = " 
+      **                  LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
       *         入院分（退院分）
                 IF  LNK-SKJHKN-HKNCOMBINUM(IDX1 1) NOT = SPACE
                     IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  =
@@ -840,16 +840,16 @@
                     END-IF
                 END-IF
            END-PERFORM
-           PERFORM    VARYING  IDX1   FROM  1  BY  1
-             UNTIL    IDX1     >   31
-               DISPLAY "IDX1 = " IDX1
-               DISPLAY "WRK-SKJ-HKNCOMBI-ASA(IDX1)  = "
-                        WRK-SKJ-HKNCOMBI-ASA(IDX1)
-               DISPLAY "WRK-SKJ-HKNCOMBI-HIRU(IDX1) = "
-                        WRK-SKJ-HKNCOMBI-HIRU(IDX1)
-               DISPLAY "WRK-SKJ-HKNCOMBI-YORU(IDX1) = "
-                        WRK-SKJ-HKNCOMBI-YORU(IDX1)
-           END-PERFORM
+      **     PERFORM    VARYING  IDX1   FROM  1  BY  1
+      **       UNTIL    IDX1     >   31
+      **         DISPLAY "IDX1 = " IDX1
+      **         DISPLAY "WRK-SKJ-HKNCOMBI-ASA(IDX1)  = "
+      **                  WRK-SKJ-HKNCOMBI-ASA(IDX1)
+      **         DISPLAY "WRK-SKJ-HKNCOMBI-HIRU(IDX1) = "
+      **                  WRK-SKJ-HKNCOMBI-HIRU(IDX1)
+      **         DISPLAY "WRK-SKJ-HKNCOMBI-YORU(IDX1) = "
+      **                  WRK-SKJ-HKNCOMBI-YORU(IDX1)
+      **     END-PERFORM
       *
       *労災入院会計作成サブの呼び出し（入院料と入院料加算の取得）
       *    診療コード識別  (LNK-SROUNYUIN-SRYCD-SK)
@@ -3503,7 +3503,9 @@
       *****************************************************************
        2103-SHOKUJI-HENSHU-SEC        SECTION.
       *
-           DISPLAY "2103-SHOKUJI-HENSHU-SEC"
+      **     DISPLAY "2103-SHOKUJI-HENSHU-SEC"
+      **     DISPLAY "LNK-RNYURECEDEN-HKNCOMBI = "
+      **              LNK-RNYURECEDEN-HKNCOMBI
       *
       *食事の保険組合せがセットされている日は入院扱いとする
            PERFORM   VARYING   IDX1   FROM  1   BY  1
@@ -3761,27 +3763,19 @@
       *    食堂加算をクリアする
            PERFORM      VARYING   IDX1   FROM   1  BY  1
              UNTIL      IDX1     >    31
-                IF   LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "1" 
-                   IF  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1) =
-                                  LNK-RNYURECEDEN-HKNCOMBI
-                      IF   WRK-SKJ-HKNCOMBI-ASA(IDX1)  NOT =  ZERO
-                           CONTINUE
+                IF   LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  =  "1"
+      *            朝食を他保険で算定
+                   IF  WRK-SKJ-ASA-ARI(IDX1)  NOT =  ZERO
+                      IF   WRK-SKJ-HKNCOMBI-ASA(IDX1)   =  ZERO
+                          MOVE   "1"  TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
                       END-IF
-                      IF   WRK-SKJ-HKNCOMBI-HIRU(IDX1)  NOT =  ZERO
-                        IF (WRK-SKJ-HKNCOMBI-ASA(IDX1)  =  ZERO  AND
-                            WRK-SKJ-ASA-ARI(IDX1)       NOT = ZERO)
-                                   MOVE   "1"  TO
-                                        WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
-                        END-IF
-                      END-IF
-                      IF   WRK-SKJ-HKNCOMBI-YORU(IDX1)  NOT =  ZERO
-                        IF (WRK-SKJ-HKNCOMBI-ASA(IDX1)  =  ZERO  AND
-                            WRK-SKJ-ASA-ARI(IDX1)       NOT = ZERO) OR
-                           (WRK-SKJ-HKNCOMBI-HIRU(IDX1)  =  ZERO  AND
-                            WRK-SKJ-HIRU-ARI(IDX1)      NOT = ZERO)
-                                   MOVE   "1"  TO
-                                        WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
-                        END-IF
+                   END-IF
+      *            朝食又は昼食を他保険で算定
+                   IF (WRK-SKJ-ASA-ARI(IDX1)   NOT =  ZERO)  OR
+                      (WRK-SKJ-HIRU-ARI(IDX1)  NOT =  ZERO)
+                      IF  (WRK-SKJ-HKNCOMBI-ASA(IDX1)   =  ZERO) AND
+                          (WRK-SKJ-HKNCOMBI-HIRU(IDX1)  =  ZERO)
+                          MOVE   "1"  TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
                       END-IF
                    END-IF
                END-IF
@@ -3792,6 +3786,9 @@
              UNTIL      IDX1     >    31
       **       DISPLAY "IDX1 = " IDX1 " WRK-TAHOKEN-SHOKUDOU-FLG = "
       **                WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+      **                       " SHOKUDOU = "  WRK-SKJ6-SHOKUDOU(IDX1)
+      **                       " ASA " WRK-SKJ-ASA-ARI(IDX1)
+      **                       " HIRU " WRK-SKJ-HIRU-ARI(IDX1)
              IF    WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)  =   "1"
                  MOVE    SPACE     TO  WRK-SKJ6-SHOKUDOU(IDX1)
              END-IF
