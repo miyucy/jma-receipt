@@ -12257,6 +12257,7 @@
       *
            PERFORM      210202-SENTEI-KEISU-GET-SEC
       *
+      *    入院料と異なる食事算定保険組み合わせ取得
            PERFORM      210225-SKJHKN-GET-SEC
       *
            MOVE    ZERO    TO    WRK-ZAINUM-CNT2
@@ -14247,12 +14248,12 @@
                   (RECE62-HKNCOMBI(IDX1)     NOT =
                                 WRK-SKJHKN-HKNCOMBI(IDY)))
                IF ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                   (RECE62-HKNCOMBI(IDX1)       =
+                   (RECE62-HKNCOMBI(IDX1)        =
                                      RECE62-DOUJITSU-HKNCOMBI(IDY)) AND
                    (WRK-SKJHKN-HKNCOMBI-DOU(IDY)       = SPACE    ))
                OR ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
                    (WRK-SKJHKN-HKNCOMBI-DOU(IDY)   NOT = SPACE    ) AND
-                   (RECE62-HKNCOMBI(IDX1)       =
+                   (RECE62-HKNCOMBI(IDX1)        =
                                      WRK-SKJHKN-HKNCOMBI-DOU(IDY) ))
                  MOVE    1    TO  FLG-DOJITU
                  MOVE    1    TO  WRK-SKJ-DOJITU-KBN (IDX1 IDY)
@@ -14276,12 +14277,12 @@
              AND  (RECE62-HKNCOMBI(IDX1)         =
                                 WRK-SKJHKN-HKNCOMBI(IDY))
                IF ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                   (RECE62-HKNCOMBI(IDX1)       =
+                   (RECE62-HKNCOMBI(IDX1)        =
                                      RECE62-DOUJITSU-HKNCOMBI(IDY)) AND
                    (WRK-SKJHKN-HKNCOMBI-DOU(IDY)       = SPACE    ))
                OR ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
                    (WRK-SKJHKN-HKNCOMBI-DOU(IDY)   NOT = SPACE    ) AND
-                   (RECE62-HKNCOMBI(IDX1)       =
+                   (RECE62-HKNCOMBI(IDX1)        =
                                      WRK-SKJHKN-HKNCOMBI-DOU(IDY) ))
                OR ( RECE62-DOUJITSU-HKNCOMBI(IDY)      = ZERO      )
                  MOVE  NACCT-DAY(IDY)  TO  WRK-DAY24(IDY)
@@ -14289,12 +14290,12 @@
                END-IF
       *
                IF ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                   (RECE62-HKNCOMBI(IDX1)   NOT =
+                   (RECE62-HKNCOMBI(IDX1)    NOT =
                                      RECE62-DOUJITSU-HKNCOMBI(IDY)) AND
                    (WRK-SKJHKN-HKNCOMBI-DOU(IDY)       = SPACE    ))
                OR ((RECE62-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
                    (WRK-SKJHKN-HKNCOMBI-DOU(IDY)   NOT = SPACE    ) AND
-                   (RECE62-HKNCOMBI(IDX1)   NOT =
+                   (RECE62-HKNCOMBI(IDX1)    NOT =
                                      WRK-SKJHKN-HKNCOMBI-DOU(IDY) ))
                  MOVE    1    TO  FLG-DOJITU
                  MOVE    2    TO  WRK-SKJ-DOJITU-KBN (IDX1 IDY)
