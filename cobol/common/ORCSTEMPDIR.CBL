@@ -104,7 +104,6 @@
            END-ACCEPT
       *
            IF    ( STEMPDIR-MODE   =   "DEL" )
-               DISPLAY "STEMPDIR-TEMPDIR=" STEMPDIR-TEMPDIR
                IF    ( STEMPDIR-TEMPDIR    NOT =   SPACE )
                    CALL    "SYSTEM"    USING
                                        FUNCTION CONCATENATE (
@@ -117,7 +116,6 @@
                                            STEMPDIR-TEMPDIR
                    RETURNING  WRK-RC
                    END-CALL
-                   DISPLAY "WRK-RC = " WRK-RC
                END-IF
            ELSE
       *
