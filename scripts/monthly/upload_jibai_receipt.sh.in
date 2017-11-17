@@ -17,7 +17,9 @@ fi
 #        $3 データファイル
 #-------------------------------------------#
 
-LOCAL_TEMPDIR=$(mktemp -dp ${MCP_TEMPDIR})
+LOCAL_DIR=$(uuidgen)
+LOCAL_TEMPDIR=${MCP_TEMPDIR}/${LOCAL_DIR}
+mkdir -p ${LOCAL_TEMPDIR}
 MONTH=JIBAI_RECEIPT_$2
 ZIP_FILE=${MONTH}.zip
 JRP_FILE=${MONTH}-$(date +"%Y%m%d%H%M%S").jrp
@@ -25,11 +27,11 @@ MONTH_DIR=${LOCAL_TEMPDIR}/${MONTH}
 DATA_FILE=${MCP_TEMPDIR}/$3
 
 cleanup () {
-	rm -Rf ${LOCAL_TEMPDIR}
-  rm -Rf ${DATA_FILE}
+	[ -n "${LOCAL_DIR}" ] && rm -rf ${LOCAL_TEMPDIR}/*
+    rm -f ${DATA_FILE}
 }
 
-trap "cleanup" 1 2 3 15 
+trap "cleanup" EXIT
 
 
 mkdir -p ${MONTH_DIR}
@@ -54,7 +56,7 @@ while read LINE; do
   monpe ${layeroption} ${tmpfile}.red -e ${tmpfile}.pdf
 done < ${DATA_FILE}
 
-for f in $(ls ${LOCAL_TEMPDIR}/*.tmp.pdf | cut -b 1-$((${#tmpfile} - 7))) ; do
+for f in $(ls ${LOCAL_TEMPDIR}/*.tmp.pdf | cut -b 1-$((${#tmpfile} - 7)) | sort | uniq) ; do
   pdftk  $f*.tmp.pdf cat output ${MONTH_DIR}/$(basename $f).pdf
 done
 
