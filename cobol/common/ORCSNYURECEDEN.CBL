@@ -4460,11 +4460,11 @@
       *食事保険指定で記録対象となる入力があれば保険組合せ番号をセット
            PERFORM    VARYING  IDX1   FROM  1  BY  1
              UNTIL    IDX1     >   31
-                DISPLAY "IDX1 = " IDX1 
-                        " T-SKJKBN = " 
-                        LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
-                        " SAI-SKJKBN = " 
-                        LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
+      **          DISPLAY "IDX1 = " IDX1 
+      **                  " T-SKJKBN = " 
+      **                  LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
+      **                  " SAI-SKJKBN = " 
+      **                  LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
       *         入院分（退院分）
                 IF  LNK-SKJHKN-HKNCOMBINUM(IDX1 1) NOT = SPACE
                     IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  =
@@ -4588,16 +4588,16 @@
                     END-IF
                 END-IF
            END-PERFORM
-           PERFORM    VARYING  IDX1   FROM  1  BY  1
-             UNTIL    IDX1     >   31
-               DISPLAY "IDX1 = " IDX1
-               DISPLAY "WRK-SKJ-HKNCOMBI-ASA(IDX1)  = "
-                        WRK-SKJ-HKNCOMBI-ASA(IDX1)
-               DISPLAY "WRK-SKJ-HKNCOMBI-HIRU(IDX1) = "
-                        WRK-SKJ-HKNCOMBI-HIRU(IDX1)
-               DISPLAY "WRK-SKJ-HKNCOMBI-YORU(IDX1) = "
-                        WRK-SKJ-HKNCOMBI-YORU(IDX1)
-           END-PERFORM
+      **     PERFORM    VARYING  IDX1   FROM  1  BY  1
+      **       UNTIL    IDX1     >   31
+      **         DISPLAY "IDX1 = " IDX1
+      **         DISPLAY "WRK-SKJ-HKNCOMBI-ASA(IDX1)  = "
+      **                  WRK-SKJ-HKNCOMBI-ASA(IDX1)
+      **         DISPLAY "WRK-SKJ-HKNCOMBI-HIRU(IDX1) = "
+      **                  WRK-SKJ-HKNCOMBI-HIRU(IDX1)
+      **         DISPLAY "WRK-SKJ-HKNCOMBI-YORU(IDX1) = "
+      **                  WRK-SKJ-HKNCOMBI-YORU(IDX1)
+      **     END-PERFORM
       *
       *入院料の取得
            MOVE    ZERO                    TO  FLG-OK
@@ -11861,7 +11861,13 @@
       *                  （生活療養負担コード分割対応）
       *****************************************************************
        2103-SHOKUJI-HENSHU5-SEC        SECTION.
-           DISPLAY "2103-SHOKUJI-HENSHU5-SEC"
+      **     DISPLAY "2103-SHOKUJI-HENSHU5-SEC"
+      **     DISPLAY "LNK-NYURECEDEN-SET-HKNCOMBI(1) = "
+      **              LNK-NYURECEDEN-SET-HKNCOMBI(1)
+      **     DISPLAY "LNK-NYURECEDEN-SET-HKNCOMBI(2) = "
+      **              LNK-NYURECEDEN-SET-HKNCOMBI(2)
+      **     DISPLAY "LNK-NYURECEDEN-SET-HKNCOMBI(3) = "
+      **              LNK-NYURECEDEN-SET-HKNCOMBI(3)
       *
       *食事の保険組合せがセットされている日は入院扱いとする
            PERFORM   VARYING   IDX1   FROM  1   BY  1
@@ -12138,8 +12144,8 @@
       *                    WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)
       *     END-PERFORM
       *
-      *    引数でセットされた保険組合せ番号以外はSKJ4,SKJ5,SKJFTN2領域の
-      *    セット内容をクリアする
+      *    引数でセットされた保険組合せ番号以外はSKJ4,SKJ5,SKJFTN2
+      *    領域のセット内容をクリアする
            PERFORM    VARYING  IDX1   FROM 1 BY 1
              UNTIL    IDX1 > 93
                  IF   WRK-SKJ4-HKNCOMBI-DAY(IDX1)  NOT =  ZERO
@@ -12246,13 +12252,35 @@
                END-IF
            END-PERFORM
       *
+      *    同日再入院日に他保険で食事の算定がある場合に
+      *    食堂加算をクリアする
+           PERFORM      VARYING   IDX1   FROM   1  BY  1
+             UNTIL      IDX1     >    31
+                IF   LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  =  "1"
+      *            朝食を他保険で算定
+                   IF  WRK-SKJ-ASA-ARI(IDX1)  NOT =  ZERO
+                      IF   WRK-SKJ-HKNCOMBI-ASA(IDX1)   =  ZERO
+                          MOVE   "1"  TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+                      END-IF
+                   END-IF
+      *            朝食又は昼食を他保険で算定
+                   IF (WRK-SKJ-ASA-ARI(IDX1)   NOT =  ZERO)  OR
+                      (WRK-SKJ-HIRU-ARI(IDX1)  NOT =  ZERO)
+                      IF  (WRK-SKJ-HKNCOMBI-ASA(IDX1)   =  ZERO) AND
+                          (WRK-SKJ-HKNCOMBI-HIRU(IDX1)  =  ZERO)
+                          MOVE   "1"  TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+                      END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
       *    食堂加算クリアフラグによる食堂加算領域のクリア
            PERFORM      VARYING   IDX1   FROM   1  BY  1
              UNTIL      IDX1     >    31
-             DISPLAY "IDX1 = " IDX1 " WRK-TAHOKEN-SHOKUDOU-FLG = "
-                                      WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
-                             " SHOKUDOU = "
-                                      WRK-SKJ6-SHOKUDOU(IDX1)
+      **       DISPLAY "IDX1 = " IDX1 " WRK-TAHOKEN-SHOKUDOU-FLG = "
+      **                                WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+      **                       " SHOKUDOU = "
+      **                                WRK-SKJ6-SHOKUDOU(IDX1)
              IF    WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)  =   "1"
                  MOVE    SPACE     TO  WRK-SKJ6-SHOKUDOU(IDX1)
              END-IF
