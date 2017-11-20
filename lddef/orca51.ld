@@ -97,6 +97,7 @@ db	{
 	tbl_dbcatalog;
 	tbl_sysuser;
 	tbl_sysbase;
+	tbl_ptbyomei;
 };
 
 /* #include "orcadb.inc" */

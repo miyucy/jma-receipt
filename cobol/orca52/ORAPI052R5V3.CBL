@@ -48,6 +48,7 @@
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-PTBYOMEI            PIC 9(01).
       *
            03  FLG-SYORI               PIC 9(01).
       *
@@ -156,6 +157,9 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+       01  PTBYOMEI-REC.
+           COPY    "CPPTBYOMEI.INC".
       *
            COPY    "CPSYSKANRI.INC".
       *    （職員情報）
@@ -546,7 +550,23 @@
       *****************************************************************
        20010-INPUT-HEN-SEC             SECTION.
       *
-      *    基準日
+      *    基準日が未設定のときは最小転帰月とする
+           IF      LSTREQ-BASE-MONTH  =   SPACE
+               INITIALIZE                      PTBYOMEI-REC
+               MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+               MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+               PERFORM 900-PTBYO-READ-SEC
+               IF      FLG-PTBYOMEI        =   1
+                   MOVE    "1989-01"           TO  LSTREQ-BASE-MONTH
+               ELSE
+      *??
+                DISPLAY "PTBYO-TENKIYMD=" PTBYO-TENKIYMD
+                   MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
+                   PERFORM 801-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE (1:7)  TO  LSTREQ-BASE-MONTH
+                   
+               END-IF
+           END-IF
            MOVE   LSTREQ-BASE-MONTH    TO  LSTRES-BASE-MONTH
       *
            MOVE   LSTREQ-BASE-MONTH    TO  WRK-HEN-DATE
@@ -566,22 +586,17 @@
       *****************************************************************
        20011-PERFORM-CHK-SEC           SECTION.
       *
-      *    日付チェックサブ
-           IF      WRK-BASE-MONTH        =   SPACE
-               CONTINUE
-           ELSE
-               MOVE    SPACE               TO  STS-AREA-DAY
-               INITIALIZE                      STS-AREA-DAY
-               MOVE    SPACE               TO  LNK-DAY2-AREA
-               MOVE    "21"                TO  LNK-DAY2-IRAI
-               MOVE    WRK-BASE-MONTH      TO  LNK-DAY2-YMD (1:6)
-               MOVE    "01"                TO  LNK-DAY2-YMD (7:2)
-               CALL    "ORCSDAY"           USING
-                                           STS-AREA-DAY
-                                           LNK-DAY2-AREA
-               IF      STS-DAY-RC1     NOT =   ZERO
-                   MOVE    "E11"               TO  WRK-ERRCD
-               END-IF
+           MOVE    SPACE               TO  STS-AREA-DAY
+           INITIALIZE                      STS-AREA-DAY
+           MOVE    SPACE               TO  LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-BASE-MONTH      TO  LNK-DAY2-YMD (1:6)
+           MOVE    "01"                TO  LNK-DAY2-YMD (7:2)
+           CALL    "ORCSDAY"           USING
+                                       STS-AREA-DAY
+                                       LNK-DAY2-AREA
+           IF      STS-DAY-RC1     NOT =   ZERO
+               MOVE    "E11"               TO  WRK-ERRCD
            END-IF
       *
            .
@@ -612,9 +627,6 @@
                                        SPA-AREA
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
-      *
-           INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
-           MOVE    SPACE           TO  SPA-TERMID (37:)
       *
       *    一時ディレクトリのルートディレクトリ取得
            ACCEPT  WRK-TEMPDIR-ROOT
@@ -860,7 +872,9 @@
                                            INTO  WRK-ERRMSG
                        END-STRING
                    ELSE
-                       IF      JOB-ERRCD   =   SPACE
+                       IF    ( JOB-ERRCD   =   SPACE                )
+                       OR    ( JOB-YOBI    =
+                               "処理対象のデータがありませんでした" )
                            MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
                            MOVE    WRK-UPDCNT-X    TO
                                                    LSTRES-OUTPUT-COUNT
@@ -948,8 +962,13 @@
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE           TO  WRK-HEN-DATE
+           INITIALIZE                  WRK-HEN-DATE
+           MOVE    "-"                 TO  WRK-HEN-H1
+           MOVE    "-"                 TO  WRK-HEN-H2
+           IF      WRK-SYMD            =   SPACE   OR  "00000000"
+               MOVE    "1900"              TO  WRK-HEN-YY
+               MOVE    "01"                TO  WRK-HEN-MM
+               MOVE    "01"                TO  WRK-HEN-DD
            ELSE
                INITIALIZE                  WRK-HEN-DATE
                MOVE    WRK-SYY             TO  WRK-HEN-YY
@@ -962,6 +981,7 @@
                    MOVE    "31"                TO  WRK-HEN-DD
                END-IF
            END-IF
+      *
       *
            INITIALIZE                  WRK-HEN-TIME
            MOVE    WRK-THH             TO  WRK-HEN-THH
@@ -1125,6 +1145,38 @@
            PERFORM 990-DBCLOSE-SEC
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者病名マスター読込
+      *****************************************************************
+       900-PTBYO-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    "key53"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+               MOVE    "key53"             TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
+                   MOVE    ZERO            TO  FLG-PTBYOMEI
+               ELSE
+                   INITIALIZE                  PTBYOMEI-REC
+                   MOVE    1               TO  FLG-PTBYOMEI
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTBYOMEI
+               INITIALIZE                      PTBYOMEI-REC
+           END-IF
+      *
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    "key53"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-PTBYO-READ-EXT.
            EXIT.
       *
       *****************************************************************

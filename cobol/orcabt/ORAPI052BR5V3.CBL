@@ -93,7 +93,7 @@
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC X(02).
            03  WRK-PARA-TERMID     PIC X(64).
-           03  WRK-PARA-BASE-MONTH PIC X(08).
+           03  WRK-PARA-BASE-MONTH PIC X(06).
            03  WRK-PARA-ERRFILE    PIC X(64).
       *
       *    一時領域
@@ -108,10 +108,14 @@
            03  WRK-PTID            PIC 9(10).
       *
            03  WRK-YM              PIC 9(06).
+           03  WRK-SRYYM           PIC X(06).
+           03  WRK-END-SRYYM       PIC X(06).
       *
            03  WRK-LENGTH          PIC 9(02).
       *
            03  WRK-MCP-PATHNAME    PIC X(64).
+           03  WRK-MCP-PTBYO-PATHNAME
+                                   PIC X(64).
       *
            03  WRK-SYMD.
                05  WRK-SYY         PIC X(04).
@@ -137,7 +141,7 @@
       *
       *    患者病名データ
        01  PTBYOMEILST-REC.
-           03  PTBYOMEILST-OCC          OCCURS   3.
+           03  PTBYOMEILST-OCC          OCCURS   28.
       *        患者番号
                05  PTBYOLST-PATIENTID   PIC X(20).
       *        患者氏名
@@ -150,10 +154,11 @@
                05  PTBYOLST-SEX         PIC X(1).
       *
                05  PTBYOLST-ERRCD       PIC X(03).
-      *        病名情報
+               05  PTBYOLST-BASE-MONTH  PIC X(07).
                05  PTBYOLST-INFORMATION-OVERFLOW
                                         PIC X(5).
-               05  PTBYOLST-DISEASE-INF-G   OCCURS   200.
+      *        病名情報
+               05  PTBYOLST-DISEASE-INF-G   OCCURS   50.
       *
                    07  PTBYOLST-DISEASE-ERRCD  PIC X(03).
       *            入外区分
@@ -250,6 +255,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -388,6 +396,14 @@
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
            END-IF
+      *
+      *    システム月取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           MOVE    SMCNDATE-YMD (1:6)  TO  WRK-END-SRYYM
+      *
+           MOVE    WRK-PARA-BASE-MONTH TO  WRK-SRYYM
            .
        100-INIT-EXT.
            EXIT.
@@ -397,43 +413,77 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           INITIALIZE                      PTBYOMEI-REC
-           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
-           MOVE    WRK-PARA-BASE-MONTH TO  PTBYO-SRYYMD   (1:6)
-           MOVE    "31"                TO  PTBYO-SRYYMD   (7:2)
-           MOVE    WRK-PARA-BASE-MONTH TO  PTBYO-TENKIYMD (1:6)
-           MOVE    "01"                TO  PTBYO-TENKIYMD (7:2)
-           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key51"             TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               PERFORM 900-PTBYOMEI-READ-N-SEC
-           ELSE
+           MOVE    ZERO                TO  CNT-OUT1
+           MOVE    SPACE               TO  PTBYOMEILST-REC
+           INITIALIZE                      PTBYOMEILST-REC
+      *
+           PERFORM         UNTIL   WRK-SRYYM   >   WRK-END-SRYYM
+      *??
+               DISPLAY "SRYYM=" WRK-SRYYM
+      *??
                INITIALIZE                      PTBYOMEI-REC
-               MOVE    1                   TO  FLG-PTBYOMEI
-           END-IF
+               MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+               MOVE    WRK-SRYYM           TO  PTBYO-SRYYMD   (1:6)
+               MOVE    "31"                TO  PTBYO-SRYYMD   (7:2)
+               MOVE    WRK-SRYYM           TO  PTBYO-TENKIYMD (1:6)
+               MOVE    "01"                TO  PTBYO-TENKIYMD (7:2)
+               MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               IF      WRK-SRYYM           =   WRK-END-SRYYM
+                   MOVE    "key52"         TO  WRK-MCP-PTBYO-PATHNAME
+               ELSE
+                   MOVE    "key51"         TO  WRK-MCP-PTBYO-PATHNAME
+               END-IF
+               MOVE    WRK-MCP-PTBYO-PATHNAME
+                                           TO  MCP-PATHNAME
+               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+               PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   PERFORM 900-PTBYOMEI-READ-N-SEC
+               ELSE
+                   INITIALIZE                      PTBYOMEI-REC
+                   MOVE    1                   TO  FLG-PTBYOMEI
+               END-IF
       *
-      *    病名マスタ編集処理
-           PERFORM     UNTIL   FLG-PTBYOMEI  =   1
-               MOVE    ZERO                TO  CNT-OUT1
+      *        病名マスタ編集処理
+               PERFORM     UNTIL   FLG-PTBYOMEI  =   1
+                   PERFORM     UNTIL   FLG-PTBYOMEI    =   1
+                               OR      CNT-OUT1        >=  28
+                       PERFORM 2001-PTBYOMEILST-HENSYU-SEC
+                   END-PERFORM
       *
-               MOVE    SPACE               TO  PTBYOMEILST-REC
-               INITIALIZE                      PTBYOMEILST-REC
+                   IF      CNT-OUT1            >=  28
+                       ADD     1                   TO  CNT-XMLCOUNT
+                       PERFORM 910-XMLEXPORT-SEC
       *
-               PERFORM     UNTIL   FLG-PTBYOMEI    =   1
-                           OR      CNT-OUT1        >=  3
-                   PERFORM 2001-PTBYOMEILST-HENSYU-SEC
+                       MOVE    ZERO                TO  CNT-OUT1
+                       MOVE    SPACE               TO  PTBYOMEILST-REC
+                       INITIALIZE                      PTBYOMEILST-REC
+                   END-IF
                END-PERFORM
       *
-               ADD     1                   TO  CNT-XMLCOUNT
-               PERFORM 910-XMLEXPORT-SEC
+               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+               MOVE    WRK-MCP-PTBYO-PATHNAME
+                                           TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE   "61"                 TO  LNK-DAY6-IRAI
+               MOVE   WRK-SRYYM            TO  LNK-DAY6-KIJUN (1:6)
+               MOVE   "01"                 TO  LNK-DAY6-KIJUN (7:2)
+               MOVE   "2"                  TO  LNK-DAY6-ZOGENPTN
+               MOVE   1                    TO  LNK-DAY6-ZOGEN
+               CALL   "ORCSDAY"            USING   STS-AREA-DAY
+                                                  LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN (1:6)
+                                           TO  WRK-SRYYM
            END-PERFORM
       *
-           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key51"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+           IF      CNT-OUT1            >=  ZERO
+               ADD     1                   TO  CNT-XMLCOUNT
+               PERFORM 910-XMLEXPORT-SEC
+           END-IF
       *
            MOVE    1                   TO  FLG-END
            .
@@ -479,6 +529,12 @@
                MOVE    "E17"           TO  PTBYOLST-ERRCD          (IDX)
            END-IF
       *
+           MOVE    WRK-SRYYM           TO  WRK-SYMD (1:6)
+           MOVE    "01"                TO  WRK-SYMD (7:2)
+           MOVE    ZERO                TO  WRK-THMS
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  PTBYOLST-BASE-MONTH     (IDX)
+      *
            MOVE    ZERO                TO  IDY
            MOVE    PTBYO-PTID          TO  WRK-PTID
       *
@@ -486,7 +542,7 @@
                    OR    ( PTBYO-PTID  NOT =   WRK-PTID )
              ADD     1                   TO  IDY
       *
-             IF      IDY                 >   200
+             IF      IDY                 >   50
                CONTINUE
              ELSE
                EVALUATE    PTBYO-NYUGAIKBN
@@ -521,19 +577,46 @@
                        MOVE    WRK-PTID            TO  COMB-PTID
                        MOVE    PTBYO-KOHID         TO  COMB-KOHID (1)
                        MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-                       MOVE    "key4"              TO  WRK-MCP-PATHNAME
-                       PERFORM 900-COMB-READ-SEC
-                       IF    ( FLG-HKNCOMBI        =   1  )
-                       OR    ( COMB-DELKBN         =  "1" )
-                           MOVE    "E20"           TO
-                                       PTBYOLST-DISEASE-ERRCD  (IDX IDY)
+                       MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                       MOVE    "key8"              TO  MCP-PATHNAME
+                       PERFORM 900-DBSELECT-SEC
+                       IF      MCP-RC              =   ZERO
+                           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                           MOVE    "key8"              TO  MCP-PATHNAME
+                           PERFORM 900-COMB-READ-N-SEC
                        ELSE
-                           MOVE    COMB-HKNCOMBINUM
+                           INITIALIZE                  HKNCOMBI-REC
+                           MOVE    1               TO  FLG-HKNCOMBI
+                       END-IF
+                       PERFORM         UNTIL   FLG-HKNCOMBI        =   1
+                           IF    ( COMB-TEKSTYMD       <= PTBYO-SRYYMD )
+                           AND   ( COMB-TEKEDYMD       >= PTBYO-SRYYMD )
+                           AND   ( COMB-KOHID (1)      =  PTBYO-KOHID  )
+                               IF      COMB-DELKBN     =  "1"
+                                   MOVE    "E20"             TO
+                                       PTBYOLST-DISEASE-ERRCD  (IDX IDY)
+                               ELSE
+                                   MOVE    COMB-HKNCOMBINUM
                                                    TO  PTBYOLST-HKNCOMBI
                                                                (IDX IDY)
+                               END-IF
+                           END-IF
+                           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                           MOVE    "key8"              TO  MCP-PATHNAME
+                           PERFORM 900-COMB-READ-N-SEC
+                       END-PERFORM
+                       MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                       MOVE    "key8"              TO  MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
+      *
+                       IF      PTBYOLST-HKNCOMBI  (IDX IDY)
+                                                   =   SPACE
+                           MOVE    "E20"           TO
+                                       PTBYOLST-DISEASE-ERRCD  (IDX IDY)
                        END-IF
                    END-IF
                END-IF
+      *
                MOVE    PTBYO-BYOMEI        TO  PTBYOLST-DISEASE-NAME
                                                                (IDX IDY)
                PERFORM VARYING     IDZ     FROM    1   BY  1
@@ -1037,30 +1120,13 @@
        900-PTBYOMEI-READ-N-SEC         SECTION.
       *
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key51"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PTBYO-PATHNAME
+                                       TO  MCP-PATHNAME
       *
            PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PTBYOMEI
                MOVE    MCPDATA-REC         TO  PTBYOMEI-REC
-               GO  TO  900-PTBYOMEI-READ-N-EXT
-      **??
-      *        基準年月に有効な病名を対象とする
-               IF      PTBYO-SRYYMD (1:6)  =   WRK-PARA-BASE-MONTH
-                   CONTINUE
-               ELSE
-                   IF      PTBYO-TENKIKBN       =   SPACE
-                       CONTINUE
-                    ELSE
-                       MOVE    PTBYO-TENKIYMD(1:6)
-                                               TO  WRK-YM
-                       IF      WRK-YM          >=  WRK-PARA-BASE-MONTH
-                           CONTINUE
-                        ELSE
-                           GO  TO  900-PTBYOMEI-READ-N-SEC
-                       END-IF
-                  END-IF
-               END-IF
            ELSE
               MOVE    1                    TO  FLG-PTBYOMEI
            END-IF

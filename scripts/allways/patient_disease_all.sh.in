@@ -25,11 +25,9 @@ cleanup(){
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi
-##      環境変数［ORCA_UID］が設定されていた場合、一時ディレクトリを削除
-##        if  [ -n "${ORCA_UID}" ]; then
-##            echo "remove!! ${MCP_TEMPDIR}"
-##            rm  -rf ${MCP_TEMPDIR}
-##        fi
+        if  [ -n "${ORCA_UID}" ]; then
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBDELTEMPDIR
+        fi
 }
 trap cleanup EXIT
 
@@ -51,9 +49,6 @@ $DBSTUB -dir $LDDIRECTORY -bd orcabt ORAPI052BR5V3 -parameter "$1,$2,$3,$RENNUM,
 if  [ -e ${ERR_FILE_FULL} ]; then
 	exit
 else
-     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE${12}${13},${14}"
-     exit 
-
      FILENM="patient_disease_all.xml"
      echo "filenm=[" $FILENM "]"
      $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},$FILENM,"xml",${17}
