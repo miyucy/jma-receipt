@@ -613,19 +613,19 @@
       *労災から労災への同日再入院で保険組合せが変更とならない場合は
       *同日再入院扱いとする必要がないので、"ORCSNYUINDAY"の返却値を
       *クリアすることとする
-           PERFORM    VARYING   IDX1   FROM   1   BY   1
-                      UNTIL     IDX1   >   31
-               IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  = "1")
-               AND (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "4")
-               AND (LNK-RNYURECEDEN-HKNCOMBI  =
-                               LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1))
-               AND (LNK-RNYURECEDEN-HKNCOMBI  =
-                               LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1))
+      **     PERFORM    VARYING   IDX1   FROM   1   BY   1
+      **                UNTIL     IDX1   >   31
+      **         IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  = "1")
+      **         AND (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "4")
+      **         AND (LNK-RNYURECEDEN-HKNCOMBI  =
+      **                         LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1))
+      **         AND (LNK-RNYURECEDEN-HKNCOMBI  =
+      **                         LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1))
       *            同日再入院区分と保険変動区分をクリア
-                   MOVE  SPACE TO LNK-NYUINDAY-DOUJITSU-KBN(IDX1)
-                   MOVE  SPACE TO LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1)
-               END-IF
-           END-PERFORM
+      **             MOVE  SPACE TO LNK-NYUINDAY-DOUJITSU-KBN(IDX1)
+      **             MOVE  SPACE TO LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1)
+      **         END-IF
+      **     END-PERFORM
       *食事算定用の保険組合せ判定領域にセット
            PERFORM    VARYING   IDX   FROM   1   BY   1
                       UNTIL      IDX  >    31
@@ -3724,15 +3724,15 @@
            MOVE    "key32"                     TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *     DISPLAY "---------SKJ4 SKJ2 CLEAR MAE -----------------"
-      *     PERFORM    VARYING  IDX1   FROM 1 BY 1
-      *       UNTIL    IDX1 > 93
-      *           DISPLAY  "IDX1 = " IDX1
-      *                    " WRK-SKJ4-HKNCOMBI-DAY = "
-      *                    WRK-SKJ4-HKNCOMBI-DAY(IDX1)
-      *                    " WRK-SKJFTN2-HKNCOMBI-DAY = "
-      *                    WRK-SKJFTN2-HKNCOMBI-DAY(IDX1)
-      *     END-PERFORM
+           DISPLAY "---------SKJ4 SKJ5 CLEAR MAE -----------------"
+           PERFORM    VARYING  IDX1   FROM 1 BY 1
+             UNTIL    IDX1 > 93
+                 DISPLAY  "IDX1 = " IDX1
+                          " WRK-SKJ4-HKNCOMBI-DAY = "
+                          WRK-SKJ4-HKNCOMBI-DAY(IDX1)
+                          " WRK-SKJ5-HKNCOMBI-DAY = "
+                          WRK-SKJ5-HKNCOMBI-DAY(IDX1)
+           END-PERFORM
       *
       *    引数でセットされた保険組合せ番号以外はSKJ4,SKJ5領域の
       *    セット内容をクリアする
@@ -3757,7 +3757,15 @@
                    END-IF
                  END-IF
            END-PERFORM
-      *     DISPLAY "---------SKJ4 SKJ2 CLEAR ATO -----------------"
+           DISPLAY "---------SKJ4 SKJ5 CLEAR ATO -----------------"
+           PERFORM    VARYING  IDX1   FROM 1 BY 1
+             UNTIL    IDX1 > 93
+                 DISPLAY  "IDX1 = " IDX1
+                          " WRK-SKJ4-HKNCOMBI-DAY = "
+                          WRK-SKJ4-HKNCOMBI-DAY(IDX1)
+                          " WRK-SKJ5-HKNCOMBI-DAY = "
+                          WRK-SKJ5-HKNCOMBI-DAY(IDX1)
+           END-PERFORM
       *
       *    同日再入院日に他保険で食事の算定がある場合に
       *    食堂加算をクリアする
