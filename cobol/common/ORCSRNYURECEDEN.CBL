@@ -3724,15 +3724,15 @@
            MOVE    "key32"                     TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-           DISPLAY "---------SKJ4 SKJ5 CLEAR MAE -----------------"
-           PERFORM    VARYING  IDX1   FROM 1 BY 1
-             UNTIL    IDX1 > 93
-                 DISPLAY  "IDX1 = " IDX1
-                          " WRK-SKJ4-HKNCOMBI-DAY = "
-                          WRK-SKJ4-HKNCOMBI-DAY(IDX1)
-                          " WRK-SKJ5-HKNCOMBI-DAY = "
-                          WRK-SKJ5-HKNCOMBI-DAY(IDX1)
-           END-PERFORM
+      *     DISPLAY "---------SKJ4 SKJ5 CLEAR MAE -----------------"
+      *     PERFORM    VARYING  IDX1   FROM 1 BY 1
+      *       UNTIL    IDX1 > 93
+      *           DISPLAY  "IDX1 = " IDX1
+      *                    " WRK-SKJ4-HKNCOMBI-DAY = "
+      *                    WRK-SKJ4-HKNCOMBI-DAY(IDX1)
+      *                    " WRK-SKJ5-HKNCOMBI-DAY = "
+      *                    WRK-SKJ5-HKNCOMBI-DAY(IDX1)
+      *     END-PERFORM
       *
       *    引数でセットされた保険組合せ番号以外はSKJ4,SKJ5領域の
       *    セット内容をクリアする
@@ -3757,15 +3757,15 @@
                    END-IF
                  END-IF
            END-PERFORM
-           DISPLAY "---------SKJ4 SKJ5 CLEAR ATO -----------------"
-           PERFORM    VARYING  IDX1   FROM 1 BY 1
-             UNTIL    IDX1 > 93
-                 DISPLAY  "IDX1 = " IDX1
-                          " WRK-SKJ4-HKNCOMBI-DAY = "
-                          WRK-SKJ4-HKNCOMBI-DAY(IDX1)
-                          " WRK-SKJ5-HKNCOMBI-DAY = "
-                          WRK-SKJ5-HKNCOMBI-DAY(IDX1)
-           END-PERFORM
+      *     DISPLAY "---------SKJ4 SKJ5 CLEAR ATO -----------------"
+      *     PERFORM    VARYING  IDX1   FROM 1 BY 1
+      *       UNTIL    IDX1 > 93
+      *           DISPLAY  "IDX1 = " IDX1
+      *                    " WRK-SKJ4-HKNCOMBI-DAY = "
+      *                    WRK-SKJ4-HKNCOMBI-DAY(IDX1)
+      *                    " WRK-SKJ5-HKNCOMBI-DAY = "
+      *                    WRK-SKJ5-HKNCOMBI-DAY(IDX1)
+      *     END-PERFORM
       *
       *    同日再入院日に他保険で食事の算定がある場合に
       *    食堂加算をクリアする
