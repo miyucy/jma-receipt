@@ -67,7 +67,7 @@
                05  SYS-5000-EIYOUKSNKBN    PIC  X(01).
       *救急・在宅等支援療養病床初期加算区分
                05  SYS-5000-KYUKYUKSNKBN   PIC  X(01).
-      *次回作成時の食事区分
+      *次月作成時の食事区分
                05  SYS-5000-SKJ-CREATEKBN  PIC  X(01).
       *予備（１）
       ******   05                          PIC  X(60).

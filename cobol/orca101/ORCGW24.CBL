@@ -1456,18 +1456,18 @@
        310-REKI-TAIINKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    次回作成時の食事区分コンボ
+      *    次月作成時の食事区分コンボ
       *****************************************************************
        310-SKJ-CREATELST-SET-SEC    SECTION.
       *
            MOVE    2               TO  SPA-GMN-W24-SKJ-CREATE-MAX
       *
            MOVE    "0"             TO  SPA-GMN-W24-SKJ-CREATEL    (1)
-           MOVE    "最終食を引き継ぐ"
+           MOVE    "最終夕食で算定"
                                    TO  SPA-GMN-W24-SKJ-CREATEMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-W24-SKJ-CREATEL    (2)
-           MOVE    "最終日を引き継ぐ"
+           MOVE    "最終日状態で算定"
                                    TO  SPA-GMN-W24-SKJ-CREATEMEIL (2)
       *
       *
