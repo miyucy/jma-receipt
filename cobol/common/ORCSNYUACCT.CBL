@@ -44,20 +44,6 @@
       * 03.05.00     NACL-æÆ∆¶¬Ù  07.07.27  Œ≈Õ‹…¬≈Ô° …¬æ≤°À∆˛±°≤Ò∑◊
       *                                     …Ωº®∂Ë ¨¬–±˛
       * 04.03.00     NACL-¬ø°π«º  08/07/09  ∆˛±°∆¸£±≤Û§Œ≤√ªª¬–±˛
-      * ø¿Æ£≥£∞«Ø£¥∑Ó≤˛ƒÍ¬–±˛
-      *  05.00.00    NACL-æÆ∆¶¬Ù  18/03/02  Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡£≤§Œ∑–≤·
-      *                                     ¡º√÷ƒ…≤√° ¥«∏Ó»ÊŒ®£≥£∞¬–£±°À
-      *  05.00.00    NACL-æÆ∆¶¬Ù  18/03/07  √ª¥¸¬⁄∫ﬂºÍΩ—≈˘¥À‹Œ¡§Œ»ΩƒÍ —ππ
-      *  05.00.00    NACL-æÆ∆¶¬Ù  18/03/08  ±…Õ‹¥…Õ˝¬Œ¿©∏∫ªª§Œ∆√ Ã∆˛±°¥À‹Œ¡
-      *                                     »ΩƒÍ —ππ
-      *  05.00.00    NACL-æÆ∆¶¬Ù  18/03/09  Œ≈Õ‹…¬≈Ô∆˛±°Œ¡£≤° £…°À
-      *                                     ¡º√÷ƒ…≤√£≤°¶ƒÃ¬ß£∏¬–±˛ƒ…≤√
-      *  05.00.00    NACL-æÆ∆¶¬Ù  18/03/09  ¥«∏Ó ‰Ωı≤√ªª° £±£µ∆¸∞ æÂ£≥£∞∆¸
-      *                                     ∞ ∆‚°À§ŒªªƒÍ¬–±˛
-      *  05.00.00    NACL-æÆ∆¶¬Ù  18/03/20  ∫ﬂ¬¥µº‘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª° Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡°À
-      *                                     ∫ﬂ¬¥µº‘ªŸ±Á…¬æ≤ΩÈ¥¸≤√ªª° √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°Œ¡°À
-      *  05.00.00    NACL-æÆ∆¶¬Ù  18/03/09  «ß√Œæ…ÃÎ¥÷¬–±˛≤√ªª° «ß√Œæ…º£Œ≈…¬≈Ô∆˛±°Œ¡°À
-      *                                   ° £≥£±∆¸∞ æÂ°À§ŒªªƒÍ¬–±˛
       *****************************************************************
       *
       *
@@ -239,11 +225,9 @@
       *    Õ≠æ≤ø«Œ≈ΩÍ∞Ï»Ã…¬æ≤ΩÈ¥¸≤√ªª§ŒªªƒÍ∫—∆¸øÙ
            03  WRK-YUUSHO-NISSU                 PIC 9(05).
       *    µﬂµﬁ°¶∫ﬂ¬≈˘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª§ŒªªƒÍ∫—∆¸øÙ
-      *    ∫ﬂ¬¥µº‘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª§ŒªªƒÍ∫—∆¸øÙ
            03  WRK-KYUKYU-NISSU                 PIC 9(05).
       *    Õ≠æ≤ø«Œ≈ΩÍ∫ﬂ¬…¸µ¢µ°«Ω∂Ø≤Ω≤√ªª° Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡°À§ŒªªƒÍÕ—
            03  WRK-SCNYUACCT-STSRYYMD           PIC X(08).
-      *    ∫ﬂ¬¥µº‘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª§ŒªªƒÍ∫—∆¸øÙ
       *
       *    ±…Õ‹¥…Õ˝¬Œ¿©∏∫ªª§Œ∏∫ªª•≥°º•…
            03  WRK-EIYOU-GENSANCD               PIC X(09).
@@ -1349,143 +1333,6 @@
                 END-EVALUATE
              END-IF
       *
-             IF      LNK-SCNYUACCT-STSRYYMD   >=   "20180401"
-                EVALUATE     LNK-SCNYUACCT-NYUKHN-SRYCD (1)
-      *         Œ≈Õ‹…¬≈Ô∆˛±°Œ¡£≤° ¥«∏Óø¶∞˜øÙ≈˘∑–≤·¡º√÷°°∑–≤·¡º√÷£±°À
-                 WHEN      "190215110"
-                 WHEN      "190215310"
-                 WHEN      "190215510"
-                 WHEN      "190215710"
-                 WHEN      "190215910"
-                 WHEN      "190216110"
-                 WHEN      "190216310"
-                 WHEN      "190216510"
-                 WHEN      "190216710"
-                   MOVE    1           TO  FLG-RYOYO-NYUIN
-                   MOVE   "190215110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
-                   MOVE   "190215310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
-                   MOVE   "190215510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
-                   MOVE   "190215710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
-                   MOVE   "190215910"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
-                   MOVE   "190216110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (6)
-                   MOVE   "190216310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (7)
-                   MOVE   "190216510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (8)
-                   MOVE   "190216710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (9)
-      *         Œ≈Õ‹…¬≈Ô∆˛±°Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À° ¥«∏Óø¶∞˜øÙ≈˘∑–≤·¡º√÷°°∑–≤·¡º√÷£±°À
-                 WHEN      "190215210"
-                 WHEN      "190215410"
-                 WHEN      "190215610"
-                 WHEN      "190215810"
-                 WHEN      "190216010"
-                 WHEN      "190216210"
-                 WHEN      "190216410"
-                 WHEN      "190216610"
-                 WHEN      "190216810"
-                   MOVE    1           TO  FLG-RYOYO-NYUIN
-                   MOVE   "190215210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
-                   MOVE   "190215410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
-                   MOVE   "190215610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
-                   MOVE   "190215810"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
-                   MOVE   "190216010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
-                   MOVE   "190216210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (6)
-                   MOVE   "190216410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (7)
-                   MOVE   "190216610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (8)
-                   MOVE   "190216810"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (9)
-                END-EVALUATE
-             END-IF
-      *
-             IF     (LNK-SCNYUACCT-STSRYYMD   >=   "20180401")   AND
-                    (SYS-5000-EIYOUKSNKBN     NOT  =  "1")
-                EVALUATE     LNK-SCNYUACCT-NYUKHN-SRYCD (1)
-      *         Œ≈Õ‹…¬≈Ô∆˛±°Œ¡£≤° ¥«∏Ó»ÊŒ®£≥£∞¬–£±≈˘∑–≤·¡º√÷°°∑–≤·¡º√÷£≤°À
-                 WHEN      "190202510"
-                 WHEN      "190202710"
-                 WHEN      "190202910"
-                 WHEN      "190203110"
-                 WHEN      "190203310"
-                 WHEN      "190203510"
-                 WHEN      "190203710"
-                 WHEN      "190203910"
-                 WHEN      "190204110"
-                   MOVE    1           TO  FLG-RYOYO-NYUIN
-                   MOVE   "190202510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
-                   MOVE   "190202710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
-                   MOVE   "190202910"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
-                   MOVE   "190203110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
-                   MOVE   "190203310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
-                   MOVE   "190203510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (6)
-                   MOVE   "190203710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (7)
-                   MOVE   "190203910"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (8)
-                   MOVE   "190204110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (9)
-      *         Œ≈Õ‹…¬≈Ô∆˛±°Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À° ¥«∏Ó»ÊŒ®£≥£∞¬–£±≈˘∑–≤·¡º√÷°°∑–≤·¡º√÷£≤°À
-                 WHEN      "190202610"
-                 WHEN      "190202810"
-                 WHEN      "190203010"
-                 WHEN      "190203210"
-                 WHEN      "190203410"
-                 WHEN      "190203610"
-                 WHEN      "190203810"
-                 WHEN      "190204010"
-                 WHEN      "190204210"
-                   MOVE    1           TO  FLG-RYOYO-NYUIN
-                   MOVE   "190202610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
-                   MOVE   "190202810"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
-                   MOVE   "190203010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
-                   MOVE   "190203210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
-                   MOVE   "190203410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
-                   MOVE   "190203610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (6)
-                   MOVE   "190203810"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (7)
-                   MOVE   "190204010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (8)
-                   MOVE   "190204210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (9)
-                END-EVALUATE
-             END-IF
-      *
-             IF     (LNK-SCNYUACCT-STSRYYMD   >=   "20180401")   AND
-                    (SYS-5000-EIYOUKSNKBN     =    "1")
-                EVALUATE     LNK-SCNYUACCT-NYUKHN-SRYCD (1)
-      *         Œ≈Õ‹…¬≈Ô∆˛±°Œ¡£≤° ¥«∏Ó»ÊŒ®£≥£∞¬–£±≈˘∑–≤·¡º√÷°°∑–≤·¡º√÷£≤°À
-                 WHEN      "190202510"
-                 WHEN      "190202710"
-                 WHEN      "190202910"
-                 WHEN      "190203110"
-                 WHEN      "190203310"
-                 WHEN      "190203510"
-                 WHEN      "190203710"
-                 WHEN      "190203910"
-                 WHEN      "190204310"
-                   MOVE    1           TO  FLG-RYOYO-NYUIN
-                   MOVE   "190202510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
-                   MOVE   "190202710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
-                   MOVE   "190202910"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
-                   MOVE   "190203110"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
-                   MOVE   "190203310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
-                   MOVE   "190203510"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (6)
-                   MOVE   "190203710"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (7)
-                   MOVE   "190203910"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (8)
-                   MOVE   "190204310"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (9)
-      *         Œ≈Õ‹…¬≈Ô∆˛±°Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À° ¥«∏Ó»ÊŒ®£≥£∞¬–£±≈˘∑–≤·¡º√÷°°∑–≤·¡º√÷£≤°À
-                 WHEN      "190202610"
-                 WHEN      "190202810"
-                 WHEN      "190203010"
-                 WHEN      "190203210"
-                 WHEN      "190203410"
-                 WHEN      "190203610"
-                 WHEN      "190203810"
-                 WHEN      "190204010"
-                 WHEN      "190204410"
-                   MOVE    1           TO  FLG-RYOYO-NYUIN
-                   MOVE   "190202610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (1)
-                   MOVE   "190202810"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (2)
-                   MOVE   "190203010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (3)
-                   MOVE   "190203210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (4)
-                   MOVE   "190203410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (5)
-                   MOVE   "190203610"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (6)
-                   MOVE   "190203810"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (7)
-                   MOVE   "190204010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (8)
-                   MOVE   "190204410"  TO  LNK-SCNYUACCT-KAGEN-SRYCD (9)
-                END-EVALUATE
-             END-IF
-      *
              EVALUATE     LNK-SCNYUACCT-NYUKHN-SRYCD (1)
       *        Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°¥À‹Œ¡
                 WHEN      "190122010"
@@ -1635,14 +1482,13 @@
                  PERFORM 920-DBFETCH-SEC
                  IF      MCP-RC            =   ZERO
                      MOVE    MCPDATA-REC   TO  TNS-TENSU-REC
-                     IF    (TNS-CDKBN-KBN     =   "A")   AND
-                           (TNS-CDKBN-KBNNUM  =   400)   AND
-                           (TNS-CDKBN-KOUBAN  =   2  OR 3)
+                     IF   TNS-NYUKHNKSNKBN  =  226  OR
+                                               240
                          MOVE    1         TO  FLG-TANKI
-                         IF   TNS-CDKBN-KOUBAN  =   2
+                         IF   TNS-NYUKHNKSNKBN  =  226
                              MOVE    1         TO  FLG-TANKI2
                          END-IF
-                         IF   TNS-CDKBN-KOUBAN  =   3
+                         IF   TNS-NYUKHNKSNKBN  =  240
                              MOVE    1         TO  FLG-TANKI3
                          END-IF
                      END-IF
@@ -2114,62 +1960,6 @@
                        END-IF
                    END-IF
                END-IF
-      *
-      *        ∫ﬂ¬¥µº‘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª° Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡°À
-               IF    LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K) = "190201870"
-                  MOVE  "3"  TO  LNK-SCNYUACCT-NYUKHNKSN-KBN (IDX-K)
-      *            ∆˛±°ΩËÕ˝ª˛§Œ§ﬂπ‘§¶
-                   IF     (LNK-SCNYUACCT-SYORI-KBN     =   "1")  AND
-                          (LNK-SCNYUACCT-IDOSAKUSEI-KBN  =  SPACE)
-                       MOVE    14                  TO  WRK-ZOGEN
-      *ª√ƒÍ¬–ΩË
-                       MOVE    ZERO                TO  FLG-SYORI
-      *
-                   ELSE
-      *                ∫ﬂ¬¥µº‘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª° Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡°À
-      *                §ŒªªƒÍ∫—∆¸øÙºË∆¿
-                       PERFORM   210-KYUKYU-KSN1-SEC
-                       IF      WRK-KYUKYU-NISSU  NOT =   ZERO
-                         IF  WRK-KYUKYU-NISSU    <   14
-                           COMPUTE  WRK-ZOGEN  =  14 - WRK-KYUKYU-NISSU
-                           MOVE     ZERO         TO  FLG-SYORI
-                         ELSE
-                           MOVE    ZERO          TO  WRK-ZOGEN
-                         END-IF
-                       ELSE
-                         MOVE     14    TO   WRK-ZOGEN
-                         MOVE     ZERO  TO   FLG-SYORI
-                       END-IF
-                   END-IF
-               END-IF
-      *
-      *        ∫ﬂ¬¥µº‘ªŸ±Á…¬æ≤ΩÈ¥¸≤√ªª° √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°Œ¡°À
-               IF    LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K) = "190212470"
-                  MOVE  "3"  TO  LNK-SCNYUACCT-NYUKHNKSN-KBN (IDX-K)
-      *            ∆˛±°ΩËÕ˝ª˛§Œ§ﬂπ‘§¶
-                   IF     (LNK-SCNYUACCT-SYORI-KBN     =   "1")  AND
-                          (LNK-SCNYUACCT-IDOSAKUSEI-KBN  =  SPACE)
-                       MOVE    14                  TO  WRK-ZOGEN
-      *ª√ƒÍ¬–ΩË
-                       MOVE    ZERO                TO  FLG-SYORI
-      *
-                   ELSE
-      *                ∫ﬂ¬¥µº‘ªŸ±Á…¬æ≤ΩÈ¥¸≤√ªª° √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°Œ¡°À
-      *                §ŒªªƒÍ∫—∆¸øÙºË∆¿
-                       PERFORM   210-KYUKYU-KSN1-SEC
-                       IF      WRK-KYUKYU-NISSU  NOT =   ZERO
-                         IF  WRK-KYUKYU-NISSU    <   14
-                           COMPUTE  WRK-ZOGEN  =  14 - WRK-KYUKYU-NISSU
-                           MOVE     ZERO         TO  FLG-SYORI
-                         ELSE
-                           MOVE    ZERO          TO  WRK-ZOGEN
-                         END-IF
-                       ELSE
-                         MOVE     14    TO   WRK-ZOGEN
-                         MOVE     ZERO  TO   FLG-SYORI
-                       END-IF
-                   END-IF
-               END-IF
       *TEST
       *         DISPLAY "NYUKHNKSN-SRYCD:" 
       *                          LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K)
@@ -2204,11 +1994,8 @@
       *
       *            Õ≠æ≤ø«Œ≈ΩÍ∫ﬂ¬…¸µ¢µ°«Ω∂Ø≤Ω≤√ªª° Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡°À
       *            §œ∆˛±°∆¸£±£µ∆¸Ã‹∞ πﬂ§ÀªªƒÍ§π§Î
-      *            ¥«∏Ó ‰Ωı≤√ªª° æ„≥≤º‘ª‹¿ﬂ≈˘∆˛±°¥À‹Œ¡°À§Œ£±£µ∆¸∞ æÂªªƒÍ
-      *            •≥°º•…§‚∆±ÕÕ§»§π§Î°  ø¿Æ£≥£∞«Ø≤˛¿µ§«ø∑¿ﬂ°À
                    IF    LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K)
-                                                      = "190190270" OR
-                                                        "190205670"
+                                                      = "190190270"
       **                DISPLAY "//////ZAITAKU-FUKKI/////////////////"
       **                DISPLAY "LNK-SCNYUACCT-NYUKHN-NISUU = "
       **                         LNK-SCNYUACCT-NYUKHN-NISUU
@@ -2261,70 +2048,6 @@
                       END-IF
                       MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
                       MOVE    15                  TO  LNK-DAY6-ZOGEN
-                      IF      LNK-SCNYUACCT-SYORI-KBN  =   "1" OR "8"
-                          COMPUTE    LNK-DAY6-ZOGEN  =  LNK-DAY6-ZOGEN -
-                                           LNK-SCNYUACCT-NYUKHN-NISUU
-                      END-IF
-                      CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                          LNK-DAY6-AREA
-                      IF      STS-DAY-RC1         =   ZERO
-      **                    DISPLAY "LNK-DAY6-KEISAN = " LNK-DAY6-KEISAN
-      **                    DISPLAY "LNK-DAY6-KOYOMI = " LNK-DAY6-KOYOMI
-                          IF    WRK-STYMD    >=    LNK-DAY6-KOYOMI
-                               MOVE   WRK-STYMD   TO   WRK-KHN-STYMD
-                          ELSE
-                               MOVE   LNK-DAY6-KOYOMI
-                                                  TO  WRK-KHN-STYMD
-                          END-IF
-                      END-IF
-                     END-IF
-                   END-IF
-      *            «ß√Œæ…ÃÎ¥÷¬–±˛≤√ªª° «ß√Œæ…º£Œ≈…¬≈Ô∆˛±°Œ¡°À§Œ£≥£±∆¸∞ æÂ
-      *            §Œ≤√ªª•≥°º•…ªªƒÍ°  ø¿Æ£≥£∞«Ø≤˛¿µ§«ø∑¿ﬂ°À
-                   IF    LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K)
-                                                      = "190213270"
-                     IF  LNK-SCNYUACCT-NYUKHN-NISUU  <  31
-      *               ∆˛±°Õ˙ŒÚ§Ú∏°∫˜§∑∆˛±°∆¸§ÚºË∆¿
-                      INITIALIZE                    PTNYUINRRK-REC
-                      MOVE    SPA-HOSPNUM       TO  PTNYUINRRK-HOSPNUM
-                      MOVE    SPA-PTID          TO  PTNYUINRRK-PTID
-                      MOVE    WRK-STYMD         TO  PTNYUINRRK-TENNYUYMD
-                                                    PTNYUINRRK-TENSTUYMD
-                      MOVE    PTNYUINRRK-REC    TO  MCPDATA-REC
-                      MOVE    "tbl_ptnyuinrrk"  TO  MCP-TABLE
-                      MOVE    "key42"           TO  MCP-PATHNAME
-                      PERFORM 910-PTNYUINRRK-SELECT-SEC
-                      IF      FLG-PTNYUINRRK     =  ZERO
-                          MOVE    "tbl_ptnyuinrrk"   TO  MCP-TABLE
-                          MOVE    "key42"            TO  MCP-PATHNAME
-                          PERFORM 910-PTNYUINRRK-FETCH-SEC
-      **                    DISPLAY "FLG-PTNYUINRRK  = " FLG-PTNYUINRRK
-                          IF      FLG-PTNYUINRRK  =   ZERO
-                               MOVE   PTNYUINRRK-NYUINYMD
-                                            TO  WRK-SCNYUACCT-STSRYYMD
-                          END-IF
-                      END-IF
-                      MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-                      MOVE    "key42"             TO  MCP-PATHNAME
-                      PERFORM 990-DBCLOSE-SEC
-      *
-      *               £Œ∆¸∏ÂªªƒÍ
-                      INITIALIZE                      STS-AREA-DAY
-                      INITIALIZE                      LNK-DAY6-AREA
-                      MOVE    "61"                TO  LNK-DAY6-IRAI
-                      IF    WRK-SCNYUACCT-STSRYYMD  NOT =   SPACE
-                          MOVE    WRK-SCNYUACCT-STSRYYMD
-                                            TO  LNK-DAY6-KIJUN
-                      ELSE
-                          MOVE    LNK-SCNYUACCT-STSRYYMD
-                                            TO  LNK-DAY6-KIJUN
-                      END-IF
-                      IF      LNK-SCNYUACCT-SYORI-KBN  =   "8"
-                          MOVE    WRK-STYMD
-                                            TO  LNK-DAY6-KIJUN
-                      END-IF
-                      MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-                      MOVE    31                  TO  LNK-DAY6-ZOGEN
                       IF      LNK-SCNYUACCT-SYORI-KBN  =   "1" OR "8"
                           COMPUTE    LNK-DAY6-ZOGEN  =  LNK-DAY6-ZOGEN -
                                            LNK-SCNYUACCT-NYUKHN-NISUU
@@ -2477,8 +2200,7 @@
                                          TO   WRK-EIYOU-GENSANCD
                           END-IF
                         END-IF
-                        IF  (WRK-STYMD(1:6)  >=   "201604")   AND
-                            (WRK-STYMD(1:6)  <=   "201803")
+                        IF   WRK-STYMD(1:6)  >=   "201604"
                           IF  (TNS-SRYCD       =  "190121810"  OR
                                                   "190799510") OR
       *                      ∞Ï»Ã…¬≈Ô∆√ Ã∆˛±°¥À‹Œ¡
@@ -2508,61 +2230,6 @@
       *                     ∑Î≥À…¬≈Ô∆˛±°¥À‹Œ¡° ÃÎ∂–ª˛¥÷∆√ Ã∆˛±°¥À‹Œ¡°À
                             ((TNS-CDKBN-KBNNUM  = 102)   AND
                              (TNS-CDKBN-KOUBAN  =   9))       OR
-      *                     ¿∫ø¿…¬≈Ô∆√ Ã∆˛±°¥À‹Œ¡
-      *                     ¿∫ø¿…¬≈Ô∆˛±°¥À‹Œ¡° ÃÎ∂–ª˛¥÷ƒ∂≤·∏∫ªª°À
-                            ((TNS-CDKBN-KBNNUM  = 103)   AND
-                             (TNS-CDKBN-KOUBAN  =   6))       OR
-      *                     ¿∫ø¿…¬≈Ô∆˛±°¥À‹Œ¡° ÃÎ∂–ª˛¥÷∆√ Ã∆˛±°¥À‹Œ¡°À
-                            ((TNS-CDKBN-KBNNUM  = 103)   AND
-                             (TNS-CDKBN-KOUBAN  =  11))       OR
-      *                     æ„≥≤º‘ª‹¿ﬂ≈˘∆˛±°¥À‹Œ¡° ÃÎ∂–ª˛¥÷ƒ∂≤·∏∫ªª°À
-                            ((TNS-CDKBN-KBNNUM  = 106)   AND
-                             (TNS-CDKBN-KOUBAN  =   5))       OR
-      *                     æ„≥≤º‘ª‹¿ﬂ≈˘∆˛±°¥À‹Œ¡° ∞ÂŒ≈∂Ë ¨°À° ÃÎ∂–ª˛¥÷ƒ∂≤·∏∫ªª°À
-      *                   ° …ΩÕ—»÷πÊ§«»ΩƒÍ…‘≤ƒ§Œ∞Ÿ°¢ªªƒÍ•≥°º•…§Úƒæ»ΩƒÍ°À
-                             (TNS-SRYCD       = "190198910"  OR
-                                                "190199010"  OR
-                                                "190199110"  OR
-                                                "190199210"  OR
-                                                "190199310"  OR
-                                                "190199410"  OR
-                                                "190199510"  OR
-                                                "190199610")
-                              CONTINUE
-                          ELSE
-                              MOVE   "190182590"
-                                         TO   WRK-EIYOU-GENSANCD
-                          END-IF
-                        END-IF
-                        IF   WRK-STYMD(1:6)  >=   "201804"
-      *                      ∞Ï»Ã…¬≈Ô∆√ Ã∆˛±°¥À‹Œ¡
-                          IF ((TNS-CDKBN-KBNNUM  = 100)   AND
-                             (TNS-CDKBN-KOUBAN  =   4))       OR
-      *                      ° ¡™°À∞Ï»Ã…¬≈Ô∆√ Ã∆˛±°¥À‹Œ¡
-                            ((TNS-CDKBN-KBNNUM  = 100)   AND
-                             (TNS-CDKBN-KOUBAN  =   5))       OR
-      *                      µﬁ¿≠¥¸∞Ï»Ã∆˛±°Œ¡° ∑Ó ø∂—ÃÎ∂–ª˛¥÷ƒ∂≤·∏∫ªª°À
-      *                      √œ∞Ë∞Ï»Ã∆˛±°Œ¡° ∑Ó ø∂—ÃÎ∂–ª˛¥÷ƒ∂≤·∏∫ªª°À
-                            ((TNS-CDKBN-KBNNUM  = 100)   AND
-                             (TNS-CDKBN-KOUBAN  =   6))       OR
-      *                      µﬁ¿≠¥¸∞Ï»Ã∆˛±°Œ¡° ÃÎ∂–ª˛¥÷∆√ Ã∆˛±°¥À‹Œ¡°À
-      *                      √œ∞Ë∞Ï»Ã∆˛±°Œ¡° ÃÎ∂–ª˛¥÷∆√ Ã∆˛±°¥À‹Œ¡°À
-                            ((TNS-CDKBN-KBNNUM  = 100)   AND
-                             (TNS-CDKBN-KOUBAN  =  11))       OR
-      *                     Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡° ∆√ Ã∆˛±°¥À‹Œ¡°À
-      *                     Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡° ∆√ Ã∆˛±°¥À‹Œ¡°À° ¿∏≥ËŒ≈Õ‹°À
-                            ((TNS-CDKBN-KBNNUM  = 101)   AND
-                             (TNS-CDKBN-KOUBAN  =   3))       OR
-      *                     ∑Î≥À…¬≈Ô∆√ Ã∆˛±°¥À‹Œ¡
-      *                     ∑Î≥À…¬≈Ô∆˛±°¥À‹Œ¡° ÃÎ∂–ª˛¥÷ƒ∂≤·∏∫ªª°À
-                            ((TNS-CDKBN-KBNNUM  = 102)   AND
-                             (TNS-CDKBN-KOUBAN  =   7))       OR
-      *                     ∑Î≥À…¬≈Ô∆˛±°¥À‹Œ¡° ÃÎ∂–ª˛¥÷∆√ Ã∆˛±°¥À‹Œ¡°À
-                            ((TNS-CDKBN-KBNNUM  = 102)   AND
-                             (TNS-CDKBN-KOUBAN  =   9))       OR
-      *                     ∑Î≥À…¬≈Ô∆˛±°¥À‹Œ¡° Ω≈æ…¥µº‘≥‰πÁ∆√ Ã∆˛±°¥À‹Œ¡°À
-                            ((TNS-CDKBN-KBNNUM  = 102)   AND
-                             (TNS-CDKBN-KOUBAN  =  10))       OR
       *                     ¿∫ø¿…¬≈Ô∆√ Ã∆˛±°¥À‹Œ¡
       *                     ¿∫ø¿…¬≈Ô∆˛±°¥À‹Œ¡° ÃÎ∂–ª˛¥÷ƒ∂≤·∏∫ªª°À
                             ((TNS-CDKBN-KBNNUM  = 103)   AND
@@ -2775,8 +2442,6 @@
       *      µﬂµﬁ°¶∫ﬂ¬≈˘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª° Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡£±°À
       *      µﬂµﬁ°¶∫ﬂ¬≈˘ªŸ±Á…¬æ≤ΩÈ¥¸≤√ªª° ∆√ƒÍ∞Ï»Ã…¬≈Ô∆˛±°Œ¡°À
       *      µﬂµﬁ°¶∫ﬂ¬≈˘ªŸ±Á…¬æ≤ΩÈ¥¸≤√ªª° √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°Œ¡°À
-      *      ∫ﬂ¬¥µº‘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª° Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡°À
-      *      ∫ﬂ¬¥µº‘ªŸ±Á…¬æ≤ΩÈ¥¸≤√ªª° √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°Œ¡°À
       *****************************************************************
        210-KYUKYU-KSN1-SEC            SECTION.
       *
@@ -3088,135 +2753,12 @@
            MOVE    "key42"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ∫ﬂ¬¥µº‘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª° Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡°À
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    WRK-STYMD           TO  PTNYUINRRK-TENNYUYMD
-                                           PTNYUINRRK-TENSTUYMD
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
-           PERFORM 910-PTNYUINRRK-SELECT-SEC
-           IF      FLG-PTNYUINRRK      =   ZERO
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key42"             TO  MCP-PATHNAME
-               PERFORM 910-PTNYUINRRK-FETCH-SEC
-               IF      FLG-PTNYUINRRK  =   ZERO
-                   INITIALIZE                      KSN-NYUINACCT-REC
-                   MOVE    SPA-HOSPNUM         TO  KSN-NACCT-HOSPNUM
-                   MOVE    SPA-PTID            TO  KSN-NACCT-PTID
-                   MOVE    PTNYUINRRK-NYUINYMD(1:6)
-                                               TO  KSN-NACCT-SRYYM
-                   MOVE    KSN-NYUINACCT-REC   TO  MCPDATA-REC
-                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                   MOVE    "key60"             TO  MCP-PATHNAME
-                   PERFORM 910-NYUINACCT-SELECT-SEC
-                   IF      FLG-NYUINACCT       =   ZERO
-                       MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-                       MOVE    "key60"         TO  MCP-PATHNAME
-                       PERFORM 910-NYUINACCT-FETCH-SEC
-                       PERFORM    UNTIL
-                                  FLG-NYUINACCT    =    1
-                           IF     PTNYUINRRK-NYUINYMD(1:6)  =
-                                                   KSN-NACCT-SRYYM
-                               MOVE   PTNYUINRRK-NYUINYMD
-                                               TO  WRK-KSN-YMD
-                               PERFORM   VARYING IDX-KSN  FROM
-                                                 WRK-KSN-DD   BY   1
-                                 UNTIL   IDX-KSN  >   31
-                                     IF  KSN-NACCT-DAY(IDX-KSN)  =   1
-                                         ADD  1  TO  WRK-KYUKYU-NISSU
-                                     END-IF
-                               END-PERFORM
-                           ELSE
-                               ADD   KSN-NACCT-ZAIKAISU
-                                               TO  WRK-KYUKYU-NISSU
-                           END-IF
-                           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-                           MOVE    "key60"         TO  MCP-PATHNAME
-                           PERFORM 910-NYUINACCT-FETCH-SEC
-                       END-PERFORM
-                   END-IF
-      *
-                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                   MOVE    "key60"             TO  MCP-PATHNAME
-                   PERFORM 990-DBCLOSE-SEC
-               END-IF
-           END-IF
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    ∫ﬂ¬¥µº‘ªŸ±Á…¬æ≤ΩÈ¥¸≤√ªª° √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°Œ¡°À
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    WRK-STYMD           TO  PTNYUINRRK-TENNYUYMD
-                                           PTNYUINRRK-TENSTUYMD
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
-           PERFORM 910-PTNYUINRRK-SELECT-SEC
-           IF      FLG-PTNYUINRRK      =   ZERO
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key42"             TO  MCP-PATHNAME
-               PERFORM 910-PTNYUINRRK-FETCH-SEC
-               IF      FLG-PTNYUINRRK  =   ZERO
-                   INITIALIZE                      KSN-NYUINACCT-REC
-                   MOVE    SPA-HOSPNUM         TO  KSN-NACCT-HOSPNUM
-                   MOVE    SPA-PTID            TO  KSN-NACCT-PTID
-                   MOVE    PTNYUINRRK-NYUINYMD(1:6)
-                                               TO  KSN-NACCT-SRYYM
-                   MOVE    KSN-NYUINACCT-REC   TO  MCPDATA-REC
-                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                   MOVE    "key61"             TO  MCP-PATHNAME
-                   PERFORM 910-NYUINACCT-SELECT-SEC
-                   IF      FLG-NYUINACCT       =   ZERO
-                       MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-                       MOVE    "key61"         TO  MCP-PATHNAME
-                       PERFORM 910-NYUINACCT-FETCH-SEC
-                       PERFORM    UNTIL
-                                  FLG-NYUINACCT    =    1
-                           IF     PTNYUINRRK-NYUINYMD(1:6)  =
-                                                   KSN-NACCT-SRYYM
-                               MOVE   PTNYUINRRK-NYUINYMD
-                                               TO  WRK-KSN-YMD
-                               PERFORM   VARYING IDX-KSN  FROM
-                                                 WRK-KSN-DD   BY   1
-                                 UNTIL   IDX-KSN  >   31
-                                     IF  KSN-NACCT-DAY(IDX-KSN)  =   1
-                                         ADD  1  TO  WRK-KYUKYU-NISSU
-                                     END-IF
-                               END-PERFORM
-                           ELSE
-                               ADD   KSN-NACCT-ZAIKAISU
-                                               TO  WRK-KYUKYU-NISSU
-                           END-IF
-                           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-                           MOVE    "key61"         TO  MCP-PATHNAME
-                           PERFORM 910-NYUINACCT-FETCH-SEC
-                       END-PERFORM
-                   END-IF
-      *
-                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                   MOVE    "key61"             TO  MCP-PATHNAME
-                   PERFORM 990-DBCLOSE-SEC
-               END-IF
-           END-IF
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key42"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
       *     DISPLAY "==  ORCSNYUACCT WRK-KYUKYU-NISSU = "
       *                 WRK-KYUKYU-NISSU
       *
            .
        210-KYUKYU-KSN1-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    µﬂµﬁ°¶∫ﬂ¬≈˘ªŸ±ÁŒ≈Õ‹…¬æ≤ΩÈ¥¸≤√ªª° ø«Œ≈ΩÍ°À§ŒªªƒÍ∫—∆¸øÙºË∆¿
@@ -5442,11 +4984,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF    TNS-SRYCD         =   "190182590"  OR
                                                "190182690"
                         MOVE    3          TO   TNS-TENSIKIBETU
-                   END-IF
-      *            ¥«∏Ó ‰Ωı≤√ªª° £±£µ∆¸∞ æÂ£≥£∞∆¸∞ ∆‚°À° æ„≥≤º‘ª‹¿ﬂ≈˘
-      *            ∆˛±°¥À‹Œ¡°À§œæÂ∏¬∆¸øÙ§Ú£≥£∞∆¸§À —ππ
-                   IF    TNS-SRYCD         =   "190205670"
-                        MOVE    30         TO   TNS-JGNCNT
                    END-IF
                    MOVE    ZERO                TO  FLG-TENSU
                ELSE
