@@ -468,6 +468,9 @@
       *    食事負担据え置き対象取得パラメタ
            COPY    "CPORCSSKJKEEP.INC".
       *
+      *    食事保険取得サブ
+           COPY    "CPORCSSKJHKN.INC".
+      *
       *    療養レセコメント取得サブ
            COPY    "CPORCSRYOCOM.INC".
       *
@@ -629,6 +632,15 @@
            MOVE    LNK-DPCNYUIN-PTID          TO  LNK-NYUINDAY-PTID
            MOVE    LNK-DPCNYUIN-SANTEIYM      TO  LNK-NYUINDAY-SANTEIYM
            CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
+                                                  SPA-AREA
+      *
+      *食事の保険組合せ取得
+           INITIALIZE                             ORCSSKJHKN-AREA
+           MOVE    LNK-DPCNYUIN-HOSPNUM       TO  LNK-SKJHKN-HOSPNUM
+           MOVE    LNK-DPCNYUIN-PTID          TO  LNK-SKJHKN-PTID
+           MOVE    LNK-DPCNYUIN-SANTEIYM      TO  LNK-SKJHKN-SANTEIYM
+           CALL    "ORCSSKJHKN"         USING     ORCSSKJHKN-AREA
+                                                  ORCSNYUINDAY-AREA
                                                   SPA-AREA
       *
       *医療区分、ＡＤＬ点数コメントの取得（平成２８年１０月診療分以降）
