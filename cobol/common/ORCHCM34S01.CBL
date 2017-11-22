@@ -1018,23 +1018,6 @@
                END-IF
            END-IF
       *
-           IF    ( HCM34S01-SANTEIYM  >= CONST-H2910 )
-               INITIALIZE              ORCSSKJHKN-AREA
-               MOVE    HCM34S01-HOSPNUM
-                                       TO  LNK-SKJHKN-HOSPNUM
-               MOVE    HCM34S01-PTID   TO  LNK-SKJHKN-PTID
-               MOVE    HCM34S01-SANTEIYM
-                                       TO  LNK-SKJHKN-SANTEIYM
-               CALL    "ORCSSKJHKN"    USING
-                                       ORCSSKJHKN-AREA
-                                       SPA-AREA
-               IF    ( LNK-SKJHKN-RC   =   ZERO )
-                   CONTINUE
-               ELSE
-                   INITIALIZE          ORCSSKJHKN-AREA
-               END-IF
-           END-IF
-      *
            INITIALIZE  ORCSNYUINDAY-AREA
            MOVE    HCM34S01-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
            MOVE    HCM34S01-PTID       TO  LNK-NYUINDAY-PTID
@@ -1060,6 +1043,24 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( HCM34S01-SANTEIYM  >= CONST-H2910 )
+               INITIALIZE              ORCSSKJHKN-AREA
+               MOVE    HCM34S01-HOSPNUM
+                                       TO  LNK-SKJHKN-HOSPNUM
+               MOVE    HCM34S01-PTID   TO  LNK-SKJHKN-PTID
+               MOVE    HCM34S01-SANTEIYM
+                                       TO  LNK-SKJHKN-SANTEIYM
+               CALL    "ORCSSKJHKN"    USING
+                                       ORCSSKJHKN-AREA
+                                       ORCSNYUINDAY-AREA
+                                       SPA-AREA
+               IF    ( LNK-SKJHKN-RC   =   ZERO )
+                   CONTINUE
+               ELSE
+                   INITIALIZE          ORCSSKJHKN-AREA
+               END-IF
+           END-IF
       *
            PERFORM 1501-SHOKUJI-HOKEN-SEC
       *
@@ -1228,38 +1229,6 @@
       *****************************************************************
        1501-SHOKUJI-HOKEN-SEC          SECTION.
       *
-           DISPLAY "HKNCOMBI," HCM34S01-HKNCOMBI ","
-                   FLG-NYUINDAY (01) ","
-                   FLG-NYUINDAY (02) ","
-                   FLG-NYUINDAY (03) ","
-                   FLG-NYUINDAY (04) ","
-                   FLG-NYUINDAY (05) ","
-                   FLG-NYUINDAY (06) ","
-                   FLG-NYUINDAY (07) ","
-                   FLG-NYUINDAY (08) ","
-                   FLG-NYUINDAY (09) ","
-                   FLG-NYUINDAY (10) ","
-                   FLG-NYUINDAY (11) ","
-                   FLG-NYUINDAY (12) ","
-                   FLG-NYUINDAY (13) ","
-                   FLG-NYUINDAY (14) ","
-                   FLG-NYUINDAY (15) ","
-                   FLG-NYUINDAY (16) ","
-                   FLG-NYUINDAY (17) ","
-                   FLG-NYUINDAY (18) ","
-                   FLG-NYUINDAY (19) ","
-                   FLG-NYUINDAY (20) ","
-                   FLG-NYUINDAY (21) ","
-                   FLG-NYUINDAY (22) ","
-                   FLG-NYUINDAY (23) ","
-                   FLG-NYUINDAY (24) ","
-                   FLG-NYUINDAY (25) ","
-                   FLG-NYUINDAY (26) ","
-                   FLG-NYUINDAY (27) ","
-                   FLG-NYUINDAY (28) ","
-                   FLG-NYUINDAY (29) ","
-                   FLG-NYUINDAY (30) ","
-                   FLG-NYUINDAY (31) ","
            PERFORM VARYING     IDXD    FROM    WRK-SKYSTDD BY  1
                    UNTIL     ( IDXD    >       WRK-SKYEDDD )
       *

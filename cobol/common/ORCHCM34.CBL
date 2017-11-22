@@ -5821,6 +5821,7 @@
                MOVE    ORCHCM34-SRYYM  TO  LNK-SKJHKN-SANTEIYM
                CALL    "ORCSSKJHKN"    USING
                                        ORCSSKJHKN-AREA
+                                       ORCSNYUINDAY-AREA
                                        SPA-AREA
                IF    ( LNK-SKJHKN-RC   =   ZERO )
                    PERFORM VARYING IDX25   FROM    ORCHCM34-STDAY BY 1

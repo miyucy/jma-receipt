@@ -948,23 +948,6 @@
                END-EVALUATE
            END-IF
       *
-           IF    ( HCM34S01-SANTEIYM  >= CONST-H2910 )
-               INITIALIZE              ORCSSKJHKN-AREA
-               MOVE    HCM34S01-HOSPNUM
-                                       TO  LNK-SKJHKN-HOSPNUM
-               MOVE    HCM34S01-PTID   TO  LNK-SKJHKN-PTID
-               MOVE    HCM34S01-SANTEIYM
-                                       TO  LNK-SKJHKN-SANTEIYM
-               CALL    "ORCSSKJHKN"    USING
-                                       ORCSSKJHKN-AREA
-                                       SPA-AREA
-               IF    ( LNK-SKJHKN-RC   =   ZERO )
-                   CONTINUE
-               ELSE
-                   INITIALIZE          ORCSSKJHKN-AREA
-               END-IF
-           END-IF
-      *
            INITIALIZE  ORCSNYUINDAY-AREA
            MOVE    HCM34S01-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
            MOVE    HCM34S01-PTID       TO  LNK-NYUINDAY-PTID
@@ -990,6 +973,24 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( HCM34S01-SANTEIYM  >= CONST-H2910 )
+               INITIALIZE              ORCSSKJHKN-AREA
+               MOVE    HCM34S01-HOSPNUM
+                                       TO  LNK-SKJHKN-HOSPNUM
+               MOVE    HCM34S01-PTID   TO  LNK-SKJHKN-PTID
+               MOVE    HCM34S01-SANTEIYM
+                                       TO  LNK-SKJHKN-SANTEIYM
+               CALL    "ORCSSKJHKN"    USING
+                                       ORCSSKJHKN-AREA
+                                       ORCSNYUINDAY-AREA
+                                       SPA-AREA
+               IF    ( LNK-SKJHKN-RC   =   ZERO )
+                   CONTINUE
+               ELSE
+                   INITIALIZE          ORCSSKJHKN-AREA
+               END-IF
+           END-IF
       *
            PERFORM 1501-SHOKUJI-HOKEN-SEC
       *
