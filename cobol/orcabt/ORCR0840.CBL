@@ -520,6 +520,7 @@
            03  IDX26                                   PIC 9(02).
            03  IDX30                                   PIC 9(03).
            03  IDX31                                   PIC 9(03).
+           03  IDX35                                   PIC 9(03).
            03  IDXA                                    PIC 9(01).
            03  IDXB                                    PIC 9(03).
            03  IDY                                     PIC 9(03).
@@ -1687,6 +1688,8 @@
            COPY    "CPORCSSKJKEEP.INC".
       *    入院料と異なる食事算定保険組み合わせ取得サブ
            COPY    "CPORCSSKJHKN.INC".
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -9096,24 +9099,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
              END-IF
       *
       *      食事負担据え置き対象取得
-             IF     RECE82-SRYYM         >=  "201604"
-               IF   RECE82-HKNKBN  =  "6"
-                 INITIALIZE                   ORCSSKJKEEP-AREA
-                 MOVE    RECE82-HOSPNUM   TO  LNK-SKJKEEP-HOSPNUM
-                 MOVE    RECE82-PTID      TO  LNK-SKJKEEP-PTID
-                 MOVE    RECE82-SRYYM     TO  LNK-SKJKEEP-SANTEIYM
-                 CALL    "ORCSSKJKEEP"        USING
-                                              ORCSSKJKEEP-AREA
-                                              SPA-AREA
-                 IF      LNK-SKJKEEP-RC   =   ZERO
-                   PERFORM  VARYING  IDX30  FROM  1  BY  1
-                             UNTIL   IDX30   >   31
-                     MOVE  LNK-SKJKEEP-KBN(IDX30)
-                                 TO  WRK-SKJKEEP-KBN(IDX30)
-                   END-PERFORM
-                   MOVE    LNK-SKJKEEP-SEI-NYUINYMD
-                                 TO  RECE82-SEISIN-NYUINYMD
-                 END-IF
+             IF   RECE82-HKNKBN  =  "6"
+               INITIALIZE                   ORCSSKJKEEP-AREA
+               MOVE    RECE82-HOSPNUM   TO  LNK-SKJKEEP-HOSPNUM
+               MOVE    RECE82-PTID      TO  LNK-SKJKEEP-PTID
+               MOVE    RECE82-SRYYM     TO  LNK-SKJKEEP-SANTEIYM
+               CALL    "ORCSSKJKEEP"        USING
+                                            ORCSSKJKEEP-AREA
+                                            SPA-AREA
+               IF      LNK-SKJKEEP-RC   =   ZERO
+                 PERFORM  VARYING  IDX30  FROM  1  BY  1
+                           UNTIL   IDX30   >   31
+                   MOVE  LNK-SKJKEEP-KBN(IDX30)
+                               TO  WRK-SKJKEEP-KBN(IDX30)
+                 END-PERFORM
+                 MOVE    LNK-SKJKEEP-SEI-NYUINYMD
+                               TO  RECE82-SEISIN-NYUINYMD
                END-IF
              END-IF
            ELSE
@@ -9186,11 +9187,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
        230A-SKJHKN-GET-SEC                SECTION.
       *
            IF   RECE82-SRYYM  >=  "201710"
+             INITIALIZE                   ORCSNYUINDAY-AREA
+             PERFORM    VARYING   IDX35   FROM   1   BY   1
+                         UNTIL    IDX35    >    31
+               MOVE  RECE82-DOUJITSU-HKNCOMBI(IDX35)
+                           TO  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX35)
+             END-PERFORM
+      *
              INITIALIZE                   ORCSSKJHKN-AREA
              MOVE    RECE82-HOSPNUM   TO  LNK-SKJHKN-HOSPNUM
              MOVE    RECE82-PTID      TO  LNK-SKJHKN-PTID
              MOVE    RECE82-SRYYM     TO  LNK-SKJHKN-SANTEIYM
              CALL    "ORCSSKJHKN"     USING   ORCSSKJHKN-AREA
+                                              ORCSNYUINDAY-AREA
                                               SPA-AREA
              IF      LNK-SKJHKN-RC    =   ZERO
                 PERFORM    VARYING   IDY   FROM   1   BY   1

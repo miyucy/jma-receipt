@@ -301,6 +301,7 @@
            03  IDX26               PIC 9(02).
            03  IDX30               PIC 9(03).
            03  IDX31               PIC 9(03).
+           03  IDX35               PIC 9(03).
            03  IDXA                PIC 9(01).
            03  IDXB                PIC 9(03).
            03  IDXX                PIC 9(02).
@@ -1233,6 +1234,8 @@
            COPY    "CPORCSNYULIFE2.INC".
       *    入院料と異なる食事算定保険組み合わせ取得サブ
            COPY    "CPORCSSKJHKN.INC".
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -5394,11 +5397,19 @@
        210225-SKJHKN-GET-SEC                SECTION.
       *
            IF   RECE200-SRYYM  >=  "201710"
+             INITIALIZE                    ORCSNYUINDAY-AREA
+             PERFORM    VARYING   IDX35   FROM   1   BY   1
+                         UNTIL    IDX35    >    31
+               MOVE  RECE200-DOUJITSU-HKNCOMBI(IDX35)
+                           TO  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX35)
+             END-PERFORM
+      *
              INITIALIZE                    ORCSSKJHKN-AREA
              MOVE    RECE200-HOSPNUM   TO  LNK-SKJHKN-HOSPNUM
              MOVE    RECE200-PTID      TO  LNK-SKJHKN-PTID
              MOVE    RECE200-SRYYM     TO  LNK-SKJHKN-SANTEIYM
              CALL    "ORCSSKJHKN"      USING   ORCSSKJHKN-AREA
+                                               ORCSNYUINDAY-AREA
                                                SPA-AREA
              IF      LNK-SKJHKN-RC     =   ZERO
                 PERFORM    VARYING   IDY   FROM   1   BY   1

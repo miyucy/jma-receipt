@@ -1039,6 +1039,7 @@
            03  IDX32                                   PIC 9(03).
            03  IDX33                                   PIC 9(02).
            03  IDX34                                   PIC 9(03).
+           03  IDX35                                   PIC 9(03).
            03  IDXA                                    PIC 9(01).
            03  IDXB                                    PIC 9(03).
            03  IDXX                                    PIC 9(02).
@@ -2758,6 +2759,8 @@
            COPY    "CPORCSSKJKEEP.INC".
       *    入院料と異なる食事算定保険組み合わせ取得サブ
            COPY    "CPORCSSKJHKN.INC".
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -12636,27 +12639,25 @@
              END-IF
       *
       *      食事負担据え置き対象取得
-             IF     RECE62-SRYYM         >=  "201604"
-               IF  (RECE62-HKNNUM(1:2) =  "98"  OR "90"  OR "91" )
-               OR  (RECE62-HKNNUM      =  "068" OR "069" OR "040")
-                 CONTINUE
-               ELSE
-                 INITIALIZE                   ORCSSKJKEEP-AREA
-                 MOVE    RECE62-HOSPNUM   TO  LNK-SKJKEEP-HOSPNUM
-                 MOVE    RECE62-PTID      TO  LNK-SKJKEEP-PTID
-                 MOVE    RECE62-SRYYM     TO  LNK-SKJKEEP-SANTEIYM
-                 CALL    "ORCSSKJKEEP"        USING
-                                              ORCSSKJKEEP-AREA
-                                              SPA-AREA
-                 IF      LNK-SKJKEEP-RC   =   ZERO
-                   PERFORM  VARYING  IDX30  FROM  1  BY  1
-                             UNTIL   IDX30   >   31
-                     MOVE  LNK-SKJKEEP-KBN(IDX30)
-                                 TO  WRK-SKJKEEP-KBN(IDX30)
-                   END-PERFORM
-                   MOVE    LNK-SKJKEEP-SEI-NYUINYMD
-                                 TO  RECE62-SEISIN-NYUINYMD
-                 END-IF
+             IF  (RECE62-HKNNUM(1:2) =  "98"  OR "90"  OR "91" )
+             OR  (RECE62-HKNNUM      =  "068" OR "069" OR "040")
+               CONTINUE
+             ELSE
+               INITIALIZE                   ORCSSKJKEEP-AREA
+               MOVE    RECE62-HOSPNUM   TO  LNK-SKJKEEP-HOSPNUM
+               MOVE    RECE62-PTID      TO  LNK-SKJKEEP-PTID
+               MOVE    RECE62-SRYYM     TO  LNK-SKJKEEP-SANTEIYM
+               CALL    "ORCSSKJKEEP"        USING
+                                            ORCSSKJKEEP-AREA
+                                            SPA-AREA
+               IF      LNK-SKJKEEP-RC   =   ZERO
+                 PERFORM  VARYING  IDX30  FROM  1  BY  1
+                           UNTIL   IDX30   >   31
+                   MOVE  LNK-SKJKEEP-KBN(IDX30)
+                               TO  WRK-SKJKEEP-KBN(IDX30)
+                 END-PERFORM
+                 MOVE    LNK-SKJKEEP-SEI-NYUINYMD
+                               TO  RECE62-SEISIN-NYUINYMD
                END-IF
              END-IF
            ELSE
@@ -14155,11 +14156,19 @@
        210225-SKJHKN-GET-SEC                SECTION.
       *
            IF   RECE62-SRYYM  >=  "201710"
+             INITIALIZE                   ORCSNYUINDAY-AREA
+             PERFORM    VARYING   IDX35   FROM   1   BY   1
+                         UNTIL    IDX35    >    31
+               MOVE  RECE62-DOUJITSU-HKNCOMBI(IDX35)
+                           TO  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX35)
+             END-PERFORM
+      *
              INITIALIZE                   ORCSSKJHKN-AREA
              MOVE    RECE62-HOSPNUM   TO  LNK-SKJHKN-HOSPNUM
              MOVE    RECE62-PTID      TO  LNK-SKJHKN-PTID
              MOVE    RECE62-SRYYM     TO  LNK-SKJHKN-SANTEIYM
              CALL    "ORCSSKJHKN"     USING   ORCSSKJHKN-AREA
+                                              ORCSNYUINDAY-AREA
                                               SPA-AREA
              IF      LNK-SKJHKN-RC    =   ZERO
                 PERFORM    VARYING   IDY   FROM   1   BY   1

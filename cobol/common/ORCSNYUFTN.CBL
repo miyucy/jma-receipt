@@ -1442,6 +1442,7 @@
            END-PERFORM.
       *
       *    入院料未算定日等の取得
+      *    入院料と異なる食事算定保険組み合わせ取得
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL    (IDX            >     2)
                                 OR     (WRK-SKYYM(IDX) =  SPACE)
@@ -1468,19 +1469,13 @@
                  END-PERFORM
               END-IF
       *
-           END-PERFORM.
-      *
-      *    入院料と異なる食事算定保険組み合わせ取得
-           PERFORM    VARYING   IDX    FROM   1   BY   1
-                              UNTIL    (IDX            >     2)
-                                OR     (WRK-SKYYM(IDX) =  SPACE)
-      *
               IF   WRK-SKYYM(IDX)  >=  "201710"
                 INITIALIZE                   ORCSSKJHKN-AREA
                 MOVE    LNK-S02-HOSPNUM  TO  LNK-SKJHKN-HOSPNUM
                 MOVE    LNK-S02-PTID     TO  LNK-SKJHKN-PTID
                 MOVE    WRK-SKYYM(IDX)   TO  LNK-SKJHKN-SANTEIYM
                 CALL    "ORCSSKJHKN"     USING   ORCSSKJHKN-AREA
+                                                 ORCSNYUINDAY-AREA
                                                  SPA-AREA
                 IF      LNK-SKJHKN-RC    =   ZERO
                    PERFORM    VARYING   IDY   FROM   1   BY   1
