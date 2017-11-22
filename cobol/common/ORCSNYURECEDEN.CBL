@@ -4237,6 +4237,7 @@
            MOVE    LNK-NYURECEDEN-PTID        TO  LNK-SKJHKN-PTID
            MOVE    LNK-NYURECEDEN-SANTEIYM    TO  LNK-SKJHKN-SANTEIYM
            CALL    "ORCSSKJHKN"         USING     ORCSSKJHKN-AREA
+                                                  ORCSNYUINDAY-AREA
                                                   SPA-AREA
       *
            MOVE    SPACE                      TO  WRK-SAIGAI-AREA2

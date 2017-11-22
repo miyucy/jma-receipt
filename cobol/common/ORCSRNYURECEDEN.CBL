@@ -608,6 +608,7 @@
            MOVE    LNK-RNYURECEDEN-PTID       TO  LNK-SKJHKN-PTID
            MOVE    LNK-RNYURECEDEN-SANTEIYM   TO  LNK-SKJHKN-SANTEIYM
            CALL    "ORCSSKJHKN"         USING     ORCSSKJHKN-AREA
+                                                  ORCSNYUINDAY-AREA
                                                   SPA-AREA
       *
       *労災から労災への同日再入院で保険組合せが変更とならない場合は

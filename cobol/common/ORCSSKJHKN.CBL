@@ -144,8 +144,6 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
-           COPY    "CPORCSNYUINDAY.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -153,12 +151,15 @@
         LINKAGE                     SECTION.
       *
            COPY    "CPORCSSKJHKN.INC".
+      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
            ORCSSKJHKN-AREA
+           ORCSNYUINDAY-AREA
            SPA-AREA
            .
       *
@@ -282,12 +283,12 @@
            END-IF
       *
       *    Æ±ÆüºÆÆþ±¡Æü¤ÎÊÝ¸±ÁÈ¹ç¤»¼èÆÀ
-           INITIALIZE                         ORCSNYUINDAY-AREA
-           MOVE    LNK-SKJHKN-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    LNK-SKJHKN-PTID        TO  LNK-NYUINDAY-PTID
-           MOVE    LNK-SKJHKN-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
-           CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
-                                                  SPA-AREA
+      **     INITIALIZE                         ORCSNYUINDAY-AREA
+      **     MOVE    LNK-SKJHKN-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
+      **     MOVE    LNK-SKJHKN-PTID        TO  LNK-NYUINDAY-PTID
+      **     MOVE    LNK-SKJHKN-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
+      **     CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
+      **                                            SPA-AREA
       **     PERFORM    VARYING IDX   FROM   1   BY  1
       **                UNTIL IDX   >   31
       **       DISPLAY "IDX = " IDX
