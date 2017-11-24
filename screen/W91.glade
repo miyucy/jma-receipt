@@ -667,7 +667,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>※corn起動によるデータ作成</label>
+        <label>※cron起動によるデータ作成</label>
         <justify>GTK_JUSTIFY_RIGHT</justify>
         <wrap>False</wrap>
       </widget>
