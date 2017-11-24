@@ -1034,6 +1034,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(05.00.02)--ADD-START---
                MOVE    WIDGET-NORMAL       TO  W91-COOPBASE2-STATE
                MOVE    WIDGET-NORMAL       TO  W91-LABEL3-STATE
+               MOVE    WIDGET-NORMAL       TO  W91-LABEL4-STATE
       *----(05.00.02)--ADD-END-----
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  W91-CHKSYREC-STATE
@@ -1048,6 +1049,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(05.00.02)--ADD-START---
                MOVE    WIDGET-INSENSITIVE  TO  W91-COOPBASE2-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W91-LABEL3-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  W91-LABEL4-STATE
       *----(05.00.02)--ADD-END-----
            END-IF
       *

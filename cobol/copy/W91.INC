@@ -41,3 +41,5 @@
                         PIC X(20)   OCCURS  10 TIMES.
               04  W91-LABEL3.
                 05  W91-LABEL3-STATE     PIC S9(9)   BINARY.
+              04  W91-LABEL4.
+                05  W91-LABEL4-STATE     PIC S9(9)   BINARY.
