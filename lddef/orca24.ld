@@ -45,5 +45,10 @@ data	{
 	};
 };
 
+db "xml2" {
+ fm_karte_no3;
+};
+
+
 #include "orcadb.inc"
 #include "orcadbh.inc"
