@@ -370,8 +370,7 @@
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    "ORAPI052BR5V3"     TO  JOB-PGID
-           MOVE    "患者病名データ移行"
-                                       TO  JOB-SHELLMSG
+           MOVE    "患者病名情報返却"  TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    患者番号構成管理情報
@@ -430,7 +429,7 @@
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  WRK-BASE-MONTH
       *
-               DISPLAY "SRYYM=" WRK-SRYYM
+      *        DISPLAY "SRYYM=" WRK-SRYYM
       *
                INITIALIZE                      PTBYOMEI-REC
                MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
@@ -850,8 +849,8 @@
            IF      IDY                 =   ZERO
                CONTINUE
            ELSE
-               IF      IDY                 >   200
-      *            200件以上あり
+               IF      IDY                 >   50
+      *            50件以上あり
                    MOVE    "True"             TO
                                            PTBYOLST-INFORMATION-OVERFLOW
                                                                    (IDX)
@@ -954,7 +953,7 @@
                                        MCPAREA
                                        XMLDATA-REC
       *
-           MOVE    "patient_disease_all"
+           MOVE    "Patient_Disease_All"
                                    TO  XMLDATA-RECORDNAME
            MOVE    "XMLWRITE"      TO  MCP-FUNC
            CALL    "MONFUNC"           USING

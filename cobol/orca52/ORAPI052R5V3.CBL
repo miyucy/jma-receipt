@@ -561,7 +561,7 @@
                    MOVE    "E16"               TO  WRK-KEICD
                ELSE
       *??
-                DISPLAY "PTBYO-TENKIYMD=" PTBYO-TENKIYMD
+                   DISPLAY "PTBYO-TENKIYMD=" PTBYO-TENKIYMD
                    MOVE    SPACE               TO  STS-AREA-DAY
                    INITIALIZE                      STS-AREA-DAY
                    MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -1046,7 +1046,7 @@
                MOVE    "オルカＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "E11"
-               MOVE    "基準日が暦日ではありません。"
+               MOVE    "基準月が暦日ではありません。"
                                                TO  WRK-ERRMSG
            WHEN    "E16"
                MOVE
