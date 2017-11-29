@@ -55,9 +55,9 @@ db "xml2" {
  xml_receipt_printv3res;
 };
 
-#db "monblob" {
-# monblob;
-#};
+db "monblob" {
+ monblob;
+};
 
 db	{
 	tbl_btpara;

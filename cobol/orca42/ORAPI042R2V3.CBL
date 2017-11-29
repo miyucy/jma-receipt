@@ -176,6 +176,8 @@
       *
            COPY    "CPORCSGETTEMP.INC".
       *
+           COPY    "CPORCSTEMPDIR.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1450,20 +1452,10 @@
       *
            MOVE    SPA-TERMID      TO  WRK-SPA-TERMID
       *
-      *    一時ディレクトリのルートディレクトリ取得
-           ACCEPT  WRK-TEMPDIR-ROOT
-                               FROM    ENVIRONMENT "MCP_TEMPDIR_ROOT"
-      *    一時ディレクトリ名組み立て
-           STRING  WRK-TEMPDIR-ROOT    DELIMITED   BY  SPACE
-                   "/"                 DELIMITED   BY  SIZE
-                   SPA-TERMID          DELIMITED   BY  SPACE
-                   LOW-VALUE           DELIMITED   BY  SIZE
-                                       INTO        MCP-TEMPDIR
-           END-STRING
-      *
-      *    環境変数［MCP_TEMPDIR］を生成（MCP-TEMPDIRの値を設定）
-           SET ENVIRONMENT "MCP_TEMPDIR"
-                                   TO  MCP-TEMPDIR
+      *    一時ディレクトリ作成
+           INITIALIZE                  STEMPDIR-AREA
+           CALL    "ORCSTEMPDIR"   USING
+                                       STEMPDIR-AREA
       *
            MOVE    WRK-SPA-TERMID  TO  SPA-TERMID
       *
