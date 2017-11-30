@@ -214,6 +214,7 @@
       *                                     処理スクリプトの存在チェック
       *                                     を行わない
       *  04.09.03    NACL-藤原    17/08/01  ＨＡＯＲＩ対応
+      *  05.00.00    NACL-森脇    17/11/30  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -284,6 +285,10 @@
            03  FLG-RECEDEN-201203-CHK
                                    PIC 9(01).
            03  FLG-SYUKA-CHK      PIC 9(01).
+      *----(05.00.00)--ADD-START---
+      *    クライアント印刷有
+           03  FLG-CLIENT-OK       PIC 9(01).
+      *----(05.00.00)--ADD-END-----
       *
       *    添字領域
        01  IDX-AREA.
@@ -598,6 +603,10 @@
       *
       *    ユーザー情報取得
            COPY    "CPORCSLDUSER.INC".
+      *----(05.00.00)--ADD-START---
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -648,6 +657,12 @@
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
+      *----(05.00.00)--ADD-START---
+      *    クライアント印刷
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
+           END-IF
+      *----(05.00.00)--ADD-END-----
       *
            MOVE    SPA-T01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -2365,6 +2380,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
        3202-PRINT-EXT.
            EXIT. 
       *
+      *----(05.00.00)--ADD-START---
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           IF     (SPA-CLIENT-PRT-FLG   =   1  )
+      *    印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
+           END-IF
+      *
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
+      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    プレビュー処理
       *****************************************************************
@@ -2791,9 +2823,17 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "3"             TO  SHELLTBL-ARG17
       **       WHEN    "NO"
       **           MOVE    "3"             TO  SHELLTBL-ARG17
+      *----(05.00.00)--ADD-START---
                WHEN    "OK"
-                   MOVE    "2"             TO  SHELLTBL-ARG17
+                   IF      SPA-CLIENT-PRT-FLG  =  2
+                       MOVE    "5"         TO  SHELLTBL-ARG17
+                   ELSE
+                       MOVE    "2"         TO  SHELLTBL-ARG17
+                   END-IF
                END-EVALUATE
+               MOVE    SPA-CLIENT-SHOWDIALOG
+                                           TO  SHELLTBL-ARG22
+      *----(05.00.00)--ADD-END-----
 grpsys         MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
@@ -4629,9 +4669,17 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "3"             TO  SHELLTBL-ARG17
       **       WHEN    "NO"
       **           MOVE    "3"             TO  SHELLTBL-ARG17
+      *----(05.00.00)--ADD-START---
                WHEN    "OK"
-                   MOVE    "2"             TO  SHELLTBL-ARG17
+                   IF      SPA-CLIENT-PRT-FLG  =  2
+                       MOVE    "5"         TO  SHELLTBL-ARG17
+                   ELSE
+                       MOVE    "2"         TO  SHELLTBL-ARG17
+                   END-IF
                END-EVALUATE
+               MOVE    SPA-CLIENT-SHOWDIALOG
+                                           TO  SHELLTBL-ARG22
+      *----(05.00.00)--ADD-END-----
 grpsys         MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
@@ -5153,9 +5201,17 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "3"             TO  SHELLTBL-ARG17
       **       WHEN    "NO"
       **           MOVE    "3"             TO  SHELLTBL-ARG17
+      *----(05.00.00)--ADD-START---
                WHEN    "OK"
-                   MOVE    "2"             TO  SHELLTBL-ARG17
+                   IF      SPA-CLIENT-PRT-FLG  =  2
+                       MOVE    "5"         TO  SHELLTBL-ARG17
+                   ELSE
+                       MOVE    "2"         TO  SHELLTBL-ARG17
+                   END-IF
                END-EVALUATE
+               MOVE    SPA-CLIENT-SHOWDIALOG
+                                           TO  SHELLTBL-ARG22
+      *----(05.00.00)--ADD-END-----
 grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
