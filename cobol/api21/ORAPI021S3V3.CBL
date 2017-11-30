@@ -511,7 +511,7 @@
       *
            IF      WRK-ERRCD           =   "99"
       *        •Ê°º•∂£…£ƒ•®•È°º
-               MOVE   404                  TO  APILST04-HTTPSTATUS
+               MOVE   404                  TO  APILST05-HTTPSTATUS
            ELSE
       *         ÷µ—ŒŒ∞Ë ‘Ω∏
                PERFORM 300-APTXMLMAKE-SEC
