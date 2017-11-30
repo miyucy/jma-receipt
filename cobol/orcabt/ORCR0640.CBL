@@ -12655,6 +12655,12 @@
                            UNTIL   IDX30   >   31
                    MOVE  LNK-SKJKEEP-KBN(IDX30)
                                TO  WRK-SKJKEEP-KBN(IDX30)
+                   IF    WRK-SKJKEEP-KBN(IDX30) = "2"
+                   AND   RECE62-TEISYOTOKU3-SKJKBN(IDX30)
+                                            NOT =  SPACE
+                   AND   RECE62-SRYYM          >= "201710"
+                      MOVE  SPACE   TO  WRK-SKJKEEP-KBN(IDX30)
+                   END-IF
                  END-PERFORM
                  MOVE    LNK-SKJKEEP-SEI-NYUINYMD
                                TO  RECE62-SEISIN-NYUINYMD

@@ -2219,6 +2219,11 @@
                      END-PERFORM
                    END-IF
                 END-IF
+                PERFORM VARYING SYOTOKU-IDX9 FROM 1 BY 1
+                         UNTIL  SYOTOKU-IDX9   > 31
+                   MOVE  LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX9)
+                            TO  RECE62-TEISYOTOKU3-SKJKBN(SYOTOKU-IDX9)
+                END-PERFORM
            END-IF
       *
            .

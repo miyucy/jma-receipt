@@ -432,6 +432,7 @@
            03  FLG-NYUINACT                            PIC 9(01).
            03  FLG-ARI                                 PIC 9(01).
            03  FLG-ARI2                                PIC 9(01).
+           03  FLG-ARI3                                PIC 9(01).
            03  FLG-DAY21                               PIC 9(01).
            03  FLG-DAY24                               PIC 9(01).
            03  FLG-TENTEKI                             PIC 9(01).
@@ -1690,6 +1691,8 @@
            COPY    "CPORCSSKJHKN.INC".
       *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
            COPY    "CPORCSNYUINDAY.INC".
+      *    ´µ¼Ô½êÆÀ¾ðÊóÊÔ½¸¥µ¥Ö
+           COPY    "CPORCSSYOTOKU.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -9108,13 +9111,36 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                             ORCSSKJKEEP-AREA
                                             SPA-AREA
                IF      LNK-SKJKEEP-RC   =   ZERO
+                 MOVE   ZERO   TO  FLG-ARI3
                  PERFORM  VARYING  IDX30  FROM  1  BY  1
                            UNTIL   IDX30   >   31
                    MOVE  LNK-SKJKEEP-KBN(IDX30)
                                TO  WRK-SKJKEEP-KBN(IDX30)
+                   IF    WRK-SKJKEEP-KBN(IDX30) = "2"
+                   AND   RECE82-SRYYM          >= "201710"
+                      MOVE  1  TO  FLG-ARI3
+                   END-IF
                  END-PERFORM
                  MOVE    LNK-SKJKEEP-SEI-NYUINYMD
                                TO  RECE82-SEISIN-NYUINYMD
+                 IF   FLG-ARI3  =  1
+                   INITIALIZE                ORCSSYOTOKUAREA
+                   MOVE  RECE82-HOSPNUM  TO  LNK-SYOTOKU-HOSPNUM
+                   MOVE  RECE82-PTID     TO  LNK-SYOTOKU-PTID
+                   MOVE  RECE82-SRYYM    TO  LNK-SYOTOKU-SRYYM
+                   MOVE  "1"             TO  LNK-SYOTOKU-SKJCHKFLG
+                   CALL  "ORCSSYOTOKU"   USING  ORCSSYOTOKUAREA
+                                                SPA-AREA
+                   IF    LNK-SYOTOKU-RC  =   ZERO
+                     PERFORM  VARYING  IDX30  FROM  1  BY  1
+                               UNTIL   IDX30   >   31
+                       IF  LNK-SYOTOKU-SKJKBN(IDX30) NOT = SPACE
+                       AND WRK-SKJKEEP-KBN(IDX30)        = "2"
+                         MOVE  SPACE   TO  WRK-SKJKEEP-KBN(IDX30)
+                       END-IF
+                     END-PERFORM
+                   END-IF
+                 END-IF
                END-IF
              END-IF
            ELSE
