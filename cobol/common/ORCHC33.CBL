@@ -2531,6 +2531,8 @@
                                    TO  FMKARTE3-SRYYM
       *
            IF  ( ORCHC33-PRINT-FLG =   1 )
+               MOVE    "2"         TO  FMKARTE3-HAKKOKBN
+           ELSE
                MOVE    "1"         TO  FMKARTE3-HAKKOKBN
            END-IF
       *
