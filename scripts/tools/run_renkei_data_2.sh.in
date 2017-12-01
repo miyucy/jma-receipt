@@ -23,6 +23,7 @@ if ! [ -d $2 ]; then
   exit 1
 fi
 
+RUNDATE=$(date  '+%Y%m%d%H%M%S')
 FLG_TEMPDIR_GEN=0
 if [ -z "${MCP_TEMPDIR}" ]; then
   export MCP_TEMPDIR=/tmp/orca_root/$(uuidgen)
@@ -31,18 +32,32 @@ if [ -z "${MCP_TEMPDIR}" ]; then
 fi
 
 delete_tempdir(){
-  if [ ${FLG_TEMPDIR_GEN} -eq 1 ] ; then
+  if [ ${FLG_TEMPDIR_GEN} -eq 1 ]; then
      rm -R ${MCP_TEMPDIR}
   fi
 }
 
 create_pgpass
 
-# システム管理連携基盤情報よりデータ作成設定の確認
 HOSPNUM=`printf "%02d" $1`
+RNKERRFS=${HOSPNUM}RENKEI-${RUNDATE}.$$
+RNKERRFL=${MCP_TEMPDIR}/${RNKERRFS}
+
+if [ -e ${RNKERRFL} ]; then
+  rm ${RNKERRFL}
+fi
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBCHECKREDL -parameter "${RNKERRFS}"
+if [ -e ${RNKERRFL} ]; then
+  cat ${RNKERRFL}
+  delete_tempdir 
+  delete_pgpass
+  exit 0
+fi
+
+# システム管理連携基盤情報よりデータ作成設定の確認
 JOBID="0000001"
 SHELLID="RECEPT1"
-RESULTF=${MCP_TEMPDIR}/orcbjobchk1
+RESULTF=${MCP_TEMPDIR}/${HOSPNUM}orcbjobchk1-${RUNDATE}.$$
 
 # 当日受診設定の確認
 RENKEI2=0
