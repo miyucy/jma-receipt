@@ -556,6 +556,7 @@
            MOVE    WRK-HEN-TIME        TO  MDCRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
+           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
