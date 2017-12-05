@@ -3780,8 +3780,8 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                GO  TO  4109-SRYYMKBN-CHK-EXT
            END-IF
       *
-           IF      SPA-GMN-SRYYMKBN   =   SPACE
-               CONTINUE
+           IF      SPA-GMN-SRYYMKBN    =   SPACE
+               MOVE    SPACE               TO  SPA-GMN-SRYYMKBN-G
            ELSE
                MOVE    SPACE               TO  SPA-GMN-SRYYMKBNNM
                PERFORM VARYING IDX     FROM    1   BY  1

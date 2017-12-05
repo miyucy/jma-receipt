@@ -913,8 +913,12 @@
                                        =   "00"
                CONTINUE
            ELSE
-               IF    ( RECEDMAKEQ-START-MONTH  =   SPACE ) 
-               AND   ( RECEDMAKEQ-END-MONTH    =   SPACE ) 
+             IF      RECEDMAKEQ-SUBMISSION-MODE
+                                             =   "05"
+               CONTINUE
+             ELSE
+               IF    ( RECEDMAKEQ-START-MONTH  =   SPACE )
+               AND   ( RECEDMAKEQ-END-MONTH    =   SPACE )
                    IF      SPA-GMN-SRYYMKBN-MAX    >   ZERO
                        MOVE    "E22"           TO  WRK-ERRCD
                        GO  TO  2001-INPUT-CHK-EXT
@@ -986,6 +990,7 @@
                        END-IF
                    END-IF
                END-IF
+             END-IF
            END-IF
       *
       *    直接請求する保険者
@@ -993,6 +998,10 @@
                                        =   "00"
                CONTINUE
            ELSE
+             IF      RECEDMAKEQ-SUBMISSION-MODE
+                                             =   "05"
+               CONTINUE
+             ELSE
                EVALUATE    RECEDMAKEQ-HKNJANUM
                    WHEN    SPACE
                        IF      SPA-GMN-DIRECT-HKNJANUM-MAX
@@ -1030,6 +1039,7 @@
                            END-IF
                        END-IF
                END-EVALUATE
+             END-IF
            END-IF
       *
       *    更新前チェック
