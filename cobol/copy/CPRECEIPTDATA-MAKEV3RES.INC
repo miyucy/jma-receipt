@@ -49,6 +49,11 @@
                03  RECEDMAKES-RESKEY       PIC X(100).
       *
                03  RECEDMAKES-PERFORM-MONTH    PIC X(7).
+      *
+               03  RECEDMAKES-DATA-ID-INFORMATION  OCCURS  10.
+                   05  RECEDMAKES-DATA-ID      PIC X(37).
+                   05  RECEDMAKES-PRINT-ID     PIC X(37).
+      *
       *        ワーニング
                03  RECEDMAKES-API-WARNING-INFO OCCURS  5.
                    05  RECEDMAKES-API-WARNING  PIC X(3).

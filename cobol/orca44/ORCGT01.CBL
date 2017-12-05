@@ -607,6 +607,8 @@
       *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÀ©¸æ
            COPY    "CPORCSPRTCTRL.INC".
       *----(05.00.00)--ADD-END-----
+      *
+           COPY    "MONBLOB".
       *****************************************************************
       *    Ï¢ÍíÎÎ°è
       *****************************************************************
@@ -6180,6 +6182,27 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
                                        TO  SHELLTBL-ARG28
            END-IF
       *
+      *    £È£Á£Ï£Ò£É¤Î¤È¤­£Í£Ï£Î£Â£Ì£Ï£Â¡Ý£É£Ä¤òÀßÄê
+           IF      SPA-T01-JOB-PARAM
+                                   NOT =   SPACE
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               MOVE    MONBLOB-ID          TO  SHELLTBL-ARG29
+                                               SPA-T01-MONBLOB-DATA-ID
+      *
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-PRINT-ID
+           END-IF
+      *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -6438,6 +6461,27 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
            ELSE
                MOVE    SPA-GMN-RECEDEN-CHK
                                        TO  SHELLTBL-ARG26
+           END-IF
+      *
+      *    £È£Á£Ï£Ò£É¤Î¤È¤­£Í£Ï£Î£Â£Ì£Ï£Â¡Ý£É£Ä¤òÀßÄê
+           IF      SPA-T01-JOB-PARAM
+                                   NOT =   SPACE
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               MOVE    MONBLOB-ID          TO  SHELLTBL-ARG29
+                                               SPA-T01-MONBLOB-DATA-ID
+      *
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-PRINT-ID
            END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC

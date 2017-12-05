@@ -131,9 +131,11 @@
       *
            03  WRK-SPA-TERMID          PIC X(64).
       *  
-           03  WRK-STPAGE          PIC 9(05).
-           03  WRK-EDPAGE          PIC 9(05).
+           03  WRK-STPAGE              PIC 9(05).
+           03  WRK-EDPAGE              PIC 9(05).
       *
+           03  WRK-MONBLOB-PRINT-ID    PIC X(37).
+           03  WRK-MONBLOB-DATA-ID     PIC X(37).
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".
@@ -210,6 +212,8 @@
            COPY    "ORCA-BLOB".
       *
            COPY    "CPORCSTEMPDIR.INC".
+      *
+      **** COPY    "MONBLOB".
       *
       *    £’£…£ƒºË∆¿Õ—•®•Í•¢
        01  UIDIO-AREA.
@@ -544,6 +548,15 @@
       **** MOVE    RECEDMAKEQ-CHECK-MODE
       ****                             TO  RECEDMAKES-CHECK-MODE
       *
+           IF      RECEDMAKEQ-REQUEST-NUMBER
+                                       =   "01"
+               MOVE    SPA-T01-MONBLOB-PRINT-ID
+                                           TO  RECEDMAKES-PRINT-ID (1)
+               MOVE    SPA-T01-MONBLOB-DATA-ID
+                                           TO  RECEDMAKES-DATA-ID  (1)
+           END-IF
+      *
+      *
            IF      APILST-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
@@ -803,7 +816,7 @@
       *    ¿¡µ·«Ø∑Ó∆¸
            IF    ( RECEDMAKEQ-REQUEST-NUMBER
                                        =   "00"   )
-           AND   ( RECEDMAKEQ-AC-DATE   =   SPACE )
+           AND   ( RECEDMAKEQ-AC-DATE  =   SPACE )
                CONTINUE
            ELSE
                IF      RECEDMAKEQ-AC-DATE   =   SPACE
@@ -1090,8 +1103,7 @@
                                    MOVE    "CHK"       TO
                                                        SJOBKANRI-MODE
                                    INITIALIZE          JOBKANRI-REC
-                                   MOVE    WRK-CONS-JOB-JOBID
-                                                       TO  JOB-JOBID
+                                   MOVE    IDX         TO  JOB-JOBID
                                    MOVE    WRK-CONS-JOB-SHELLID
                                                        TO  JOB-SHELLID
                                    PERFORM 900-CALL-ORCSJOB-SEC
@@ -1158,7 +1170,7 @@
                                        SPA-TID1-AREA
       *
            MOVE    "TID2"          TO  SPA-MOTOPG
-           MOVE    "PV"            TO  SPA-TID1-FLG
+           MOVE    "NO"            TO  SPA-TID1-FLG
       *
            MOVE    "LINK"          TO  MCP-STATUS
            MOVE    SPACE           TO  MCP-EVENT
@@ -1275,7 +1287,7 @@
            MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
            MOVE    SPA-NAI-SKYYM       TO  LNK-PRTKANRI-SRYYM 
            MOVE    SPA-NAI-SKYYMD      TO  LNK-PRTKANRI-SKYYMD
-           MOVE    "print_prv.sh"          TO  LNK-PRTKANRI-SHELLID
+           MOVE    "print_prv.sh"      TO  LNK-PRTKANRI-SHELLID
            MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
            MOVE    WRK-CONS-TERMID     TO  LNK-PRTKANRI-TERMID
            MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
@@ -1398,7 +1410,7 @@
            MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
            MOVE    SPA-NAI-SKYYM       TO  LNK-PRTKANRI-SRYYM 
            MOVE    SPA-NAI-SKYYMD      TO  LNK-PRTKANRI-SKYYMD
-           MOVE    "recept4_monblobapi.sh"
+           MOVE    "recept4_monblobapi"
                                        TO  LNK-PRTKANRI-SHELLID
            MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
            MOVE    WRK-CONS-TERMID     TO  LNK-PRTKANRI-TERMID
@@ -1420,6 +1432,15 @@
            MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9
            MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
+           MOVE    SPA-T01-JOB-JOBID   TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG13
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG14
+           MOVE    ERRFLPARA-BASENAME
+                                       TO  SHELLTBL-ARG15
+           MOVE    SPA-T01-MONBLOB-PRINT-ID
+                                       TO  SHELLTBL-ARG16
+      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE

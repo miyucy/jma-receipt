@@ -31,6 +31,7 @@ fi
 #            1:履歴保存する
 #        ${26} レセ電データチェックの有無
 #            1:チェックする
+#        ${29} MONBLOB-ID(data-id)
 #-------------------------------------------#
 
         echo "window  ${MCP_WINDOW}"
@@ -44,11 +45,6 @@ cleanup(){
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi
-##      MCP_WINDOW がAPI のとき、一時ディレクトリを削除
-##        if  [ "${MCP_WINDOW}" == "receiptdatamakev3" ]; then
-##            echo "remove!! ${MCP_TEMPDIR}"
-##            rm  -rf ${MCP_TEMPDIR}
-##        fi
 }
 trap cleanup EXIT
 
@@ -68,6 +64,7 @@ trap cleanup EXIT
     echo "arg23 = [" ${23} "]" 
     echo "arg24 = [" ${24} "]" 
     echo "arg26 = [" ${26} "]" 
+    echo "arg29 = [" ${29} "]" 
 #    echo "hostname =  [" `hostname`  "]" 
 
     rennum=0
@@ -337,6 +334,27 @@ trap cleanup EXIT
             echo "--- iso err   ---" 
             exit
 	fi
+    fi
+
+
+#   大容量ＡＰＩ作成
+    if  [ ${17} -eq '9' ]; then
+        cd  ${MCP_TEMPDIR}/
+        zip -r ${ROUSAI_FOLDER}.zip ${ROUSAI_FOLDER}/
+	RC=$?
+        echo "--- zip end   ---[" $RC  "]" 
+	if  [ $RC -ne '0' ]; then
+	    ERRCD='0000'$RC
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4},${20} 
+            echo "--- zip err   ---" 
+            exit
+	fi
+        FILENM="${ROUSAI_FOLDER}.zip"
+        echo "filenm=[" $FILENM "]"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter ${1},${2},${3},$rennum,${5},${6},${7},${8},${9},${10},${11},${14},${15},${20},${16},$FILENM,"csv",${29}
+        if  [ -e ${MCP_TEMPDIR}/${16} ]; then
+             exit
+        fi
     fi
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15},${20} 

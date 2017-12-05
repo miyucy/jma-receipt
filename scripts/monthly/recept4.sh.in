@@ -18,6 +18,7 @@ fi
 #        $15 SHELLID
 #        $16 エラーファイル名 
 #        $17 ファイル出力先区分
+#            9:haori
 #        $18 端末ｉｐアドレス
 #        $19 入外区分
 #        ${20} HOSPNUM
@@ -36,6 +37,7 @@ fi
 #            1:チェックする
 #        ${27}-  ${28}医療機関コード別の処理指定時
 #            該当診療年月の開始、終了
+#        ${29} MONBLOB-ID(data-id)
 #-------------------------------------------#
 
         echo "window  ${MCP_WINDOW}"
@@ -49,11 +51,6 @@ cleanup(){
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi
-##      MCP_WINDOW がAPI のとき、一時ディレクトリを削除
-##        if  [ "${MCP_WINDOW}" == "receiptdatamakev3" ]; then
-##            echo "remove!! ${MCP_TEMPDIR}"
-##            rm  -rf ${MCP_TEMPDIR}
-##        fi
 }
 trap cleanup EXIT
 
@@ -82,6 +79,7 @@ trap cleanup EXIT
     echo "arg26 = [" ${26} "]" 
     echo "arg27 = [" ${27} "]" 
     echo "arg28 = [" ${28} "]" 
+    echo "arg29 = [" ${29} "]" 
 #    echo "hostname =  [" `hostname`  "]"
 
     rennum=0
@@ -368,6 +366,16 @@ trap cleanup EXIT
     fi
 
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15},${20}
+#   大容量ＡＰＩ作成
+    if  [ ${17} -eq '9' ]; then
+        cp ${MCP_TEMPDIR}/${20}${RECEFILE1}.UKE ${MCP_TEMPDIR}/${RECEFILE1}.UKE
+        FILENM="${RECEFILE1}.UKE"
+        echo "filenm=[" $FILENM "]"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter ${1},${2},${3},$rennum,${5},${6},${7},${8},${9},${10},${11},${14},${15},${20},${16},$FILENM,"csv",${29}
+        if  [ -e ${MCP_TEMPDIR}/${16} ]; then
+             exit
+        fi
+    fi
 
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15},${20}
     exit 
