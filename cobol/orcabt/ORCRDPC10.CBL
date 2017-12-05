@@ -1866,6 +1866,9 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
       *
+      **     DISPLAY "============== ORCRDPC10 ===================="
+      **     DISPLAY "RECE62-PTNUM = " RECE62-PTNUM
+           
       *    患者保険組み合わせ取得処理
            PERFORM 2001-HKNCOMBI-GET-SEC
       *
@@ -1876,13 +1879,15 @@
                                                    NOT =   KEY-OLD1
       *
       *        入院会計取得処理（提出先別）
-               PERFORM 2001-NYUINRYO-GET-SEC
+      ****         PERFORM 2001-NYUINRYO-GET-SEC
       *
       *        診療年月・患者ID・レセ科・提出先別処理
                MOVE    KEY-NEW         TO  KEY-OLD
                PERFORM                 UNTIL   FLG-END     =   1
                                        OR      KEY-NEW NOT =   KEY-OLD
       *
+      *            入院会計取得処理（提出先別）
+                   PERFORM 2001-NYUINRYO-GET-SEC
                    MOVE    ZERO                TO  WRK-RENNUM
                    MOVE    ZERO                TO  WRK-MEISAI-RENNUM
                    MOVE    SPACE               TO  WRK-FEDT-SRYKBN-SAVE
@@ -2166,6 +2171,17 @@
            MOVE    RECE62-HOSPNUM      TO  LNK-DPCNYUIN-HOSPNUM
            MOVE    RECE62-PTID         TO  LNK-DPCNYUIN-PTID
            MOVE    RECE62-SRYYM        TO  LNK-DPCNYUIN-SANTEIYM
+           IF      RECE62-TEISYUTUSAKI =   "6"
+               MOVE    "3"                 TO  LNK-DPCNYUIN-HKNKBN
+           ELSE
+               MOVE    RECE62-TEISYUTUSAKI TO  LNK-DPCNYUIN-HKNKBN
+           END-IF
+           PERFORM VARYING IDX FROM    1   BY  1
+             UNTIL (IDX   >    10)    OR
+                     (RECE62-HKNCOMBI (IDX)  =   ZERO)
+               MOVE    RECE62-HKNCOMBI(IDX)   TO
+                                        LNK-DPCNYUIN-SET-HKNCOMBI(IDX)
+           END-PERFORM
            CALL    "ORCSDPCNYUIN"      USING   ORCSDPCNYUIN-AREA
                                                SPA-AREA
            IF      LNK-DPCNYUIN-RC     NOT =   ZERO
@@ -5733,6 +5749,19 @@
                 (RECE641-SRYSYUKBN   NOT =  "970")       AND
                 (RECE641-KAISU(1 WRK-EDDD)   NOT =  ZERO)  AND
                 (RECE641-KAISU(1 WRK-EDDD) = RECE641-KAISU(3 WRK-EDDD))
+                  IF  WRK-NYUIN-RIREKI-NYUINYMD (IDW + 1) NOT = SPACE
+                      ADD    1     TO   IDW
+                  END-IF
+             END-IF
+      *同日再入院日の再入院時に算定した食事は次の入院履歴に変更する
+      **       DISPLAY "LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ) = "
+      **                LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ)
+      **       DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ) = "
+      **                LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ)
+      **       DISPLAY "RECE641-SRYSYUKBN = " RECE641-SRYSYUKBN
+             IF (RECE62-PTID       =    RECE641-PTID)    AND
+                (LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ)(1:3) = "197")  AND
+                (LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ)  =  "1")
                   IF  WRK-NYUIN-RIREKI-NYUINYMD (IDW + 1) NOT = SPACE
                       ADD    1     TO   IDW
                   END-IF

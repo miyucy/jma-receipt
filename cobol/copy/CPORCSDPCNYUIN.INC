@@ -19,6 +19,10 @@
            03  LNK-DPCNYUIN-PTID                   PIC  9(10).
       *算定年月
            03  LNK-DPCNYUIN-SANTEIYM               PIC  X(06).
+      *保険区分（１：社保　２：国保　３：広域連合）
+           03  LNK-DPCNYUIN-HKNKBN                 PIC  X(01).
+      *対象保険組合せ番号
+           03  LNK-DPCNYUIN-SET-HKNCOMBI           PIC  9(04) OCCURS 10.
       *返却項目
            03  LNK-DPCNYUIN-HENKYAKU-AREA.
       *入院返却テーブル（添字１：入院料　添字２：特定入院料　３：食事
@@ -58,6 +62,8 @@
                        09  LNK-DPCNYUIN-KAISU      PIC  9(02).
       *コメント記録データ
                        09  LNK-DPCNYUIN-COMMENT    PIC  X(76).
+      *同日再入院区分
+                       09  LNK-DPCNYUIN-SAINYUINKBN PIC X(01).
       *
       *復帰コード（１：算定年月エラー　２：患者検索エラー
       *            ４：入院会計なし　　５：保険組合せ取得エラー）
