@@ -764,6 +764,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "2"             TO  SHELLTBL-ARG17
                    IF      SPA-CLIENT-PRT-FLG  =   2
                        MOVE    "5"             TO  SHELLTBL-ARG17
+                       MOVE    SPA-CLIENT-SHOWDIALOG
+                                               TO  SHELLTBL-ARG22
                    END-IF
            END-EVALUATE
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
