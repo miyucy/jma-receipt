@@ -845,8 +845,7 @@
                MOVE    SYSKANRI-REC        TO  SYS-1010-REC
       *        最後の行へ編集する
                IF      SPA-DRCD-MAX        >=  100
-      *            MOVE    99              TO  SPA-DRCD-MAX
-                   CONTINUE
+                   MOVE    100             TO  SPA-DRCD-MAX
                ELSE
                    ADD     1               TO  SPA-DRCD-MAX
                END-IF
