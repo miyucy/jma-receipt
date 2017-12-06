@@ -1226,6 +1226,21 @@
       *
            MOVE    Y03-DRNAME          TO  SPA-GMN-DRNAME
       *
+      *    コード変換
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    SPA-GMN-DRCD        TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-SEISUU         >   4     )   OR
+                  (SNUM-SYOKBN         =   "1"   )   OR
+                  (SNUM-MINKBN         =   "1"   )
+               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    02                  TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SNUM-OUTEDT(12:4)   TO  SPA-GMN-DRCD
+           END-IF
+      *
       *    診療内容
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX-D   FROM    1   BY  1
