@@ -64,6 +64,8 @@
                        09  LNK-DPCNYUIN-COMMENT    PIC  X(76).
       *同日再入院区分
                        09  LNK-DPCNYUIN-SAINYUINKBN PIC X(01).
+      *対象日
+                   07  LNK-DPCNYUIN-DD             PIC  9(02).
       *
       *復帰コード（１：算定年月エラー　２：患者検索エラー
       *            ４：入院会計なし　　５：保険組合せ取得エラー）

@@ -181,6 +181,7 @@
       *              NACL-小豆沢  17/09/07  同日再入院日の入退院日記録修正時の
       *                                     不具合修正
       *              NACL-小豆沢  17/09/08  きざみ計算の出来高実績点数端数処理追加
+      *              NACL-小豆沢  17/12/07  同日再入院の食事記録修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2182,6 +2183,11 @@
                MOVE    RECE62-HKNCOMBI(IDX)   TO
                                         LNK-DPCNYUIN-SET-HKNCOMBI(IDX)
            END-PERFORM
+      *     DISPLAY "=========   ORCSDPCNYUIN CALL ========="
+      *     DISPLAY "LNK-DPCNYUIN-SET-HKNCOMBI(1) ="
+      *              LNK-DPCNYUIN-SET-HKNCOMBI(1)
+      *     DISPLAY "LNK-DPCNYUIN-SET-HKNCOMBI(2) ="
+      *              LNK-DPCNYUIN-SET-HKNCOMBI(2)
            CALL    "ORCSDPCNYUIN"      USING   ORCSDPCNYUIN-AREA
                                                SPA-AREA
            IF      LNK-DPCNYUIN-RC     NOT =   ZERO
@@ -5265,12 +5271,25 @@
                                          END-IF
                                        END-IF
                                        MOVE  IDZ2  TO  WRK-FEDT-DD
+      *                                平成２９年１０月以降の食事は引数
+      *                                で返却された日付をセット
+                                       IF (LNK-DPCNYUIN-SANTEIYM >=
+                                                          "201710")  AND
+                                          (IDZ1   =   3  OR  4)      AND
+                                          (LNK-DPCNYUIN-DD
+                                                     (IDZ1 IDZ2)
+                                                     NOT =   ZERO)
+                                          MOVE  LNK-DPCNYUIN-DD
+                                                       (IDZ1 IDZ2)
+                                                        TO  WRK-FEDT-DD
+                                       END-IF
                                        PERFORM
                                          200771-NYUIN-ZAI-E-HENSYU-SEC
                                        IF  WRK-REC-LENGTH  >  ZERO
                                          PERFORM 5001-FILE-WRITE-SEC
                                        END-IF
                                     END-IF
+      *
                                     PERFORM
                                          200771-NYUIN-ZAI-F-HENSYU-SEC
                                     IF   WRK-REC-LENGTH  >  ZERO
@@ -5759,7 +5778,9 @@
       **       DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ) = "
       **                LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ)
       **       DISPLAY "RECE641-SRYSYUKBN = " RECE641-SRYSYUKBN
-             IF (RECE62-PTID       =    RECE641-PTID)    AND
+             IF (IDZ1              =    3  OR  4)        AND
+                (RECE62-PTID       =    RECE641-PTID)    AND
+                (LNK-DPCNYUIN-SANTEIYM  >=  "201710")    AND
                 (LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ)(1:3) = "197")  AND
                 (LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ)  =  "1")
                   IF  WRK-NYUIN-RIREKI-NYUINYMD (IDW + 1) NOT = SPACE

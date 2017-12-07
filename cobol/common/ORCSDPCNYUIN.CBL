@@ -75,6 +75,7 @@
       *  05.00.00    NACL-¾®Æ¦Âô  17/08/31  µï½»Èñ¶â³ÛÊÑ¹¹ÂÐ±þ
       *                                     ¶­³¦ÁØÂÐ±þ
       *                                     À¸³èÎÅÍÜÉéÃ´¥³¡¼¥ÉÊ¬³äÂÐ±þ
+      *  05.00.01    NACL-¾®Æ¦Âô  17/12/07  Æ±ÆüºÆÆþ±¡¤Î¿©»öµ­Ï¿½¤Àµ
       *****************************************************************
       *
       *
@@ -548,6 +549,15 @@
       *     DISPLAY "LNK-DPCNYUIN-RECSKB = " LNK-DPCNYUIN-RECSKB(3 IDX 1)
       *     DISPLAY "LNK-DPCNYUIN-SRYSKB = " LNK-DPCNYUIN-SRYSKB(3 IDX 1)
       *     DISPLAY "LNK-DPCNYUIN-SRYCD = " LNK-DPCNYUIN-SRYCD(3 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SURYO = " LNK-DPCNYUIN-SURYO(3 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-TEN   = " LNK-DPCNYUIN-TEN(3 IDX 1)
+      *     DISPLAY "    --- SEIKATSU -----"
+      *     DISPLAY "LNK-DPCNYUIN-PTID = " LNK-DPCNYUIN-PTID
+      *     DISPLAY "LNK-DPCNYUIN-RECSKB = " LNK-DPCNYUIN-RECSKB(4 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SRYSKB = " LNK-DPCNYUIN-SRYSKB(4 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SRYCD = " LNK-DPCNYUIN-SRYCD(4 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SURYO = " LNK-DPCNYUIN-SURYO(4 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-TEN   = " LNK-DPCNYUIN-TEN(4 IDX 1)
       *     END-PERFORM
       *
            .
@@ -6052,71 +6062,71 @@
       *
                    IF  LNK-NYULIFE2-SKJ-SRYCD(IDX1 1)  =   SPACE
                      MOVE  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
-                                       TO  WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+                                    TO  WRK-SKJ7-HKNCOMBI-DAY(SET-IDX1)
                      IF   WRK-SKJ4-RYOYO(IDX1)   =   CONS-SKJ-RYOYO-1-1
                                                  OR  CONS-SKJ-RYOYO-2-1
                          MOVE  WRK-SKJ4-RYOYO(IDX1)
-                                         TO  WRK-SKJ7-RYOYO(IDX1)
-                         ADD   1     TO  WRK-SKJ7-RYOYO-SU(IDX1)
+                                         TO  WRK-SKJ7-RYOYO(SET-IDX1)
+                         ADD   1     TO  WRK-SKJ7-RYOYO-SU(SET-IDX1)
                      END-IF
                      IF   WRK-SKJ4-RYOYO(IDX1)   =   CONS-SKJ-RYOYO-1-2
                                                  OR  CONS-SKJ-RYOYO-2-2
                          MOVE  WRK-SKJ4-RYOYO(IDX1)
-                                         TO  WRK-SKJ7-RYOYO-RYU(IDX1)
-                          ADD   1     TO  WRK-SKJ7-RYOYO-RYU-SU(IDX1)
+                                     TO  WRK-SKJ7-RYOYO-RYU(SET-IDX1)
+                          ADD   1    TO  WRK-SKJ7-RYOYO-RYU-SU(SET-IDX1)
                      END-IF
                    END-IF
       *            Æþ±¡»þÀ¸³èÎÅÍÜÈñ¤ÎÃÖ´¹¤¨
                    IF   LNK-NYULIFE2-SKJ-SRYCD(IDX1 1)  NOT =  SPACE
                       MOVE  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
-                                       TO  WRK-SKJ7-HKNCOMBI-DAY(IDX1)
+                                     TO  WRK-SKJ7-HKNCOMBI-DAY(SET-IDX1)
                       IF   LNK-NYULIFE2-SKJ-SRYCD(IDX1 1) =
                                                CONS-SKJSEI-RYOYO-1-1 OR
                                                CONS-SKJSEI-RYOYO-2
                            MOVE  LNK-NYULIFE2-SKJ-SRYCD(IDX1 1)
-                                       TO  WRK-SKJ7-RYOYO(IDX1)
-                           ADD   1     TO  WRK-SKJ7-RYOYO-SU(IDX1)
+                                       TO  WRK-SKJ7-RYOYO(SET-IDX1)
+                           ADD   1     TO  WRK-SKJ7-RYOYO-SU(SET-IDX1)
                       END-IF
                       IF   LNK-NYULIFE2-SKJ-SRYCD(IDX1 1) =
                                                CONS-SKJSEI-RYOYO-1-2
                            MOVE  LNK-NYULIFE2-SKJ-SRYCD(IDX1 1)
-                                       TO  WRK-SKJ7-RYOYO-RYU(IDX1)
-                           ADD   1     TO  WRK-SKJ7-RYOYO-RYU-SU(IDX1)
+                                     TO  WRK-SKJ7-RYOYO-RYU(SET-IDX1)
+                           ADD   1   TO  WRK-SKJ7-RYOYO-RYU-SU(SET-IDX1)
                       END-IF
                    END-IF
                END-IF
       *        ÆÃÊÌ¿©²Ã»»¡ÊÄ«¡Ë
                IF    WRK-SKJ5-TOKU-SHOKU(IDX1)  NOT =   SPACE
                    MOVE  WRK-SKJ5-TOKU-SHOKU(IDX1)
-                                       TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+                                       TO  WRK-SKJ7-TOKU-SHOKU(SET-IDX1)
       *            Æþ±¡»þÀ¸³èÎÅÍÜÈñ¤ÎÃÖ´¹¤¨
                    IF   LNK-NYULIFE2-SKJ-SRYCD(IDX1 1)  NOT =  SPACE
                        MOVE  "197001570"
-                                       TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
+                                    TO  WRK-SKJ7-TOKU-SHOKU(SET-IDX1)
                    END-IF
-                   ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
+                   ADD   1          TO  WRK-SKJ7-TOKU-SHOKU-SU(SET-IDX1)
                END-IF
       *        ¿©»öÉéÃ´¡ÊÄ«¡Ë
                IF    WRK-SKJFTN2-SRYCD(IDX1)  NOT =   SPACE
                    MOVE  WRK-SKJFTN2-SRYCD(IDX1)
-                                       TO  WRK-SKJ7-SKJFTN(IDX1)
+                                       TO  WRK-SKJ7-SKJFTN(SET-IDX1)
       *            ÆñÉÂÅù¤ÈÀº¿À£±Ç¯Ä¶¤ÎÃÖ¤­´¹¤¨
                    IF    LNK-SYOTOKU-SKJKBN(IDX1)  =  SPACE
                        IF    LNK-SKJKEEP-KBN(IDX1)    =   "1"
                            MOVE   CONS-NANBYO-SKJFTN
-                                           TO  WRK-SKJ7-SKJFTN(IDX1)
+                                           TO  WRK-SKJ7-SKJFTN(SET-IDX1)
                        END-IF
                        IF    LNK-SKJKEEP-KBN(IDX1)    =   "2"
                            MOVE   CONS-SEISIN-SKJFTN
-                                           TO  WRK-SKJ7-SKJFTN(IDX1)
+                                           TO  WRK-SKJ7-SKJFTN(SET-IDX1)
                        END-IF
                    END-IF
       *            Æþ±¡»þÀ¸³èÎÅÍÜÈñ¤ÎÃÖ´¹¤¨
                    IF   LNK-NYULIFE2-SKJ-SRYCD(IDX1 1)  NOT =  SPACE
                        MOVE  LNK-NYULIFE2-SKJFTN-SRYCD(IDX1 1)
-                                       TO  WRK-SKJ7-SKJFTN(IDX1)
+                                       TO  WRK-SKJ7-SKJFTN(SET-IDX1)
                    END-IF
-                   ADD   1             TO  WRK-SKJ7-SKJFTN-SU(IDX1)
+                   ADD   1             TO  WRK-SKJ7-SKJFTN-SU(SET-IDX1)
                END-IF
       *        ¿©»öÎÅÍÜÈñ¡ÊÃë¡Ë
                MOVE      ZERO          TO  IDX2
@@ -6442,7 +6452,10 @@
                 IF (WRK-SKJ7-RYOYO(IDX1)   NOT = "197001310")  AND
                    (WRK-SKJ7-RYOYO(IDX1)   NOT = "197001710")  AND
                    (WRK-SKJ7-RYOYO-RYU(IDX1)   NOT = "197003510")
-                    MOVE    IDX1     TO    IDX2
+      *-----------------------------------------------
+      **              MOVE    IDX1     TO    IDX2
+                    ADD     1        TO    IDX2
+      *-----------------------------------------------
                     MOVE  WRK-SKJ7-HKNCOMBI-DAY(IDX1) TO
                                     LNK-DPCNYUIN-HKNCOMBI(3 IDX2)
                     MOVE   ZERO     TO    IDX4
@@ -6465,6 +6478,13 @@
                     IF      WRK-SKJ7-SAINYUINKBN(IDX1)    =   1
                         MOVE  "1"  TO  LNK-DPCNYUIN-SAINYUINKBN
                                                         (3 IDX2 IDX4)
+                    END-IF
+      *             ÊÖµÑÃÍ¤ËÂÐ¾ÝÆüÉÕÄÉ²Ã
+                    IF       IDX1    >=   32
+                         COMPUTE  LNK-DPCNYUIN-DD(3 IDX2)  =
+                                  IDX1   -  31
+                    ELSE
+                        MOVE  IDX1    TO   LNK-DPCNYUIN-DD(3 IDX2)
                     END-IF
       *
                     EVALUATE  WRK-SKJ7-RYOYO(IDX1)
@@ -6717,7 +6737,10 @@
                     MOVE  IDX4  TO  LNK-DPCNYUIN-MEISAISU(3 IDX2)
                 ELSE
       *             Æþ±¡»þÀ¸³èÎÅÍÜ¤Î¿©»öÎÅÍÜ¤ÏÅº»ú£´¤ÎÎÎ°è¤ËÊÖµÑ
-                    MOVE   IDX1       TO    IDX3
+      *-----------------------------------------------
+      **              MOVE   IDX1       TO    IDX3
+                    ADD     1         TO    IDX3
+      *-----------------------------------------------
                     MOVE  WRK-SKJ7-HKNCOMBI-DAY(IDX1) TO
                                     LNK-DPCNYUIN-HKNCOMBI(4 IDX3)
                     MOVE   ZERO     TO    IDX5
@@ -6738,6 +6761,13 @@
                     IF      WRK-SKJ7-SAINYUINKBN(IDX1)    =   1
                         MOVE  "1"  TO  LNK-DPCNYUIN-SAINYUINKBN
                                                         (4 IDX3 IDX5)
+                    END-IF
+      *             ÊÖµÑÃÍ¤ËÂÐ¾ÝÆüÉÕÄÉ²Ã
+                    IF       IDX1    >=   32
+                         COMPUTE  LNK-DPCNYUIN-DD(4 IDX3)  =
+                                  IDX1   -  31
+                    ELSE
+                        MOVE  IDX1    TO   LNK-DPCNYUIN-DD(4 IDX3)
                     END-IF
       *
                     EVALUATE  WRK-SKJ7-RYOYO(IDX1)
