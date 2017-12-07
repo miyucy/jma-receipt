@@ -272,6 +272,10 @@
       *    MCPAREA 保存
        01  WRK-MCPAREA             PIC X(5000).
       *
+      *    オンライン画面
+       01  WRK-SCRAREA.
+           COPY    "ORCA24SCRAREA.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -464,6 +468,8 @@
            INITIALIZE                      XML-MEDICALV3RES6
            INITIALIZE                      WRK-APIV3DATA-AREA
            INITIALIZE                      SPA-J01KYOUTU
+      *
+           INITIALIZE                      WRK-SCRAREA
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -1970,7 +1976,7 @@
                                        MCPAREA
                                        SPAAREA
                                        LINKAREA
-                                       SCRAREA
+                                       WRK-SCRAREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-J02
@@ -1992,7 +1998,7 @@
                                        MCPAREA
                                        SPAAREA
                                        LINKAREA
-                                       SCRAREA
+                                       WRK-SCRAREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-J02
@@ -2245,7 +2251,7 @@
                                        MCPAREA
                                        SPAAREA
                                        LINKAREA
-                                       SCRAREA
+                                       WRK-SCRAREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-J02
@@ -2280,7 +2286,7 @@
                                        MCPAREA
                                        SPAAREA
                                        LINKAREA
-                                       SCRAREA
+                                       WRK-SCRAREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-J02
@@ -2333,7 +2339,7 @@
                                        MCPAREA
                                        SPAAREA
                                        LINKAREA
-                                       SCRAREA
+                                       WRK-SCRAREA
       *
            MOVE    WRK-MCPAREA     TO  MCPAREA
       *

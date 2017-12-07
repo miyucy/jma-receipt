@@ -48,6 +48,10 @@
       *    画面スパ領域
            COPY    "K06SCR-SPA".
       *
+      *    オンライン画面
+       01  WRK-SCRAREA.
+           COPY    "ORCA21SCRAREA.INC".
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
@@ -1358,6 +1362,7 @@
        20013-RIHA-SANTEI-HENSYU-SEC     SECTION.
       *
            INITIALIZE                  SPA-K06
+           INITIALIZE                  WRK-SCRAREA
       *
            MOVE    2                   TO  SPA-K061-GMN
            MOVE    "APIV3"             TO  SPA-MOTOPG
@@ -1373,7 +1378,7 @@
                                        MCPAREA
                                        SPAAREA
                                        LINKAREA
-                                       SCRAREA
+                                       WRK-SCRAREA
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-K06
