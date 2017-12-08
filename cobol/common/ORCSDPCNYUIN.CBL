@@ -397,6 +397,7 @@
       *
       *    病棟区分退避用テーブル
            03  TABLE-BTUKBN.
+               05  TBL-RRKNUM                  PIC 9(03)   OCCURS  31.
                05  TBL-BTUNUM                  PIC 9(02)   OCCURS  31.
                05  TBL-BTUKBN                  PIC X(02)   OCCURS  31.
                05  TBL-SRYKA                   PIC X(02)   OCCURS  31.
@@ -7627,18 +7628,25 @@
       **             DISPLAY "IDX2 = " IDX2
                    PERFORM   VARYING   IDX    FROM  IDX1   BY  1
                              UNTIL    (IDX    >   IDX2)
-      *                 病棟番号セット（既にセット済の場合は同日再入院日
-      *                                 となることから別項目にセットする）
+      *                 病棟番号セット（同日再入院日は別項目にセットする）
                         IF     TBL-BTUNUM(IDX)  =   ZERO
+                          MOVE   PTNYUINRRK-RRKNUM  TO  TBL-RRKNUM(IDX)
                           MOVE   PTNYUINRRK-BTUNUM  TO  WRK-DAY-X
                           MOVE   WRK-DAY-9          TO  TBL-BTUNUM(IDX)
                           MOVE   PTNYUINRRK-NYUINKA TO  TBL-SRYKA(IDX)
                           MOVE   PTNYUINRRK-DRCD1   TO  TBL-DRCD(IDX)
                         ELSE
-                          MOVE   PTNYUINRRK-BTUNUM  TO  WRK-DAY-X
-                          MOVE   WRK-DAY-9          TO  TBL-BTUNUM2(IDX)
-                          MOVE   PTNYUINRRK-NYUINKA TO  TBL-SRYKA2(IDX)
-                          MOVE   PTNYUINRRK-DRCD1   TO  TBL-DRCD2(IDX)
+                          IF   PTNYUINRRK-RRKNUM    =   TBL-RRKNUM(IDX)
+                            MOVE PTNYUINRRK-BTUNUM  TO  WRK-DAY-X
+                            MOVE WRK-DAY-9          TO  TBL-BTUNUM(IDX)
+                            MOVE PTNYUINRRK-NYUINKA TO  TBL-SRYKA(IDX)
+                            MOVE PTNYUINRRK-DRCD1   TO  TBL-DRCD(IDX)
+                          ELSE
+                            MOVE PTNYUINRRK-BTUNUM  TO  WRK-DAY-X
+                            MOVE WRK-DAY-9          TO  TBL-BTUNUM2(IDX)
+                            MOVE PTNYUINRRK-NYUINKA TO  TBL-SRYKA2(IDX)
+                            MOVE PTNYUINRRK-DRCD1   TO  TBL-DRCD2(IDX)
+                          END-IF
                         END-IF
                    END-PERFORM
                    MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
