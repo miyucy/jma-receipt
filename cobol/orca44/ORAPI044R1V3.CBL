@@ -537,14 +537,19 @@
            END-IF
            MOVE    RECEDMAKEQ-REQUEST-NUMBER
                                        TO  RECEDMAKES-REQUEST-NUMBER
+           MOVE    RECEDMAKEQ-SUBMISSION-MODE
+                                       TO  RECEDMAKES-SUBMISSION-MODE
            MOVE    RECEDMAKEQ-PERFORM-MONTH
                                        TO  RECEDMAKES-PERFORM-MONTH
+           MOVE    RECEDMAKEQ-START-MONTH
+                                       TO  RECEDMAKES-START-MONTH
+           MOVE    RECEDMAKEQ-END-MONTH
+                                       TO  RECEDMAKES-END-MONTH
+           MOVE    RECEDMAKEQ-HKNJANUM TO  RECEDMAKES-HKNJANUM
       **** MOVE    RECEDMAKEQ-AC-DATE  TO  RECEDMAKES-AC-DATE
       **** MOVE    RECEDMAKEQ-INOUT    TO  RECEDMAKES-INOUT
       **** MOVE    RECEDMAKEQ-CREATE-MODE
       ****                             TO  RECEDMAKES-CREATE-MODE
-      **** MOVE    RECEDMAKEQ-SUBMISSION-MODE
-      ****                             TO  RECEDMAKES-SUBMISSION-MODE
       **** MOVE    RECEDMAKEQ-CHECK-MODE
       ****                             TO  RECEDMAKES-CHECK-MODE
       *
@@ -744,9 +749,11 @@
                END-IF
            END-IF
       *
-      *    情報取得のとき期間、直接請求する保険者番号の情報取得
-           IF      RECEDMAKEQ-REQUEST-NUMBER
-                                       =   "00"
+      *    情報取得のとき期間、直接請求する保険者番号の情報取得（医保分のみ）
+           IF    ( RECEDMAKEQ-REQUEST-NUMBER
+                                       =   "00" )
+           AND   ( RECEDMAKEQ-SUBMISSION-MODE
+                                   NOT =   "05" )
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-SRYYMKBN-MAX
                    MOVE    SPA-NAI-SRYYMKBN-ST (IDX)
@@ -754,17 +761,17 @@
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE (1:7)
                                            TO
-                                           RECEDMAKES-START-MONTH (IDX)
+                                           RECEDMAKES-START-MONTH-O(IDX)
                    MOVE    SPA-NAI-SRYYMKBN-ED (IDX)
                                            TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE (1:7)
                                            TO
-                                           RECEDMAKES-END-MONTH   (IDX)
+                                           RECEDMAKES-END-MONTH-O  (IDX)
                    IF      SPA-NAI-SRYYMKBN-ERR (IDX)
                                            =   "1"
                        MOVE    "Ng"            TO
-                                           RECEDMAKES-SELECT-MODE (IDX)
+                                           RECEDMAKES-SELECT-MODE-O(IDX)
                    END-IF
                END-PERFORM
       *        社保のとき直接請求する保険者番号を取得
@@ -773,9 +780,11 @@
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >   SPA-GMN-DIRECT-HKNJANUM-MAX
                        MOVE    SPA-GMN-DIRECT-HKNJANUML (IDX)
-                                           TO  RECEDMAKES-HKNJANUM (IDX)
+                                           TO  RECEDMAKES-HKNJANUM-O
+                                                                   (IDX)
                        MOVE    SPA-GMN-DIRECT-HKNJANAMEL (IDX)
-                                           TO  RECEDMAKES-HKNJANAME(IDX)
+                                           TO  RECEDMAKES-HKNJANAME-O
+                                                                   (IDX)
                    END-PERFORM
                END-IF
            END-IF
@@ -815,17 +824,26 @@
       *
       *    請求年月日
            IF    ( RECEDMAKEQ-REQUEST-NUMBER
-                                       =   "00"   )
+                                       =   "00"  )
            AND   ( RECEDMAKEQ-AC-DATE  =   SPACE )
                CONTINUE
            ELSE
-               IF      RECEDMAKEQ-AC-DATE   =   SPACE
-                   MOVE    "E16"                TO  WRK-ERRCD
+               IF      RECEDMAKEQ-AC-DATE  =   SPACE
+                   MOVE    "E16"               TO  WRK-ERRCD
                    GO  TO  2001-INPUT-CHK-EXT
                ELSE
                    MOVE    RECEDMAKEQ-AC-DATE  TO  WRK-HEN-DATE
                    PERFORM 802-DAYHEN02-SEC
-                   MOVE    WRK-SYMD            TO  T01-SKYYMD
+                   INITIALIZE                      ORCSGDAYAREA
+                   MOVE    WRK-SYMD            TO  SGDAY-INDAY
+                   CALL    "ORCSGDAY"          USING
+                                                   ORCSGDAYAREA
+                   IF      SGDAY-RC            =   ZERO
+                       MOVE    WRK-SYMD            TO  T01-SKYYMD
+                   ELSE
+                       MOVE    "E20"               TO  WRK-ERRCD
+                       GO  TO  2001-INPUT-CHK-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -860,8 +878,8 @@
       *
       *    入外区分
            IF    ( RECEDMAKEQ-REQUEST-NUMBER
-                                       =   "00"   )
-           AND   ( RECEDMAKEQ-INOUT     =   SPACE )
+                                       =   "00"  )
+           AND   ( RECEDMAKEQ-INOUT    =   SPACE )
                CONTINUE
            ELSE
                EVALUATE    RECEDMAKEQ-INOUT
@@ -908,15 +926,13 @@
                END-EVALUATE
       *****END-IF
       *
-      *    期間指定
-           IF      RECEDMAKEQ-REQUEST-NUMBER
-                                       =   "00"
+      *    期間指定（医保分のみ）
+           IF    ( RECEDMAKEQ-REQUEST-NUMBER
+                                       =   "00" )
+           OR    ( RECEDMAKEQ-SUBMISSION-MODE
+                                       =   "05" )
                CONTINUE
            ELSE
-             IF      RECEDMAKEQ-SUBMISSION-MODE
-                                             =   "05"
-               CONTINUE
-             ELSE
                IF    ( RECEDMAKEQ-START-MONTH  =   SPACE )
                AND   ( RECEDMAKEQ-END-MONTH    =   SPACE )
                    IF      SPA-GMN-SRYYMKBN-MAX    >   ZERO
@@ -990,18 +1006,15 @@
                        END-IF
                    END-IF
                END-IF
-             END-IF
            END-IF
       *
-      *    直接請求する保険者
-           IF      RECEDMAKEQ-REQUEST-NUMBER
-                                       =   "00"
+      *    直接請求する保険者（社保のみ）
+           IF    ( RECEDMAKEQ-REQUEST-NUMBER
+                                       =   "00" )
+           OR    ( RECEDMAKEQ-SUBMISSION-MODE
+                                   NOT =   "02" )
                CONTINUE
            ELSE
-             IF      RECEDMAKEQ-SUBMISSION-MODE
-                                             =   "05"
-               CONTINUE
-             ELSE
                EVALUATE    RECEDMAKEQ-HKNJANUM
                    WHEN    SPACE
                        IF      SPA-GMN-DIRECT-HKNJANUM-MAX
@@ -1039,7 +1052,6 @@
                            END-IF
                        END-IF
                END-EVALUATE
-             END-IF
            END-IF
       *
       *    更新前チェック
@@ -1084,8 +1096,8 @@
                        MOVE    "E11"               TO  WRK-ERRCD
                    WHEN    "0004"
                        MOVE    "E20"               TO  WRK-ERRCD
-                   WHEN    "0005"
-                       MOVE    "E17"               TO  WRK-ERRCD
+      *************WHEN    "0005"
+      *************    MOVE    "E17"               TO  WRK-ERRCD
                    WHEN    "7777"
                        MOVE    "E70"               TO  WRK-ERRCD
                        MOVE    SPA-ERRMSG          TO  WRK-ERRMSG
@@ -1134,6 +1146,13 @@
                    WHEN    "0050"
                        IF      RECEDMAKEQ-REQUEST-NUMBER
                                                    =   "00"
+                           CONTINUE
+                       ELSE
+                           MOVE    "E60"               TO  WRK-ERRCD
+                       END-IF
+                   WHEN    "0051"
+                       IF      RECEDMAKEQ-SUBMISSION-MODE
+                                                   =   "05"
                            CONTINUE
                        ELSE
                            MOVE    "E60"               TO  WRK-ERRCD
@@ -1511,7 +1530,7 @@
                    MOVE    "【チェックリストが作成されました】"
                                            TO  WRK-WARNING-MSG
                                                        (WRK-WARNING-MAX)
-                   MOVE    "W01"           TO  WRK-WARNING
+                   MOVE    "W03"           TO  WRK-WARNING
                                                        (WRK-WARNING-MAX)
                END-IF
            ELSE
@@ -1764,9 +1783,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "E16"
                    MOVE    "請求年月日が未設定です。"
                                                    TO  WRK-ERRMSG
-               WHEN    "E17"
-                   MOVE    "保険者番号の設定に誤りがあります。"
-                                                   TO  WRK-ERRMSG
+      *********WHEN    "E17"
+      *********    MOVE    "保険者番号の設定に誤りがあります。"
+      *********                                    TO  WRK-ERRMSG
                WHEN    "E18"
                    MOVE    "レセ電データ作成の設定が行われていません。"
                                                    TO  WRK-ERRMSG

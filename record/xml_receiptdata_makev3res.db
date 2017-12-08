@@ -13,7 +13,11 @@ xml_receiptdata_makev3res {
 		Api_Result		varchar(3);
 		Api_Result_Message	varchar(100);
 		Reskey			varchar(100);
+		Submission_Mode		varchar(2);
 		Perform_Month		varchar(7);
+		Start_Month		varchar(7);
+		End_Month		varchar(7);
+		InsuranceProvider_Number	varchar(8);
 		Data_Id_Information {
 			Data_Id         varchar(37);
 			Print_Id        varchar(37);
@@ -23,13 +27,13 @@ xml_receiptdata_makev3res {
 			receiptdata_Warning_Message	varchar(100);
 		} [5];
 		Effective_Period_Information{
-			Start_Month	varchar(7);
-			End_Month	varchar(7);
-			Select_Mode	varchar(2);
+			Info_Period_Start_Month	varchar(7);
+			Info_Period_End_Month	varchar(7);
+			Info_Period_Select_Mode	varchar(2);
 		}[10];
 		InsuranceProvider_Information{
-			InsuranceProvider_Number	varchar(08);
-			InsuranceProvider_Name		varchar(30);
+			Info_InsuranceProvider_Number	varchar(8);
+			Info_InsuranceProvider_Name	varchar(30);
 		}[10];
 		All_Count		varchar(05);
 		All_Number_Of_Sheets    varchar(05);

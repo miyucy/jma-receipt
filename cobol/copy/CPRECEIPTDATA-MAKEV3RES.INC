@@ -48,7 +48,11 @@
       *
                03  RECEDMAKES-RESKEY       PIC X(100).
       *
+               03  RECEDMAKES-SUBMISSION-MODE  PIC X(2).
                03  RECEDMAKES-PERFORM-MONTH    PIC X(7).
+               03  RECEDMAKES-START-MONTH  PIC X(7).
+               03  RECEDMAKES-END-MONTH    PIC X(7).
+               03  RECEDMAKES-HKNJANUM     PIC X(8).
       *
                03  RECEDMAKES-DATA-ID-INFORMATION  OCCURS  10.
                    05  RECEDMAKES-DATA-ID      PIC X(37).
@@ -61,13 +65,13 @@
                                                PIC X(100).
       *        期間指定
                03  RECEDMAKES-PERIOD-INFO      OCCURS  10.
-                   05  RECEDMAKES-START-MONTH  PIC X(7).
-                   05  RECEDMAKES-END-MONTH    PIC X(7).
-                   05  RECEDMAKES-SELECT-MODE  PIC X(2).
+                   05  RECEDMAKES-START-MONTH-O PIC X(7).
+                   05  RECEDMAKES-END-MONTH-O   PIC X(7).
+                   05  RECEDMAKES-SELECT-MODE-O PIC X(2).
       *        保険者番号(00000000:直接請求する保険者以外 00000000以外:直接請求する保険者以外)
                03  RECEDMAKES-HKNJA-OCC        OCCURS  10.
-                   05  RECEDMAKES-HKNJANUM     PIC X(08).
-                   05  RECEDMAKES-HKNJANAME    PIC X(30).
+                   05  RECEDMAKES-HKNJANUM-O   PIC X(8).
+                   05  RECEDMAKES-HKNJANAME-O  PIC X(30).
       *        総レセプト件数
                03  RECEDMAKES-ALL-COUNT    PIC X(5).
       *        総枚数
