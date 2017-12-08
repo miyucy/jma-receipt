@@ -31,7 +31,7 @@
       *  03.04.01    NACL-¿¹ÏÆ    07/02/21  ¥Á¥§¥Ã¥¯¶èÊ¬ÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.08.01    NACL-¿¹ÏÆ    16/11/29  £Ã£Ó£Ö½ÐÎÏÂÐ±þ
-      *  05.00.00    NACL-¿¹ÏÆ    17/11/29  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
+      *  05.00.00    NACL-¿¹ÏÆ    17/12/08  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -333,7 +333,6 @@
            COPY    "X05.INC".
            COPY    "X06.INC".
            COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -2701,9 +2700,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  XID1
            INITIALIZE                      XID1
            MOVE    SPA-XIDCD           TO  XID1-ID1CODE
-           MOVE    "Ìá¤ë"              TO  XID1-B01
-           MOVE    "£Ï£Ë"              TO  XID1-B12
-      *
            MOVE    WRK-XIDMSG          TO  XID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
       *
