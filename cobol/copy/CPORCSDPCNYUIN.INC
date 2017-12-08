@@ -41,6 +41,14 @@
                    07  LNK-DPCNYUIN-SRYKA          PIC  X(02).
       *ドクターコード
                    07  LNK-DPCNYUIN-DRCD           PIC  X(05).
+      *病棟番号２（同日再入院用）
+                   07  LNK-DPCNYUIN-BTUNUM2        PIC  9(02).
+      *病棟区分２（同日再入院用）
+                   07  LNK-DPCNYUIN-BTUKBN2        PIC  X(02).
+      *診療科２（同日再入院用）
+                   07  LNK-DPCNYUIN-SRYKA2         PIC  X(02).
+      *ドクターコード２（同日再入院用）
+                   07  LNK-DPCNYUIN-DRCD2          PIC  X(05).
       *明細数
                    07  LNK-DPCNYUIN-MEISAISU       PIC  9(03).
       *レセ電記録エリア

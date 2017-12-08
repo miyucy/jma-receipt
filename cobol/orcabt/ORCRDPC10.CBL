@@ -5532,6 +5532,37 @@
            ELSE
                MOVE    "1"             TO  WRK-FEDT-BYOTOKBN
            END-IF
+      *平成２９年１０月以降の食事で同日再入院分の再セット
+           IF (LNK-DPCNYUIN-SANTEIYM >= "201710")  AND
+              (IDZ1   =   3  OR  4)   AND
+              (LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 1)  =  "1")
+      *       レセプト科区分
+               MOVE    SPACE               TO  WRK-FEDT-RECESRYKA
+               PERFORM VARYING SYSKAN-IDX2 FROM  1  BY  1
+                 UNTIL   SYSKAN-IDX2 >   TBL-SRYKA-MAX
+                   IF    LNK-DPCNYUIN-SRYKA2(IDZ1 IDZ2)
+                                       =   TBL-SRYKA (SYSKAN-IDX2)
+                      MOVE    TBL-RECESRYKA (SYSKAN-IDX2)
+                                       TO  WRK-FEDT-RECESRYKA
+                     MOVE    TBL-SRYKA-MAX   TO  SYSKAN-IDX2
+                   END-IF
+               END-PERFORM
+      *        診療科区分
+               PERFORM 200721-SRYKAKBN-HENSYU-SEC
+      *        医師コード
+               MOVE    LNK-DPCNYUIN-DRCD2 (IDZ1 IDZ2)
+                                       TO  WRK-FEDT-DRCD
+      *        病棟コード
+               MOVE    LNK-DPCNYUIN-BTUNUM2 (IDZ1 IDZ2)
+                                       TO  WRK-FEDT-BYOTOCD
+      *        病棟区分
+               IF      LNK-DPCNYUIN-BTUKBN2 (IDZ1 IDZ2)
+                                           =   "01"
+                   MOVE    "0"             TO  WRK-FEDT-BYOTOKBN
+               ELSE
+                   MOVE    "1"             TO  WRK-FEDT-BYOTOKBN
+               END-IF
+           END-IF
       *入外区分
            MOVE    RECE62-NYUGAIKBN   TO  WRK-FEDT-NYUGAIKBN
       *行為点数から施設タイプまで
@@ -5782,7 +5813,7 @@
                 (RECE62-PTID       =    RECE641-PTID)    AND
                 (LNK-DPCNYUIN-SANTEIYM  >=  "201710")    AND
                 (LNK-DPCNYUIN-SRYCD(IDZ1 IDZ2 IDXZ)(1:3) = "197")  AND
-                (LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 IDXZ)  =  "1")
+                (LNK-DPCNYUIN-SAINYUINKBN(IDZ1 IDZ2 1)  =  "1")
                   IF  WRK-NYUIN-RIREKI-NYUINYMD (IDW + 1) NOT = SPACE
                       ADD    1     TO   IDW
                   END-IF

@@ -401,6 +401,13 @@
                05  TBL-BTUKBN                  PIC X(02)   OCCURS  31.
                05  TBL-SRYKA                   PIC X(02)   OCCURS  31.
                05  TBL-DRCD                    PIC X(05)   OCCURS  31.
+      *    病棟区分退避用テーブル（同日再入院分）
+           03  TABLE-BTUKBN2.
+               05  TBL-BTUNUM2                 PIC 9(02)   OCCURS  31.
+               05  TBL-BTUKBN2                 PIC X(02)   OCCURS  31.
+               05  TBL-SRYKA2                  PIC X(02)   OCCURS  31.
+               05  TBL-DRCD2                   PIC X(05)   OCCURS  31.
+           03  WRK-SET-DD                      PIC 9(02).
       *
            03  WRK-DAY-X                       PIC X(02).
            03  WRK-DAY-9        REDEFINES      WRK-DAY-X
@@ -546,18 +553,38 @@
       *               UNTIL IDX > 31
       *     DISPLAY "IDX = " IDX
       *     DISPLAY "LNK-DPCNYUIN-PTID = " LNK-DPCNYUIN-PTID
+      *     DISPLAY "LNK-DPCNYUIN-SRYKA   = " LNK-DPCNYUIN-SRYKA(3 IDX)
+      *     DISPLAY "LNK-DPCNYUIN-SRYKA2  = " LNK-DPCNYUIN-SRYKA2(3 IDX)
       *     DISPLAY "LNK-DPCNYUIN-RECSKB = " LNK-DPCNYUIN-RECSKB(3 IDX 1)
       *     DISPLAY "LNK-DPCNYUIN-SRYSKB = " LNK-DPCNYUIN-SRYSKB(3 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SRYSKB2= " LNK-DPCNYUIN-SRYSKB(3 IDX 2)
       *     DISPLAY "LNK-DPCNYUIN-SRYCD = " LNK-DPCNYUIN-SRYCD(3 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SRYCD2= " LNK-DPCNYUIN-SRYCD(3 IDX 2)
       *     DISPLAY "LNK-DPCNYUIN-SURYO = " LNK-DPCNYUIN-SURYO(3 IDX 1)
       *     DISPLAY "LNK-DPCNYUIN-TEN   = " LNK-DPCNYUIN-TEN(3 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(1) = "
+      *              LNK-DPCNYUIN-SAINYUINKBN(3 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(2) = "
+      *              LNK-DPCNYUIN-SAINYUINKBN(3 IDX 2)
+      *     DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(3) = "
+      *              LNK-DPCNYUIN-SAINYUINKBN(3 IDX 3)
       *     DISPLAY "    --- SEIKATSU -----"
       *     DISPLAY "LNK-DPCNYUIN-PTID = " LNK-DPCNYUIN-PTID
+      *     DISPLAY "LNK-DPCNYUIN-SRYKA   = " LNK-DPCNYUIN-SRYKA(4 IDX)
+      *     DISPLAY "LNK-DPCNYUIN-SRYKA2  = " LNK-DPCNYUIN-SRYKA2(4 IDX)
       *     DISPLAY "LNK-DPCNYUIN-RECSKB = " LNK-DPCNYUIN-RECSKB(4 IDX 1)
       *     DISPLAY "LNK-DPCNYUIN-SRYSKB = " LNK-DPCNYUIN-SRYSKB(4 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SRYSKB2= " LNK-DPCNYUIN-SRYSKB(4 IDX 2)
       *     DISPLAY "LNK-DPCNYUIN-SRYCD = " LNK-DPCNYUIN-SRYCD(4 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SRYCD2= " LNK-DPCNYUIN-SRYCD(4 IDX 2)
       *     DISPLAY "LNK-DPCNYUIN-SURYO = " LNK-DPCNYUIN-SURYO(4 IDX 1)
       *     DISPLAY "LNK-DPCNYUIN-TEN   = " LNK-DPCNYUIN-TEN(4 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(1) = "
+      *              LNK-DPCNYUIN-SAINYUINKBN(4 IDX 1)
+      *     DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(2) = "
+      *              LNK-DPCNYUIN-SAINYUINKBN(4 IDX 2)
+      *     DISPLAY "LNK-DPCNYUIN-SAINYUINKBN(3) = "
+      *              LNK-DPCNYUIN-SAINYUINKBN(4 IDX 3)
       *     END-PERFORM
       *
            .
@@ -5920,6 +5947,11 @@
                    END-IF
                END-IF
            END-PERFORM
+      **     PERFORM      VARYING   IDX1   FROM   1  BY  1
+      **       UNTIL      IDX1     >    31
+      **        DISPLAY "IDX1 = " IDX1 " WRK-TAHOKEN-SHOKUDOU-FLG(IDX1) ="
+      **                WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
+      **     END-PERFORM
       *
       *    同日再入院日の再入院分食事算定について、入退院日を変更する為
       *    の区分をセット
@@ -6128,6 +6160,21 @@
                    END-IF
                    ADD   1             TO  WRK-SKJ7-SKJFTN-SU(SET-IDX1)
                END-IF
+      *        食堂加算
+               IF    WRK-SKJ6-SHOKUDOU(IDX1)  NOT =   SPACE
+                   MOVE  WRK-SKJ6-SHOKUDOU(IDX1)
+                                       TO  WRK-SKJ7-SHOKUDOU(SET-IDX1)
+      *            入院時生活療養費の置換え
+                   IF  (LNK-NYULIFE2-SKJ-SRYCD(IDX1 1) = SPACE) AND
+                       (LNK-NYULIFE2-SKJ-SRYCD(IDX1 2) = SPACE) AND
+                       (LNK-NYULIFE2-SKJ-SRYCD(IDX1 3) = SPACE)
+                         CONTINUE
+                   ELSE
+                       MOVE  "197001670"
+                                       TO  WRK-SKJ7-SHOKUDOU(SET-IDX1)
+                   END-IF
+                   MOVE    SPACE       TO  WRK-SKJ6-SHOKUDOU(IDX1)
+               END-IF
       *        食事療養費（昼）
                MOVE      ZERO          TO  IDX2
                MOVE      ZERO          TO  SET-IDX1
@@ -6217,6 +6264,21 @@
                                        TO  WRK-SKJ7-SKJFTN(SET-IDX1)
                    END-IF
                    ADD   1             TO  WRK-SKJ7-SKJFTN-SU(SET-IDX1)
+               END-IF
+      *        食堂加算
+               IF    WRK-SKJ6-SHOKUDOU(IDX1)  NOT =   SPACE
+                   MOVE  WRK-SKJ6-SHOKUDOU(IDX1)
+                                       TO  WRK-SKJ7-SHOKUDOU(SET-IDX1)
+      *            入院時生活療養費の置換え
+                   IF  (LNK-NYULIFE2-SKJ-SRYCD(IDX1 1) = SPACE) AND
+                       (LNK-NYULIFE2-SKJ-SRYCD(IDX1 2) = SPACE) AND
+                       (LNK-NYULIFE2-SKJ-SRYCD(IDX1 3) = SPACE)
+                         CONTINUE
+                   ELSE
+                       MOVE  "197001670"
+                                       TO  WRK-SKJ7-SHOKUDOU(SET-IDX1)
+                   END-IF
+                   MOVE    SPACE       TO  WRK-SKJ6-SHOKUDOU(IDX1)
                END-IF
       *        食事療養費（夕）
                MOVE      ZERO          TO  IDX3
@@ -6317,7 +6379,7 @@
       *        食堂加算
                IF    WRK-SKJ6-SHOKUDOU(IDX1)  NOT =   SPACE
                    MOVE  WRK-SKJ6-SHOKUDOU(IDX1)
-                                       TO  WRK-SKJ7-SHOKUDOU(IDX1)
+                                       TO  WRK-SKJ7-SHOKUDOU(SET-IDX1)
       *            入院時生活療養費の置換え
                    IF  (LNK-NYULIFE2-SKJ-SRYCD(IDX1 1) = SPACE) AND
                        (LNK-NYULIFE2-SKJ-SRYCD(IDX1 2) = SPACE) AND
@@ -6325,8 +6387,9 @@
                          CONTINUE
                    ELSE
                        MOVE  "197001670"
-                                       TO  WRK-SKJ7-SHOKUDOU(IDX1)
+                                       TO  WRK-SKJ7-SHOKUDOU(SET-IDX1)
                    END-IF
+                   MOVE    SPACE       TO  WRK-SKJ6-SHOKUDOU(IDX1)
                END-IF
            END-PERFORM
       *
@@ -7520,6 +7583,10 @@
       *****************************************************************
        2105-BTUNUM-HENSHU-SEC        SECTION.
       *
+           MOVE    SPACE                   TO  TABLE-BTUKBN
+           INITIALIZE                          TABLE-BTUKBN
+           MOVE    SPACE                   TO  TABLE-BTUKBN2
+           INITIALIZE                          TABLE-BTUKBN2
       *    患者入院履歴の取得
            INITIALIZE                          PTNYUINRRK-REC
            MOVE    LNK-DPCNYUIN-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
@@ -7538,6 +7605,9 @@
                PERFORM  UNTIL  
                   ( FLG-PTNYUINRRK         =   1  )
       *
+      **           DISPLAY "PTNYUINRRK-FETCH"
+      **           DISPLAY "PTNYUINRRK-TENNYUYMD = " PTNYUINRRK-TENNYUYMD
+      **           DISPLAY "PTNYUINRRK-TENSTUYMD = " PTNYUINRRK-TENSTUYMD
                    MOVE    1     TO     IDX1
                    MOVE    31    TO     IDX2
                    IF      LNK-DPCNYUIN-SANTEIYM
@@ -7553,13 +7623,23 @@
                        MOVE   WRK-DAY-9  TO    IDX2
                    END-IF
       *
+      **             DISPLAY "IDX1 = " IDX1
+      **             DISPLAY "IDX2 = " IDX2
                    PERFORM   VARYING   IDX    FROM  IDX1   BY  1
                              UNTIL    (IDX    >   IDX2)
-      *                 病棟番号セット
-                        MOVE   PTNYUINRRK-BTUNUM  TO  WRK-DAY-X
-                        MOVE   WRK-DAY-9          TO  TBL-BTUNUM(IDX)
-                        MOVE   PTNYUINRRK-NYUINKA TO  TBL-SRYKA(IDX)
-                        MOVE   PTNYUINRRK-DRCD1   TO  TBL-DRCD(IDX)
+      *                 病棟番号セット（既にセット済の場合は同日再入院日
+      *                                 となることから別項目にセットする）
+                        IF     TBL-BTUNUM(IDX)  =   ZERO
+                          MOVE   PTNYUINRRK-BTUNUM  TO  WRK-DAY-X
+                          MOVE   WRK-DAY-9          TO  TBL-BTUNUM(IDX)
+                          MOVE   PTNYUINRRK-NYUINKA TO  TBL-SRYKA(IDX)
+                          MOVE   PTNYUINRRK-DRCD1   TO  TBL-DRCD(IDX)
+                        ELSE
+                          MOVE   PTNYUINRRK-BTUNUM  TO  WRK-DAY-X
+                          MOVE   WRK-DAY-9          TO  TBL-BTUNUM2(IDX)
+                          MOVE   PTNYUINRRK-NYUINKA TO  TBL-SRYKA2(IDX)
+                          MOVE   PTNYUINRRK-DRCD1   TO  TBL-DRCD2(IDX)
+                        END-IF
                    END-PERFORM
                    MOVE    "tbl_ptnyuinrrk"       TO  MCP-TABLE
                    MOVE    "key44"             TO  MCP-PATHNAME
@@ -7636,6 +7716,83 @@
                END-IF
            END-PERFORM
       *
+      *    病棟区分セット（同日再入院分）
+           PERFORM   VARYING   IDX   FROM   1  BY  1
+                     UNTIL    (IDX    >   31)
+               IF   TBL-BTUNUM2(IDX)    NOT =   ZERO
+                   IF    IDX    >   1
+                        COMPUTE   IDX3   =   IDX   -  1
+                        IF    TBL-BTUNUM2(IDX)   =  TBL-BTUNUM2(IDX3)
+                           MOVE  TBL-BTUKBN2(IDX3)
+                                          TO  TBL-BTUKBN2(IDX)
+                        ELSE
+                           MOVE    ZERO           TO  FLG-SYSKANRI
+                           INITIALIZE                 SYSKANRI-REC
+                           MOVE    "5001"         TO  SYS-KANRICD
+                           MOVE    TBL-BTUNUM2(IDX)
+                                                  TO  SYS-KBNCD
+                           MOVE    LNK-DPCNYUIN-SANTEIYM
+                                                  TO  SYS-STYUKYMD(1:6)
+                           MOVE    "01"           TO  SYS-STYUKYMD(7:2)
+                           MOVE    SYS-STYUKYMD   TO  SYS-EDYUKYMD
+                           MOVE    SPA-HOSPNUM    TO  SYS-HOSPNUM
+                           MOVE    SYSKANRI-REC   TO  MCPDATA-REC
+                           MOVE    "tbl_syskanri" TO  MCP-TABLE
+                           MOVE    "key10"        TO  MCP-PATHNAME
+                           PERFORM   900-DBSELECT-SEC
+                           IF      MCP-RC         =   ZERO
+                               MOVE    "tbl_syskanri"
+                                                  TO  MCP-TABLE
+                               MOVE    "key10"    TO  MCP-PATHNAME
+                               PERFORM  910-SYSKANRI-READ-SEC
+                               MOVE     SYS-5001-BTU-SBT
+                                                  TO  TBL-BTUKBN2(IDX)
+                           END-IF
+                           MOVE    "tbl_syskanri" TO  MCP-TABLE
+                           MOVE    "key10"        TO  MCP-PATHNAME
+                           PERFORM   900-CLOSE-SEC
+                        END-IF
+                   ELSE
+                        MOVE    ZERO              TO  FLG-SYSKANRI
+                        INITIALIZE                    SYSKANRI-REC
+                        MOVE    "5001"            TO  SYS-KANRICD
+                        MOVE    TBL-BTUNUM2(IDX)  TO  SYS-KBNCD
+                        MOVE    LNK-DPCNYUIN-SANTEIYM
+                                                  TO  SYS-STYUKYMD(1:6)
+                        MOVE    "01"              TO  SYS-STYUKYMD(7:2)
+                        MOVE    SYS-STYUKYMD      TO  SYS-EDYUKYMD
+                        MOVE    SPA-HOSPNUM       TO  SYS-HOSPNUM
+                        MOVE    SYSKANRI-REC      TO  MCPDATA-REC
+                        MOVE    "tbl_syskanri"    TO  MCP-TABLE
+                        MOVE    "key10"           TO  MCP-PATHNAME
+                        PERFORM   900-DBSELECT-SEC
+                        IF      MCP-RC            =   ZERO
+                            MOVE    "tbl_syskanri" TO MCP-TABLE
+                            MOVE    "key10"       TO  MCP-PATHNAME
+                            PERFORM  910-SYSKANRI-READ-SEC
+                            MOVE     SYS-5001-BTU-SBT
+                                                  TO  TBL-BTUKBN2(IDX)
+                        END-IF
+                        MOVE    "tbl_syskanri"    TO  MCP-TABLE
+                        MOVE    "key10"           TO  MCP-PATHNAME
+                        PERFORM   900-CLOSE-SEC
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *     PERFORM    VARYING   SET-IDX1   FROM  1  BY  1
+      *       UNTIL    SET-IDX1   >   31
+      *         DISPLAY "SET-IDX1 = " SET-IDX1
+      *         DISPLAY "TBL-BTUNUM = " TBL-BTUNUM(SET-IDX1)
+      *         DISPLAY "TBL-BTUKBN = " TBL-BTUKBN(SET-IDX1)
+      *         DISPLAY "TBL-SRYKA  = " TBL-SRYKA(SET-IDX1)
+      *         DISPLAY "TBL-DRCD   = " TBL-DRCD(SET-IDX1)
+      *         DISPLAY "TBL-BTUNUM2 = " TBL-BTUNUM2(SET-IDX1)
+      *         DISPLAY "TBL-BTUKBN2 = " TBL-BTUKBN2(SET-IDX1)
+      *         DISPLAY "TBL-SRYKA2  = " TBL-SRYKA2(SET-IDX1)
+      *         DISPLAY "TBL-DRCD2   = " TBL-DRCD2(SET-IDX1)
+      *     END-PERFORM
+      *
       *    レセ電サブ返却エリアへの環境療養セット
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
@@ -7663,25 +7820,79 @@
       **          END-IF
       *         病棟番号セット（食事）
       **          IF    LNK-DPCNYUIN-SRYCD(3 IDX1 1)   NOT =  SPACE
-                    MOVE   TBL-BTUNUM(IDX1)   TO
+                    IF    LNK-DPCNYUIN-SANTEIYM  <=  "201709"
+                       MOVE   TBL-BTUNUM(IDX1)   TO
                                           LNK-DPCNYUIN-BTUNUM(3 IDX1)
-                    MOVE   TBL-BTUKBN(IDX1)   TO
+                       MOVE   TBL-BTUKBN(IDX1)   TO
                                           LNK-DPCNYUIN-BTUKBN(3 IDX1)
-                    MOVE   TBL-SRYKA(IDX1)    TO
+                       MOVE   TBL-SRYKA(IDX1)    TO
                                           LNK-DPCNYUIN-SRYKA(3 IDX1)
-                    MOVE   TBL-DRCD(IDX1)     TO
+                       MOVE   TBL-DRCD(IDX1)     TO
                                           LNK-DPCNYUIN-DRCD(3 IDX1)
+                    ELSE
+                       MOVE   LNK-DPCNYUIN-DD(3 IDX1)   TO  WRK-SET-DD
+                       MOVE   TBL-BTUNUM(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUNUM(3 IDX1)
+                       MOVE   TBL-BTUKBN(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUKBN(3 IDX1)
+                       MOVE   TBL-SRYKA(WRK-SET-DD)    TO
+                                          LNK-DPCNYUIN-SRYKA(3 IDX1)
+                       MOVE   TBL-DRCD(WRK-SET-DD)     TO
+                                          LNK-DPCNYUIN-DRCD(3 IDX1)
+                       PERFORM   VARYING  IDX2 FROM  1 BY  1
+                         UNTIL  (IDX2      >   100)    OR
+                               (LNK-DPCNYUIN-SRYCD(3 IDX1 IDX2) = SPACE)
+                             IF   LNK-DPCNYUIN-SAINYUINKBN(3 IDX1 IDX2)
+                                                       =    "1"
+                                MOVE   TBL-BTUNUM2(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUNUM2(3 IDX1)
+                                MOVE   TBL-BTUKBN2(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUKBN2(3 IDX1)
+                                MOVE   TBL-SRYKA2(WRK-SET-DD)    TO
+                                          LNK-DPCNYUIN-SRYKA2(3 IDX1)
+                                MOVE   TBL-DRCD2(WRK-SET-DD)     TO
+                                          LNK-DPCNYUIN-DRCD2(3 IDX1)
+                             END-IF
+                       END-PERFORM
+                    END-IF
       **          END-IF
       *         病棟番号セット（生活療養）
       **          IF    LNK-DPCNYUIN-SRYCD(4 IDX1 1)   NOT =  SPACE
-                    MOVE   TBL-BTUNUM(IDX1)   TO
+                    IF    LNK-DPCNYUIN-SANTEIYM  <=  "201709"
+                       MOVE   TBL-BTUNUM(IDX1)   TO
                                           LNK-DPCNYUIN-BTUNUM(4 IDX1)
-                    MOVE   TBL-BTUKBN(IDX1)   TO
+                       MOVE   TBL-BTUKBN(IDX1)   TO
                                           LNK-DPCNYUIN-BTUKBN(4 IDX1)
-                    MOVE   TBL-SRYKA(IDX1)    TO
+                       MOVE   TBL-SRYKA(IDX1)    TO
                                           LNK-DPCNYUIN-SRYKA(4 IDX1)
-                    MOVE   TBL-DRCD(IDX1)     TO
+                       MOVE   TBL-DRCD(IDX1)     TO
                                           LNK-DPCNYUIN-DRCD(4 IDX1)
+                    ELSE
+                       MOVE   LNK-DPCNYUIN-DD(4 IDX1)   TO  WRK-SET-DD
+                       MOVE   TBL-BTUNUM(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUNUM(4 IDX1)
+                       MOVE   TBL-BTUKBN(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUKBN(4 IDX1)
+                       MOVE   TBL-SRYKA(WRK-SET-DD)    TO
+                                          LNK-DPCNYUIN-SRYKA(4 IDX1)
+                       MOVE   TBL-DRCD(WRK-SET-DD)     TO
+                                          LNK-DPCNYUIN-DRCD(4 IDX1)
+                       PERFORM   VARYING  IDX2 FROM  1 BY  1
+                         UNTIL  (IDX2      >   100)    OR
+                               (LNK-DPCNYUIN-SRYCD(4 IDX1 IDX2) = SPACE)
+                             IF   LNK-DPCNYUIN-SAINYUINKBN(4 IDX1 IDX2)
+                                                       =    "1"
+                                MOVE   TBL-BTUNUM2(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUNUM2(4 IDX1)
+                                MOVE   TBL-BTUKBN2(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUKBN2(4 IDX1)
+                                MOVE   TBL-SRYKA2(WRK-SET-DD)    TO
+                                          LNK-DPCNYUIN-SRYKA2(4 IDX1)
+                                MOVE   TBL-DRCD2(WRK-SET-DD)     TO
+                                          LNK-DPCNYUIN-DRCD2(4 IDX1)
+                             END-IF
+                       END-PERFORM
+                    END-IF
       **          END-IF
       *         病棟番号セット（環境療養）
       **          IF    LNK-DPCNYUIN-SRYCD(5 IDX1 1)   NOT =  SPACE
@@ -7699,6 +7910,7 @@
            .
        2105-BTUNUM-HENSHU-EXT.
            EXIT.
+      *
       *****************************************************************
       *    点数マスタ退避ワークチェック処理
       *****************************************************************
