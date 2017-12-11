@@ -922,7 +922,7 @@
                    WHEN    "Yes"
                        MOVE    "1"             TO  T01-RECEDEN-CHK
                    WHEN    OTHER
-                       MOVE    "2"             TO  T01-RECEDEN-CHK
+                       MOVE    "0"             TO  T01-RECEDEN-CHK
                END-EVALUATE
       *****END-IF
       *
