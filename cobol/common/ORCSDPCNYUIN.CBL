@@ -551,7 +551,7 @@
       *     DISPLAY "------------HENKYAKU--------------------------"
       *     DISPLAY "LNK-DPCNYUIN-PTID = " LNK-DPCNYUIN-PTID
       *     PERFORM   VARYING  IDX FROM 1 BY 1
-      *               UNTIL IDX > 31
+      *               UNTIL IDX > 40
       *     DISPLAY "IDX = " IDX
       *     DISPLAY "LNK-DPCNYUIN-PTID = " LNK-DPCNYUIN-PTID
       *     DISPLAY "LNK-DPCNYUIN-SRYKA   = " LNK-DPCNYUIN-SRYKA(3 IDX)
@@ -2284,9 +2284,9 @@
       *****************************************************************
        210-GAIHAKU-SET-SEC            SECTION.
       *
-           DISPLAY "210-GAIHAKU-SET-SEC"
+      *     DISPLAY "210-GAIHAKU-SET-SEC"
            MOVE   NACCT-DAY(IDX1)     TO    WRK-GAIHAKU-KBN(IDX1)
-           DISPLAY "WRK-SRYKBN(IDX1) = " WRK-SRYKBN(IDX1)
+      *     DISPLAY "WRK-SRYKBN(IDX1) = " WRK-SRYKBN(IDX1)
       *
            EVALUATE   WRK-SRYKBN(IDX1)
               WHEN     "90"
@@ -2331,8 +2331,8 @@
                       PERFORM   2101-GAIHAKU-GENSAN-SEC
                  END-EVALUATE
            END-EVALUATE
-           DISPLAY "IDX1 = " IDX1
-           DISPLAY "WRK-GAIHAKU(IDX1) = " WRK-GAIHAKU(IDX1)
+      *     DISPLAY "IDX1 = " IDX1
+      *     DISPLAY "WRK-GAIHAKU(IDX1) = " WRK-GAIHAKU(IDX1)
       *
            .
        210-GAIHAKU-SET-EXT.
@@ -6485,6 +6485,8 @@
            MOVE       ZERO    TO   IDX3
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     62)
+      *           DISPLAY "LNK-DPCNYUIN-SET"
+      *           DISPLAY "IDX1 = " IDX1
       *          DISPLAY "WRK-SKJ7  MATOME AFTER"
       *          DISPLAY "IDX1 = " IDX1
       *          DISPLAY "WRK-SKJ7-HKNCOMBI-DAY(IDX1) = "
@@ -6804,6 +6806,7 @@
       *-----------------------------------------------
       **              MOVE   IDX1       TO    IDX3
                     ADD     1         TO    IDX3
+      *              DISPLAY "IDX3 = " IDX3
       *-----------------------------------------------
                     MOVE  WRK-SKJ7-HKNCOMBI-DAY(IDX1) TO
                                     LNK-DPCNYUIN-HKNCOMBI(4 IDX3)
@@ -7803,7 +7806,7 @@
       *
       *    レセ電サブ返却エリアへの環境療養セット
            PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     31)
+                      UNTIL     (IDX1   >     40)
       *         病棟番号セット（入院料）
       **          IF    LNK-DPCNYUIN-SRYCD(1 IDX1 1)   NOT =  SPACE
                     MOVE   TBL-BTUNUM(IDX1)   TO

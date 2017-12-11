@@ -30,7 +30,7 @@
       *                  添字５：生活療養（環境療養））
              04  LNK-DPCNYUIN-HENKYAKU-TABLE       OCCURS  5.
       *入院料返却テーブル
-               05  LNK-DPCNYUIN-HENKYAKU-TBL       OCCURS  31.
+               05  LNK-DPCNYUIN-HENKYAKU-TBL       OCCURS  40.
       *保険組合せ
                    07  LNK-DPCNYUIN-HKNCOMBI       PIC  9(04).
       *病棟番号

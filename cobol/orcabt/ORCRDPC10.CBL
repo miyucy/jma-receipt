@@ -5188,7 +5188,7 @@
            PERFORM VARYING IDZ1    FROM    3   BY  1
                    UNTIL   IDZ1    >       5
                PERFORM VARYING IDZ2    FROM    1   BY  1
-                       UNTIL   IDZ2    >       31
+                       UNTIL   IDZ2    >       40
       *
                    MOVE    ZERO                    TO  FLG-CHK
       *
