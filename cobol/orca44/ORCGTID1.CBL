@@ -74,6 +74,7 @@
       *
        01  SCRAREA.
            COPY    "ORCA44SCRAREA.INC".
+
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
