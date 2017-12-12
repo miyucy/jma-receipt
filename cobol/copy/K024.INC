@@ -13,10 +13,6 @@
                   06  K024-KANRILIST-ROW    PIC S9(9)   BINARY.
                   06  K024-KANRILIST-SELECT
                           PIC X       OCCURS  100 TIMES.
-                  06  K024-KANRILIST-FGCOLOR
-                          PIC X(256)  OCCURS  100 TIMES.
-                  06  K024-KANRILIST-BGCOLOR
-                          PIC X(256)  OCCURS  100 TIMES.
                   06  K024-ITEM       OCCURS  100 TIMES.
                     07  K024-TNUM       PIC X(3).
                     07  K024-TTOUYYMD   PIC X(16).
@@ -27,10 +23,6 @@
                   06  K024-MEILIST-ROW    PIC S9(9)   BINARY.
                   06  K024-MEILIST-SELECT
                           PIC X       OCCURS  500 TIMES.
-                  06  K024-MEILIST-FGCOLOR
-                          PIC X(256)  OCCURS  500 TIMES.
-                  06  K024-MEILIST-BGCOLOR
-                          PIC X(256)  OCCURS  500 TIMES.
                   06  K024-ITEM       OCCURS  500 TIMES.
                     07  K024-TBANGO     PIC X(3).
                     07  K024-TMEISAI    PIC X(80).

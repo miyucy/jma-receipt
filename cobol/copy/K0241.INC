@@ -13,10 +13,6 @@
                   06  K0241-ROW   PIC S9(9)   BINARY.
                   06  K0241-SELECTDATA
                           PIC X       OCCURS  50 TIMES.
-                  06  K0241-FGCOLOR
-                          PIC X(256)  OCCURS  50 TIMES.
-                  06  K0241-BGCOLOR
-                          PIC X(256)  OCCURS  50 TIMES.
                   06  K0241-ITEM      OCCURS  50 TIMES.
                     07  K0241-TNUM       PIC X(3).
                     07  K0241-TNAME      PIC X(100).

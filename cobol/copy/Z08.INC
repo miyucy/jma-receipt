@@ -46,10 +46,6 @@
                   05  Z08-SHONAMELIST-ROW PIC S9(9)   BINARY.
                   05  Z08-SHONAMELIST-SELECT
                           PIC X       OCCURS  200 TIMES.
-                  05  Z08-FGCOLOR
-                          PIC X(256)  OCCURS  200 TIMES.
-                  05  Z08-BGCOLOR
-                          PIC X(256)  OCCURS  200 TIMES.
                   05  Z08-ITEM        OCCURS  200 TIMES.
                     06  Z08-RENNUM  PIC X(3).
                     06  Z08-SNAME   PIC X(200).

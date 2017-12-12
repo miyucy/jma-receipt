@@ -13,8 +13,6 @@ K0241 { #GtkWindow
         count int;
         row int;
         selectdata bool[50];
-        fgcolor varchar(256)[50];
-        bgcolor varchar(256)[50];
         item {
           column1 varchar(3);
           column2 varchar(100);
