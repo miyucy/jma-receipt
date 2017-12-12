@@ -604,10 +604,24 @@
            CALL    "ORCSPRGOPTION"     USING   SPA-AREA
                                                ORCSPRGOPTIONAREA
            MOVE    SPACE               TO  WRK-PARA
-           IF      ORCSPRGOPTION-OT-TYPE   =   1
-      *        半角で１文字目を値とする
-               MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
-           END-IF
+           EVALUATE    WRK-PARA-NAME
+           WHEN    "API_CUSTOM_ID"
+               MOVE    ORCSPRGOPTION-OT-PARA (1:30)
+                                       TO  WRK-PARA
+           WHEN    OTHER
+               IF      ORCSPRGOPTION-OT-TYPE   =   1
+      *            半角で１文字目を値とする
+                   MOVE    ORCSPRGOPTION-OT-PARA(1:1)
+                                       TO  WRK-PARA(1:1)
+               END-IF
+           END-EVALUATE
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    WRK-PARA        TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT
+                                   TO  WRK-PARA
            .
        1001-OPTION-CALL-EXT.
            EXIT.
