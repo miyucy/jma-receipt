@@ -93,10 +93,6 @@
       *                                     （記録）対応修正
       *  04.08.10    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
       *                                     での食事算定対応
-      *  04.08.11    NACL-門脇    17/12/13  包括点数の公害補償法減点分のマイナス
-      *                                     表示対応
-      *  04.08.12    NACL-藤原    18/03/28  平成３０年４月改正対応
-      *  04.08.13    NACL-門脇    18/03/29  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -498,11 +494,9 @@
                 "ウイルス抗体価精密測定".                        
                 05  FILLER                 PIC X(50)   VALUE
                 "血漿蛋白免疫学的検査".                        
-                05  FILLER                 PIC X(50)   VALUE
-                "悪性腫瘍遺伝子検査".
             03  WRK-CONS-KENSACOMMENT-R    REDEFINES
                                            WRK-CONS-KENSACOMMENT-G.
-                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  12.
+                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  11.
       *外来迅速検体検査加算算定日テーブル
        01  WRK-KENTAIKASAN-TABLE.
            03  WRK-KENTAIKASAN             PIC 9(01)
@@ -827,8 +821,6 @@
            03  CONS-TEIGEN4    PIC X(09)   VALUE   "630010007".
       *    包括点数の治験減点分
            03  CONS-GENTEN     PIC X(09)   VALUE   "199000210".
-      *    包括点数の公害補償法減点分
-           03  CONS-GENTEN2    PIC X(09)   VALUE   "199000410".
       *---- (01.00.05) LINE ADD START --------------------------------
       *フリーコメント
       *    電話再診（　回）
@@ -1531,7 +1523,6 @@
                                                   OR  CONS-TEIGEN3
                                                   OR  CONS-TEIGEN4
                                                   OR  CONS-GENTEN
-                                                  OR  CONS-GENTEN2
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
                        IF     (RECE120-SRYKBN     =   "31" OR "32" )
@@ -2148,10 +2139,7 @@
                ADD     1                  TO  WRK-ZAIWMAX (2)
                                               WRK-ZAIWMAX (6)
                MOVE    WRK-ZAIWMAX (2)    TO  IDZ   
-               IF      WRK-TNS-HOUKNSKBN  =   11
-                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
-                                          TO    TBL-ZAIW-NAME (2 IDZ)
-               ELSE
+               IF      WRK-TNS-HOUKNSKBN  <   11
                    STRING  WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
                                               DELIMITED  BY  SPACE
                            "（"               DELIMITED  BY  SIZE
@@ -2159,6 +2147,9 @@
                            "項目）"           DELIMITED  BY  SIZE
                                           INTO    TBL-ZAIW-NAME (2 IDZ)
                    END-STRING
+               ELSE
+                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
+                                          TO    TBL-ZAIW-NAME (2 IDZ)
                END-IF
                PERFORM VARYING IDX FROM   200 BY  -1
                        UNTIL   IDX <      1
@@ -3889,8 +3880,7 @@
                                        "120002470" OR "120002570" OR
                                        "120003270" OR "120003470" OR
                                        "120003570" OR "120003710" OR
-                                       "120003970" OR "120004270" OR
-                                       "120004570"                )
+                                       "120003970" OR "120004270")
                  OR (RECE120-SIPPUCOMFLG  =   "1"                 )
                  OR (RECE120-SIPPUFLG     =   "1"                 )
                        MOVE   ZERO   TO   RECE140-SYOHOUFLG

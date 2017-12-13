@@ -48,9 +48,6 @@
       *                                     ¡Êµ­Ï¿¡ËÂÐ±þ½¤Àµ
       *  04.08.09    NACL-ÌçÏÆ    17/10/18  Æþ±¡ÎÁ¤È°Û¤Ê¤ëÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
       *                                     ¤Ç¤Î¿©»ö»»ÄêÂÐ±þ
-      *  04.08.10    NACL-ÌçÏÆ    17/12/13  Êñ³çÅÀ¿ô¤Î¸ø³²Êä½þË¡¸ºÅÀÊ¬¤Î¥Þ¥¤¥Ê¥¹
-      *                                     É½¼¨ÂÐ±þ
-      *  04.08.11    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -412,11 +409,9 @@
                 "¥¦¥¤¥ë¥¹¹³ÂÎ²ÁÀºÌ©Â¬Äê".                        
                 05  FILLER                 PIC X(50)   VALUE
                 "·ìÞùÃÁÇòÌÈ±Ö³ØÅª¸¡ºº".                        
-                05  FILLER                 PIC X(50)   VALUE
-                "°­À­¼ðáç°äÅÁ»Ò¸¡ºº".
             03  WRK-CONS-KENSACOMMENT-R    REDEFINES
                                            WRK-CONS-KENSACOMMENT-G.
-                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  12.
+                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  11.
       *³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»»»ÄêÆü¥Æ¡¼¥Ö¥ë
        01  WRK-KENTAIKASAN-TABLE.
            03  WRK-KENTAIKASAN             PIC 9(01)
@@ -582,8 +577,6 @@
            03  CONS-GENTEN     PIC X(09)   VALUE   "199000210".
       *    ÌôºÞÎÁ¸ºÅÀ¡Ê¹ç»»ÌôºÞÎÁ¾å¸ÂÄ¶¡Ë
            03  CONS-GENTEN2    PIC X(09)   VALUE   "630010001".
-      *    Êñ³çÅÀ¿ô¤Î¸ø³²Êä½þË¡¸ºÅÀÊ¬
-           03  CONS-GENTEN3    PIC X(09)   VALUE   "199000410".
       *
       *¥Õ¥ê¡¼¥³¥á¥ó¥È
       *    ¥Õ¥ê¡¼¥³¥á¥ó¥È 
@@ -1368,7 +1361,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                        IF      RECE85-SRYCD(IDX) =   CONS-TEIGEN
                                                  OR  CONS-GENTEN
                                                  OR  CONS-GENTEN2
-                                                 OR  CONS-GENTEN3
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
       ***>             IF    ( RECE84-SRYKBN     =   "90" OR "92"      )
@@ -1754,10 +1746,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                ADD     1                  TO  WRK-ZAIWMAX (2)
                                               WRK-ZAIWMAX (6)
                MOVE    WRK-ZAIWMAX (2)    TO  IDZ   
-               IF      WRK-TNS-HOUKNSKBN  =   11
-                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
-                                          TO    TBL-ZAIW-NAME (2 IDZ)
-               ELSE
+               IF      WRK-TNS-HOUKNSKBN  <   11
                    STRING  WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
                                               DELIMITED  BY  SPACE
                            "¡Ê"               DELIMITED  BY  SIZE
@@ -1765,6 +1754,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                            "¹àÌÜ¡Ë"           DELIMITED  BY  SIZE
                                           INTO    TBL-ZAIW-NAME (2 IDZ)
                    END-STRING
+               ELSE
+                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
+                                          TO    TBL-ZAIW-NAME (2 IDZ)
                END-IF
                PERFORM VARYING IDX FROM   200 BY  -1
                        UNTIL   IDX <      1
