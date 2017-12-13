@@ -549,10 +549,6 @@
                                TO  SS009-SRYSYUKBN
                                                    (CNT-ZAINUM)
       *
-           MOVE    HCM34S01-ZAISKBKBN (IDX4)
-                               TO  SS009-ZAISKBKBN
-                                                   (CNT-ZAINUM)
-      *
            MOVE    HCM34S01-ZAITEN (IDX4)
                                TO  SS009-ZAITEN
                                                    (CNT-ZAINUM)
