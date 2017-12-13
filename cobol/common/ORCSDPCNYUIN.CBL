@@ -7841,6 +7841,7 @@
                        MOVE   TBL-DRCD(IDX1)     TO
                                           LNK-DPCNYUIN-DRCD(3 IDX1)
                     ELSE
+                     IF   LNK-DPCNYUIN-DD(3 IDX1)  NOT =   ZERO
                        MOVE   LNK-DPCNYUIN-DD(3 IDX1)   TO  WRK-SET-DD
                        MOVE   TBL-BTUNUM(WRK-SET-DD)   TO
                                           LNK-DPCNYUIN-BTUNUM(3 IDX1)
@@ -7865,6 +7866,7 @@
                                           LNK-DPCNYUIN-DRCD2(3 IDX1)
                              END-IF
                        END-PERFORM
+                     END-IF
                     END-IF
       **          END-IF
       *         病棟番号セット（生活療養）
@@ -7879,6 +7881,7 @@
                        MOVE   TBL-DRCD(IDX1)     TO
                                           LNK-DPCNYUIN-DRCD(4 IDX1)
                     ELSE
+                     IF   LNK-DPCNYUIN-DD(4 IDX1)  NOT =   ZERO
                        MOVE   LNK-DPCNYUIN-DD(4 IDX1)   TO  WRK-SET-DD
                        MOVE   TBL-BTUNUM(WRK-SET-DD)   TO
                                           LNK-DPCNYUIN-BTUNUM(4 IDX1)
@@ -7903,6 +7906,7 @@
                                           LNK-DPCNYUIN-DRCD2(4 IDX1)
                              END-IF
                        END-PERFORM
+                     END-IF
                     END-IF
       **          END-IF
       *         病棟番号セット（環境療養）
