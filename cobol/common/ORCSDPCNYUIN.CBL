@@ -7804,9 +7804,10 @@
       *         DISPLAY "TBL-DRCD2   = " TBL-DRCD2(SET-IDX1)
       *     END-PERFORM
       *
-      *    レセ電サブ返却エリアへの環境療養セット
+      *    レセ電サブ返却エリアへのセット
+           
            PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     40)
+                      UNTIL     (IDX1   >     31)
       *         病棟番号セット（入院料）
       **          IF    LNK-DPCNYUIN-SRYCD(1 IDX1 1)   NOT =  SPACE
                     MOVE   TBL-BTUNUM(IDX1)   TO
@@ -7829,86 +7830,6 @@
                     MOVE   TBL-DRCD(IDX1)     TO
                                           LNK-DPCNYUIN-DRCD(2 IDX1)
       **          END-IF
-      *         病棟番号セット（食事）
-      **          IF    LNK-DPCNYUIN-SRYCD(3 IDX1 1)   NOT =  SPACE
-                    IF    LNK-DPCNYUIN-SANTEIYM  <=  "201709"
-                       MOVE   TBL-BTUNUM(IDX1)   TO
-                                          LNK-DPCNYUIN-BTUNUM(3 IDX1)
-                       MOVE   TBL-BTUKBN(IDX1)   TO
-                                          LNK-DPCNYUIN-BTUKBN(3 IDX1)
-                       MOVE   TBL-SRYKA(IDX1)    TO
-                                          LNK-DPCNYUIN-SRYKA(3 IDX1)
-                       MOVE   TBL-DRCD(IDX1)     TO
-                                          LNK-DPCNYUIN-DRCD(3 IDX1)
-                    ELSE
-                     IF   LNK-DPCNYUIN-DD(3 IDX1)  NOT =   ZERO
-                       MOVE   LNK-DPCNYUIN-DD(3 IDX1)   TO  WRK-SET-DD
-                       MOVE   TBL-BTUNUM(WRK-SET-DD)   TO
-                                          LNK-DPCNYUIN-BTUNUM(3 IDX1)
-                       MOVE   TBL-BTUKBN(WRK-SET-DD)   TO
-                                          LNK-DPCNYUIN-BTUKBN(3 IDX1)
-                       MOVE   TBL-SRYKA(WRK-SET-DD)    TO
-                                          LNK-DPCNYUIN-SRYKA(3 IDX1)
-                       MOVE   TBL-DRCD(WRK-SET-DD)     TO
-                                          LNK-DPCNYUIN-DRCD(3 IDX1)
-                       PERFORM   VARYING  IDX2 FROM  1 BY  1
-                         UNTIL  (IDX2      >   100)    OR
-                               (LNK-DPCNYUIN-SRYCD(3 IDX1 IDX2) = SPACE)
-                             IF   LNK-DPCNYUIN-SAINYUINKBN(3 IDX1 IDX2)
-                                                       =    "1"
-                                MOVE   TBL-BTUNUM2(WRK-SET-DD)   TO
-                                          LNK-DPCNYUIN-BTUNUM2(3 IDX1)
-                                MOVE   TBL-BTUKBN2(WRK-SET-DD)   TO
-                                          LNK-DPCNYUIN-BTUKBN2(3 IDX1)
-                                MOVE   TBL-SRYKA2(WRK-SET-DD)    TO
-                                          LNK-DPCNYUIN-SRYKA2(3 IDX1)
-                                MOVE   TBL-DRCD2(WRK-SET-DD)     TO
-                                          LNK-DPCNYUIN-DRCD2(3 IDX1)
-                             END-IF
-                       END-PERFORM
-                     END-IF
-                    END-IF
-      **          END-IF
-      *         病棟番号セット（生活療養）
-      **          IF    LNK-DPCNYUIN-SRYCD(4 IDX1 1)   NOT =  SPACE
-                    IF    LNK-DPCNYUIN-SANTEIYM  <=  "201709"
-                       MOVE   TBL-BTUNUM(IDX1)   TO
-                                          LNK-DPCNYUIN-BTUNUM(4 IDX1)
-                       MOVE   TBL-BTUKBN(IDX1)   TO
-                                          LNK-DPCNYUIN-BTUKBN(4 IDX1)
-                       MOVE   TBL-SRYKA(IDX1)    TO
-                                          LNK-DPCNYUIN-SRYKA(4 IDX1)
-                       MOVE   TBL-DRCD(IDX1)     TO
-                                          LNK-DPCNYUIN-DRCD(4 IDX1)
-                    ELSE
-                     IF   LNK-DPCNYUIN-DD(4 IDX1)  NOT =   ZERO
-                       MOVE   LNK-DPCNYUIN-DD(4 IDX1)   TO  WRK-SET-DD
-                       MOVE   TBL-BTUNUM(WRK-SET-DD)   TO
-                                          LNK-DPCNYUIN-BTUNUM(4 IDX1)
-                       MOVE   TBL-BTUKBN(WRK-SET-DD)   TO
-                                          LNK-DPCNYUIN-BTUKBN(4 IDX1)
-                       MOVE   TBL-SRYKA(WRK-SET-DD)    TO
-                                          LNK-DPCNYUIN-SRYKA(4 IDX1)
-                       MOVE   TBL-DRCD(WRK-SET-DD)     TO
-                                          LNK-DPCNYUIN-DRCD(4 IDX1)
-                       PERFORM   VARYING  IDX2 FROM  1 BY  1
-                         UNTIL  (IDX2      >   100)    OR
-                               (LNK-DPCNYUIN-SRYCD(4 IDX1 IDX2) = SPACE)
-                             IF   LNK-DPCNYUIN-SAINYUINKBN(4 IDX1 IDX2)
-                                                       =    "1"
-                                MOVE   TBL-BTUNUM2(WRK-SET-DD)   TO
-                                          LNK-DPCNYUIN-BTUNUM2(4 IDX1)
-                                MOVE   TBL-BTUKBN2(WRK-SET-DD)   TO
-                                          LNK-DPCNYUIN-BTUKBN2(4 IDX1)
-                                MOVE   TBL-SRYKA2(WRK-SET-DD)    TO
-                                          LNK-DPCNYUIN-SRYKA2(4 IDX1)
-                                MOVE   TBL-DRCD2(WRK-SET-DD)     TO
-                                          LNK-DPCNYUIN-DRCD2(4 IDX1)
-                             END-IF
-                       END-PERFORM
-                     END-IF
-                    END-IF
-      **          END-IF
       *         病棟番号セット（環境療養）
       **          IF    LNK-DPCNYUIN-SRYCD(5 IDX1 1)   NOT =  SPACE
                     MOVE   TBL-BTUNUM(IDX1)   TO
@@ -7921,6 +7842,92 @@
                                           LNK-DPCNYUIN-DRCD(5 IDX1)
       **          END-IF
            END-PERFORM
+      *
+           IF    LNK-DPCNYUIN-SANTEIYM  <=  "201709"
+              PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+      *         病棟番号セット（食事）
+      **          IF    LNK-DPCNYUIN-SRYCD(3 IDX1 1)   NOT =  SPACE
+                       MOVE   TBL-BTUNUM(IDX1)   TO
+                                          LNK-DPCNYUIN-BTUNUM(3 IDX1)
+                       MOVE   TBL-BTUKBN(IDX1)   TO
+                                          LNK-DPCNYUIN-BTUKBN(3 IDX1)
+                       MOVE   TBL-SRYKA(IDX1)    TO
+                                          LNK-DPCNYUIN-SRYKA(3 IDX1)
+                       MOVE   TBL-DRCD(IDX1)     TO
+                                          LNK-DPCNYUIN-DRCD(3 IDX1)
+      **          END-IF
+      *         病棟番号セット（生活療養）
+      **          IF    LNK-DPCNYUIN-SRYCD(4 IDX1 1)   NOT =  SPACE
+                       MOVE   TBL-BTUNUM(IDX1)   TO
+                                          LNK-DPCNYUIN-BTUNUM(4 IDX1)
+                       MOVE   TBL-BTUKBN(IDX1)   TO
+                                          LNK-DPCNYUIN-BTUKBN(4 IDX1)
+                       MOVE   TBL-SRYKA(IDX1)    TO
+                                          LNK-DPCNYUIN-SRYKA(4 IDX1)
+                       MOVE   TBL-DRCD(IDX1)     TO
+                                          LNK-DPCNYUIN-DRCD(4 IDX1)
+      **          END-IF
+              END-PERFORM
+           ELSE
+              PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     40)
+      *         病棟番号セット（食事）
+                IF   LNK-DPCNYUIN-DD(3 IDX1)  NOT =   ZERO
+                     MOVE   LNK-DPCNYUIN-DD(3 IDX1)   TO  WRK-SET-DD
+                     MOVE   TBL-BTUNUM(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUNUM(3 IDX1)
+                     MOVE   TBL-BTUKBN(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUKBN(3 IDX1)
+                     MOVE   TBL-SRYKA(WRK-SET-DD)    TO
+                                          LNK-DPCNYUIN-SRYKA(3 IDX1)
+                     MOVE   TBL-DRCD(WRK-SET-DD)     TO
+                                          LNK-DPCNYUIN-DRCD(3 IDX1)
+                     PERFORM   VARYING  IDX2 FROM  1 BY  1
+                       UNTIL  (IDX2      >   100)    OR
+                               (LNK-DPCNYUIN-SRYCD(3 IDX1 IDX2) = SPACE)
+                             IF   LNK-DPCNYUIN-SAINYUINKBN(3 IDX1 IDX2)
+                                                       =    "1"
+                                MOVE   TBL-BTUNUM2(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUNUM2(3 IDX1)
+                                MOVE   TBL-BTUKBN2(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUKBN2(3 IDX1)
+                                MOVE   TBL-SRYKA2(WRK-SET-DD)    TO
+                                          LNK-DPCNYUIN-SRYKA2(3 IDX1)
+                                MOVE   TBL-DRCD2(WRK-SET-DD)     TO
+                                          LNK-DPCNYUIN-DRCD2(3 IDX1)
+                             END-IF
+                     END-PERFORM
+                END-IF
+      *         病棟番号セット（生活療養）
+                IF   LNK-DPCNYUIN-DD(4 IDX1)  NOT =   ZERO
+                     MOVE   LNK-DPCNYUIN-DD(4 IDX1)   TO  WRK-SET-DD
+                     MOVE   TBL-BTUNUM(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUNUM(4 IDX1)
+                     MOVE   TBL-BTUKBN(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUKBN(4 IDX1)
+                     MOVE   TBL-SRYKA(WRK-SET-DD)    TO
+                                          LNK-DPCNYUIN-SRYKA(4 IDX1)
+                     MOVE   TBL-DRCD(WRK-SET-DD)     TO
+                                          LNK-DPCNYUIN-DRCD(4 IDX1)
+                     PERFORM   VARYING  IDX2 FROM  1 BY  1
+                       UNTIL  (IDX2      >   100)    OR
+                               (LNK-DPCNYUIN-SRYCD(4 IDX1 IDX2) = SPACE)
+                             IF   LNK-DPCNYUIN-SAINYUINKBN(4 IDX1 IDX2)
+                                                       =    "1"
+                                MOVE   TBL-BTUNUM2(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUNUM2(4 IDX1)
+                                MOVE   TBL-BTUKBN2(WRK-SET-DD)   TO
+                                          LNK-DPCNYUIN-BTUKBN2(4 IDX1)
+                                MOVE   TBL-SRYKA2(WRK-SET-DD)    TO
+                                          LNK-DPCNYUIN-SRYKA2(4 IDX1)
+                                MOVE   TBL-DRCD2(WRK-SET-DD)     TO
+                                          LNK-DPCNYUIN-DRCD2(4 IDX1)
+                             END-IF
+                     END-PERFORM
+                END-IF
+              END-PERFORM
+           END-IF
       *
            .
        2105-BTUNUM-HENSHU-EXT.
