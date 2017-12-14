@@ -6032,9 +6032,15 @@
       *            ¼¼ÎÁº¹³Û¤Î¥»¥Ã¥È
                    PERFORM  VARYING IDX  FROM  START-IDX   BY 1
                                 UNTIL   IDX  >    WRK-GETSUMATSU-D
-                       MOVE    SODRNACCT-ORDERID(3:2)
-                                               TO  WRK-ROOMSAGAKU
-                       MOVE    WRK-ROOMSAGAKU  TO   NACCT-DAY(IDX)
+                       IF   SODRNACCT-ORDERID(3:2)   =   "01"
+                            MOVE    PTNYUINRRK-RM-SAGAKU
+                                             TO  WRK-ROOMSAGAKU
+                            MOVE    WRK-ROOMSAGAKU
+                                             TO   NACCT-DAY(IDX)
+                       END-IF
+                       IF   SODRNACCT-ORDERID(3:2)   =   "02"
+                            MOVE    ZERO     TO   NACCT-DAY(IDX)
+                       END-IF
                    END-PERFORM
       *
       *            ¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
@@ -6132,9 +6138,15 @@
       *            ¼¼ÎÁº¹³Û¤Î¥»¥Ã¥È
                    PERFORM  VARYING IDX  FROM  START-IDX   BY 1
                                 UNTIL   IDX  >    WRK-GETSUMATSU-D
-                       MOVE    SODRNACCT-ORDERID(3:2)
-                                               TO  WRK-ROOMSAGAKU
-                       MOVE    WRK-ROOMSAGAKU  TO   NACCT-DAY(IDX)
+                       IF   SODRNACCT-ORDERID(3:2)   =   "01"
+                            MOVE    PTNYUINRRK-RM-SAGAKU
+                                             TO  WRK-ROOMSAGAKU
+                            MOVE    WRK-ROOMSAGAKU
+                                             TO   NACCT-DAY(IDX)
+                       END-IF
+                       IF   SODRNACCT-ORDERID(3:2)   =   "02"
+                            MOVE    ZERO     TO   NACCT-DAY(IDX)
+                       END-IF
                    END-PERFORM
       *
       *            ¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
@@ -6248,9 +6260,15 @@
       *            ¼¼ÎÁº¹³Û¤Î¥»¥Ã¥È
                    PERFORM  VARYING IDX  FROM  START-IDX   BY 1
                                 UNTIL   IDX  >    WRK-GETSUMATSU-D
-                       MOVE    SODRNACCT-ORDERID(3:2)
-                                               TO  WRK-ROOMSAGAKU
-                       MOVE    WRK-ROOMSAGAKU  TO   NACCT-DAY(IDX)
+                       IF   SODRNACCT-ORDERID(3:2)   =   "01"
+                            MOVE    PTNYUINRRK-RM-SAGAKU
+                                             TO  WRK-ROOMSAGAKU
+                            MOVE    WRK-ROOMSAGAKU
+                                             TO   NACCT-DAY(IDX)
+                       END-IF
+                       IF   SODRNACCT-ORDERID(3:2)   =   "02"
+                            MOVE    ZERO     TO   NACCT-DAY(IDX)
+                       END-IF
                    END-PERFORM
       *
       *            ¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
