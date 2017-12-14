@@ -2168,7 +2168,6 @@
       *    診療コードのみ対象
       *****IF      CHK-CD(1:1)         =   "1"
       *
-      *
                EVALUATE    CHK-CHKKBN
                    WHEN    "5"
       *            同月内チェック
@@ -5277,6 +5276,11 @@
                                         -   SPA-COM-KZM   (IDX-T) )
                    IF      SPA-COM-KZMERR (IDX-T)  =   2  OR  3
                        MOVE    "0021"          TO  SPA-ERRCD
+                   END-IF
+      *H29.12
+      *            数量ゼロはエラーなし
+                   IF      (WRK-SURYO          =   ZERO )
+                       MOVE    SPACE           TO  SPA-ERRCD
                    END-IF
       *
       *            下限値＜データ≦上限値
