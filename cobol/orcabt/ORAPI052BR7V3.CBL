@@ -824,7 +824,7 @@
            END-IF
       *
            IF     (FLG-CHK             =   1     )
-               GO      TO      20034-ZAISET-HEN-EXT
+               GO      TO      20012-ZAISET-HEN-EXT
            END-IF
       *
            MOVE    ZERO                TO  WRK-ZAITEN
@@ -885,12 +885,22 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *    ∂‚≥€ ‘Ω∏
-           IF      IDM3               >   ZERO
+           IF     (IDM3               >   ZERO )
+             AND  (IDM2               <=  50   )
                PERFORM 200342-KINGAKU-HEN-SEC
            END-IF
       *
+      *    50∑Ô∞ æÂ§¢§Í
+           IF      FLG-ERR             =   2
+               MOVE    "True"              TO
+                                       MDCRES-MEDICAL-INF-OVERFLOW (IDM)
+           ELSE
+               MOVE    "False"             TO
+                                       MDCRES-MEDICAL-INF-OVERFLOW (IDM)
+           END-IF
+      *
            .
-       20034-ZAISET-HEN-EXT.
+       20012-ZAISET-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -900,21 +910,12 @@
       *
            ADD     1                   TO  IDM3
            IF      IDM3                =   1
-      *??
-                display "idm2=" idm2 
+               ADD     1                   TO  IDM2
       *
-      *        50∑Ô∞ æÂ§¢§Í
-               IF      IDM2                =   50
-                   MOVE    1               TO  FLG-ERR
-                   MOVE    "True"          TO
-                                           MDCRES-MEDICAL-INF-OVERFLOW
-                                                                   (IDM)
+               IF      IDM2                >   50
+                   MOVE    2               TO  FLG-ERR
                    GO  TO  200341-MEISE-HEN-EXT
                END-IF
-      *
-               ADD     1                   TO  IDM2
-               MOVE    "False"         TO  MDCRES-MEDICAL-INF-OVERFLOW
-                                                                   (IDM)
       *
       *        ø«Œ≈ºÔ Ã ‘Ω∏
                PERFORM 200342-ZAINUM-HEN-SEC
