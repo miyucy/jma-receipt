@@ -235,7 +235,6 @@
       *H24.9
            03  WRK-PARA-HKNNUM         PIC X(03).
            03  WRK-CHK-HKNCOMBI        PIC X(04).
-           03  WRK-ENDPAGE             PIC 9(03).
       *
       *    集計テーブル
        01  TBL-AREA.
@@ -470,7 +469,6 @@
            INITIALIZE                  TBL-AREA
            INITIALIZE                  TBL-HKNCOMBI-AREA
            INITIALIZE                  TBL-HEN-AREA
-           INITIALIZE                  FMKARTE3-REC
       *
            ACCEPT  SYS-TIME            FROM    TIME
            MOVE    ZERO                TO  WRK-PAGE
@@ -776,10 +774,6 @@
       *
       *    最終印刷頁
            MOVE    ORCHC33-ENDPAGE     TO  ORCHC33-PAGE
-           IF    ( ORCHC33-ENDPAGE     =   ZERO )
-            AND  ( ORCHC33-ENDLINE     >   ZERO )
-               MOVE    1               TO  ORCHC33-PAGE
-           END-IF
       *    最終印行
            IF      ORCHC33-ENDLINE     =   ZERO
                MOVE    ZERO            TO  FLG-HC331
@@ -805,6 +799,9 @@
        2001-HEAD-PRINT-SEC            SECTION.
       *
            IF    ( PARA-API-DATA       =   "1" )
+      *
+      *       見出し編集
+              PERFORM 7001-API-HEAD-HEN-SEC
       *       印刷処理
               PERFORM 7009-API-CALLSYORI-SEC
            ELSE
@@ -1548,14 +1545,6 @@
       *    ELSE
       *        MOVE    ZERO                TO  CNT-MEI
       *****END-IF
-      *
-      *H30.1
-      *    バッチ印刷の保険組合せ編集
-           IF     (ORCHC33-KBN         =   "2" )
-             AND  (CNT-MEI             <   40  )
-               PERFORM 200311-HKNSYUBETU-HEN-SEC
-               MOVE    WRK-HEN-HKNCOMBIMEI     TO  HCM33-HKNSYUBETU
-           END-IF
       *
            PERFORM VARYING     IDX     FROM    ORCHC33-STRDD  BY  1
                    UNTIL       IDX     >   31
@@ -2525,6 +2514,8 @@
            MOVE    ORCHC33-PTID    TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
       *
+           INITIALIZE                  FMKARTE3-REC
+      *
            MOVE    "karte_no3"     TO  FMKARTE3-FORM-ID
            MOVE    PARA-API-CUSTOM-ID 
                                    TO  FMKARTE3-CUSTOM-ID
@@ -2538,20 +2529,15 @@
                                    TO  FMKARTE3-PRINTER-ZOKUSHI
            END-IF
       *
-           MOVE    ORCHC33-ENDPAGE TO  WRK-ENDPAGE
-           IF    ( ORCHC33-ENDLINE =   ZERO )
-               COMPUTE WRK-ENDPAGE
-                   =   ORCHC33-ENDPAGE     +   1
-           ELSE
-               IF    ( ORCHC33-ENDPAGE     =   ZERO )
-                   MOVE    1       TO  WRK-ENDPAGE
-               END-IF
+           IF    ( ORCHC33-ENDPAGE >   ZERO )
+               MOVE    ORCHC33-ENDPAGE TO  API-ENDPAGE
+               MOVE    API-ENDPAGE-G   TO  FMKARTE3-ENDPAGE
            END-IF
-           MOVE    WRK-ENDPAGE     TO  API-ENDPAGE
-           MOVE    API-ENDPAGE-G   TO  FMKARTE3-ENDPAGE
       *
-           MOVE    ORCHC33-ENDLINE TO  API-ENDLINE
-           MOVE    API-ENDLINE-G   TO  FMKARTE3-ENDLINE
+           IF    ( ORCHC33-ENDLINE >   ZERO )
+               MOVE    ORCHC33-ENDLINE TO  API-ENDLINE
+               MOVE    API-ENDLINE-G   TO  FMKARTE3-ENDLINE
+           END-IF
       *
            MOVE    ORCHC33-SRYYM   TO  WRK-SYMD
            MOVE    "01"            TO  WRK-SYMD(7:)
@@ -2593,6 +2579,10 @@
       *    ＡＰＩ明細編集処理
       *****************************************************************
        7002-API-BODY-SEC               SECTION.
+      *
+           IF    ( CNT-API             =   ZERO )
+               PERFORM 7001-API-HEAD-HEN-SEC
+           END-IF
       *
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1    >   IDX-MAX
@@ -2658,8 +2648,6 @@
            PERFORM 70021-API-BODY-SEC
       *
            IF      WRK-TUK-RSI-MONEY   NOT =   ZERO
-      *
-               INITIALIZE                      API-AREA
                MOVE    "※労・自"          TO  API-BIKOU
                MOVE    WRK-TUK-RSI-MONEY   TO  WRK-Z89
                MOVE    WRK-Z89             TO  API-NAIYO (8)
@@ -2675,8 +2663,6 @@
       *    ＡＰＩ送信処理
       *****************************************************************
        7009-API-CALLSYORI-SEC         SECTION.
-      *
-           PERFORM 7001-API-HEAD-HEN-SEC
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    FMKARTE3-FORM-ID    TO  RPMAIN-ID

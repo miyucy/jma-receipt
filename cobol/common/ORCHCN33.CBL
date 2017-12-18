@@ -255,7 +255,6 @@
            03  WRK-SYOKEIS2            PIC 9(09)V9(06).
            03  WRK-TENSU-KEI           PIC 9(08)V9(06).
            03  WRK-TENSU-GOK           PIC 9(08)V9(06).
-           03  WRK-ENDPAGE             PIC 9(03).
       *
       *    ½¸·×¥Æ¡¼¥Ö¥ë
        01  TBL-AREA.
@@ -517,8 +516,6 @@
       *    ÅÀÅ©¿ôÎÌ·×ÍÑ
            INITIALIZE                  TBL-TENTEKI-AREA
            INITIALIZE                  TBL-TENTEKI-AREA2
-      *
-           INITIALIZE                  FMKARTE3N-REC
       *
            ACCEPT  SYS-TIME            FROM    TIME
            MOVE    ZERO                TO  WRK-PAGE
@@ -828,10 +825,6 @@
       *
       *    ºÇ½ª°õºþÊÇ
            MOVE    ORCHC33-ENDPAGE     TO  ORCHC33-PAGE
-           IF    ( ORCHC33-ENDPAGE     =   ZERO )
-            AND  ( ORCHC33-ENDLINE     >   ZERO )
-               MOVE    1               TO  ORCHC33-PAGE
-           END-IF
       *    ºÇ½ª°õ¹Ô
            IF      ORCHC33-ENDLINE     =   ZERO
                MOVE    ZERO            TO  FLG-HCN331
@@ -857,6 +850,9 @@
        2001-HEAD-PRINT-SEC            SECTION.
       *
            IF    ( PARA-API-DATA       =   "1" )
+      *
+      *       ¸«½Ð¤·ÊÔ½¸
+              PERFORM 7001-API-HEAD-HEN-SEC
       *       °õºþ½èÍý
               PERFORM 7009-API-CALLSYORI-SEC
            ELSE
@@ -1923,14 +1919,6 @@
       *    Æþ±¡ÎÁ¤Î»»Äê
            PERFORM 200221-NYUIN-SYORI-SEC
       *
-      *H30.1
-      *    ¥Ð¥Ã¥Á°õºþ¤ÎÊÝ¸±ÁÈ¹ç¤»ÊÔ½¸
-           IF     (ORCHC33-KBN         =   "2" )
-             AND  (CNT-MEI             <   40  )
-               PERFORM 200311-HKNSYUBETU-HEN-SEC
-               MOVE    WRK-HEN-HKNCOMBIMEI     TO  HCM33N-HKNSYUBETU
-           END-IF
-      *
            PERFORM VARYING     IDX     FROM    ORCHC33-STRDD  BY  1
                    UNTIL       IDX     >   IDX-END
                MOVE    ZERO                TO  FLG-ARI
@@ -2634,6 +2622,8 @@
            MOVE    ORCHC33-PTID    TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
       *
+           INITIALIZE                  FMKARTE3N-REC
+      *
            MOVE    "karte_no3_n"   TO  FMKARTE3N-FORM-ID
            MOVE    PARA-API-CUSTOM-ID 
                                    TO  FMKARTE3N-CUSTOM-ID
@@ -2647,20 +2637,15 @@
                                    TO  FMKARTE3N-PRINTER-ZOKUSHI
            END-IF
       *
-           MOVE    ORCHC33-ENDPAGE TO  WRK-ENDPAGE
-           IF    ( ORCHC33-ENDLINE =   ZERO )
-               COMPUTE WRK-ENDPAGE
-                   =   ORCHC33-ENDPAGE     +   1
-           ELSE
-               IF    ( ORCHC33-ENDPAGE     =   ZERO )
-                   MOVE    1       TO  WRK-ENDPAGE
-               END-IF
+           IF    ( ORCHC33-ENDPAGE >   ZERO )
+               MOVE    ORCHC33-ENDPAGE TO  API-ENDPAGE
+               MOVE    API-ENDPAGE-G   TO  FMKARTE3N-ENDPAGE
            END-IF
-           MOVE    WRK-ENDPAGE     TO  API-ENDPAGE
-           MOVE    API-ENDPAGE-G   TO  FMKARTE3N-ENDPAGE
       *
-           MOVE    ORCHC33-ENDLINE TO  API-ENDLINE
-           MOVE    API-ENDLINE-G   TO  FMKARTE3N-ENDLINE
+           IF    ( ORCHC33-ENDLINE >   ZERO )
+               MOVE    ORCHC33-ENDLINE TO  API-ENDLINE
+               MOVE    API-ENDLINE-G   TO  FMKARTE3N-ENDLINE
+           END-IF
       *
            MOVE    ORCHC33-SRYYM   TO  WRK-SYMD
            MOVE    "01"            TO  WRK-SYMD(7:)
@@ -2702,6 +2687,10 @@
       *    £Á£Ð£ÉÌÀºÙÊÔ½¸½èÍý
       *****************************************************************
        7002-API-BODY-SEC               SECTION.
+      *
+           IF    ( CNT-API             =   ZERO )
+               PERFORM 7001-API-HEAD-HEN-SEC
+           END-IF
       *
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1    >   IDX-MAX
@@ -2767,8 +2756,6 @@
            PERFORM 70021-API-BODY-SEC
       *
            IF      WRK-TUK-RSI-MONEY   NOT =   ZERO
-               INITIALIZE                      API-AREA
-      *
                MOVE    "¢¨Ï«¡¦¼«"          TO  API-BIKOU
                MOVE    WRK-TUK-RSI-MONEY   TO  WRK-Z89
                MOVE    WRK-Z89             TO  API-NAIYO (9)
@@ -2784,8 +2771,6 @@
       *    £Á£Ð£ÉÁ÷¿®½èÍý
       *****************************************************************
        7009-API-CALLSYORI-SEC         SECTION.
-      *
-           PERFORM 7001-API-HEAD-HEN-SEC
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    FMKARTE3N-FORM-ID    TO  RPMAIN-ID
