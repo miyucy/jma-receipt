@@ -553,6 +553,7 @@ RECORD_files = \
 	system01dailyv2.rec \
     hsconfroomchargev2.rec \
 	patientmedicalallv3.rec \
+	W93.rec \
 
 DEF_files = \
 
