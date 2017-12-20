@@ -139,6 +139,10 @@ shell_sources = \
 	daily/import_blob.sh.in \
 	daily/export_blob.sh.in \
 	daily/rpmain1.sh.in \
+	monthly/recept1_mining.sh.in \
+	monthly/recept4_mining.sh.in \
+	monthly/recept9_mining.sh.in \
+	tools/run_receipt_mining.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \
