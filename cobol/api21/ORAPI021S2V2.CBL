@@ -1051,6 +1051,10 @@
                MOVE    ORAPISUB2-MDC-CLASS-NUMBER (IDX)
                                            TO  TMDCRES-MDC-CLASS-NUMBER
                                                                (IDX)
+      *        Æþ±¡»»ÄêÆü
+               MOVE    ORAPISUB02-MDC-DAY-G (IDX)
+                                           TO  TMDCRES-MDC-DAY-G
+                                                               (IDX)
       *        ºÞÆâÍÆ
                PERFORM VARYING IDY     FROM    1   BY  1
                        UNTIL   (IDY            >   50    )

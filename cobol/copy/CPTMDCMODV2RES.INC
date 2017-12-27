@@ -115,6 +115,10 @@
                        09  TMDCRES-MDC-CLASS-NAME        PIC X(40).
       *                回数
                        09  TMDCRES-MDC-CLASS-NUMBER      PIC X(03).
+      *                入院　算定日
+                       09  TMDCRES-MDC-DAY-G.
+                           11  TMDCRES-MDC-DAY           PIC X(01)
+                                                      OCCURS   31.
       *
                        09  TMDCRES-PRSCRPT-INFO-G.
                            10  TMDCRES-PRSCRPT-INFO    OCCURS   50.

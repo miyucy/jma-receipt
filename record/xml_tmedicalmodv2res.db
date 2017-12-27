@@ -57,6 +57,8 @@ xml_tmedicalmodv2res {
 		Medical_Class			varchar(03);
 		Medical_Class_Name		varchar(40);
 		Medical_Class_Number		varchar(03);
+#-----  “ü‰@ŽZ’è“ú
+		Medical_Calendar	        varchar(31);
 		Medication_Info    {
 			Medication_Code	varchar(09);
 			Medication_Name	varchar(80);
