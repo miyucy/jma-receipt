@@ -17,7 +17,7 @@
     <has_focus>False</has_focus>
     <border_width>0</border_width>
     <type>GTK_WINDOW_TOPLEVEL</type>
-    <title>(W93)システム管理情報−医療情報連携基盤情報</title>
+    <title>(W93)システム管理情報−医療情報代理機関情報</title>
     <modal>False</modal>
     <position>GTK_WIN_POS_CENTER</position>
     <wmclass_class></wmclass_class>
