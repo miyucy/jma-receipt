@@ -1188,7 +1188,7 @@
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
                IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9" OR
-                                               "8"
+                                               "8" OR  "B"
                    MOVE    "key60"             TO  WRK-SRYACCT-PATHNAME
                ELSE
                    MOVE    "key36"             TO  WRK-SRYACCT-PATHNAME
@@ -1595,7 +1595,8 @@
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3" OR  "5" OR
-                                                       "9" OR  "8"
+                                                       "9" OR  "8" OR
+                                                       "B"
                            DISPLAY "LNK-FTNJGNCHK-KOHNUM="
                                                LNK-FTNJGNCHK-KOHNUM
                                    " LNK-FTNJGNCHK-TENKEN-RC="
@@ -1654,7 +1655,8 @@
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3" OR  "5" OR
-                                                       "9" OR  "8"
+                                                       "9" OR  "8" OR
+                                                       "B"
                            DISPLAY "LNK-FTNJGNCHK-KOHNUM="
                                                LNK-FTNJGNCHK-KOHNUM
                                    " LNK-FTNJGNCHK-TENKEN-RC="
@@ -2095,7 +2097,8 @@
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3" OR  "5" OR
-                                                       "9" OR  "8"
+                                                       "9" OR  "8" OR
+                                                       "B"
                            DISPLAY "LNK-FTNJGNCHK-KOHNUM="
                                                LNK-FTNJGNCHK-KOHNUM
                                    " LNK-FTNJGNCHK-TENKEN-RC="
@@ -2154,7 +2157,8 @@
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3" OR  "5" OR
-                                                       "9" OR  "8"
+                                                       "9" OR  "8" OR
+                                                       "B"
                            DISPLAY "LNK-FTNJGNCHK-KOHNUM="
                                                LNK-FTNJGNCHK-KOHNUM
                                    " LNK-FTNJGNCHK-TENKEN-RC="
@@ -4011,7 +4015,7 @@
            MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "B" 
                MOVE    "key61"             TO  WRK-SRYACCT-PATHNAME
            ELSE
                MOVE    "key37"             TO  WRK-SRYACCT-PATHNAME
@@ -4164,7 +4168,7 @@
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
                    IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9"
-                                               OR  "8"
+                                               OR  "8" OR  "B"
                        MOVE    "key61"         TO  WRK-SRYACCT-PATHNAME
                    ELSE
                        MOVE    "key37"         TO  WRK-SRYACCT-PATHNAME
@@ -4801,7 +4805,8 @@
        800-MISEIKYU-CHECK-SEC          SECTION.
       *
       *    ＥＦファイル作成、連係基盤用のとき未請求設定分も作成する
-           IF      WRK-PARA-PRTKBN     =   "9" OR  "8"
+      *    診療情報システムのとき未請求設定分も作成する
+           IF      WRK-PARA-PRTKBN     =   "9" OR  "8" OR  "B"
                INITIALIZE                      SYUKA-REC
                GO  TO  800-MISEIKYU-CHECK-EXT
            END-IF
