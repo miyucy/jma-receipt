@@ -41,6 +41,7 @@ xml_hsptinfmodv2req {
 				Certificate_ExpiredDate		varchar(10);
 			}[4];
 		};
+		Hospital_Charge_Auto_Set		    varchar(01);
 		Hospital_Charge						varchar(09);
 		Hospital_Charge_NotApplicable		varchar(01);
 		Editing_Hospital_Charge				varchar(01);

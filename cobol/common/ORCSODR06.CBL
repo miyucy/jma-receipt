@@ -115,6 +115,7 @@
            03  ITEM-BTUSBT             PIC X(02).
            03  ITEM-SAGAKUCD           PIC X(02).
            03  ITEM-SENTEIKBN          PIC X(01).
+           03  ITEM-AUTOSET            PIC X(01).
            03  ITEM-TOKNYUIN-G.
                05  ITEM-TOKNYUIN-KBN   PIC X(01).
                05  ITEM-TOKNYUIN-NYUIN PIC X(02).
@@ -233,7 +234,10 @@
        01  SNRRK-AREA.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //SNRRK-//.
-       *
+      *
+      *    入院料取得サブ
+           COPY "CPORCSNYUINRYO.INC".
+      *
       *    特定入院料コード取得サブ
            COPY  "CPORCSTOKNYUIN.INC".
       *
@@ -408,6 +412,8 @@
                                    TO  ITEM-DRCD (3)
            END-IF
       *
+           MOVE    "0"             TO  ITEM-AUTOSET
+      *
            PERFORM VARYING IDX-ODR    FROM    1   BY  1
                    UNTIL ( IDX-ODR    >   LNK-ODRITEM-MAX )
       *
@@ -424,6 +430,8 @@
                    PERFORM 20011-SAGAKU-CHK-SEC
                WHEN    NCLAIMID-DRJMA
                    PERFORM 20011-DR-CHK-SEC
+               WHEN    NCLAIMID-AUTOSETJMA
+                   PERFORM 20011-AUTOSET-CHK-SEC
                WHEN    NCLAIMID-TOKNYUINJMA
                    PERFORM 20011-TOKNYUIN-CHK-SEC
                WHEN    NCLAIMID-TOKHIGAITOKBNJMA
@@ -687,6 +695,26 @@
       *
            .
        20011-DR-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料初期値設定区分チェック処理
+      *****************************************************************
+       20011-AUTOSET-CHK-SEC         SECTION.
+      *
+           IF    ( LNK-ODRITEM-ITEM (IDX-ODR)
+                                     NOT =   SPACE )
+               IF    ( LNK-ODRITEM-ITEM (IDX-ODR)
+                                         =   "0" OR "1" )
+                   MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
+                                       TO  ITEM-AUTOSET
+               ELSE
+                   MOVE    "0196"      TO  ERRCD-ERRCD
+                   PERFORM 2100-ITEM-ERR-SET-SEC
+               END-IF
+           END-IF
+      *
+           .
+       20011-AUTOSET-CHK-EXT.
            EXIT.
       *****************************************************************
       *    特定入院料チェック処理
@@ -1104,6 +1132,27 @@
       *    入院料チェック処理
       *****************************************************************
        20021-NYUINRYO-CHK-SEC          SECTION.
+      *
+           IF    ( ITEM-AUTOSET        =   "1" )
+               INITIALIZE                      SNYUINRYO-AREA
+               MOVE    "1"                 TO  SNYUINRYO-AUTOSET
+               MOVE    SODR-SRYYMD         TO  SNYUINRYO-SRYYMD
+               MOVE    "08"                TO  SNYUINRYO-SYORIKBN
+               MOVE    ITEM-BTUNUM         TO  SNYUINRYO-BTUNUM
+               MOVE    ITEM-BRMNUM(3:)     TO  SNYUINRYO-BRMNUM
+               MOVE    ITEM-HKNCOMBI       TO  SNYUINRYO-HKNCOMBI
+               CALL    "ORCSNYUINRYO"      USING
+                                           SNYUINRYO-AREA
+                                           SPA-AREA
+               MOVE    SNYUINRYO-BTU-KHNSRYCD
+                                           TO  ITEM-SANTEICD
+               IF    ( SNYUINRYO-TOKHIGAITOKBN NOT =   SPACE )
+                   MOVE    SNYUINRYO-TOKHIGAITOKBN
+                                           TO  ITEM-TOKHIGAITOKBN
+               END-IF
+               MOVE    SNYUINRYO-TOKNYUIN-G
+                                           TO  ITEM-TOKNYUIN-G
+           END-IF
       *
       *    入院料が取得できていない場合
            IF    ( ITEM-SANTEICD       =   SPACE )
@@ -1575,6 +1624,7 @@
                                        OR  NCLAIMID-KSNCDJMA
                                        OR  NCLAIMID-BUNBENKBNJMA
                                        OR  NCLAIMID-RIYOUKBNJMA
+                                       OR  NCLAIMID-AUTOSETJMA
                                            )
                CONTINUE
            ELSE

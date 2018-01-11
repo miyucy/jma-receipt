@@ -62,6 +62,7 @@
            03  IDXE                    PIC 9(05).
            03  IDX-ITM                 PIC 9(05).
            03  IDXS                    PIC 9(05).
+           03  IDX-LIFE                PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -100,6 +101,10 @@
            03  WRK-SNUM-OUTNUM         PIC 9(12).
            03  WRK-DENPNUM             PIC 9(07).
            03  WRK-KJNYMD              PIC X(08).
+           03  WRK-KHNCD               PIC X(09).
+           03  WRK-TOKNYUIN-G.
+               05  WRK-TOKNYUIN-KBN    PIC X(01).
+               05  WRK-TOKNYUIN-CD     PIC X(02).
       *
        01  API-AREA.
            03  API-ORDERID             PIC X(04).
@@ -119,6 +124,7 @@
            03  API-SHOKAIYMD           PIC X(08).
            03  API-KAIGOKBN            PIC X(01).
            03  API-HKNCOMBI            PIC X(04).
+           03  API-AUTOSET             PIC X(01).
            03  API-KHNCD               PIC X(09).
            03  API-NYUINRYOCD          PIC X(03).
            03  API-TOKHIGAITOKBN       PIC X(01).
@@ -161,6 +167,8 @@
        01  TODR-REC.
            COPY  "CPORDER.INC"         REPLACING  //ORDER-//
                                        BY         //TODR-//.
+      *
+           COPY    "CPRYOYOCD.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -607,7 +615,10 @@
                PERFORM 10011-HOKEN-CHECK-SEC
            END-IF
       *
-           IF    ( HSPTINFMREQ-KHNCD   NOT =   SPACE )
+           MOVE    HSPTINFMREQ-AUTOSET TO  API-AUTOSET
+      *
+           IF    ( HSPTINFMREQ-AUTOSET     =   SPACE OR ZERO )
+            AND  ( HSPTINFMREQ-KHNCD   NOT =   SPACE )
                PERFORM 10011-KHNCD-CHECK-SEC
            END-IF
       *
@@ -720,7 +731,11 @@
                PERFORM 10011-HOKEN-CHECK-SEC
            END-IF
       *
-           IF    ( HSPTINFMREQ-KHNCD   NOT =   SPACE )
+      *
+           MOVE    HSPTINFMREQ-AUTOSET TO  API-AUTOSET
+      *
+           IF    ( HSPTINFMREQ-AUTOSET    =   SPACE OR ZERO )
+            AND  ( HSPTINFMREQ-KHNCD   NOT =   SPACE )
                PERFORM 10011-KHNCD-CHECK-SEC
            END-IF
       *
@@ -861,6 +876,16 @@
       *****************************************************************
        10011-KHNCD-CHECK-SEC           SECTION.
       *
+           INITIALIZE                      SNYUINRYO-AREA
+           MOVE    WRK-KJNYMD          TO  SNYUINRYO-SRYYMD
+           MOVE    HSPTINFMREQ-REQNUM  TO  SNYUINRYO-SYORIKBN
+           MOVE    API-BTUNUM          TO  SNYUINRYO-BTUNUM
+           MOVE    API-BRMNUM          TO  SNYUINRYO-BRMNUM
+           MOVE    API-HKNCOMBI        TO  SNYUINRYO-HKNCOMBI
+           CALL    "ORCSNYUINRYO"      USING
+                                       SNYUINRYO-AREA
+                                       SPA-AREA
+      *
            PERFORM 100111-KHNCD-CHECK-SEC
       *
            .
@@ -869,7 +894,7 @@
       *****************************************************************
       *    入院料チェック処理
       *****************************************************************
-       100111-KHNCD-CHECK-SEC           SECTION.
+       100111-KHNCD-CHECK-SEC          SECTION.
       *
            IF    ( HSPTINFMREQ-KHNCD (1:1) =   "4" )
             AND  ( HSPTINFMREQ-KHNCD (4:)  =   SPACE )
@@ -878,19 +903,37 @@
                                        TO  NYUINCDCHG-NYUINRYOCD
       *        ダミーのコードを設定
                MOVE    "188000000"     TO  NYUINCDCHG-SRYCD-AF
+               PERFORM 1001111-KHNCD-CHECK-SEC
            ELSE
+               MOVE    HSPTINFMREQ-KHNCD
+                                       TO  WRK-KHNCD
                PERFORM 900-NYUINCDCHG-KEY2-SEL-SEC
+               PERFORM 1001111-KHNCD-CHECK-SEC
+               IF    ( API-KHNCD                   =   SPACE )
+                AND  ( NYUINCDCHG-NYUINRYOCD   NOT =   SPACE )
+                   PERFORM 1001111-LIFE-CHECK-SEC
+                   IF    ( WRK-TOKNYUIN-G      NOT =   SPACE )
+                       PERFORM 900-NYUINCDCHG-KEY3-SEL-SEC
+                       PERFORM 1001111-KHNCD-CHECK-SEC
+                   END-IF
+               END-IF
+      *
            END-IF
       *
-           INITIALIZE                      SNYUINRYO-AREA
-           MOVE    WRK-KJNYMD          TO  SNYUINRYO-SRYYMD
-           MOVE    "01"                TO  SNYUINRYO-SYORIKBN
-           MOVE    API-BTUNUM          TO  SNYUINRYO-BTUNUM
-           MOVE    API-BRMNUM          TO  SNYUINRYO-BRMNUM
-           MOVE    API-HKNCOMBI        TO  SNYUINRYO-HKNCOMBI
-           CALL    "ORCSNYUINRYO"      USING
-                                       SNYUINRYO-AREA
-                                       SPA-AREA
+           IF    ( SNYUINRYO-BTU-KHNSRYCD  NOT =   SPACE )
+            AND  ( SNYUINRYO-BTU-KHNSRYCD      =   API-KHNCD )
+               MOVE    SPACE           TO  API-NYUINRYOCD
+               MOVE    SPACE           TO  API-KHNCD
+           END-IF
+      *
+           .
+       100111-KHNCD-CHECK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料チェック処理
+      *****************************************************************
+       1001111-KHNCD-CHECK-SEC             SECTION.
+      *
            IF    ( NYUINCDCHG-NYUINRYOCD
                                        NOT =   SPACE )
                PERFORM VARYING IDX0    FROM    1   BY  1
@@ -905,22 +948,41 @@
                                        TO  API-KHNCD
                    END-IF
                END-PERFORM
-      *
-      *    ELSE
-      *        IF    ( NYUINCDCHG-SRYCD-AF NOT =   SPACE )
-      *            MOVE    NYUINCDCHG-SRYCD-AF
-      *                                TO  API-KHNCD
-      *        END-IF
-           END-IF
-      *
-           IF    ( SNYUINRYO-BTU-KHNSRYCD  NOT =   SPACE )
-            AND  ( SNYUINRYO-BTU-KHNSRYCD      =   API-KHNCD )
-               MOVE    SPACE           TO  API-NYUINRYOCD
-               MOVE    SPACE           TO  API-KHNCD
            END-IF
       *
            .
-       100111-KHNCD-CHECK-EXT.
+       1001111-KHNCD-CHECK-EXT.
+           EXIT.
+      *****************************************************************
+      *    生活療養コードチェック処理
+      *****************************************************************
+       1001111-LIFE-CHECK-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TOKNYUIN-G
+      *
+           PERFORM VARYING IDX-LIFE    FROM    1   BY  1
+                   UNTIL ( IDX-LIFE    >   CONST-TOK-LIFECD-MAX )
+                     OR  ( WRK-TOKNYUIN-G  NOT =   SPACE )
+      *
+               EVALUATE    TRUE
+               WHEN  ( CONST-TOK-LIFECD-IPN (IDX-LIFE)
+                                       =   NYUINCDCHG-NYUINRYOCD )
+                   MOVE    CONST-TOK-LIFECD-LIFE (IDX-LIFE)
+                                       TO  WRK-TOKNYUIN-G
+                   MOVE    CONST-TOK-LIFECD-MAX
+                                       TO  IDX-LIFE
+               WHEN  ( CONST-TOK-LIFECD-LIFE (IDX-LIFE)
+                                       =   NYUINCDCHG-NYUINRYOCD )
+                   MOVE    CONST-TOK-LIFECD-IPN (IDX-LIFE)
+                                       TO  WRK-TOKNYUIN-G
+                   MOVE    CONST-TOK-LIFECD-MAX
+                                       TO  IDX-LIFE
+               END-EVALUATE
+      *
+           END-PERFORM
+      *
+           .
+       1001111-LIFE-CHECK-EXT.
            EXIT.
       *****************************************************************
       *    退院日チェック処理
@@ -1048,6 +1110,12 @@
                    PERFORM 2300-DR-SET-SEC
                END-IF
            END-PERFORM
+      *
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
+               IF    ( API-AUTOSET       NOT =   SPACE )
+                   PERFORM 2300-AUTOSET-SET-SEC
+               END-IF
+           END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                IF    ( API-NYUINRYOCD    NOT =   SPACE )
@@ -1323,6 +1391,12 @@
            END-PERFORM
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
+               IF    ( API-AUTOSET       NOT =   SPACE )
+                   PERFORM 2300-AUTOSET-SET-SEC
+               END-IF
+           END-IF
+      *
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                IF    ( API-NYUINRYOCD    NOT =   SPACE )
                    PERFORM 2300-TOKNYUIN-SET-SEC
                END-IF
@@ -1513,6 +1587,19 @@
       *
            .
        2300-DR-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料初期値設定区分設定処理
+      *****************************************************************
+       2300-AUTOSET-SET-SEC           SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-AUTOSETJMA TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-AUTOSET         TO  LNK-ODRITEM-ITEM (IDX-ITM)
+      *
+           .
+       2300-AUTOSET-SET-EXT.
            EXIT.
       *****************************************************************
       *    特定入院料設定処理
@@ -2676,7 +2763,7 @@
            MOVE    ZERO                TO  FLG-NYUINCDCHG
       *
            INITIALIZE                      NYUINCDCHG-REC
-           MOVE    HSPTINFMREQ-KHNCD   TO  NYUINCDCHG-SRYCD-BF
+           MOVE    WRK-KHNCD           TO  NYUINCDCHG-SRYCD-BF
            MOVE    WRK-KJNYMD          TO  NYUINCDCHG-YUKOSTYMD
                                            NYUINCDCHG-YUKOEDYMD
            MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
@@ -2697,6 +2784,36 @@
            .
       *
        900-NYUINCDCHG-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料置換検索処理
+      *****************************************************************
+       900-NYUINCDCHG-KEY3-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINCDCHG
+      *
+           INITIALIZE                      NYUINCDCHG-REC
+           MOVE    WRK-TOKNYUIN-G      TO  NYUINCDCHG-NYUINRYOCD
+           MOVE    WRK-KJNYMD          TO  NYUINCDCHG-YUKOSTYMD
+                                           NYUINCDCHG-YUKOEDYMD
+           MOVE    NYUINCDCHG-REC      TO  MCPDATA-REC
+           MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINCDCHG-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINCDCHG
+               INITIALIZE                  NYUINCDCHG-REC
+           END-IF
+      *
+           MOVE    "tbl_nyuincdchg"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-NYUINCDCHG-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
       *    収納検索処理

@@ -61,6 +61,7 @@
                       11  HSPTINFMREQ-JKYSNUM   PIC X(20).
                       11  HSPTINFMREQ-KTEKSTYMD PIC X(10).
                       11  HSPTINFMREQ-KTEKEDYMD PIC X(10).
+              05  HSPTINFMREQ-AUTOSET           PIC X(1).
               05  HSPTINFMREQ-KHNCD             PIC X(9).
               05  HSPTINFMREQ-TOKHIGAITOKBN     PIC X(1).
               05  HSPTINFMREQ-NACCTKBN          PIC X(1).
