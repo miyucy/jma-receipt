@@ -558,6 +558,7 @@ RECORD_files = \
 	medicalmodav32.rec \
 	medicalmodav33.rec \
 	medicalmodav34.rec \
+	receiptdatacheckmakev3.rec \
 
 DEF_files = \
 
@@ -1087,6 +1088,8 @@ DB_files = \
 	xml_medicalav3res2.db \
 	xml_medicalav3res3.db \
 	xml_medicalav3res4.db \
+	xml_receiptdata_check_makev3req.db \
+	xml_receiptdata_check_makev3res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
