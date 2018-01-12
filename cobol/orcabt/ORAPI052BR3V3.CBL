@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.00    NACL-多々納  18/01/12  自費コード対象追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -642,9 +643,11 @@
                                   (SRY-SRYCD (IDXA)    =   SPACE)
       *            薬剤のみ
                    IF      (SRY-SRYCD(IDXA)(1:1)   =   "6" )
-      *             投薬のユーザ登録
-                    OR    ((SRY-SRYCD(IDXA)(1:3)   =   "059")
-                       AND (SRY-SRYKBN(1:1)        =   "2"  ))
+      *             自費コードはすべて対象
+                    OR    ((SRY-SRYKBN             =   "95"
+                                                   OR  "96" ) AND
+                           (SRY-SRYCD(IDXA)(1:3)   =   "095"
+                                                   OR  "096" ))
                        PERFORM 200341-MEISE-HEN-SEC
                    END-IF
                END-PERFORM
@@ -736,10 +739,16 @@
                                                TO
                                        WRK-ZAIKOUT-PRICD-MONEY     (IDY)
       *            単位
-                   MOVE    TNS-TANICD          TO
+                   IF     (TNS-SRYCD (1:1)     =   "6"   )
+                     OR  ((TNS-SRYCD (1:3)     =   "095"
+                                               OR  "096" ) AND
+                          (TNS-YKZKBN       NOT =   ZERO ))
+      *                薬剤、自費薬剤のみ
+                       MOVE    TNS-TANICD          TO
                                        WRK-ZAIKOUT-TANNICD         (IDY)
-                   MOVE    TNS-TANINAME        TO
+                       MOVE    TNS-TANINAME        TO
                                        WRK-ZAIKOUT-TANICD-NAME     (IDY)
+                   END-IF
                END-IF
            END-PERFORM
       *
