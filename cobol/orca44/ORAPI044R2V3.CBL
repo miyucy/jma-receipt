@@ -727,6 +727,15 @@
       *
            PERFORM 800-ORCGT01-CALL-SEC
       *
+      *    ０点公費記載ありの点検用レセあり
+           IF      SPA-GMN-TITLE   NOT =   SPACE
+               ADD     1                   TO  WRK-WARNING-MAX
+               MOVE    SPA-GMN-TITLE       TO  WRK-WARNING-MSG
+                                                   (WRK-WARNING-MAX)
+               MOVE    "W01"               TO  WRK-WARNING
+                                                   (WRK-WARNING-MAX)
+           END-IF
+      *
       *    月途中変更の診療年月のとき
            IF      SPA-GMN-TITLE2  NOT =   SPACE
                MOVE    SPA-GMN-TITLE2      TO  WRK-ERRMSG
