@@ -1224,10 +1224,6 @@
                    MOVE    SPACE           TO  MCP-WIDGET
       *
                    PERFORM 800-ORCGT06-CALL-SEC
-      *??
-           DISPLAY "T06 SPA-ERRCD=" IDZZ "#"
-                       RECEDMAKEQ-PATIENT-ID (IDZZ) "#" SPA-GMN-T09-MAX
-      *??
                END-IF
       *??
            DISPLAY "SPA-ERRCD="   SPA-ERRCD "#" SPA-TIDCD "#" 
@@ -1324,11 +1320,6 @@
                                    MOVE    SPACE       TO  MCP-EVENT
       *
                                    PERFORM 800-ORCGT06-CALL-SEC
-      *??
-           DISPLAY "T09 modori=" 
-                    SPA-ERRCD "#" SPA-TIDCD "#" SPA-GMN-T06-RECE-MAX "#"
-                    SPA-GMN-T09-MAX "#"
-      *??
                                END-IF
                            END-IF
                        ELSE
@@ -1450,14 +1441,14 @@
                ELSE
                    EVALUATE    SPA-TIDCD
                        WHEN    "1002"
-                           MOVE    "W01"   TO  RECEDMAKES-DETAIL-WARNING
+                           MOVE    "W03"   TO  RECEDMAKES-DETAIL-WARNING
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                            MOVE    "既に請求済です"
                                            TO
                                            RECEDMAKES-DETAIL-WARNING-MSG
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                        WHEN    "1006"
-                           MOVE    "W02"   TO  RECEDMAKES-DETAIL-WARNING
+                           MOVE    "W04"   TO  RECEDMAKES-DETAIL-WARNING
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                            MOVE
                            "請求データの作成日がレセ送信日以前です"
@@ -1465,7 +1456,7 @@
                                            RECEDMAKES-DETAIL-WARNING-MSG
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                        WHEN    "1011"
-                           MOVE    "W03"   TO  RECEDMAKES-DETAIL-WARNING
+                           MOVE    "W01"   TO  RECEDMAKES-DETAIL-WARNING
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                            MOVE
                                "返戻データが存在します（返戻設定無し）"
@@ -1473,7 +1464,7 @@
                                            RECEDMAKES-DETAIL-WARNING-MSG
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                        WHEN    "1012"
-                           MOVE    "W04"   TO  RECEDMAKES-DETAIL-WARNING
+                           MOVE    "W02"   TO  RECEDMAKES-DETAIL-WARNING
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                            STRING  "保険情報が一致する返戻データが"
                                                DELIMITED  BY  SIZE
@@ -1486,7 +1477,7 @@
                            MOVE    "W05"   TO  RECEDMAKES-DETAIL-WARNING
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
       *??
-                           DISPLAY "SPA-TIDCD=" SPA-TIDCD "#" 
+                           DISPLAY "W05 SPA-TIDCD=" SPA-TIDCD "#" 
                    END-EVALUATE
                END-IF
       *
@@ -1640,9 +1631,6 @@
            IF      WRK-ERRCD      NOT =   SPACE
                GO  TO  2002-RECEIPTDATA-CHECK-MAKE-EXT
            END-IF
-      *??
-           DISPLAY "MAKE SPA-ERRCD=" SPA-ERRCD "#" SPA-TID1-AREA "#"
-      *??
       *
            MOVE    RECEDMAKEQ-KARTE-UID
                                    TO  SPA-T01-JOB-KARTE-UID
