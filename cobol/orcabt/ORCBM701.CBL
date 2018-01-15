@@ -525,6 +525,15 @@
       *
       *    システム管理情報取得
            PERFORM 110-SYSKANRI-HENSYU-SEC
+      *
+           PERFORM 900-RECEDEN-SELECT-SEC
+           IF      FLG-RECEDEN     =   1
+               DISPLAY "!!!!!! RECEDEN NOT FOUND !!!!!"
+               MOVE    1                   TO  FLG-END
+           END-IF
+           MOVE    "tbl_receden_tmp"   TO  MCP-TABLE
+           MOVE    "all2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        100-INIT-EXT.
            EXIT.
@@ -1810,7 +1819,7 @@
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECEDEN-SRYYM
       **   MOVE    WRK-PARA-TEISYUTUSAKI
       **                               TO  RECEDEN-TEISYUTUSAKI
-           MOVE    "3"                 TO  RECEDEN-TEISYUTUSAKI
+           MOVE    3                   TO  RECEDEN-TEISYUTUSAKI
            MOVE    WRK-PARA-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
       **   MOVE    "1"                 TO  RECEDEN-RECKBN
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
