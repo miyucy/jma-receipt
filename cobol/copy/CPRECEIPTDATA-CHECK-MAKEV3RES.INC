@@ -114,18 +114,18 @@
                                            PIC X(20).
       *                Ï«ºÒ¾ðÊó
                        07  RECEDMAKES-ACCIDENT.
-      *                   ½ýÉÂ¤ÎÉô°Ì
-                           09  RECEDMAKES-DISEASE-LOCATION
-                                           PIC X(100).
+      *****************½ýÉÂ¤ÎÉô°Ì
+      *****************    09  RECEDMAKES-DISEASE-LOCATION
+      *****************                    PIC X(100).
       *                    Ï«Æ¯ÊÝ¸±ÈÖ¹æ
                            09  RECEDMAKES-ACCIDENT-NUMBER
                                            PIC X(14).
       *                     Ç¯¶â¾Ú½ñÈÖ¹æ
                            09  RECEDMAKES-PENSIONCERTIFICATE
                                            PIC X(09).
-      *                    ºÒ³²¶èÊ¬
-                           09  RECEDMAKES-ACCIDENT-CLASS
-                                           PIC X(1).
+      *****************ºÒ³²¶èÊ¬
+      *****************    09  RECEDMAKES-ACCIDENT-CLASS
+      *****************                    PIC X(1).
       *                ºÒ³²³ºÅö¤ÎÍ­Ìµ
                        07  RECEDMAKES-ACCIDENT-TARGET
                                            PIC X(4).

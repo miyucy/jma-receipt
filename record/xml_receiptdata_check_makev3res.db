@@ -42,10 +42,10 @@ xml_receiptdata_check_makev3res {
 				Patient_Detail_HealthInsuredPerson_Assistance	varchar(1);
 				Patient_Detail_PublicInsurer_Number		varchar(8);
 				Patient_Detail_PublicInsuredPerson_Number	varchar(20);
-				Patient_Detail_Disease_Location			varchar(100);
+#---				Patient_Detail_Disease_Location			varchar(100);
 				Patient_Detail_Accident_Insurance_Number	varchar(14);
 				Patient_Detail_PensionCertificate_Number	varchar(9);
-				Patient_Detail_Accident_Class			varchar(1);
+#---				Patient_Detail_Accident_Class			varchar(1);
 				Patient_Detail_Accident_Target_Class		varchar(4);
 				Patient_Detail_Incare_Class			varchar(4);
 				Patient_Detail_Error_Code			varchar(3);
