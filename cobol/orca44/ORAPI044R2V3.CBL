@@ -1411,13 +1411,17 @@
                        WHEN    "E028"
                            MOVE    "E28"       TO  RECEDMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
+                       WHEN    "E029"
+                           MOVE    "E29"       TO  RECEDMAKES-ERROR-CODE
+                                                   (WRK-ERR-PATIENT-MAX)
                        WHEN    "0008"
-                           MOVE    "既に対象になっています"
+                           MOVE
+                               "同じレセプトが既に対象になっています"
                                                TO  SPA-ERRMSG
-                           MOVE    "E50"       TO  RECEDMAKES-ERROR-CODE
+                           MOVE    "E51"       TO  RECEDMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
                        WHEN    OTHER
-                           MOVE    "E50"       TO  RECEDMAKES-ERROR-CODE
+                           MOVE    "E51"       TO  RECEDMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
                    END-EVALUATE
                    MOVE    SPA-ERRMSG      TO  RECEDMAKES-ERROR-MSG
@@ -1433,10 +1437,11 @@
                IF      SPA-ERRCD       NOT =   SPACE
                    EVALUATE    SPA-ERRCD
                        WHEN    "0008"
-                           MOVE    "既に対象になっています"
+                           MOVE
+                               "同じレセプトが既に対象になっています"
                                                TO  SPA-ERRMSG
                    END-EVALUATE
-                   MOVE    "E50"       TO  RECEDMAKES-DETAIL-ERROR-CODE
+                   MOVE    "E51"       TO  RECEDMAKES-DETAIL-ERROR-CODE
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                    MOVE    SPA-ERRMSG  TO  RECEDMAKES-DETAIL-ERROR-MSG
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
@@ -1450,14 +1455,14 @@
                ELSE
                    EVALUATE    SPA-TIDCD
                        WHEN    "1002"
-                           MOVE    "W03"   TO  RECEDMAKES-DETAIL-WARNING
+                           MOVE    "W13"   TO  RECEDMAKES-DETAIL-WARNING
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                            MOVE    "既に請求済です"
                                            TO
                                            RECEDMAKES-DETAIL-WARNING-MSG
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                        WHEN    "1006"
-                           MOVE    "W04"   TO  RECEDMAKES-DETAIL-WARNING
+                           MOVE    "W14"   TO  RECEDMAKES-DETAIL-WARNING
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                            MOVE
                            "請求データの作成日がレセ送信日以前です"
@@ -1465,7 +1470,7 @@
                                            RECEDMAKES-DETAIL-WARNING-MSG
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                        WHEN    "1011"
-                           MOVE    "W01"   TO  RECEDMAKES-DETAIL-WARNING
+                           MOVE    "W11"   TO  RECEDMAKES-DETAIL-WARNING
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                            MOVE
                                "返戻データが存在します（返戻設定無し）"
@@ -1473,7 +1478,7 @@
                                            RECEDMAKES-DETAIL-WARNING-MSG
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                        WHEN    "1012"
-                           MOVE    "W02"   TO  RECEDMAKES-DETAIL-WARNING
+                           MOVE    "W12"   TO  RECEDMAKES-DETAIL-WARNING
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                            STRING  "保険情報が一致する返戻データが"
                                                DELIMITED  BY  SIZE
