@@ -1284,7 +1284,8 @@
       *****************************************************************
        20021-NYUINRYO-CHK-SEC          SECTION.
       *
-           IF    ( ITEM-AUTOSET        =   "1" )
+           EVALUATE    TRUE
+           WHEN  ( ITEM-AUTOSET        =   "1" )
       *
                INITIALIZE                      SNYUINRYO-AREA
                MOVE    "1"                 TO  SNYUINRYO-AUTOSET
@@ -1300,7 +1301,23 @@
                                            TO  ITEM-SANTEICD
                MOVE    SNYUINRYO-TOKNYUIN-G
                                            TO  ITEM-TOKNYUIN-G
-           END-IF
+           WHEN  ( ITEM-SANTEICD       =   SPACE )
+             AND ( ITEM-TOKNYUIN-G     =   SPACE )
+               INITIALIZE                      SNYUINRYO-AREA
+               MOVE    "A"                 TO  SNYUINRYO-AUTOSET
+               MOVE    SODR-SRYYMD         TO  SNYUINRYO-SRYYMD
+               MOVE    "01"                TO  SNYUINRYO-SYORIKBN
+               MOVE    ITEM-BTUNUM         TO  SNYUINRYO-BTUNUM
+               MOVE    ITEM-BRMNUM(3:)     TO  SNYUINRYO-BRMNUM
+               MOVE    ITEM-HKNCOMBI       TO  SNYUINRYO-HKNCOMBI
+               CALL    "ORCSNYUINRYO"      USING
+                                           SNYUINRYO-AREA
+                                           SPA-AREA
+               MOVE    SNYUINRYO-BTU-KHNSRYCD
+                                           TO  ITEM-SANTEICD
+               MOVE    SNYUINRYO-TOKNYUIN-G
+                                           TO  ITEM-TOKNYUIN-G
+           END-EVALUATE
       *
       *    入院料が取得できていない場合
            IF    ( ITEM-SANTEICD       =   SPACE )

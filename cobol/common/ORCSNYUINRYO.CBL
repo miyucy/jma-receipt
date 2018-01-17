@@ -242,6 +242,11 @@
            IF    ( SNYUINRYO-AUTOSET       =   "1" )
             AND  ( SNYUINRYO-SYORIKBN      =   CONST-IDO )
                PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
+               IF    ( SNYUINRYO-SRYYMD    <   PTNYUINRRK-TENNYUYMD )
+                   MOVE    SNYUINRYO-SRYYMD
+                                           TO  PTNYUINRRK-TENNYUYMD
+                   PERFORM 900-PTNYUINRRK-KEY73-SEL-SEC
+               END-IF
                MOVE    PTNYUINRRK-REC          TO  LAST-RRK-REC
                MOVE    LAST-RRK-TOKUTEI-KBN    TO  LAST-TOKNYUIN-KBN
                MOVE    LAST-RRK-TOKUTEI-NYUIN  TO  LAST-TOKNYUIN-CD
@@ -365,15 +370,19 @@
                PERFORM 2001-KANSATU-EDIT-SEC
            ELSE
                PERFORM 2001-NYUINRYO-EDIT-SEC
-               IF    ( SNYUINRYO-AUTOSET   =   "1" )
+               EVALUATE    SNYUINRYO-AUTOSET
+               WHEN    "1"
                    IF    ( SNYUINRYO-SYORIKBN  =   CONST-IDO )
                        PERFORM 2001-LAST-NYUINRYO-CHK-SEC
                    END-IF
                    IF    ( FLG-KEEP        =   ZERO )
                        PERFORM 2001-AUTOSET-SEC
+                       PERFORM 2002-AUTOSET-SEC
                    END-IF
       *
-               END-IF
+               WHEN    "A"
+                   PERFORM 2002-AUTOSET-SEC
+               END-EVALUATE
            END-IF
       *
            MOVE    SYS-5001-BTU-KHNSRYCD   TO  SNYUINRYO-BTU-KHNSRYCD
@@ -1261,8 +1270,8 @@
                            MOVE    LAST-BTU-BTU-KHNSRYCD
                                        TO  WRK-SRYCD
                            PERFORM 900-NYUINCDCHG-KEY4-SEL-SEC
-               DISPLAY "WRK-SRYCD             =" WRK-SRYCD
-               DISPLAY "NYUINCDCHG-NYUINRYOCD =" NYUINCDCHG-NYUINRYOCD 
+      D        DISPLAY "WRK-SRYCD             =" WRK-SRYCD
+      D        DISPLAY "NYUINCDCHG-NYUINRYOCD =" NYUINCDCHG-NYUINRYOCD 
                            IF  ( NYUINCDCHG-NYUINRYOCD NOT =   SPACE )
                                MOVE    NYUINCDCHG-NYUINRYOCD
                                        TO  WRK-TOKTEMP-G
@@ -1302,7 +1311,7 @@
        20011-NYUINRYO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    入院料自動設定処理
+      *    入院料自動設定処理（特定入院料）
       *****************************************************************
        2001-AUTOSET-SEC                SECTION.
       *
@@ -1327,6 +1336,14 @@
       D            DISPLAY "2 TOKNYUIN-G:" SNYUINRYO-TOKNYUIN-G
                END-IF
            END-IF
+      *
+           .
+       2001-AUTOSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料自動設定処理（療養病棟入院基本料）
+      *****************************************************************
+       2002-AUTOSET-SEC                SECTION.
       *
            IF    ( SNYUINRYO-TOKNYUIN-G    =   SPACE )
                IF    ( SYS-5002-KHNKBNCD
@@ -1372,7 +1389,7 @@
            END-IF
       *
            .
-       2001-AUTOSET-EXT.
+       2002-AUTOSET-EXT.
            EXIT.
       *****************************************************************
       *    入院料自動設定処理
@@ -1638,6 +1655,31 @@
       *
            .
        900-PTNYUINRRK-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院履歴検索処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY73-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key73"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key73"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTNYUINRRK-KEY73-SEL-EXT.
            EXIT.
       *****************************************************************
       *    入院料置換検索処理

@@ -6,6 +6,7 @@ xml_hsptinfmodv2req {
 	private_objects {
 		Save_Request	varchar(1);
 		Request_Number	varchar(2);
+		Force_Update		varchar(5);
 		Patient_ID		varchar(20);
 		Admission_Date		varchar(10);
 		Update_Date			varchar(10);

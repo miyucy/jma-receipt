@@ -111,6 +111,7 @@
            03  API-SRYYMD              PIC X(08).
            03  API-SAVEREQ             PIC X(01).
            03  API-REQNUM              PIC X(02).
+           03  API-FORCE-UPDATE        PIC X(05).
            03  API-NYUINYMD            PIC X(08).
            03  API-IDOYMD              PIC X(08).
            03  API-BTUNUM              PIC X(02).
@@ -648,6 +649,8 @@
       *****************************************************************
        1001-TAIIN-SEC                  SECTION.
       *
+           MOVE    HSPTINFMREQ-FORCE-UPDATE
+                                       TO  API-FORCE-UPDATE
       *
            PERFORM 10011-TAIINYMD-CHECK-SEC
       *
@@ -704,6 +707,9 @@
            PERFORM 10011-PTNUM-CHECK-SEC
       *
            PERFORM 10011-IDOYMD-CHECK-SEC
+      *
+           MOVE    HSPTINFMREQ-FORCE-UPDATE
+                                        TO  API-FORCE-UPDATE
       *
            MOVE    API-IDOYMD           TO  WRK-KJNYMD
       *
@@ -1213,6 +1219,10 @@
            MOVE    ZERO                TO  IDX-ITM
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
+               PERFORM 2300-FORCE-UPDATE-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-TAIINCD-SET-SEC
            END-IF
       *
@@ -1364,6 +1374,10 @@
            MOVE    ZERO                TO  IDX-ITM
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
+               PERFORM 2300-FORCE-UPDATE-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-BTUNUM-SET-SEC
            END-IF
       *
@@ -1491,6 +1505,20 @@
       *
            .
        2001-IDO-TORIKESHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    強制更新設定処理
+      *****************************************************************
+       2300-FORCE-UPDATE-SET-SEC             SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-FORCE-UPDATEJMA
+                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-FORCE-UPDATE    TO  LNK-ODRITEM-ITEM (IDX-ITM)
+      *
+           .
+       2300-FORCE-UPDATE-SET-EXT.
            EXIT.
       *****************************************************************
       *    初回設定処理
@@ -2024,6 +2052,16 @@
            MOVE    API-TAIINYMD    TO  WRK-SYMD
            PERFORM 800-DATE-SEC
            MOVE    WRK-DATE        TO  HSPTINFM02RES-SKYEDYMD
+      *
+           IF    ( SODR-UNSKYSTYMD NOT =   SPACE )
+               MOVE    SODR-UNSKYSTYMD TO  WRK-SYMD
+               PERFORM 800-DATE-SEC
+               MOVE    WRK-DATE        TO  HSPTINFM02RES-UNSKYSTYMD
+      *
+               MOVE    SODR-UNSKYEDYMD TO  WRK-SYMD
+               PERFORM 800-DATE-SEC
+               MOVE    WRK-DATE        TO  HSPTINFM02RES-UNSKYEDYMD
+           END-IF
       *
            MOVE    SPA-PTNUM       TO  HSPTINFM02RES-PTNUM
            MOVE    PTINF-NAME      TO  HSPTINFM02RES-NAME
