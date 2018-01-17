@@ -78,12 +78,25 @@ trap cleanup EXIT
     RECEFILE3="RREC"
     RECEFILE4="UKSRECE"
 
-    if  [ ${24} -eq '2' ]; then
-	RECEFILE1="TENC"
+
+    if  [ ${21} -eq '8' ]; then
+	RECEFILE1="CKEC"
 	RECEFILE2="TENKENT"
-	RECEFILE3="TENC"
+	RECEFILE3="CKEC"
 	RECEFILE4="UKSTENK"
-	echo "file name change!" 
+        if  [ ${24} -eq '2' ]; then
+	    RECEFILE1="TKEC"
+	    RECEFILE3="TKEC"
+        fi
+	echo "file name change!"
+    else
+        if  [ ${24} -eq '2' ]; then
+	    RECEFILE1="TENC"
+	    RECEFILE2="TENKENT"
+	    RECEFILE3="TENC"
+	    RECEFILE4="UKSTENK"
+	    echo "file name change!" 
+        fi
     fi
 
 #   該当ファイル削除
@@ -111,7 +124,7 @@ trap cleanup EXIT
     else
         ROUSAI_FOLDER1="${23}_Rousai_${5}"
     fi
-    if  [ ${21} -eq '5' ]|| [ ${21} -eq '6' ]; then
+    if  [ ${21} -eq '5' ]|| [ ${21} -eq '6' ]|| [ ${21} -eq '8' ]; then
         ROUSAI_FOLDER="${ROUSAI_FOLDER1}_Kobetsu"
     else
         ROUSAI_FOLDER="${ROUSAI_FOLDER1}/Kobetsu"

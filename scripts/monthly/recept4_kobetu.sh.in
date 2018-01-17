@@ -92,10 +92,19 @@ trap cleanup EXIT
     RECEFILE1="RECEIPTC"
     RECEFILE2="RECEDEN"
 
-    if  [ ${24} -eq '2' ]; then
-	RECEFILE1="TENKENRC"
+    if  [ ${21} -eq '8' ]; then
+	RECEFILE1="CHECKRC"
 	RECEFILE2="TENKENT"
+        if  [ ${24} -eq '2' ]; then
+	    RECEFILE1="THECKRC"
+        fi
 	echo "file name change!"
+    else
+        if  [ ${24} -eq '2' ]; then
+	    RECEFILE1="TENKENRC"
+	    RECEFILE2="TENKENT"
+	    echo "file name change!"
+        fi
     fi
 
 #   該当ファイル削除

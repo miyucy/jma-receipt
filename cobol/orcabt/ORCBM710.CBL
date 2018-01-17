@@ -1140,22 +1140,35 @@
            COMPUTE WRK-FILE-RENNUM =   WRK-FILE-RENNUM  +   1
            MOVE    WRK-FILE-RENNUM     TO  RECE30PARA-RENNUM
            MOVE    WRK-FILE-SEQNUM1    TO  RECE30PARA-SEQNUM1
-           EVALUATE    FLG-SYORI
-               WHEN    1
-      *            一時請求分
-                   IF      WRK-PARA-PRTKBN     =   "1"
-                       MOVE    "RECEDEN"           TO  RECE30PARA-FILENM
-                   ELSE
+           IF      WRK-PARA-DATAKBN
+                                       =   "8"
+      *        ＨＡＯＲＩのチェック用レセ電データ作成時
+               EVALUATE    FLG-SYORI
+                   WHEN    1
+      *                一時請求分
                        MOVE    "TENKENT"           TO  RECE30PARA-FILENM
-                   END-IF
-               WHEN    2
-      *            再請求分
-                   IF      WRK-PARA-PRTKBN     =   "1"
-                       MOVE    "UKSRECE"           TO  RECE30PARA-FILENM
-                   ELSE
+                   WHEN    2
+      *                再請求分
                        MOVE    "UKSTENK"           TO  RECE30PARA-FILENM
-                   END-IF
-           END-EVALUATE
+               END-EVALUATE
+           ELSE
+               EVALUATE    FLG-SYORI
+                   WHEN    1
+      *                一時請求分
+                       IF      WRK-PARA-PRTKBN     =   "1"
+                           MOVE    "RECEDEN"       TO  RECE30PARA-FILENM
+                       ELSE
+                           MOVE    "TENKENT"       TO  RECE30PARA-FILENM
+                       END-IF
+                   WHEN    2
+      *                再請求分
+                       IF      WRK-PARA-PRTKBN     =   "1"
+                           MOVE    "UKSRECE"       TO  RECE30PARA-FILENM
+                       ELSE
+                           MOVE    "UKSTENK"       TO  RECE30PARA-FILENM
+                       END-IF
+               END-EVALUATE
+           END-IF
       *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECE30PARA-BASENAME
@@ -1593,6 +1606,15 @@
       *    返戻データ更新処理
       *****************************************************************
        20091-HENREI-B-UPDATE-SEC          SECTION.
+      *
+      *    点検用またはＨＡＯＲＩのチェック用レセ電データ作成時は更新しない
+           IF    ( WRK-PARA-PRTKBN     =   "1" )
+           AND   ( WRK-PARA-DATAKBN
+                                   NOT =   "8" )
+               CONTINUE
+           ELSE
+               GO  TO  20091-HENREI-B-UPDATE-EXT
+           END-IF
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA

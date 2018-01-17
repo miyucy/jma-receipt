@@ -1348,7 +1348,7 @@
       *    レセ電データ作成前チェック
            MOVE    SPACE           TO  LINKAREA
                                        SPA-MOTOPG
-           INITIALIZE                  SPA-T01KYOUTU
+           INITIALIZE                  SPA-T01KYOUTU-H
       *
            MOVE    "PUTG"          TO  MCP-STATUS
            MOVE    "CLICKED"       TO  MCP-EVENT

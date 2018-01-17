@@ -686,10 +686,16 @@
            COMPUTE WRK-FILE-RENNUM =   WRK-VOLNUM  +   1
            MOVE    WRK-FILE-RENNUM     TO  RECE30PARA-RENNUM
            MOVE    WRK-PARA-HOSPNUM    TO  RECE30PARA-HOSPNUM
-           IF      WRK-PARA-PRTKBN     =   "1"
-               MOVE    "RECEDEN"           TO  RECE30PARA-FILENM
-           ELSE
+           IF      WRK-PARA-DATAKBN
+                                       =   "8"
+      *        ＨＡＯＲＩのチェック用レセ電データ作成時
                MOVE    "TENKENT"           TO  RECE30PARA-FILENM
+           ELSE
+               IF      WRK-PARA-PRTKBN     =   "1"
+                   MOVE    "RECEDEN"           TO  RECE30PARA-FILENM
+               ELSE
+                   MOVE    "TENKENT"           TO  RECE30PARA-FILENM
+               END-IF
            END-IF
       *
            INITIALIZE                      SGETTEMP-AREA
@@ -1330,6 +1336,15 @@
       *    返戻データ更新処理
       *****************************************************************
        20091-HENREI-B-UPDATE-SEC          SECTION.
+      *
+      *    点検用またはＨＡＯＲＩのチェック用レセ電データ作成時は更新しない
+           IF    ( WRK-PARA-PRTKBN     =   "1" )
+           AND   ( WRK-PARA-DATAKBN
+                                   NOT =   "8" )
+               CONTINUE
+           ELSE
+               GO  TO  20091-HENREI-B-UPDATE-EXT
+           END-IF
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
