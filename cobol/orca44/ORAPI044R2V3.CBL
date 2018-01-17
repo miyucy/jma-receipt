@@ -106,6 +106,9 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
+      *
+           03 WRK-SYSYM-2              PIC 9(06).
+      *
       *    エラーコード
            03  WRK-ERRCD               PIC X(03).
            03  WRK-ERRMSG              PIC X(100).
@@ -658,6 +661,19 @@
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
+      *    システム日付−２ヵ月
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE  "61"                  TO  LNK-DAY6-IRAI
+           MOVE  SPA-SYSYMD            TO  LNK-DAY6-KIJUN
+           MOVE  "2"                   TO  LNK-DAY6-ZOGENPTN
+           MOVE  -2                    TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN (1:6)
+                                       TO  WRK-SYSYM-2
+      *
+      *
       *    カルテUID
            IF      RECEDMAKEQ-KARTE-UID =   SPACE
                MOVE    "E04"               TO  WRK-ERRCD
@@ -734,6 +750,15 @@
                                                    (WRK-WARNING-MAX)
                MOVE    "W01"               TO  WRK-WARNING
                                                    (WRK-WARNING-MAX)
+           END-IF
+      *
+      *    システム日付の二ヶ月前以前は処理不可 
+           IF      RECEDMAKEQ-REQUEST-NUMBER
+                                       =   "01"    OR  "00"
+               IF      WRK-SYSYM-2         >=  SPA-NAI-SKYYM
+                   MOVE    "E30"               TO  WRK-ERRCD
+                  GO  TO  2001-INPUT-CHK-EXT
+               END-IF
            END-IF
       *
       *    月途中変更の診療年月のとき
@@ -2256,7 +2281,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "E70"
       *            レセプト作成、定期請求の処理中
                    GO  TO  890-ERRCD-MSG-EXT
-               WHEN    "E30"
                WHEN    "E31"
                WHEN    "E32"
       *            レセプト作成結果
@@ -2326,6 +2350,10 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                    TO  WRK-ERRMSG
                WHEN    "E27"
                    MOVE    "保険者番号の設定に誤りがあります。"
+                                                   TO  WRK-ERRMSG
+               WHEN    "E30"
+                   MOVE
+                   "システム日付の前月の診療年月まで処理が可能です。"
                                                    TO  WRK-ERRMSG
        *
                WHEN    "E40"
