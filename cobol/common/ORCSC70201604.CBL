@@ -258,6 +258,15 @@
       *    撮影料の数量（診断料へ）
            03  WRK-SATUEI-SURYO    PIC 9(05)V9(03).
            03  WRK-SATUEI-SURYO2   PIC 9(05)V9(03).
+      *H30.1
+      *   きざみ値行為再計算用
+           03  WRK-SATU-TEN2       PIC 9(08)V9(03).
+           03  WRK-KZMTEN2         PIC 9(08)V9(03).
+           03  WRK-SATUKSN-TEN     PIC 9(08)V9(03).
+           03  WRK-SATUKZM-TEN     PIC 9(08)V9(03).
+      *    減算割合
+           03  WRK-SATU-GENRT     PIC 9(03)V9(03).
+           03  IDX-KS2             PIC 9(04).
       *
       *    減コード
            03 WRK-GEN-SRYCD        PIC X(09).
@@ -2753,10 +2762,18 @@
                    MOVE    ZERO                    TO  FLG-SATU
       *            撮影料を逓減、乳幼児加算後にきざみ値計算をする
                    PERFORM 1000131-SATUEI-KEI-SEC
+      *H30.1
+      *            脳脊髄腔造影剤使用撮影加算を対象としない
+                   IF     (WRK-COM-INPUTCD (IDX-Z) =   "170002270")
+                     CONTINUE
+                   ELSE
+      *
                    ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-TENSUKEI1
                    IF      WRK-SKBN-02         =   SPACE
                        ADD     1                   TO  WRK-CNT-SATUEI
                        MOVE    IDX-Z               TO  IDX-SYU 
+                   END-IF
+      *
                    END-IF
                WHEN    "71"
       *            診断料
@@ -2802,6 +2819,7 @@
            MOVE    ZERO                TO  WRK-SATUEI-SURYO2
       *
       *    間接撮影による逓減計算
+           MOVE    ZERO                TO  WRK-SATU-GENRT
            PERFORM VARYING     IDX-Z2  FROM    IDX-STR BY  1
                    UNTIL      (IDX-Z2      >   SPA-MAX-LINE  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE )
@@ -2821,6 +2839,9 @@
                                                -   WRK-GENTEN
                        MOVE    1               TO  WRK-COM-SANFLG
                                                           (IDX-Z2)
+      *               減算の割合を編集する
+                      COMPUTE WRK-SATU-GENRT   =   WRK-COM-TEN (IDX-Z2)
+                                               /   100
                        MOVE    SPA-MAX-LINE    TO  IDX-Z2
                    END-IF
                END-IF
@@ -2849,6 +2870,33 @@
                    MOVE    SPA-MAX-LINE        TO  IDX-Z2
                END-IF
            END-PERFORM
+      *
+      *H30.1
+      *    脳脊髄腔造影剤使用撮影加算処理
+           MOVE    ZERO                TO  IDX-KS2
+           IF      WRK-SATU-KASAN      =   ZERO
+      *        乳幼児加算なし
+               IF     (WRK-COM-INPUTCD (IDX-Z) =   "170002270")
+      *            単独できざみ値計算
+                   MOVE    ZERO                TO  FLG-SATU-GEN
+                   MOVE    ZERO                TO  FLG-SATU
+                   PERFORM 1000132-TENSU-KEISAN-SEC
+                   ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-TENSUKEI1
+                   GO     TO  1000131-SATUEI-KEI-EXT
+               END-IF
+           ELSE
+      *        乳幼児加算あり
+               PERFORM VARYING     IDX-Z2  FROM    IDX-STR BY  1
+                   UNTIL      (IDX-Z2      >   SPA-MAX-LINE  )  OR
+                              (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE )
+                   IF      WRK-COM-INPUTCD (IDX-Z2) =   "170002270"
+                       MOVE    IDX-Z2           TO  IDX-KS2
+                   END-IF
+               END-PERFORM
+               IF     (WRK-COM-INPUTCD (IDX-Z) =   "170002270")
+                   GO     TO  1000131-SATUEI-KEI-EXT
+               END-IF
+           END-IF
       *
       *    きざみ値判定
            IF     (WRK-COM-INPUTCD (IDX-Z)(1:1)    =   "1" ) AND
@@ -2882,6 +2930,8 @@
            MOVE    WRK-COM-TEN  (IDX-Z)    TO  WRK-SATU-TEN
       *    乳幼児加算クリア
            MOVE    ZERO                TO  WRK-SATU-KASAN
+           MOVE    ZERO                TO  WRK-SATU-GENRT
+           MOVE    ZERO                TO  IDX-KS2
       *
            IF      WRK-SATUEI-SURYO2   >   ZERO
                COMPUTE WRK-SATUEI-SURYO    =   WRK-SATUEI-SURYO
@@ -2956,6 +3006,13 @@
       *     きざみ値計算処理
       *****************************************************************
        1000132-TENSU-KEISAN-SEC          SECTION.
+      *
+      *H30.1
+      *    脳脊髄腔造影剤使用撮影加算と乳幼児加算の計算
+           IF      IDX-KS2             >   ZERO
+               PERFORM 10001322-TENSU-KEISAN02-SEC
+               GO      TO      1000132-TENSU-KEISAN-EXT
+           END-IF
       *
            MOVE    WRK-COM-INPUTCD (IDX-Z)
                                        TO  TNS-SRYCD
@@ -3037,6 +3094,173 @@
                        COMPUTE WRK-KEI-TEN     =   TNS-TEN
                                                + ( WRK-KEI-TEN2
                                                *   TNS-KZMTEN )
+                       COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
+                   ELSE
+      *            点数計算式２
+                       COMPUTE WRK-KEI-TEN1    =  (TNS-KZMJGN
+                                               -   TNS-KZMKGN)
+                                               /   TNS-KZM
+                                               +   0.999
+                       MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
+                       COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
+                                                   + ( WRK-KEI-TEN2
+                                                   *   WRK-KZMTEN )
+                       COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN  +  0.5
+                   END-IF
+           END-EVALUATE
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-KEI-TEN2        >   ZERO
+                   MOVE    WRK-KEI-TEN2    TO  WRK-COM-KISOTEN  (IDX-Z)
+               ELSE
+                   IF      WRK-SURYO       =   ZERO
+                       MOVE    ZERO        TO  WRK-COM-KISOTEN(IDX-Z)
+                   ELSE
+                       COMPUTE WRK-TENSUKEI-9  =   WRK-SATU-TEN  + 0.5
+                       MOVE    WRK-TENSUKEI-9  TO  WRK-COM-KISOTEN
+                                                               (IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       1000132-TENSU-KEISAN-EXT.
+           EXIT.
+      *
+      *H30.1
+      *****************************************************************
+      *     きざみ値計算処理(脳延髄造影剤使用撮影加算と乳幼児加算あり）
+      *****************************************************************
+       10001322-TENSU-KEISAN02-SEC          SECTION.
+      *
+      *    脳延髄造影剤使用撮影加算
+           IF      IDX-KS2             >   ZERO
+               MOVE    WRK-COM-INPUTCD (IDX-KS2)
+                                       TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               MOVE    WRK-COM-TEN (IDX-KS2)  TO  WRK-SATUKSN-TEN
+      *        きざみ値
+               MOVE    TNS-KZMTEN          TO  WRK-SATUKZM-TEN
+           ELSE
+               MOVE    ZERO                TO  WRK-SATUKSN-TEN
+               MOVE    ZERO                TO  WRK-SATUKZM-TEN
+           END-IF
+      *
+      *    撮影料
+           MOVE    WRK-COM-INPUTCD (IDX-Z)
+                                       TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+      *
+      *    きざみ値計算
+           MOVE    WRK-COM-SURYO (IDX-Z)   TO  WRK-SURYO
+      *    同時撮影料の数量
+           IF     (WRK-SATUEI-SURYO        >   ZERO )  AND
+                  (FLG-SATU                =   ZERO )
+      *        撮影料の数量を合計上限　５　までとする
+               IF     (WRK-COM-SURYO (IDX-Z)   +   WRK-SATUEI-SURYO)
+                                           >   5
+                   IF      WRK-SATUEI-SURYO    <   5
+                       COMPUTE WRK-SURYO       = ( 5
+                                               -   WRK-SATUEI-SURYO )
+                   ELSE
+                       MOVE    ZERO            TO  WRK-SURYO
+                   END-IF
+               END-IF
+           END-IF
+      *    間接撮影による逓減計算（減点）
+           IF      WRK-SATU-GENRT  NOT =   ZERO
+               COMPUTE WRK-GENTEN      =   WRK-COM-TEN (IDX-Z)
+                                       *   WRK-SATU-GENRT
+               COMPUTE WRK-SATU-TEN    =   WRK-COM-TEN (IDX-Z)
+                                       -   WRK-GENTEN
+      *        きざみ点数
+               COMPUTE WRK-GENTEN      =   TNS-KZMTEN
+                                       *   WRK-SATU-GENRT
+               COMPUTE WRK-KZMTEN      =   TNS-KZMTEN
+                                       -   WRK-GENTEN
+           ELSE
+               MOVE    WRK-COM-TEN (IDX-Z) TO  WRK-SATU-TEN
+               MOVE    TNS-KZMTEN          TO  WRK-KZMTEN
+           END-IF
+      *
+      *    加算追加
+           COMPUTE WRK-SATU-TEN        =   WRK-SATU-TEN
+                                       +   WRK-SATUKSN-TEN
+           COMPUTE WRK-KZMTEN          =   WRK-KZMTEN
+                                       +   WRK-SATUKZM-TEN
+      *
+           MOVE    ZERO                    TO  WRK-KEI-TEN2
+      *
+      *    乳幼児加算計算
+           IF      WRK-SATU-KASAN      >   ZERO
+               COMPUTE WRK-SATU-TEN2   =   (WRK-SATU-TEN
+                                       *    WRK-SATU-KASAN )
+                                       +    WRK-SATU-TEN
+               MOVE    WRK-SATU-TEN2   TO  WRK-SATU-TEN
+               COMPUTE WRK-KZMTEN2     =   (WRK-KZMTEN
+                                       *    WRK-SATU-KASAN )
+                                       +    WRK-KZMTEN
+               MOVE    WRK-KZMTEN2     TO  WRK-KZMTEN
+           END-IF
+      *
+      *    きざみ点数を算定点数の１／２とする
+      *    IF      WRK-SATU-TEN        =   ZERO
+      *        MOVE    TNS-KZMTEN          TO  WRK-KZMTEN
+      *        乳幼児加算計算
+      *        IF      WRK-SATU-KASAN      >   ZERO
+      *            COMPUTE WRK-KZMTEN      =   (TNS-KZMTEN
+      *                                    *    WRK-SATU-KASAN )
+      *                                    +    TNS-KZMTEN
+      *        END-IF
+      *    ELSE
+      *        IF      FLG-SATU-GEN        =   ZERO
+      ***        AND  (WRK-SKBN-02         =   SPACE )
+      *          点数ときざみ点数が同じ時、撮影点数とする
+      *          AND  (TNS-TEN         NOT =   TNS-KZMTEN )
+      *            COMPUTE WRK-KZMTEN          =   WRK-SATU-TEN   /  2
+      *        ELSE
+      *            MOVE    WRK-SATU-TEN        TO  WRK-KZMTEN
+      *        END-IF
+      **** END-IF
+      *    きざみ値判定
+           EVALUATE    TRUE
+      *            データ≦（下限値−きざみ値）
+               WHEN    WRK-SURYO       <=  (TNS-KZMKGN  -  TNS-KZM)
+      *            IF      TNS-KZMERR          =   2  OR  3
+      *                MOVE    "0021"          TO  SPA-ERRCD
+      *            END-IF
+                   CONTINUE
+      *
+      *            下限値＜データ≦上限値
+               WHEN     (TNS-KZMKGN        <   WRK-SURYO )   AND
+                        (TNS-KZMJGN        >=  WRK-SURYO )
+      *            点数計算式１
+                   COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO -  TNS-KZMKGN)
+                                           /   TNS-KZM
+                                           +   0.999
+                   MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
+      *            点数がゼロの時、この点数とする
+                   COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
+                                               + ( WRK-KEI-TEN2
+                                               *   WRK-KZMTEN )
+                   COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
+      *
+      *            上限値＜データ
+               WHEN    TNS-KZMJGN        <   WRK-SURYO
+                   IF      TNS-KZMERR        =   0  OR  2
+      *            点数計算式１をせず、エラーとする
+      *************    MOVE    "0022"        TO  SPA-ERRCD
+      *            警告エラーとする
+      *                MOVE    "K030"            TO  SPA-ERRCD
+      *            点数計算式１
+                       COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
+                                               -  TNS-KZMKGN)
+                                               /   TNS-KZM
+                                               +   0.999
+                       MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
+                       COMPUTE WRK-KEI-TEN     =   WRK-SATU-TEN
+                                               + ( WRK-KEI-TEN2
+                                               *   WRK-KZMTEN )
                        COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
                    ELSE
       *            点数計算式２
