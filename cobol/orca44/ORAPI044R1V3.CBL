@@ -1798,9 +1798,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "E16"
                    MOVE    "請求年月日が未設定です。"
                                                    TO  WRK-ERRMSG
-      *********WHEN    "E17"
-      *********    MOVE    "保険者番号の設定に誤りがあります。"
-      *********                                    TO  WRK-ERRMSG
+               WHEN    "E17"
+                   MOVE    "保険者番号の設定に誤りがあります。"
+                                                   TO  WRK-ERRMSG
                WHEN    "E18"
                    MOVE    "レセ電データ作成の設定が行われていません。"
                                                    TO  WRK-ERRMSG
