@@ -2167,7 +2167,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    TAIHI-MCPAREA   TO  MCPAREA
            .
-       800-ORCGT06-CALL-EXT.
+       800-ORCGT09-CALL-EXT.
            EXIT.
       *
       *****************************************************************

@@ -277,6 +277,12 @@
       *    プレビュー用情報
            COPY    "CPXC01LNK.INC".
       *
+      *    退避用
+       01  WRK-ONRECE-K-REC.
+           COPY    "CPONRECE-KANRI.INC"
+                                   REPLACING  //ONRECE-K-//
+                                   BY         //WRK-ONRECE-K-//.
+      *
        01  WRK-CONS-AREA.
       *    個別指示一覧最大行
            03  WRK-CONS-LINE-MAX   PIC 9(04)   VALUE   500.
@@ -4810,7 +4816,30 @@
                MOVE    ZERO            TO  ONRECE-K-RENNUM
            END-IF
       *
-           ADD     1                   TO  ONRECE-K-RENNUM
+           IF      ONRECE-K-RENNUM     =   999
+               MOVE    ZERO                TO  ONRECE-K-RENNUM
+           END-IF
+      *
+           ADD     1               TO  ONRECE-K-RENNUM
+           MOVE    ONRECE-K-REC    TO  WRK-ONRECE-K-REC
+      *
+      *    次の連番のデータが存在するとき
+           MOVE    "tbl_onrece_kanri"
+                                   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    ONRECE-K-REC        TO  MCPDATA-REC
+           PERFORM 900-ONRECE-KANRI-SELECT-SEC
+           MOVE    "tbl_onrece_kanri"
+                                   TO  MCP-TABLE
+           MOVE    "key"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF      FLG-ONRECE-K    =   ZERO
+               MOVE    "1006"          TO  SPA-ERRCD
+               GO  TO  460-RECEDEN-EXT
+           END-IF
+      *
+           MOVE    WRK-ONRECE-K-REC    TO  ONRECE-K-REC
            MOVE    SPA-NAI-T06-SKYYMD-H
                                        TO  ONRECE-K-SKYYMD
            MOVE    SPA-GMN-T06-RECE-MAX
@@ -6308,6 +6337,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                                                        TO  TERR-ERRMSG
                WHEN    "1005"
                    MOVE    "パラメタＤＢが存在しません" 
+                                                       TO  TERR-ERRMSG
+               WHEN    "1006"
+                   MOVE    "処理上限数を超えています" 
                                                        TO  TERR-ERRMSG
                WHEN    "1009"
                    MOVE    "オンライン管理ＤＢが更新できません"
