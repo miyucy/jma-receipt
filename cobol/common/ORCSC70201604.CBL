@@ -3127,7 +3127,6 @@
        1000132-TENSU-KEISAN-EXT.
            EXIT.
       *
-      *H30.1
       *****************************************************************
       *     きざみ値計算処理(脳延髄造影剤使用撮影加算と乳幼児加算あり）
       *****************************************************************
@@ -3141,6 +3140,16 @@
                MOVE    WRK-COM-TEN (IDX-KS2)  TO  WRK-SATUKSN-TEN
       *        きざみ値
                MOVE    TNS-KZMTEN          TO  WRK-SATUKZM-TEN
+      *        数量
+               IF     (WRK-SATUEI-SURYO        >   ZERO )  AND
+                      (FLG-SATU                =   ZERO )
+                   COMPUTE WRK-COM-SURYO (IDX-KS2)
+                                           =   WRK-SATUEI-SURYO
+                                           +   WRK-COM-SURYO (IDX-Z)
+               ELSE
+                   MOVE    WRK-COM-SURYO (IDX-Z)
+                                           TO  WRK-COM-SURYO (IDX-KS2)
+               END-IF
            ELSE
                MOVE    ZERO                TO  WRK-SATUKSN-TEN
                MOVE    ZERO                TO  WRK-SATUKZM-TEN
@@ -3183,11 +3192,20 @@
                MOVE    TNS-KZMTEN          TO  WRK-KZMTEN
            END-IF
       *
-      *    加算追加
-           COMPUTE WRK-SATU-TEN        =   WRK-SATU-TEN
-                                       +   WRK-SATUKSN-TEN
-           COMPUTE WRK-KZMTEN          =   WRK-KZMTEN
+      *    脳延髄造影剤使用撮影加算
+           IF     (WRK-SATUEI-SURYO        >   ZERO )  AND
+                  (FLG-SATU                =   ZERO )
+      *        同時撮影料の時、点数にきざみ値点数を加算する（１回目は加算済み）
+               COMPUTE WRK-SATU-TEN    =   WRK-SATU-TEN
                                        +   WRK-SATUKZM-TEN
+               COMPUTE WRK-KZMTEN      =   WRK-KZMTEN
+                                       +   WRK-SATUKZM-TEN
+           ELSE
+               COMPUTE WRK-SATU-TEN    =   WRK-SATU-TEN
+                                       +   WRK-SATUKSN-TEN
+               COMPUTE WRK-KZMTEN      =   WRK-KZMTEN
+                                       +   WRK-SATUKZM-TEN
+           END-IF
       *
            MOVE    ZERO                    TO  WRK-KEI-TEN2
       *
