@@ -60,6 +60,7 @@
            03  FLG-SYORI               PIC 9(01).
            03  FLG-SP                  PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
+           03  FLG-NO                  PIC 9(01).
       *
            03  FLG-DELCHK              PIC 9(01).
            03  FLG-DELOK               PIC 9(01).
@@ -70,6 +71,7 @@
            03  FLG-SYOHOU-PRT          PIC 9(01).
            03  FLG-CHUUSHA-PRT         PIC 9(01).
            03  FLG-SIJISEN-PRT         PIC 9(01).
+           03  FLG-NO2                 PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -210,7 +212,6 @@
            03  WRK-KEY-SRYYMD.
                05  WRK-KEY-SRYYM           PIC X(06).
                05  WRK-KEY-SRYDD           PIC 9(02).
-           03  FLG-NO                  PIC 9(01).
       *
        01  WRK-XML-AREA.
            03  WRK-PERFORM-DATE        PIC X(10).
@@ -716,10 +717,6 @@
                    WHEN    2
                        MOVE    "登録正常終了"
                                            TO  MDCRES-API-RESULT-MSG
-                       IF      FLG-UPDATE      =   ZERO
-                           MOVE    "確認処理終了"
-                                           TO  MDCRES-API-RESULT-MSG
-                       END-IF
                END-EVALUATE
            ELSE
                IF      WRK-ERRMSG          =   SPACE
@@ -2289,19 +2286,24 @@
            ELSE
                MOVE    1                   TO  FLG-SRYACCT
            END-IF
-      *    回数ゼロは対象外
-           IF      ACCT-ZAIKAISU       =   ZERO
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
       *
            PERFORM
-               UNTIL       (FLG-SRYACCT         =   1 )  OR
-                           (IDX                 >=  10 )
-               IF      ACCT-SYUTEN1        >   ZERO
-      *            包括まとめ入力は対象外とする
-                  AND  (ACCT-HKNCOMBI NOT =   "9999" )
+               UNTIL       (FLG-SRYACCT        =   1 )  OR
+                           (IDX                >=  10 )
+               MOVE    ZERO                TO  FLG-NO2
+      *        回数ゼロは対象外
+               IF      ACCT-ZAIKAISU       =   ZERO
+                   MOVE    1                   TO  FLG-NO2
+               END-IF
+               IF      (ACCT-SYUTEN1       =   ZERO )
+      *           包括まとめ入力は対象外とする
+                  OR   (ACCT-HKNCOMBI     =   "9999" )
       *           薬評は対象外とする
-                  AND  (ACCT-ZAIKBN   NOT =   1      )
+                  OR   (ACCT-ZAIKBN       =   1      )
+                   MOVE    1                   TO  FLG-NO2
+               END-IF
+      *
+               IF      FLG-NO2             =   ZERO
                    PERFORM 200341-CHOZAI-HENSYU-SEC
                END-IF
       *
