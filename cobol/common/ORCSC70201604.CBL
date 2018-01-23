@@ -2756,6 +2756,12 @@
       *****************************************************************
        1002121-XSEN-KEI-SEC             SECTION.
       *
+      *H30.1
+      *    Ç¾ÀÔ¿ñ¹ÐÂ¤±ÆºÞ»ÈÍÑ»£±Æ²Ã»»¤Î¿ÇÎÅ¼ïÊÌ¶èÊ¬¤òÊÑ¹¹¤¹¤ë
+           IF     (WRK-COM-INPUTCD (IDX-Z)     =   "170002270")
+               MOVE    "721"           TO  WRK-COM-TNSSRYSYUKBN(IDX-Z)
+           END-IF
+      *
            EVALUATE    WRK-COM-TNSSRYSYUKBN(IDX-Z)(1:2)
                WHEN    "72"
       *            »£±ÆÎÁÊÔ½¸
@@ -2886,7 +2892,7 @@
                END-IF
            ELSE
       *        ÆýÍÄ»ù²Ã»»¤¢¤ê
-               PERFORM VARYING     IDX-Z2  FROM    IDX-STR BY  1
+               PERFORM VARYING     IDX-Z2  FROM    1   BY  1
                    UNTIL      (IDX-Z2      >   SPA-MAX-LINE  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z2)  =   SPACE )
                    IF      WRK-COM-INPUTCD (IDX-Z2) =   "170002270"
@@ -3309,7 +3315,7 @@
            END-IF
       *
            .
-       1000132-TENSU-KEISAN-EXT.
+       10001322-TENSU-KEISAN02-EXT.
            EXIT.
       *
       *****************************************************************
