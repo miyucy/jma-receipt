@@ -673,7 +673,6 @@
            MOVE    LNK-DAY6-KEISAN (1:6)
                                        TO  WRK-SYSYM-2
       *
-      *
       *    カルテUID
            IF      RECEDMAKEQ-KARTE-UID =   SPACE
                MOVE    "E04"               TO  WRK-ERRCD
@@ -1241,7 +1240,7 @@
       *            診療年月
                    IF      RECEDMAKEQ-PATIENT-MONTH (IDZZ)
                                                =   SPACE
-                       MOVE    "E014"              TO  SPA-ERRCD
+                       MOVE    "E032"              TO  SPA-ERRCD
                        MOVE    "診療年月が未設定です"
                                                    TO  SPA-ERRMSG
                    ELSE
@@ -1425,13 +1424,13 @@
                            MOVE    "E10"       TO  RECEDMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
                        WHEN    "0009"
-                           MOVE    "E11"       TO  RECEDMAKES-ERROR-CODE
+                           MOVE    "E31"       TO  RECEDMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
                        WHEN    "E001"
                            MOVE    "E01"       TO  RECEDMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
-                       WHEN    "E014"
-                           MOVE    "E14"       TO  RECEDMAKES-ERROR-CODE
+                       WHEN    "E032"
+                           MOVE    "E32"       TO  RECEDMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
                        WHEN    "E028"
                            MOVE    "E28"       TO  RECEDMAKES-ERROR-CODE
@@ -2023,7 +2022,7 @@
                                                        (WRK-WARNING-MAX)
                END-IF
            ELSE
-               MOVE    "E31"           TO  WRK-ERRCD
+               MOVE    "E35"           TO  WRK-ERRCD
                MOVE    JOB-YOBI        TO  WRK-ERRMSG
            END-IF
       *
@@ -2281,8 +2280,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "E70"
       *            レセプト作成、定期請求の処理中
                    GO  TO  890-ERRCD-MSG-EXT
-               WHEN    "E31"
-               WHEN    "E32"
+               WHEN    "E35"
+               WHEN    "E36"
       *            レセプト作成結果
                    GO  TO  890-ERRCD-MSG-EXT
                WHEN    "E63"
