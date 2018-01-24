@@ -405,6 +405,8 @@
            MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  RECEERR
       *
+           PERFORM 100-DBOPEN-SEC
+      *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
