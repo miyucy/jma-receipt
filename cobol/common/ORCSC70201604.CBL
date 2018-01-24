@@ -2886,6 +2886,9 @@
       *            単独できざみ値計算
                    MOVE    ZERO                TO  FLG-SATU-GEN
                    MOVE    ZERO                TO  FLG-SATU
+      *            間接撮影による逓減計算なし
+                   MOVE    ZERO                TO  WRK-SATU-GENRT
+                   MOVE    WRK-COM-TEN (IDX-Z) TO  WRK-SATU-TEN
                    PERFORM 1000132-TENSU-KEISAN-SEC
                    ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-TENSUKEI1
                    GO     TO  1000131-SATUEI-KEI-EXT
