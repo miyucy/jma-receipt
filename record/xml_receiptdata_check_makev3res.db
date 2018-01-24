@@ -22,9 +22,9 @@ xml_receiptdata_check_makev3res {
 			Data_Id         varchar(37);
 			Print_Id        varchar(37);
 		} [10];
-		receiptdata_Warning_Info {
-			receiptdata_Warning		varchar(3);
-			receiptdata_Warning_Message	varchar(100);
+		Receiptdata_Warning_Info {
+			Receiptdata_Warning		varchar(3);
+			Receiptdata_Warning_Message	varchar(100);
 		} [5];
 		Err_Patient_Information {
 			Patient_ID		varchar(20);
