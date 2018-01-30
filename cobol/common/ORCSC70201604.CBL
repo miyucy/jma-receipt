@@ -2902,6 +2902,7 @@
                    END-IF
                END-PERFORM
                IF     (WRK-COM-INPUTCD (IDX-Z) =   "170002270")
+                   PERFORM 10001322-SATUKSN-SURYO-CHK-SEC
                    GO     TO  1000131-SATUEI-KEI-EXT
                END-IF
            END-IF
@@ -3161,15 +3162,15 @@
       *        ¤­¤¶¤ßÃÍ
                MOVE    TNS-KZMTEN          TO  WRK-SATUKZM-TEN
       *        ¿ôÎÌ¡Ê»£±ÆÎÁ¤Î¿ôÎÌ¡Ë
-               IF     (WRK-SATUEI-SURYO        >   ZERO )  AND
-                      (FLG-SATU                =   ZERO )
-                   COMPUTE WRK-COM-SURYO (IDX-KS2)
-                                           =   WRK-SATUEI-SURYO
-                                           +   WRK-COM-SURYO (IDX-Z)
-               ELSE
-                   MOVE    WRK-COM-SURYO (IDX-Z)
-                                           TO  WRK-COM-SURYO (IDX-KS2)
-               END-IF
+      **       IF     (WRK-SATUEI-SURYO        >   ZERO )  AND
+      *               (FLG-SATU                =   ZERO )
+      *            COMPUTE WRK-COM-SURYO (IDX-KS2)
+      *                                    =   WRK-SATUEI-SURYO
+      *                                    +   WRK-COM-SURYO (IDX-Z)
+      *        ELSE
+      *            MOVE    WRK-COM-SURYO (IDX-Z)
+      *                                    TO  WRK-COM-SURYO (IDX-KS2)
+      **       END-IF
            ELSE
                MOVE    ZERO                TO  WRK-SATUKSN-TEN
                MOVE    ZERO                TO  WRK-SATUKZM-TEN
@@ -3252,14 +3253,52 @@
            EXIT.
       *
       *****************************************************************
+      *    Ç¾ÀÔ¿ñ¹ÐÂ¤±ÆºÞ»ÈÍÑ»£±Æ²Ã»»¤Î¿ôÎÌ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       10001322-SATUKSN-SURYO-CHK-SEC             SECTION.
+      *
+      *    ÆþÎÏ¿ôÎÌ¤¬»£±Æ¹ç·×¿ôÎÌ¤È°ã¤¦»þ
+           IF     (WRK-SATKSN-SURYO        >   ZERO )    AND
+                  (WRK-SATKSN-SURYO    NOT =   WRK-COM-SURYO (IDX-Z))
+      *        ¤­¤¶¤ßÃÍ¾å¸Â¤Î£µ°Ê¾å¤ÏÂÐ¾Ý³°
+               IF     (WRK-SATKSN-SURYO        <   5     )
+                 OR   (WRK-COM-SURYO(IDX-Z)    <   5     )
+                   MOVE    "0701"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
+               END-IF
+           END-IF
+           .
+       10001322-SATUKSN-SURYO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    Ç¾ÀÔ¿ñ¹ÐÂ¤±ÆºÞ»ÈÍÑ»£±Æ²Ã»»¤Î¤ß·×»»½èÍý
       *****************************************************************
        10001323-NOUSTUKSN-KEI-SEC             SECTION.
       *
-      *    ¿ôÎÌ¡Ê»£±ÆÎÁ¤Î¿ôÎÌ¡Ë
+      *    ¿ôÎÌ¡Ê»£±ÆÎÁ¤Î¿ôÎÌ¡Ë¤¬°ã¤¦»þ¡¢·Ù¹ð
+      *            ¤­¤¶¤ßÃÍ¾å¸Â¤Î£µ°Ê¾å¤ÏÂÐ¾Ý³°
            IF     (WRK-SATKSN-SURYO        >   ZERO )
-               MOVE    WRK-SATKSN-SURYO    TO  WRK-COM-SURYO(IDX-Z)
+             AND  (WRK-SATKSN-SURYO    NOT =   WRK-COM-SURYO(IDX-Z))
+               IF      (WRK-SATKSN-SURYO       <   5     )
+                   OR  (WRK-COM-SURYO(IDX-Z)   <   5     )
+      *            ·Ù¹ð
+                   IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE ) AND
+                          (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                       MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-Z)
+                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
+                       MOVE    "K701"          TO  SPA-ERRCD
+                       GO      TO      10001323-NOUSTUKSN-KEI-EXT
+                   END-IF
+               END-IF
            END-IF
+      *
+      *??  IF     (WRK-SATKSN-SURYO        >   ZERO )
+      *        MOVE    WRK-SATKSN-SURYO    TO  WRK-COM-SURYO(IDX-Z)
+      *????END-IF
+      *
       *    ¤­¤¶¤ßÃÍ·×»»
            MOVE    WRK-COM-SURYO (IDX-Z)   TO  WRK-SURYO
       *

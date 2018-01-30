@@ -2235,6 +2235,20 @@
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
+      *H30.2
+               WHEN    "0701"
+                   STRING  "撮影料の合計数量と違います。"
+                           "同じ数量を入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K701"
+                   STRING  "警告！撮影料の合計数量と違います。"
+                           "同じ数量を入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
