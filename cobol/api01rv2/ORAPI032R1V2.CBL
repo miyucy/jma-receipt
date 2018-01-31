@@ -261,8 +261,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  XML-HSMEALV2REQ
-                                       XML-HSMEALRES
+           INITIALIZE                  XML-HSMEALRES
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
