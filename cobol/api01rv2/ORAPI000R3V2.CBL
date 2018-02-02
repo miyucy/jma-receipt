@@ -748,18 +748,10 @@
            INITIALIZE                  MPE-REC
            MOVE    PEGREQ-EVENT    TO  MPE-EVENT
            MOVE    PEGREQ-USER     TO  MPE-USER
-           IF    ( API-START-TIMESTAMP NOT =   SPACE )
-               STRING API-START-TIMESTAMP  DELIMITED BY SIZE
-                      " JST"               DELIMITED BY SIZE
-               INTO   MPE-PUSHED-FROM
-               END-STRING
-           END-IF
-           IF    ( API-END-TIMESTAMP   NOT =   SPACE )
-               STRING API-END-TIMESTAMP    DELIMITED BY SIZE
-                      " JST"               DELIMITED BY SIZE
-               INTO   MPE-PUSHED-TO
-               END-STRING
-           END-IF
+           MOVE    API-START-TIMESTAMP
+                                   TO  MPE-PUSHED-FROM
+           MOVE    API-END-TIMESTAMP
+                                   TO  MPE-PUSHED-TO
            MOVE    MPE-REC         TO  MCPDATA-REC
            MOVE    "monpushevent"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
