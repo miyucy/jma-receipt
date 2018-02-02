@@ -272,4 +272,5 @@ db	{
 	tbl_hknjainf_user;
 	tbl_hknjainf_master;
         tbl_receden_tmp;
+    monpushevent;
 };

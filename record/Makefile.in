@@ -559,6 +559,7 @@ RECORD_files = \
 	medicalmodav33.rec \
 	medicalmodav34.rec \
 	receiptdatacheckmakev3.rec \
+    pusheventgetv2.rec \
 	addressmasterlstv3.rec \
 
 DEF_files = \
@@ -1091,6 +1092,10 @@ DB_files = \
 	xml_medicalav3res4.db \
 	xml_receiptdata_check_makev3req.db \
 	xml_receiptdata_check_makev3res.db \
+    monpushevent.db \
+    xml_pusheventgetv2err.db \
+    xml_pusheventgetv2req.db \
+    xml_pusheventgetv2res.db \
 	xml_address_masterlstv3req.db \
 	xml_address_masterlstv3res.db \
 	xml_address_masterlst.db \
