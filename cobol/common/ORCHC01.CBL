@@ -1819,7 +1819,8 @@
            MOVE    WRK-OUT-MAX         TO  WRK-JKYSNO-MAX
       *
       *ver.4.7
-           IF      COMB-KOH1HKNNUM     =   "970"
+      *****IF      COMB-KOH1HKNNUM     =   "970"
+           IF      PTKOH-KOHNUM        =   "970"
       *        第三者行為
                IF      PARA-DAISANKBN      =   "1"
       *            負担者番号へ
@@ -2391,7 +2392,8 @@
            MOVE    WRK-HEN-DATE        TO  FMKARTE1-KOH-TEKEDYMD
                                                        (IDX-KOH)
       *
-           IF      COMB-KOH1HKNNUM     =   "970"
+      ***  IF      COMB-KOH1HKNNUM     =   "970"
+           IF      PTKOH-KOHNUM        =   "970"
       *        第三者行為
                IF      PARA-DAISANKBN      =   "1"
                    CONTINUE
