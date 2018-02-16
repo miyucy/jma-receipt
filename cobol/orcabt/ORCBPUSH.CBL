@@ -222,7 +222,14 @@
       *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           PERFORM 900-CALL-ORCSJOB-SEC
+           MOVE    1               TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+                                   SPA-AREA
            IF    ( SJOBKANRI-RETURN
                                    =   ZERO  )
            AND   ( JOB-KARTE-UID
@@ -231,8 +238,7 @@
                MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
                MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
                MOVE    "000"           TO  PUSHBA01API-RESULT
-               MOVE    WRK-PARA-EVENT
-                                       TO  PUSHBA01-EVENT
+               MOVE    WRK-PARA-EVENT  TO  PUSHBA01-EVENT
                EVALUATE    WRK-PARA-EVENT
                    WHEN    "receiptdata_make"
                    WHEN    "receiptdata_check_make"
@@ -262,6 +268,8 @@
                CALL    "ORCDBMAIN"     USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
+           ELSE
+               DISPLAY "NOT FOUND JOBKANRI"
            END-IF
            .
        200-MAIN-EXT.

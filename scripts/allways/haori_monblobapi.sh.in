@@ -40,6 +40,7 @@ trap cleanup EXIT
     echo "arg14 =  [" ${14} "]"  
     echo "arg15 =  [" ${15} "]"  
     echo "arg16 =  [" ${16} "]"  
+    echo "arg17 =  [" ${17} "]"  
 
     FILENM="${2}${3}.pdf"
     if  [ -e "${MCP_TEMPDIR}/${FILENM}" ]; then
