@@ -107,6 +107,7 @@ utf8_shell_sources = \
 	monthly/recept4_monblobapi.sh.in \
 	allways/patient_medical_all.sh.in \
 	allways/address_masterlst.sh.in \
+	allways/haori_monblobapi.sh.in \
 
 
 shell_sources = \

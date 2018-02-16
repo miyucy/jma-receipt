@@ -789,6 +789,9 @@
            MOVE    MONBLOB-ID          TO  SHELLTBL-ARG17
                                            WRK-MONBLOB-ID
       *
+           MOVE    "medicalpoints_master_make"
+                                       TO  SHELLTBL-ARG18
+      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
