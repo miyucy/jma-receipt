@@ -508,9 +508,9 @@
       *********        MOVE    90          TO  SPA-GMN28-CUR
                        MOVE    30          TO  SPA-GMN28-CUR
       *H30.4
-      *                ½÷À­¤Ç£±£°ºÐ°Ê¾å¤ÏÇ¥ÉØ¶èÊ¬¤Ø
+      *                ½÷À­¤Ç£±£¶ºÐ°Ê¾å¤ÏÇ¥ÉØ¶èÊ¬¤Ø
                        IF     (SPA-GMN-SEX         =   "2" )
-                         AND  (SPA-NAI-NENREI-YY   >=  10  )
+                         AND  (SPA-NAI-NENREI-YY   >=  16  )
                            MOVE    49          TO  SPA-GMN28-CUR
                        END-IF
                    ELSE
