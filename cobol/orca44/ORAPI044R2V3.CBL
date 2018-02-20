@@ -2037,7 +2037,7 @@
                                                        (WRK-WARNING-MAX)
                END-IF
            ELSE
-               MOVE    "E31"           TO  WRK-ERRCD
+               MOVE    "E35"           TO  WRK-ERRCD
                MOVE    WRK-JOB-YOBI    TO  WRK-ERRMSG
            END-IF
       *
