@@ -58,18 +58,7 @@ if [ "${PTID}" = "9999999999" ]; then
       else
         CSVFILE="JMAMR${HOSPCD}G${dataymd}${EXYMD}${EXTIME}.csv"
       fi
-      if ! [ "${MCP_MIDDLEWARE_NAME}" = "ginbee" ]; then
-        cp ${TEMPSJISMRCSV} ${9}/${CSVFILE}
-        chmod g+rw ${9}/${CSVFILE}
-      else
-        rennum=$(expr ${rennum} + 1) 
-        RECCNT="$(wc -l ${TEMPSJISMRCSV} | awk '{i=split($0,arr," ");printf("%06d",arr[1])}')"
-        ${MONBLOB} -dir ${LDDIRECTORY} -import ${TEMPSJISMRCSV} > ${MCP_TEMPDIR}/blobid-$$
-        MONBLOBID=`cat ${MCP_TEMPDIR}/blobid-$$`
-        PARAM="${NYUGAI},MISJMAMR,${EXYMD}${EXTIME},${rennum},${dataymd:0:6},${dataymd},jmamr.sh,1,,,,,,,${HOSPNUM},${NYUGAI},${MCP_TEMPDIR},${CSVFILE},${RECCNT},${MONBLOBID}"
-
-        ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBFILEMIS -parameter "${PARAM}"
-      fi
+      cp -p ${TEMPSJISMRCSV} ${9}/${CSVFILE}
     fi
   done
 else
