@@ -12881,8 +12881,10 @@
                                       LNK-NYURECEDEN-TEN(3 IDX2 IDX4)
                         END-EVALUATE
                     END-EVALUATE
-                    MOVE  WRK-SKJ7-KAISU(IDX1)  TO
-                                LNK-NYURECEDEN-KAISU(3 IDX2 IDX4)
+                    IF   WRK-SKJ7-RYOYO(IDX1)  NOT =  SPACE
+                        MOVE  WRK-SKJ7-KAISU(IDX1)  TO
+                                    LNK-NYURECEDEN-KAISU(3 IDX2 IDX4)
+                    END-IF
                     IF   WRK-SKJ7-RYOYO-RYU(IDX1)  NOT =  SPACE
                         ADD     1     TO    IDX4
                         IF     IDX4   =   1
@@ -12938,8 +12940,10 @@
                           END-EVALUATE
                         END-IF
                     END-EVALUATE
-                    MOVE  WRK-SKJ7-KAISU(IDX1)  TO
-                                LNK-NYURECEDEN-KAISU(3 IDX2 IDX4)
+                    IF   WRK-SKJ7-RYOYO-RYU(IDX1)  NOT =  SPACE
+                        MOVE  WRK-SKJ7-KAISU(IDX1)  TO
+                                    LNK-NYURECEDEN-KAISU(3 IDX2 IDX4)
+                    END-IF
                     IF   WRK-SKJ7-SHOKUDOU(IDX1)  NOT =  SPACE
                          ADD     1     TO    IDX4
                          MOVE   "SI"   TO
