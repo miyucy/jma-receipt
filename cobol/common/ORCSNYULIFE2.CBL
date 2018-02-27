@@ -63,6 +63,9 @@
       *                                     •≥°º•…»ΩƒÍƒ…≤√
       *  05.00.00    NACL-æÆ∆¶¬Ù  17/11/22  ¥µº‘«ØŒ£∂£≥∫–∞ ≤º§œ¿∏≥ËŒ≈Õ‹
       *                                     ¬–æ›≥∞§Œ•Í•ø°º•Û•≥°º•… ÷µ—
+      * ø¿Æ£≥£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
+      *  05.00.00    NACL-æÆ∆¶¬Ù  18/02/27  ¿∏≥ËŒ≈Õ‹ø©ªˆ…È√¥≥€ —ππ¬–±˛
+      *                                     µÔΩª»Ò…È√¥≥€ —ππ¬–±˛
       *****************************************************************
       *
       *
@@ -1310,6 +1313,25 @@
                                            LNK-NYULIFE2-SKJFTN-MONEY
                                                             (IDX1 IDX-T)
                               END-IF
+      *                        ø¿Æ£≥£∞«Ø≤˛¿µ
+                              IF    LNK-NYULIFE2-SANTEIYM
+                                                      >= "201804"
+                                  IF   LNK-NYULIFE2-SKJKBN(IDX1)  =  "1"
+                                       MOVE  "197005110"   TO
+                                             LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                       MOVE   460      TO
+                                           LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                  ELSE
+                                       MOVE  "197005210"   TO
+                                             LNK-NYULIFE2-SKJFTN-SRYCD
+                                                            (IDX1 IDX-T)
+                                       MOVE   420      TO
+                                           LNK-NYULIFE2-SKJFTN-MONEY
+                                                            (IDX1 IDX-T)
+                                  END-IF
+                              END-IF
       *                       ∆Ò…¬≈˘ø¯§®√÷§≠¥µº‘§Œ√÷¥π
                               EVALUATE     LNK-SKJKEEP-KBN(IDX1)
                                   WHEN     "1"
@@ -1504,6 +1526,11 @@
                                         LNK-NYULIFE2-KANFTN-SRYCD(IDX1)
                         MOVE  200       TO
                                         LNK-NYULIFE2-KANFTN-MONEY(IDX1)
+      *                  ø¿Æ£≥£∞«Ø≤˛¿µ°°∞ÂŒ≈∂Ë ¨£≤°¢£≥° £±∆¸£≥£∑£∞±ﬂ°À
+                        IF   LNK-NYULIFE2-SANTEIYM >=  "201804"
+                             MOVE  370       TO
+                                        LNK-NYULIFE2-KANFTN-MONEY(IDX1)
+                        END-IF
                     END-IF
       *             ∂≠≥¶¡ÿ¥µº‘§œ¥ƒ∂≠Œ≈Õ‹¥µº‘…È√¥Ãµ§∑§À√÷¥π§®
                     IF  LNK-SYOTOKU-KKSKBN(IDX1)   =   "1"
