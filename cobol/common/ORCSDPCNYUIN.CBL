@@ -6591,8 +6591,10 @@
                         MOVE      WRK-SKJ7-RYOYO-SU(IDX1)  TO
                                       LNK-DPCNYUIN-SURYO(3 IDX2 IDX4)
                     END-IF
-                    MOVE      WRK-SKJ7-RYOYO-SU(IDX1)  TO
+                    IF   WRK-SKJ7-RYOYO(IDX1)  NOT =  SPACE
+                        MOVE      WRK-SKJ7-RYOYO-SU(IDX1)  TO
                                       LNK-DPCNYUIN-SURYO(3 IDX2 IDX4)
+                    END-IF
       *             Æ±ÆüºÆÆþ±¡È½Äê¹àÌÜ
                     IF      WRK-SKJ7-SAINYUINKBN(IDX1)    =   1
                         MOVE  "1"  TO  LNK-DPCNYUIN-SAINYUINKBN
@@ -6634,8 +6636,10 @@
                                       LNK-DPCNYUIN-TEN(3 IDX2 IDX4)
                         END-EVALUATE
                     END-EVALUATE
-                    MOVE  WRK-SKJ7-KAISU(IDX1)  TO
-                                LNK-DPCNYUIN-KAISU(3 IDX2 IDX4)
+                    IF   WRK-SKJ7-RYOYO(IDX1)  NOT =  SPACE
+                        MOVE  WRK-SKJ7-KAISU(IDX1)  TO
+                                    LNK-DPCNYUIN-KAISU(3 IDX2 IDX4)
+                    END-IF
                     IF   WRK-SKJ7-RYOYO-RYU(IDX1)  NOT =  SPACE
                         ADD     1     TO    IDX4
       **                  IF     IDX4   =   1
@@ -6691,8 +6695,10 @@
                           END-EVALUATE
                         END-IF
                     END-EVALUATE
-                    MOVE  WRK-SKJ7-KAISU(IDX1)  TO
-                                LNK-DPCNYUIN-KAISU(3 IDX2 IDX4)
+                    IF   WRK-SKJ7-RYOYO-RYU(IDX1)  NOT =  SPACE
+                        MOVE  WRK-SKJ7-KAISU(IDX1)  TO
+                                    LNK-DPCNYUIN-KAISU(3 IDX2 IDX4)
+                    END-IF
                     IF   WRK-SKJ7-SHOKUDOU(IDX1)  NOT =  SPACE
                          ADD     1     TO    IDX4
                          MOVE   "SI"   TO
