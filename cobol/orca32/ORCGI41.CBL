@@ -1343,21 +1343,36 @@
            IF       SPA-NAI-SRYYM      >=  "201604"
                MOVE    "05"                TO  SPA-GMN-SAGAKUNO-41 (5)
                MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£°¡ó¸º"
-                                       TO  SPA-GMN-SAGAKU-41   (5)
+                                           TO  SPA-GMN-SAGAKU-41   (5)
                MOVE    "06"                TO  SPA-GMN-SAGAKUNO-41 (6)
                MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£²£°¡ó¸º"
-                                       TO  SPA-GMN-SAGAKU-41   (6)
+                                           TO  SPA-GMN-SAGAKU-41   (6)
                MOVE    "08"                TO  SPA-GMN-SAGAKUNO-41 (7)
-               MOVE    "ÆÃÄê»þ´ÖÂà±¡¸º»»"
-                                       TO  SPA-GMN-SAGAKU-41   (7)
+               MOVE    "ÆÃÄê»þ´ÖÂà±¡¸º»»"  TO  SPA-GMN-SAGAKU-41   (7)
                MOVE    "09"                TO  SPA-GMN-SAGAKUNO-41 (8)
                MOVE    "ÆÃÄêÍËÆüÆþÂà±¡¸º»»"
-                                       TO  SPA-GMN-SAGAKU-41   (8)
+                                           TO  SPA-GMN-SAGAKU-41   (8)
                MOVE    "13"                TO  SPA-GMN-SAGAKUNO-41 (9)
                MOVE    "ÆÃÄêÍËÆü¡ÜÂ¾¼õ£±£°¡ó¸º"
-                                       TO  SPA-GMN-SAGAKU-41   (9)
+                                           TO  SPA-GMN-SAGAKU-41   (9)
       *
                MOVE    9                   TO  SPA-SAGAKU-MAX-41
+               IF       SPA-NAI-SRYYM      >=  "201804"
+                   MOVE    "14"            TO  SPA-GMN-SAGAKUNO-41 (10)
+                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£µ¡ó¸º"
+                                           TO  SPA-GMN-SAGAKU-41   (10)
+                   MOVE    "15"            TO  SPA-GMN-SAGAKUNO-41 (11)
+                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£³£µ¡ó¸º"
+                                           TO  SPA-GMN-SAGAKU-41   (11)
+                   MOVE    "16"            TO  SPA-GMN-SAGAKUNO-41 (12)
+                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£µ¡ó¸º"
+                                           TO  SPA-GMN-SAGAKU-41   (12)
+                   MOVE    "17"            TO  SPA-GMN-SAGAKUNO-41 (13)
+                   MOVE    "ÆÃÄêÍËÆü¡ÜÂ¾¼õ£µ¡ó¸º"
+                                           TO  SPA-GMN-SAGAKU-41   (13)
+      *
+                   MOVE    13              TO  SPA-SAGAKU-MAX-41
+               END-IF
            ELSE
              IF       SPA-NAI-SRYYM      >=  "201204"
                MOVE    "05"                TO  SPA-GMN-SAGAKUNO-41 (5)
@@ -4618,7 +4633,8 @@ grpsys                                     SPA-AREA
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
                       END-IF
-                      IF      SPA-NAI-SRYYM         >=    "201604"
+                      IF  (SPA-NAI-SRYYM         >=    "201604") AND
+                          (SPA-NAI-SRYYM         <=    "201803")
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
@@ -4629,6 +4645,26 @@ grpsys                                     SPA-AREA
                                                            OR  8
                                                            OR  9
                                                            OR 13
+                               CONTINUE
+                           ELSE
+                               MOVE    "0035"         TO  SPA-ERRCD
+                           END-IF
+                      END-IF
+                      IF      SPA-NAI-SRYYM         >=    "201804"
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  1
+                                                           OR  2
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                                                           OR  6
+                                                           OR  8
+                                                           OR  9
+                                                           OR 13
+                                                           OR 14
+                                                           OR 15
+                                                           OR 16
+                                                           OR 17
                                CONTINUE
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
@@ -4685,7 +4721,8 @@ grpsys                                     SPA-AREA
                                MOVE    "0036"         TO  SPA-ERRCD
                            END-IF
                       END-IF
-                      IF   SPA-NAI-SRYYM         >=    "201604"
+                      IF  (SPA-NAI-SRYYM         >=    "201604") AND
+                          (SPA-NAI-SRYYM         <=    "201803")
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  3
                                                            OR  4
@@ -4699,11 +4736,38 @@ grpsys                                     SPA-AREA
                                MOVE    "0036"         TO  SPA-ERRCD
                            END-IF
                       END-IF
+                      IF   SPA-NAI-SRYYM         >=    "201804"
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                                                           OR  6
+                                                           OR  8
+                                                           OR  9
+                                                           OR 13
+                                                           OR 14
+                                                           OR 15
+                                                           OR 16
+                                                           OR 17
+                               CONTINUE
+                           ELSE
+                               MOVE    "0036"         TO  SPA-ERRCD
+                           END-IF
+                      END-IF
                    END-IF
       *
       *            ÆÃÄêÍËÆüÆþÂà±¡¸º»»¤ÎÅÚÆüÍËÆü¥Á¥§¥Ã¥¯
                    IF     SPA-NAI-SRYYM      >=    "201210"
                      IF  SPA-GMN-DAY-41 (IDX-D)   =   9   OR  13
+                       IF   SPA-NAI-YOBI(IDX-D)   =  "6"  OR  "7"
+                           CONTINUE
+                       ELSE
+                           MOVE  "0055"           TO  SPA-ERRCD
+                       END-IF
+                     END-IF
+                   END-IF
+                   IF     SPA-NAI-SRYYM      >=    "201804"
+                     IF  SPA-GMN-DAY-41 (IDX-D)   =   17
                        IF   SPA-NAI-YOBI(IDX-D)   =  "6"  OR  "7"
                            CONTINUE
                        ELSE
@@ -9034,11 +9098,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                      MOVE  "¤«¤Ç¤¹¡£"
                                        TO  WRK-ERRMSG(43:8)
                  END-IF
-                 IF   SPA-NAI-SRYYM     >=    "201604"
+                 IF  (SPA-NAI-SRYYM     >=    "201604")  AND
+                     (SPA-NAI-SRYYM     <=    "201803")
                      MOVE  "³°Çñ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡Á£¶¡¢£¸¡¢£¹¡¢£±£³"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE  "¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
                                        TO  WRK-ERRMSG(43:16)
+                 END-IF
+                 IF   SPA-NAI-SRYYM     >=    "201804"
+                     MOVE  "³°Çñ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡Á£¶¡¢£¸¡¢£¹¡¢£±£³"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE  "¡Á£±£·¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
+                                       TO  WRK-ERRMSG(43:22)
                  END-IF
                WHEN    "0036"
                  IF   SPA-NAI-SRYYM     <=    "201003"
@@ -9068,11 +9139,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                      MOVE    "£³¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
                                        TO  WRK-ERRMSG(43:18)
                  END-IF
-                 IF   SPA-NAI-SRYYM     >=    "201604"
-                     MOVE  "³°Çñ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡¢£³¡Á£¶¡¢£¸¡¢£¹¡¢"
+                 IF  (SPA-NAI-SRYYM     >=    "201604")  AND
+                     (SPA-NAI-SRYYM     <=    "201803")
+                     MOVE  "ÁªÄêÆþ±¡ÎÁ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡¢£³¡Á£¶¡¢£¸"
                                        TO  WRK-ERRMSG(1:42)
-                     MOVE  "£±£³¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
-                                       TO  WRK-ERRMSG(43:20)
+                     MOVE  "¡¢£¹¡¢£±£³¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
+                                       TO  WRK-ERRMSG(43:26)
+                 END-IF
+                 IF   SPA-NAI-SRYYM     >=    "201804"
+                     MOVE  "ÁªÄêÆþ±¡ÎÁ¤ÇÆþÎÏ²ÄÇ½¤Ê¶èÊ¬¤Ï£°¡¢£³¡Á£¶¡¢£¸"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE  "¡¢£¹¡¢£±£³¡Á£±£·¤Î¤¤¤º¤ì¤«¤Ç¤¹¡£"
+                                       TO  WRK-ERRMSG(43:32)
                  END-IF
                WHEN    "0037"
                    MOVE    "ÆþÎÏ¤µ¤ì¤¿¿ô»ú¤Ï¼¼ÎÁº¹³ÛÈÖ¹æ¤È¤·¤ÆÀßÄê¤µ¤ì"
