@@ -52,6 +52,8 @@
       *  04.07.01    NACL-ÃÝÅÄ    07/06/01  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *
       *  04.08.01    NACL-Æ£¸¶    14/08/28  £´¡¥£¸¥ß¥É¥ëÂÐ±þ
+      *
+      *  05.00.01    NACL-Æ£¸¶    17/12/25  £È£Á£Ï£Ò£ÉÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -261,6 +263,8 @@
       *    Åý·×¥á¥â
        01  TOUKEIMEMO-REC.
            COPY  "CPTOUKEIMEMO.INC".
+      *
+           COPY    "MONBLOB".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -2077,6 +2081,10 @@
                    MOVE    "2"             TO  SHELLTBL-ARG17
                  END-IF
                END-EVALUATE
+               IF      SPA-L01-JOB-PARAM
+                                       NOT =   SPACE
+                   MOVE    "7"                 TO  SHELLTBL-ARG17
+               END-IF
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SPA-CLIENT-SHOWDIALOG
                                            TO  SHELLTBL-ARG22
@@ -2088,6 +2096,14 @@
                                            MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
+           END-IF
+      *
+      *    monblobapi½èÍý
+           IF      SPA-L01-JOB-PARAM
+                               NOT =   SPACE
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 45013-MONBLOBAPI-SEC
+               END-IF
            END-IF
       *
       *    £Ê£Ï£Â£É£Ä¹¹¿·½èÍý
@@ -2177,6 +2193,10 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  JOB-SHELLID
            MOVE    SPA-TERMID      TO  JOB-TERMID
+           MOVE    SPA-L01-JOB-KARTE-UID
+                                   TO  JOB-KARTE-UID
+           MOVE    SPA-L01-JOB-ORCA-UID
+                                   TO  JOB-ORCA-UID
            PERFORM 800-ORCSJOB-SEC
       *
            .
@@ -2231,6 +2251,83 @@
       *
            .
        45012-JOBID-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    MONBLOBAPI½èÍý
+      *****************************************************************
+       45013-MONBLOBAPI-SEC        SECTION.
+      *
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *             
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    "haori_monblobapi.sh"
+                                       TO  SHELLTBL-NAME
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
+           MOVE    WRK-CONS-JOB-JOBID
+                                       TO  SHELLTBL-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-SHELLID
+      *
+           MOVE    SPACE               TO  LNK-PRTKANRI-AREA
+           INITIALIZE                      LNK-PRTKANRI-AREA
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    SPA-L01-TBL-GROUP   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
+           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
+           MOVE    "000000"            TO  LNK-PRTKANRI-SRYYM
+           MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "haori_monblobapi.sh"
+                                       TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
+           MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
+      *
+           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  SHELLTBL-ARG2
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  SHELLTBL-ARG3
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  SHELLTBL-ARG4
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6
+           MOVE    LNK-PRTKANRI-SHELLID
+                                       TO  SHELLTBL-ARG7
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  SHELLTBL-ARG8
+           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9
+           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
+           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
+           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG13
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG14
+           MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG15
+      *
+           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "monblob"           TO  MCP-TABLE
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MONBLOB
+           MOVE    MONBLOB-ID          TO  SPA-L01-MONBLOB-PRINT-ID
+                                           SHELLTBL-ARG16
+           MOVE    SPA-L01-PUSHBA01-EVENT
+                                       TO  SHELLTBL-ARG17
+      *
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "allways"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       45013-MONBLOBAPI-EXT.
            EXIT.
       *
       *****************************************************************
