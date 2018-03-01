@@ -384,7 +384,7 @@
       *        特定入院料コンボ
                09  SPA-GMN-W20-TOKNYUINLST-G.
                  11  SPA-GMN-W20-TOKNYUIN-MAX      PIC 9(03).
-                 11  SPA-GMN-W20-TOKNYUINLST-OCC   OCCURS  31.
+                 11  SPA-GMN-W20-TOKNYUINLST-OCC   OCCURS  51.
                    13  SPA-GMN-W20-TOKNYUINLST.
                        15  SPA-GMN-W20-TOKNYUINL    PIC X(02).
                        15  SPA-GMN-W20-TOKNYUINFL1  PIC X(01).
