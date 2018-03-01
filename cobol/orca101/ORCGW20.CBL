@@ -476,7 +476,7 @@
                05  CONST-SYOUBTUBRMCD  PIC X(09) OCCURS      16.
            03  CONST-BTULST-MAX        PIC 9(03) VALUE 50.
            03  CONST-RIREKILST-MAX     PIC 9(03) VALUE 20.
-           03  CONST-TOKNYUIN-MAX      PIC 9(03) VALUE 30.
+           03  CONST-TOKNYUIN-MAX      PIC 9(03) VALUE 50.
            03  CONST-SRYKA-MAX         PIC 9(03) VALUE 99.
            03  CONST-SBT-MAX           PIC 9(03) VALUE 15.
            03  CONST-YKNKNG-MAX        PIC 9(03) VALUE 10.
