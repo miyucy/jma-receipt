@@ -1,7 +1,7 @@
 kanri_cd    : "5001"
 name        : "病棟マスタ"
 class_cd    : "*"
-item_max    : 76
+item_max    : 78
 item_list   :
 - item_no   : 1
   item      : "BTU-NUM"
@@ -357,108 +357,120 @@ item_list   :
   item_jp   : "予備"
   type      : "X"
   start     : 315
-  length    : 132
+  length    : 130
 - item_no   : 60
+  item      : "SYOKUINKBN2"
+  item_jp   : "看護職員比率過措置区分"
+  type      : "X"
+  start     : 445
+  length    : 1
+- item_no   : 61
+  item      : "JUUSHOUKNGKBN"
+  item_jp   : "重症患者割合特別入院基本料区分"
+  type      : "X"
+  start     : 446
+  length    : 1
+- item_no   : 62
   item      : "TSRYCD"
   item_jp   : "病棟診療行為コード（特定入院料）"
   type      : "X"
   start     : 447
   length    : 9
-- item_no   : 61
+- item_no   : 63
   item      : "SRYCD"
   item_jp   : "病棟診療行為コード"
   type      : "X"
   start     : 456
   length    : 9
-- item_no   : 62
+- item_no   : 64
   item      : "SYOKUINKBN"
   item_jp   : "看護職員数等経過措置区分"
   type      : "X"
   start     : 465
   length    : 1
-- item_no   : 63
+- item_no   : 65
   item      : "YKNTOKUKBN"
   item_jp   : "夜勤時間特別入院基本料区分"
   type      : "X"
   start     : 466
   length    : 1
-- item_no   : 64
+- item_no   : 66
   item      : "YKNCHOKAKBN"
   item_jp   : "月平均夜勤時間超過減算"
   type      : "X"
   start     : 467
   length    : 1
-- item_no   : 65
+- item_no   : 67
   item      : "CRYOYOKBN"
   item_jp   : "診療所一般・療養病床相互算定区分"
   type      : "X"
   start     : 468
   length    : 1
-- item_no   : 66
+- item_no   : 68
   item      : "HRYOYOKBN"
   item_jp   : "一般病棟９０日超算定"
   type      : "X"
   start     : 469
   length    : 1
-- item_no   : 67
+- item_no   : 69
   item      : "KHNSRYCD"
   item_jp   : "保険診療コード"
   type      : "X"
   start     : 470
   length    : 9
-- item_no   : 68
+- item_no   : 70
   item      : "KHNKBNCD"
   item_jp   : "保険区分コード"
   type      : "X"
   start     : 479
   length    : 3
-- item_no   : 69
+- item_no   : 71
   item      : "SENTEI-IPN-KINGAKU"
   item_jp   : "選定入院特別料金（一般）"
   type      : "9"
   start     : 482
   length    : 4
   precision : 0
-- item_no   : 70
+- item_no   : 72
   item      : "SENTEI-RJN-KINGAKU"
   item_jp   : "選定入院特別料金（老人）"
   type      : "9"
   start     : 486
   length    : 4
   precision : 0
-- item_no   : 71
+- item_no   : 73
   item      : "BTU-ISISUKBN"
   item_jp   : "選定入院設定区分"
   type      : "X"
   start     : 490
   length    : 1
-- item_no   : 72
+- item_no   : 74
   item      : "SENTEI-FTNKBN"
   item_jp   : "選定入院負担区分"
   type      : "X"
   start     : 491
   length    : 1
-- item_no   : 73
+- item_no   : 75
   item      : "SENTEI-TAXKBN"
   item_jp   : "選定入院消費税区分"
   type      : "X"
   start     : 492
   length    : 1
-- item_no   : 74
+- item_no   : 76
   item      : "SENTEI-TANKA"
   item_jp   : "選定入院点数単価"
   type      : "9"
   start     : 493
   length    : 2
   precision : 0
-- item_no   : 75
+- item_no   : 77
   item      : "ENTEI-KINGAKU"
   item_jp   : "選定入院特別料金（共通）"
   type      : "9"
   start     : 495
   length    : 4
   precision : 0
-- item_no   : 76
+- item_no   : 78
   item      : "RECEDSPKBN"
   item_jp   : "レセプト表示区分"
   type      : "X"
