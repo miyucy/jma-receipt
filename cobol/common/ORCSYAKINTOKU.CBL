@@ -32,6 +32,8 @@
       *                                     地域一般入院料の新設
       *                                     療養病棟入院基本料２は平成
       *                                     ３０年３月まで
+      *  00.00.00    NACL-小豆沢  18/03/02  結核病棟（重症患者割合割合
+      *                                     特別入院料基本料の新設）
       *****************************************************************
       *
       *
@@ -124,7 +126,8 @@
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
       *
-               IF    SYS-5001-YKNTOKUKBN  =   "1"
+      *        コード置き換え（夜勤時間特別入院基本料）
+               IF    SYS-5001-YKNTOKUKBN   =   "1"
                    IF    LNK-YAKINTOKU-SRYCD    NOT  =  SPACE
                        IF  LNK-YAKINTOKU-SANTEIYM       >=   "201804"
                            PERFORM    201-CDCHG-SEC
@@ -132,7 +135,15 @@
                            PERFORM    200-CDCHG-SEC
                        END-IF
                    END-IF
+               END-IF
       *
+      *        コード置き換え（結核病棟の重症患者割合割合特別入院料基本料）
+               IF    SYS-5001-JUUSHOUKNGKBN    =   "1"
+                   IF    LNK-YAKINTOKU-SRYCD    NOT  =  SPACE
+                       IF  LNK-YAKINTOKU-SANTEIYM       >=   "201804"
+                           PERFORM    210-CDCHG-SEC
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -262,7 +273,8 @@
            .
       *
       *****************************************************************
-      *    コード置き換え（夜勤時間特別入院基本料）  平成３０年４月から
+      *    コード置き換え（夜勤時間特別入院基本料）
+      *    平成３０年４月から
       *****************************************************************
        201-CDCHG-SEC                    SECTION.
       *
@@ -337,6 +349,40 @@
            .
       *
        201-CDCHG-EXT.
+           .
+      *
+      *****************************************************************
+      *    コード置き換え（結核病棟の重症患者割合割合特別入院料基本料）
+      *    平成３０年４月から
+      *****************************************************************
+       210-CDCHG-SEC                    SECTION.
+      *
+           EVALUATE    LNK-YAKINTOKU-SRYCD
+      *        結核病棟７対１入院基本料
+               WHEN    "190117910"
+                  MOVE "190204610" TO  LNK-YAKINTOKU-CHGSRYCD
+      *        結核病棟１０対１入院基本料
+               WHEN    "190081710"
+                  MOVE "190204710" TO  LNK-YAKINTOKU-CHGSRYCD
+      *        結核病棟１３対１入院基本料
+               WHEN    "190081810"
+                  MOVE "190204810" TO  LNK-YAKINTOKU-CHGSRYCD
+      *        結核病棟１５対１入院基本料
+               WHEN    "190081910"
+                  MOVE "190204910" TO  LNK-YAKINTOKU-CHGSRYCD
+      *        結核病棟１８対１入院基本料
+               WHEN    "190082010"
+                  MOVE "190205010" TO  LNK-YAKINTOKU-CHGSRYCD
+      *        結核病棟２０対１入院基本料
+               WHEN    "190082110"
+                  MOVE "190205110" TO  LNK-YAKINTOKU-CHGSRYCD
+               WHEN    OTHER
+                       CONTINUE
+           END-EVALUATE
+      *
+           .
+      *
+       210-CDCHG-EXT.
            .
       *
       *****************************************************************
