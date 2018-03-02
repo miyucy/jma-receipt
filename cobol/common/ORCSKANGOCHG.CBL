@@ -27,6 +27,9 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *平成３０年４月改定対応
+      *  00.00.00    NACL-小豆沢  18/03/02  療養病棟入院基本料２の経過
+      *                                     措置追加（看護比率３０対１）
       *****************************************************************
       *
       *
@@ -125,6 +128,15 @@
                    END-IF
       *
                END-IF
+      *
+      *        平成３０年４月改定（看護比率３０対１等経過措置）
+               IF  LNK-KANGOCHG-SANTEIYM       >=   "201804"
+                   IF    SYS-5001-SYOKUINKBN2  =   "1"
+                       IF    LNK-KANGOCHG-SRYCD    NOT  =  SPACE
+                           PERFORM    201-CDCHG-SEC
+                       END-IF
+                   END-IF
+               END-IF
            END-IF
       *
            IF    LNK-KANGOCHG-CHGSRYCD   =     SPACE
@@ -205,6 +217,76 @@
            .
       *
        200-CDCHG-EXT.
+           .
+      *
+      *****************************************************************
+      *    コード置き換え（看護比率３０対１等経過措置入院基本料）
+      *    平成３０年４月から
+      *****************************************************************
+       201-CDCHG-SEC                    SECTION.
+      *
+           EVALUATE    LNK-KANGOCHG-SRYCD
+      *        療養病棟入院料２（Ａ）
+               WHEN    "190132410"
+                  MOVE "190202510" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ａ）（生活療養）
+               WHEN    "190132510"
+                  MOVE "190202610" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｂ）
+               WHEN    "190132610"
+                  MOVE "190202710" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｂ）（生活療養）
+               WHEN    "190132710"
+                  MOVE "190202810" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｃ）
+               WHEN    "190132810"
+                  MOVE "190202910" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｃ）（生活療養）
+               WHEN    "190132910"
+                  MOVE "190203010" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｄ）
+               WHEN    "190133010"
+                  MOVE "190203110" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｄ）（生活療養）
+               WHEN    "190133110"
+                  MOVE "190203210" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｅ）
+               WHEN    "190133210"
+                  MOVE "190203310" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｅ）（生活療養）
+               WHEN    "190133310"
+                  MOVE "190203410" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｆ）
+               WHEN    "190133410"
+                  MOVE "190203510" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｆ）（生活療養）
+               WHEN    "190133510"
+                  MOVE "190203610" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｇ）
+               WHEN    "190133610"
+                  MOVE "190203710" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｇ）（生活療養）
+               WHEN    "190133710"
+                  MOVE "190203810" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｈ）
+               WHEN    "190133810"
+                  MOVE "190203910" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｈ）（生活療養）
+               WHEN    "190133910"
+                  MOVE "190204010" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｉ）
+               WHEN    "190134010"
+                  MOVE "190204110" TO  LNK-KANGOCHG-CHGSRYCD
+      *        療養病棟入院料２（Ｉ）（生活療養）
+               WHEN    "190134110"
+                  MOVE "190204210" TO  LNK-KANGOCHG-CHGSRYCD
+               WHEN    OTHER
+                       CONTINUE
+           END-EVALUATE
+      *
+           .
+      *
+       201-CDCHG-EXT.
            .
       *
       *****************************************************************
