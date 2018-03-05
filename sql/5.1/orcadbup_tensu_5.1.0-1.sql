@@ -7,5 +7,5 @@
 
 \set ON_ERROR_STOP
 
-alter table tbl_tensu add column akuseibyoriksn smallint default 0;
+alter table master.tbl_tensu add column akuseibyoriksn smallint default 0;
 -- update tbl_tensu set akuseibyoriksn=0;
