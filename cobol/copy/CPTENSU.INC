@@ -41,6 +41,7 @@
       *                                     労災算定不可
       *                                     四肢加算（労災）
       * 05.00.00     NACL-伊藤    17/01/05  マスター区分
+      * 05.01.00     NACL-伊藤    18/03/05  悪性腫瘍病理組織標本加算
       ************************************************************
        01  TNS-TENSU-REC.
       *(1)
@@ -152,6 +153,10 @@
       *    四肢加算（労災）
            03  TNS-SISIKSN             PIC  9(01).
       *H28.4 ADD END
+      *H30.4 ADD START
+      *    悪性腫瘍病理組織標本加算
+           03  TNS-AKUSEIBYORIKSN      PIC  9(01).
+      *H30.4 ADD END
            03  TNS-OLDTENSKB           PIC  9(01).
            03  TNS-OLDTEN              PIC  9(09)V99.
            03  TNS-MADOKUKBN           PIC  9(01).
