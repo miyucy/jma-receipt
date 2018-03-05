@@ -4288,53 +4288,24 @@
                    END-IF
                WHEN    "31"
                WHEN    "27"
+               WHEN    "29"
+               WHEN    "55"
                WHEN    "41"
                WHEN    "45"
                WHEN    "AL"
                WHEN    "AP"
-      *            回復期リハビリテーション病棟入院料１
-      *            回復期リハビリテーション病棟入院料２
-      *            地域包括ケア病棟入院料１
-      *            地域包括ケア病棟入院料１（特定地域）
-      *            地域包括ケア入院医療管理料１
-      *            地域包括ケア入院医療管理料１（特定地域）
-      *            一般病棟の時は一般病棟特別入院基本料を算定
-                   IF   SYS-5001-BTU-SBT     =   "01"
-                        MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
-                        MOVE   "190079010"  TO  LNK-TOKNYUIN-GAI-SRYCD
-                   END-IF
-      *            療養病棟の時は療養病棟入院基本料１（Ｉ）を算定
-                   IF   SYS-5001-BTU-SBT     =   "04"
-                        MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
-                        MOVE   "190132210"  TO  LNK-TOKNYUIN-GAI-SRYCD
-                        MOVE   "1"          TO
-                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
-                   END-IF
-               WHEN    "32"
-               WHEN    "28"
-               WHEN    "42"
-               WHEN    "46"
-               WHEN    "AM"
-               WHEN    "AQ"
-      *            回復期リハビリテーション病棟入院料１（生活療養）
-      *            回復期リハビリテーション病棟入院料２（生活療養）
-      *            地域包括ケア病棟入院料１（生活療養）
-      *            地域包括ケア病棟入院料１（生活療養）（特定地域）
-      *            地域包括ケア入院医療管理料１（生活療養）
-      *            地域包括ケア入院医療管理料１（生活療養）（特定地域）
-      *            療養病棟の時は療養病棟入院基本料１（Ｉ）（生活療養）を算定
-                   IF   SYS-5001-BTU-SBT     =   "04"
-                        MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
-                        MOVE   "190132310"  TO  LNK-TOKNYUIN-GAI-SRYCD
-                        MOVE   "1"          TO
-                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
-                   END-IF
-               WHEN    "29"
                WHEN    "43"
                WHEN    "47"
                WHEN    "AN"
                WHEN    "AR"
+      *            回復期リハビリテーション病棟入院料１
+      *            回復期リハビリテーション病棟入院料２
       *            回復期リハビリテーション病棟入院料３
+      *            回復期リハビリテーション病棟入院料４
+      *            地域包括ケア病棟入院料１
+      *            地域包括ケア病棟入院料１（特定地域）
+      *            地域包括ケア入院医療管理料１
+      *            地域包括ケア入院医療管理料１（特定地域）
       *            地域包括ケア病棟入院料２
       *            地域包括ケア病棟入院料２（特定地域）
       *            地域包括ケア入院医療管理料２
@@ -4344,24 +4315,97 @@
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190079010"  TO  LNK-TOKNYUIN-GAI-SRYCD
                    END-IF
-      *            療養病棟の時は療養病棟入院基本料２（Ｉ）を算定
+      *            療養病棟の時は療養病棟入院料１（Ｉ）を算定
+                   IF   SYS-5001-BTU-SBT     =   "04"
+                        MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
+                        MOVE   "190132210"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
+                   END-IF
+               WHEN    "32"
+               WHEN    "28"
+               WHEN    "30"
+               WHEN    "56"
+               WHEN    "42"
+               WHEN    "46"
+               WHEN    "AM"
+               WHEN    "AQ"
+               WHEN    "44"
+               WHEN    "48"
+               WHEN    "AO"
+               WHEN    "AS"
+      *            回復期リハビリテーション病棟入院料１（生活療養）
+      *            回復期リハビリテーション病棟入院料２（生活療養）
+      *            回復期リハビリテーション病棟入院料３（生活療養）
+      *            回復期リハビリテーション病棟入院料４（生活療養）
+      *            地域包括ケア病棟入院料１（生活療養）
+      *            地域包括ケア病棟入院料１（生活療養）（特定地域）
+      *            地域包括ケア入院医療管理料１（生活療養）
+      *            地域包括ケア入院医療管理料１（生活療養）（特定地域）
+      *            地域包括ケア病棟入院料２（生活療養）
+      *            地域包括ケア病棟入院料２（生活療養）（特定地域）
+      *            地域包括ケア入院医療管理料２（生活療養）
+      *            地域包括ケア入院医療管理料２（生活療養）（特定地域）
+      *            療養病棟の時は療養病棟入院料１（Ｉ）（生活療養）を算定
+                   IF   SYS-5001-BTU-SBT     =   "04"
+                        MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
+                        MOVE   "190132310"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                        MOVE   "1"          TO
+                                            LNK-TOKNYUIN-GAI-NYUKSNKBN
+                   END-IF
+               WHEN    "57"
+               WHEN    "59"
+               WHEN    "61"
+               WHEN    "65"
+               WHEN    "BZ"
+               WHEN    "C3"
+               WHEN    "63"
+               WHEN    "67"
+               WHEN    "C1"
+               WHEN    "C5"
+      *            回復期リハビリテーション病棟入院料５
+      *            回復期リハビリテーション病棟入院料６
+      *            地域包括ケア病棟入院料３
+      *            地域包括ケア病棟入院料３（特定地域）
+      *            地域包括ケア入院医療管理料３
+      *            地域包括ケア入院医療管理料３（特定地域）
+      *            地域包括ケア病棟入院料４
+      *            地域包括ケア病棟入院料４（特定地域）
+      *            地域包括ケア入院医療管理料４
+      *            地域包括ケア入院医療管理料４（特定地域）
+      *            一般病棟の時は一般病棟特別入院基本料を算定
+                   IF   SYS-5001-BTU-SBT     =   "01"
+                        MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
+                        MOVE   "190079010"  TO  LNK-TOKNYUIN-GAI-SRYCD
+                   END-IF
+      *            療養病棟の時は療養病棟入院料２（Ｉ）を算定
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190134010"  TO  LNK-TOKNYUIN-GAI-SRYCD
                         MOVE   "1"          TO
                                             LNK-TOKNYUIN-GAI-NYUKSNKBN
                    END-IF
-               WHEN    "30"
-               WHEN    "44"
-               WHEN    "48"
-               WHEN    "AO"
-               WHEN    "AS"
-      *            回復期リハビリテーション病棟入院料３（生活療養）
-      *            地域包括ケア病棟入院料２（生活療養）
-      *            地域包括ケア病棟入院料２（生活療養）（特定地域）
-      *            地域包括ケア入院医療管理料２（生活療養）
-      *            地域包括ケア入院医療管理料２（生活療養）（特定地域）
-      *            療養病棟の時は療養病棟入院基本料２（Ｉ）（生活療養）を算定
+               WHEN    "58"
+               WHEN    "60"
+               WHEN    "62"
+               WHEN    "66"
+               WHEN    "C0"
+               WHEN    "C4"
+               WHEN    "64"
+               WHEN    "68"
+               WHEN    "C2"
+               WHEN    "C6"
+      *            回復期リハビリテーション病棟入院料５（生活療養）
+      *            回復期リハビリテーション病棟入院料６（生活療養）
+      *            地域包括ケア病棟入院料３（生活療養）
+      *            地域包括ケア病棟入院料３（生活療養）（特定地域）
+      *            地域包括ケア入院医療管理料３（生活療養）
+      *            地域包括ケア入院医療管理料３（生活療養）（特定地域）
+      *            地域包括ケア病棟入院料４（生活療養）
+      *            地域包括ケア病棟入院料４（生活療養）（特定地域）
+      *            地域包括ケア入院医療管理料４（生活療養）
+      *            地域包括ケア入院医療管理料４（生活療養）（特定地域）
+      *            療養病棟の時は療養病棟入院料２（Ｉ）（生活療養）を算定
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190134110"  TO  LNK-TOKNYUIN-GAI-SRYCD
@@ -4388,7 +4432,7 @@
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190079010"  TO  LNK-TOKNYUIN-GAI-SRYCD
                    END-IF
-      *            療養病棟の時は療養病棟入院基本料１（Ｉ）を算定
+      *            療養病棟の時は療養病棟入院料１（Ｉ）を算定
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190132210"  TO  LNK-TOKNYUIN-GAI-SRYCD
@@ -4399,7 +4443,7 @@
                WHEN    "AQ"
       *            地域包括ケア入院医療管理料１（生活療養）
       *            地域包括ケア入院医療管理料１（生活療養）（特定地域）
-      *            療養病棟の時は療養病棟入院基本料１（Ｉ）（生活療養）を算定
+      *            療養病棟の時は療養病棟入院料１（Ｉ）（生活療養）を算定
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190132310"  TO  LNK-TOKNYUIN-GAI-SRYCD
@@ -4415,7 +4459,7 @@
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190079010"  TO  LNK-TOKNYUIN-GAI-SRYCD
                    END-IF
-      *            療養病棟の時は療養病棟入院基本料２（Ｉ）を算定
+      *            療養病棟の時は療養病棟入院料２（Ｉ）を算定
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190134010"  TO  LNK-TOKNYUIN-GAI-SRYCD
@@ -4426,7 +4470,7 @@
                WHEN    "AS"
       *            地域包括ケア入院医療管理料２（生活療養）
       *            地域包括ケア入院医療管理料２（生活療養）（特定地域）
-      *            療養病棟の時は療養病棟入院基本料２（Ｉ）（生活療養）を算定
+      *            療養病棟の時は療養病棟入院料２（Ｉ）（生活療養）を算定
                    IF   SYS-5001-BTU-SBT     =   "04"
                         MOVE   SPACE        TO  LNK-TOKNYUIN-SRYCD
                         MOVE   "190134110"  TO  LNK-TOKNYUIN-GAI-SRYCD
