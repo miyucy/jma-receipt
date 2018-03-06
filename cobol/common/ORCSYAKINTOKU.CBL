@@ -361,21 +361,6 @@
       *        結核病棟７対１入院基本料
                WHEN    "190117910"
                   MOVE "190204610" TO  LNK-YAKINTOKU-CHGSRYCD
-      *        結核病棟１０対１入院基本料
-               WHEN    "190081710"
-                  MOVE "190204710" TO  LNK-YAKINTOKU-CHGSRYCD
-      *        結核病棟１３対１入院基本料
-               WHEN    "190081810"
-                  MOVE "190204810" TO  LNK-YAKINTOKU-CHGSRYCD
-      *        結核病棟１５対１入院基本料
-               WHEN    "190081910"
-                  MOVE "190204910" TO  LNK-YAKINTOKU-CHGSRYCD
-      *        結核病棟１８対１入院基本料
-               WHEN    "190082010"
-                  MOVE "190205010" TO  LNK-YAKINTOKU-CHGSRYCD
-      *        結核病棟２０対１入院基本料
-               WHEN    "190082110"
-                  MOVE "190205110" TO  LNK-YAKINTOKU-CHGSRYCD
                WHEN    OTHER
                        CONTINUE
            END-EVALUATE
