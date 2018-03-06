@@ -110,6 +110,11 @@
                05  KEY-O-PTID                  PIC 9(10).
                05  KEY-O-HKNCOMBI              PIC 9(04).
       *
+      *    集計領域
+       01  SUM-AREA.
+           03  SUM-PTBYOMEI                    PIC 9(08).
+           03  SUM-PTBYOMEI-NG                 PIC 9(08).
+      *
       *    一時領域
        01  WRK-AREA.
            COPY    "CPORCSPRTLNK.INC".
@@ -326,11 +331,12 @@
              03  H01-FL              PIC X(02)   VALUE   "〜".
              03  FILLER              PIC X(01)   VALUE   SPACE.
              03  H01-EDSRYYM         PIC X(16)   VALUE   SPACE.
-             03  FILLER              PIC X(06)   VALUE   SPACE.
+             03  FILLER              PIC X(03)   VALUE   SPACE.
              03  FILLER              PIC X(30)   VALUE
                  "未コード化傷病名使用割合一覧表".
-             03  FILLER              PIC X(06)   VALUE   SPACE.
-             03  H01-SYSYMD          PIC X(22)   VALUE   SPACE.
+             03  FILLER              PIC X(15)   VALUE   SPACE.
+             03  H01-SYSYMD          PIC X(09)   VALUE   SPACE.
+             03  FILLER              PIC X(01)   VALUE   SPACE.
              03  FILLER              PIC X(04)   VALUE
                  "作成".
       *
@@ -342,19 +348,19 @@
                  "傷病名総件数".
              03  FILLER              PIC X(22)   VALUE
                  "未コード化傷病名件数".
-             03  FILLER              PIC X(03)   VALUE   SPACE.
+             03  FILLER              PIC X(06)   VALUE   SPACE.
              03  FILLER              PIC X(10)   VALUE
                  "割合（％）".
       *
          01  BODY-01.
-             03  B01-OCC-G           OCCURS      12.
+             03  B01-OCC-G           OCCURS      13.
                  05  FILLER          PIC X(20).
                  05  B01-SRYYM       PIC X(22).
                  05  FILLER          PIC X(02).
                  05  B01-CNT         PIC ZZ,ZZZ,ZZ9.
                  05  FILLER          PIC X(12).
                  05  B01-CNT-NG       PIC ZZ,ZZZ,ZZ9.
-                 05  FILLER          PIC X(4).
+                 05  FILLER          PIC X(8).
                  05  B01-WARIAI      PIC ZZ9.99.
                  05  B01-FL          PIC X(02).
       *
@@ -501,6 +507,7 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        FLG-AREA
+                                       SUM-AREA
                                        WRK-TOUKEI01-TABLE
                                        WRK-HKNNUM-AREA
                                        TABLE-HKNNUM-AREA  
@@ -642,7 +649,7 @@
                                        ORCSMCNDATEAREA
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
-           MOVE    LNK-DAY2-EDTYMD3    TO  H01-SYSYMD
+           MOVE    LNK-DAY2-EDTYMD1    TO  H01-SYSYMD
            .
        100-INIT-EXT.
            EXIT.
@@ -761,7 +768,6 @@
                MOVE    CNT-PTBYOMEI    TO  B01-CNT     (CNT-LINE)
                MOVE    CNT-PTBYOMEI-NG TO  B01-CNT-NG  (CNT-LINE)
                MOVE    WRK-WARI        TO  B01-WARIAI  (CNT-LINE)
-      ****     MOVE    " %"            TO  B01-FL      (CNT-LINE)
       *
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
@@ -2401,9 +2407,11 @@
                    UNTIL   IDX >       1000
                    OR      WRK-RECE631-SRYYMD (IDX) =   SPACE
                ADD     1               TO  CNT-PTBYOMEI
+                                           SUM-PTBYOMEI
                                            CNT-IN
                IF      WRK-RECE631-BYOMEIHENFLG (IDX)   =   "1"
                    ADD     1               TO  CNT-PTBYOMEI-NG
+                                               SUM-PTBYOMEI-NG
                END-IF
            END-PERFORM
            .
@@ -2732,6 +2740,20 @@
       *    印刷処理
       *****************************************************************
        3001-LST-HENSYU-SEC            SECTION.
+      *
+      *    合計
+           IF      SUM-PTBYOMEI    =   ZERO
+               MOVE    ZERO            TO  WRK-WARI
+           ELSE
+               COMPUTE WRK-WARI    =   SUM-PTBYOMEI-NG
+                                   /   SUM-PTBYOMEI
+                                   *   100
+               END-IF
+           ADD     1               TO  CNT-LINE
+           MOVE    "合　　　計"    TO  B01-SRYYM   (CNT-LINE)
+           MOVE    SUM-PTBYOMEI    TO  B01-CNT     (CNT-LINE)
+           MOVE    SUM-PTBYOMEI-NG TO  B01-CNT-NG  (CNT-LINE)
+           MOVE    WRK-WARI        TO  B01-WARIAI  (CNT-LINE)
       *
            MOVE    SPACE               TO  HCMSL80
       *
