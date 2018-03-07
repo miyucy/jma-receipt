@@ -1575,10 +1575,10 @@
                            (TNS-CDKBN-KBNNUM  =   400)   AND
                            (TNS-CDKBN-KOUBAN  =   2  OR 3)
                          MOVE    1         TO  FLG-TANKI
-                         IF   TNS-NYUKHNKSNKBN  =  226
+                         IF   TNS-CDKBN-KOUBAN  =   2
                              MOVE    1         TO  FLG-TANKI2
                          END-IF
-                         IF   TNS-NYUKHNKSNKBN  =  240
+                         IF   TNS-CDKBN-KOUBAN  =   3
                              MOVE    1         TO  FLG-TANKI3
                          END-IF
                      END-IF
