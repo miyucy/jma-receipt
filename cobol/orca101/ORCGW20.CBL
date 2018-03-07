@@ -6501,10 +6501,9 @@ NEW   *    Ìë´Ö´Ç¸îÂÎÀ©²Ã»»¡Ê¾ã³²¼Ô»ÜÀß¡Ë
                                                (IDX-CMB)
            END-IF
       *
-           IF    ( TNS-CDKBN-KBNNUM   =   102 AND SPA-NAI-W20-YUKOSTYMD
-                                                  >=  CONST-H300401
-                                              AND TNS-NYUKHNKSNKBN
-                                                   =  136 )
+           IF    ( TNS-CDKBN-KBNNUM   =   102 AND TNS-CDKBN-KOUBAN = 1
+                                              AND SPA-NAI-W20-YUKOSTYMD
+                                                  >=  CONST-H300401 )
                MOVE    "1"     TO  SPA-NAI-W20-JUUSHOUKNGKBNL
                                                (IDX-CMB)
            END-IF
