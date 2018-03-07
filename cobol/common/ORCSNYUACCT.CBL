@@ -45,8 +45,9 @@
       *                                     表示区分対応
       * 04.03.00     NACL-多々納  08/07/09  入院日１回の加算対応
       *平成３０年４月改定対応
-      *  00.00.00    NACL-小豆沢  18/03/02  療養病棟入院基本料２の経過
+      *  05.00.00    NACL-小豆沢  18/03/02  療養病棟入院基本料２の経過
       *                                     措置追加（看護比率３０対１）
+      *  05.00.00    NACL-小豆沢  18/03/07  短期滞在手術等基本料の判定変更
       *****************************************************************
       *
       *
@@ -1570,8 +1571,9 @@
                  PERFORM 920-DBFETCH-SEC
                  IF      MCP-RC            =   ZERO
                      MOVE    MCPDATA-REC   TO  TNS-TENSU-REC
-                     IF   TNS-NYUKHNKSNKBN  =  226  OR
-                                               240
+                     IF    (TNS-CDKBN-KBN     =   "A")   AND
+                           (TNS-CDKBN-KBNNUM  =   400)   AND
+                           (TNS-CDKBN-KOUBAN  =   2  OR 3)
                          MOVE    1         TO  FLG-TANKI
                          IF   TNS-NYUKHNKSNKBN  =  226
                              MOVE    1         TO  FLG-TANKI2

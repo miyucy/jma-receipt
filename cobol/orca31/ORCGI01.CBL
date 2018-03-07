@@ -159,6 +159,7 @@
       *                                     有床診療所入院基本料３追加対応
       *平成３０年４月改正対応
       *  05.00.00    NACL-小豆沢  18/03/05  療養病棟の読み替えコード追加
+      *  05.00.00    NACL-小豆沢  18/03/07  短期滞在手術等基本料の判定変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3789,7 +3790,9 @@
                              MOVE    MCPDATA-REC TO  TNS-TENSU-REC
                              IF   TNS-NYUTENTTLKBN   =   920
       *                        短期滞在はチェック対象外
-                               IF  TNS-NYUKHNKSNKBN  =  226  OR 240
+                               IF    (TNS-CDKBN-KBN     =   "A")   AND
+                                     (TNS-CDKBN-KBNNUM  =   400)   AND
+                                     (TNS-CDKBN-KOUBAN  =   2  OR 3)
                                  CONTINUE
                                ELSE
       *                          入院会計を検索
@@ -16470,7 +16473,9 @@
                    MOVE    MCPDATA-REC TO  TNS-TENSU-REC
                    IF   TNS-NYUTENTTLKBN   =   920
       *                 短期滞在はチェック対象外
-                      IF  TNS-NYUKHNKSNKBN  =  226  OR 240
+                      IF  (TNS-CDKBN-KBN     =   "A")   AND
+                          (TNS-CDKBN-KBNNUM  =   400)   AND
+                          (TNS-CDKBN-KOUBAN  =   2  OR 3)
                           CONTINUE
                       ELSE
                           MOVE  SPACE TO  LNK-SCNYUACCT-NYUKHN-SRYCD(1)

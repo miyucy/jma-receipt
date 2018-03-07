@@ -108,6 +108,7 @@
       *平成３０年４月改正対応
       *  05.00.00    NACL-小豆沢  18/02/28  他医受診の追加
       *  05.00.00    NACL-小豆沢  18/03/05  療養病棟の読み替えコード追加
+      *  05.00.00    NACL-小豆沢  18/03/07  短期滞在手術等基本料の判定変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5531,12 +5532,13 @@ grpsys                                     SPA-AREA
            MOVE    "key"                   TO   MCP-PATHNAME
            PERFORM    990-DBCLOSE-SEC
       *
+      *    選定入院料（システム予約コード)
            IF     (SPA-GMN-TSRYCD (IDG)    =  "099999916")
-           OR     (TNS-NYUKHNKSNKBN        =
-      *                                        短期滞在２（生活療養含む）
-                                                  226   OR
-      *                                        短期滞在３（生活療養含む）
-                                                  240 )
+      *    短期滞在２（生活療養含む）
+      *    短期滞在３（生活療養含む）
+           OR    ((TNS-CDKBN-KBN     =   "A")   AND
+                  (TNS-CDKBN-KBNNUM  =   400)   AND
+                  (TNS-CDKBN-KOUBAN  =   2  OR 3))
       *    療養病床の判定
            OR     ((SPA-5000-RYOYODSPKBN    =    "1")
                                            AND
