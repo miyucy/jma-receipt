@@ -80,8 +80,6 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                          PIC 9(06).
-           03  CNT-PTBYOMEI                    PIC 9(08).
-           03  CNT-PTBYOMEI-NG                 PIC 9(08).
            03  CNT-LINE                        PIC 9(06).
       *
        01  INDEX-AREA.
@@ -112,8 +110,11 @@
       *
       *    集計領域
        01  SUM-AREA.
-           03  SUM-PTBYOMEI                    PIC 9(08).
-           03  SUM-PTBYOMEI-NG                 PIC 9(08).
+           03  SUM-OCC-G                   OCCURS  2.
+               05  SUM-OCC                 OCCURS  3.
+                   07  SUM-PTBYOMEI        PIC 9(08).
+                   07  SUM-PTBYOMEI-NG     PIC 9(08).
+                   07  SUM-PTBYOMEI-G      PIC 9(08).
       *
       *    一時領域
        01  WRK-AREA.
@@ -151,7 +152,6 @@
       *
            03  WRK-SEIHO-FLG           PIC 9(01).
       *
-           03  WRK-PTID                PIC 9(10).
            03  WRK-SRYYM               PIC X(06).
            03  WRK-PARA-NYUGAIKBN      PIC X(01).
            03  WRK-WARI                PIC 9(3)V9(3).
@@ -328,7 +328,7 @@
              03  FILLER              PIC X(04)   VALUE   SPACE.
              03  H01-STSRYYM         PIC X(16)   VALUE   SPACE.
              03  FILLER              PIC X(01)   VALUE   SPACE.
-             03  H01-FL              PIC X(02)   VALUE   "〜".
+             03  H01-FL              PIC X(02)   VALUE   SPACE.
              03  FILLER              PIC X(01)   VALUE   SPACE.
              03  H01-EDSRYYM         PIC X(16)   VALUE   SPACE.
              03  FILLER              PIC X(03)   VALUE   SPACE.
@@ -341,9 +341,11 @@
                  "作成".
       *
          01  HEAD-02.
-             03  FILLER              PIC X(20)   VALUE   SPACE.
+             03  FILLER              PIC X(15)   VALUE   SPACE.
              03  FILLER              PIC X(22)   VALUE
                  "診療年月".
+             03  FILLER              PIC X(10)   VALUE
+                 "入外区分".
              03  FILLER              PIC X(14)   VALUE
                  "傷病名総件数".
              03  FILLER              PIC X(22)   VALUE
@@ -353,16 +355,16 @@
                  "割合（％）".
       *
          01  BODY-01.
-             03  B01-OCC-G           OCCURS      13.
-                 05  FILLER          PIC X(20).
-                 05  B01-SRYYM       PIC X(22).
-                 05  FILLER          PIC X(02).
-                 05  B01-CNT         PIC ZZ,ZZZ,ZZ9.
-                 05  FILLER          PIC X(12).
-                 05  B01-CNT-NG       PIC ZZ,ZZZ,ZZ9.
-                 05  FILLER          PIC X(8).
-                 05  B01-WARIAI      PIC ZZ9.99.
-                 05  B01-FL          PIC X(02).
+             05  FILLER              PIC X(15).
+             05  B01-SRYYM           PIC X(22).
+             05  B01-NYUGAIKBN       PIC X(10).
+             05  FILLER              PIC X(02).
+             05  B01-CNT             PIC ZZ,ZZZ,ZZ9.
+             05  FILLER              PIC X(12).
+             05  B01-CNT-NG          PIC ZZ,ZZZ,ZZ9.
+             05  FILLER              PIC X(8).
+             05  B01-WARIAI          PIC ZZ9.99.
+             05  B01-FL              PIC X(02).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -535,7 +537,13 @@
                                        WRK-PARA-EDSRYYM
            END-UNSTRING 
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-           MOVE    "1"                 TO  WRK-PARA-NYUGAIKBN
+      *
+           DISPLAY "STSRYYM=" WRK-PARA-STSRYYM
+           DISPLAY "EDSRYYM=" WRK-PARA-EDSRYYM
+      *
+           IF      WRK-PARA-EDSRYYM    =   SPACE
+               MOVE   WRK-PARA-STSRYYM     TO  WRK-PARA-EDSRYYM
+           END-IF
       *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
@@ -552,8 +560,6 @@
            MOVE    "未コード化傷病名使用割合一覧表"
                                        TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
-      *
-           DISPLAY "SRYYM=" WRK-PARA-STSRYYM " " WRK-PARA-EDSRYYM
       *
       *    期間指定のチェック（上限一年間）
            IF      WRK-PARA-STSRYYM    >   WRK-PARA-EDSRYYM
@@ -632,11 +638,16 @@
                                     SYS-2005-TENKIHENKBN
       *
       *    期間
-           MOVE    WRK-PARA-STSRYYM    TO  WRK-SYMD (1:6)
-           MOVE    "01"                TO  WRK-SYMD (7:2)
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    LNK-DAY2-EDTYMD3 (1:16)
-                                       TO  H01-STSRYYM
+           IF      WRK-PARA-STSRYYM    =   WRK-PARA-EDSRYYM
+               CONTINUE
+           ELSE
+               MOVE    WRK-PARA-STSRYYM    TO  WRK-SYMD (1:6)
+               MOVE    "01"                TO  WRK-SYMD (7:2)
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    LNK-DAY2-EDTYMD3 (1:16)
+                                           TO  H01-STSRYYM
+               MOVE   "〜"                 TO  H01-FL
+           END-IF
            MOVE    WRK-PARA-EDSRYYM    TO  WRK-SYMD (1:6)
            MOVE    "01"                TO  WRK-SYMD (7:2)
            PERFORM 800-SEIWA-HEN-SEC
@@ -650,6 +661,15 @@
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    LNK-DAY2-EDTYMD1    TO  H01-SYSYMD
+      *
+           MOVE    SPACE               TO  HCMSL80
+      *
+           MOVE    HEAD-01             TO  HCMSL80-MOJI (1)
+           MOVE    HEAD-02             TO  HCMSL80-MOJI (3)
+      *
+           MOVE    4                   TO  CNT-LINE
+      *
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -663,11 +683,10 @@
       *
            PERFORM             UNTIL   WRK-SRYYM  >  WRK-PARA-EDSRYYM
                DISPLAY "SRYYM=" WRK-SRYYM
-               MOVE    ZERO            TO  CNT-PTBYOMEI
-                                           CNT-PTBYOMEI-NG
+               INITIALIZE              SUM-OCC-G (1)
       *
       *        診療年月
-               MOVE    WRK-SRYYM  TO  WRK-SYMD (1:6)
+               MOVE    WRK-SRYYM       TO  WRK-SYMD (1:6)
                MOVE    "01"            TO  WRK-SYMD (7:2)
       *
                MOVE    WRK-SYMD        TO  WRK-STYMD
@@ -675,9 +694,9 @@
                INITIALIZE                  STS-AREA-DAY
                INITIALIZE                  LNK-DAY7-AREA
                MOVE    "71"            TO  LNK-DAY7-IRAI
-               MOVE    WRK-SRYYM  TO  LNK-DAY7-YM
+               MOVE    WRK-SRYYM       TO  LNK-DAY7-YM
                CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                           LNK-DAY7-AREA
+                                               LNK-DAY7-AREA
                MOVE    LNK-DAY7-KOYOMI TO  WRK-EDYMD
       *
       *        医療機関情報
@@ -726,8 +745,37 @@
                    GO  TO  200-MAIN-EXT
                END-IF
       *
+      *        診療会計読み込み（患者ＩＤ、保険組合せ順）
+               MOVE    "2"                 TO  WRK-PARA-NYUGAIKBN
+      *
+               INITIALIZE                      SRYACCT-REC
+               MOVE    WRK-PARA-HOSPNUM    TO  ACCT-HOSPNUM
+               MOVE    WRK-SRYYM           TO  ACCT-SRYYM
+               MOVE    WRK-PARA-NYUGAIKBN  TO  ACCT-NYUGAIKBN
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key36"             TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key36"             TO  MCP-PATHNAME
+                   PERFORM 900-SRYACCT-READ-SEC
+               ELSE
+                   INITIALIZE                      SRYACCT-REC
+                   MOVE    1                   TO  FLG-SRYACCT
+               END-IF
+      * 
+               PERFORM 2001-NYUINGAI-HENSYU-SEC
+                                   UNTIL   FLG-SRYACCT     =   1
+      *
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key36"             TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
       *        入院会計読み込み（患者ＩＤ、診療科、剤識別区分順）
-               INITIALIZE                  NYUINACCT-REC
+               MOVE    "1"                 TO  WRK-PARA-NYUGAIKBN
+      *
+               INITIALIZE                      NYUINACCT-REC
                MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
                MOVE    WRK-SRYYM           TO  NACCT-SRYYM
                MOVE    WRK-PARA-NYUGAIKBN  TO  NACCT-NYUGAIKBN
@@ -751,23 +799,8 @@
                MOVE    "key13"             TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
       *
-               IF      CNT-PTBYOMEI    =   ZERO
-                   MOVE    ZERO            TO  WRK-WARI
-               ELSE
-                   COMPUTE WRK-WARI    =   CNT-PTBYOMEI-NG
-                                       /   CNT-PTBYOMEI
-                                       *   100
-               END-IF
-      *
-               ADD     1               TO  CNT-LINE
-               MOVE    WRK-SRYYM       TO  WRK-SYMD (1:6)
-               MOVE    "01"            TO  WRK-SYMD (7:2)
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    LNK-DAY2-EDTYMD3 (1:16)
-                                       TO  B01-SRYYM   (CNT-LINE)
-               MOVE    CNT-PTBYOMEI    TO  B01-CNT     (CNT-LINE)
-               MOVE    CNT-PTBYOMEI-NG TO  B01-CNT-NG  (CNT-LINE)
-               MOVE    WRK-WARI        TO  B01-WARIAI  (CNT-LINE)
+               MOVE    1                   TO  IDX7
+               PERFORM 2009-SUM-HENSYU-SEC
       *
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
@@ -782,9 +815,132 @@
                                            TO  WRK-SRYYM
            END-PERFORM
       *
+           MOVE    2                   TO  IDX7
+           PERFORM 2009-SUM-HENSYU-SEC
+      *
            MOVE    1                   TO  FLG-END
            .
        200-MAIN-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    診療会計編集処理（入院外）
+      *****************************************************************
+       2001-NYUINGAI-HENSYU-SEC              SECTION.
+      *
+           INITIALIZE                  WRK-TOUKEI01-TABLE
+                                       WRK-RECE02-AREA
+                                       WRK-RECE631-AREA
+      *
+      *    テスト患者のときは読み飛ばす
+           MOVE    WRK-PARA-HOSPNUM    TO  PTINF-HOSPNUM
+           MOVE    ACCT-PTID           TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+      *
+           PERFORM 800-MISEIKYU-CHECK-SEC
+      *
+      **     DISPLAY "SRYACCT PTID=" ACCT-PTID
+      **             " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
+      **             " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
+      *
+           IF   (  FLG-PTINF           =   ZERO 
+               AND  PTINF-TSTPTNUMKBN   =   "1" )
+           OR   (  SYUKA-MISEIKYU-FLG  =   "01" )
+           OR   (  FLG-PTINF           =   "1"  )
+               MOVE    KEY-NEW             TO  KEY-OLD
+               PERFORM         UNTIL   FLG-SRYACCT     =   1 
+                               OR      KEY-N-PTID  NOT =   KEY-O-PTID
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key36"             TO  MCP-PATHNAME
+                   PERFORM 900-SRYACCT-READ-SEC
+               END-PERFORM
+           ELSE
+      *        施設入所情報
+               PERFORM 500-SISETU-HENSYU-SEC
+      *
+      *        患者レセプト分割情報情報
+               PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
+      *
+               MOVE    KEY-NEW             TO  KEY-OLD
+               PERFORM         UNTIL   FLG-SRYACCT     =   1 
+                               OR      KEY-N-PTID  NOT =   KEY-O-PTID
+      *            未訂正分があるか
+                   MOVE    SPACE               TO  WRK-ERR-AREA
+                   INITIALIZE                      WRK-ERR-AREA
+      *
+                   INITIALIZE                  HKNCOMBI-REC
+                   MOVE    WRK-PARA-HOSPNUM    TO  COMB-HOSPNUM
+                   MOVE    KEY-N-PTID          TO  COMB-PTID
+                   MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM 
+                   MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+                   PERFORM 910-HKNCOMBI-INV-SEC
+      *
+                   IF      FLG-HKNCOMBI    =   ZERO
+                       IF      COMB-HKNNUM     =
+                                           WRK-CONS-ROUSAI-HKNNUM  OR
+                                           WRK-CONS-JIBAI-HKNNUM   OR
+                                           WRK-CONS-KOUGAI-HKNNUM  OR
+                                           WRK-CONS-TOKU-40-HKNNUM OR
+                                           WRK-CONS-TOKU-68-HKNNUM OR
+                                           WRK-CONS-TOKU-69-HKNNUM 
+                           MOVE    "1"            TO  WRK-TEISEIKBN
+                       ELSE     
+                           IF      COMB-TEKSTYMD   <=  WRK-STYMD
+                           AND     COMB-TEKEDYMD   >=  WRK-EDYMD
+                               MOVE    SPACE           TO  WRK-UPDKBN
+                           ELSE
+                              MOVE    "1"              TO  WRK-UPDKBN
+                           END-IF
+                       END-IF
+                   ELSE
+                       MOVE    "1"             TO  WRK-TEISEIKBN
+                   END-IF
+      *
+                   IF      WRK-TEISEIKBN       =   SPACE
+                       MOVE    "2"                 TO  WRK-DATAKBN
+                       PERFORM 2001-FILE-SYORI-SEC
+                   END-IF
+      *
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key36"             TO  MCP-PATHNAME
+                   PERFORM 900-SRYACCT-READ-SEC
+               END-PERFORM
+      *
+               IF      TBL-PT-HDIST-DAY-MAX
+                                           =   ZERO
+                   MOVE    1               TO  ST-IDX
+                   MOVE    SPACE           TO  WRK-RECEIPT-KBN
+      *            基本ファイル出力処理
+                   PERFORM   2002-KIHON-WRITE-SEC
+               ELSE
+                   MOVE    ZERO            TO  ST-IDX
+                   PERFORM         UNTIL   ST-IDX  =   999
+                       MOVE    SPACE           TO  WRK-RECEIPT-KBN
+                       MOVE    ZERO            TO  ST-IDX
+                       PERFORM VARYING IDXX    FROM    1   BY  1
+                               UNTIL   IDXX    >       100
+                               OR      WRK-TOUKEI01-HOSPNUM (IDXX)
+                                               =   ZERO
+                           IF      WRK-TOUKEI01-SYOKBN (IDXX)
+                                                   =   SPACE
+                               MOVE    WRK-TOUKEI01-RECEIPT-KBN (IDXX)
+                                                   TO  WRK-RECEIPT-KBN
+                               MOVE    IDXX    TO  ST-IDX
+                               MOVE    100     TO  IDXX
+                           END-IF 
+                       END-PERFORM
+      *
+                       IF      ST-IDX          >   ZERO
+      *                    基本ファイル出力処理
+                           PERFORM   2002-KIHON-WRITE-SEC
+                       ELSE
+                           MOVE    999             TO  ST-IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+           .
+       2001-NYUINGAI-HENSYU-EXT.
            EXIT. 
       *
       *****************************************************************
@@ -803,10 +959,10 @@
       *
            PERFORM 800-MISEIKYU-CHECK-SEC
       *
-           DISPLAY "NYUINACCT PTID=" NACCT-PTID
-                   " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
-                   " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
-       *
+      **     DISPLAY "NYUINACCT PTID=" NACCT-PTID
+      **             " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
+      **             " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
+      *
            IF   (  FLG-PTINF           =   ZERO 
                AND  PTINF-TSTPTNUMKBN   =   "1" )
            OR   (  SYUKA-MISEIKYU-FLG  =   "01" )
@@ -817,11 +973,10 @@
                    PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
            ELSE
-      *        災害該当情報
+      *        施設入所情報
                PERFORM 500-SISETU-HENSYU-SEC
       *
       *        患者レセプト分割情報情報
-               MOVE    NACCT-PTID              TO  WRK-PTID
                PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
       *
                INITIALIZE                      WRK-DAY-AREA
@@ -991,16 +1146,16 @@
       *
            INITIALIZE                      SRYACCT-REC
            MOVE    WRK-PARA-HOSPNUM    TO  ACCT-HOSPNUM
-           MOVE    WRK-SRYYM      TO  ACCT-SRYYM
+           MOVE    WRK-SRYYM           TO  ACCT-SRYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    PTINF-PTID          TO  ACCT-PTID
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key36"            TO  MCP-PATHNAME
+           MOVE    "key37"             TO  MCP-PATHNAME
            PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key36"              TO  MCP-PATHNAME
+               MOVE    "key37"              TO  MCP-PATHNAME
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -1045,12 +1200,12 @@
                END-IF
       *
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key36"              TO  MCP-PATHNAME
+               MOVE    "key37"             TO  MCP-PATHNAME
                PERFORM 900-SRYACCT-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key36"             TO  MCP-PATHNAME
+           MOVE    "key37"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
            .
        20012-NYUIN-SRYACCT-HENSYU-EXT.
@@ -1111,7 +1266,7 @@
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    PTINF-HOSPNUM   TO  AGECHK-HOSPNUM
            MOVE    PTINF-PTID      TO  AGECHK-PTID
-           MOVE    WRK-SRYYM  TO  AGECHK-SRYYMD(1:6)
+           MOVE    WRK-SRYYM       TO  AGECHK-SRYYMD(1:6)
            MOVE    "01"            TO  AGECHK-SRYYMD(7:2)
            MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
            CALL    "ORCSAGECHK"        USING
@@ -1148,7 +1303,7 @@
       *    ファイル編集処理
            INITIALIZE                      TOUKEI01-REC
            MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI01-HOSPNUM
-           MOVE    WRK-SRYYM      TO  TOUKEI01-SRYYM
+           MOVE    WRK-SRYYM           TO  TOUKEI01-SRYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  TOUKEI01-NYUGAIKBN
            MOVE    PTINF-PTID          TO  TOUKEI01-PTID
            MOVE    COMB-HKNNUM         TO  TOUKEI01-HKNNUM
@@ -2315,7 +2470,7 @@
       *****************************************************************
        20023-HENSYU-SEC              SECTION.
       *
-           DISPLAY "RECESYUBETU=" TOUKEI01-RECESYUBETU
+      *     DISPLAY "RECESYUBETU=" TOUKEI01-RECESYUBETU
       *
            IF      TOUKEI01-RECESYUBETU
                                        =   ZERO    OR    6666
@@ -2363,18 +2518,6 @@
       *****************************************************************
        20022-BYOMEI-HENSYU-SEC              SECTION.
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
-                   OR      TOUKEI01-HKNCOMBI (IDX) =   ZERO
-               DISPLAY "HKNCOMBI=" IDX "#" TOUKEI01-HKNCOMBI (IDX)
-           END-PERFORM
-      *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       20
-                   OR      TOUKEI01-SRYKA  (IDX)   =   SPACE
-               DISPLAY "HKNCOMBI=" IDX "#" TOUKEI01-SRYKA (IDX)
-           END-PERFORM
-      *
            INITIALIZE                      PTBYOMEI-REC
            MOVE    WRK-PARA-HOSPNUM    TO  PTBYO-HOSPNUM
            MOVE    PTINF-PTID          TO  PTBYO-PTID
@@ -2406,12 +2549,26 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       1000
                    OR      WRK-RECE631-SRYYMD (IDX) =   SPACE
-               ADD     1               TO  CNT-PTBYOMEI
-                                           SUM-PTBYOMEI
+               ADD     1               TO  SUM-PTBYOMEI (1 3)
+                                           SUM-PTBYOMEI (2 3)
                                            CNT-IN
+               IF      WRK-PARA-NYUGAIKBN  =   "2"
+                   ADD     1               TO  SUM-PTBYOMEI (1 1)
+                                               SUM-PTBYOMEI (2 1)
+               ELSE
+                   ADD     1               TO  SUM-PTBYOMEI (1 2)
+                                               SUM-PTBYOMEI (2 2)
+               END-IF
                IF      WRK-RECE631-BYOMEIHENFLG (IDX)   =   "1"
-                   ADD     1               TO  CNT-PTBYOMEI-NG
-                                               SUM-PTBYOMEI-NG
+                   ADD     1               TO  SUM-PTBYOMEI-NG (1 3)
+                                               SUM-PTBYOMEI-NG (2 3)
+                   IF      WRK-PARA-NYUGAIKBN  =   "2"
+                       ADD     1               TO  SUM-PTBYOMEI-NG (1 1)
+                       ADD     1               TO  SUM-PTBYOMEI-NG (2 1)
+                   ELSE
+                       ADD     1               TO  SUM-PTBYOMEI-NG (1 2)
+                       ADD     1               TO  SUM-PTBYOMEI-NG (2 2)
+                   END-IF
                END-IF
            END-PERFORM
            .
@@ -2440,7 +2597,8 @@
            END-IF
       *
       *    入外区分
-           IF      PTBYO-NYUGAIKBN      =   SPACE  OR  "1"
+           IF      PTBYO-NYUGAIKBN      =   SPACE  OR
+                                            WRK-PARA-NYUGAIKBN
                CONTINUE
            ELSE
                GO  TO  200221-BYOMEI-WRITE-EXT
@@ -2630,8 +2788,8 @@
                END-PERFORM
            END-IF
       *
-           DISPLAY "BYOMEI=" PTBYO-SRYYMD " " PTBYO-BYOMEIHENFLG " " 
-             PTBYO-BYOMEI 
+      **     DISPLAY "BYOMEI=" PTBYO-SRYYMD " " PTBYO-BYOMEIHENFLG " " 
+      **       PTBYO-BYOMEI 
       *
       *    同一開始日・病名・転帰区分でまとめる
            IF      SYS-2005-TENKIHENKBN
@@ -2664,6 +2822,55 @@
            END-PERFORM
            .
        200221-BYOMEI-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    合計編集処理
+      *****************************************************************
+       2009-SUM-HENSYU-SEC                SECTION.
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       3
+               IF      SUM-PTBYOMEI (IDX7 IDX)    =   ZERO
+                   MOVE    ZERO            TO  WRK-WARI
+               ELSE
+                   COMPUTE WRK-WARI    =   SUM-PTBYOMEI-NG(IDX7 IDX)
+                                       /   SUM-PTBYOMEI   (IDX7 IDX)
+                                       *   100
+               END-IF
+      *
+               MOVE    SPACE           TO  BODY-01
+               EVALUATE    IDX
+                   WHEN    1
+                       IF      IDX7            =   1
+                           MOVE    WRK-SRYYM       TO  WRK-SYMD (1:6)
+                           MOVE    "01"            TO  WRK-SYMD (7:2)
+                           PERFORM 800-SEIWA-HEN-SEC
+                           MOVE    LNK-DAY2-EDTYMD3 (1:16)
+                                                   TO  B01-SRYYM
+                       ELSE
+                           MOVE    "総合計"        TO  B01-SRYYM
+                       END-IF
+                       MOVE    "入院外"        TO  B01-NYUGAIKBN
+                   WHEN    2
+                       MOVE    SPACE           TO  B01-SRYYM
+                       MOVE    "入　院"        TO  B01-NYUGAIKBN
+                   WHEN    3
+                       MOVE    SPACE           TO  B01-SRYYM
+                       MOVE    "合　計"        TO  B01-NYUGAIKBN
+               END-EVALUATE
+               MOVE    SUM-PTBYOMEI    (IDX7 IDX)
+                                           TO  B01-CNT
+               MOVE    SUM-PTBYOMEI-NG (IDX7 IDX)
+                                           TO  B01-CNT-NG
+               MOVE    WRK-WARI            TO  B01-WARIAI
+      *
+               ADD     1               TO  CNT-LINE
+               MOVE    BODY-01         TO  HCMSL80-MOJI (CNT-LINE)
+           END-PERFORM
+           ADD     1               TO  CNT-LINE
+           .
+       2009-SUM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2741,31 +2948,6 @@
       *****************************************************************
        3001-LST-HENSYU-SEC            SECTION.
       *
-      *    合計
-           IF      SUM-PTBYOMEI    =   ZERO
-               MOVE    ZERO            TO  WRK-WARI
-           ELSE
-               COMPUTE WRK-WARI    =   SUM-PTBYOMEI-NG
-                                   /   SUM-PTBYOMEI
-                                   *   100
-               END-IF
-           ADD     1               TO  CNT-LINE
-           MOVE    "合　　　計"    TO  B01-SRYYM   (CNT-LINE)
-           MOVE    SUM-PTBYOMEI    TO  B01-CNT     (CNT-LINE)
-           MOVE    SUM-PTBYOMEI-NG TO  B01-CNT-NG  (CNT-LINE)
-           MOVE    WRK-WARI        TO  B01-WARIAI  (CNT-LINE)
-      *
-           MOVE    SPACE               TO  HCMSL80
-      *
-           MOVE    HEAD-01             TO  HCMSL80-MOJI (1)
-           MOVE    HEAD-02             TO  HCMSL80-MOJI (3)
-      *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       CNT-LINE
-               COMPUTE IDY =   IDX *   2   +   3
-               MOVE    B01-OCC-G (IDX) TO  HCMSL80-MOJI (IDY)
-           END-PERFORM
-      *
            INITIALIZE                  ORCSPRTAREA
            MOVE    "INS"            TO  SPRT-MODE
            MOVE    LNK-PRTKANRI-RENNUM
@@ -2820,7 +3002,7 @@
       *    ９５０（老併）
            INITIALIZE                      PTKOHINF-REC
            MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-           MOVE    KEY-N-PTID          TO  PTKOH-PTID
+           MOVE    PTINF-PTID          TO  PTKOH-PTID
            MOVE    "950"               TO  PTKOH-KOHNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
@@ -2831,7 +3013,7 @@
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-PTKOHINF-READ-N-SEC
            ELSE
-               MOVE    1                   TO  FLG-PTKOHINF  
+               MOVE    1                   TO  FLG-PTKOHINF
            END-IF
            PERFORM     UNTIL   FLG-PTKOHINF    =   1
                        OR      TBL-PTKOHINF-MAX
@@ -2860,7 +3042,7 @@
       *    ９５１（老健）
            INITIALIZE                      PTKOHINF-REC
            MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-           MOVE    KEY-N-PTID          TO  PTKOH-PTID
+           MOVE    PTINF-PTID          TO  PTKOH-PTID
            MOVE    "951"               TO  PTKOH-KOHNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
@@ -2871,7 +3053,7 @@
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-PTKOHINF-READ-N-SEC
            ELSE
-               MOVE    1                   TO  FLG-PTKOHINF  
+               MOVE    1                   TO  FLG-PTKOHINF
            END-IF
            PERFORM     UNTIL   FLG-PTKOHINF    =   1
                        OR      TBL-PTKOHINF-MAX
@@ -2880,17 +3062,10 @@
                    ADD     1               TO  TBL-PTKOHINF-MAX
                    MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
                                                    (TBL-PTKOHINF-MAX)
-      *
-                   DISPLAY "   TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX
-                           " KOHNUM="
-                                   TBL-PTKOH-KOHNUM   (TBL-PTKOHINF-MAX)
-                           " ST="  TBL-PTKOH-TEKSTYMD (TBL-PTKOHINF-MAX)
-                           " ED="  TBL-PTKOH-TEKEDYMD (TBL-PTKOHINF-MAX)
-      *
                END-IF
       *
-               MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-               MOVE    "key4"           TO  MCP-PATHNAME
+               MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
+               MOVE    "key4"          TO  MCP-PATHNAME
                PERFORM  900-PTKOHINF-READ-N-SEC
            END-PERFORM
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
@@ -2909,8 +3084,8 @@
       *
            INITIALIZE                      PT-HDIST-DAY-REC
            MOVE    SPA-HOSPNUM         TO  PT-HDIST-DAY-HOSPNUM
-           MOVE    WRK-PTID            TO  PT-HDIST-DAY-PTID
-           MOVE    WRK-SRYYM      TO  PT-HDIST-DAY-SRYYM
+           MOVE    PTINF-PTID          TO  PT-HDIST-DAY-PTID
+           MOVE    WRK-SRYYM           TO  PT-HDIST-DAY-SRYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  PT-HDIST-DAY-NYUGAIKBN
            MOVE    PT-HDIST-DAY-REC    TO  MCPDATA-REC
            MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
@@ -2929,14 +3104,6 @@
                ADD     1                   TO  TBL-PT-HDIST-DAY-MAX
                MOVE    PT-HDIST-DAY-REC    TO  TBL-PT-HDIST-DAY-REC
                                                (TBL-PT-HDIST-DAY-MAX)
-      *
-               DISPLAY "   TBL-PT-HDIST-DAY=" TBL-PT-HDIST-DAY-MAX
-                       " DAY=" TBL-PT-HDIST-DAY-DAY
-                                               (TBL-PT-HDIST-DAY-MAX)
-               DISPLAY "      1=" TBL-PT-HDIST-DAY-HKNCOMBI-OCC
-                                               (TBL-PT-HDIST-DAY-MAX 1)
-               DISPLAY "      2=" TBL-PT-HDIST-DAY-HKNCOMBI-OCC
-                                               (TBL-PT-HDIST-DAY-MAX 2)
       *
                MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -3022,7 +3189,7 @@
            INITIALIZE                      SYUKA-REC
            MOVE    WRK-PARA-HOSPNUM    TO  PTINF-HOSPNUM
            MOVE    NACCT-SRYYM         TO  SYUKA-SRYYM
-           MOVE    NACCT-PTID          TO  SYUKA-PTID
+           MOVE    PTINF-PTID          TO  SYUKA-PTID
            MOVE    "1"                 TO  SYUKA-NYUGAIKBN
            MOVE    "YYYY"              TO  SYUKA-RECESYUBETU
            MOVE    SYUKA-REC           TO  MCPDATA-REC
@@ -3049,7 +3216,7 @@
                INITIALIZE                      LNK-DAY2-AREA
                MOVE    "21"                TO  LNK-DAY2-IRAI
                MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
-               CALL    "ORCSDAY"            USING   STS-AREA-DAY
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY2-AREA
                MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
            END-IF
@@ -3102,7 +3269,7 @@
            EXIT.
       *
       *****************************************************************
-      *    診療会計マスタＲＥＡＤ
+      *    診療会計ＲＥＡＤ
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
@@ -3114,14 +3281,14 @@
                MOVE    1               TO  FLG-SRYACCT
            END-IF
       *
-           MOVE    ACCT-PTID           TO  KEY-N-PTID 
+           MOVE    ACCT-PTID           TO  KEY-N-PTID
            MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
            .
        900-SRYACCT-READ-EXT.
            EXIT.
       *
       *****************************************************************
-      *    入院会計マスタ　ＲＥＡＤ
+      *    入院会計ＲＥＡＤ
       *****************************************************************
        900-NYUINACCT-READ-SEC          SECTION.
       *
