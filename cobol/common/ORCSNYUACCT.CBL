@@ -48,6 +48,8 @@
       *  05.00.00    NACL-小豆沢  18/03/02  療養病棟入院基本料２の経過
       *                                     措置追加（看護比率３０対１）
       *  05.00.00    NACL-小豆沢  18/03/07  短期滞在手術等基本料の判定変更
+      *  05.00.00    NACL-小豆沢  18/03/08  栄養管理体制減算の特別入院基本料
+      *                                     判定変更
       *****************************************************************
       *
       *
@@ -2290,7 +2292,8 @@
                                          TO   WRK-EIYOU-GENSANCD
                           END-IF
                         END-IF
-                        IF   WRK-STYMD(1:6)  >=   "201604"
+                        IF  (WRK-STYMD(1:6)  >=   "201604")   AND
+                            (WRK-STYMD(1:6)  <=   "201803")
                           IF  (TNS-SRYCD       =  "190121810"  OR
                                                   "190799510") OR
       *                      一般病棟特別入院基本料
@@ -2313,6 +2316,66 @@
       *                     療養病棟入院基本料２（夜勤時間特別入院基本料）
                             ((TNS-CDKBN-KBNNUM  = 101)   AND
                              (TNS-CDKBN-KOUBAN  =  10))       OR
+      *                     結核病棟特別入院基本料
+      *                     結核病棟入院基本料（夜勤時間超過減算）
+                            ((TNS-CDKBN-KBNNUM  = 102)   AND
+                             (TNS-CDKBN-KOUBAN  =   7))       OR
+      *                     結核病棟入院基本料（夜勤時間特別入院基本料）
+                            ((TNS-CDKBN-KBNNUM  = 102)   AND
+                             (TNS-CDKBN-KOUBAN  =   9))       OR
+      *                     精神病棟特別入院基本料
+      *                     精神病棟入院基本料（夜勤時間超過減算）
+                            ((TNS-CDKBN-KBNNUM  = 103)   AND
+                             (TNS-CDKBN-KOUBAN  =   6))       OR
+      *                     精神病棟入院基本料（夜勤時間特別入院基本料）
+                            ((TNS-CDKBN-KBNNUM  = 103)   AND
+                             (TNS-CDKBN-KOUBAN  =  11))       OR
+      *                     障害者施設等入院基本料（夜勤時間超過減算）
+                            ((TNS-CDKBN-KBNNUM  = 106)   AND
+                             (TNS-CDKBN-KOUBAN  =   5))       OR
+      *                     障害者施設等入院基本料（医療区分）（夜勤時間超過減算）
+      *                   （表用番号で判定不可の為、算定コードを直判定）
+                             (TNS-SRYCD       = "190198910"  OR
+                                                "190199010"  OR
+                                                "190199110"  OR
+                                                "190199210"  OR
+                                                "190199310"  OR
+                                                "190199410"  OR
+                                                "190199510"  OR
+                                                "190199610")
+                              CONTINUE
+                          ELSE
+                              MOVE   "190182590"
+                                         TO   WRK-EIYOU-GENSANCD
+                          END-IF
+                        END-IF
+                        IF   WRK-STYMD(1:6)  >=   "201804"
+      *                      一般病棟特別入院基本料
+                          IF ((TNS-CDKBN-KBNNUM  = 100)   AND
+                             (TNS-CDKBN-KOUBAN  =   4))       OR
+      *                      （選）一般病棟特別入院基本料
+                            ((TNS-CDKBN-KBNNUM  = 100)   AND
+                             (TNS-CDKBN-KOUBAN  =   5))       OR
+      *                      急性期一般入院料（月平均夜勤時間超過減算）
+      *                      地域一般入院料（月平均夜勤時間超過減算）
+                            ((TNS-CDKBN-KBNNUM  = 100)   AND
+                             (TNS-CDKBN-KOUBAN  =   6))       OR
+      *                      急性期一般入院料（夜勤時間特別入院基本料）
+      *                      地域一般入院料（夜勤時間特別入院基本料）
+                            ((TNS-CDKBN-KBNNUM  = 100)   AND
+                             (TNS-CDKBN-KOUBAN  =  11))       OR
+      *                     療養病棟入院基本料（特別入院基本料）
+      *                     療養病棟入院基本料（特別入院基本料）（生活療養）
+                            ((TNS-CDKBN-KBNNUM  = 101)   AND
+                             (TNS-CDKBN-KOUBAN  =   3))       OR
+      *                     療養病棟入院料２（経過措置１）
+      *                     療養病棟入院料２（経過措置１）（生活療養）
+                            ((TNS-CDKBN-KBNNUM  = 101)   AND
+                             (TNS-CDKBN-KOUBAN  =  10))       OR
+      *                     療養病棟入院料２（経過措置２）
+      *                     療養病棟入院料２（経過措置２）（生活療養）
+                            ((TNS-CDKBN-KBNNUM  = 101)   AND
+                             (TNS-CDKBN-KOUBAN  =  11))       OR
       *                     結核病棟特別入院基本料
       *                     結核病棟入院基本料（夜勤時間超過減算）
                             ((TNS-CDKBN-KBNNUM  = 102)   AND
