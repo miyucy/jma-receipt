@@ -109,6 +109,8 @@
       *  05.00.00    NACL-小豆沢  18/02/28  他医受診の追加
       *  05.00.00    NACL-小豆沢  18/03/05  療養病棟の読み替えコード追加
       *  05.00.00    NACL-小豆沢  18/03/07  短期滞在手術等基本料の判定変更
+      *  05.00.00    NACL-小豆沢  18/03/08  療養病棟入院料の名称読み替えは
+      *                                     平成３０年３月まで
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -9644,7 +9646,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                           "食堂加算"           TO  TNS-NAME
                        END-EVALUATE
                      ELSE
-                       EVALUATE   TNS-SRYCD
+                       IF   WRK-SRYYMD(1:6)      <=  "201803"
+                        EVALUATE   TNS-SRYCD
                          WHEN   "190121310"
                            MOVE "療養病棟入院基本料１（Ａ）"
                                                TO  TNS-NAME
@@ -9800,7 +9803,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                          WHEN   "197000570"
                            MOVE
                           "食堂加算"           TO  TNS-NAME
-                       END-EVALUATE
+                        END-EVALUATE
+                       ELSE
+                        EVALUATE   TNS-SRYCD
+                         WHEN   "197000570"
+                           MOVE
+                          "食堂加算"           TO  TNS-NAME
+                        END-EVALUATE
+                       END-IF
                      END-IF
                    END-IF
                    MOVE    ZERO                TO  FLG-TENSU
