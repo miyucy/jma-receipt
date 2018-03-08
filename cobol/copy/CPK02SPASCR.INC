@@ -455,6 +455,9 @@
                        09  SPA-COM-HISINKSN        PIC  X(01).
       *                凍結保存同種組織加算
                        09  SPA-COM-TOUKETUHOZONKSN PIC  X(01).
+      *H30.4
+      *                悪性腫瘍病理組織標本加算
+                       09  SPA-COM-AKUSEIBYORIKSN  PIC  X(01).
       *H29.1           ユーザー管理区分
                        09  SPA-COM-MASTER-CLASS    PIC  X(01).
       *

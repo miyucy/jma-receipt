@@ -2311,6 +2311,13 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "K274"
+                   STRING  "警告！"
+                           "悪性腫瘍病理組織標本加算の算定対象の"
+                           "入力がありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
