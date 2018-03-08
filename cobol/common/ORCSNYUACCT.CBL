@@ -2383,6 +2383,9 @@
       *                     結核病棟入院基本料（夜勤時間特別入院基本料）
                             ((TNS-CDKBN-KBNNUM  = 102)   AND
                              (TNS-CDKBN-KOUBAN  =   9))       OR
+      *                     結核病棟入院基本料（重症患者割合特別入院基本料）
+                            ((TNS-CDKBN-KBNNUM  = 102)   AND
+                             (TNS-CDKBN-KOUBAN  =  10))       OR
       *                     精神病棟特別入院基本料
       *                     精神病棟入院基本料（夜勤時間超過減算）
                             ((TNS-CDKBN-KBNNUM  = 103)   AND
