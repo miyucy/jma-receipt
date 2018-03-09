@@ -1214,7 +1214,8 @@
                IF      FLG-KANJI           =   1
                    MOVE    "J"             TO  SPA-Z98-CDSYUBETU
                ELSE
-                   IF      WRK-INPUTCD(1:1)    NUMERIC
+      ****         IF      WRK-INPUTCD(1:1)    NUMERIC
+                   IF      WRK-INPUTCD(1:WRK-CD-MCNT)    NUMERIC
                        EVALUATE    WRK-CD-MCNT
                            WHEN    3
                            WHEN    6
@@ -1616,6 +1617,13 @@
                   EVALUATE    SPA-Z01GMN-SRYCD (1:3)
                       WHEN    "099"
                           MOVE   "Z03"                   TO  SPA-SAKIPG
+      *
+      *H30.4
+      *                   処方せん分割用
+                          IF      SPA-Z01GMN-SRYCD(1:7)  =   "0992081"
+      *                       コメントへ
+                              MOVE   "Z02"               TO  SPA-SAKIPG
+                          END-IF
       *               特定器材
                       WHEN    "059"
                           MOVE   "Z05"                   TO  SPA-SAKIPG
