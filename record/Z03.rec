@@ -500,18 +500,5 @@ Z03 {
     YUKOEDYMDH {
       textdata varchar(9);
     };
-    MIDASHI { #GtkLabel
-      style varchar(20);
-      textdata varchar(80);
-    };
-    B03 { #GtkButton
-      state int;
-    };
-    B10 { #GtkButton
-      state int;
-    };
-    B12 { #GtkButton
-      state int;
-    };
   };
 };

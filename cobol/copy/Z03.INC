@@ -359,12 +359,3 @@
                 04  Z03-VALUE   PIC X(9).
               03  Z03-YUKOEDYMDH.
                 04  Z03-VALUE   PIC X(9).
-              03  Z03-MIDASHI.
-                04  Z03-MIDASHI-STYLE   PIC X(20).
-                04  Z03-MIDASHI-DATA    PIC X(80).
-              03  Z03-B03.
-                04  Z03-B03-STATE   PIC S9(9)   BINARY.
-              03  Z03-B10.
-                04  Z03-B10-STATE   PIC S9(9)   BINARY.
-              03  Z03-B12.
-                04  Z03-B12-STATE   PIC S9(9)   BINARY.
