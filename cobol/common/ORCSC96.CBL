@@ -1186,6 +1186,13 @@
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H30.4
+               WHEN    "0604"
+                   STRING  "コンタクトレンズ検査料算定時に"
+                           "算定できません"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "9300"
                    STRING  "患者登録の業務権限はありません。"
@@ -2313,10 +2320,17 @@
                    END-STRING
                WHEN    "K274"
                    STRING  "警告！"
-                           "悪性腫瘍病理組織標本加算の算定対象の"
-                           "入力がありません。"
+                           "悪性腫瘍病理組織標本加算の"
+                           "算定できる手術の算定がありません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "K503"
+                   STRING  "警告！術中脳灌流モニタリング加算の"
+                           "算定できる手術ではありません。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
                    END-STRING
       *
            END-EVALUATE

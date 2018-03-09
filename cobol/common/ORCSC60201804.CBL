@@ -3555,17 +3555,15 @@
                            END-IF
                    END-EVALUATE
                END-IF
-      *TEST
-      *TEST
-      *TEST
+      *
       *H30.4
       *        夜間早朝加算はエラー
                IF      WRK-COM-INPUTCD (IDX2) =   "112015570"
                                               OR  "111012470"
-                   MOVE    "0600"          TO  SPA-ERRCD
+                   MOVE    "0604"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR(IDX2)
                END-IF
-      *TEST
+      *
            END-PERFORM
            .
        2003-CCONTAKU-CHK2-EXT.
