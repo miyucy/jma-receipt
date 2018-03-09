@@ -28,8 +28,10 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *Ê¿À®£³£°Ç¯£´·î²þÄêÂÐ±þ
-      *  00.00.00    NACL-¾®Æ¦Âô  18/03/02  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¤Î·Ð²á
+      *  05.00.00    NACL-¾®Æ¦Âô  18/03/02  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¤Î·Ð²á
       *                                     Á¼ÃÖÄÉ²Ã¡Ê´Ç¸îÈæÎ¨£³£°ÂÐ£±¡Ë
+      *  05.00.00    NACL-¾®Æ¦Âô  18/03/09  ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£É¡Ë
+      *                                     Á¼ÃÖÄÉ²Ã£²¡¦ÄÌÂ§£¸ÂÐ±þ
       *****************************************************************
       *
       *
@@ -53,6 +55,9 @@
       *****************************************************************
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
+      *
+           COPY    "CPSK5000.INC".
+      *
            COPY    "CPSK5001.INC".
       *
       *    £Ä£Â¸¡º÷
@@ -121,6 +126,46 @@
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
+      *
+      *        ±ÉÍÜ´ÉÍýÂÎÀ©¸º»»µ¬Äê³ºÅö¡ÊÄÌÂ§£¸¡Ë¤ÎÂÐ¾Ý³ÎÇ§
+               IF  LNK-KANGOCHG-SANTEIYM       >=   "201804"
+      *           ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+                   MOVE    SPACE           TO  SYS-5000-REC
+                   INITIALIZE                  SYS-5000-REC
+                   MOVE    "5000"          TO  SYS-5000-KANRICD
+                   MOVE    "*"             TO  SYS-5000-KBNCD
+                   MOVE    LNK-KANGOCHG-SANTEIYM
+                                           TO  SYS-5000-STYUKYMD(1:6)
+                   MOVE    "01"            TO  SYS-5000-STYUKYMD(7:2)
+                   MOVE    SYS-5000-STYUKYMD
+                                           TO  SYS-5000-EDYUKYMD
+                   MOVE    SPA-HOSPNUM     TO  SYS-5000-HOSPNUM
+                   MOVE    SYS-5000-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key10"         TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key10"             TO  MCP-PATHNAME
+                       PERFORM 920-DBFETCH-SEC
+                       IF      MCP-RC              =   ZERO
+                           MOVE    ZERO                TO  FLG-SYSKANRI
+                           MOVE    MCPDATA-REC         TO  SYS-5000-REC
+                       ELSE
+                           MOVE    SPACE           TO  SYS-5000-REC
+                           INITIALIZE                  SYS-5000-REC
+                           MOVE    1                   TO  FLG-SYSKANRI
+                       END-IF
+                   ELSE
+                       MOVE    SPACE           TO  SYS-5000-REC
+                       INITIALIZE                  SYS-5000-REC
+                       MOVE    1               TO  FLG-SYSKANRI
+                   END-IF
+      *
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key10"             TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
+               END-IF
       *
       *        Ê¿À®£²£¸Ç¯£´·î²þÄê¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖÆþ±¡´ðËÜÎÁ¡Ë
                IF  LNK-KANGOCHG-SANTEIYM       <=   "201803"
@@ -358,9 +403,17 @@
       *        ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£É¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
                WHEN    "190134010"
                   MOVE "190204110" TO  LNK-KANGOCHG-CHGSRYCD
+      *           ÄÌÂ§£¸¤Î»þ¡¢¹¹¤ËÃÖ¤­´¹¤¨
+                  IF    SYS-5000-EIYOUKSNKBN   =    "1"
+                       MOVE "190204310" TO  LNK-KANGOCHG-CHGSRYCD
+                  END-IF
       *        ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
                WHEN    "190134110"
                   MOVE "190204210" TO  LNK-KANGOCHG-CHGSRYCD
+      *           ÄÌÂ§£¸¤Î»þ¡¢¹¹¤ËÃÖ¤­´¹¤¨
+                  IF    SYS-5000-EIYOUKSNKBN   =    "1"
+                       MOVE "190204410" TO  LNK-KANGOCHG-CHGSRYCD
+                  END-IF
                WHEN    OTHER
                        CONTINUE
            END-EVALUATE
