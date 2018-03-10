@@ -2431,7 +2431,7 @@ NEW   *    夜間看護体制加算（障害者施設）
        3101-KNGHJSHICH-SET-EXT.
            EXIT.
       *****************************************************************
-      *    夜間看護加算加算
+      *    夜間看護加算
       *****************************************************************
        3101-H30YKNKNG-SET-SEC          SECTION.
       *
@@ -4239,6 +4239,7 @@ NEW   *    夜間看護体制加算（障害者施設）
            WHEN  ( SPA-NAI-W20-YUKOSTYMD >=  CONST-H261001 )
             AND  ( SPA-GMN-W20-SBT        =   "01" OR "06" )
            WHEN  ( SPA-NAI-W20-YUKOSTYMD >=  CONST-H241001 )
+            AND  ( SPA-NAI-W20-YUKOSTYMD <   CONST-H300401 )
             AND  ( SPA-GMN-W20-SBT        =   "01" )
             AND  ( SPA-NAI-W20-NYUKHNKBN  =   56 OR 57 )
       *
@@ -6348,9 +6349,7 @@ NEW   *    夜間看護体制加算（障害者施設）
       *
            PERFORM 42011-RYOYOSANTEI-CHK-SEC
            IF    ( FLG-RYOYOSANTEI =   1 )
-               IF    ( SPA-GMN-W20-SBT         =   "08" OR "09" )
-                   PERFORM 4100-RYOYOKBN-CMB-EDT-SEC
-               END-IF
+               PERFORM 4100-RYOYOKBN-CMB-EDT-SEC
            END-IF
       *
            .
@@ -6735,9 +6734,15 @@ NEW   *    夜間看護体制加算（障害者施設）
                MOVE    "一般病棟入院基本料を算定"
                                       TO   SPA-GMN-W20-RYOYOKBNMEIL (1)
       *
-               MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL  (2)
-               MOVE    "療養病棟入院基本料１の例により算定"
+               IF    ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H300401 )
+                   MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL  (2)
+                   MOVE    "療養病棟入院料１の例により算定"
                                       TO   SPA-GMN-W20-RYOYOKBNMEIL (2)
+               ELSE
+                   MOVE    "1"    TO  SPA-GMN-W20-RYOYOKBNL  (2)
+                   MOVE    "療養病棟入院基本料１の例により算定"
+                                      TO   SPA-GMN-W20-RYOYOKBNMEIL (2)
+               END-IF
                MOVE    2              TO   SPA-GMN-W20-RYOYOKBN-MAX
       *
            END-IF
@@ -9042,7 +9047,7 @@ NEW   *    夜間看護体制加算（障害者施設）
                                        TO  SPA-GMN-W20-EIYO-LBL
                MOVE    CONST-H28-A108C10
                                        TO  SPA-NAI-W20-EIYO-CD
-               MOVE    "夜間看護加算加算"
+               MOVE    "夜間看護加算"
                                        TO  SPA-GMN-W20-H30YKNKNG-LBL
                MOVE    CONST-H30-A101C13
                                        TO  SPA-NAI-W20-H30YKNKNG-CD
