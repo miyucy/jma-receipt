@@ -330,9 +330,12 @@
       *H30.4
       *            H30.4から産婦人科特例対応
                    IF     (SPA-SRYYMD          <   "20180401" )
-                     AND  (SPA-JIKANTOKU-NYU   =   2
-                                               OR  3          )
-                       MOVE    1               TO  SPA-JIKANTOKU-NYU
+                       IF      SPA-JIKANTOKU-NYU   =   "2"
+                           MOVE    "1"             TO  SPA-JIKANTOKU-NYU
+                       END-IF
+                       IF      SPA-JIKANTOKU-NYU   =   "3"
+                           MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
+                       END-IF
                    END-IF
                END-IF
       *
@@ -1017,14 +1020,14 @@
                        END-IF
                    END-IF
       *H30.4
-                   IF      SPA-SRYYMD      >=  "20180401"
+      *            IF      SPA-SRYYMD      >=  "20180401"
       *                機能強化加算（初診）（????)
-      *??              IF      SYS-1006-SSTKIJUN (XXX) =   1
-                           MOVE    1               TO  SPA-KYOUKAKSN
+      *??不明          IF      SYS-1006-SSTKIJUN (XXX) =   1
+      *                    MOVE    1               TO  SPA-KYOUKAKSN
       *                ELSE
       *                    MOVE    ZERO            TO  SPA-KYOUKAKSN
-      **               END-IF
-                   END-IF
+      *                END-IF
+      ***          END-IF
                END-IF
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
@@ -1451,9 +1454,12 @@
       *H30.4
       *            H30.4から産婦人科特例対応
                    IF     (SPA-SRYYMD          <   "20180401" )
-                     AND  (SPA-JIKANTOKU-NYU   =   2
-                                               OR  3          )
-                       MOVE    1               TO  SPA-JIKANTOKU-NYU
+                      IF      SPA-JIKANTOKU-NYU    =   "2"
+                           MOVE    "1"             TO  SPA-JIKANTOKU-NYU
+                       END-IF
+                       IF      SPA-JIKANTOKU-NYU   =   "3"
+                           MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
+                       END-IF
                    END-IF
                END-IF
       *
