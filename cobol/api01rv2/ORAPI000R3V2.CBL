@@ -234,6 +234,12 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
+           IF    ( SPA-MW              =   SPA-GINBEE )
+               CONTINUE
+           ELSE
+               MOVE    "0099"          TO  SPA-ERRCD
+               PERFORM 990-EXIT-PROGRAM-SEC
+           END-IF
       *
       *    XML情報取り出し
            PERFORM 900-XML-READ-SEC
