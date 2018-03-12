@@ -99,3 +99,8 @@
                         PIC X(1).
             02  HC02QV04-KAISUU
                         PIC X(1).
+            02  HC02QV04-BUNKATULBL.
+              03  HC02QV04-BUNKATULBL-S1
+                        PIC X(20).
+              03  HC02QV04-BUNKATULBL-S2
+                        PIC X(18).
