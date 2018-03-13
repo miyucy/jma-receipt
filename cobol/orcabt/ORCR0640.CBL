@@ -34432,6 +34432,16 @@
                            END-IF
                          END-IF
                        END-IF
+                     ELSE
+                       COMPUTE WRK-SKY-KEISAN2 = WRK-SKY-FTNMONEY-KOH9
+                                               - RECE62-FTNMONEY-SKY
+                       IF  RECE62-SKYIRYO-HOKENJA > WRK-SKY-KEISAN2
+                         COMPUTE RECE62-SKYIRYO-HOKENJA =
+                                 RECE62-SKYIRYO-HOKENJA -
+                                 WRK-SKY-KEISAN2
+                       ELSE
+                         MOVE    ZERO    TO    RECE62-SKYIRYO-HOKENJA
+                       END-IF
                      END-IF
                    ELSE
                      COMPUTE   WRK-SKY-KEISAN  = WRK-SKY-ZENGAKU-KOH
