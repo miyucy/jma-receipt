@@ -52,3 +52,7 @@
            03  SPA-L01-MONBLOB-PRINT-ID    PIC X(37).
       *
            03  SPA-L01-PUSHBA01-EVENT      PIC X(50).
+      *
+      *    エラー項目名称の位置
+           03  SPA-L01-PARAHYOJI-1         PIC 9(03).
+           03  SPA-L01-PARAHYOJI-2         PIC 9(03).

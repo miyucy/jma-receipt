@@ -1568,6 +1568,11 @@
                                                    DELIMITED BY SPACE
                            INTO    WRK-ERRMSG
                            END-STRING
+                           IF      SPA-L01-JOB-PARAM
+                                           NOT =   SPACE
+                               MOVE    IDXA    TO  SPA-L01-PARAHYOJI-1
+                               MOVE    IDXB    TO  SPA-L01-PARAHYOJI-2
+                           END-IF
                            GO  TO  49001-MINYURYOKU-CHK-EXT
                        END-IF
                    END-PERFORM

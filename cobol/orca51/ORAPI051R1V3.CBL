@@ -97,6 +97,8 @@
       *    エラーコード
            03  WRK-ERRCD               PIC X(03).
            03  WRK-ERRMSG              PIC X(100).
+           03  WRK-ERR-1               PIC X(100).
+           03  WRK-ERR-2               PIC X(100).
       *
            03  WRK-PROCESSING-ERRCD    PIC X(03).
            03  WRK-ERR-PROCESSING-MAX  PIC 9(03).
@@ -900,14 +902,10 @@
                DISPLAY "MCP-WIDGET=" MCP-WIDGET "#"
       *
                PERFORM 800-ORCGL01-CALL-SEC
-      *??
-              DISPLAY "CHK SPA-ERRCD=" SPA-ERRCD "#" SPA-LID1-AREA "#"
-      *??
       *
                IF      SPA-ERRCD       NOT =   SPACE
                    EVALUATE    SPA-ERRCD
                        WHEN    "0002"
-                       WHEN    "0003"
                        WHEN    "0004"
                        WHEN    "0103"
                            MOVE    "E61"           TO
@@ -940,12 +938,14 @@
            MOVE    "B12"           TO  MCP-WIDGET
       *
            PERFORM 800-ORCGL01-CALL-SEC
-      *??
-           DISPLAY "CHK SPA-ERRCD=" SPA-ERRCD "#" SPA-LID1-AREA "#"
-      *??
       *
            IF      SPA-ERRCD       NOT =   SPACE
                EVALUATE    SPA-ERRCD
+                   WHEN    "0002"
+                   WHEN    "0004"
+                   WHEN    "0103"
+                       MOVE    "E61"           TO  WRK-PROCESSING-ERRCD
+                       PERFORM 20012-PROCESSING-ERR-SEC
                    WHEN    "7777"
                        MOVE    "E70"               TO  WRK-ERRCD
                        MOVE    SPA-ERRMSG          TO  WRK-ERRMSG
@@ -1003,9 +1003,6 @@
       *
            ADD     1               TO  WRK-ERR-PROCESSING-MAX
       *
-      *??
-           display "NAME=" IDX "#" LSTREQ-PROGRAM-NAME (IDX) "#"
-      *??
            MOVE    LSTREQ-PROGRAM-NAME (IDX)
                                    TO  LSTRES-ERR-PROGRAM-NAME
                                                (WRK-ERR-PROCESSING-MAX)
@@ -1074,17 +1071,28 @@
            ELSE
                EVALUATE    WRK-PROCESSING-ERRCD
                    WHEN    "E61"
-      *                   IDBB PARA INDEX
-      *                   IDAA PAGE LINE
-      *                    IDCC SPA LINE
-                       COMPUTE SPA-GMN-L01-CUR =   SPA-GMN-L01-CUR -   1
-                       DIVIDE  9   INTO        SPA-GMN-L01-CUR
-                                   GIVING      IDAA
-                                   REMAINDER   IDBB
-                       END-DIVIDE
-                       COMPUTE IDCC    = ( SPA-GMN-L01-PAGE    -   1 )
-                                       *   WRK-CONS-SCR-MAX
-                                       +   IDAA    +   1
+                       EVALUATE    SPA-ERRCD
+                           WHEN    "0002"
+                           WHEN    "0103"
+      *                        IDBB PARA INDEX
+      *                        IDAA PAGE LINE
+      *                        IDCC SPA LINE
+                               COMPUTE SPA-GMN-L01-CUR
+                                            =   SPA-GMN-L01-CUR -   1
+                               DIVIDE  9   INTO        SPA-GMN-L01-CUR
+                                           GIVING      IDAA
+                                           REMAINDER   IDBB
+                               END-DIVIDE
+                               COMPUTE IDCC    = ( SPA-GMN-L01-PAGE
+                                                           -   1 )
+                                               *   WRK-CONS-SCR-MAX
+                                               +   IDAA    +   1
+                           WHEN    "0004"
+                               MOVE    SPA-L01-PARAHYOJI-1
+                                                   TO  IDCC
+                               MOVE    SPA-L01-PARAHYOJI-2
+                                                   TO  IDBB
+                       END-EVALUATE
        *
                        MOVE    SPA-GMN-L01-HCNAME  (IDCC)
                                            TO  LSTRES-ERR-PROGRAM-LABEL
@@ -1094,23 +1102,22 @@
       *
                EVALUATE    SPA-ERRCD
                    WHEN    "0002"
-                       STRING  SPA-GMN-L01-PARAHYOJI (IDCC IDBB)
+                   WHEN    "0004"
+                   WHEN    "0103"
+                       MOVE    SPACE           TO  WRK-ERR-1
+                                                   WRK-ERR-2
+                       UNSTRING    SPA-ERRMSG  DELIMITED  BY  "【"
+                                               INTO    WRK-ERR-1
+                                                       WRK-ERR-2
+                       END-UNSTRING
+                       STRING  WRK-ERR-1       DELIMITED  BY  SPACE
+                               "【"            DELIMITED  BY  SIZE
+                               SPA-GMN-L01-PARAHYOJI (IDCC IDBB)
                                                DELIMITED  BY  SPACE
-                               "入力エラー"    DELIMITED  BY  SPACE
+                               "】"            DELIMITED  BY  SIZE
                                                INTO    LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                        END-STRING
-                   WHEN    "0003"
-                       MOVE    "項目に入力がありません"
-                                               TO  LSTRES-ERROR-MSG
-                                               (WRK-ERR-PROCESSING-MAX)
-                   WHEN    "0004"
-                       MOVE    "必須項目が未入力です"
-                                               TO  LSTRES-ERROR-MSG
-                                               (WRK-ERR-PROCESSING-MAX)
-                   WHEN    "0103"
-                       MOVE    SPA-ERRMSG      TO  LSTRES-ERROR-MSG
-                                               (WRK-ERR-PROCESSING-MAX)
                    WHEN    OTHER
                        MOVE    SPA-ERRMSG      TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
@@ -1118,15 +1125,15 @@
       *
                IF      WRK-ERRCD       =   SPACE
                    MOVE    "E63"           TO  WRK-ERRCD
-                   MOVE    LSTRES-ERROR-MSG (WRK-ERR-PROCESSING-MAX)
+                   MOVE    LSTRES-ERROR-MSG  (WRK-ERR-PROCESSING-MAX)
                                            TO  WRK-ERRMSG
                END-IF
            END-IF
       *
-      *   パラメタ値返却
-          IF      WRK-ERR-PARAMETER-IDX
+      *    パラメタ値返却
+           IF      WRK-ERR-PARAMETER-IDX
                                    =   ZERO
-              MOVE    LSTREQ-PARAMETER-G  (IDX)
+               MOVE    LSTREQ-PARAMETER-G  (IDX)
                                        TO  LSTRES-ERR-PARAMETER-G
                                                (WRK-ERR-PROCESSING-MAX)
            ELSE
@@ -1136,7 +1143,7 @@
            END-IF
       *
            MOVE    ZERO            TO  WRK-ERR-PARAMETER-IDX
-            .
+           .
        20012-PROCESSING-ERR-EXT.
            EXIT.
       *
@@ -1154,9 +1161,6 @@
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  2002-SYORI-01-EXT
            END-IF
-   *??
-           DISPLAY "MAKE SPA-ERRCD=" SPA-ERRCD "#" SPA-LID1-AREA "#"
-      *??
       *
            MOVE    LSTREQ-KARTE-UID
                                    TO  SPA-L01-JOB-KARTE-UID
@@ -1223,7 +1227,7 @@
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL ( IDX >       SYS-3003-JOBID )
       *            ジョブ管理チェック処理
-                   MOVE    "CHK"           TO  SJOBKANRI-MODE
+                   MOVE    "CH2"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    MOVE    IDX             TO  JOB-JOBID
