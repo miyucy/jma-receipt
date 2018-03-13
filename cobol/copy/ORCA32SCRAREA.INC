@@ -29,3 +29,7 @@
            COPY    "I4ID2.INC".
            COPY    "CPAPILSTV2.INC"    REPLACING
                                        //APILST-// BY //I4API01-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //I4API02-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //I4API03-//.

@@ -2430,6 +2430,7 @@
            END-IF
       *
            INITIALIZE                      XML-APIREQ
+                                           XML-HSPTINFMREQ
       * XML情報取り出し
            MOVE    "xml_hsptinfmodv2req"   TO  MCP-TABLE
            MOVE    "key"                TO  MCP-PATHNAME
@@ -2493,11 +2494,12 @@
       *
            END-PERFORM
       *
-           MOVE    "リクエスト番号"
+           IF    ( HSPTINFMREQ-REQNUM      NOT =   SPACE )
+               MOVE    "リクエスト番号"
                                TO  HSPTINFM01RES-REQNUM-LBL
-      *
-           MOVE    HSPTINFMREQ-REQNUM
+               MOVE    HSPTINFMREQ-REQNUM
                                TO  HSPTINFM01RES-REQNUM-DATA
+           END-IF
       *
            EVALUATE    HSPTINFMREQ-REQNUM
            WHEN    "01"
