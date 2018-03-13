@@ -38,6 +38,7 @@
       *  05.00.00    NACL-井痞卖  17/12/14  技瘟汗驰の借妄纳裁
       *士喇３０钳４奉猖赖滦炳
       *  05.00.00    NACL-井痞卖  18/03/05  闻蛙陕棚の粕み仑えコ〖ド纳裁
+      *  05.00.00    NACL-井痞卖  18/03/13  戮板减壳の纳裁
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -572,7 +573,11 @@
       *        0210:戮板闻怠簇１５◇负
       *        0211:泼年箕粗锣薄负换
       *        0212:泼年退泣掐锣薄负换
-      *        0213:泼年退泣掐锣薄负换≤戮板闻怠簇３０◇负
+      *        0213:泼年退泣掐锣薄负换≤戮板闻怠簇１０◇负
+      *        0214:戮板闻怠簇３５◇负
+      *        0215:戮板闻怠簇１５◇负
+      *        0216:戮板闻怠簇５◇负
+      *        0217:泼年退泣掐锣薄负换≤戮板闻怠簇５◇负
                WHEN    "0200"
                WHEN    "0207"
                WHEN    "0208"
@@ -581,6 +586,10 @@
                WHEN    "0211"
                WHEN    "0212"
                WHEN    "0213"
+               WHEN    "0214"
+               WHEN    "0215"
+               WHEN    "0216"
+               WHEN    "0217"
                    IF   SODRNACCT-ENDYMD   =   SPACE
                        PERFORM   4801-GENSAN-SEC
                    ELSE
@@ -5880,7 +5889,11 @@
       *                0210:戮板闻怠簇１５◇负
       *                0211:泼年箕粗锣薄负换
       *                0212:泼年退泣掐锣薄负换
-      *                0213:泼年退泣掐锣薄负换≤戮板闻怠簇３０◇负
+      *                0213:泼年退泣掐锣薄负换≤戮板闻怠簇１０◇负
+      *                0214:戮板闻怠簇３５◇负
+      *                0215:戮板闻怠簇１５◇负
+      *                0216:戮板闻怠簇５◇负
+      *                0217:泼年退泣掐锣薄负换≤戮板闻怠簇５◇负
                        EVALUATE   SODRNACCT-ORDERID(3:2)
                            WHEN   "00"
                              MOVE   0    TO   NACCT-DAY(IDX)
@@ -5906,6 +5919,14 @@
                              MOVE   9    TO   NACCT-DAY(IDX)
                            WHEN   "13"
                              MOVE  13    TO   NACCT-DAY(IDX)
+                           WHEN   "14"
+                             MOVE  15    TO   NACCT-DAY(IDX)
+                           WHEN   "15"
+                             MOVE  16    TO   NACCT-DAY(IDX)
+                           WHEN   "16"
+                             MOVE  14    TO   NACCT-DAY(IDX)
+                           WHEN   "17"
+                             MOVE  17    TO   NACCT-DAY(IDX)
                        END-EVALUATE
                    END-PERFORM
       *
@@ -5989,7 +6010,11 @@
       *        0210:戮板闻怠簇１５◇负
       *        0211:泼年箕粗锣薄负换
       *        0212:泼年退泣掐锣薄负换
-      *        0213:泼年退泣掐锣薄负换≤戮板闻怠簇３０◇负
+      *        0213:泼年退泣掐锣薄负换≤戮板闻怠簇１０◇负
+      *        0214:戮板闻怠簇３５◇负
+      *        0215:戮板闻怠簇１５◇负
+      *        0216:戮板闻怠簇５◇负
+      *        0217:泼年退泣掐锣薄负换≤戮板闻怠簇５◇负
                EVALUATE   SODRNACCT-ORDERID(3:2)
                    WHEN   "00"
                      MOVE   0    TO   NACCT-DAY(IDX)
@@ -6007,6 +6032,14 @@
                      MOVE   9    TO   NACCT-DAY(IDX)
                    WHEN   "13"
                      MOVE  13    TO   NACCT-DAY(IDX)
+                   WHEN   "14"
+                     MOVE  15    TO   NACCT-DAY(IDX)
+                   WHEN   "15"
+                     MOVE  16    TO   NACCT-DAY(IDX)
+                   WHEN   "16"
+                     MOVE  14    TO   NACCT-DAY(IDX)
+                   WHEN   "17"
+                     MOVE  17    TO   NACCT-DAY(IDX)
                END-EVALUATE
       *
       *        オペ〖レ〖タＩＤ
