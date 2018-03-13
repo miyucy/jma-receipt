@@ -52,6 +52,8 @@
       *                                     判定変更
       *  05.00.00    NACL-小豆沢  18/03/09  療養病棟入院料２（Ｉ）
       *                                     措置追加２・通則８対応追加
+      *  05.00.00    NACL-小豆沢  18/03/09  看護補助加算（１５日以上３０日
+      *                                     以内）の算定対応
       *****************************************************************
       *
       *
@@ -2141,7 +2143,8 @@
       *            有床診療所在宅復帰機能強化加算（有床診療所入院基本料）
       *            は入院日１５日目以降に算定する
                    IF    LNK-SCNYUACCT-NYUKHNKSN-SRYCD (IDX-K)
-                                                      = "190190270"
+                                                      = "190190270" OR
+                                                        "190205670"
       **                DISPLAY "//////ZAITAKU-FUKKI/////////////////"
       **                DISPLAY "LNK-SCNYUACCT-NYUKHN-NISUU = "
       **                         LNK-SCNYUACCT-NYUKHN-NISUU
@@ -5194,6 +5197,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF    TNS-SRYCD         =   "190182590"  OR
                                                "190182690"
                         MOVE    3          TO   TNS-TENSIKIBETU
+                   END-IF
+      *            看護補助加算（１５日以上３０日以内）（障害者施設等
+      *            入院基本料）は上限日数を３０日に変更
+                   IF    TNS-SRYCD         =   "190205670"
+                        MOVE    30         TO   TNS-JGNCNT
                    END-IF
                    MOVE    ZERO                TO  FLG-TENSU
                ELSE
