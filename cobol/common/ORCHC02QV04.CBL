@@ -681,11 +681,6 @@
                    07  WRK-HENKOU          PIC X(02).
                    07  WRK-NAIYOU          PIC X(82).
            03  WRK-PAGE-MAX                PIC 9(03).
-      *H30.4
-      *    処方頁（分割）
-       01  WRK-GRP-SYOHOU-AREA.
-           03  WRK-GRP-SYOHOU-PAGE         OCCURS   3.
-               05  WRK-GRP-PAGE-MAX        PIC 9(03).
       *
       *    処方せん明細行
        01  LINE-MAX                PIC 9(03)  VALUE 19.
@@ -1027,7 +1022,6 @@
       *    一般名記載ログクリア
            INITIALIZE                  ORCHC02GELOGAREA
       *H30.4
-           INITIALIZE                  WRK-GRP-SYOHOU-AREA
       *    備考コメント
            INITIALIZE                  WRK-SRYACT98-ALL-AREA
       *
@@ -1286,9 +1280,6 @@
            MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
       *
            OPEN    OUTPUT               PRT-FILE
-      *TEST
-            DISPLAY "400-SYOKI-PRINT-SEC"
-               ",WRK-PAGE:" WRK-PAGE
       *
            .
        400-SYOKI-PRINT-EXT.
@@ -3042,7 +3033,6 @@
                WHEN    "2"
       *            見出しのみ
                    INITIALIZE                  WRK-SYOHOU-AREA
-                   INITIALIZE                  WRK-GRP-SYOHOU-AREA
                    MOVE    1                   TO  WRK-PAGE-MAX
                    MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
                    INITIALIZE                  ORCSQRCSVAREA
@@ -3212,8 +3202,6 @@
       *H28.4
            INITIALIZE                  WRK-QR-BIKOU-AREA
            INITIALIZE                  WRK-ZANSIJI-G
-      *H30.4
-           INITIALIZE                  WRK-GRP-SYOHOU-AREA
       *
            MOVE    ZERO                TO  WRK-PAGE-SYOMAX
       *
@@ -3994,13 +3982,9 @@
                PERFORM 21001-BUKOU-ADDHEN-SEC
                MOVE    IDX-ALL            TO  WRK-ALL-MAX (IDXP)
            END-IF
-      *TEST
-            DISPLAY "H02Q WRK-BUNKATU-MAX:" WRK-BUNKATU-MAX
-      *TEST
       *
       *    分割毎に編集
            MOVE    ZERO                TO  WRK-BUNKATU-CNT
-           INITIALIZE                  WRK-GRP-SYOHOU-AREA
       *    備考コメント
            INITIALIZE                  WRK-SRYACT98-ALL-AREA
       *
@@ -6445,8 +6429,10 @@
            MOVE    FLG-KOUHATUFUKA-IN  TO  FMSHOHO-KOUHATUFUKA-IN
       *H30.4
       *    分割調剤
-           MOVE    WRK-BUNKATU-MAX     TO  FMSHOHO-BUNKATU-MAX
-           MOVE    WRK-BUNKATU-CNT     TO  FMSHOHO-BUNKATU-CNT
+           IF      WRK-BUNKATU-MAX     >   1
+               MOVE    WRK-BUNKATU-MAX     TO  FMSHOHO-BUNKATU-MAX
+               MOVE    WRK-BUNKATU-CNT     TO  FMSHOHO-BUNKATU-CNT
+           END-IF
       *
       *    処方内容編集
       *    備考編集
