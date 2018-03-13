@@ -386,7 +386,7 @@
                05  WRK-DAY24                           PIC 9(04).
       *
        01  WRK-GAI-TABLE.
-           03  WRK-GAI-TBL                             OCCURS   46.
+           03  WRK-GAI-TBL                             OCCURS   62.
              04  WRK-GAI-T                             OCCURS   10.
                05  WRK-GAI-DAY                         PIC 9(02).
                05  WRK-GAI-ZAITEN                      PIC 9(08).
@@ -6198,7 +6198,7 @@
            MOVE     ZERO     TO     SYUKEI-IDX3
       *
            PERFORM    VARYING  SYUKEI-IDX     FROM    1   BY  1
-                  UNTIL  SYUKEI-IDX            > 46
+                  UNTIL  SYUKEI-IDX            > 62
       *
              PERFORM  VARYING  SYUKEI-IDX2    FROM    1   BY  1
                   UNTIL  SYUKEI-IDX2           > 10
