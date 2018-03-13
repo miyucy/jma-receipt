@@ -61,6 +61,7 @@
       * 04.08.00     NACL-多々納  16/05/XX  一般名表示対応
       *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
       *  04.08.00    NACL-多々納  16/11/XX  投薬投与量チェック区分対応
+      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3438,6 +3439,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                  AND  (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 )
                    MOVE    1                   TO  FLG-IN1
                END-IF
+      *H30.4   分割調剤など
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
+                                               =   "0992081" )
+                   MOVE    1                   TO  FLG-IN1
+               END-IF
       *
                IF      FLG-IN1             =   1
                    MOVE    "2"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
@@ -5892,6 +5898,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *             用法コメント
                     OR   ((SPA-COM-INPUTCD(IDX1)(1:3)  =   "001" )  AND
                           (SPA-COM-YCOMKBN(IDX1)       =   1     ))
+      *H30.4
+                    OR    (SPA-COM-INPUTCD(IDX1)(1:7)  =   "0992081")
                        MOVE    SPA-COM-INPUTCHI-G(IDX1)
                                            TO  ORCSCZAICHK-INPUTCHI-G
                                                              (IDX-ATO)
@@ -6432,6 +6440,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *     用法コメント
             OR   ((SPA-COM-INPUTCD(IDX)(1:3)   =   "001" )  AND
                   (SPA-COM-YCOMKBN(IDX)        =   1     ))
+      *H30.4
+            OR    (SPA-COM-INPUTCD(IDX)(1:7)  =   "0992081")
+      *
                IF      (SPA-COM-INPUTCD(IDX)(1:4)  =   "0085"
                                                    OR  "0086" ) AND
                        (SPA-GMN-MEISYO (IDX)   =   SPA-COM-NAME (IDX))

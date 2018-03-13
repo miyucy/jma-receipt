@@ -76,6 +76,7 @@
       * 04.08.00     NACL-多々納  14/10/23  連続挿入対応
       * 04.08.00     NACL-多々納  17/01/17  翌月入院料チェック対応
       * 04.08.00     NACL-多々納  17/05/XX  公費期間表示、メモ対応
+      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1417,7 +1418,6 @@
       *            ＤＯ選択画面より
                    PERFORM 3013-K09-SET-SEC
                    MOVE    2                   TO  FLG-GMN
-      *************GO      TO      300-SCREEN-EXT
                WHEN    "KHELP"
       *            ヘルプ画面より
                    MOVE    2                   TO  FLG-GMN
@@ -1557,7 +1557,6 @@
                    END-IF
       *
                WHEN    "K08"
-      ******** WHEN    "K03"
       *            登録後クリア画面の表示
                    IF      SPA-PTNUM          =   SPACE
                        PERFORM 30010-INIT-GMN-SEC
@@ -5836,6 +5835,11 @@
                               (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
+      *H30.4             分割調剤など
+                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
+                                                   =   "0992081" ) AND
+                              (SPA-COM-SURFLG (SPA-GMN-IDX)
+                                                       =   SPACE ))
       *
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
@@ -6113,6 +6117,11 @@
                IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
                                                =   "001" )
                  AND  (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 )
+                   MOVE    1                   TO  FLG-IN1
+               END-IF
+      *H30.4   分割調剤など
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
+                                               =   "0992081" )
                    MOVE    1                   TO  FLG-IN1
                END-IF
       *
@@ -11237,7 +11246,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-IF
-      *TEST
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC

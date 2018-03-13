@@ -1796,6 +1796,7 @@
       *                ºßÂð´ïºà
                    OR ((SRY-SRYKBN             =   "14"  ) AND
                        (SRY-SRYCD (IDX)(1:1)   =   "7"   ))
+      *
                    MOVE    1                   TO  FLG-OK
       *
                    ADD     1                   TO  IDY
@@ -2075,6 +2076,14 @@
            IF    ((LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
                   (LNK-WKSRY-SRYCD   (IDX IDZ)(1:3)  =   "008" ))  AND
                   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
+               MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
+                                           TO  SPA-GMN-TMEISYO2(IDG)
+               MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
+                                           TO  WRK-MEISYO
+           END-IF
+      *H30.4
+           IF     (LNK-WKSRY-SRYCD   (IDX IDZ)(1:7)  =   "0992081" )
+            AND   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
                                            TO  SPA-GMN-TMEISYO2(IDG)
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
@@ -4362,8 +4371,11 @@
                                            TO  ORCSHCN30-INPUTCOMENT
                                                              (IDX1 IDX2)
       *H28.11          ÍÑË¡¥³¡¼¥É¿ôÎÌ
-                       IF      SPA-PARA-SRYCD (IDX-W IDX-W2)(1:3)
-                                               =   "001"
+                       IF     (SPA-PARA-SRYCD (IDX-W IDX-W2)(1:3)
+                                               =   "001"   )
+      *H30.4
+                          OR  (SPA-PARA-SRYCD (IDX-W IDX-W2)(1:7)
+                                               =   "0992081"   )
                            MOVE    SPA-PARA-INPUTCHI-G (IDX-W IDX-W2)
                                            TO  ORCSHCN30-INPUTCHI-G
                                                              (IDX1 IDX2)

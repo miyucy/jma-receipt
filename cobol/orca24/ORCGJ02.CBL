@@ -77,6 +77,7 @@
       *  04.08.00    NACL-多々納  16/06/XX  中心静脈（植入型カテーテル）対応
       *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
       *  04.08.00    NACL-多々納  16/10/XX  一括変更項目桁数対応
+      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3435,6 +3436,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
                PERFORM 310122-KNJCOM-SET-SEC
            END-IF
+      *H30.4
+      *    コメントの時、内容設定
+           IF     (SRY-SRYCD  (IDZ)(1:7)   =   "0992081" )
+             AND  (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
+               PERFORM 310122-KNJCOM-SET-SEC
+           END-IF
       *
       *    数量（薬剤、器材のとき）
            IF    ((SRY-SRYCD  (IDZ)(1:1)   =   "6"  OR  "7" )
@@ -3638,6 +3645,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ((SRY-SRYCD  (IDZ)(1:1)   =   "8"   ) OR
                   (SRY-SRYCD  (IDZ)(1:3)   =   "008" )) AND
                   (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
+               PERFORM 310122-KNJCOM-SET-SEC
+           END-IF
+      *H30.4
+      *    コメントの時、内容設定
+           IF     (SRY-SRYCD  (IDZ)(1:7)   =   "0992081" )
+             AND  (SRY-INPUTNUM(IDZ)   NOT =   ZERO  )
                PERFORM 310122-KNJCOM-SET-SEC
            END-IF
       *

@@ -36,6 +36,7 @@
       *  04.08.00    NACL-多々納  14/05/29  一時ファイル変更
       *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
+      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5304,6 +5305,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        =   1     ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
+      *H30.4             分割調剤など
+                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
+                                                   =   "0992081" ) AND
+                              (SPA-COM-SURFLG (SPA-GMN-IDX)
+                                                       =   SPACE ))
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
                                                      (WRK-IN-IDX2:)
@@ -5610,6 +5616,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
                                                =   "001" )
                  AND  (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 )
+                   MOVE    1                   TO  FLG-IN1
+               END-IF
+      *H30.4   分割調剤など
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
+                                               =   "0992081" )
                    MOVE    1                   TO  FLG-IN1
                END-IF
       *
