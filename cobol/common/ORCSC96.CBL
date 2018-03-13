@@ -2316,6 +2316,11 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "0286"
+                   STRING  "分割調剤の内容がありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "K120"
                    STRING  "警告！"

@@ -557,6 +557,7 @@
            03  WRK-BUN-KAISU           PIC 9(03).
            03  IDX-BNKT                PIC 9(04).
            03  IDX-BC                  PIC 9(04).
+           03  FLG-BNKT                PIC 9(01).
       *
       *    ·ÑÂ³¤Î»þ¡¢¼«Æ°È¯À¸¤Î¥Á¥§¥Ã¥¯
        01  WRK-CONTCHK-TBL.
@@ -696,6 +697,16 @@
       * £·£°Ëç¤òÄ¶¤¨¤Æ¼¾ÉÛÌô¤òÅêÍ¿¤·¤¿ÍýÍ³
        01  CONS-SP70-COMT          PIC X(09)   VALUE    "830000052".
       *
+      *H30.4
+       01  CONS-REC.
+      *    ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»£±
+           03  CONS-CHKCARKSN1     PIC X(09)   VALUE   "112021770".
+      *    ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»£²
+           03  CONS-CHKCARKSN2     PIC X(09)   VALUE   "112017270".
+      *    Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»£±
+           03  CONS-NNCHIKSN1      PIC X(09)   VALUE   "112021870".
+      *    Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»£²
+           03  CONS-NNCHIKSN2      PIC X(09)   VALUE   "112017570".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -2387,6 +2398,7 @@
        2004-BUNKATUCHK-SEC              SECTION.
       *
            MOVE    ZERO                TO  IDX-BNKT
+           MOVE    ZERO                TO  FLG-BNKT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                              ((WRK-GMN-INPUTCD(IDX) =   SPACE) AND
@@ -2420,6 +2432,20 @@
                    END-IF
                END-IF
       *
+      *        ÌôÉ¾ÂÐ¾Ý³°
+               IF    (WRK-COM-YAKUHYO  (IDX)  =   SPACE  )
+      *         ¸ºÅÀÂÐ¾Ý³°
+               AND   (WRK-COM-GENTEN   (IDX)  =   SPACE  )
+      *         »ý»²Ìô
+               AND   (WRK-COM-JISANYAKU(IDX)  =   SPACE  )
+      *            ºÞÆâÍÆ¤¬¤¢¤ë¤³¤È
+                   IF     (WRK-COM-INPUTCD(IDX)(1:1)  =   "6"
+                                                      OR  "7"  )
+                     OR   (WRK-COM-INPUTCD(IDX)(1:3)  =   "059")
+                       MOVE    1                TO  FLG-BNKT
+                   END-IF
+               END-IF
+      *
                IF     (WRK-COM-ZAIEND (IDX)    =   "1" )
                 AND   (SPA-ERRCD               =   SPACE )
       *            ²ó¿ôÆþÎÏ¤¢¤ê¡¢¤Þ¤¿¤Ï¡¢ÅÐÏ¿»þ
@@ -2429,6 +2455,7 @@
                        PERFORM 20041-BUNKATU-SURYO-SEC
                    END-IF
                    MOVE    ZERO            TO  IDX-BNKT
+                   MOVE    ZERO            TO  FLG-BNKT
                END-IF
            END-PERFORM
            .
@@ -2438,6 +2465,11 @@
       *    Ê¬³äÄ´ºÞ¥³¡¼¥É¿ôÎÌ¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        20041-BUNKATU-SURYO-SEC              SECTION.
+      *
+      *    ºÞÆâÍÆ¤Ê¤·
+           IF      FLG-BNKT            =   ZERO
+               MOVE    "0286"              TO  SPA-ERRCD
+           END-IF
       *
       *    £³£°Æü°Ê¾å¤ÎÅêÌô¤Î¤ß
            IF      WRK-COM-KAISU(IDX)  <   30
@@ -2545,13 +2577,15 @@
              ELSE
       *H26.4
       *        ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
-               IF      WRK-COM-INPUTCD(IDX)    =   "112017270"
+               IF      WRK-COM-INPUTCD(IDX)    =   CONS-CHKCARKSN1
+                                               OR  CONS-CHKCARKSN2
                    MOVE    1                   TO  FLG-CHKCARKSN
                END-IF
       *!
       *H28.9
       *        Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
-               IF     (WRK-COM-INPUTCD(IDX)    =   "112017570" )
+               IF     (WRK-COM-INPUTCD(IDX)    =   CONS-NNCHIKSN1
+                                               OR  CONS-NNCHIKSN2 )
                    MOVE    1                   TO  FLG-NINCHIKSN
                    MOVE    IDX                 TO  IDX-NINCHI
                END-IF
