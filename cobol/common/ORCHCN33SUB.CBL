@@ -55,7 +55,6 @@
       *                                     ¡ÊÌë¶Ð»þ´Ö·Ð²á¸º»»¤ÎÁªÄêÂÐ±þ¡Ë
       *  04.08.01    NACL-ÌçÏÆ    16/03/01  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.02    NACL-ÌçÏÆ    18/03/01  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.03    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -189,7 +188,6 @@
                    07  WRK-GAIHAKU-KBN     PIC 9(03).
                    07  WRK-CHUKSNCD        PIC X(04).
                    07  WRK-NYUKHNKBN       PIC 9(03).
-                   07  WRK-KANGOGEN        PIC X(09).
       *
       *    Æþ±¡²ñ·×ÊÂ¤ÓÂØ¤¨¥ï¡¼¥¯
            03  WRK-NYUIN-SORT-TABLE.
@@ -424,9 +422,6 @@
       *
       *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö£²
            COPY    "CPORCSNYULIFE2.INC".
-      *
-      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¼èÆÀ¥µ¥Ö
-           COPY    "CPORCSKANGOGEN.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -679,21 +674,6 @@
       *****************************************************************
        210-NYUINTEN-GET-SEC            SECTION.
       *
-      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¼èÆÀ
-           IF      LNK-ORCHCN33SUB-SANTEIYM   >=   "201804"
-             INITIALIZE                         ORCSKANGOGEN-AREA
-             MOVE  LNK-ORCHCN33SUB-HOSPNUM  TO  LNK-KANGOGEN-HOSPNUM
-             MOVE  LNK-ORCHCN33SUB-PTID     TO  LNK-KANGOGEN-PTID
-             MOVE  LNK-ORCHCN33SUB-SANTEIYM TO  LNK-KANGOGEN-SANTEIYM
-             CALL  "ORCSKANGOGEN"           USING  ORCSKANGOGEN-AREA
-                                                   SPA-AREA
-             IF      LNK-KANGOGEN-RC  =   ZERO
-               PERFORM    VARYING   IDX1  FROM   1   BY   1
-                           UNTIL    IDX1   >    31
-                 MOVE  LNK-KANGOGEN-SRYCD(IDX1) TO  WRK-KANGOGEN(IDX1)
-               END-PERFORM
-             END-IF
-           END-IF
       *
       *Æþ±¡ÎÁ¤Î¼èÆÀ
            MOVE    ZERO                    TO  FLG-OK
@@ -1193,24 +1173,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    (IDX1 WRK-MEISAISU)
                                  END-IF
                                END-IF
-                           END-IF
-                           MOVE   "tbl_senteicdchg"    TO  MCP-TABLE
-                           MOVE   "key2"               TO  MCP-PATHNAME
+                          END-IF
+                          MOVE    "tbl_senteicdchg"    TO  MCP-TABLE
+                          MOVE    "key2"               TO  MCP-PATHNAME
                          PERFORM   910-DB-CLOSE-SEC
                        END-IF
                    END-IF
                END-IF
-      *        Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»
-               IF        (WRK-NYUINKHN(IDX1)  NOT =        SPACE)
-               AND       (WRK-KANGOGEN(IDX1)  NOT =        SPACE)
-                   ADD      1                TO  WRK-MEISAISU
-                   MOVE   WRK-KANGOGEN(IDX1) TO  WRK-SO-SRYCD
-                                           (IDX1 WRK-MEISAISU)
-               END-IF
+      *
       *        ³°Çñ
                IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
-                   ADD      1                TO  WRK-MEISAISU
-                   MOVE   WRK-GAIHAKU(IDX1)  TO  WRK-SO-SRYCD
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE   WRK-GAIHAKU(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        ³°Çñ£²
