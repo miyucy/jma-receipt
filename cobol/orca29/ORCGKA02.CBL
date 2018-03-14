@@ -38,7 +38,6 @@
       *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
       *  04.08.00    NACL-多々納  16/11/XX   用法コード数量追加
-      *  05.00.00    NACL-多々納  17/05/XX  API(GINBEE)対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -182,7 +181,6 @@
            03  WRK-ZAIKAISU        PIC 9(08).
            03  WRK-EDANUM          PIC 9(02).
            03  WRK-SRYYMD          PIC X(08).
-           03  WRK-YUKOSTYMD       PIC X(08).
            03  WRK-DAY-TBL.
                05  WRK-DAY-T           PIC 9(03)   OCCURS   31.
       *
@@ -1796,7 +1794,6 @@
       *                在宅器材
                    OR ((SRY-SRYKBN             =   "14"  ) AND
                        (SRY-SRYCD (IDX)(1:1)   =   "7"   ))
-      *
                    MOVE    1                   TO  FLG-OK
       *
                    ADD     1                   TO  IDY
@@ -4261,10 +4258,6 @@
                            MOVE    SPA-PARA-INPUTCOMENT (IDX-W IDX-W2)
                                            TO  ORCHC19-INPUTCOMENT
                                                              (IDX1 IDX2)
-      *H30.4
-                           MOVE    SPA-PARA-INPUTCHI-G  (IDX-W IDX-W2)
-                                           TO  ORCHC19-INPUTCHI-G
-                                                             (IDX1 IDX2)
                        END-IF
                    END-IF
                END-PERFORM
@@ -4300,9 +4293,6 @@
            MOVE    SPA-NAI-BTUNAME     TO  ORCSHCN30-BTUNAME
            MOVE    SPA-NAI-ROOMNO      TO  ORCSHCN30-ROOMNO
            MOVE    SPA-NAI-KOUFUYMD    TO  ORCSHCN30-SRYYMD
-      *API(GINBEE)対応
-      *    病棟番号
-           MOVE    SPA-NAI-BTUNUM      TO  ORCSHCN30-BTUNUM
            PERFORM 41031-ORCSHCN30-HENSYU-SEC
       *
            IF      SPA-ERRCD           =   SPACE
@@ -4375,8 +4365,8 @@
                                            TO  ORCSHCN30-INPUTCOMENT
                                                              (IDX1 IDX2)
       *H28.11          用法コード数量
-                       IF     (SPA-PARA-SRYCD (IDX-W IDX-W2)(1:3)
-                                               =   "001"   )
+                       IF      SPA-PARA-SRYCD (IDX-W IDX-W2)(1:3)
+                                               =   "001"
       *H30.4
                           OR  (SPA-PARA-SRYCD (IDX-W IDX-W2)(1:7)
                                                =   "0992081"   )
@@ -4470,9 +4460,6 @@
                MOVE    PTNYUINRRK-BRMNUM (3:6)
                                            TO  SPA-NAI-ROOMNO
            END-IF
-      *API(GINBEE)対応
-      *    病棟番号
-           MOVE    PTNYUINRRK-BTUNUM   TO  SPA-NAI-BTUNUM
       *
            .
        41041-BTUNAME-HEN-EXT.
@@ -4510,17 +4497,11 @@
            MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
            MOVE    SPA-PARA-SRYKA      TO  SPA-SRYKA
       *
-           IF      SPA-GMN-DRCD    NOT =   SPACE
-               MOVE    "1"                 TO  ORCHCN62-DRCD(1:1)
-               MOVE    SPA-GMN-DRCD        TO  ORCHCN62-DRCD(2:4)
-           END-IF
+           MOVE    "1"                 TO  ORCHCN62-DRCD(1:1)
+           MOVE    SPA-GMN-DRCD        TO  ORCHCN62-DRCD(2:4)
            MOVE    SPA-NAI-KOUFUYMD    TO  ORCHCN62-SRYYMD
            MOVE    SPA-NAI-BTUNAME     TO  ORCHCN62-BTUNAME
            MOVE    SPA-NAI-ROOMNO      TO  ORCHCN62-ROOMNO
-      *API(GINBEE)対応
-      *    病棟番号
-           MOVE    SPA-NAI-BTUNUM      TO  ORCHCN62-BTUNUM
-      *
            MOVE    1                   TO  ORCHCN62-CNT
       *ver.4.7
            MOVE    WRK-QRKBN           TO  ORCHCN62-QRKBN
@@ -4788,12 +4769,8 @@
            MOVE    SPA-NAI-TAIINYMD    TO  ORCSNYUINSHO-TAIINYMD
            MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
                                        TO  ORCSNYUINSHO-SRYKA (1)
-           IF      SPA-GMN-DRCD    NOT =   SPACE
-               MOVE    "1"                 TO  ORCSNYUINSHO-DRCD
-                                                           (1)(1:1)
-               MOVE    SPA-GMN-DRCD        TO  ORCSNYUINSHO-DRCD
-                                                           (1)(2:4)
-           END-IF
+           MOVE    "1"                 TO  ORCSNYUINSHO-DRCD  (1)(1:1)
+           MOVE    SPA-GMN-DRCD        TO  ORCSNYUINSHO-DRCD  (1)(2:4)
            MOVE    1                   TO  ORCSNYUINSHO-SRYKA-MAX
       *
            MOVE    "02"                TO  SPA-PRT-FLG
@@ -5560,7 +5537,6 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    TNS-YUKOSTYMD       TO  WRK-YUKOSTYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
@@ -5717,8 +5693,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
