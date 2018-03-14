@@ -2620,10 +2620,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       1000
                    OR      WRK-RECE631-SRYYMD (IDX) =   SPACE
-      *??
-              DISPLAY "IDX=" IDX "#" WRK-RECE631-SRYYMD (IDX) "#"
-                       
-      *??
+      *
+               DISPLAY "SRYYMD=" WRK-RECE631-SRYYMD (IDX)
+                             " " WRK-RECE631-BYOMEIHENFLG (IDX)
+      *
                ADD     1               TO  SUM-PTBYOMEI (1 3)
                                            SUM-PTBYOMEI (2 3)
                                            CNT-IN
