@@ -9058,6 +9058,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+      *H30.4
+           IF     (SPA-SRYYMD          >=  "20180401")
+               IF     (SPA-NINPUKBN-ARI    =   1    )
+                   MOVE    "¡ÊÇ¥ÉØ¡Ë"      TO  KT01-MODE3-VALUE
+                   MOVE    "blue"          TO  KT01-MODE3-STYLE
+               ELSE
+      *            ¼êÆþÎÏ¤ÇÇ¥ÉØ
+                   IF     (SPA-NINPUKBN-IN     =   1    )
+                   MOVE    "¡ÊÇ¥ÉØ¡Ë"      TO  KT01-MODE3-VALUE
+                   MOVE    "black"         TO  KT01-MODE3-STYLE
+                   END-IF
+               END-IF
+           END-IF
       *
       *    °å±¡Ì¾¾Î
       ***  MOVE    SPA-HOSPNAME        TO  KT01-TITLE
