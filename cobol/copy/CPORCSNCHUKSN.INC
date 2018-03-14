@@ -15,19 +15,11 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    orca31（入退院登録）画面
       ******************************************************************
-           COPY    "I01.INC".
-           COPY    "I02.INC".
-           COPY    "I03.INC".
-           COPY    "I04.INC".
-           COPY    "I05.INC".
-           COPY    "I06.INC".
-           COPY    "I0ERR.INC".
-           COPY    "I0ID1.INC".
-           COPY    "I0ID2.INC".
-           COPY    "I041.INC".
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //I0API01-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //I0API02-//.
+      *    ＡＰＩレスポンス受付情報           COPY (CPORCSNCHUKSN.INC)
+      ******************************************************************
+        01  SNCHUKSN-AREA.
+            03 SNCHUKSN-BASEYMD                PIC X(08).
+            03 SNCHUKSN-KBNNUM                 PIC 9(03).
+            03 SNCHUKSN-EDANUM                 PIC 9(02).
+            03 SNCHUKSN-KSNCD                  PIC X(09).

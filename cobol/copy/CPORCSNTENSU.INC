@@ -15,19 +15,20 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    orca31（入退院登録）画面
       ******************************************************************
-           COPY    "I01.INC".
-           COPY    "I02.INC".
-           COPY    "I03.INC".
-           COPY    "I04.INC".
-           COPY    "I05.INC".
-           COPY    "I06.INC".
-           COPY    "I0ERR.INC".
-           COPY    "I0ID1.INC".
-           COPY    "I0ID2.INC".
-           COPY    "I041.INC".
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //I0API01-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //I0API02-//.
+      *    入院点数マスタ付加情報
+      ******************************************************************
+        01 SNTENSU-AREA.
+           03  SNTENSU-BASEYMD                 PIC X(8).
+           03  SNTENSU-SRYCD                   PIC X(9).
+           03  SNTENSU-RETURN-AREA.
+               05  SNTENSU-KBNNUM              PIC 9(3).
+               05  SNTENSU-EDANUM              PIC 9(2).
+      *        出来高入院料区分 1:出来高入院料
+               05  SNTENSU-DEKIDAKAKBN         PIC X(1).
+      *        特別入院基本料等区分
+      *          1:特別入院基本料
+      *          2:月平均夜勤時間超過減算
+      *          3:夜勤時間特別入院基本料
+      *          4:重症患者割合特別入院基本料
+               05  SNTENSU-TOKUBETSUKBN        PIC X(1).
