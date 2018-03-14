@@ -2227,8 +2227,11 @@
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
                                        =   "0084"  ) OR
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                       =   "001"   ))  AND
-                  (LF04-SURYO (IDX1 IDX2)  NOT =   SPACE )
+                                       =   "001"   )
+      *H30.4
+               OR (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
+                                       =   "0992081"))
+             AND  (LF04-SURYO (IDX1 IDX2)  NOT =   SPACE )
                PERFORM 200321-INPUTCHI-HEN-SEC
                MOVE    1               TO  FLG-SURYO
            END-IF
