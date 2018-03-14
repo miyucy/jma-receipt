@@ -904,7 +904,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 900-TNSWK-V05-SET
       *
            WHEN   (LNK-DBRVERSION (3:6)    =   "040800") AND
-                  (LNK-DBRVERSION (12:8)   <   "20180306")
+                  (LNK-DBRVERSION (12:8)   <   "20180315")
                PERFORM 900-TNSWK-V06-SET
       *
            WHEN    OTHER
