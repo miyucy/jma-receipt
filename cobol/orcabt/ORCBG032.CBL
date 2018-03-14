@@ -3180,8 +3180,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                END-PERFORM
            END-IF
       *
-           DISPLAY "BYOMEI=" PTBYO-SRYYMD " " PTBYO-BYOMEIHENFLG " " 
-             PTBYO-BYOMEI 
+      **     DISPLAY "BYOMEI=" PTBYO-SRYYMD " " PTBYO-BYOMEIHENFLG " " 
+      **       PTBYO-BYOMEI 
       *
       *    同一開始日・病名・転帰区分でまとめる
            IF      S-25-TENKIHENKBN    =   ZERO
