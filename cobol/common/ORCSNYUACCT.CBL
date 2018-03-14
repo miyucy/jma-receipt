@@ -2427,14 +2427,6 @@
       *                     療養病棟入院基本料（特別入院基本料）（生活療養）
                             ((TNS-CDKBN-KBNNUM  = 101)   AND
                              (TNS-CDKBN-KOUBAN  =   3))       OR
-      *                     療養病棟入院料２（経過措置１）
-      *                     療養病棟入院料２（経過措置１）（生活療養）
-                            ((TNS-CDKBN-KBNNUM  = 101)   AND
-                             (TNS-CDKBN-KOUBAN  =  10))       OR
-      *                     療養病棟入院料２（経過措置２）
-      *                     療養病棟入院料２（経過措置２）（生活療養）
-                            ((TNS-CDKBN-KBNNUM  = 101)   AND
-                             (TNS-CDKBN-KOUBAN  =  11))       OR
       *                     結核病棟特別入院基本料
       *                     結核病棟入院基本料（夜勤時間超過減算）
                             ((TNS-CDKBN-KBNNUM  = 102)   AND
