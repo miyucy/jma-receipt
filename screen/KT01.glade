@@ -2979,7 +2979,7 @@
         <name>JIKANMSG</name>
         <x>8</x>
         <y>64</y>
-        <width>116</width>
+        <width>141</width>
         <height>20</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -4218,24 +4218,6 @@
       </widget>
       <widget>
         <class>GtkLabel</class>
-        <name>MODE2</name>
-        <x>124</x>
-        <y>64</y>
-        <width>58</width>
-        <height>20</height>
-        <sensitive>True</sensitive>
-        <can_focus>False</can_focus>
-        <has_focus>False</has_focus>
-        <xalign>0</xalign>
-        <yalign>0.5</yalign>
-        <xpad>0</xpad>
-        <ypad>0</ypad>
-        <label></label>
-        <justify>GTK_JUSTIFY_CENTER</justify>
-        <wrap>False</wrap>
-      </widget>
-      <widget>
-        <class>GtkLabel</class>
         <name>MODE3</name>
         <x>552</x>
         <y>64</y>
@@ -4244,7 +4226,7 @@
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
-        <xalign>0</xalign>
+        <xalign>0.5</xalign>
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
