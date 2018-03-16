@@ -113,6 +113,7 @@
                05  WRK-PARM-FLG-OCC    OCCURS  10.
                    07  WRK-PARM-PAGE   PIC 9(02).
                    07  WRK-PARM-LINE   PIC 9(02).
+                   07  WRK-PARM-INDEX  PIC 9(02).
       *
            03  WRK-TEMPDIR-ROOT        PIC X(1024).
       *
@@ -782,6 +783,7 @@
                                              *   WRK-CONS-SCR-MAX )
                        MOVE    IDZ           TO  WRK-PARM-PAGE (IDX)
                        MOVE    IDZZ          TO  WRK-PARM-LINE (IDX)
+                       MOVE    IDXX          TO  WRK-PARM-INDEX(IDX)
       *
       *                パラメタＩＤのチェック
                        PERFORM VARYING IDY FROM    1   BY  1
@@ -865,9 +867,11 @@
                    END-IF
                END-IF
       *
-               MOVE    WRK-PARM-LINE (IDX)
+               MOVE    WRK-PARM-INDEX (IDX)
                                        TO  IDY
                MOVE    "T"             TO  SPA-GMN-L01-CHK-VALUE (IDY)
+               MOVE    WRK-PARM-LINE (IDX)
+                                       TO  IDY
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >   WRK-CONS-PARA-MAX
                    EVALUATE    LSTREQ-PARM-CLASS (IDX IDXX)
@@ -899,7 +903,6 @@
                        "1"                 DELIMITED  BY SIZE
                                            INTO  MCP-WIDGET
                END-STRING
-               DISPLAY "MCP-WIDGET=" MCP-WIDGET "#"
       *
                PERFORM 800-ORCGL01-CALL-SEC
       *
