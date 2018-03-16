@@ -2146,6 +2146,8 @@
                EVALUATE    SPA-GMN-INPUTCD (IDX)(1:1)
                    WHEN    "."
                    WHEN    "*"
+                   WHEN    "#"
+                   WHEN    "$"
                        CONTINUE
                    WHEN    OTHER
       *                点数マスタチェック（再表示編集時にエラー）
@@ -2703,6 +2705,8 @@
            IF     (SPA-COM-INPUTCD(IDX)(1:1) =   "8")
              OR   (SPA-COM-INPUTCD(IDX)(1:3) =   "008")
              OR   (SPA-COM-INPUTCD(IDX)(1:3) =   "001")
+      *H30.4
+             OR   (SPA-COM-INPUTCD(IDX)(1:7) =   "0992081")
                IF     (SPA-COM-INPUTCD(IDX)  =   "810000001"
                                              OR  "008500000"
                                              OR  "008600000")
@@ -2861,6 +2865,8 @@
       *       用法コメント
               OR ((SPA-COM-INPUTCD(IDX)(1:3)   =   "001") AND
                   (SPA-COM-YCOMKBN (IDX)       =   "1" ))
+      *H30.4
+               OR (SPA-COM-INPUTCD(IDX)(1:7)   =   "0992081" )
                PERFORM VARYING     IDX-A   FROM    1   BY  1
                        UNTIL      (IDX-A       >   5   )
                    IF      SPA-COM-ATAI (IDX IDX-A)    NOT =   SPACE

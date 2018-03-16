@@ -741,7 +741,9 @@
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
                                        =   "0084"  ) OR
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                       =   "001"   ))  AND
+                                       =   "001"   ) OR
+                  (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
+                                       =   "0992081"))  AND
                   (ORAPISUB01-ATAI-G  (IDY IDZ)
                                    NOT =   SPACE )
                PERFORM 200321-INPUTCHI-HEN-SEC
@@ -973,7 +975,9 @@
                        IF   ((TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
                                                =   "0084"   )  OR
                              (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                               =   "001"    ))
+                                               =   "001"    )
+                          OR (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
+                                               =   "0992081"))
                         AND  (SNUM-SYOSUU      >   0        )
                            MOVE    ORAPISUB01-ATAI(IDY IDZ IDX-I)
                                                TO  TBL-WKSRY-INPUTCHI
