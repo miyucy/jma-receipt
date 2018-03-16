@@ -255,6 +255,7 @@
                        MOVE    JOB-UPDCNT2 TO  WRK-CNT
                        MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
                    WHEN    "medicalpoints_master_make"
+                   WHEN    "disease_master_make"
                        MOVE    WRK-PARA-DATA (1)
                                            TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
