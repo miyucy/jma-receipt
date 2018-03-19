@@ -3425,6 +3425,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *            画面制御
                    MOVE    "JOIN"              TO  WRK-PUTTYPE
                    PERFORM 41002-KOUSIN-SYORI-SEC
+      *H10.4
+      *        不安不眠薬投与確認
+               WHEN    "2008"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                      MOVE    1                TO  SPA-FUANCHK-OK
+                   ELSE
+                      MOVE    ZERO             TO  SPA-FUANCHK-OK
+                   END-IF
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   MOVE    SPACE               TO  SPA-KID1-FLG
+      *            画面制御
+                   MOVE    "JOIN"              TO  WRK-PUTTYPE
+                   PERFORM 41002-KOUSIN-SYORI-SEC
       *
       *        クリア確認チェック
                WHEN    "0125"
@@ -12401,6 +12415,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
              OR   (FLG-KINKI           =   1     )
                GO      TO      4100-TOROKU-EXT
            END-IF
+      *TEST
+      *TEST
+      *****MOVE    1               TO  SPA-ETENSU-CHK
+      *    電子点数表のチェック
+           IF      SPA-ETENSU-CHK  NOT =   ZERO
+               PERFORM 41001-ETENSU-CHK-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE )
+                   GO      TO      4100-TOROKU-EXT
+               END-IF
+           END-IF
+      *TEST
+      *TEST
       *
       *    特定疾患処方管理・長期投薬加算有無クリア
            MOVE    ZERO                TO  SPA-CHOKITOFLG
@@ -12455,6 +12481,39 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4100-TOROKU-EXT.
            EXIT.
+      *TEST
+      *****************************************************************
+      *    電子点数表のチェック処理
+      *****************************************************************
+       41001-ETENSU-CHK-SEC          SECTION.
+      *
+      *    電子点数表一括チェック
+           INITIALIZE                  ORCSC92AREA
+           MOVE    "G"                 TO  LNK-SC92-KBN
+           MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
+           MOVE    "K02"               TO  LNK-SC92-PG 
+      *    警告チェックあり
+           MOVE    "1"                 TO  LNK-SC92-KEIFLG
+           MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
+           MOVE    SPA-15MIMAN-ARI     TO  LNK-SC92-15MIMAN-ARI
+           MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
+           MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
+           MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
+           MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+           CALL    "ORCSC92ECHK"       USING
+                                           MCPAREA
+                                           ORCSC92AREA
+                                           SPA-SCR-REC
+                                           SPA-AREA
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           END-IF
+      *
+           .
+       41001-ETENSU-CHK-EXT.
+           EXIT.
+      *TEST
+      *
       *
       *****************************************************************
       *    確定　処理
@@ -14499,12 +14558,28 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *H30.4 から
+                   IF      SPA-SRYYMD      >=  "20180401"
+                   STRING  "特定疾患処方管理加算１が算定できます。"
+                           "ＯＫで自動算定します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+                   END-IF
                WHEN    "0130"
                    STRING  "長期投薬加算が算定できます。"
                            "ＯＫで自動算定します。"
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *H30.4 から
+                   IF      SPA-SRYYMD      >=  "20180401"
+                   STRING  "特定疾患処方管理加算２が算定できます。"
+                           "ＯＫで自動算定します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+                   END-IF
       *!!!!
                WHEN    "0213"
                    STRING  "特定疾患処方管理加算が算定できます。"
@@ -14513,6 +14588,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *H30.4 から
+                   IF      SPA-SRYYMD      >=  "20180401"
+                   STRING  "特定疾患処方管理加算１が算定できます。"
+                            "ＯＫで自動算定します。"
+                            "（併用算定警告該当有）"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+                   END-IF
                WHEN    "0230"
                    STRING  "長期投薬加算が算定できます。"
                            "ＯＫで自動算定します。"
@@ -14520,6 +14604,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *H30.4 から
+                   IF      SPA-SRYYMD      >=  "20180401"
+                   STRING  "特定疾患処方管理加算２が算定できます。"
+                           "ＯＫで自動算定します。"
+                            "（併用算定警告該当有）"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+                   END-IF
       *!!!!
                WHEN    "0114"
                    STRING  "厚生労働大臣が定める患者の再診４回目以降へ"
