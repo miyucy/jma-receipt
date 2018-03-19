@@ -19,16 +19,6 @@ fi
 #        ${16} ´ð½àÆü
 #        ${17} MONBLOB-ID
 #        ${18} EVENT
-#        ${19} PARA (1)
-#        ${20} PARA (2)
-#        ${21} PARA (3)
-#        ${22} PARA (4)
-#        ${23} PARA (5)
-#        ${24} PARA (6)
-#        ${25} PARA (7)
-#        ${26} PARA (8)
-#        ${27} PARA (9)
-#        ${28} PARA (10)
 #-------------------------------------------#
 
 cleanup(){
@@ -54,14 +44,15 @@ echo $(basename ${LOG_FILE})
 [ -e ${ERR_FILE_FULL} ] && rm  ${ERR_FILE_FULL} 
 
 echo $#
+echo "arg16  = [" ${16} "]" 
 echo "arg17  = [" ${17} "]" 
+echo "arg18  = [" ${18} "]" 
 
 RENNUM=$(expr $RENNUM + 1) 
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORAPI052BR1V3 -parameter "$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16}"
-if  [ -e ${ERR_FILE_FULL} ]; then
-     exit
-else
-     FILENM="disease_masterlst.xml"
+
+FILENM="disease_masterlst.xml"
+if  [ -e "${MCP_TEMPDIR}/${FILENM}" ]; then
      echo "filenm=[" $FILENM "]"
      $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBBLOBIMPORT -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},$FILENM,"xml",${17}
      if  [ -e ${ERR_FILE_FULL} ]; then
@@ -69,7 +60,7 @@ else
      fi
 fi
 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPUSH -parameter ${1},${2},${3},$rennum,${5},${6},${7},${8},${9},${10},${11},${12},${13},${14},${15},${18},${19},${20},${21},${22},${23},${24},${25},${26},${27},${28}
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPUSH -parameter "${1},${2},${3},$rennum,${5},${6},${7},${8},${9},${10},${11},${12},${13},${14},${15},${18},${16},${19},${20},${21},${22},${23},${24},${25},${26},${27}"
 if  [ -e ${ERR_FILE_FULL} ]; then
      exit
 fi

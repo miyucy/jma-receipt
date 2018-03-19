@@ -796,7 +796,6 @@
       *
            MOVE    "disease_master_make"
                                        TO  SHELLTBL-ARG18
-           MOVE    WRK-BASE-YMD        TO  SHELLTBL-ARG19
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
