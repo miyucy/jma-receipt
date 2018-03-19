@@ -643,7 +643,7 @@
       *
       *H30.4
       *    機能強化加算（初診）（小児科外来診療料）
-       01  CONS-SYOUNICD1          PIC X(09)  VALUE   "113015810".
+       01  CONS-SYOUNICD1          PIC X(09)  VALUE   "113028870".
       *    小児抗菌適正薬使用加算（小児科外来診療料）
        01  CONS-SYOUNICD2          PIC X(09)  VALUE   "113024670".
       *
