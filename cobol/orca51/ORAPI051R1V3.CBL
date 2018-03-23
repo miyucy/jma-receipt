@@ -1068,6 +1068,7 @@
                END-EVALUATE
       *
                IF      WRK-ERRCD       =   SPACE
+      *****        MOVE    "E63"           TO  WRK-ERRCD
                    MOVE    WRK-PROCESSING-ERRCD
                                            TO  WRK-ERRCD
                    MOVE    LSTRES-ERROR-MSG (WRK-ERR-PROCESSING-MAX)
@@ -1129,7 +1130,9 @@
                END-EVALUATE
       *
                IF      WRK-ERRCD       =   SPACE
-                   MOVE    "E63"           TO  WRK-ERRCD
+      *****        MOVE    "E63"           TO  WRK-ERRCD
+                   MOVE    WRK-PROCESSING-ERRCD
+                                           TO  WRK-ERRCD
                    MOVE    LSTRES-ERROR-MSG  (WRK-ERR-PROCESSING-MAX)
                                            TO  WRK-ERRMSG
                END-IF
