@@ -1520,6 +1520,7 @@
       *
            MOVE    WRK-SRYKA-NAME      TO  SPA-SRYKAMEI
            MOVE    WRK-DRCD-NAME       TO  SPA-DRCD-NAME
+           MOVE    WRK-DRCD            TO  SPA-DRCD
       *
            INITIALIZE                  ORCSC95AREA
            MOVE    "@"                 TO  LNK-SC95-KBN
@@ -3649,12 +3650,28 @@
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *H30.4 から
+                   IF      SPA-SRYYMD      >=  "20180401"
+                   STRING  "特定疾患処方管理加算１が算定できます。"
+                           "ＯＫで自動算定します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+                   END-IF
                WHEN    "0130"
                    STRING  "長期投薬加算が算定できます。"
                            "ＯＫで自動算定します。"
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *H30.4 から
+                   IF      SPA-SRYYMD      >=  "20180401"
+                   STRING  "特定疾患処方管理加算２が算定できます。"
+                           "ＯＫで自動算定します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+                   END-IF
                WHEN    "0213"
                    STRING  "特定疾患処方管理加算が算定できます。"
                             "ＯＫで自動算定します。"
@@ -3662,6 +3679,15 @@
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *H30.4 から
+                   IF      SPA-SRYYMD      >=  "20180401"
+                   STRING  "特定疾患処方管理加算１が算定できます。"
+                            "ＯＫで自動算定します。"
+                            "（併用算定警告該当有）"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+                   END-IF
                WHEN    "0230"
                    STRING  "長期投薬加算が算定できます。"
                            "ＯＫで自動算定します。"
@@ -3669,6 +3695,15 @@
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *H30.4 から
+                   IF      SPA-SRYYMD      >=  "20180401"
+                   STRING  "特定疾患処方管理加算２が算定できます。"
+                           "ＯＫで自動算定します。"
+                            "（併用算定警告該当有）"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+                   END-IF
                WHEN    "2001"
                    STRING   "内服薬剤が７種類以上になります。"
                             "逓減しますか？"
