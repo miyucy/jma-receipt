@@ -82,6 +82,7 @@
       *                                     での食事算定対応
       *  04.08.11    NACL-門脇    17/12/13  包括点数の公害補償法減点分のマイナス
       *                                     表示対応
+      *  04.08.12    NACL-藤原    18/03/28  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -456,10 +457,12 @@
                 "ウイルス抗体価精密測定".                        
                 05  FILLER         PIC X(50)   VALUE
                 "血漿蛋白免疫学的検査".                        
+                05  FILLER         PIC X(50)   VALUE
+                "悪性腫瘍遺伝子検査".
             03  WRK-CONS-KENSACOMMENT-R
                                    REDEFINES   WRK-CONS-KENSACOMMENT-G.
                 05  WRK-CONS-KENSACOMMENT 
-                                   PIC X(50)   OCCURS  11.
+                                   PIC X(50)   OCCURS  12.
       *
       *外来迅速検体検査加算算定日テーブル
        01  WRK-KENTAIKASAN-TABLE.
@@ -1665,7 +1668,10 @@
                ADD     1                  TO  WRK-ZAIWMAX (2)
                                               WRK-ZAIWMAX (6)
                MOVE    WRK-ZAIWMAX (2)    TO  IDZ   
-               IF      WRK-TNS-HOUKNSKBN  <   11
+               IF      WRK-TNS-HOUKNSKBN  =   11
+                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
+                                          TO    TBL-ZAIW-NAME (2 IDZ)
+               ELSE
                    STRING  WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
                                               DELIMITED  BY  SPACE
                            "（"               DELIMITED  BY  SIZE
@@ -1673,9 +1679,6 @@
                            "項目）"           DELIMITED  BY  SIZE
                                           INTO    TBL-ZAIW-NAME (2 IDZ)
                    END-STRING
-               ELSE
-                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
-                                          TO    TBL-ZAIW-NAME (2 IDZ)
                END-IF
                PERFORM VARYING IDX FROM   200 BY  -1
                        UNTIL   IDX <      1
