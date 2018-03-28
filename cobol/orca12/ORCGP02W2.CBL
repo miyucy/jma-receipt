@@ -146,6 +146,7 @@
       *                                     主保険名に（特）をつける
       *  04.08.08    NACL-門脇    17/11/01  主保険＋052小児特定＋053児童保護の
       *                                     保険組み合わせ作成対応
+      *  04.08.09    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -614,9 +615,11 @@
                OR     (PTKOH-KOHNUM =
                        "950" OR "951" OR "953" OR "954" OR "955" OR
                        "956" OR "957" OR "958" OR "959" OR
-                       "976" OR "977" OR "978" OR "979"       )
+                       "976" OR "977" OR "978" OR "979" OR
+                       "948" OR "949"                         )
                OR     (PTKOH-KOHNUM(1:2)   =   "96"           )
-                   IF  ((PTKOH-KOHNUM     = "950" OR "951") AND
+                   IF  ((PTKOH-KOHNUM     =
+                          "950" OR "951" OR "948" OR "949") AND
                         (PTKOH-SAKJOKBN   =  SPACE        ))
                    OR  ((PTKOH-KOHNUM     = "959"         ) AND
                         (PTKOH-SAKJOKBN   =  SPACE        ) AND
@@ -625,7 +628,8 @@
                      ADD     1             TO  IDY3
                      MOVE  PTKOH-TEKSTYMD  TO  WRK-NYUSYO-TEKSTYMD(IDY3)
                      MOVE  PTKOH-TEKEDYMD  TO  WRK-NYUSYO-TEKEDYMD(IDY3)
-                     IF   (PTKOH-KOHNUM     = "950" OR "951")
+                     IF   (PTKOH-KOHNUM     =
+                            "950" OR "951" OR "948" OR "949")
                      AND  (PTKOH-SAKJOKBN   =  SPACE        )
                        MOVE  PTKOH-JKYSNUM TO  WRK-NYUSYO-JKYSNUM(IDY3)
                      END-IF

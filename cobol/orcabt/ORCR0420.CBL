@@ -314,6 +314,7 @@
       *                                     ¤Ç¤Î¿©»ö»»ÄêÂÐ±þ
       *  04.08.20    NACL-ÌçÏÆ    17/12/15  Âè»°¼Ô¹Ô°Ù¸½ÊªµëÉÕ¤Ë´Ø¤ï¤ë
       *                                     ÉéÃ´¶â·×»»ÂÐ±þ
+      *  04.08.21    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -861,19 +862,15 @@
            03  CONS-SHOHOSEN3 PIC X(09)      VALUE "120002910".
            03  CONS-SHOHOSEN4 PIC X(09)      VALUE "120003010".
            03  CONS-SHOHOSEN5 PIC X(09)      VALUE "120003710".
-      *    ½èÊý¤»¤ó¡ÊÆýÍÄ»ù¡Ë²Ã»»
+      *    ½èÊý¤»¤óÎÁ²Ã»»
            03  CONS-SHOHOKSN1  PIC X(09)     VALUE "120002470".
            03  CONS-SHOHOKSN2  PIC X(09)     VALUE "120002570".
-      *    Ä¹´üÅêÌô²Ã»»¡Ê½èÊý¤»¤óÎÁ¡Ë
            03  CONS-SHOHOKSN3  PIC X(09)     VALUE "120003270".
-      *    ¹³°­À­¼ðáçºÞ½èÊý´ÉÍý²Ã»»¡Ê½èÊý¤»¤óÎÁ¡Ë
            03  CONS-SHOHOKSN4  PIC X(09)     VALUE "120003470".
-      *    °ìÈÌÌ¾½èÊý²Ã»»¡Ê½èÊý¤»¤óÎÁ¡Ë
            03  CONS-SHOHOKSN5  PIC X(09)     VALUE "120003570".
-      *    ½èÊý¤»¤óÎÁ¡Ê¾Ò²ðÎ¨¤¬Äã¤¤ÂçÉÂ±¡£³£°Æü°Ê¾åÅêÌô¸º»»¡Ë
            03  CONS-SHOHOKSN6  PIC X(09)     VALUE "120003970".
-      *    °ìÈÌÌ¾½èÊý²Ã»»£±¡Ê½èÊý¤»¤óÎÁ¡Ë
            03  CONS-SHOHOKSN7  PIC X(09)     VALUE "120004270".
+           03  CONS-SHOHOKSN8  PIC X(09)     VALUE "120004570".
       *    ÌôºÞÎÁÄþ¸º¡Ê£¹£°¡¿£±£°£°¡Ë¡ÊÆâÉþÌô¡Ë
            03  CONS-YAKTEIGEN  PIC X(09)     VALUE "630010002".
       *    ÌôºÞÎÁÄþ¸º¡Ê£¸£°¡¿£±£°£°¡Ë¡Ê¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¡Ë
@@ -2687,8 +2684,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                UNTIL     IDX2   >       31
                        MOVE    ACCT-DAY(IDX3 IDX2)  TO
                                             RECE44-KAISU (IDX3 IDX2)
-                       IF     (WK-TAIHI-FLG            =   ZERO)   AND
-                              (ACCT-DAY(1 IDX2)    NOT =   ZERO)
+                       IF    (WK-TAIHI-FLG               =  ZERO)
+                       AND   (RECE44-KAISU(1 IDX2)   NOT =  ZERO)
                            MOVE     IDX2    TO      WK-TAIHI-DAY
                            MOVE     1       TO      WK-TAIHI-FLG
                        END-IF    
@@ -3555,6 +3552,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                     CONS-SHOHOKSN5 OR
                                                     CONS-SHOHOKSN6 OR
                                                     CONS-SHOHOKSN7 OR
+                                                    CONS-SHOHOKSN8 OR
                                                     CONS-RYOYOTEATE
                               CONTINUE                                  
                        ELSE                                             
@@ -5988,7 +5986,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *
       *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍýÎÁ
            IF    RECE45-SRYCD(IDX4)   = "113000410" OR "113000510" OR
-                                        "180000110" OR "180000210"
+                                        "180000110" OR "180000210" OR
+                                        "113023910"
                  MOVE   1             TO  WRK-SETCOM-JIDO
            END-IF
       *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý²Ã»»¡ÊÂ¡´ï°Ü¿¢·î¤«¤é£³·î¡Ë
@@ -7044,7 +7043,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
                                          "120003170" OR "120003370" OR
                                          "120003870" OR
-                                         "120004070" OR "120004170"
+                                         "120004070" OR "120004170" OR
+                                         "120004370" OR "120004470"
                       COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
                                                  +  ACCT-ZAIKAISU
                    END-IF
@@ -7223,6 +7223,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                         OR CONS-SHOHOKSN5
                                         OR CONS-SHOHOKSN6
                                         OR CONS-SHOHOKSN7
+                                        OR CONS-SHOHOKSN8
                        COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
                                                   +  ACCT-ZAIKAISU
                     END-IF
@@ -7237,7 +7238,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                               CONS-SHOHOKSN4 OR
                                               CONS-SHOHOKSN5 OR
                                               CONS-SHOHOKSN6 OR
-                                              CONS-SHOHOKSN7
+                                              CONS-SHOHOKSN7 OR
+                                              CONS-SHOHOKSN8
                          ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(33)
                          COMPUTE   RECE41-TENSU(33)  =
                                    RECE41-TENSU(33)  +
@@ -7578,7 +7580,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
                                          "120003170" OR "120003370" OR
                                          "120003870" OR
-                                         "120004070" OR "120004170"
+                                         "120004070" OR "120004170" OR
+                                         "120004370" OR "120004470"
                       COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
                                                  +  ACCT-ZAIKAISU
                    END-IF
@@ -7718,7 +7721,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                                   CONS-SHOHOKSN4 OR
                                                   CONS-SHOHOKSN5 OR
                                                   CONS-SHOHOKSN6 OR
-                                                  CONS-SHOHOKSN7
+                                                  CONS-SHOHOKSN7 OR
+                                                  CONS-SHOHOKSN8
                          COMPUTE   RECE41-TENSU(30)  =
                                    RECE41-TENSU(30)  +
                                   (WK-ZAITEN  *   WRK-ZAIKAISU-XXX)
@@ -8073,7 +8077,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
                                          "120003170" OR "120003370" OR
                                          "120003870" OR
-                                         "120004070" OR "120004170"
+                                         "120004070" OR "120004170" OR
+                                         "120004370" OR "120004470"
                       COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
                                                  +  ACCT-ZAIKAISU
                    END-IF
@@ -8393,6 +8398,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                           OR CONS-SHOHOKSN5
                                           OR CONS-SHOHOKSN6
                                           OR CONS-SHOHOKSN7
+                                          OR CONS-SHOHOKSN8
                          COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
                                                     +  ACCT-ZAIKAISU
                       END-IF
@@ -8407,7 +8413,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                                    CONS-SHOHOKSN4 OR
                                                    CONS-SHOHOKSN5 OR
                                                    CONS-SHOHOKSN6 OR
-                                                   CONS-SHOHOKSN7
+                                                   CONS-SHOHOKSN7 OR
+                                                   CONS-SHOHOKSN8
                           ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(31)
                           COMPUTE   RECE41-TENSU(31)  =
                                     RECE41-TENSU(31)  +
@@ -8519,6 +8526,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                           OR CONS-SHOHOKSN5
                                           OR CONS-SHOHOKSN6
                                           OR CONS-SHOHOKSN7
+                                          OR CONS-SHOHOKSN8
                          COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
                                                     +  ACCT-ZAIKAISU
                       END-IF
@@ -8533,7 +8541,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                                    CONS-SHOHOKSN4 OR
                                                    CONS-SHOHOKSN5 OR
                                                    CONS-SHOHOKSN6 OR
-                                                   CONS-SHOHOKSN7
+                                                   CONS-SHOHOKSN7 OR
+                                                   CONS-SHOHOKSN8
                           ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(33)
                           COMPUTE   RECE41-TENSU(33)  =
                                     RECE41-TENSU(33)  +
@@ -9286,7 +9295,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
                                          "120003170" OR "120003370" OR
                                          "120003870" OR
-                                         "120004070" OR "120004170"
+                                         "120004070" OR "120004170" OR
+                                         "120004370" OR "120004470"
                       COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
                                                  +  ACCT-ZAIKAISU
                    END-IF
@@ -9563,6 +9573,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                           OR CONS-SHOHOKSN5
                                           OR CONS-SHOHOKSN6
                                           OR CONS-SHOHOKSN7
+                                          OR CONS-SHOHOKSN8
                          COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
                                                     +  ACCT-ZAIKAISU
                       END-IF
@@ -9577,7 +9588,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                                    CONS-SHOHOKSN4 OR
                                                    CONS-SHOHOKSN5 OR
                                                    CONS-SHOHOKSN6 OR
-                                                   CONS-SHOHOKSN7
+                                                   CONS-SHOHOKSN7 OR
+                                                   CONS-SHOHOKSN8
                           ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(35)
                           COMPUTE   RECE41-TENSU(35)   =
                                     RECE41-TENSU(35)   +
@@ -10183,7 +10195,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    IF  SRY-SRYCD(IDX3) = "120002170" OR "120002270" OR
                                          "120003170" OR "120003370" OR
                                          "120003870" OR
-                                         "120004070" OR "120004170"
+                                         "120004070" OR "120004170" OR
+                                         "120004370" OR "120004470"
                       COMPUTE  WRK-SYOHOU-KAISU  =  WRK-SYOHOU-KAISU
                                                  +  ACCT-ZAIKAISU
                    END-IF
@@ -10341,6 +10354,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                         OR CONS-SHOHOKSN5
                                         OR CONS-SHOHOKSN6
                                         OR CONS-SHOHOKSN7
+                                        OR CONS-SHOHOKSN8
                        COMPUTE  WRK-SYOSEN-KAISU  =  WRK-SYOSEN-KAISU
                                                   +  ACCT-ZAIKAISU
                     END-IF
@@ -10355,7 +10369,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                               CONS-SHOHOKSN4 OR
                                               CONS-SHOHOKSN5 OR
                                               CONS-SHOHOKSN6 OR
-                                              CONS-SHOHOKSN7
+                                              CONS-SHOHOKSN7 OR
+                                              CONS-SHOHOKSN8
                          ADD  ACCT-ZAIKAISU  TO  RECE41-KAISU(36)
                          COMPUTE   RECE41-TENSU(36)  =
                                    RECE41-TENSU(36)  +
