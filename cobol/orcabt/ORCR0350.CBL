@@ -423,6 +423,7 @@
       *                                     µ≠œø§π§Î§Ë§¶ —ππ
       *  04.08.18    NACL-ÃÁœ∆    17/08/28   ø¿Æ£≤£π«Ø£±£∞∑Ó≤˛¿µ
       *                                     ° ∆˛±°ª˛¿∏≥ËŒ≈Õ‹§Œ∏´ƒæ§∑°À
+      *  04.08.19    NACL-∆£∏∂    18/03/28   ø¿Æ£≥£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
       *
       *  05.00.01    NACL-∆£∏∂    17/07/04  £»£¡£œ£“£…¬–±˛
       *  05.00.02    NACL-æÆ∆¶¬Ù  17/11/07  •Ï•ª≈≈•µ•÷∞˙øÙ§À ›∏±¡»πÁ§ªƒ…≤√
@@ -1772,6 +1773,12 @@
       *        ¿∏≥ËŒ≈Õ‹ø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∂≠≥¶¡ÿ≥∫≈ˆ°À° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ƒ„£±°À
                05  WRK-CONS-HYOJYUN-FUTAN32
                                       PIC X(09)   VALUE   "197005010".
+      *        ¿∏≥ËŒ≈Õ‹° £±°Àø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ∞Ï»Ã°À
+               05  WRK-CONS-HYOJYUN-FUTAN33
+                                      PIC X(09)   VALUE   "197005110".
+      *        ¿∏≥ËŒ≈Õ‹° £≤°Àø©ªˆŒ≈Õ‹…∏Ω‡…È√¥≥€° ∞ÂŒ≈∂Ë ¨£≤°¶£≥°À° ∞Ï»Ã°À
+               05  WRK-CONS-HYOJYUN-FUTAN34
+                                      PIC X(09)   VALUE   "197005210".
       *
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
@@ -7786,7 +7793,9 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN29
                                            OR  WRK-CONS-HYOJYUN-FUTAN30
                                            OR  WRK-CONS-HYOJYUN-FUTAN31
-                                           OR  WRK-CONS-HYOJYUN-FUTAN32)
+                                           OR  WRK-CONS-HYOJYUN-FUTAN32
+                                           OR  WRK-CONS-HYOJYUN-FUTAN33
+                                           OR  WRK-CONS-HYOJYUN-FUTAN34)
                                    EVALUATE    WRK-FTNKBN
                                        WHEN    "5"
                                        WHEN    "7"
@@ -7869,7 +7878,9 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN29
                                            OR  WRK-CONS-HYOJYUN-FUTAN30
                                            OR  WRK-CONS-HYOJYUN-FUTAN31
-                                           OR  WRK-CONS-HYOJYUN-FUTAN32)
+                                           OR  WRK-CONS-HYOJYUN-FUTAN32
+                                           OR  WRK-CONS-HYOJYUN-FUTAN33
+                                           OR  WRK-CONS-HYOJYUN-FUTAN34)
                                        CONTINUE
                                    ELSE
                                       IF    ( RECE62-HKNNUM (1:2)
@@ -7911,7 +7922,9 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN29
                                            OR  WRK-CONS-HYOJYUN-FUTAN30
                                            OR  WRK-CONS-HYOJYUN-FUTAN31
-                                           OR  WRK-CONS-HYOJYUN-FUTAN32)
+                                           OR  WRK-CONS-HYOJYUN-FUTAN32
+                                           OR  WRK-CONS-HYOJYUN-FUTAN33
+                                           OR  WRK-CONS-HYOJYUN-FUTAN34)
                                            CONTINUE
                                        ELSE
                                            MOVE    1   TO  FLG-PRT
@@ -7952,7 +7965,9 @@
                                            WRK-CONS-HYOJYUN-FUTAN29 OR
                                            WRK-CONS-HYOJYUN-FUTAN30 OR
                                            WRK-CONS-HYOJYUN-FUTAN31 OR
-                                           WRK-CONS-HYOJYUN-FUTAN32)
+                                           WRK-CONS-HYOJYUN-FUTAN32 OR
+                                           WRK-CONS-HYOJYUN-FUTAN33 OR
+                                           WRK-CONS-HYOJYUN-FUTAN34)
                                      PERFORM  200773-SKJFTNFLG-CHECK-SEC
                                    END-IF
                                END-IF   
