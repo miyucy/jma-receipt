@@ -52,6 +52,7 @@
       *  04.08.02    NACL-門脇    16/03/28  平成２８年４月改正対応
       *  04.08.03    NACL-門脇    16/08/23  持参薬対応
       *  04.08.04    NACL-門脇    18/03/01  平成３０年４月改正対応
+      *  04.08.05    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -213,6 +214,11 @@
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
            03  WRK-KHNTEN                              PIC 9(08). 
+           03  WRK-KHNTEN-MOTO                         PIC 9(08).
+           03  WRK-KHNTEN-GEN                          PIC 9(08).
+           03  WRK-KHN-ZAITEN                          PIC 9(08).
+           03  WRK-KHN-ZAITEN-MOTO                     PIC 9(08).
+           03  WRK-KHN-ZAITEN-GEN                      PIC 9(08).
            03  WRK-KSNTEN                              PIC S9(08).
            03  WRK-NYUTENTTLKBN                        PIC 9(03).
            03  WRK-NYUKHNRYO                           PIC 9(09).
@@ -282,6 +288,9 @@
            COPY    "CPORCSEIYOUKKS.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
+      *
+      *    夜間看護体制特定日減算取得サブ
+           COPY    "CPORCSKANGOGEN.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -473,6 +482,23 @@
       *
            MOVE       SPACE             TO     WRK-KOGAI-TABLE
            INITIALIZE                          WRK-KOGAI-TABLE
+      *
+      *    夜間看護体制特定日減算取得
+           IF   RECE200-SRYYM       >=  "201804"
+             INITIALIZE                 ORCSKANGOGEN-AREA
+             MOVE  RECE200-HOSPNUM  TO  LNK-KANGOGEN-HOSPNUM
+             MOVE  RECE200-PTID     TO  LNK-KANGOGEN-PTID
+             MOVE  RECE200-SRYYM    TO  LNK-KANGOGEN-SANTEIYM
+             CALL  "ORCSKANGOGEN"   USING  ORCSKANGOGEN-AREA
+                                           SPA-AREA
+             IF    LNK-KANGOGEN-RC  =   ZERO
+               PERFORM  VARYING  IDY  FROM  1  BY  1
+                         UNTIL   IDY   >   31
+                 MOVE  LNK-KANGOGEN-SRYCD(IDY)
+                                    TO  RECE200-KANGOGEN-SRYCD(IDY)
+               END-PERFORM
+             END-IF
+           END-IF
       *
            PERFORM     200111-RECE200-HENSYU-SEC
            PERFORM     200112-RECE200-HENSYU2-SEC
@@ -1043,6 +1069,14 @@
       *****************************************************************
        2001124-RECE200-TENSOU21-SEC                 SECTION.
       *
+           IF    RECE200-KANGOGEN-SRYCD(IDY)  =  SPACE
+             MOVE  WRK-KHNTEN-MOTO         TO  WRK-KHNTEN
+             MOVE  WRK-KHN-ZAITEN-MOTO     TO  WRK-KHN-ZAITEN
+           ELSE
+             MOVE  WRK-KHNTEN-GEN          TO  WRK-KHNTEN
+             MOVE  WRK-KHN-ZAITEN-GEN      TO  WRK-KHN-ZAITEN
+           END-IF
+      *
       *    入院料と外泊を比較して点数算定
       *
            EVALUATE   WRK-NYUTENTTLKBN
@@ -1050,7 +1084,7 @@
                   MOVE      ZERO   TO  WRK-NYUKHNRYO
                   EVALUATE   WRK-DAY2(IDY)
                     WHEN   ZERO
-                      MOVE     NACCT-ZAITEN   TO    WRK-NYUKHNRYO
+                      MOVE     WRK-KHN-ZAITEN  TO   WRK-NYUKHNRYO
                     WHEN   1
                       COMPUTE  WRK-NYUKHNRYO = (WRK-KHNTEN  *  0.15)
                                                             +  0.5
@@ -1192,7 +1226,7 @@
                   MOVE      ZERO   TO  FLG-GAIHAKU
                   EVALUATE   WRK-DAY2(IDY)
                     WHEN   ZERO
-                      MOVE     NACCT-ZAITEN   TO    WRK-NYUTOKRYO
+                      MOVE     WRK-KHN-ZAITEN  TO   WRK-NYUTOKRYO
                     WHEN   1
                       COMPUTE  WRK-NYUTOKRYO = (WRK-KHNTEN  *  0.15)
                                                             +  0.5
@@ -1426,6 +1460,11 @@
            END-IF                                                       
       *
            MOVE    ZERO               TO   WRK-KHNTEN
+           MOVE    ZERO               TO   WRK-KHNTEN-MOTO
+           MOVE    ZERO               TO   WRK-KHNTEN-GEN
+           MOVE    ZERO               TO   WRK-KHN-ZAITEN
+           MOVE    ZERO               TO   WRK-KHN-ZAITEN-MOTO
+           MOVE    ZERO               TO   WRK-KHN-ZAITEN-GEN
            MOVE    SPACE              TO   WRK-RYAKUSHO
            MOVE    ZERO               TO   NYUINACT-IDX2
            MOVE    ZERO               TO   WRK-KSNTEN
@@ -1467,14 +1506,17 @@
                      PERFORM  900-TENSU-READ-SEC
                      IF       FLG-TENSU      =    ZERO
                          IF   TNS-DATAKBN    =    1
-                              MOVE   TNS-TEN   TO   WRK-KHNTEN
+                              MOVE   TNS-TEN   TO   WRK-KHNTEN-MOTO
+      *                       夜間看護体制特定日減算
+                              COMPUTE  WRK-KHNTEN-GEN   =
+                                      (WRK-KHNTEN-MOTO  * 0.95) +  0.5
       *                       看護比率基準未達時の入院基本点数の取得
                               IF    RECE200-SRYYM  <=  "201203"
                                PERFORM 20011231-GAIHAKU-NYUKHN-SET-SEC
                               END-IF
                               IF   WRK-GAIHAKU-KHNTEN  NOT =  ZERO
                                  MOVE   WRK-GAIHAKU-KHNTEN
-                                               TO   WRK-KHNTEN
+                                               TO   WRK-KHNTEN-MOTO
                               END-IF
                               MOVE   NYUINACT-IDX
                                                TO   NYUINACT-IDX2
@@ -1491,6 +1533,19 @@
                          END-IF
                      END-IF
                END-PERFORM
+      *
+               COMPUTE  WRK-KHN-ZAITEN-MOTO     =
+                        NACCT-ZAITEN
+               COMPUTE  WRK-KHN-ZAITEN-GEN      =
+                        WRK-KHNTEN-GEN          +
+                        WRK-KSNTEN
+               IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      *          標欠：％減算
+                 COMPUTE    WRK-KHN-ZAITEN-GEN      =
+                          ( WRK-KHN-ZAITEN-GEN      -
+                           (WRK-KHN-ZAITEN-GEN      *
+                            (WRK-HYOKETU-TEN   /  100))) + 0.5
+               END-IF
       *
                IF    WRK-NYUTENTTLKBN     =   920
                AND   NYUINACT-IDX2    NOT =   ZERO
@@ -1525,14 +1580,6 @@
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-      *
-      ***  IF     WRK-HYOKETU-TEN    NOT =   ZERO
-      *      標欠：％減算
-      ***    COMPUTE    WRK-KHNTEN  =
-      ***             ( WRK-KHNTEN  -
-      ***              (WRK-KHNTEN  *
-      ***               (WRK-HYOKETU-TEN   /  100)))  +  0.5
-      ***  END-IF
       *
            .
        2001123-NYUINKHN-GET-EXT.
@@ -1823,6 +1870,20 @@
            MOVE    "key7"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
+      *    入院略称の取得（夜間看護体制特定日減算）
+           PERFORM  VARYING  IDY    FROM    1   BY  1
+                     UNTIL   IDY     >     31
+                IF   (WRK-DAY1(IDY)               NOT = ZERO )
+                AND  (RECE200-KANGOGEN-SRYCD(IDY) NOT = SPACE)
+                  IF  WRK-DAY5(IDY) =  RECE200-HKNCOMBI
+                     MOVE      RECE200-KANGOGEN-SRYCD(IDY)
+                                 TO    WRK-SRYCD
+                     PERFORM   2001134-YAGEN-GET3-SEC
+                  END-IF
+                END-IF
+           END-PERFORM
+      *
+      *    入院略称の取得（特定時間退院減算・特定曜日入退院減算）
            PERFORM  VARYING  IDY    FROM    1   BY  1
                      UNTIL   IDY     >     31
                 IF   (WRK-DAY1(IDY)   NOT  =  ZERO                    )
@@ -2088,6 +2149,98 @@
       *
            .
        2001133-GENSAN-GET3-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    入院略称の取得（夜間看護体制特定日減算）
+      **************************************************************
+       2001134-YAGEN-GET3-SEC           SECTION.
+      *
+           MOVE     ZERO     TO    FLG-ARI
+           PERFORM  VARYING  ID1    FROM    1   BY  1
+                     UNTIL  (ID1                     >  20  )
+                      OR    (RECE200-NYUSYUBETU(ID1) = SPACE)
+                      OR    (FLG-ARI                 =   1  )
+             EVALUATE   WRK-SRYCD
+      *        夜間看護体制特定日減算（一般病棟入院基本料）
+               WHEN     "190200970"
+                 IF  RECE200-NYUSYUBETU(ID1)(1:14)
+                                             = "一般夜看特定減"
+                          MOVE  1   TO   FLG-ARI
+                 END-IF
+      *        療養病棟・夜間看護体制特定日減算（一般病棟入院基本料）
+               WHEN     "190214470"
+                 IF  RECE200-NYUSYUBETU(ID1)(1:14)
+                                             = "一般夜看特定減"
+                          MOVE  1   TO   FLG-ARI
+                 END-IF
+      *        夜間看護体制特定日減算（結核病棟入院基本料）
+               WHEN     "190205270"
+                 IF  RECE200-NYUSYUBETU(ID1)(1:12)
+                                             = "結夜看特定減"
+                          MOVE  1   TO   FLG-ARI
+                 END-IF
+      *        夜間看護体制特定日減算（精神病棟入院基本料）
+               WHEN     "190205370"
+                 IF  RECE200-NYUSYUBETU(ID1)(1:12)
+                                             = "精夜看特定減"
+                          MOVE  1   TO   FLG-ARI
+                 END-IF
+      *        夜間看護体制特定日減算（専門病院入院基本料）
+               WHEN     "190205470"
+                 IF  RECE200-NYUSYUBETU(ID1)(1:12)
+                                             = "専夜看特定減"
+                          MOVE  1   TO   FLG-ARI
+                 END-IF
+      *        夜間看護体制特定日減算（障害者施設等入院基本料）
+               WHEN     "190205870"
+                 IF  RECE200-NYUSYUBETU(ID1)(1:12)
+                                             = "障夜看特定減"
+                          MOVE  1   TO   FLG-ARI
+                 END-IF
+      *        夜間看護体制特定日減算（地域包括ケア病棟入院料）
+               WHEN     "190212670"
+                 IF  RECE200-NYUSYUBETU(ID1)(1:12)
+                                             = "包夜看特定減"
+                          MOVE  1   TO   FLG-ARI
+                 END-IF
+             END-EVALUATE
+           END-PERFORM
+           IF    FLG-ARI  =  ZERO
+             EVALUATE   WRK-SRYCD
+      *        夜間看護体制特定日減算（一般病棟入院基本料）
+               WHEN     "190200970"
+                 MOVE   "一般夜看特定減"
+                            TO   RECE200-NYUSYUBETU(ID1)(1:14)
+      *        療養病棟・夜間看護体制特定日減算（一般病棟入院基本料）
+               WHEN     "190214470"
+                 MOVE   "一般夜看特定減"
+                            TO   RECE200-NYUSYUBETU(ID1)(1:14)
+      *        夜間看護体制特定日減算（結核病棟入院基本料）
+               WHEN     "190205270"
+                 MOVE   "結夜看特定減"
+                            TO   RECE200-NYUSYUBETU(ID1)(1:12)
+      *        夜間看護体制特定日減算（精神病棟入院基本料）
+               WHEN     "190205370"
+                 MOVE   "精夜看特定減"
+                            TO   RECE200-NYUSYUBETU(ID1)(1:12)
+      *        夜間看護体制特定日減算（専門病院入院基本料）
+               WHEN     "190205470"
+                 MOVE   "専夜看特定減"
+                            TO   RECE200-NYUSYUBETU(ID1)(1:12)
+      *        夜間看護体制特定日減算（障害者施設等入院基本料）
+               WHEN     "190205870"
+                 MOVE   "障夜看特定減"
+                            TO   RECE200-NYUSYUBETU(ID1)(1:12)
+      *        夜間看護体制特定日減算（地域包括ケア病棟入院料）
+               WHEN     "190212670"
+                 MOVE   "包夜看特定減"
+                            TO   RECE200-NYUSYUBETU(ID1)(1:12)
+             END-EVALUATE
+           END-IF
+      *
+           .
+       2001134-YAGEN-GET3-EXT.
            EXIT.
       *
       *****************************************************************
