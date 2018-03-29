@@ -1668,6 +1668,10 @@
                                    TO  PTNYUINRRK-KAIGOKBN
            END-IF
       *
+           MOVE    ITEM-KSNCD (1)  TO  PTNYUINRRK-KSNSRYCD(1)
+           MOVE    ITEM-KSNCD (2)  TO  PTNYUINRRK-KSNSRYCD(2)
+           MOVE    ITEM-KSNCD (3)  TO  PTNYUINRRK-KSNSRYCD(3)
+      *
            MOVE    1               TO  PTNYUINRRK-MAXEDANUM
       *
            MOVE    SODR-OPID       TO  PTNYUINRRK-OPID

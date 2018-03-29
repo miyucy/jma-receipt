@@ -331,7 +331,8 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  XML-HSPTINFM01RES
+           INITIALIZE                  XML-HSPTINFMREQ
+                                       XML-HSPTINFM01RES
                                        XML-HSPTINFM02RES
       *
       *    更新日取得
@@ -2497,6 +2498,7 @@
            IF    ( HSPTINFMREQ-REQNUM      NOT =   SPACE )
                MOVE    "リクエスト番号"
                                TO  HSPTINFM01RES-REQNUM-LBL
+      *
                MOVE    HSPTINFMREQ-REQNUM
                                TO  HSPTINFM01RES-REQNUM-DATA
            END-IF

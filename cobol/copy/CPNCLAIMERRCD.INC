@@ -813,6 +813,10 @@
                05                      PIC X(80)   VALUE
                    "定期請求が行われていないため、退院登録はできません".
       *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "0199".
+               05                      PIC X(80)   VALUE
+                   "更新対象の入院会計が６ヶ月を超えています".
+      *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "8001".
                05                      PIC X(80)   VALUE
                    "入院日の入力に誤りがあります".
@@ -1060,7 +1064,7 @@
                    "処理終了".
       *
            03  NCLAIMERRCD-R   REDEFINES   NCLAIMERRCD-VAL.
-               05  NCLAIMERRCD-OCC     OCCURS  257.
+               05  NCLAIMERRCD-OCC     OCCURS  258.
                    07  NCLAIMERRCDL    PIC X(04).
                    07  NCLAIMERRCDLMEI PIC X(80).
-           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   257.
+           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   258.

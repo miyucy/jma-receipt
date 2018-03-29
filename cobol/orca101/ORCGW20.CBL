@@ -4280,8 +4280,14 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
             AND  ( SPA-GMN-W20-SBT        =   "01" )
             AND  ( SPA-NAI-W20-NYUKHNKBN  =   56 OR 57 )
       *
-               IF    ( SPA-NAI-W20-NYUKHNKBN  NOT =   79 )
-                   MOVE    1       TO  FLG-RYOYOSANTEI
+               MOVE    1       TO  FLG-RYOYOSANTEI
+      *
+               IF    ( SPA-NAI-W20-NYUKHNKBN  =   79 )
+                   MOVE    ZERO    TO  FLG-RYOYOSANTEI
+               END-IF
+      *
+               IF    ( SPA-NAI-W20-KHNSRYCD   =   "190079010" )
+                   MOVE    ZERO    TO  FLG-RYOYOSANTEI
                END-IF
            WHEN  ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H240401 )
             AND  ( SPA-GMN-W20-SBT          =  "08" OR "09" )

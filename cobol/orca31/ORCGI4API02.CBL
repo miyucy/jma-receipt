@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORCGI0API02.
+       PROGRAM-ID.         ORCGI4API02.
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
       *  サブシステム名    : API連携用モジュール
-      *  コンポーネント名  : 出産育児一時金
+      *  コンポーネント名  : 入院会計登録
       *  管理者            :
       *  作成日付    作業者        記述
       *  14/04/09    NACL−太田　新規作成
@@ -44,20 +44,23 @@
       *
        01  FLG-AREA.
            03  FLG-SYSKANRI            PIC 9(01).
-           03  FLG-PTINF               PIC 9(01).
-           03  FLG-ORCSNUM             PIC 9(01).
            03  FLG-PTNYUINRRK          PIC 9(01).
-           03  FLG-KYUSEIRRK           PIC 9(01).
-           03  FLG-BUNBEN              PIC 9(01).
-           03  FLG-HKNJAINF            PIC 9(01).
-           03  FLG-KYUSEI-ALERT        PIC 9(01).
+           03  FLG-NYUINACCT           PIC 9(01).
+           03  FLG-PTINF               PIC 9(01).
+           03  FLG-PTNUM               PIC 9(01).
+           03  FLG-ORCSNUM             PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX1                    PIC 9(05).
+           03  IDX2                    PIC 9(05).
            03  IDX8                    PIC 9(05).
            03  IDX9                    PIC 9(05).
+           03  IDXA                    PIC 9(05).
+           03  IDXD                    PIC 9(05).
+           03  IDXK                    PIC 9(05).
            03  IDXE                    PIC 9(05).
+           03  IDXH                    PIC 9(05).
            03  IDX-ITM                 PIC 9(05).
       *
       *    一時領域
@@ -92,31 +95,38 @@
            03  WRK-SRYYMD.
                05  WRK-SRYYMD-YM       PIC X(06).
                05  WRK-SRYYMD-DD       PIC 9(02).
-           03  WRK-NUM2Z               PIC Z9.
-           03  WRK-NUM3Z               PIC ZZ9.
-           03  WRK-NUM7Z               PIC ZZZZZZ9.
+           03  WRK-SAGAKU              PIC 9(08).
            03  WRK-SNUM-INX            PIC X(26).
            03  WRK-SNUM-OUTNUM         PIC 9(12).
-           03  WRK-DENPNUM             PIC 9(07).
-           03  WRK-KYUSEI-G.
-               05  WRK-KYUSEI-NAME     PIC X(100).
-               05  WRK-KYUSEI-KANANAME PIC X(100).
+           03  WRK-GAIHAKUKBN-G.
+               05  WRK-GAIHAKUKBN      PIC 9(02).
       *
-       01  REG-AREA.
-           03  REG-ORDERID             PIC X(04).
-           03  REG-SAVEREQ             PIC X(01).
-           03  REG-REQNUM              PIC X(02).
-           03  REG-NYUINYMD            PIC X(08).
-           03  REG-SRYYMD              PIC X(08).
-           03  REG-ERR-MAX             PIC 9(03).
-           03  REG-ERR-OCC             OCCURS  10.
-               05  REG-ERRCD           PIC X(04).
+       01  API-AREA.
+           03  API-SAVEREQ             PIC X(01).
+           03  API-NYUINYMD            PIC X(08).
+           03  API-ORDERID             PIC X(04).
+           03  API-SAGAKU              PIC X(07).
+           03  API-SAGAKUCD            PIC X(02).
+           03  API-SRYYMD              PIC X(08).
+           03  API-ENDYMD              PIC X(08).
+           03  API-GAIHAKUKBN          PIC X(02).
+           03  API-SKJ-AREA.
+               05  API-SKJ-OCC         OCCURS 3.
+                   07  API-SKJTIME     PIC X(02).
+                   07  API-SKJTYPE     PIC X(01).
+                   07  API-NISSU       PIC X(100).
+                   07  API-SAME-AFTER  PIC X(1).
+           03  API-ERR-MAX             PIC 9(03).
+           03  API-ERR-OCC             OCCURS  10.
+               05  API-ERRCD           PIC X(04).
+               03  API-ERRMSG          PIC X(100).
       *
        01  CONST-AREA.
+           03  CONST-H300401           PIC X(08)   VALUE "20180401".
+           03  CONST-H280401           PIC X(08)   VALUE "20160401".
            03  CONST-H240401           PIC X(08)   VALUE "20120401".
            03  CONST-ERR-MAX           PIC 9(03)   VALUE 10.
            03  CONST-ODRITEM-MAX       PIC 9(05)   VALUE 30.
-           03  CONST-ALERT-MAX         PIC 9(05)   VALUE 5.
       *
            COPY    "COMMON-SPA"        REPLACING   //SPA-//
                                        BY          //TSPA-//.
@@ -130,15 +140,9 @@
       *    オーダＩＤ
            COPY    "CPNORDERID.INC".
       *
-      *    患者入院履歴退避
        01  TRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //TRRK-//.
-      *
-      *    分娩管理情報退避
-       01  TBBN-REC.
-           COPY    "CPBUNBEN.INC"      REPLACING  //BUNBEN-//
-                                       BY         //TBBN-//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -159,9 +163,6 @@
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    保険組合せセット領域
-           COPY    "CPORCSAPIHKN.INC".
-      *
       *    算定可能入院料取得
            COPY    "CPORCSNYUINRYO.INC".
       *
@@ -176,6 +177,9 @@
            COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
                                        BY         //LNK-ODRITEM-//.
       *
+      *    入院基本情報取得サブ（外泊等）
+           COPY    "CPORCSNINF03.INC".
+      *
       *    ＵＩＤ取得用エリア
        01  SUID-AREA.
            03  SUID-RET                PIC X(2).
@@ -183,10 +187,10 @@
        01  SUID-ST                     PIC 9(2).
       *
       *    API XML読み込み用定義体
-           COPY    "CPBDV2REQ.INC".
+           COPY    "CPHSACCTMV2REQ.INC".
       *
       *    API XML書き込み用定義体
-           COPY    "CPBDV2RES.INC".
+           COPY    "CPHSACCTMV2RES.INC".
       *
       *ver.4.7
       *    API XML読み込み共通定義
@@ -199,26 +203,23 @@
       *    システム管理
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1010.INC".
+           COPY    "CPSK5113.INC".
+      *
+      *    患者番号
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
       *
       *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    旧姓履歴
-       01  KYUSEIRRK-REC.
-           COPY  "CPKYUSEIRRK.INC".
-      *
-      *    保険者情報
-       01  HKNJAINF-REC.
-           COPY  "CPHKNJAINF.INC".
-      *
       *    入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    分娩管理情報
-       01  BUNBEN-REC.
-           COPY    "CPBUNBEN.INC".
+      *    入院会計
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
       *
       *    オーダーテーブル
        01  ORDER-REC.
@@ -259,19 +260,17 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  REG-AREA
+           INITIALIZE                  API-AREA
            INITIALIZE                  SPA-AREA
-           INITIALIZE                  TRRK-REC
-           INITIALIZE                  TBBN-REC
       *
       *    初期処理
            PERFORM 100-INIT-SEC
       *
       *    主処理
-           IF    ( REG-ERR-MAX         =   ZERO )
+           IF    ( API-ERR-MAX         =   ZERO )
                PERFORM 200-MAIN-SEC
            ELSE
-               IF    ( REG-SAVEREQ     =   "1" )
+               IF    ( API-SAVEREQ     =   "1" )
                    PERFORM 290-ORDER-INSERT-SEC
                END-IF
            END-IF
@@ -292,8 +291,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  XML-BDREQ
-                                       XML-BDRES
+           INITIALIZE                  XML-HSACCTMRES
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -329,7 +327,6 @@
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
            IF    ( SPA-ERRCD       NOT =   SPACE )
-      *
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
                    MOVE    "8901"      TO  WRK-ERRCD
@@ -344,12 +341,9 @@
                WHEN    OTHER
                    MOVE    "8900"      TO  WRK-ERRCD
                END-EVALUATE
-      *
                PERFORM 990-ERROR-EDIT-SEC
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
-      *
-           MOVE    NORDERID-BUNBENID   TO  REG-ORDERID
       *
       *    XML情報取り出し
            PERFORM 900-XML-READ-SEC
@@ -358,15 +352,19 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
-           PERFORM 1001-INIT-CHECK-SEC
-      *
-           EVALUATE    BDREQ-REQNUM
-           WHEN    "01"
-               PERFORM 1001-SHOKAI-SEC
-      *
-           WHEN    "02"
-               PERFORM 1001-TOROKU-SEC
-      *
+           EVALUATE    HSACCTMREQ-REQNUM
+           WHEN    "2"
+               PERFORM 1001-GAIHAKU-SEC
+               MOVE    NORDERID-GPTSTID    TO  API-ORDERID
+           WHEN    "3"
+               PERFORM 1001-SAGAKU-SEC
+               MOVE    NORDERID-SAGAKUID   TO  API-ORDERID
+           WHEN    "4"
+               PERFORM 1001-SHOKUJI-SEC
+               MOVE    NORDERID-FOODID     TO  API-ORDERID
+           WHEN    "9"
+               PERFORM 1001-CRENACCT-SEC
+               MOVE    NORDERID-CRENACCTID TO  API-ORDERID
            WHEN    OTHER
                MOVE    "8003"          TO  WRK-ERRCD
                PERFORM 990-ERROR-EDIT-SEC
@@ -381,37 +379,193 @@
       *****************************************************************
        1001-INIT-CHECK-SEC         SECTION.
       *
-           MOVE    BDREQ-SAVEREQ   TO  REG-SAVEREQ
+           MOVE    HSACCTMREQ-SAVEREQ
+                                       TO  API-SAVEREQ
       *
-           MOVE    BDREQ-REQNUM    TO  REG-REQNUM
+           PERFORM 10011-SRYYMD-CHECK-SEC
       *
            PERFORM 10011-PTNUM-CHECK-SEC
       *
            PERFORM 10011-NYUINYMD-CHECK-SEC
       *
-           IF    ( WRK-ERRCD   =   SPACE )
-               PERFORM 10011-BUNBEN-CHECK-SEC
-           END-IF
-      *
-           IF    ( BDREQ-REQNUM    NOT =   "02" )
-               MOVE    ZERO        TO  REG-SAVEREQ
-           END-IF
       *
            .
        1001-INIT-CHECK-EXT.
+           EXIT.
+      *****************************************************************
+      *    電文項目退避処理（食事）
+      *****************************************************************
+       1001-SHOKUJI-SEC            SECTION.
+      *
+           PERFORM 1001-INIT-CHECK-SEC
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   3 )
+               MOVE    HSACCTMREQ-SKJTIME (IDX2)
+                                           TO  API-SKJTIME (IDX2)
+               MOVE    HSACCTMREQ-SKJTYPE (IDX2)
+                                           TO  API-SKJTYPE (IDX2)
+               MOVE    HSACCTMREQ-NISSU  (IDX2)
+                                           TO  API-NISSU (IDX2)
+               MOVE    HSACCTMREQ-SAME-AFTER (IDX2)
+                                           TO  API-SAME-AFTER (IDX2)
+           END-PERFORM
+      *
+           .
+       1001-SHOKUJI-EXT.
+           EXIT.
+      *****************************************************************
+      *    電文項目退避処理（室料差額）
+      *****************************************************************
+       1001-SAGAKU-SEC                 SECTION.
+      *
+           PERFORM 1001-INIT-CHECK-SEC
+      *
+           PERFORM 10011-SAGAKU-CHECK-SEC
+      *
+           PERFORM 10011-ENDYMD-CHECK-SEC
+      *
+           .
+       1001-SAGAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    電文項目退避処理（外泊）
+      *****************************************************************
+       1001-GAIHAKU-SEC            SECTION.
+      *
+           PERFORM 1001-INIT-CHECK-SEC
+      *
+           PERFORM 10011-GAIHAKUKBN-CHECK-SEC
+      *
+           PERFORM 10011-ENDYMD-CHECK-SEC
+      *
+           .
+       1001-GAIHAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    電文項目退避処理（入院会計作成）
+      *****************************************************************
+       1001-CRENACCT-SEC            SECTION.
+      *
+           MOVE    HSACCTMREQ-SAVEREQ
+                                       TO  API-SAVEREQ
+      *
+           PERFORM 10011-PTNUM-CHECK-SEC
+      *
+           PERFORM 10011-NYUINYMD-CHECK-SEC
+      *
+           .
+       1001-CRENACCT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院日チェック処理
+      *****************************************************************
+       10011-NYUINYMD-CHECK-SEC       SECTION.
+      *
+           IF    ( HSACCTMREQ-NYUINYMD =   SPACE )
+               MOVE    "8001"          TO  WRK-ERRCD
+               PERFORM 990-ERROR-EDIT-SEC
+           ELSE
+               MOVE    HSACCTMREQ-NYUINYMD
+                                       TO  WRK-DATE
+               PERFORM 800-SYMD-SEC
+               PERFORM 800-HIZUKE-SEC
+               IF    ( WRK-EDTYMD1     =   SPACE )
+                   MOVE    "8001"      TO  WRK-ERRCD
+                   PERFORM 990-ERROR-EDIT-SEC
+               ELSE
+                   MOVE    WRK-SYMD    TO  API-NYUINYMD
+                   IF    ( HSACCTMREQ-REQNUM   =   "9" )
+                       MOVE    WRK-SYMD    TO  API-SRYYMD
+                   END-IF
+               END-IF
+      *
+           END-IF
+      *
+           PERFORM 100111-NYUINYMD-CHECK-SEC
+      *
+           .
+       10011-NYUINYMD-CHECK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院日チェック処理
+      *****************************************************************
+       100111-NYUINYMD-CHECK-SEC       SECTION.
+      *
+           IF    ( WRK-ERRCD           =   SPACE )
+               PERFORM 900-PTNYUINRRK-KEY42-SEL-SEC
+               IF    ( FLG-PTNYUINRRK       =   ZERO )
+                   MOVE    PTNYUINRRK-REC   TO  TRRK-REC
+                   MOVE    TRRK-NYUINYMD   TO  WRK-YMD
+                   MOVE    "1"             TO  WRK-ZOGENPTN
+                   MOVE    -1              TO  WRK-ZOGEN
+                   PERFORM 800-CALENDAR-SEC
+                   MOVE    WRK-KEISANYMD   TO  WRK-SRYYMD
+                   PERFORM 900-PTNYUINRRK-KEY39-SEL-SEC
+                   IF    ( FLG-PTNYUINRRK      =   ZERO )
+                       EVALUATE    TRUE
+                       WHEN  ( PTNYUINRRK-JTIKBN   NOT =   "5" )
+                        AND  ( PTNYUINRRK-JTIKBN   NOT =   "6" )
+                        AND  ( PTNYUINRRK-NYUINYMD =   TRRK-NYUINYMD )
+                       WHEN  ( PTNYUINRRK-JTIKBN   =   "6" )
+                        AND  ( PTNYUINRRK-TAIINYMD =   WRK-SRYYMD )
+                           CONTINUE
+                       WHEN    OTHER
+                           MOVE    "8005"      TO  WRK-ERRCD
+                           PERFORM 990-ERROR-EDIT-SEC
+                       END-EVALUATE
+                   ELSE
+                       MOVE    "8005"      TO  WRK-ERRCD
+                       PERFORM 990-ERROR-EDIT-SEC
+                   END-IF
+               ELSE
+                   IF    ( HSACCTMREQ-REQNUM   =   "9" )
+                       MOVE    "8005"  TO  WRK-ERRCD
+                   ELSE
+                       MOVE    "8010"  TO  WRK-ERRCD
+                   END-IF
+                   PERFORM 990-ERROR-EDIT-SEC
+               END-IF
+           END-IF
+      *
+           .
+       100111-NYUINYMD-CHECK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療日チェック処理
+      *****************************************************************
+       10011-SRYYMD-CHECK-SEC          SECTION.
+      *
+           IF    ( HSACCTMREQ-SRYYMD =   SPACE )
+               MOVE    SMCNDATE-YMD    TO  API-SRYYMD
+           ELSE
+               MOVE    HSACCTMREQ-SRYYMD
+                                       TO  WRK-DATE
+               PERFORM 800-SYMD-SEC
+               PERFORM 800-HIZUKE-SEC
+               IF    ( WRK-EDTYMD1     =   SPACE )
+                   MOVE    "8009"      TO  WRK-ERRCD
+                   PERFORM 990-ERROR-EDIT-SEC
+               ELSE
+                   MOVE    WRK-SYMD    TO  API-SRYYMD
+               END-IF
+           END-IF
+      *
+           .
+       10011-SRYYMD-CHECK-EXT.
            EXIT.
       *****************************************************************
       *    患者番号チェック処理
       *****************************************************************
        10011-PTNUM-CHECK-SEC       SECTION.
       *
-           IF    ( BDREQ-PTNUM    =   SPACE )
-               MOVE    "0004"           TO  WRK-ERRCD
+           IF    ( HSACCTMREQ-PTNUM    =   SPACE )
+               MOVE    "0004"            TO  WRK-ERRCD
                PERFORM 990-ERROR-EDIT-SEC
            ELSE
                INITIALIZE                  ORCSPTIDAREA
                MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
-               MOVE    BDREQ-PTNUM   TO  SPTID-PTNUM
+               MOVE    HSACCTMREQ-PTNUM   TO  SPTID-PTNUM
                CALL    "ORCSPTID"      USING
                                        ORCSPTIDAREA
                                        SPA-AREA
@@ -434,119 +588,150 @@
        10011-PTNUM-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    入院日チェック処理
+      *    外泊区分チェック処理
       *****************************************************************
-       10011-NYUINYMD-CHECK-SEC       SECTION.
+       10011-GAIHAKUKBN-CHECK-SEC      SECTION.
       *
-           IF    ( BDREQ-NYUINYMD =   SPACE )
-               MOVE    "8001"           TO  WRK-ERRCD
-               PERFORM 990-ERROR-EDIT-SEC
-           ELSE
-               MOVE    BDREQ-NYUINYMD
-                                      TO  WRK-DATE
-               PERFORM 800-SYMD-SEC
-               PERFORM 800-HIZUKE-SEC
-               IF    ( WRK-EDTYMD1    =   SPACE )
-                   MOVE    "8001"     TO  WRK-ERRCD
-                   PERFORM 990-ERROR-EDIT-SEC
-               ELSE
-                   MOVE    WRK-SYMD   TO  REG-NYUINYMD
-               END-IF
+           MOVE    SPACE               TO  WRK-ERRCD
       *
-           END-IF
+           MOVE    HSACCTMREQ-GAIHAKUKBN
+                                       TO  WRK-SNUM-INX
+           PERFORM 800-ORCSNUM-SEC
+           IF    ( FLG-ORCSNUM         =   ZERO )
       *
-           IF    ( WRK-ERRCD           =   SPACE )
-      *
-               PERFORM 900-PTNYUINRRK-KEY39-SEL-SEC
-               IF    ( FLG-PTNYUINRRK      =   ZERO )
-      *
-                   MOVE    PTNYUINRRK-NYUINYMD
-                                           TO  WRK-YMD
-                   MOVE    "1"             TO  WRK-ZOGENPTN
-                   MOVE    1               TO  WRK-ZOGEN
-                   PERFORM 800-CALENDAR-SEC
-                   MOVE    WRK-KEISANYMD   TO  WRK-SRYYMD
-      *
-                   MOVE    PTNYUINRRK-REC  TO  TRRK-REC
-      *
-                   IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
-                    AND  ( PTNYUINRRK-JTIKBN   NOT =   "6" )
-                    AND  ( PTNYUINRRK-NYUINYMD =   REG-NYUINYMD )
+               EVALUATE    TRUE
+               WHEN  ( API-SRYYMD       >=   CONST-H300401 )
+                   EVALUATE    WRK-SNUM-OUTNUM
+                   WHEN    0   THRU    6
+                   WHEN    8   THRU    9
+                   WHEN    13  THRU    17
+                   WHEN    99
+                       CONTINUE
+                   WHEN    OTHER
+                       MOVE    "8011"  TO  WRK-ERRCD
+                   END-EVALUATE
+               WHEN  ( API-SRYYMD      >=   CONST-H280401 )
+                   IF    ( WRK-SNUM-OUTNUM =   ZERO OR 1 OR 2  OR 3 OR 4
+                                            OR 5 OR 6  OR 8
+                                            OR 9 OR 13 OR 99 )
                        CONTINUE
                    ELSE
-                       IF    ( PTNYUINRRK-JTIKBN       =   "6" )
-                        AND  ( PTNYUINRRK-NYUINCHUKBN  =   "1" )
-                           PERFORM 900-PTNYUINRRK-KEY20-SEL-SEC
-                           IF    ( FLG-PTNYUINRRK      =   ZERO )
-                            AND  ( PTNYUINRRK-JTIKBN   NOT =   "5" )
-                            AND  ( PTNYUINRRK-JTIKBN   NOT =   "6" )
-                            AND  ( PTNYUINRRK-NYUINYMD =   WRK-SRYYMD )
-                               MOVE    PTNYUINRRK-REC  TO  TRRK-REC
-                           ELSE
-                               MOVE    "8005"  TO  WRK-ERRCD
-                               PERFORM 990-ERROR-EDIT-SEC
-                           END-IF
-                       ELSE
-                           MOVE    "8005"  TO  WRK-ERRCD
-                           PERFORM 990-ERROR-EDIT-SEC
-                       END-IF
+                       MOVE    "8011"  TO  WRK-ERRCD
                    END-IF
-               ELSE
-                       MOVE    "8005"      TO  WRK-ERRCD
-                       PERFORM 990-ERROR-EDIT-SEC
-               END-IF
+               WHEN    OTHER
+                   IF    ( WRK-SNUM-OUTNUM =   ZERO OR 1 OR 2  OR 3 OR 4
+                                                OR 5 OR 6  OR 7 OR 8
+                                                OR 9 OR 13 OR 99 )
+                       CONTINUE
+                   ELSE
+                       MOVE    "8011"  TO  WRK-ERRCD
+                   END-IF
+               END-EVALUATE
+           ELSE
+               MOVE    "8011"          TO  WRK-ERRCD
            END-IF
-      *
       *
            IF    ( WRK-ERRCD           =   SPACE )
-               MOVE    TRRK-NYUINYMD       TO  REG-SRYYMD
-               IF    ( TRRK-TAIINYMD   NOT =   "99999999" )
-                   MOVE    TRRK-TAIINYMD   TO  REG-SRYYMD
-               END-IF
-           END-IF
-      *
-           .
-       10011-NYUINYMD-CHECK-EXT.
-           EXIT.
-      *****************************************************************
-      *    分娩管理検索処理
-      *****************************************************************
-       10011-BUNBEN-CHECK-SEC          SECTION.
-      *
-           PERFORM 900-BUNBEN-KEY3-SEL-SEC
-           IF    ( FLG-BUNBEN          =   ZERO )
-               IF    ( BDREQ-REQNUM    =   "01" )
-                AND  ( BUNBEN-UPDKBN   =   ZERO )
-                   MOVE    "8916"      TO  WRK-ERRCD
-                   PERFORM 990-ERROR-EDIT-SEC
-               END-IF
+               MOVE    WRK-SNUM-OUTNUM TO  WRK-GAIHAKUKBN
+               MOVE    WRK-GAIHAKUKBN-G TO API-GAIHAKUKBN
            ELSE
-               MOVE    "8916"          TO  WRK-ERRCD
                PERFORM 990-ERROR-EDIT-SEC
            END-IF
       *
-           MOVE    BUNBEN-REC          TO  TBBN-REC
-      *
            .
-       10011-BUNBEN-CHECK-EXT.
+       10011-GAIHAKUKBN-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    電文項目退避処理（照会時）
+      *    室料差額チェック処理
       *****************************************************************
-       1001-SHOKAI-SEC                 SECTION.
+       10011-SAGAKU-CHECK-SEC          SECTION.
       *
+           MOVE    SPACE           TO  API-SAGAKUCD
+           MOVE    HSACCTMREQ-SAGAKU
+                                   TO  API-SAGAKU
+      *
+           IF    ( HSACCTMREQ-SAGAKU   =   SPACE )
+               MOVE    "0024"      TO  WRK-ERRCD
+           ELSE
+               MOVE    HSACCTMREQ-SAGAKU
+                                   TO  WRK-SNUM-INX
+               PERFORM 800-ORCSNUM-SEC
+               IF    ( FLG-ORCSNUM =   ZERO )
+                   IF    ( WRK-SNUM-OUTNUM =   ZERO )
+                       MOVE    "00"    TO  API-SAGAKUCD
+                   END-IF
+               ELSE
+                   MOVE    "0024"      TO  WRK-ERRCD
+               END-IF
+      *
+               IF    ( WRK-ERRCD       =   SPACE )
+                AND  ( API-SAGAKUCD    =   SPACE )
+                   INITIALIZE              SYSKANRI-REC
+                   MOVE    "5113"      TO  SYS-KANRICD
+                   MOVE    API-SRYYMD  TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+                   PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+                   MOVE    SYSKANRI-REC TO SYS-5113-REC
+                   PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                            OR   ( API-SAGAKUCD    NOT =   SPACE )
+                       IF    ( WRK-SNUM-OUTNUM
+                                   =   SYS-5113-BRM-SAGAKU-NM )
+                           MOVE    SYS-5113-KBNCD
+                                       TO  API-SAGAKUCD
+                       END-IF
+      *
+                       PERFORM 900-SYSKANRI-KEY2-FET-SEC
+                       MOVE    SYSKANRI-REC
+                                       TO  SYS-5113-REC
+                   END-PERFORM
+      *
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key2"          TO  MCP-PATHNAME
+                   PERFORM 910-DBCLOSECURSOR-SEC
+               END-IF
+           END-IF
+      *
+           IF    ( WRK-ERRCD       =   SPACE )
+               IF    ( API-SAGAKUCD    =   SPACE )
+                   MOVE     "8047" TO  WRK-ERRCD
+               END-IF
+           END-IF
+      *
+          IF    (  WRK-ERRCD       =   SPACE )
+              CONTINUE
+          ELSE
+               PERFORM 990-ERROR-EDIT-SEC
+          END-IF
       *
            .
-       1001-SHOKAI-EXT.
+       10011-SAGAKU-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    電文項目退避処理（登録時）
+      *    期間終了日チェック処理
       *****************************************************************
-       1001-TOROKU-SEC             SECTION.
+       10011-ENDYMD-CHECK-SEC          SECTION.
       *
+           MOVE    SPACE           TO  API-ENDYMD
+      *
+           IF    ( HSACCTMREQ-ENDYMD   NOT =   SPACE )
+               MOVE    HSACCTMREQ-ENDYMD
+                                       TO  WRK-DATE
+               PERFORM 800-SYMD-SEC
+               PERFORM 800-HIZUKE-SEC
+               IF    ( WRK-EDTYMD1     =   SPACE )
+                   MOVE    "8013"      TO  WRK-ERRCD
+                   PERFORM 990-ERROR-EDIT-SEC
+               ELSE
+                   MOVE    WRK-SYMD    TO  API-ENDYMD
+                   IF    ( API-SRYYMD (1:6)    NOT =   API-ENDYMD (1:6))
+                       MOVE    "8014"  TO  WRK-ERRCD
+                       PERFORM 990-ERROR-EDIT-SEC
+                   END-IF
+               END-IF
+           END-IF
       *
            .
-       1001-TOROKU-EXT.
+       10011-ENDYMD-CHECK-EXT.
            EXIT.
       *****************************************************************
       *    主　処理
@@ -556,12 +741,17 @@
            INITIALIZE                  ORDER-REC
            INITIALIZE                  ODRITEM-REC
            INITIALIZE                  SODR-AREA
+           INITIALIZE                  LNK-ODRITEM-REC
       *
-           EVALUATE    BDREQ-REQNUM
-           WHEN    "01"
-               PERFORM 2001-KAKUNIN-SEC
-           WHEN    "02"
-               PERFORM 2001-TOROKU-SEC
+           EVALUATE    HSACCTMREQ-REQNUM
+           WHEN    "2"
+               PERFORM 2001-GAIHAKU-SEC
+           WHEN    "3"
+               PERFORM 2001-SAGAKU-SEC
+           WHEN    "4"
+               PERFORM 2001-SHOKUJI-SEC
+           WHEN    "9"
+               PERFORM 2001-CRENACCT-SEC
            END-EVALUATE
       *
            .
@@ -569,29 +759,26 @@
            EXIT.
       *
       *****************************************************************
-      *    確認処理
+      *    外泊等処理
       *****************************************************************
-       2001-KAKUNIN-SEC                SECTION.
-      *
-           PERFORM 2001-RESPONSE-EDIT-SEC
-      *
-           .
-       2001-KAKUNIN-EXT.
-           EXIT.
-      *****************************************************************
-      *    確認処理
-      *****************************************************************
-       2001-TOROKU-SEC                 SECTION.
+       2001-GAIHAKU-SEC                SECTION.
       *
            PERFORM 2300-SODR-COMMON-SET-SEC
       *
-           CALL   "ORCSODR11S01"   USING   SODR-AREA
-                                           LNK-ODRITEM-REC
-                                           XML-BDREQ
-                                           MCPAREA
-                                           SPA-AREA
+           MOVE    API-SRYYMD          TO  SODR-SRYYMD
+           MOVE    API-ORDERID         TO  SODR-ORDERID
       *
-           CALL   "ORCSODR11"      USING   SODR-AREA
+           MOVE    API-SRYYMD          TO  SPA-SRYYMD
+      *
+           MOVE    ZERO                TO  IDX-ITM
+      *
+           PERFORM 2300-GAIHAKUKBN-SET-SEC
+      *
+           PERFORM 2300-ENDYMD-SET-SEC
+      *
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
+      *
+           CALL   "ORCSODR03"      USING   SODR-AREA
                                            LNK-ODRITEM-REC
                                            MCPAREA
                                            SPA-AREA
@@ -607,7 +794,219 @@
            END-EVALUATE
       *
            .
-       2001-TOROKU-EXT.
+       2001-GAIHAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    室料差額処理
+      *****************************************************************
+       2001-SAGAKU-SEC                 SECTION.
+      *
+           PERFORM 2300-SODR-COMMON-SET-SEC
+      *
+           MOVE    API-SRYYMD          TO  SODR-SRYYMD
+           MOVE    API-ORDERID         TO  SODR-ORDERID
+      *
+           MOVE    API-SRYYMD          TO  SPA-SRYYMD
+      *
+           MOVE    ZERO                TO  IDX-ITM
+      *
+           PERFORM 2300-SAGAKU-SET-SEC
+      *
+           PERFORM 2300-ENDYMD-SET-SEC
+      *
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
+      *
+           CALL   "ORCSODR04"      USING   SODR-AREA
+                                           LNK-ODRITEM-REC
+                                           MCPAREA
+                                           SPA-AREA
+           EVALUATE    TRUE
+           WHEN  ( SODR-RC         =   ZERO )
+            AND  ( SODR-ERRFLG     =   ZERO )
+               PERFORM 2001-RESPONSE-EDIT-SEC
+           WHEN  ( SODR-RC     NOT =   ZERO )
+               MOVE    "8051"      TO  WRK-ERRCD
+               PERFORM 990-ERROR-EDIT-SEC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               PERFORM 2400-ORDER-ERROR-EDIT-SEC
+           END-EVALUATE
+      *
+           .
+       2001-SAGAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事処理
+      *****************************************************************
+       2001-SHOKUJI-SEC                SECTION.
+      *
+           PERFORM 2300-SODR-COMMON-SET-SEC
+      *
+           MOVE    API-SRYYMD          TO  SODR-SRYYMD
+           MOVE    API-ORDERID         TO  SODR-ORDERID
+      *
+           MOVE    API-SRYYMD          TO  SPA-SRYYMD
+      *
+           MOVE    ZERO                TO  IDX-ITM
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   3 )
+      *
+               PERFORM 2300-SKJTIME-SET-SEC
+      *
+               PERFORM 2300-SKJTYPE-SET-SEC
+      *
+               PERFORM 2300-NISSU-SET-SEC
+      *
+               PERFORM 2300-SAME-AFTER-SET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
+      *
+           CALL   "ORCSODR04"      USING   SODR-AREA
+                                           LNK-ODRITEM-REC
+                                           MCPAREA
+                                           SPA-AREA
+           EVALUATE    TRUE
+           WHEN  ( SODR-RC         =   ZERO )
+            AND  ( SODR-ERRFLG     =   ZERO )
+               PERFORM 2001-RESPONSE-EDIT-SEC
+           WHEN  ( SODR-RC     NOT =   ZERO )
+               MOVE    "8051"      TO  WRK-ERRCD
+               PERFORM 990-ERROR-EDIT-SEC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               PERFORM 2400-ORDER-ERROR-EDIT-SEC
+           END-EVALUATE
+      *
+           .
+       2001-SHOKUJI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計作成処理
+      *****************************************************************
+       2001-CRENACCT-SEC               SECTION.
+      *
+           PERFORM 2300-SODR-COMMON-SET-SEC
+      *
+           MOVE    API-SRYYMD          TO  SODR-SRYYMD
+           MOVE    API-ORDERID         TO  SODR-ORDERID
+      *
+           MOVE    API-SRYYMD          TO  SPA-SRYYMD
+      *
+           MOVE    ZERO                TO  IDX-ITM
+      *
+           MOVE    IDX-ITM          TO  LNK-ODRITEM-MAX
+      *
+           CALL   "ORCSODR04"      USING   SODR-AREA
+                                           LNK-ODRITEM-REC
+                                           MCPAREA
+                                           SPA-AREA
+           EVALUATE    TRUE
+           WHEN  ( SODR-RC         =   ZERO )
+            AND  ( SODR-ERRFLG     =   ZERO )
+               PERFORM 2002-RESPONSE-EDIT-SEC
+           WHEN  ( SODR-RC     NOT =   ZERO )
+               MOVE    "8051"      TO  WRK-ERRCD
+               PERFORM 990-ERROR-EDIT-SEC
+           WHEN  ( SODR-ERRFLG  NOT =   ZERO )
+               PERFORM 2400-ORDER-ERROR-EDIT-SEC
+           END-EVALUATE
+      *
+           .
+       2001-CRENACCT-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事時間区分設定処理
+      *****************************************************************
+       2300-SKJTIME-SET-SEC            SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+           MOVE    NCLAIMID-SKJTIMEJMA
+                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-SKJTIME (IDX2)  TO  LNK-ODRITEM-ITEM (IDX-ITM)
+      *
+           .
+       2300-SKJTIME-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事の種類区分設定処理
+      *****************************************************************
+       2300-SKJTYPE-SET-SEC             SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+           MOVE    NCLAIMID-SKJTYPEJMA TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-SKJTYPE (IDX2)  TO  LNK-ODRITEM-ITEM (IDX-ITM)
+      *
+           .
+       2300-SKJTYPE-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括入力設定処理
+      *****************************************************************
+       2300-NISSU-SET-SEC              SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+           MOVE    NCLAIMID-NISSUJMA   TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-NISSU (IDX2)    TO  LNK-ODRITEM-MEMO (IDX-ITM)
+      *
+           .
+       2300-NISSU-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事継続区分設定処理
+      *****************************************************************
+       2300-SAME-AFTER-SET-SEC         SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+           MOVE    NCLAIMID-SAME-AFTERJMA
+                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-SAME-AFTER (IDX2)
+                                       TO  LNK-ODRITEM-ITEM (IDX-ITM)
+      *
+           .
+       2300-NISSU-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    外泊区分設定処理
+      *****************************************************************
+       2300-GAIHAKUKBN-SET-SEC         SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-GAIHAKUKBNJMA
+                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-GAIHAKUKBN      TO  LNK-ODRITEM-ITEM (IDX-ITM)
+      *
+           .
+       2300-GAIHAKUKBN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    終了日設定処理
+      *****************************************************************
+       2300-ENDYMD-SET-SEC             SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-ENDYMDJMA
+                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-ENDYMD          TO  LNK-ODRITEM-ITEM (IDX-ITM)
+      *
+           .
+       2300-ENDYMD-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    室料差額設定処理
+      *****************************************************************
+       2300-SAGAKU-SET-SEC             SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-SAGAKUJMA  TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-SAGAKUCD        TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    API-SAGAKU          TO  LNK-ODRITEM-MEMO (IDX-ITM)
+      *
+           .
+       2300-SAGAKU-SET-EXT.
            EXIT.
       *****************************************************************
       *    共通項目設定処理
@@ -622,7 +1021,7 @@
            MOVE    SPA-PTID            TO  SODR-PTID
            MOVE    SMCNDATE-YMD        TO  SODR-UKEYMD
            MOVE    SMCNDATE-HMS        TO  SODR-UKEHMS
-           IF    ( REG-SAVEREQ         =   "1" )
+           IF    ( API-SAVEREQ         =   "1" )
                MOVE    "0"             TO  SODR-PROCKBN
            ELSE
                MOVE    "2"             TO  SODR-PROCKBN
@@ -635,9 +1034,6 @@
            MOVE    SPA-OPID            TO  SODR-OPID(5:)
            MOVE    SMCNDATE-YMD        TO  SODR-UPYMD
            MOVE    SMCNDATE-HMS        TO  SODR-UPHMS
-      *
-           MOVE    REG-SRYYMD          TO  SODR-SRYYMD
-           MOVE    REG-ORDERID         TO  SODR-ORDERID
       *
            .
        2300-SODR-COMMON-SET-EXT.
@@ -687,277 +1083,156 @@
       *****************************************************************
        2001-RESPONSE-EDIT-SEC          SECTION.
       *
-           MOVE    TRRK-REC        TO  PTNYUINRRK-REC
+           INITIALIZE                  SNINF03-AREA
+           MOVE    API-SRYYMD(1:6) TO  SNINF03-IN-SRYYM
+           CALL    "ORCSNINF03"    USING
+                                   SNINF03-AREA
+                                   SPA-AREA
       *
-           PERFORM 900-BUNBEN-KEY3-SEL-SEC
+           MOVE    SNINF03-PTNUM       TO  HSACCTMRES-PTNUM
+           MOVE    SNINF03-NAME        TO  HSACCTMRES-NAME
+           MOVE    SNINF03-KANANAME    TO  HSACCTMRES-KANANAME
+           MOVE    SNINF03-BIRTHDAY    TO  HSACCTMRES-BIRTHDAY
+           MOVE    SNINF03-SEX         TO  HSACCTMRES-SEX
       *
-           PERFORM 900-PTINF-KEY-SEL-SEC
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   5 )
+               MOVE    SNINF03-NYUINYMD (IDXA)
+                                       TO  HSACCTMRES-NYUINYMD (IDXA)
+               MOVE    SNINF03-TAIINYMD (IDXA)
+                                       TO  HSACCTMRES-TAIINYMD (IDXA)
+           END-PERFORM
       *
-           MOVE    SPACE           TO  WRK-KYUSEI-G
-           PERFORM 900-KYUSEIRRK-KEY3-SEL-SEC
-           IF    ( FLG-KYUSEIRRK   =   ZERO )
-               MOVE    KYUSEI-KANANAME
-                                   TO  WRK-KYUSEI-KANANAME
-               MOVE    KYUSEI-NAME
-                                   TO  WRK-KYUSEI-NAME
-           END-IF
+           MOVE    SNINF03-SRYYM       TO  HSACCTMRES-SRYYM
       *
-           PERFORM 900-HKNJAINF-KEY-SEL-SEC
+           PERFORM VARYING IDXD    FROM    1   BY  1
+                   UNTIL ( IDXD    >   31 )
       *
-           MOVE    SPA-PTNUM       TO  BDRES-PTNUM
-           IF    ( WRK-KYUSEI-KANANAME =   SPACE )
-               MOVE    PTINF-NAME      TO  BDRES-NAME
-               MOVE    PTINF-KANANAME  TO  BDRES-KANANAME
-           ELSE
-               MOVE    WRK-KYUSEI-NAME     TO  BDRES-NAME
-               MOVE    WRK-KYUSEI-KANANAME TO  BDRES-KANANAME
-               IF    ( BUNBEN-NAME     NOT =   WRK-KYUSEI-KANANAME )
-                   MOVE    1       TO  FLG-KYUSEI-ALERT
-               END-IF
-           END-IF
-           MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
-           PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE        TO  BDRES-BIRTHDAY
-           MOVE    PTINF-SEX       TO  BDRES-SEX
+               MOVE    SNINF03-SRYYMD (IDXD)
+                                   TO  HSACCTMRES-SRYYMD (IDXD)
+               MOVE    SNINF03-SRYKA-LBL (IDXD)
+                                   TO  HSACCTMRES-SRYKA-LBL (IDXD)
+               MOVE    SNINF03-SRYKA-DATA(IDXD)
+                                   TO  HSACCTMRES-SRYKA-DATA(IDXD)
+               MOVE    SNINF03-SRYKA-NAME (IDXD)
+                                   TO  HSACCTMRES-SRYKA-NAME (IDXD)
       *
-           MOVE    PTNYUINRRK-RRKNUM
-                                   TO  BDRES-RRKNUM
+               MOVE    SNINF03-BTUNUM-LBL (IDXD)
+                                   TO  HSACCTMRES-BTUNUM-LBL (IDXD)
+               MOVE    SNINF03-BTUNUM-DATA (IDXD)
+                                   TO  HSACCTMRES-BTUNUM-DATA (IDXD)
       *
-           MOVE    PTNYUINRRK-NYUINYMD
-                                   TO  WRK-SYMD
-           PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE        TO  BDRES-NYUINYMD
+               MOVE    SNINF03-BTUNAME-LBL (IDXD)
+                                   TO  HSACCTMRES-BTUNAME-LBL (IDXD)
+               MOVE    SNINF03-BTUNAME-DATA (IDXD)
+                                   TO  HSACCTMRES-BTUNAME-DATA (IDXD)
       *
-           MOVE    PTNYUINRRK-TAIINYMD
-                                   TO  WRK-SYMD
-           PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE        TO  BDRES-TAIINYMD
+               MOVE    SNINF03-BRMNUM-LBL (IDXD)
+                                   TO  HSACCTMRES-BRMNUM-LBL (IDXD)
+               MOVE    SNINF03-BRMNUM-DATA (IDXD)
+                                   TO  HSACCTMRES-BRMNUM-DATA (IDXD)
       *
-           IF    ( BUNBEN-RIYOUKBN NOT =   SPACE )
-               MOVE    "直接支払制度"
-                                   TO  BDRES-RIYOUKBN-LBL
-               MOVE    BUNBEN-RIYOUKBN
-                                   TO  BDRES-RIYOUKBN-DATA
-               EVALUATE    BUNBEN-RIYOUKBN
-               WHEN    "0"
-                   MOVE    "利用しない"
-                                   TO  BDRES-RIYOUKBN-NAME
-               WHEN    "1"
-                   MOVE    "利用する"
-                                   TO  BDRES-RIYOUKBN-NAME
-               END-EVALUATE
-           END-IF
+               MOVE    SNINF03-HKNCOMBI (IDXD)
+                                   TO  HSACCTMRES-HKNCOMBI (IDXD)
       *
-           IF    ( BUNBEN-SKYYM    NOT =   SPACE )
-            AND  ( BUNBEN-SKYYM    NOT =   ZERO )
+               MOVE    SNINF03-PTSTATUS-LBL (IDXD)
+                                   TO  HSACCTMRES-PTSTATUS-LBL (IDXD)
+               MOVE    SNINF03-PTSTATUS-DATA (IDXD)
+                                   TO  HSACCTMRES-PTSTATUS-DATA (IDXD)
+               MOVE    SNINF03-PTSTATUS-NAME (IDXD)
+                                   TO  HSACCTMRES-PTSTATUS-NAME (IDXD)
       *
-               MOVE    "請求年月"      TO  BDRES-SKYYM-LBL
+               MOVE    SNINF03-SKJ-ASA-LBL (IDXD)
+                                   TO  HSACCTMRES-SKJ-ASA-LBL (IDXD)
+               MOVE    SNINF03-SKJ-ASA-DATA (IDXD)
+                                   TO  HSACCTMRES-SKJ-ASA-DATA (IDXD)
+               MOVE    SNINF03-SKJ-ASA-NAME (IDXD)
+                                   TO  HSACCTMRES-SKJ-ASA-NAME (IDXD)
       *
-               MOVE    BUNBEN-SKYYM    TO  WRK-SYMD
-               MOVE    "01"            TO  WRK-SYMD (7:2)
-               PERFORM 800-DATE-SEC
-               MOVE    WRK-DATE (1:7)  TO  BDRES-SKYYM-DATA
-           END-IF
+               MOVE    SNINF03-SKJ-HIRU-LBL (IDXD)
+                                   TO  HSACCTMRES-SKJ-HIRU-LBL (IDXD)
+               MOVE    SNINF03-SKJ-HIRU-DATA (IDXD)
+                                   TO  HSACCTMRES-SKJ-HIRU-DATA (IDXD)
+               MOVE    SNINF03-SKJ-HIRU-NAME (IDXD)
+                                   TO  HSACCTMRES-SKJ-HIRU-NAME (IDXD)
       *
-           IF    ( BUNBEN-TEISYUTUBIKBN NOT =   SPACE )
+               MOVE    SNINF03-SKJ-YU-LBL (IDXD)
+                                   TO  HSACCTMRES-SKJ-YU-LBL (IDXD)
+               MOVE    SNINF03-SKJ-YU-DATA (IDXD)
+                                   TO  HSACCTMRES-SKJ-YU-DATA (IDXD)
+               MOVE    SNINF03-SKJ-YU-NAME (IDXD)
+                                   TO  HSACCTMRES-SKJ-YU-NAME (IDXD)
       *
-               MOVE    "提出日"        TO  BDRES-TEISYUTUBIKBN-LBL
-               MOVE    BUNBEN-TEISYUTUBIKBN
-                                       TO  BDRES-TEISYUTUBIKBN-DATA
+               MOVE    SNINF03-SAGAKU-LBL (IDXD)
+                                   TO  HSACCTMRES-SAGAKU-LBL (IDXD)
+               MOVE    SNINF03-SAGAKU-DATA (IDXD)
+                                   TO  HSACCTMRES-SAGAKU-DATA (IDXD)
+               MOVE    SNINF03-SAGAKU-NAME (IDXD)
+                                   TO  HSACCTMRES-SAGAKU-NAME (IDXD)
       *
-               EVALUATE    BUNBEN-TEISYUTUBIKBN
-               WHEN    "1"
-                   MOVE    "１０日請求" TO BDRES-TEISYUTUBIKBN-NAME
-               WHEN    "2"
-                   MOVE    "２５日請求" TO BDRES-TEISYUTUBIKBN-NAME
-               END-EVALUATE
-           END-IF
+           END-PERFORM
       *
-           IF    ( BUNBEN-SKYKBN       NOT =   SPACE )
+           PERFORM VARYING IDXH    FROM    1   BY  1
+                   UNTIL ( IDXH    >   10 )
       *
-               MOVE    "請求区分"      TO  BDRES-SKYKBN-LBL
-               MOVE    BUNBEN-SKYKBN   TO  BDRES-SKYKBN-DATA
+               MOVE    SNINF03-HKNCOMBI-KEY (IDXH)
+                                   TO  HSACCTMRES-HKNCOMBI-KEY (IDXH)
+               MOVE    SNINF03-HKNNUM (IDXH)
+                                   TO  HSACCTMRES-HKNNUM (IDXH)
+               MOVE    SNINF03-HKNJANUM (IDXH)
+                                   TO  HSACCTMRES-HKNJANUM (IDXH)
+               MOVE    SNINF03-HKNJANAME (IDXH)
+                                   TO  HSACCTMRES-HKNJANAME (IDXH)
+               MOVE    SNINF03-HKIGO (IDXH)
+                                   TO  HSACCTMRES-HKIGO (IDXH)
+               MOVE    SNINF03-HNUM (IDXH)
+                                   TO  HSACCTMRES-HNUM (IDXH)
       *
-               EVALUATE    BUNBEN-SKYKBN
-               WHEN    "0"
-                   MOVE    "請求しない" TO BDRES-SKYKBN-NAME
-               WHEN    "1"
-                   MOVE    "未請求"    TO  BDRES-SKYKBN-NAME
-               WHEN    "2"
-                   MOVE    "請求済"    TO  BDRES-SKYKBN-NAME
-               END-EVALUATE
+               PERFORM VARYING IDXK    FROM    1   BY  1
+                       UNTIL ( IDXK    >   4 )
       *
-           END-IF
+                   MOVE    SNINF03-KOHNUM (IDXH IDXK)
+                                   TO  HSACCTMRES-KOHNUM (IDXH IDXK)
+                   MOVE    SNINF03-KOHNAME (IDXH IDXK)
+                                   TO  HSACCTMRES-KOHNAME (IDXH IDXK)
+                   MOVE    SNINF03-FTNJANUM (IDXH IDXK)
+                                   TO  HSACCTMRES-FTNJANUM (IDXH IDXK)
+                   MOVE    SNINF03-JKYSNUM (IDXH IDXK)
+                                   TO  HSACCTMRES-JKYSNUM (IDXH IDXK)
       *
-           IF    ( BUNBEN-BUNBENKBN    NOT =   SPACE )
+               END-PERFORM
       *
-               MOVE    "分娩区分"      TO  BDRES-BUNBENKBN-LBL
-               MOVE    BUNBEN-BUNBENKBN TO BDRES-BUNBENKBN-DATA
+           END-PERFORM
       *
-               EVALUATE    BUNBEN-BUNBENKBN
-               WHEN    "1"
-                   MOVE    "正常分娩"  TO  BDRES-BUNBENKBN-NAME
-               WHEN    "2"
-                   MOVE    "異常分娩"  TO  BDRES-BUNBENKBN-NAME
-               END-EVALUATE
-           END-IF
-      *
-           IF    ( BUNBEN-TEISYUTUSAKI NOT =   SPACE )
-      *
-               MOVE    "提出先"        TO  BDRES-TEISYUTUSAKI-LBL
-               MOVE    BUNBEN-TEISYUTUSAKI
-                                       TO  BDRES-TEISYUTUSAKI-DATA
-      *
-               EVALUATE    BUNBEN-TEISYUTUSAKI
-               WHEN    "1"
-                   MOVE    "支払基金"
-                                       TO  BDRES-TEISYUTUSAKI-NAME
-               WHEN    "2"
-                   MOVE    "国保連合会"
-                                       TO  BDRES-TEISYUTUSAKI-NAME
-               END-EVALUATE
-      *
-           END-IF
-      *
-           IF    ( BUNBEN-ZAIWEEK NOT  =   ZERO )
-      *
-               MOVE    "在胎週数"      TO  BDRES-ZAIWEEK-LBL
-               MOVE    BUNBEN-ZAIWEEK  TO  WRK-NUM2Z
-               MOVE    WRK-NUM2Z       TO  BDRES-ZAIWEEK-DATA
-               MOVE    "週"            TO  BDRES-ZAIWEEK-NAME
-      *
-           END-IF
-      *
-           IF    ( BUNBEN-BIRTHDAY NOT =   SPACE )
-               MOVE    "出産年月日"    TO  BDRES-BIRTHDAY-LBL
-               MOVE    BUNBEN-BIRTHDAY TO  WRK-SYMD
-               PERFORM 800-DATE-SEC
-               MOVE    WRK-DATE        TO  BDRES-BIRTHDAY-DATA
-           END-IF
-      *
-           IF    ( BUNBEN-SIZANKBN NOT =   SPACE )
-      *
-               MOVE    "死産有無"      TO  BDRES-SIZANKBN-LBL
-               MOVE    BUNBEN-SIZANKBN TO  BDRES-SIZANKBN-DATA
-      *
-               EVALUATE    BUNBEN-SIZANKBN
-               WHEN    "1"
-                   MOVE    "死産"      TO  BDRES-SIZANKBN-NAME
-               WHEN    "2"
-                   MOVE    "死産でない" TO  BDRES-SIZANKBN-NAME
-               WHEN    "3"
-                   MOVE    "混在"      TO  BDRES-SIZANKBN-NAME
-               END-EVALUATE
-      *
-           END-IF
-      *
-           IF    ( BUNBEN-BIRTHCNT NOT =   ZERO )
-               MOVE    "出産数"        TO  BDRES-BIRTHCNT-LBL
-               MOVE    BUNBEN-BIRTHCNT TO  WRK-NUM2Z
-               MOVE    WRK-NUM2Z       TO  BDRES-BIRTHCNT-DATA
-               MOVE    "人"            TO  BDRES-BIRTHCNT-NAME
-           END-IF
-      *
-           IF    ( BUNBEN-SANKAKBN NOT =   SPACE )
-      *
-               MOVE    "産科医療補償制度"  TO  BDRES-SANKAKBN-LBL
-               MOVE    BUNBEN-SANKAKBN     TO  BDRES-SANKAKBN-DATA
-      *
-               EVALUATE    BUNBEN-SANKAKBN
-               WHEN    "1"
-                   MOVE    "対象分娩"
-                                   TO  BDRES-SANKAKBN-NAME
-               WHEN    "2"
-                   MOVE    "対象分娩でない"
-                                   TO  BDRES-SANKAKBN-NAME
-               WHEN    "3"
-                   MOVE    "混在"  TO  BDRES-SANKAKBN-NAME
-               END-EVALUATE
-      *
-           END-IF
-      *
-           IF    ( BUNBEN-UPDKBN       NOT =   "3" )
-               MOVE    "入院日数"      TO  BDRES-NYUIN-DAY-LBL
-               MOVE    BUNBEN-NYUIN-DAY TO WRK-NUM3Z
-               MOVE    WRK-NUM3Z       TO  BDRES-NYUIN-DAY-DATA
-               MOVE    "日"            TO  BDRES-NYUIN-DAY-NAME
-      *
-               MOVE    "入院料"            TO  BDRES-NYU-MONEY-LBL
-               MOVE    BUNBEN-NYU-MONEY    TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-NYU-MONEY-DATA
-               MOVE    "円"                TO  BDRES-NYU-MONEY-NAME
-      *
-               MOVE    "室料差額"          TO  BDRES-RMSGK-MONEY-LBL
-               MOVE    BUNBEN-RMSGK-MONEY  TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-RMSGK-MONEY-DATA
-               MOVE    "円"                TO  BDRES-RMSGK-MONEY-NAME
-      *
-               MOVE    "分娩介助料"        TO  BDRES-KAIJO-MONEY-LBL
-               MOVE    BUNBEN-KAIJO-MONEY  TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-KAIJO-MONEY-DATA
-               MOVE    "円"                TO  BDRES-KAIJO-MONEY-NAME
-      *
-               MOVE    "分娩料"            TO  BDRES-BUNBEN-MONEY-LBL
-               MOVE    BUNBEN-BUNBEN-MONEY TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-BUNBEN-MONEY-DATA
-               MOVE    "円"                TO  BDRES-BUNBEN-MONEY-NAME
-      *
-               MOVE    "新生児管理保育料"  TO  BDRES-SHIN-MONEY-LBL
-               MOVE    BUNBEN-SHIN-MONEY   TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-SHIN-MONEY-DATA
-               MOVE    "円"                TO  BDRES-SHIN-MONEY-NAME
-      *
-               MOVE    "検査・薬剤料"      TO  BDRES-KNS-MONEY-LBL
-               MOVE    BUNBEN-KNS-MONEY    TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-KNS-MONEY-DATA
-               MOVE    "円"                TO  BDRES-KNS-MONEY-NAME
-      *
-               MOVE    "処置・手当料"      TO  BDRES-SYC-MONEY-LBL
-               MOVE    BUNBEN-SYC-MONEY    TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-SYC-MONEY-DATA
-               MOVE    "円"                TO  BDRES-SYC-MONEY-NAME
-      *
-               MOVE    "産科医療補償制度掛金"
-                                           TO  BDRES-SNK-MONEY-LBL
-               MOVE    BUNBEN-SNK-MONEY    TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-SNK-MONEY-DATA
-               MOVE    "円"                TO  BDRES-SNK-MONEY-NAME
-      *
-               MOVE    "その他"            TO  BDRES-ETC-MONEY-LBL
-               MOVE    BUNBEN-ETC-MONEY    TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-ETC-MONEY-DATA
-               MOVE    "円"                TO  BDRES-ETC-MONEY-NAME
-      *
-               MOVE    "一部負担金等"      TO  BDRES-ICBFTN-MONEY-LBL
-               MOVE    BUNBEN-ICBFTN-MONEY TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-ICBFTN-MONEY-DATA
-               MOVE    "円"                TO  BDRES-ICBFTN-MONEY-NAME
-      *
-               MOVE    "妊婦合計負担額"    TO  BDRES-NINPUFTN-MONEY-LBL
-               MOVE    BUNBEN-NINPUFTN-MONEY TO WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-NINPUFTN-MONEY-DATA
-               MOVE    "円"                TO  BDRES-NINPUFTN-MONEY-NAME
-      *
-               MOVE    "代理受取額"        TO  BDRES-DAIRI-MONEY-LBL
-               MOVE    BUNBEN-DAIRI-MONEY  TO  WRK-NUM7Z
-               MOVE    WRK-NUM7Z           TO  BDRES-DAIRI-MONEY-DATA
-               MOVE    "円"                TO  BDRES-DAIRI-MONEY-NAME
-      *
-           END-IF
-      *
-           IF    ( BUNBEN-BIKOU        NOT =   SPACE )
-               MOVE    "備考欄"        TO  BDRES-BIKOU-LBL
-               MOVE    BUNBEN-BIKOU    TO  BDRES-BIKOU-DATA
-           END-IF
-      *
-           MOVE    BUNBEN-HKNJANUM     TO  BDRES-HKNJANUM
-           MOVE    HKNJA-HKNJANAME     TO  BDRES-HKNJANAME
-           MOVE    BUNBEN-KIGO         TO  BDRES-KIGO
-           MOVE    BUNBEN-NUM          TO  BDRES-NUM
-           MOVE    BUNBEN-HONKZKKBN    TO  BDRES-HONKZKKBN
       *
            .
        2001-RESPONSE-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    レスポンス編集処理
+      *****************************************************************
+       2002-RESPONSE-EDIT-SEC          SECTION.
+      *
+           PERFORM 900-PTNUM-KEY-SEL-SEC
+      *
+           PERFORM 900-PTINF-KEY-SEL-SEC
+      *
+           PERFORM 900-NYUINACCT-KEY58-SEL-SEC
+      *
+           MOVE    PTNUM-PTNUM         TO  HSACCTMRES-PTNUM
+           MOVE    PTINF-NAME          TO  HSACCTMRES-NAME
+           MOVE    PTINF-KANANAME      TO  HSACCTMRES-KANANAME
+           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+           PERFORM 800-DATE-SEC
+           MOVE    WRK-DATE            TO  HSACCTMRES-BIRTHDAY
+           MOVE    PTINF-SEX           TO  HSACCTMRES-SEX
+      *
+           MOVE    NACCT-SRYYM         TO  WRK-SYMD
+           PERFORM 800-DATE-SEC
+           MOVE    WRK-DATE            TO  HSACCTMRES-SRYYM
+      *
+           .
+       2002-RESPONSE-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    オーダー追加処理
@@ -971,13 +1246,13 @@
            MOVE    "1"                 TO  ORDER-NYUGAIKBN
            MOVE    SPA-PTNUM           TO  ORDER-PTNUM
            MOVE    SPA-PTID            TO  ORDER-PTID
-           MOVE    REG-NYUINYMD        TO  ORDER-SRYYMD
+           MOVE    API-SRYYMD          TO  ORDER-SRYYMD
            MOVE    SMCNDATE-YMD        TO  ORDER-UKEYMD
            MOVE    SMCNDATE-HMS        TO  ORDER-UKEHMS
-           MOVE    REG-ORDERID         TO  ORDER-ORDERID
+           MOVE    API-ORDERID         TO  ORDER-ORDERID
       *
-           MOVE    REG-ERRCD (1)       TO  ORDER-ERRCD1
-      *    MOVE    REG-ERRCD (2)       TO  ORDER-ERRCD2
+           MOVE    API-ERRCD (1)       TO  ORDER-ERRCD1
+      *    MOVE    API-ERRCD (2)       TO  ORDER-ERRCD2
       *
            MOVE    1                   TO  ORDER-STATUS
       *
@@ -1002,29 +1277,27 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-           MOVE    SMCNDATE-YMD    TO  WRK-SYMD
+           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE        TO  BDRES-INFORMATION-DATE
+           MOVE    WRK-DATE            TO  HSACCTMRES-INFORMATION-DATE
       *
-           MOVE    SMCNDATE-HMS    TO  WRK-HMS
+           MOVE    SMCNDATE-HMS        TO  WRK-HMS
            PERFORM 800-TIME-SEC
-           MOVE    WRK-TIME        TO  BDRES-INFORMATION-TIME
+           MOVE    WRK-TIME            TO  HSACCTMRES-INFORMATION-TIME
       *
-           IF    ( REG-ERR-MAX     =   ZERO )
-               MOVE    1           TO  REG-ERR-MAX
-               MOVE    "0000"      TO  REG-ERRCD (1)
+           IF    ( API-ERR-MAX         =   ZERO )
+               MOVE    1               TO  API-ERR-MAX
+               MOVE    "00"            TO  API-ERRCD (1)
            END-IF
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   REG-ERR-MAX )
+                   UNTIL ( IDX1    >   API-ERR-MAX )
       *
-               MOVE    REG-ERRCD  (IDX1)
+               MOVE    API-ERRCD  (IDX1)
                                        TO  WRK-ERRCD
                PERFORM 890-ERRCD-MSG-SEC
-               MOVE    WRK-ERRCD
-                               TO  BDRES-API-RESULT     (IDX1)
-               MOVE    WRK-ERRMSG
-                               TO  BDRES-API-RESULT-MSG (IDX1)
+               MOVE    WRK-ERRCD   TO  HSACCTMRES-API-RESULT    (IDX1)
+               MOVE    WRK-ERRMSG  TO  HSACCTMRES-API-RESULT-MSG(IDX1)
       *
            END-PERFORM
       *
@@ -1090,7 +1363,7 @@
            MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
            MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
            MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
-           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN     TO  WRK-KEISANYMD
       *
@@ -1146,6 +1419,7 @@
        800-ORCSNUM-SEC                 SECTION.
       *
            MOVE    ZERO                TO  FLG-ORCSNUM
+           MOVE    ZERO                TO  WRK-SNUM-OUTNUM
       *
            INITIALIZE                      ORCSNUMAREA
            MOVE    WRK-SNUM-INX        TO  SNUM-INX
@@ -1179,25 +1453,24 @@
            .
        890-ERRCD-MSG-EXT.
            EXIT.
-      *
       *****************************************************************
       *    XML情報から内容を取り出す
       *****************************************************************
        900-XML-READ-SEC             SECTION.
       *
-           IF    ( I0API02-BODY     NOT =   LOW-VALUE )
-               DISPLAY "birthdeliveryv2r object is not low_value"
+           IF    ( I4API02-BODY     NOT =   LOW-VALUE )
+               DISPLAY "hsacctmodv2 object is not low_value"
            END-IF
       *
            INITIALIZE                      XML-APIREQ
       * XML情報取り出し
-           MOVE    "xml_birthdeliveryv2req"   TO  MCP-TABLE
-           MOVE    "key"                TO  MCP-PATHNAME
-           MOVE    I0API02-BODY         TO  APIREQ-OBJECT
+           MOVE    "xml_hsacctmodv2req"    TO  MCP-TABLE
+           MOVE    "key"                   TO  MCP-PATHNAME
+           MOVE    I4API02-BODY            TO  APIREQ-OBJECT
            MOVE    ZERO                    TO  APIREQ-MODE
            PERFORM 910-XMLOPEN-SEC
            IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_birthdeliveryv2req"
+               MOVE    "xml_hsacctmodv2req"
                                            TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "private_objects"   TO  APIREQ-RECORDNAME
@@ -1207,16 +1480,18 @@
                    PERFORM 9001-XML-FILTER-SEC
                ELSE
                    DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "8098"           TO  WRK-ERRCD
+                   MOVE   "8098"            TO  WRK-ERRCD
                END-IF
            ELSE
                DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "8097"                TO  WRK-ERRCD
+               MOVE   "8097"               TO  WRK-ERRCD
            END-IF
       *
-           MOVE    "xml_birthdeliveryv2req"   TO  MCP-TABLE
+           MOVE    "xml_hsacctmodv2req"    TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-XMLCLOSE-SEC
+      *
+           MOVE    LOW-VALUE               TO  I4API02-BODY
       *
            .
        900-XML-READ-EXT.
@@ -1227,7 +1502,7 @@
        9001-XML-FILTER-SEC             SECTION.
       *
            MOVE    APIREQ-PATIENTINFOREQ
-                                       TO  BDREQ-PRIVATE-OBJECTS
+                                       TO  HSACCTMREQ-PRIVATE-OBJECTS
       *
            .
        9001-XML-FILTER-EXT.
@@ -1237,35 +1512,25 @@
       *****************************************************************
        900-XML-WRITE-SEC             SECTION.
       *
-           MOVE    BDRES-INFORMATION-DATE
-                               TO  BDRES-INFORMATION-DATE
+           MOVE    "リクエスト番号"
+                               TO  HSACCTMRES-REQNUM-LBL
       *
-           MOVE    BDRES-INFORMATION-TIME
-                               TO  BDRES-INFORMATION-TIME
+           MOVE    HSACCTMREQ-REQNUM
+                               TO  HSACCTMRES-REQNUM-DATA
       *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   REG-ERR-MAX )
-      *
-               MOVE    BDRES-API-RESULT     (IDX1)
-                               TO  BDRES-API-RESULT (IDX1)
-               MOVE    BDRES-API-RESULT-MSG (IDX1)
-                               TO  BDRES-API-RESULT-MSG (IDX1)
-      *
-           END-PERFORM
-      *
-           IF    ( BDREQ-REQNUM    NOT =   SPACE )
-               MOVE    "リクエスト番号"
-                               TO  BDRES-REQNUM-LBL
-      *
-               MOVE    BDREQ-REQNUM
-                               TO  BDRES-REQNUM-DATA
-           END-IF
-      *
-           EVALUATE    BDREQ-REQNUM
-           WHEN    "01"
-               MOVE    "照会"  TO  BDRES-REQNUM-NAME
-           WHEN    "02"
-               MOVE    "登録"  TO  BDRES-REQNUM-NAME
+           EVALUATE    HSACCTMREQ-REQNUM
+           WHEN    "2"
+               MOVE    "外泊"
+                               TO  HSACCTMRES-REQNUM-NAME
+           WHEN    "3"
+               MOVE    "室料差額"
+                               TO  HSACCTMRES-REQNUM-NAME
+           WHEN    "4"
+               MOVE    "食事"
+                               TO  HSACCTMRES-REQNUM-NAME
+           WHEN    "9"
+               MOVE    "入院会計作成"
+                               TO  HSACCTMRES-REQNUM-NAME
            END-EVALUATE
       *
            PERFORM 9001-XML-WRITE-SEC
@@ -1278,12 +1543,8 @@
       *****************************************************************
        9001-XML-WRITE-SEC             SECTION.
       *
-           IF    ( I0API02-BODY    NOT =   LOW-VALUE )
-               DISPLAY "birthdeliveryv2 object is not low_value"
-           END-IF
-      *
-           INITIALIZE                      XML-APIREQ
-           MOVE    "xml_birthdeliveryv2res"   TO  MCP-TABLE
+           INITIALIZE                          XML-APIREQ
+           MOVE    "xml_hsacctmodv2res"    TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    1                       TO  APIREQ-MODE
            PERFORM 910-XMLOPEN-SEC
@@ -1293,9 +1554,8 @@
                DISPLAY "XMLOPEN failure = " MCP-RC
            END-IF
       *
-           MOVE    BDRES-PRIVATE-OBJECTS
-                                           TO  APIREQ-PATIENTINFOREQ
-           MOVE    "xml_birthdeliveryv2res" TO  MCP-TABLE
+           MOVE    HSACCTMRES-PRIVATE-OBJECTS TO APIREQ-PATIENTINFOREQ
+           MOVE    "xml_hsacctmodv2res"      TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    "private_objects"       TO  APIREQ-RECORDNAME
            PERFORM 910-XMLWRITE-SEC
@@ -1305,12 +1565,12 @@
                DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
-           MOVE    "xml_birthdeliveryv2res" TO  MCP-TABLE
+           MOVE    "xml_hsacctmodv2res"       TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-XMLCLOSE-SEC
            IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    APIREQ-OBJECT       TO  I0API02-BODY
-               MOVE    "application/xml"   TO  I0API02-CONTENT-TYPE
+               MOVE    APIREQ-OBJECT       TO  I4API02-BODY
+               MOVE    "application/xml"   TO  I4API02-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "appoint xml write failure "
@@ -1390,6 +1650,35 @@
        900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
+      *    患者番号取得処理
+      *****************************************************************
+       900-PTNUM-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNUM
+      *
+           INITIALIZE                      PTNUM-REC
+           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
+           MOVE    SPA-PTID            TO  PTNUM-PTID
+           MOVE    PTNUM-REC           TO  MCPDATA-REC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNUM-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNUM
+               INITIALIZE                  PTNUM-REC
+           END-IF
+      *
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-PTNUM-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    患者情報取得処理
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
@@ -1428,7 +1717,7 @@
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    REG-NYUINYMD        TO  PTNYUINRRK-NYUINYMD
+           MOVE    API-NYUINYMD        TO  PTNYUINRRK-NYUINYMD
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key39"              TO  MCP-PATHNAME
@@ -1451,13 +1740,18 @@
       *****************************************************************
       *    入院履歴検索処理
       *****************************************************************
-       900-PTNYUINRRK-KEY20-SEL-SEC        SECTION.
+       900-PTNYUINRRK-KEY42-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+           MOVE    API-SRYYMD          TO  PTNYUINRRK-TENNYUYMD
+                                           PTNYUINRRK-TENSTUYMD
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key20"             TO  MCP-PATHNAME
+           MOVE    "key42"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -1467,120 +1761,40 @@
            END-IF
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key20"             TO  MCP-PATHNAME
+           MOVE    "key42"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
-       900-PTNYUINRRK-KEY20-SEL-EXT.
+       900-PTNYUINRRK-KEY42-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    分娩管理検索処理
+      *    入院会計検索処理
       *****************************************************************
-       900-BUNBEN-KEY3-SEL-SEC         SECTION.
+       900-NYUINACCT-KEY58-SEL-SEC     SECTION.
       *
-           MOVE    ZERO            TO  FLG-BUNBEN
+           MOVE    ZERO                TO  FLG-NYUINACCT
       *
-           INITIALIZE                  BUNBEN-REC
-           MOVE    SPA-HOSPNUM     TO  BUNBEN-HOSPNUM
-           MOVE    TRRK-PTID       TO  BUNBEN-PTID
-           MOVE    "1"             TO  BUNBEN-NYUGAIKBN
-           MOVE    TRRK-RRKNUM     TO  BUNBEN-RRKNUM
-           MOVE    BUNBEN-REC      TO  MCPDATA-REC
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    SPA-PTID            TO  NACCT-PTID
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key58"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  BUNBEN-REC
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
            ELSE
-               INITIALIZE              BUNBEN-REC
-               MOVE    1           TO  FLG-BUNBEN
+               MOVE    1               TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
            END-IF
       *
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key58"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-      *
-       900-BUNBEN-KEY3-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    旧姓履歴検索処理
-      *****************************************************************
-       900-KYUSEIRRK-KEY3-SEL-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  FLG-KYUSEIRRK
-      *
-           INITIALIZE                      KYUSEIRRK-REC
-           MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
-           MOVE    SPA-PTID            TO  KYUSEI-PTID
-           MOVE    REG-SRYYMD          TO  KYUSEI-CHGYMD
-           MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
-           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  KYUSEIRRK-REC
-           ELSE
-               INITIALIZE                  KYUSEIRRK-REC
-               MOVE    1               TO  FLG-KYUSEIRRK
-           END-IF
-      *
-           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-KYUSEIRRK-KEY3-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    旧姓履歴FETCH処理
-      *****************************************************************
-       900-KYUSEIRRK-KEY3-FET-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  FLG-KYUSEIRRK
-      *
-           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  KYUSEIRRK-REC
-           ELSE
-               INITIALIZE                  KYUSEIRRK-REC
-               MOVE    1               TO  FLG-KYUSEIRRK
-           END-IF
-      *
-           .
-       900-KYUSEIRRK-KEY3-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険者マスタ検索処理
-      *****************************************************************
-       900-HKNJAINF-KEY-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-HKNJAINF
-      *
-           INITIALIZE                      HKNJAINF-REC
-           MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
-           MOVE    BUNBEN-HKNJANUM     TO  HKNJA-HKNJANUM
-           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF ( MCP-RC                 =   ZERO )
-               MOVE    MCPDATA-REC     TO  HKNJAINF-REC
-           ELSE
-               MOVE    1               TO  FLG-HKNJAINF
-               INITIALIZE                  HKNJAINF-REC
-           END-IF
-      *
-           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-HKNJAINF-KEY-SEL-EXT.
+       900-NYUINACCT-KEY58-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
@@ -1722,16 +1936,16 @@
       *****************************************************************
        990-ERROR-EDIT-SEC              SECTION.
       *
-           IF    ( REG-ERR-MAX     <   CONST-ERR-MAX )
+           IF    ( API-ERR-MAX     <   CONST-ERR-MAX )
       *
                PERFORM VARYING IDX8    FROM    1   BY  1
                        UNTIL ( IDX8    >   CONST-ERR-MAX )
-                        OR   ( REG-ERRCD  (IDX8)
+                        OR   ( API-ERRCD  (IDX8)
                                        =   WRK-ERRCD )
       *
-                   IF    ( REG-ERRCD  (IDX8)   =   SPACE )
-                       MOVE    WRK-ERRCD       TO  REG-ERRCD  (IDX8)
-                       MOVE    IDX8            TO  REG-ERR-MAX
+                   IF    ( API-ERRCD  (IDX8)   =   SPACE )
+                       MOVE    WRK-ERRCD       TO  API-ERRCD  (IDX8)
+                       MOVE    IDX8            TO  API-ERR-MAX
                        MOVE    CONST-ERR-MAX   TO  IDX8
                    END-IF
       *
@@ -1748,7 +1962,7 @@
        990-EXIT-PROGRAM-SEC            SECTION.
       *
            IF    ( WRK-ERRCD           =   "8099" )
-               MOVE    404             TO  I0API02-HTTPSTATUS
+               MOVE    404             TO  I4API02-HTTPSTATUS
            ELSE
                PERFORM 9901-EXIT-PROGRAM-SEC
            END-IF
@@ -1763,24 +1977,22 @@
       *****************************************************************
        9901-EXIT-PROGRAM-SEC            SECTION.
       *
-           MOVE    SMCNDATE-YMD    TO  WRK-SYMD
+           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE        TO  BDRES-INFORMATION-DATE
+           MOVE    WRK-DATE            TO  HSACCTMRES-INFORMATION-DATE
       *
-           MOVE    SMCNDATE-HMS    TO  WRK-HMS
+           MOVE    SMCNDATE-HMS        TO  WRK-HMS
            PERFORM 800-TIME-SEC
-           MOVE    WRK-TIME        TO  BDRES-INFORMATION-TIME
+           MOVE    WRK-TIME            TO  HSACCTMRES-INFORMATION-TIME
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   REG-ERR-MAX )
+                   UNTIL ( IDX1    >   API-ERR-MAX )
       *
-               MOVE    REG-ERRCD  (IDX1)
+               MOVE    API-ERRCD  (IDX1)
                                        TO  WRK-ERRCD
                PERFORM 890-ERRCD-MSG-SEC
-               MOVE    WRK-ERRCD
-                               TO  BDRES-API-RESULT     (IDX1)
-               MOVE    WRK-ERRMSG
-                               TO  BDRES-API-RESULT-MSG (IDX1)
+               MOVE    WRK-ERRCD   TO  HSACCTMRES-API-RESULT    (IDX1)
+               MOVE    WRK-ERRMSG  TO  HSACCTMRES-API-RESULT-MSG(IDX1)
       *
            END-PERFORM
       *

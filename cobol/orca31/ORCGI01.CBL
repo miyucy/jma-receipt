@@ -263,6 +263,7 @@
            03  IDX7                        PIC 9(05).
            03  IDX8                        PIC 9(05).
            03  IDX9                        PIC 9(05).
+           03  IDXA                        PIC 9(05).
            03  IDX10                       PIC 9(05).
            03  IDX11                       PIC 9(05).
            03  IDX12                       PIC 9(05).
@@ -271,6 +272,7 @@
            03  IDX15                       PIC 9(05).
            03  IDX16                       PIC 9(05).
            03  IDX17                       PIC 9(05).
+           03  IDXK                        PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
            03  IDX-DAY                     PIC 9(02).
            03  IDX-SKJ-TAIHI               PIC 9(02).
@@ -613,6 +615,7 @@
            03  WRK-WEIGHT                  PIC 9(04).
            03  WRK-ERRCD.
                05  WRK-ERRCD-NUM           PIC 9(04).
+           03  WRK-SKJKBN-MAE              PIC X(01).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -1697,46 +1700,105 @@
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-5000-REC
       *
+           MOVE    SYS-5000-SKJKBN TO  SPA-NAI-I01-SKJKBN-DEF
+      *
            INITIALIZE              SPA-GMN-I01-CMB-SKJKBN
+                                   SPA-GMN-I01-CMB-TSKJKBN
       *
-           MOVE    "A"             TO  SPA-GMN-I01-SKJKBNL (1)
-           MOVE    "変更無し"      TO  SPA-GMN-I01-SKJKBNMEIL (1)
+           IF    ( SPA-NAI-I01-PTRRKNUM    =   ZERO )
+            OR   ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
+               CONTINUE
+           ELSE
+               IF    ( SPA-NAI-I01-MAESKJKBN   =   "B" OR "C" )
+                   CONTINUE
+               ELSE
+                   MOVE    "A"         TO  WRK-CMB-CD
+                   MOVE    "変更無し"  TO  WRK-CMB-ITM
+                   PERFORM 3101-CMB-SKJKBN-SET-SEC
+               END-IF
+           END-IF
       *
-           MOVE    "0"             TO  SPA-GMN-I01-SKJKBNL (2)
-           MOVE    "食なし"        TO  SPA-GMN-I01-SKJKBNMEIL (2)
+           MOVE    "0"             TO  WRK-CMB-CD
+           MOVE    "食なし"        TO  WRK-CMB-ITM
+           PERFORM 3101-CMB-SKJKBN-SET-SEC
       *
-           MOVE    "1"             TO  SPA-GMN-I01-SKJKBNL (3)
-           MOVE    "食あり"        TO  SPA-GMN-I01-SKJKBNMEIL (3)
+           MOVE    "1"             TO  WRK-CMB-CD
+           MOVE    "食あり"        TO  WRK-CMB-ITM
+           PERFORM 3101-CMB-SKJKBN-SET-SEC
       *
            IF     WRK-KJNYMD       <=  "20160331"
-             IF    ( SYS-5000-SHOKUJIRYOYOCD
+               IF    ( SYS-5000-SHOKUJIRYOYOCD
                                    =   CONST-SKJRYOYO2 )
-               MOVE    3           TO  SPA-GMN-I01-SKJKBN-CNT
-             ELSE
-               MOVE    4           TO  SPA-GMN-I01-SKJKBN-CNT
-      *
-               MOVE    "2"         TO  SPA-GMN-I01-SKJKBNL (4)
-               MOVE    "特食"      TO  SPA-GMN-I01-SKJKBNMEIL (4)
-             END-IF
+                   CONTINUE
+               ELSE
+                   MOVE    "2"     TO  WRK-CMB-CD
+                   MOVE    "特食"  TO  WRK-CMB-ITM
+                   PERFORM 3101-CMB-SKJKBN-SET-SEC
+               END-IF
            ELSE
-             IF    ( SYS-5000-SHOKUJIRYOYOCD
+               IF    ( SYS-5000-SHOKUJIRYOYOCD
                                    =   CONST-SKJRYOYO2 )
-               MOVE    4           TO  SPA-GMN-I01-SKJKBN-CNT
+                   MOVE    "3"         TO  WRK-CMB-CD
+                   MOVE    "流動食"    TO  WRK-CMB-ITM
+                   PERFORM 3101-CMB-SKJKBN-SET-SEC
+               ELSE
       *
-               MOVE    "3"         TO  SPA-GMN-I01-SKJKBNL (4)
-               MOVE    "流動食"    TO  SPA-GMN-I01-SKJKBNMEIL (4)
-             ELSE
-               MOVE    5           TO  SPA-GMN-I01-SKJKBN-CNT
+                   MOVE    "2"         TO  WRK-CMB-CD
+                   MOVE    "特食"      TO  WRK-CMB-ITM
+                   PERFORM 3101-CMB-SKJKBN-SET-SEC
       *
-               MOVE    "2"         TO  SPA-GMN-I01-SKJKBNL (4)
-               MOVE    "特食"      TO  SPA-GMN-I01-SKJKBNMEIL (4)
-               MOVE    "3"         TO  SPA-GMN-I01-SKJKBNL (5)
-               MOVE    "流動食"    TO  SPA-GMN-I01-SKJKBNMEIL (5)
-             END-IF
+                   MOVE    "3"         TO  WRK-CMB-CD
+                   MOVE    "流動食"    TO  WRK-CMB-ITM
+                   PERFORM 3101-CMB-SKJKBN-SET-SEC
+      *
+               END-IF
            END-IF
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-I01-SKJKBN-CNT )
+      *
+               IF    ( SPA-GMN-I01-TSKJKBNL (IDX0) =   "A" )
+                   CONTINUE
+               ELSE
+                   COMPUTE SPA-GMN-I01-TSKJKBN-CNT
+                       =   SPA-GMN-I01-TSKJKBN-CNT     +   1
+                   MOVE    SPA-GMN-I01-SKJKBN-ITM (IDX0)
+                                   TO  SPA-GMN-I01-TSKJKBN-ITM
+                                            (SPA-GMN-I01-TSKJKBN-CNT)
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( SPA-NAI-I01-MAESKJKBN   =   "B" OR "C" )
+               MOVE    "B"         TO  WRK-CMB-CD
+               MOVE    "変更無し"  TO  WRK-CMB-ITM
+               PERFORM 3101-CMB-SKJKBN-SET-SEC
+           END-IF
+      *
+           MOVE    "C"             TO  WRK-CMB-CD
+           MOVE    "個別指示"      TO  WRK-CMB-ITM
+           PERFORM 3101-CMB-SKJKBN-SET-SEC
       *
            .
        310-CMB-SKJKBN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事区分コンボ初期処理
+      *****************************************************************
+       3101-CMB-SKJKBN-SET-SEC          SECTION.
+      *
+           COMPUTE SPA-GMN-I01-SKJKBN-CNT
+               =   SPA-GMN-I01-SKJKBN-CNT
+               +   1
+      *
+           MOVE    WRK-CMB-CD
+                       TO SPA-GMN-I01-SKJKBNL   (SPA-GMN-I01-SKJKBN-CNT)
+      *
+           MOVE    WRK-CMB-ITM
+                       TO SPA-GMN-I01-SKJKBNMEIL(SPA-GMN-I01-SKJKBN-CNT)
+      *
+           .
+       3101-CMB-SKJKBN-SET-EXT.
            EXIT.
       *****************************************************************
       *    食事時間区分コンボ初期処理
@@ -2633,6 +2695,9 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
+           MOVE    SPA-GMN-I01-SKJKBN-CD
+                                       TO  WRK-SKJKBN-MAE
+      *
       *    異動日
            MOVE    I01-IDOYMD          TO  SPA-GMN-I01-IDOYMD
       *    病室番号
@@ -2643,6 +2708,10 @@
            MOVE    I01-SAGAKU          TO  SPA-GMN-I01-SAGAKU
       *    食事区分
            MOVE    I01-SKJKBN          TO  SPA-GMN-I01-SKJKBN
+      *    食事区分（個別指示）
+           MOVE    I01-TSKJKBN (1)     TO  SPA-GMN-I01-TSKJKBN (1)
+           MOVE    I01-TSKJKBN (2)     TO  SPA-GMN-I01-TSKJKBN (2)
+           MOVE    I01-TSKJKBN (3)     TO  SPA-GMN-I01-TSKJKBN (3)
       *    食事時間区分
            MOVE    I01-TIMEKBN         TO  SPA-GMN-I01-TIMEKBN
       *    選定入院区分
@@ -2789,6 +2858,19 @@
            PERFORM 4101-SKJKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-SKJKBN-CD   =   "C" )
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL     ( IDX1    >   3   )
+      *
+      *            食事区分チェック処理（個別指示）
+                   PERFORM 4101-TSKJKBN-CHK-SEC
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
+                       GO  TO  4102-KIHON-CHK-EXT
+                   END-IF
+      *
+               END-PERFORM
            END-IF
       *
       *    食事時間区分チェック処理
@@ -3288,17 +3370,41 @@
       *
       *    食事区分
            MOVE    PTNYUINRRK-SKJKBN
+                                   TO  SPA-NAI-I01-MAESKJKBN
+           MOVE    PTNYUINRRK-SKJKBN-ASA
+                                   TO  SPA-NAI-I01-TMAESKJKBN-ASA
+           MOVE    PTNYUINRRK-SKJKBN-HIRU
+                                   TO  SPA-NAI-I01-TMAESKJKBN-HIRU
+           MOVE    PTNYUINRRK-SKJKBN-YU
+                                   TO  SPA-NAI-I01-TMAESKJKBN-YU
+           PERFORM 310-CMB-SKJKBN-SET-SEC
+           MOVE    PTNYUINRRK-SKJKBN
                                    TO  WRK-CMB-CD
-           IF      SPA-GMN-I01-SYORIKBN-CD  =  "08"
-               MOVE    "A"         TO  WRK-CMB-CD
+           IF      SPA-GMN-I01-SYORIKBN-CD =   "08"
+               IF    ( PTNYUINRRK-SKJKBN   =   "B" OR "C" )
+                   MOVE    "B"     TO  WRK-CMB-CD
+               ELSE
+                   MOVE    "A"     TO  WRK-CMB-CD
+               END-IF
            END-IF
            PERFORM 4103-CMB-SKJKBN-CHK-SEC
-           IF    ( WRK-CMB-ITM     NOT =   SPACE )
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SKJKBN
-           ELSE
-               MOVE    "1"             TO  WRK-CMB-CD
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    "1"         TO  WRK-CMB-CD
                PERFORM 4103-CMB-SKJKBN-CHK-SEC
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SKJKBN
+           END-IF
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-SKJKBN
+      *
+           IF    ( PTNYUINRRK-SKJKBN        =   "B" OR "C" )
+               PERFORM VARYING IDXA    FROM    1   BY  1
+                       UNTIL ( IDXA    >   3 )
+                   MOVE    PTNYUINRRK-SKJKBN-KOBETSU (IDXA)
+                                   TO   WRK-CMB-CD
+                   PERFORM 4103-CMB-TSKJKBN-CHK-SEC
+                   IF    ( WRK-CMB-ITM  NOT =   SPACE )
+                       MOVE    WRK-CMB-ITM
+                                   TO   SPA-GMN-I01-TSKJKBN (IDXA)
+                   END-IF
+               END-PERFORM
            END-IF
       *
       *    食事時間区分
@@ -6798,7 +6904,15 @@
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SKJKBN
            ELSE
-               MOVE    "1"             TO  WRK-CMB-CD
+               IF    ( SPA-GMN-I01-SYORIKBN-CD  =   "08" )
+                   IF    ( SPA-NAI-I01-MAESKJKBN    =  "B" OR "C" )
+                       MOVE    "B"      TO  WRK-CMB-CD
+                   ELSE
+                       MOVE    "A"      TO  WRK-CMB-CD
+                   END-IF
+               ELSE
+                   MOVE    "1"          TO  WRK-CMB-CD
+               END-IF
                PERFORM 4103-CMB-SKJKBN-CHK-SEC
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SKJKBN
            END-IF
@@ -6809,15 +6923,76 @@
              END-IF
            END-IF
       *
-           IF   SPA-GMN-I01-SYORIKBN-CD  =   "01"   AND
-                SPA-GMN-I01-SKJKBN-CD    =   "A"
+           IF ( SPA-GMN-I01-SYORIKBN-CD  =   "01"  ) AND
+              ( SPA-GMN-I01-SKJKBN-CD    =   "A" OR "B" )
                MOVE    "1049"      TO  SPA-ERRCD
                MOVE    21          TO  SPA-GMN-I01-CUR
                GO  TO  4101-SKJKBN-CHK-EXT
            END-IF
+      *
+           IF    ( WRK-SKJKBN-MAE      NOT =   SPACE )
+               EVALUATE     TRUE
+               WHEN  ( SPA-GMN-I01-SKJKBN-CD   NOT =   "B" )
+                AND  ( SPA-GMN-I01-SKJKBN-CD   NOT =   "C" )
+                   MOVE    SPACE       TO  SPA-GMN-I01-TSKJKBN-ASA
+                                           SPA-GMN-I01-TSKJKBN-HIRU
+                                           SPA-GMN-I01-TSKJKBN-YU
+               WHEN  ( SPA-GMN-I01-SKJKBN-CD        =   "B" )
+                AND  ( WRK-SKJKBN-MAE           NOT =   "B" )
+               WHEN  ( SPA-GMN-I01-SKJKBN-CD        =   "C" )
+                AND  ( WRK-SKJKBN-MAE           NOT =   "C" )
+                   MOVE    SPA-NAI-I01-SKJKBN-DEF
+                                       TO  WRK-CMB-CD
+                   PERFORM 4103-CMB-TSKJKBN-CHK-SEC
+                   IF    ( WRK-CMB-ITM =   SPACE )
+                       MOVE    "1"     TO  WRK-CMB-CD
+                       PERFORM 4103-CMB-TSKJKBN-CHK-SEC
+                   END-IF
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-TSKJKBN-ASA
+                                           SPA-GMN-I01-TSKJKBN-HIRU
+                                           SPA-GMN-I01-TSKJKBN-YU
+                   IF    ( SPA-GMN-I01-SYORIKBN-CD  =   "08" )
+                    AND  ( SPA-NAI-I01-MAESKJKBN    =   "B" OR "C" )
+                       PERFORM VARYING IDXA    FROM    1   BY  1
+                               UNTIL ( IDXA    >   3 )
+                          MOVE    SPA-NAI-I01-TMAESKJKBN (IDXA)
+                                       TO   WRK-CMB-CD
+                          PERFORM 4103-CMB-TSKJKBN-CHK-SEC
+                          MOVE    WRK-CMB-ITM
+                                       TO   SPA-GMN-I01-TSKJKBN (IDXA)
+                       END-PERFORM
+                   END-IF
+               END-EVALUATE
+           END-IF
+      *
            .
       *
        4101-SKJKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事区分（個別指示）チェック処理
+      *****************************************************************
+       4101-TSKJKBN-CHK-SEC             SECTION.
+      *
+           MOVE    SPA-GMN-I01-TSKJKBN-CD (IDX1)
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-TSKJKBN-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-TSKJKBN (IDX1)
+           ELSE
+               MOVE    SPA-NAI-I01-SKJKBN-DEF
+                                   TO  WRK-CMB-CD
+               PERFORM 4103-CMB-TSKJKBN-CHK-SEC
+               IF    ( WRK-CMB-ITM =   SPACE )
+                   MOVE    "1"     TO  WRK-CMB-CD
+                   PERFORM 4103-CMB-TSKJKBN-CHK-SEC
+               END-IF
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-TSKJKBN (IDX1)
+           END-IF
+      *
+           .
+      *
+       4101-TSKJKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    食事時間区分チェック処理
@@ -7526,6 +7701,29 @@
        4103-CMB-SKJKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    食事区分（朝昼夕）コンボチェック処理
+      *****************************************************************
+       4103-CMB-TSKJKBN-CHK-SEC     SECTION.
+      *
+           INITIALIZE              WRK-CMB-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I01-TSKJKBN-CNT )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-I01-TSKJKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I01-TSKJKBN-ITM (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+               END-IF
+           END-PERFORM
+      *
+           .
+      *
+       4103-CMB-TSKJKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    食事時間区分コンボチェック処理
       *****************************************************************
        4103-CMB-TIMEKBN-CHK-SEC     SECTION.
@@ -8094,6 +8292,7 @@
                                    TO  SPA-GMN-I01-SEIKYU
            MOVE    SPA-GMN-I01-DISPKBN-ITM (1)
                                    TO  SPA-GMN-I01-DISPKBN
+           PERFORM 310-CMB-SKJKBN-SET-SEC
            MOVE    SYS-5000-SKJKBN TO  WRK-CMB-CD
            PERFORM 4103-CMB-SKJKBN-CHK-SEC
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
@@ -10563,6 +10762,27 @@
            MOVE    SPA-GMN-I01-SKJKBN-CD
                                    TO  PTNYUINRRK-SKJKBN
       *
+           EVALUATE    SPA-GMN-I01-SKJKBN-CD
+           WHEN    "B"
+               MOVE    SPA-NAI-I01-TMAESKJKBN-ASA
+                                   TO  PTNYUINRRK-SKJKBN-ASA
+               MOVE    SPA-NAI-I01-TMAESKJKBN-HIRU
+                                   TO  PTNYUINRRK-SKJKBN-HIRU
+               MOVE    SPA-NAI-I01-TMAESKJKBN-YU
+                                   TO  PTNYUINRRK-SKJKBN-YU
+           WHEN    "C"
+               MOVE    SPA-GMN-I01-TSKJKBN-ASA-CD
+                                   TO  PTNYUINRRK-SKJKBN-ASA
+               MOVE    SPA-GMN-I01-TSKJKBN-HIRU-CD
+                                   TO  PTNYUINRRK-SKJKBN-HIRU
+               MOVE    SPA-GMN-I01-TSKJKBN-YU-CD
+                                   TO  PTNYUINRRK-SKJKBN-YU
+           WHEN    OTHER
+               MOVE    SPACE       TO  PTNYUINRRK-SKJKBN-ASA
+                                       PTNYUINRRK-SKJKBN-HIRU
+                                       PTNYUINRRK-SKJKBN-YU
+           END-EVALUATE
+      *
       *    食事時間区分
            MOVE    SPA-GMN-I01-TIMEKBN-CD
                                    TO  PTNYUINRRK-TIMEKBN-IN
@@ -10573,6 +10793,26 @@
       *    入院料算定区分
            MOVE    SPA-GMN-I01-NYUCALKBN-CD
                                    TO  PTNYUINRRK-NYUCALKBN
+      *
+      *    入院加算
+           DISPLAY "UPDKBN=" WRK-UPDKBN
+                   " " PTNYUINRRK-KSNSRYCD (1)
+                   " " PTNYUINRRK-KSNSRYCD (2)
+                   " " PTNYUINRRK-KSNSRYCD (3)
+           IF    ( WRK-UPDKBN      =   "INS" )
+               MOVE    ZERO        TO  IDXK
+               PERFORM VARYING IDX0    FROM   1   BY  1
+                   UNTIL ( IDX0 >   CONST-GMN-KSN-MAX )
+                   IF    ( SPA-GMN-I01-KSN-CD (IDX0)     =   "2" )
+                        COMPUTE IDXK   =   IDXK   +   1
+                        MOVE    SPA-GMN-I01-KSN-SRYCD (IDX0)
+                                   TO  PTNYUINRRK-KSNSRYCD (IDXK)
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    BAKRRK-KSNSRYCD-G
+                                   TO  PTNYUINRRK-KSNSRYCD-G
+           END-IF
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *
@@ -18518,7 +18758,6 @@
            CALL    "ORCGI0SUB02"       USING
                                        SPA-AREA
                                        I0SUB02-LNK
-           DISPLAY "I0SUB02-S02-RC=" I0SUB02-S02-RC
            EVALUATE    TRUE
            WHEN  ( I0SUB02-S02-RC  NOT =   ZERO )
       *
@@ -18892,6 +19131,26 @@
                                            TO  I01-SKJKBN-ITM (IDX1)
            END-PERFORM
       *
+      *    食事区分朝昼夕
+           IF    ( SPA-GMN-I01-SKJKBN-CD   =   "B" OR "C" )
+               MOVE    "朝"                    TO  I01-LBL-TSKJKBN (1)
+               MOVE    "昼"                    TO  I01-LBL-TSKJKBN (2)
+               MOVE    "夕"                    TO  I01-LBL-TSKJKBN (3)
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   3 )
+                   MOVE    SPA-GMN-I01-TSKJKBN (IDX1)
+                                       TO  I01-TSKJKBN (IDX1)
+                   MOVE    SPA-GMN-I01-TSKJKBN-CNT
+                                       TO  I01-TSKJKBN-CNT (IDX1)
+                   PERFORM VARYING IDX2    FROM    1   BY  1
+                           UNTIL ( IDX2    >   SPA-GMN-I01-TSKJKBN-CNT )
+                       MOVE    SPA-GMN-I01-TSKJKBN-ITM (IDX2)
+                                       TO  I01-TSKJKBN-ITM (IDX1 IDX2)
+                   END-PERFORM
+      *
+               END-PERFORM
+           END-IF
+      *
       *    食事時間区分
            MOVE    SPA-GMN-I01-TIMEKBN      TO  I01-TIMEKBN
            MOVE    SPA-GMN-I01-TIMEKBN-CNT  TO  I01-TIMEKBN-CNT
@@ -19213,6 +19472,12 @@
                                        I01-SAGAKU-ITM-STT
                                        I01-SKJKBN-STT
                                        I01-SKJKBN-ITM-STT
+                                       I01-TSKJKBN-STT (1)
+                                       I01-TSKJKBN-STT (2)
+                                       I01-TSKJKBN-STT (3)
+                                       I01-TSKJKBN-ITM-STT (1)
+                                       I01-TSKJKBN-ITM-STT (2)
+                                       I01-TSKJKBN-ITM-STT (3)
                                        I01-TIMEKBN-STT
                                        I01-TIMEKBN-ITM-STT
                                        I01-SENTEIKBN-STT
@@ -19270,6 +19535,12 @@
                                        I01-SAGAKU-ITM-STT
                                        I01-SKJKBN-STT
                                        I01-SKJKBN-ITM-STT
+                                       I01-TSKJKBN-STT (1)
+                                       I01-TSKJKBN-STT (2)
+                                       I01-TSKJKBN-STT (3)
+                                       I01-TSKJKBN-ITM-STT (1)
+                                       I01-TSKJKBN-ITM-STT (2)
+                                       I01-TSKJKBN-ITM-STT (3)
                                        I01-TIMEKBN-STT
                                        I01-TIMEKBN-ITM-STT
                                        I01-SENTEIKBN-STT
@@ -19412,6 +19683,31 @@
                                            I01-TOKHIGAITO-ITM-STT
            END-IF
       *
+           MOVE    "F"                 TO  I01-TSKJKBN-VISIBLE (1)
+                                           I01-TSKJKBN-VISIBLE (2)
+                                           I01-TSKJKBN-VISIBLE (3)
+           MOVE    WIDGET-INSENSITIVE  TO  I01-TSKJKBN-STT (1)
+                                           I01-TSKJKBN-STT (2)
+                                           I01-TSKJKBN-STT (3)
+                                           I01-TSKJKBN-ITM-STT (1)
+                                           I01-TSKJKBN-ITM-STT (2)
+                                           I01-TSKJKBN-ITM-STT (3)
+      *
+           IF    ( SPA-GMN-I01-SKJKBN-CD   =   "B" OR "C" )
+               MOVE    "T"             TO  I01-TSKJKBN-VISIBLE (1)
+                                           I01-TSKJKBN-VISIBLE (2)
+                                           I01-TSKJKBN-VISIBLE (3)
+               IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" OR "08" )
+                   MOVE    WIDGET-NORMAL
+                                       TO  I01-TSKJKBN-STT (1)
+                                           I01-TSKJKBN-STT (2)
+                                           I01-TSKJKBN-STT (3)
+                                           I01-TSKJKBN-ITM-STT (1)
+                                           I01-TSKJKBN-ITM-STT (2)
+                                           I01-TSKJKBN-ITM-STT (3)
+               END-IF
+           END-IF
+      *
       *    退院証明書再発行
            IF    ( SPA-GMN-I01-NYUREKILST-SEL >   ZERO )
             AND  ( SPA-GMN-I01-NYUREKILST-SEL
@@ -19488,6 +19784,12 @@
                                            I01-SAGAKU-ITM-STT
                                            I01-SKJKBN-STT
                                            I01-SKJKBN-ITM-STT
+                                           I01-TSKJKBN-STT (1)
+                                           I01-TSKJKBN-STT (2)
+                                           I01-TSKJKBN-STT (3)
+                                           I01-TSKJKBN-ITM-STT (1)
+                                           I01-TSKJKBN-ITM-STT (2)
+                                           I01-TSKJKBN-ITM-STT (3)
                                            I01-TIMEKBN-STT
                                            I01-TIMEKBN-ITM-STT
                                            I01-SENTEIKBN-STT
@@ -19613,6 +19915,12 @@
                MOVE    "NYUCALKBN"     TO  MCP-WIDGET
            WHEN    33
                MOVE    "TOKHIGAITO"    TO  MCP-WIDGET
+           WHEN    34
+               MOVE    "SKJKBN_ASA"    TO  MCP-WIDGET
+           WHEN    35
+               MOVE    "SKJKBN_HIRU"   TO  MCP-WIDGET
+           WHEN    36
+               MOVE    "SKJKBN_YU"     TO  MCP-WIDGET
            WHEN    100
                MOVE    "SELNUM"        TO  MCP-WIDGET
            WHEN    206
@@ -19638,7 +19946,7 @@
            WHEN    "BTUNAME"
                MOVE    006             TO  SPA-GMN-I01-CUR
            WHEN    "SAGAKU"
-               MOVE    021             TO  SPA-GMN-I01-CUR
+               MOVE    022             TO  SPA-GMN-I01-CUR
            WHEN    "NYUINYMD"
                MOVE    025             TO  SPA-GMN-I01-CUR
            WHEN    "NYUINKA"
@@ -19680,17 +19988,23 @@
            WHEN    "SEIKYU"
                MOVE    019             TO  SPA-GMN-I01-CUR
            WHEN    "DISPKBN"
-               MOVE    212             TO  SPA-GMN-I01-CUR
-           WHEN    "USERPG"
-               MOVE    212             TO  SPA-GMN-I01-CUR
+               MOVE    021             TO  SPA-GMN-I01-CUR
            WHEN    "TAIINCD"
                MOVE    012             TO  SPA-GMN-I01-CUR
-           WHEN    "SKJKBN"
-               MOVE    022             TO  SPA-GMN-I01-CUR
            WHEN    "TIMEKBN"
                MOVE    008             TO  SPA-GMN-I01-CUR
            WHEN    "SENTEIKBN"
                MOVE    007             TO  SPA-GMN-I01-CUR
+           WHEN    "SKJKBN"
+               MOVE    034             TO  SPA-GMN-I01-CUR
+           WHEN    "SKJKBN_ASA"
+               MOVE    035             TO  SPA-GMN-I01-CUR
+           WHEN    "SKJKBN_HIRU"
+               MOVE    036             TO  SPA-GMN-I01-CUR
+           WHEN    "SKJKBN_YU"
+               MOVE    024             TO  SPA-GMN-I01-CUR
+           WHEN    "USERPG"
+               MOVE    212             TO  SPA-GMN-I01-CUR
            WHEN    "SELNUM"
                IF    ( SPA-GMN-I01-SYORIKBN-CD =   "10" )
                    MOVE    212         TO  SPA-GMN-I01-CUR
@@ -19730,12 +20044,6 @@
       *
            IF    ( SPA-GMN-I01-CUR =   6   )
                IF  ( I01-SAGAKU-STT    =   WIDGET-INSENSITIVE )
-                   COMPUTE SPA-GMN-I01-CUR =   21
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-I01-CUR =   21   )
-               IF  ( I01-SKJKBN-STT    =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-I01-CUR =   22
                END-IF
            END-IF
@@ -19877,13 +20185,37 @@
       *
            IF    ( SPA-GMN-I01-CUR =   19  )
                IF  ( I01-DISPKBN-STT   =   WIDGET-INSENSITIVE )
-                   MOVE    212         TO  SPA-GMN-I01-CUR
+                   MOVE    21          TO  SPA-GMN-I01-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-CUR =   21   )
+               IF  ( I01-SKJKBN-STT    =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I01-CUR =   34
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-CUR =   34   )
+               IF  ( I01-TSKJKBN-STT (1)   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I01-CUR =   35
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-CUR =   35   )
+               IF  ( I01-TSKJKBN-STT (2)   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I01-CUR =   36
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-CUR =   36   )
+               IF  ( I01-TSKJKBN-STT (3)   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I01-CUR =   24
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-I01-CUR =   24  )
                IF  ( I01-USERPG-STT    =   WIDGET-INSENSITIVE )
-                   MOVE    212         TO  SPA-GMN-I01-CUR
+                   MOVE    212          TO  SPA-GMN-I01-CUR
                END-IF
            END-IF
       *
