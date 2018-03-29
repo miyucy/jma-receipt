@@ -3466,7 +3466,6 @@
                      AND  (WRK-SRYKBN          =   TBL-SRYCD(TBL-IDX)
                                                                 (2:2))
                      AND  (WRK-ETCKBN          =   TBL-ETCKBN(TBL-IDX))
-                     AND  (WRK-ZOKKBN          =   TBL-HOSPSBT(TBL-IDX))
                        MOVE    TBL-SRYCD (TBL-IDX)
                                                TO  WRK-SRYCD
            END-SEARCH
@@ -5346,7 +5345,11 @@
                MOVE    "12"                TO  WRK-SRYKBN
                MOVE    "S"                 TO  WRK-KBN
       *        診察コードをテーブルより決定
-               PERFORM 2001-SRYCD-TBL-SEC
+               IF      WRK-ZOKKBN          =   3
+                   PERFORM 2001-SRYCD-TBL3-SEC
+               ELSE
+                   PERFORM 2001-SRYCD-TBL-SEC
+               END-IF
       *        電話再診の時、同日電話再診へ振り替え
                MOVE    SPA-GMN-IDX         TO  WRK-IDX-IN
                PERFORM 33041-SRYCD-ADD-SEC
@@ -5379,6 +5382,60 @@
            .
        30011-TELSAISIN-CHKSYORI-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    診察料をテーブルより決定処理
+      *****************************************************************
+       2001-SRYCD-TBL3-SEC              SECTION.
+      *
+           MOVE    1                   TO  WRK-KAISU
+           IF      WRK-SRYKBN          =   "12"
+      *        一般病床数
+               IF     (SPA-BEDSUIPN        >=  200 )  AND
+                      (SPA-HOSPSBT         =   1   )
+      *            200床以上は外来診察料
+                   MOVE    3               TO  WRK-KAISU
+               END-IF
+           END-IF
+      *
+           IF      WRK-SRYKBN          =   "11"
+               MOVE    ZERO                TO  WRK-HOSPSBT
+           ELSE
+               MOVE    SPA-HOSPSBT         TO  WRK-HOSPSBT
+           END-IF
+      *H25.4
+           IF      WRK-ETCKBN          =   "1"
+                                       OR  "2"
+               CONTINUE
+           ELSE
+               MOVE    "0"             TO  WRK-ETCKBN
+           END-IF
+      *H27.1
+      *    妥結率５割以下
+           IF     (SPA-SRYYMD          >=  "20150101" )
+             AND  (SPA-DAKT50-KBN      =   1          )
+               MOVE    "2"             TO  WRK-ETCKBN
+           END-IF
+      *
+      *    診察料セット
+           SET     TBL-IDX             TO  1
+           SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+                   AT   END
+                       MOVE    SPACE           TO  WRK-SRYCD
+                   WHEN   (WRK-KAISU           =   TBL-KAISU  (TBL-IDX))
+                     AND  (WRK-KBN             =   TBL-KBN    (TBL-IDX))
+                     AND  (WRK-SRYKBN          =   TBL-SRYCD(TBL-IDX)
+                                                                (2:2))
+                     AND  (WRK-ETCKBN          =   TBL-ETCKBN(TBL-IDX))
+                     AND  (WRK-ZOKKBN          =   TBL-HOSPSBT(TBL-IDX))
+                       MOVE    TBL-SRYCD (TBL-IDX)
+                                               TO  WRK-SRYCD
+           END-SEARCH
+      *
+           .
+       2001-SRYCD-TBL3-EXT.
+           EXIT.
+      *
       *
       *H25.9
       *****************************************************************
