@@ -4595,12 +4595,6 @@
                           TO  LNK-SROUNYUIN-SRYCD(IDX1 WRK-MEISAISU)
                      MOVE  "C"
                           TO  LNK-SROUNYUIN-SRYCD-SK(IDX1 WRK-MEISAISU)
-                     EVALUATE  LNK-SROUNYUIN-SENTEI-FLG(IDX1)
-                       WHEN      SPACE
-                         MOVE  "1"  TO  LNK-SROUNYUIN-SENTEI-FLG(IDX1)
-                       WHEN      "1"
-                         MOVE  "2"  TO  LNK-SROUNYUIN-SENTEI-FLG(IDX1)
-                     END-EVALUATE
                END-IF
       *
       *        ³°Çñ

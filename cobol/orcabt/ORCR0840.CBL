@@ -819,7 +819,6 @@
            03  WRK-SROUNYUIN-MEISAISU                  PIC 9(07).
            03  WRK-SROUNYUIN-SRYCD                     PIC 9(09).
            03  WRK-SROUNYUIN-SRYCD2                    PIC 9(09).
-           03  WRK-SROUNYUIN-SRYCD3                    PIC 9(09).
       *
            03  WRK-TEN-KZI                             PIC 9(09).
            03  WRK-TEN-BUN                             PIC 9(09).
@@ -12428,7 +12427,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            WRK-SROUNYUIN-MEISAISU
                                            WRK-SROUNYUIN-SRYCD
                                            WRK-SROUNYUIN-SRYCD2
-                                           WRK-SROUNYUIN-SRYCD3
       *
            INITIALIZE                      ORCSROUNYUIN-AREA
            MOVE    RECE82-HOSPNUM      TO  LNK-SROUNYUIN-HOSPNUM
@@ -12582,56 +12580,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             PERFORM   900-RECE85-WRITE-SEC
                          END-IF
                          MOVE     18     TO    SYUKEI-IDX
-                         MOVE     20     TO    SYUKEI-IDX2
-                         IF   LNK-SROUNYUIN-SRYCD(IDY SYUKEI-IDX)
-                                                         NOT = SPACE
-                            PERFORM   2502-RECE85-TENSOU2-KHN-SEC
-                            PERFORM   900-RECE85-WRITE-SEC
-                         END-IF
-      *
-                         PERFORM   900-RECE84-WRITE-SEC
-      *
-                       WHEN      "2"
-      *
-                         MOVE      LNK-SROUNYUIN-SRYCD(IDY 1)
-                                      TO    WRK-SROUNYUIN-SRYCD
-                         MOVE      LNK-SROUNYUIN-SRYCD(IDY 2)
-                                      TO    WRK-SROUNYUIN-SRYCD2
-                         MOVE      LNK-SROUNYUIN-SRYCD(IDY 3)
-                                      TO    WRK-SROUNYUIN-SRYCD3
-                         COMPUTE   WRK-SROUNYUIN-SRYCDTOTAL      =
-                                   LNK-SROUNYUIN-SRYCDTOTAL(IDY) -
-                                   WRK-SROUNYUIN-SRYCD           -
-                                   WRK-SROUNYUIN-SRYCD2          -
-                                   WRK-SROUNYUIN-SRYCD3
-                         COMPUTE   WRK-SROUNYUIN-MEISAISU        =
-                                   LNK-SROUNYUIN-MEISAISU(IDY)   -
-                                   3
-      *
-                         PERFORM   2501-RECE84-TENSOU2-KHN-SEC
-      *
-                         MOVE      4     TO    SYUKEI-IDX
-                         MOVE      8     TO    SYUKEI-IDX2
-                         IF   LNK-SROUNYUIN-SRYCD(IDY SYUKEI-IDX)
-                                                         NOT = SPACE
-                            PERFORM   2502-RECE85-TENSOU2-KHN-SEC
-                            PERFORM   900-RECE85-WRITE-SEC
-                         END-IF
-                         MOVE      9     TO    SYUKEI-IDX
-                         MOVE     13     TO    SYUKEI-IDX2
-                         IF   LNK-SROUNYUIN-SRYCD(IDY SYUKEI-IDX)
-                                                         NOT = SPACE
-                            PERFORM   2502-RECE85-TENSOU2-KHN-SEC
-                            PERFORM   900-RECE85-WRITE-SEC
-                         END-IF
-                         MOVE     14     TO    SYUKEI-IDX
-                         MOVE     18     TO    SYUKEI-IDX2
-                         IF   LNK-SROUNYUIN-SRYCD(IDY SYUKEI-IDX)
-                                                         NOT = SPACE
-                            PERFORM   2502-RECE85-TENSOU2-KHN-SEC
-                            PERFORM   900-RECE85-WRITE-SEC
-                         END-IF
-                         MOVE     19     TO    SYUKEI-IDX
                          MOVE     20     TO    SYUKEI-IDX2
                          IF   LNK-SROUNYUIN-SRYCD(IDY SYUKEI-IDX)
                                                          NOT = SPACE
