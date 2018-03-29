@@ -316,6 +316,8 @@
       *    紹介・妥結率５割
            03  WRK-ETCKBN              PIC X(01).
       *
+           03  WRK-ZOKKBN              PIC 9(01).
+      *
            03  WRK-IN-KAISU            PIC 9(03).
       *    算定年月
            03  WRK-SANTEI-YM           PIC X(06).
@@ -541,17 +543,33 @@
       *    小児科かかりつけ診察料(院内処方 再診)
            03  FILLER              PIC X(14)   VALUE   "400 N113019810".
       *
+      *H30.4
+      *    電話再診料（一般 病院）（３０年３月以前継続）
+           03  FILLER              PIC X(14)   VALUE   "103T 112023350".
+      *    同日電話再診（一般 病院）（３０年３月以前継続）
+           03  FILLER              PIC X(14)   VALUE   "103S 112023450".
+      *    電話再診（同一日２科目）（３０年３月以前継続）
+           03  FILLER              PIC X(14)   VALUE   "103JD112023550".
+      *    電話等再診（妥結率５割以下）（３０年３月以前継続
+           03  FILLER              PIC X(14)   VALUE   "123T 112023650".
+      *    同日電話等再診（妥結率５割以下）（３０年３月以前継続
+           03  FILLER              PIC X(14)   VALUE   "123S 112023750".
+      *    電話等再診（同一日２科目・減点規定該当の場合）
+           03  FILLER              PIC X(14)   VALUE   "123JD112023850".
+      *
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       **** 03  TBL-SINSATU-OCC         OCCURS  20    INDEXED  TBL-IDX.
       *?   03  TBL-SINSATU-OCC         OCCURS  29    INDEXED  TBL-IDX.
-           03  TBL-SINSATU-OCC         OCCURS  35    INDEXED  TBL-IDX.
+      **** 03  TBL-SINSATU-OCC         OCCURS  35    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  41    INDEXED  TBL-IDX.
       *        １：一般、２：小児科外来診療料、３：外来診療料
       *        ４：小児かかりつけ
                05  TBL-KAISU           PIC 9(01).
       *        １:紹介なし、２：妥結率５割以下
                05  TBL-ETCKBN          PIC 9(01).
-      *        病院種別（１：病院、２：診療所）
+      ****     病院種別（１：病院、２：診療所）
+      *        病院種別（３：３０年３月継続分）
                05  TBL-HOSPSBT         PIC 9(01).
       *        D:同日再診、T：電話再診、S:同日電話再診、F:初診
                05  TBL-KBN             PIC X(01).
@@ -3448,6 +3466,7 @@
                      AND  (WRK-SRYKBN          =   TBL-SRYCD(TBL-IDX)
                                                                 (2:2))
                      AND  (WRK-ETCKBN          =   TBL-ETCKBN(TBL-IDX))
+                     AND  (WRK-ZOKKBN          =   TBL-HOSPSBT(TBL-IDX))
                        MOVE    TBL-SRYCD (TBL-IDX)
                                                TO  WRK-SRYCD
            END-SEARCH
@@ -5311,12 +5330,15 @@
                    MOVE    SPACE           TO  WRK-KBN
                    MOVE    SPACE           TO  WRK-KBN2
                    MOVE    ZERO            TO  WRK-KAISU
+                   MOVE    ZERO            TO  WRK-ZOKKBN
                WHEN   (TBL-SRYCD (TBL-IDX) =   WRK-SRYCD) 
                    MOVE    TBL-KBN   (TBL-IDX) TO  WRK-KBN
                    MOVE    TBL-KBN2  (TBL-IDX) TO  WRK-KBN2
                    MOVE    ZERO                TO  WRK-KAISU
       *H25.4       紹介なし・妥結率対応
                    MOVE    TBL-ETCKBN(TBL-IDX) TO  WRK-ETCKBN
+      *H30.4       （３０年３月以前継続)
+                   MOVE    TBL-HOSPSBT(TBL-IDX) TO  WRK-ZOKKBN
            END-SEARCH
       *
       *    同日再診料へ置換え
@@ -5797,6 +5819,8 @@
                    WHEN    "114042210"
       *            在宅患者訪問診療料（２）
                    WHEN    "114042810"
+      *            在宅患者訪問診療料（２）ロ
+                   WHEN    "114046310"
                        MOVE    1               TO  SPA-HOUMON-ARI
       *            開放型病院共同指導料（１）
                    WHEN    "180010510"

@@ -19,4 +19,4 @@
       ********************************************************************
        01  ONPRTDATA.
            03  ONPRTDATA-PGID      PIC X(20).
-           03  ONPRTDATA-DATA      PIC X(50000).
+           03  ONPRTDATA-DATA      PIC X(500000).
