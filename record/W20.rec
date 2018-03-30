@@ -724,6 +724,35 @@ W20 {
       LBLKSNP03 {
         state int;
       };
+      fixed2 {
+        YKTTYMD01{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD02{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD03{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD04{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD05{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD06{
+          textdata varchar(10);
+          state int;
+        };
+      };
+      LBLYKTTYMDP{
+        state int;
+      };
     };
     YUKOSTYMD {
       textdata varchar(10);

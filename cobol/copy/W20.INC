@@ -189,6 +189,11 @@
                       08  W20-KSN-P03-ITM          PIC X(30) OCCURS  10.
                       08  W20-KSN-P03-ITM-STATE    PIC S9(9) BINARY.
                     07  W20-LBLKSNP03-STATE        PIC S9(9) BINARY.
+                  06  W20-YKTTYMD-G.
+                    07  W20-YKTTYMD-OCC            OCCURS 6.
+                      08  W20-YKTTYMD              PIC X(10).
+                      08  W20-YKTTYMD-STATE        PIC S9(9) BINARY.
+                    07  W20-LBLYKTTYMDP-STATE      PIC S9(9) BINARY.
               04  W20-YUKOSTYMD            PIC X(10).
               04  W20-YUKOSTYMD-STATE      PIC S9(9)   BINARY.
       *
