@@ -214,8 +214,8 @@
            03  FILLER              PIC X(15)   VALUE   "36 £≥£∂≤√º£".
            03  FILLER              PIC X(15)   VALUE   "37 £≥£∑øΩΩ–".
       *H30.4 §´§È
-           03  FILLER              PIC X(15)   VALUE   "38 ∞Â ª".
-           03  FILLER              PIC X(15)   VALUE   "39 ∞ÂŒ≈".
+           03  FILLER              PIC X(15)   VALUE   "38 £≥£∏∞Â ª".
+           03  FILLER              PIC X(15)   VALUE   "39 £≥£π∞ÂŒ≈".
        01  TBL-TOKKI-AREA-R        REDEFINES   TBL-TOKKI-AREA.
       **** 03  TBL-TOKKI-OCC       OCCURS   23.
            03  TBL-TOKKI-OCC       OCCURS   37.
