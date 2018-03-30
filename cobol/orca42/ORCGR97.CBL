@@ -54,6 +54,7 @@
       *
       *  04.08.01    NACL-Æ£¸¶    16/08/08  ºÒ³²³ºÅöÊ¬¡ÊÈó¸ºÌÈÂÐ¾Ý¤È¸ºÌÈÂÐ¾Ý¡Ë
       *                                     ¥ì¥»¥×¥È¤ÎÊ¬³äÂÐ±þ
+      *  04.08.02    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1017,6 +1018,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                                               (WRK-LINE)
                    WHEN    "2"
                        MOVE    "Ï··ò"  TO  SPA-GMN-TRECEIPT-KBN
+                                                              (WRK-LINE)
+                   WHEN    "3"
+                       MOVE    "°åÊ»"  TO  SPA-GMN-TRECEIPT-KBN
+                                                              (WRK-LINE)
+                   WHEN    "4"
+                       MOVE    "°åÎÅ"  TO  SPA-GMN-TRECEIPT-KBN
                                                               (WRK-LINE)
                END-EVALUATE
                EVALUATE    LNK-SYUACC-IO-RECEIPT-KBN(IDX1) (5:1)

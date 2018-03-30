@@ -788,6 +788,7 @@
       *  04.08.54    NACL-門脇    18/02/01  レセプト公費一部負担金記載対応
       *                                     （公費のみのレセプト）
       *  04.08.55    NACL-門脇    18/03/27  平成３０年４月改正対応
+      *  04.08.55    NACL-藤原    18/03/28  ３８医併、３９医療の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2843,13 +2844,15 @@
       *
       *    入所判定用テーブル
        01  TBL-NYUSYO-AREA.
+           03  FILLER          PIC X(03)   VALUE    "948".
+           03  FILLER          PIC X(03)   VALUE    "949".
            03  FILLER          PIC X(03)   VALUE    "950".
            03  FILLER          PIC X(03)   VALUE    "951".
       *
        01  TBL-NYUSYO-R        REDEFINES   TBL-NYUSYO-AREA.
-           03  TBL-NYUSYO      PIC X(03)   OCCURS    2.
+           03  TBL-NYUSYO      PIC X(03)   OCCURS    4.
       *
-       01  TBL-NYUSYO-MAX      PIC 9(02)   VALUE     2.
+       01  TBL-NYUSYO-MAX      PIC 9(02)   VALUE     4.
       *
       *    酸素 
            COPY    "CMSANSOTBL.INC".

@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  04.08.01    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -105,6 +106,8 @@
            03  IDXD                            PIC 9(04).
            03  IDY2                            PIC 9(04).
            03  IDW                             PIC 9(04).
+      *
+           03  IDZ4                            PIC 9(04).
       *
        01  KEY-AREA                            VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -356,11 +359,11 @@
       *
       *    »ÜÀßÆþ½ê¾ðÊó¡Ê£¹£µ£°¡¢£¹£µ£±¡ËÂàÈòÍÑÎÎ°è
        01  TABLE-PTKOHINF-AREA.
-           02  TBL-PTKOHINF-REC        OCCURS  10.
+           02  TBL-PTKOHINF-REC        OCCURS  100.
            COPY    "CPPTKOHINF.INC"
                                    REPLACING   //PTKOH//
                                    BY          //TBL-PTKOH//.
-           02  TBL-PTKOHINF-MAX    PIC 9(02).
+           02  TBL-PTKOHINF-MAX    PIC 9(03).
       *
       *    ´µ¼Ô¥ì¥»¥×¥ÈÊ¬³ä¾ðÊóÂàÈòÍÑÎÎ°è
        01  TBL-PT-HDIST-DAY-T.
@@ -1003,8 +1006,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
       *
-               IF      TBL-PT-HDIST-DAY-MAX
-                                           =   ZERO
+               IF    ( TBL-PT-HDIST-DAY-MAX
+                                           =   ZERO )
+               AND   ( TBL-PTKOHINF-MAX    =   ZERO )
                    MOVE    1               TO  ST-IDX
                    MOVE    SPACE           TO  WRK-RECEIPT-KBN
       *            ´ðËÜ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
@@ -1580,6 +1584,16 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        IF      TBL-PTKOH-KOHNUM (IDX1)
                                                =   "951"
                            MOVE    "2"     TO  TOUKEI01-RECEIPT-KBN
+                                                                   (1:1)
+                       END-IF
+                       IF      TBL-PTKOH-KOHNUM (IDX1)
+                                               =   "948"
+                           MOVE    "3"     TO  TOUKEI01-RECEIPT-KBN
+                                                                   (1:1)
+                       END-IF
+                       IF      TBL-PTKOH-KOHNUM (IDX1)
+                                               =   "949"
+                           MOVE    "4"     TO  TOUKEI01-RECEIPT-KBN
                                                                    (1:1)
                        END-IF
                        MOVE    TBL-PTKOHINF-MAX
@@ -3393,78 +3407,60 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            INITIALIZE                      TABLE-PTKOHINF-AREA
       *
-      *    £¹£µ£°¡ÊÏ·Ê»¡Ë
-           INITIALIZE                      PTKOHINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-           MOVE    PTINF-PTID          TO  PTKOH-PTID
-           MOVE    "950"               TO  PTKOH-KOHNUM
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
+           PERFORM VARYING IDZ4    FROM    1   BY  1
+                   UNTIL   IDZ4    >       4
+               INITIALIZE                      PTKOHINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+               MOVE    PTINF-PTID          TO  PTKOH-PTID
+               EVALUATE    IDZ4
+                   WHEN    1
+      *                £¹£µ£°¡ÊÏ·Ê»¡Ë
+                       MOVE    "950"               TO  PTKOH-KOHNUM
+                   WHEN    2
+      *                £¹£µ£±¡ÊÏ··ò¡Ë
+                       MOVE    "951"               TO  PTKOH-KOHNUM
+                   WHEN    3
+      *                £¹£´£¸¡Ê°åÊ»¡Ë
+                       MOVE    "948"               TO  PTKOH-KOHNUM
+                   WHEN    4
+      *                £¹£´£¹¡Ê°åÎÅ¡Ë
+                       MOVE    "949"               TO  PTKOH-KOHNUM
+               END-EVALUATE
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-PTKOHINF-READ-N-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTKOHINF
-           END-IF
-           PERFORM     UNTIL   FLG-PTKOHINF    =   1
-                       OR      TBL-PTKOHINF-MAX
-                                               >=  10
-               IF      PTKOH-SAKJOKBN      =  SPACE
-                   ADD     1               TO  TBL-PTKOHINF-MAX
-                   MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
+               PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key4"              TO  MCP-PATHNAME
+                   PERFORM 900-PTKOHINF-READ-N-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-PTKOHINF  
+               END-IF
+               PERFORM     UNTIL   FLG-PTKOHINF    =   1
+                           OR      TBL-PTKOHINF-MAX
+                                                   >=  100
+                   IF      PTKOH-SAKJOKBN      =  SPACE
+                       ADD     1               TO  TBL-PTKOHINF-MAX
+                       MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
                                                    (TBL-PTKOHINF-MAX)
       *
-                   DISPLAY "   TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX
+                       DISPLAY "   TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX
                            " KOHNUM="
                                    TBL-PTKOH-KOHNUM   (TBL-PTKOHINF-MAX)
                            " ST="  TBL-PTKOH-TEKSTYMD (TBL-PTKOHINF-MAX)
                            " ED="  TBL-PTKOH-TEKEDYMD (TBL-PTKOHINF-MAX)
       *
-               END-IF
+                   END-IF
       *
-               MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-               MOVE    "key4"           TO  MCP-PATHNAME
-               PERFORM  900-PTKOHINF-READ-N-SEC
-           END-PERFORM
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC 
-      *
-      *    £¹£µ£±¡ÊÏ··ò¡Ë
-           INITIALIZE                      PTKOHINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-           MOVE    PTINF-PTID          TO  PTKOH-PTID
-           MOVE    "951"               TO  PTKOH-KOHNUM
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                   MOVE    "key4"           TO  MCP-PATHNAME
+                   PERFORM  900-PTKOHINF-READ-N-SEC
+               END-PERFORM
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-PTKOHINF-READ-N-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTKOHINF
-           END-IF
-           PERFORM     UNTIL   FLG-PTKOHINF    =   1
-                       OR      TBL-PTKOHINF-MAX
-                                               >=  10
-               IF      PTKOH-SAKJOKBN      =  SPACE
-                   ADD     1               TO  TBL-PTKOHINF-MAX
-                   MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
-                                                   (TBL-PTKOHINF-MAX)
-               END-IF
-      *
-               MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-               MOVE    "key4"          TO  MCP-PATHNAME
-               PERFORM  900-PTKOHINF-READ-N-SEC
+               PERFORM 900-CLOSE-SEC
            END-PERFORM
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
            .
        500-SISETU-HENSYU-EXT.
            EXIT.

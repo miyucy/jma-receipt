@@ -52,6 +52,7 @@
       *  04.08.04    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *  04.08.05    NACL-藤原    18/03/28  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2142,6 +2143,16 @@
                                END-IF
                                IF      WRK-PARA-REC (IDX2:2)   =   "08"
                                    MOVE    "2"         TO
+                                               WRK-HENREI-B-RECEIPT-KBN
+                                   MOVE    WRK-MO-CNT  TO  IDX1
+                               END-IF
+                               IF      WRK-PARA-REC (IDX2:2)   =   "38"
+                                   MOVE    "3"         TO
+                                               WRK-HENREI-B-RECEIPT-KBN
+                                   MOVE    WRK-MO-CNT  TO  IDX1
+                               END-IF
+                               IF      WRK-PARA-REC (IDX2:2)   =   "39"
+                                   MOVE    "4"         TO
                                                WRK-HENREI-B-RECEIPT-KBN
                                    MOVE    WRK-MO-CNT  TO  IDX1
                                END-IF

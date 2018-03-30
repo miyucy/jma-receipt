@@ -39,6 +39,7 @@
       *
       *  04.08.01    NACL-Æ£¸¶    16/08/08  ºÒ³²³ºÅöÊ¬¡ÊÈó¸ºÌÈÂÐ¾Ý¤È¸ºÌÈÂÐ¾Ý¡Ë
       *                                     ¥ì¥»¥×¥È¤ÎÊ¬³äÂÐ±þ
+      *  04.08.02    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -425,6 +426,12 @@
                    WHEN    "2"
                        MOVE    "Ï··ò"      TO  SPA-H02GMN-TRECEIPT-KBN
                                                                   (IDY)
+                   WHEN    "3"
+                       MOVE    "°åÊ»"      TO  SPA-H02GMN-TRECEIPT-KBN
+                                                                  (IDY)
+                   WHEN    "4"
+                       MOVE    "°åÎÅ"      TO  SPA-H02GMN-TRECEIPT-KBN
+                                                                  (IDY)
                END-EVALUATE
                EVALUATE    TBL-HENREI-B-DISASTER (IDZZ)
                    WHEN    "00"
@@ -538,6 +545,12 @@
                                        SPA-H02GMN-TS-RECEIPT-KBN (IDY)
                        WHEN    "2"
                            MOVE    "Ï··ò"          TO
+                                       SPA-H02GMN-TS-RECEIPT-KBN (IDY)
+                       WHEN    "3"
+                           MOVE    "°åÊ»"          TO
+                                       SPA-H02GMN-TS-RECEIPT-KBN (IDY)
+                       WHEN    "4"
+                           MOVE    "°åÎÅ"          TO
                                        SPA-H02GMN-TS-RECEIPT-KBN (IDY)
                    END-EVALUATE
       *
