@@ -407,7 +407,7 @@
                        15  SPA-GMN-W20-KSNCDMEI        PIC X(28).
       *            夜間看護体制特定日
                09  SPA-GMN-W20-YKTTYMD-G.
-                   13  SPA-GMN-W20-YKTTYMD-OCC     OCCURS 6.
+                   13  SPA-GMN-W20-YKTTYMD-OCC     OCCURS 12.
                        15  SPA-GMN-W20-YKTTYMD     PIC X(10).
       *        有効開始日
                09  SPA-GMN-W20-YUKOSTYMD           PIC X(10).
@@ -1122,7 +1122,7 @@
                    13  SPA-NAI-W20-KSNINF-IDX      PIC 9(03).
       *            夜間看護体制特定日
                09  SPA-NAI-W20-YKTTYMD-G.
-                 11  SPA-NAI-W20-YKTTYMD-OCC       OCCURS 6.
+                 11  SPA-NAI-W20-YKTTYMD-OCC       OCCURS 12.
                    13  SPA-NAI-W20-YKTTYMD         PIC X(08).
       *      履歴リスト内部領域
              07  SPA-NAI-W20-RIREKILST.

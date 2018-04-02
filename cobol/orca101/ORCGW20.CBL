@@ -41,7 +41,7 @@
        INPUT-OUTPUT                              SECTION.
        FILE-CONTROL.
       *
-       DATA                    DIVISION.
+       DATA                        DIVISION.
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
@@ -611,7 +611,7 @@
            03  CONST-BTUMIKJNCD        PIC X(09) VALUE "188000270".
            03  CONST-KNGHJOCD-MAX      PIC 9(03) VALUE 15.
            03  CONST-5001-KSN-MAX      PIC 9(03) VALUE 14.
-           03  CONST-YKTTYMD-MAX       PIC 9(03) VALUE 6.
+           03  CONST-YKTTYMD-MAX       PIC 9(03) VALUE 12.
            03  CONST-KANSATU           PIC X(02) VALUE "10".
            03  CONST-H180401           PIC X(08) VALUE "20060401".
            03  CONST-H180701           PIC X(08) VALUE "20060701".
@@ -3155,7 +3155,7 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                    MOVE    1   TO  W20-KSN-PAGENO
                WHEN    331 THRU    346
                    MOVE    2   TO  W20-KSN-PAGENO
-               WHEN    901 THRU    906
+               WHEN    901 THRU    912
                    MOVE    3   TO  W20-KSN-PAGENO
                END-EVALUATE
            END-IF
@@ -12210,12 +12210,6 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                                        W20-TBTUTYPE-STATE
                                        W20-TBTUTYPE-ITM-STATE
                                        W20-TBTUCD-STATE
-                                       W20-YKTTYMD-STATE (1)
-                                       W20-YKTTYMD-STATE (2)
-                                       W20-YKTTYMD-STATE (3)
-                                       W20-YKTTYMD-STATE (4)
-                                       W20-YKTTYMD-STATE (5)
-                                       W20-YKTTYMD-STATE (6)
                                        W20-LBLYKTTYMDP-STATE
       *
            IF   ( SPA-GMN-W20-BTULST-SEL    >  ZERO )
@@ -12299,20 +12293,20 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                                        TO  W20-TBTUCD-STATE
            END-IF
       *
+           MOVE    WIDGET-NORMAL       TO  WRK-STATE
            IF    ( SPA-NAI-W20-HOSPSBT     =   1 )
             AND  ( SPA-NAI-W20-BEDSU       <   100 )
             AND  ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H300401 )
                CONTINUE
            ELSE
                MOVE    WIDGET-INSENSITIVE
-                                   TO  W20-YKTTYMD-STATE (1)
-                                       W20-YKTTYMD-STATE (2)
-                                       W20-YKTTYMD-STATE (3)
-                                       W20-YKTTYMD-STATE (4)
-                                       W20-YKTTYMD-STATE (5)
-                                       W20-YKTTYMD-STATE (6)
-                                       W20-LBLYKTTYMDP-STATE
+                                       TO  WRK-STATE
            END-IF
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-YKTTYMD-MAX )
+               MOVE    WRK-STATE       TO  W20-YKTTYMD-STATE (IDX0)
+           END-PERFORM
+           MOVE    WRK-STATE           TO  W20-LBLYKTTYMDP-STATE
       *
            .
        500-EDIT-GMNHEN-STATE-EXT.
@@ -12379,7 +12373,7 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                MOVE    "KSN"               TO  WRK-KSNNUM-G
                COMPUTE WRK-KSNNUM = SPA-GMN-W20-CUR - 300
                MOVE    WRK-KSNNUM-G        TO  MCP-WIDGET
-           WHEN    901 THRU  906
+           WHEN    901 THRU  912
                MOVE    "YKTTYMD"           TO  WRK-YKTTYMDNUM-G
                COMPUTE WRK-YKTTYMDNUM = SPA-GMN-W20-CUR - 900
                MOVE    WRK-YKTTYMDNUM-G    TO  MCP-WIDGET
@@ -12613,11 +12607,11 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            WHEN    "KSN30"
            WHEN    "KSN46"
                MOVE    051             TO  SPA-GMN-W20-CUR
-           WHEN    "YKTTYMD01" THRU    "YKTTYMD05"
+           WHEN    "YKTTYMD01" THRU    "YKTTYMD11"
                COMPUTE SPA-GMN-W20-CUR
                    =   FUNCTION NUMVAL (WRK-MCP-WIDGET(8:2))
                    +   901
-           WHEN    "YKTTYMD06"
+           WHEN    "YKTTYMD12"
                MOVE    051             TO  SPA-GMN-W20-CUR
            WHEN    "YUKOSTYMD"
                MOVE    052             TO  SPA-GMN-W20-CUR

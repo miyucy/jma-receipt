@@ -749,6 +749,30 @@ W20 {
           textdata varchar(10);
           state int;
         };
+        YKTTYMD07{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD08{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD09{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD10{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD11{
+          textdata varchar(10);
+          state int;
+        };
+        YKTTYMD12{
+          textdata varchar(10);
+          state int;
+        };
       };
       LBLYKTTYMDP{
         state int;
