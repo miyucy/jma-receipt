@@ -2825,6 +2825,8 @@
            IF      (SPA-NYUGAIKBN      =   "2"  )
               AND  (WRK-COM-DATAKBN (IDX-Z)    =   "1" )
               AND  (WRK-COM-TIMEKSNKBN(IDX-Z)  =   0 )
+               MOVE    "0010"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                GO      TO      1002-KASAN-SET-EXT
            END-IF
       *
