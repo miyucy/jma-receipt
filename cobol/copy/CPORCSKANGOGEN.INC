@@ -41,7 +41,6 @@
            03  LNK-KANGOGEN-HENKYAKU-AREA.
              05  LNK-KANGOGEN-TBL.
       *        夜間看護体制特定日減算コード
-      *      （空白：対象外　１：入院中で入院料未算定日）
                07  LNK-KANGOGEN-SRYCD         PIC  X(09)  OCCURS  31.
       *
       *復帰コード（１：病院以外　２：算定年月エラー　
