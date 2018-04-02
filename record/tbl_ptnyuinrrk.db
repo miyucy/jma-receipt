@@ -1291,3 +1291,18 @@ path	del3   {
 	};
 };
 
+path	key74		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key74_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPNUM      =   :HOSPNUM 
+			AND		PTID        =   :PTID
+			AND		NYUINYMD	<=	:NYUINYMD
+			AND		TAIINYMD	>=	:TAIINYMD
+			AND		JTIKBN		<>	'5'
+			AND		JTIKBN		<>	'6'
+			ORDER BY RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
