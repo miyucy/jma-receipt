@@ -911,6 +911,8 @@
              07  SPA-NAI-W20-AREA.
       *        医療機関種別
                09  SPA-NAI-W20-HOSPSBT             PIC 9(01).
+      *        許可病床数
+               09  SPA-NAI-W20-BEDSU               PIC 9(04).
       *
       *      入力領域内部領域
              07  SPA-NAI-W20-INPUT-AREA.

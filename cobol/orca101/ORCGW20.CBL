@@ -2511,6 +2511,8 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            MOVE    SYSKANRI-REC    TO  SYS-1001-REC
            MOVE    SYS-1001-HOSPSBT
                                    TO  SPA-NAI-W20-HOSPSBT
+           MOVE    SYS-1001-BEDSU
+                                   TO  SPA-NAI-W20-BEDSU
       *
            .
        3101-GET-SYS1001-EXT.
@@ -7289,6 +7291,11 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                    PERFORM 4101-NYUINRYO-CLEAR-SEC
            END-EVALUATE
       *
+           IF    ( SPA-NAI-W20-YUKOSTYMD   <   CONST-H300401 )
+               INITIALIZE              SPA-GMN-W20-YKTTYMD-G
+                                       SPA-NAI-W20-YKTTYMD-G
+           END-IF
+      *
            IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
                IF    ( SPA-GMN-W20-SBT NOT =   "04" )
                    MOVE  SPA-GMN-W20-YKNKNGLST (01)
@@ -7312,7 +7319,6 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            INITIALIZE                     SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY16-SEL-SEC
            IF    ( FLG-SYSKANRI       =   ZERO )
-               
                EVALUATE    TRUE
                WHEN  ( WRK-EDYMD          >=   CONST-H220401 )
                  AND ( WRK-STYMD          <    CONST-H220401 )
@@ -12291,6 +12297,21 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            IF    ( W20-TBTUTYPE        =   SPACE )
                MOVE    WIDGET-INSENSITIVE
                                        TO  W20-TBTUCD-STATE
+           END-IF
+      *
+           IF    ( SPA-NAI-W20-HOSPSBT     =   1 )
+            AND  ( SPA-NAI-W20-BEDSU       <   100 )
+            AND  ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H300401 )
+               CONTINUE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W20-YKTTYMD-STATE (1)
+                                       W20-YKTTYMD-STATE (2)
+                                       W20-YKTTYMD-STATE (3)
+                                       W20-YKTTYMD-STATE (4)
+                                       W20-YKTTYMD-STATE (5)
+                                       W20-YKTTYMD-STATE (6)
+                                       W20-LBLYKTTYMDP-STATE
            END-IF
       *
            .
