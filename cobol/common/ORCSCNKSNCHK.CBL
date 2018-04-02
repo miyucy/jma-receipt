@@ -976,6 +976,7 @@
       *****************************************************************
        910-TENSU-READ2-SEC         SECTION.
       *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key36"             TO  MCP-PATHNAME
            PERFORM   900-DBSELECT-SEC
