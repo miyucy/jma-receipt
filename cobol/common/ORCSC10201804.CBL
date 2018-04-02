@@ -2820,6 +2820,15 @@
                END-IF
            END-IF
       *
+      *H30.4
+      *    時間外算定不可の手技料は対象外
+           IF      (SPA-NYUGAIKBN      =   "2"  )
+              AND  (WRK-COM-DATAKBN (IDX-Z)    =   "1" )
+              AND  (WRK-COM-TIMEKSNKBN(IDX-Z)  =   0 )
+               GO      TO      1002-KASAN-SET-EXT
+           END-IF
+      *
+      *
       *    画面に時間外区分がない時、追加する
            IF      (SPA-NYUGAIKBN      =   "2"  )  AND
                    (WRK-COM-DATAKBN (IDX-Z) =   "1" )
