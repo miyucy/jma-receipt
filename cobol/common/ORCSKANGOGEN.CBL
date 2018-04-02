@@ -138,6 +138,8 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *    （医療機関情報−基本情報）
+           COPY    "CPSK1001.INC".
       *    （医療機関情報）
            COPY    "CPSK5000.INC".
       *    （病棟情報）
@@ -239,8 +241,33 @@
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
+      *    病院診療所種別取得
+           INITIALIZE                        SYS-1001-REC
+           MOVE    ZERO                  TO  FLG-SYSKANRI
+      *
+           MOVE    LNK-KANGOGEN-HOSPNUM  TO  SYS-1001-HOSPNUM
+           MOVE    "1001"                TO  SYS-1001-KANRICD
+           MOVE    "*"                   TO  SYS-1001-KBNCD
+           MOVE    LNK-KANGOGEN-SANTEIYM TO  SYS-1001-STYUKYMD(1:6)
+           MOVE    "01"                  TO  SYS-1001-STYUKYMD(7:2)
+           MOVE    SYS-1001-STYUKYMD     TO  SYS-1001-EDYUKYMD
+           MOVE    SYS-1001-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"        TO  MCP-TABLE
+           MOVE    "key"                 TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           MOVE    "tbl_syskanri"        TO  MCP-TABLE
+           MOVE    "key"                 TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF       MCP-RC               =   ZERO
+               MOVE  MCPDATA-REC         TO  SYS-1001-REC
+           END-IF
+      *    システム管理クローズ
+           MOVE    "tbl_syskanri"        TO  MCP-TABLE
+           MOVE    "key"                 TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
       *    病院チェック
-           IF     SPA-HOSPSBT       =   1
+           IF     SYS-1001-HOSPSBT       =   1
                CONTINUE
            ELSE
                MOVE    1               TO  LNK-KANGOGEN-RC
@@ -353,6 +380,7 @@
       **        END-IF
       **     END-PERFORM
       *
+      *    システム管理クローズ
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
