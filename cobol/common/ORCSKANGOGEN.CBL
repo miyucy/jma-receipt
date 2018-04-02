@@ -243,8 +243,6 @@
       *
       *    病院診療所種別取得
            INITIALIZE                        SYS-1001-REC
-           MOVE    ZERO                  TO  FLG-SYSKANRI
-      *
            MOVE    LNK-KANGOGEN-HOSPNUM  TO  SYS-1001-HOSPNUM
            MOVE    "1001"                TO  SYS-1001-KANRICD
            MOVE    "*"                   TO  SYS-1001-KBNCD
@@ -253,17 +251,17 @@
            MOVE    SYS-1001-STYUKYMD     TO  SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC          TO  MCPDATA-REC
            MOVE    "tbl_syskanri"        TO  MCP-TABLE
-           MOVE    "key"                 TO  MCP-PATHNAME
+           MOVE    "key10"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            MOVE    "tbl_syskanri"        TO  MCP-TABLE
-           MOVE    "key"                 TO  MCP-PATHNAME
+           MOVE    "key10"               TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF       MCP-RC               =   ZERO
                MOVE  MCPDATA-REC         TO  SYS-1001-REC
            END-IF
       *    システム管理クローズ
            MOVE    "tbl_syskanri"        TO  MCP-TABLE
-           MOVE    "key"                 TO  MCP-PATHNAME
+           MOVE    "key10"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    病院チェック
