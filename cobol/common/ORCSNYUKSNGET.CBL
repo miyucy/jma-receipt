@@ -31,6 +31,10 @@
       *                                     を入院料加算チェックマスタから
       *                                     電子点数表マスタに変更
       *  05.00.00    NACL-小豆沢  18/03/13  特別入院基本料の判定変更
+      *  05.00.00    NACL-小豆沢  18/03/30  療養病棟入院料２（経過措置２）を
+      *                                     特別入院基本料の扱いに変更
+      *  05.00.00    NACL-小豆沢  18/04/02  療養病棟入院料２（経過措置２）の
+      *                                     乳幼児加算、幼児加算を暫定対処
       *****************************************************************
       *
       *
@@ -2461,6 +2465,17 @@
              END-IF
            END-IF
       *
+      *    平成３０年４月の療養病棟入院料２（経過措置２)は乳幼児加算、
+      *    幼児加算を特別入院基本料の算定ができるよう暫定対処
+      *    （電子点数表マスタが修正されるまでの間の対処）
+           IF     LNK-NYUKSNGET-SANTEIYM   >=     "201804"
+              IF  (NYUKSNCHK-NYUINKBN      =      "014")   AND
+                  (TNS-SRYCD               =      "190100570"  OR
+                                                  "190100870")
+                  MOVE   ZERO      TO     FLG-NYUKSN
+              END-IF
+           END-IF
+      *
       *    注加算の表用番号が同一であることの判定
            IF   WRK-KSN-CDKBN-KBNNUM    NOT =    ZERO
               IF  (WRK-BTU-CDKBN-KBNNUM  = WRK-KSN-CDKBN-KBNNUM)  AND
@@ -2813,6 +2828,12 @@
       *       療養病棟入院基本料（特別入院基本料）（生活療養）
               IF     (TNS-CDKBN-KBNNUM  = 101)   AND
                      (TNS-CDKBN-KOUBAN  =   3)
+                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+              END-IF
+      *       療養病棟入院料２（経過措置２）
+      *       療養病棟入院料２（経過措置２）（生活療養）
+              IF     (TNS-CDKBN-KBNNUM  = 101)   AND
+                     (TNS-CDKBN-KOUBAN  =  11)
                     MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
               END-IF
       *       結核病棟特別入院基本料
