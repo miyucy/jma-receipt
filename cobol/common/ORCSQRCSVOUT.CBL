@@ -1236,6 +1236,10 @@
            MOVE    ORCSQRCSV-TNS-NAME (IDX IDX2)
                                        TO  TBL-QRCSV-DATA (5)
            MOVE    5                   TO  TBL-MAX
+      *H30.4
+           IF      SPA-SRYYMD          >=  "20180401"
+               MOVE    7                   TO  TBL-MAX
+           END-IF
            PERFORM 400-DATAOUT-SEC
            ADD     1                   TO  WRK-RP-11
       *
@@ -1496,6 +1500,10 @@
                    MOVE    WRK-SURYO-H         TO  TBL-QRCSV-DATA(IDXF)
                END-PERFORM
                MOVE    IDXF                TO  TBL-MAX
+      *H30.4
+               IF      SPA-SRYYMD          >=  "20180401"
+                   MOVE    13                  TO  TBL-MAX
+               END-IF
                PERFORM 400-DATAOUT-SEC
            END-IF
            .
@@ -1554,6 +1562,10 @@
            MOVE    ORCSQRCSV-TNS-NAME (IDX IDX3)
                                        TO  TBL-QRCSV-DATA (6)
            MOVE    6                   TO  TBL-MAX
+      *H30.4
+           IF      SPA-SRYYMD          >=  "20180401"
+               MOVE    7                   TO  TBL-MAX
+           END-IF
            PERFORM 400-DATAOUT-SEC
            .
        20032-RP281-EXT.
