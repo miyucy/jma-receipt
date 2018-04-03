@@ -1815,12 +1815,14 @@
                                      MOVE    "key"     TO  MCP-PATHNAME
                                      PERFORM 990-DBCLOSE-SEC
       *                      夜間看護加算（療養病棟入院基本料）
-      *                      （特別入院基本料等は除く）
+      *                      （特別入院基本料等、経過措置１、経過措置２は除く）
                              WHEN    "190204570"
                                 IF    SYS-5001-BTU-SBT   =   "04"
-                                  IF  LNK-NYUKSNGET-NYUIN-SRYCD
-                                                       = "190121810" OR
-                                                         "190124210"
+                                  IF (LNK-NYUKSNGET-NYUIN-SRYCD
+                                                      = "190121810" OR
+                                                        "190124210") OR
+                                     (SYS-5001-SYOKUINKBN   =   "1") OR
+                                     (SYS-5001-SYOKUINKBN2  =   "1")
                                      CONTINUE
                                   ELSE
                                      MOVE    ZERO     TO  FLG-TENSU
@@ -1847,11 +1849,7 @@
                                        IF ((TNS-CDKBN-KBNNUM = 101) AND
                                            (TNS-CDKBN-KOUBAN = 1))  OR
                                           ((TNS-CDKBN-KBNNUM = 101) AND
-                                           (TNS-CDKBN-KOUBAN = 2))  OR
-                                          ((TNS-CDKBN-KBNNUM = 101) AND
-                                           (TNS-CDKBN-KOUBAN = 10))  OR
-                                          ((TNS-CDKBN-KBNNUM = 101) AND
-                                           (TNS-CDKBN-KOUBAN = 11))
+                                           (TNS-CDKBN-KOUBAN = 2))
                                          ADD    1            TO  IDX8
                                          MOVE   "190204570"  TO
                                               WRK-NYUKHNKSN-SRYCD(IDX8)
