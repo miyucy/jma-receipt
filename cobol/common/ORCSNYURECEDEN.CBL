@@ -112,6 +112,7 @@
       *                                     食事負担額変更対応
       *                                     生活療養食事負担額変更対応
       *                                     居住費負担額変更対応
+      *  05.00.00    NACL-小豆沢  18/04/3   夜間看護体制特定日減算対応
       *****************************************************************
       *
       *
@@ -676,6 +677,9 @@
            03  WRK-NACCT-DAY-TBL.
                05  WRK-NACCT-DAY               PIC  9(03)  OCCURS 31.
       *
+      *    夜間看護体制特定日減算領域
+           03  WRK-KANGOGEN                    PIC X(09)   OCCURS 31.
+      *
       *    日付全角変換領域
        01  TBL-DAY-AREA.
            03  FILLER              PIC X(04)  VALUE "０１".
@@ -808,6 +812,9 @@
       *
       *    食事負担据え置き対象取得パラメタ
            COPY    "CPORCSSKJKEEP.INC".
+      *
+      *    夜間看護体制特定日減算取得サブ
+           COPY    "CPORCSKANGOGEN.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -4249,6 +4256,22 @@
                                                   ORCSNYUINDAY-AREA
                                                   SPA-AREA
       *
+      *夜間看護体制特定日減算取得
+           IF      LNK-NYURECEDEN-SANTEIYM     >=  "201804"
+             INITIALIZE                            ORCSKANGOGEN-AREA
+             MOVE    LNK-NYURECEDEN-HOSPNUM    TO  LNK-KANGOGEN-HOSPNUM
+             MOVE    LNK-NYURECEDEN-PTID       TO  LNK-KANGOGEN-PTID
+             MOVE    LNK-NYURECEDEN-SANTEIYM   TO  LNK-KANGOGEN-SANTEIYM
+             CALL    "ORCSKANGOGEN"     USING      ORCSKANGOGEN-AREA
+                                                   SPA-AREA
+             IF      LNK-KANGOGEN-RC           =   ZERO
+               PERFORM    VARYING   IDX1  FROM   1   BY   1
+                           UNTIL    IDX1   >    31
+                 MOVE  LNK-KANGOGEN-SRYCD(IDX1) TO  WRK-KANGOGEN(IDX1)
+               END-PERFORM
+             END-IF
+           END-IF
+      *
            MOVE    SPACE                      TO  WRK-SAIGAI-AREA2
       *
       *レセ電対象保険組合せ番号の取得
@@ -5409,6 +5432,13 @@
                          PERFORM   900-CLOSE-SEC
                        END-IF
                    END-IF
+               END-IF
+      *
+      *        夜間看護体制特定日減算
+               IF         WRK-KANGOGEN(IDX1)  NOT =        SPACE
+                   ADD      1                TO  WRK-MEISAISU
+                   MOVE   WRK-KANGOGEN(IDX1) TO  WRK-SO-SRYCD
+                                           (IDX1 WRK-MEISAISU)
                END-IF
       *
       *        医療観察

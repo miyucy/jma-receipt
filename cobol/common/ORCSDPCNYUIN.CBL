@@ -81,6 +81,7 @@
       *                                     食事負担額変更対応
       *                                     生活療養食事負担額変更対応
       *                                     居住費負担額変更対応
+      *  05.00.00    NACL-小豆沢  18/04/3   夜間看護体制特定日減算対応
       *****************************************************************
       *
       *
@@ -423,7 +424,10 @@
            03  WRK-DAY-9        REDEFINES      WRK-DAY-X
                                                PIC 9(02).
       *    選定入院時の外泊判定用
-           03  WRK-SENTEI-GAIGAKU              PIC 9(01)   OCCURS  31..
+           03  WRK-SENTEI-GAIGAKU              PIC 9(01)   OCCURS  31.
+      *
+      *    夜間看護体制特定日減算領域
+           03  WRK-KANGOGEN                    PIC X(09)   OCCURS  31.
       *
       *    患者所得情報の退避領域
        01  WRK-SYOTOKU-SKJKBN-AREA.
@@ -518,6 +522,9 @@
       *
       *    療養レセコメント取得サブ
            COPY    "CPORCSRYOCOM.INC".
+      *
+      *    夜間看護体制特定日減算取得サブ
+           COPY    "CPORCSKANGOGEN.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -716,6 +723,22 @@
            CALL    "ORCSSKJHKN"         USING     ORCSSKJHKN-AREA
                                                   ORCSNYUINDAY-AREA
                                                   SPA-AREA
+      *
+      *夜間看護体制特定日減算取得
+           IF      LNK-DPCNYUIN-SANTEIYM       >=  "201804"
+             INITIALIZE                            ORCSKANGOGEN-AREA
+             MOVE    LNK-DPCNYUIN-HOSPNUM      TO  LNK-KANGOGEN-HOSPNUM
+             MOVE    LNK-DPCNYUIN-PTID         TO  LNK-KANGOGEN-PTID
+             MOVE    LNK-DPCNYUIN-SANTEIYM     TO  LNK-KANGOGEN-SANTEIYM
+             CALL    "ORCSKANGOGEN"     USING      ORCSKANGOGEN-AREA
+                                                   SPA-AREA
+             IF      LNK-KANGOGEN-RC           =   ZERO
+               PERFORM    VARYING   IDX1  FROM   1   BY   1
+                           UNTIL    IDX1   >    31
+                 MOVE  LNK-KANGOGEN-SRYCD(IDX1) TO  WRK-KANGOGEN(IDX1)
+               END-PERFORM
+             END-IF
+           END-IF
       *
       *医療区分、ＡＤＬ点数コメントの取得（平成２８年１０月診療分以降）
            IF     LNK-DPCNYUIN-SANTEIYM       >=  "201610"
@@ -1808,6 +1831,13 @@
                          PERFORM   900-CLOSE-SEC
                        END-IF
                    END-IF
+               END-IF
+      *
+      *        夜間看護体制特定日減算
+               IF         WRK-KANGOGEN(IDX1)  NOT =        SPACE
+                   ADD      1                TO  WRK-MEISAISU
+                   MOVE   WRK-KANGOGEN(IDX1) TO  WRK-SO-SRYCD
+                                           (IDX1 WRK-MEISAISU)
                END-IF
       *
       *        医療観察
