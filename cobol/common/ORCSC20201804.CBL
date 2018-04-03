@@ -196,6 +196,10 @@
            03  FLG-TAZAI12             PIC 9(01).
            03  FLG-250IN               PIC 9(01).
            03  FLG-SGEM                PIC 9(01).
+      *H30.4
+      *    オンライン診療料あり
+           03  FLG-ONLNE-ARI           PIC 9(01).
+           03  FLG-ONLNE-AUTO          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -2561,6 +2565,14 @@
            IF     (SPA-NNCHKT-ARI      =   1   )
               OR  (SPA-NNCHKT-ARI2     =   1   )
                MOVE    2                   TO  FLG-NINCHIKSN
+           END-IF
+      *
+      *H30.4
+      *    オンライン診療料が同時
+           IF      SPA-ONLINE-ARI      =   1
+               MOVE    1               TO  FLG-ONLNE-ARI
+           ELSE
+               MOVE    ZERO            TO  FLG-ONLNE-ARI
            END-IF
       *
       *
@@ -5370,6 +5382,11 @@
                   (FLG-SYOHOSENN       =   ZERO)
                GO      TO      3001-INGAI-SYORI-EXT
            END-IF
+      *H30.4
+      *    オンライン診療料算定時なし
+           IF      FLG-ONLNE-ARI       =   1
+               GO      TO      3001-INGAI-SYORI-EXT
+           END-IF
       *
       *    訂正で自動発生なしの場合
            IF    ((LNK-ORCSC-SYORIFLG  =   1  )  AND
@@ -5493,6 +5510,9 @@
                MOVE    CONS-TAZAI-SYOSEN   TO  WRK-SRYCD2
            END-IF
       *
+      *H30.4
+           MOVE    1                   TO  FLG-ONLNE-AUTO
+      *
            PERFORM 3002-KASAN-SYORI-SEC
            IF      FLG-ERR             =   ZERO
                MOVE    "820"           TO  LNK-ORCSC-SRYSYUKBN
@@ -5510,6 +5530,14 @@
                    PERFORM 30019-GEN30KSN-HENSYU-SEC
                END-IF
       *
+           END-IF
+      *H30.4
+           MOVE    ZERO                TO  FLG-ONLNE-AUTO
+      *
+      *H30.4
+      *    オンライン診療料算定時なし
+           IF      FLG-ONLNE-ARI       =   1
+               GO      TO      30011-SYOHOUSEN-SYORI-EXT
            END-IF
       *
       *処方せん料の次に別剤として追加。加算での追加はできない
@@ -5888,8 +5916,11 @@
       *H28.4  湿布70枚以上
            IF     (FLG-SIP70-ARI       =   1    )
       *        訂正で自動発生なしの場合
-               IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
-                      (SPA-TEISEI-FLG      =   "0")
+               IF    ((LNK-ORCSC-SYORIFLG  =   1  )  AND
+                      (SPA-TEISEI-FLG      =   "0"))
+      *H30.4
+      *        オンライン診療料算定時なし
+                 OR   (FLG-ONLNE-ARI       =   1  )
                    CONTINUE
                ELSE
       *            薬剤情報提供料、調基
@@ -5901,8 +5932,12 @@
       *
       *    外来
       *    内服調剤料加算
-           IF     (FLG-NAIYAK          =   1    )  OR
-                  (FLG-TONPUK          =   1    )
+           IF    ((FLG-NAIYAK          =   1    )  OR
+                  (FLG-TONPUK          =   1    ))
+      *H30.4
+      *        オンライン診療料算定時　処方料以外なし
+             AND  (FLG-ONLNE-ARI       =   ZERO )
+      *
                MOVE    "120000710"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD2
                PERFORM 3002-KASAN-SYORI-SEC
@@ -5919,6 +5954,10 @@
            END-IF
       *    外用調剤料加算
            IF      FLG-GAIYAK          =   1
+      *H30.4
+      *        オンライン診療料算定時　処方料以外なし
+             AND  (FLG-ONLNE-ARI       =   ZERO )
+      *
                MOVE    "120001010"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD2
                PERFORM 3002-KASAN-SYORI-SEC
@@ -5967,6 +6006,8 @@
       *H29.3
                IF      FLG-250IN           =   ZERO
       *        処方料入力なし
+      *H30.4
+               MOVE    1                   TO  FLG-ONLNE-AUTO
       *
                PERFORM 3002-KASAN-SYORI-SEC
                IF      FLG-ERR             =   ZERO
@@ -5976,6 +6017,7 @@
                                                          (02 IDXS)
                    MOVE    1               TO  FLG-SYOHORYO
                END-IF
+               MOVE    ZERO                TO  FLG-ONLNE-AUTO
       *H27.4
       *        ３０日以上逓減
                IF     (SPA-TEIGEN30-OK     =   1 )
@@ -5989,6 +6031,12 @@
                ELSE
                    MOVE    1               TO  FLG-SYOHORYO
                END-IF
+      *H30.4
+      *        オンライン診療料算定時　処方料以外なし
+               IF     (FLG-ONLNE-ARI       =   1  )
+                   GO      TO      3002-INNAI-SYORI-EXT
+               END-IF
+      *
       *!!
       *H28.4
       *        外来後発医薬品使用体制加算（診療所）
@@ -6031,6 +6079,13 @@
                END-IF
       *
            END-IF
+      *
+      *H30.4
+      *    オンライン診療料算定時　処方料以外なし
+           IF     (FLG-ONLNE-ARI       =   1  )
+               GO      TO      3002-INNAI-SYORI-EXT
+           END-IF
+      *
       *    麻毒加算料
            IF      FLG-MADOKU          =   1
       *        麻毒調剤料
@@ -8545,6 +8600,14 @@
       *    年齢加算追加処理
       *****************************************************************
        3002-NENREI-KASAN-SEC            SECTION.
+      *
+      *H30.4
+      *    オンライン診療料算定時　年齢加算なし
+           IF     (FLG-ONLNE-ARI       =   1  )
+             AND  (FLG-ONLNE-AUTO      =   1  )
+               GO      TO      3002-NENREI-KASAN-EXT
+           END-IF
+      *
       *
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2        >   4       )   OR
