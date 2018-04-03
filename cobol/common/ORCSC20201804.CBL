@@ -3122,17 +3122,19 @@
            END-IF
       *
       *H30.4
+      *H30.4.3 廃止
       *    皮膚保湿薬チェック
-           IF     (WRK-HIFU-YAK        >   ZERO )
-             AND  (SPA-NYUGAIKBN       =   "2"  )
-               IF     (WRK-COM-KZMFLG(IDX-HIFU)    =   SPACE) AND
-                      (LNK-ORCSC-KEI-IDX           =   ZERO )
-                   MOVE    "K120"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR(IDX-HIFU)
-                   MOVE    "1"             TO  WRK-COM-KZMFLG(IDX-HIFU)
-                   MOVE    IDX-HIFU        TO  LNK-ORCSC-KEI-IDX
-               END-IF
-           END-IF
+      *    IF     (WRK-HIFU-YAK        >   ZERO )
+      *      AND  (SPA-NYUGAIKBN       =   "2"  )
+      *        IF     (WRK-COM-KZMFLG(IDX-HIFU)    =   SPACE) AND
+      *               (LNK-ORCSC-KEI-IDX           =   ZERO )
+      *            MOVE    "K120"          TO  SPA-ERRCD
+      *            MOVE    "1"             TO  WRK-COM-CUR(IDX-HIFU)
+      *            MOVE    "1"             TO  WRK-COM-KZMFLG(IDX-HIFU)
+      *            MOVE    IDX-HIFU        TO  LNK-ORCSC-KEI-IDX
+      *        END-IF
+      **** END-IF
+      *
       *H28.4
       *    保険毎の逓減計算（外用）（入力チェックの後へ）
       *    INITIALIZE                  WRK-HKNKEISP-G
