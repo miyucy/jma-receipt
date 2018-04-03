@@ -6474,12 +6474,9 @@
                 CONTINUE
              ELSE
       *         指導料・初診日チェック
-                IF      WRK-COM-INPUTCD(IDX-Z) =   "113001810"  OR
-                                                   "113001910"  OR
-                                                   "113002010"  OR
-                                                   "113700610"  OR
-                                                   "113700710"  OR
-                                                   "113700810" 
+                IF      WRK-COM-INPUTCD(IDX-Z) =   "113001810"
+                                               OR  "113001910"
+                                               OR  "113002010"
                    MOVE    ZERO                TO  FLG-SIDOU
                    PERFORM 230-SIDOU-SYOSIN-SEC
                END-IF
@@ -8244,6 +8241,11 @@
       *    外来診療料算定時算定なし
            IF     (SPA-BEDSUIPN        >=  200 )  AND
                   (SPA-HOSPSBT         =   1   )
+               GO      TO      20012-GAIKAN-SYORI-EXT
+           END-IF
+      *H30.4
+      *    オンライン診療料算定なし
+           IF     (SPA-ONLINE-ARI      =   1   )
                GO      TO      20012-GAIKAN-SYORI-EXT
            END-IF
       *
