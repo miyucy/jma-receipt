@@ -1405,6 +1405,10 @@
            MOVE    ORCSQRCSV-TNS-NAME (IDX IDX3)
                                        TO  TBL-QRCSV-DATA (6)
            MOVE    6                   TO  TBL-MAX
+      *H30.4
+           IF      SPA-SRYYMD          >=  "20180401"
+               MOVE    7                   TO  TBL-MAX
+           END-IF
            PERFORM 400-DATAOUT-SEC
            .
        20032-RP281-EXT.
