@@ -762,6 +762,7 @@
       *                                     ÂÐ±þ
       *  04.08.48    NACL-ÌçÏÆ    18/03/01  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.49    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.50    NACL-ÌçÏÆ    18/04/04  ÆñÉÂÉéÃ´¼ÔÈÖ¹æÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -18230,24 +18231,47 @@
                  END-IF
                END-IF
                IF  (RECE62-KOHNUMHC(IDX1 1)    = "054"   )
-               AND (RECE62-SRYYM              >= "201501")
                AND (LNK-ORCSJGNGET-NYUJGNGAK   =  ZERO   )
                AND (LNK-ORCSJGNGET-TAFTNRUIKEI
                                  NOT = 9999999 AND 999999)
                  IF  (RECE62-KOHIDHC(IDX1 1)     =  RECE62-KOHID(1))
                  AND (RECE62-KOHFTNJANUM(1)(5:3) =  "601" OR "602" )
+                 AND (RECE62-SRYYM              >= "201501"        )
                     MOVE    1     TO    FLG-SKJFTNNASI
                  END-IF
                  IF  (RECE62-KOHIDHC(IDX1 1)     =  RECE62-KOHID(2))
                  AND (RECE62-KOHFTNJANUM(2)(5:3) =  "601" OR "602" )
+                 AND (RECE62-SRYYM              >= "201501"        )
                     MOVE    1     TO    FLG-SKJFTNNASI
                  END-IF
                  IF  (RECE62-KOHIDHC(IDX1 1)     =  RECE62-KOHID(3))
                  AND (RECE62-KOHFTNJANUM(3)(5:3) =  "601" OR "602" )
+                 AND (RECE62-SRYYM              >= "201501"        )
                     MOVE    1     TO    FLG-SKJFTNNASI
                  END-IF
                  IF  (RECE62-KOHIDHC(IDX1 1)     =  RECE62-KOHID(4))
                  AND (RECE62-KOHFTNJANUM(4)(5:3) =  "601" OR "602" )
+                 AND (RECE62-SRYYM              >= "201501"        )
+                    MOVE    1     TO    FLG-SKJFTNNASI
+                 END-IF
+                 IF  (RECE62-KOHIDHC(IDX1 1)     =  RECE62-KOHID(1))
+                 AND (RECE62-KOHFTNJANUM(1)(5:2) =  "80"           )
+                 AND (RECE62-SRYYM              >= "201804"        )
+                    MOVE    1     TO    FLG-SKJFTNNASI
+                 END-IF
+                 IF  (RECE62-KOHIDHC(IDX1 1)     =  RECE62-KOHID(2))
+                 AND (RECE62-KOHFTNJANUM(2)(5:2) =  "80"           )
+                 AND (RECE62-SRYYM              >= "201804"        )
+                    MOVE    1     TO    FLG-SKJFTNNASI
+                 END-IF
+                 IF  (RECE62-KOHIDHC(IDX1 1)     =  RECE62-KOHID(3))
+                 AND (RECE62-KOHFTNJANUM(3)(5:2) =  "80"           )
+                 AND (RECE62-SRYYM              >= "201804"        )
+                    MOVE    1     TO    FLG-SKJFTNNASI
+                 END-IF
+                 IF  (RECE62-KOHIDHC(IDX1 1)     =  RECE62-KOHID(4))
+                 AND (RECE62-KOHFTNJANUM(4)(5:2) =  "80"           )
+                 AND (RECE62-SRYYM              >= "201804"        )
                     MOVE    1     TO    FLG-SKJFTNNASI
                  END-IF
                END-IF
@@ -32807,6 +32831,10 @@
                                                         OR "602" ) AND
                    ( RECE62-KOHFTNJANUM(1)(1:2) = "54"           ) AND
                    ( RECE62-SRYYM              >= "201501"       ))
+               OR (( RECE62-KOHNUM(1)    = "054"                 ) AND
+                   ( RECE62-KOHFTNJANUM(1)(5:2) = "70" OR "80"   ) AND
+                   ( RECE62-KOHFTNJANUM(1)(1:2) = "54"           ) AND
+                   ( RECE62-SRYYM              >= "201804"       ))
                OR (((RECE62-KOHNUM(2)    = "051" OR "091"       ) OR
                     (TBL-TOKATUKAIFLG(2) =  1                   )) AND
                    ( RECE62-KOHFTNJANUM(2)(5:3) = "601" OR "602" ) AND
@@ -32826,6 +32854,10 @@
                                                         OR "602" ) AND
                    ( RECE62-KOHFTNJANUM(2)(1:2) = "54"           ) AND
                    ( RECE62-SRYYM              >= "201501"       ))
+               OR (( RECE62-KOHNUM(2)    = "054"                 ) AND
+                   ( RECE62-KOHFTNJANUM(2)(5:2) = "70" OR "80"   ) AND
+                   ( RECE62-KOHFTNJANUM(2)(1:2) = "54"           ) AND
+                   ( RECE62-SRYYM              >= "201804"       ))
                OR (((RECE62-KOHNUM(3)    = "051" OR "091"       ) OR
                     (TBL-TOKATUKAIFLG(3) =  1                   )) AND
                    ( RECE62-KOHFTNJANUM(3)(5:3) = "601" OR "602" ) AND
@@ -32845,6 +32877,10 @@
                                                         OR "602" ) AND
                    ( RECE62-KOHFTNJANUM(3)(1:2) = "54"           ) AND
                    ( RECE62-SRYYM              >= "201501"       ))
+               OR (( RECE62-KOHNUM(3)    = "054"                 ) AND
+                   ( RECE62-KOHFTNJANUM(3)(5:2) = "70" OR "80"   ) AND
+                   ( RECE62-KOHFTNJANUM(3)(1:2) = "54"           ) AND
+                   ( RECE62-SRYYM              >= "201804"       ))
                OR (((RECE62-KOHNUM(4)    = "051" OR "091"       ) OR
                     (TBL-TOKATUKAIFLG(4) =  1                   )) AND
                    ( RECE62-KOHFTNJANUM(4)(5:3) = "601" OR "602" ) AND
@@ -32864,6 +32900,10 @@
                                                         OR "602" ) AND
                    ( RECE62-KOHFTNJANUM(4)(1:2) = "54"           ) AND
                    ( RECE62-SRYYM              >= "201501"       ))
+               OR (( RECE62-KOHNUM(4)    = "054"                 ) AND
+                   ( RECE62-KOHFTNJANUM(4)(5:2) = "70" OR "80"   ) AND
+                   ( RECE62-KOHFTNJANUM(4)(1:2) = "54"           ) AND
+                   ( RECE62-SRYYM              >= "201804"       ))
                OR (  WRK-KOHJGNGET-TEKIYOFLG(1) =  1              )
                OR (  WRK-KOHJGNGET-TEKIYOFLG(2) =  1              )
                OR (  WRK-KOHJGNGET-TEKIYOFLG(3) =  1              )
@@ -32888,6 +32928,10 @@
                                                           OR "602" ) AND
                      ( RECE62-KOHFTNJANUM(1)(1:2) = "54"           ) AND
                      ( RECE62-SRYYM              >= "201501"       ))
+                 OR (( RECE62-KOHNUM(1)    = "054"                 ) AND
+                     ( RECE62-KOHFTNJANUM(1)(5:2) = "70" OR "80"   ) AND
+                     ( RECE62-KOHFTNJANUM(1)(1:2) = "54"           ) AND
+                     ( RECE62-SRYYM              >= "201804"       ))
                  OR (  WRK-KOHJGNGET-TEKIYOFLG(1) =  1              )
                     MOVE     1     TO    TBL-TOKUSITUFLG(1)
                  END-IF
@@ -32910,6 +32954,10 @@
                                                           OR "602" ) AND
                      ( RECE62-KOHFTNJANUM(2)(1:2) = "54"           ) AND
                      ( RECE62-SRYYM              >= "201501"       ))
+                 OR (( RECE62-KOHNUM(2)    = "054"                 ) AND
+                     ( RECE62-KOHFTNJANUM(2)(5:2) = "70" OR "80"   ) AND
+                     ( RECE62-KOHFTNJANUM(2)(1:2) = "54"           ) AND
+                     ( RECE62-SRYYM              >= "201804"       ))
                  OR (  WRK-KOHJGNGET-TEKIYOFLG(2) =  1              )
                     MOVE     1     TO    TBL-TOKUSITUFLG(2)
                  END-IF
@@ -32932,6 +32980,10 @@
                                                           OR "602" ) AND
                      ( RECE62-KOHFTNJANUM(3)(1:2) = "54"           ) AND
                      ( RECE62-SRYYM              >= "201501"       ))
+                 OR (( RECE62-KOHNUM(3)    = "054"                 ) AND
+                     ( RECE62-KOHFTNJANUM(3)(5:2) = "70" OR "80"   ) AND
+                     ( RECE62-KOHFTNJANUM(3)(1:2) = "54"           ) AND
+                     ( RECE62-SRYYM              >= "201804"       ))
                  OR (  WRK-KOHJGNGET-TEKIYOFLG(3) =  1              )
                     MOVE     1     TO    TBL-TOKUSITUFLG(3)
                  END-IF
@@ -32954,6 +33006,10 @@
                                                           OR "602" ) AND
                      ( RECE62-KOHFTNJANUM(4)(1:2) = "54"           ) AND
                      ( RECE62-SRYYM              >= "201501"       ))
+                 OR (( RECE62-KOHNUM(4)    = "054"                 ) AND
+                     ( RECE62-KOHFTNJANUM(4)(5:2) = "70" OR "80"   ) AND
+                     ( RECE62-KOHFTNJANUM(4)(1:2) = "54"           ) AND
+                     ( RECE62-SRYYM              >= "201804"       ))
                  OR (  WRK-KOHJGNGET-TEKIYOFLG(4) =  1              )
                     MOVE     1     TO    TBL-TOKUSITUFLG(4)
                  END-IF

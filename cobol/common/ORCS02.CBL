@@ -454,6 +454,7 @@
       *                                     ÉéÃ´¶â·×»»ÂÐ±þ
       *  04.08.24    NACL-ÌçÏÆ    18/02/09  À¸³èÊÝ¸î¤Î¿©»öÉ¸½àÉéÃ´³Û·×»»
       *                                     ÂÐ±þ
+      *  04.08.25    NACL-ÌçÏÆ    18/04/04  ÆñÉÂÉéÃ´¼ÔÈÖ¹æÄÉ²ÃÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -5920,6 +5921,11 @@
                                                   OR "602"  ) AND
                    ( WK-KOH-FTNJANUM(1:2) = "54"            ) AND
                    ( LNK-SYU-SRYYMD(1:6) >= "201501"        ))
+               OR (((COMB-KOH1HKNNUM = "054"               ) OR
+                    (COMB-KOH2HKNNUM = "054"               )) AND
+                   ( WK-KOH-FTNJANUM(5:2) = "70" OR "80"    ) AND
+                   ( WK-KOH-FTNJANUM(1:2) = "54"            ) AND
+                   ( LNK-SYU-SRYYMD(1:6) >= "201804"        ))
                OR (  WK-KOHJGNGET-TEKIYOFLG(1) =  1          )
                  IF   COMB-HKNNUM  NOT =  SPACE
                     IF     LNK-S02-KOUREI-NYUIN-KBN  =  "1"
@@ -6277,6 +6283,14 @@
                MOVE     3     TO    WK-TOKUSITU-SKJ(1)
              END-IF
            END-IF
+           IF  (COMB-KOH1HKNNUM      = "054"         )
+           AND (WK-KOH-FTNJANUM(5:2) = "70" OR "80"  )
+           AND (WK-KOH-FTNJANUM(1:2) = "54"          )
+           AND (LNK-SYU-SRYYMD(1:6) >= "201804"      )
+             IF   WK-KOH-FTNJANUM(5:2) = "80"
+               MOVE     3     TO    WK-TOKUSITU-SKJ(1)
+             END-IF
+           END-IF
       *
            IF  (COMB-KOH2HKNNUM      = "054"         )
            AND (WK-KOH-FTNJANUM(5:3) = "601" OR "501"
@@ -6290,6 +6304,14 @@
                MOVE     1     TO    WK-TOKUSITU-SKJ(2)
              END-IF
              IF   WK-KOH-FTNJANUM(5:3) = "602"
+               MOVE     3     TO    WK-TOKUSITU-SKJ(2)
+             END-IF
+           END-IF
+           IF  (COMB-KOH2HKNNUM      = "054"         )
+           AND (WK-KOH-FTNJANUM(5:2) = "70" OR "80"  )
+           AND (WK-KOH-FTNJANUM(1:2) = "54"          )
+           AND (LNK-SYU-SRYYMD(1:6) >= "201804"      )
+             IF   WK-KOH-FTNJANUM(5:2) = "80"
                MOVE     3     TO    WK-TOKUSITU-SKJ(2)
              END-IF
            END-IF
