@@ -82,7 +82,7 @@
       *    夜間看護体制特定日減算（地域包括ケア病棟入院料）
              05   CONS-KANGOGEN-SRYCD6     PIC X(09) VALUE "190212670".
       *    療養病棟・夜間看護体制特定日減算（一般病棟入院基本料）
-             05   CONS-KANGOGEN-SRYCD7     PIC X(09) VALUE "190212670".
+             05   CONS-KANGOGEN-SRYCD7     PIC X(09) VALUE "190214470".
            03  CONS-KANGOGEN-R     REDEFINES  CONS-KANGOGEN-AREA.
              05   CONS-KANGOGEN-SRYCD      PIC X(09)  OCCURS  7.
       *
