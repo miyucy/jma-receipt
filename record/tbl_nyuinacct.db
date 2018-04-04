@@ -26,8 +26,7 @@ tbl_nyuinacct {
 	DAY_6				number(3,0);
 	DAY_7				number(3,0);
 	DAY_8				number(3,0);
-	DAY_9				number(3,0);
-	DAY_10				number(3,0);
+	DAY_9				number(3,0); DAY_10				number(3,0);
 	DAY_11				number(3,0);
 	DAY_12				number(3,0);
 	DAY_13				number(3,0);
@@ -1158,3 +1157,19 @@ path	key61	{
 		;
 	};
 };
+
+path	key62 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key62_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPNUM      =   :HOSPNUM
+			AND     NYUGAIKBN   =   '1'
+			AND     PTID        =   :PTID
+			AND     SRYYM       =   :SRYYM
+			AND     ZAISKBKBN   =   :ZAISKBKBN
+			ORDER  BY  (SRYCDTOTAL = :SRYCDTOTAL) DESC
+		;
+	};
+};
+

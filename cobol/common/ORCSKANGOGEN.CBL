@@ -92,6 +92,9 @@
       *    夜間看護体制特定日減算の注加算コード退避エリア
            03  WRK-CHUKSNCD-AREA.
               05  WRK-CHUKSNCD             PIC X(04)  OCCURS  7.
+      *    減算率（％）退避エリア
+           03  WRK-KANGOGEN-TEN-AREA.
+              05  WRK-KANGOGEN-TEN         PIC 9(05)  OCCURS  7.
       *
       *    病棟設定された夜間看護体制特定日減算の対象日退避エリア
            03  WRK-BTU-TAIHI-AREA.
@@ -414,6 +417,7 @@
                 PERFORM 910-TENSU-READ-SEC
                 IF      FLG-TENSU                =   ZERO
                         MOVE    TNS-CHUKSNCD     TO  WRK-CHUKSNCD(IDX)
+                        MOVE    TNS-TEN      TO  WRK-KANGOGEN-TEN (IDX)
                 END-IF
       *
                 MOVE    "tbl_tensu"              TO  MCP-TABLE
@@ -564,35 +568,56 @@
                                  MOVE  CONS-KANGOGEN-SRYCD(1)
                                                 TO  LNK-KANGOGEN-SRYCD
                                                                (IDX1)
+                                 MOVE  WRK-KANGOGEN-TEN (1)
+                                                TO  LNK-KANGOGEN-TEN
+                                                               (IDX1)
                              END-IF
                              IF   TNS-CHUKSNCD  =   WRK-CHUKSNCD(2)
                                  MOVE  CONS-KANGOGEN-SRYCD(2)
                                                 TO  LNK-KANGOGEN-SRYCD
+                                                               (IDX1)
+                                 MOVE  WRK-KANGOGEN-TEN (2)
+                                                TO  LNK-KANGOGEN-TEN
                                                                (IDX1)
                              END-IF
                              IF   TNS-CHUKSNCD  =   WRK-CHUKSNCD(3)
                                  MOVE  CONS-KANGOGEN-SRYCD(3)
                                                 TO  LNK-KANGOGEN-SRYCD
                                                                (IDX1)
+                                 MOVE  WRK-KANGOGEN-TEN (3)
+                                                TO  LNK-KANGOGEN-TEN
+                                                               (IDX1)
                              END-IF
                              IF   TNS-CHUKSNCD  =   WRK-CHUKSNCD(4)
                                  MOVE  CONS-KANGOGEN-SRYCD(4)
                                                 TO  LNK-KANGOGEN-SRYCD
+                                                               (IDX1)
+                                 MOVE  WRK-KANGOGEN-TEN (4)
+                                                TO  LNK-KANGOGEN-TEN
                                                                (IDX1)
                              END-IF
                              IF   TNS-CHUKSNCD  =   WRK-CHUKSNCD(5)
                                  MOVE  CONS-KANGOGEN-SRYCD(5)
                                                 TO  LNK-KANGOGEN-SRYCD
                                                                (IDX1)
+                                 MOVE  WRK-KANGOGEN-TEN (5)
+                                                TO  LNK-KANGOGEN-TEN
+                                                               (IDX1)
                              END-IF
                              IF   TNS-CHUKSNCD  =   WRK-CHUKSNCD(6)
                                  MOVE  CONS-KANGOGEN-SRYCD(6)
                                                 TO  LNK-KANGOGEN-SRYCD
                                                                (IDX1)
+                                 MOVE  WRK-KANGOGEN-TEN (6)
+                                                TO  LNK-KANGOGEN-TEN
+                                                               (IDX1)
                              END-IF
                              IF   TNS-CHUKSNCD  =   WRK-CHUKSNCD(7)
                                  MOVE  CONS-KANGOGEN-SRYCD(7)
                                                 TO  LNK-KANGOGEN-SRYCD
+                                                               (IDX1)
+                                 MOVE  WRK-KANGOGEN-TEN (7)
+                                                TO  LNK-KANGOGEN-TEN
                                                                (IDX1)
                              END-IF
                            END-IF

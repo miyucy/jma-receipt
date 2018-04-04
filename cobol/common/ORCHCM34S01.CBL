@@ -101,6 +101,7 @@
                05  FLG-BRMSGKSANTEIDAY         PIC 9(01)
                                                OCCURS  31.
            03  FLG-SANTEI                      PIC 9(01).
+           03  FLG-SENTEI-OK                   PIC 9(01).
            03  FLG-CLEAR                       PIC 9(01).
            03  FLG-EXSYOKUJI                   PIC 9(01).
            03  FLG-SKJZAIPTN                   PIC 9(01).
@@ -137,6 +138,9 @@
            03  IDXI                            PIC 9(05).
            03  IDXJ                            PIC 9(05).
            03  IDXK                            PIC 9(05).
+           03  IDXM                            PIC 9(05).
+           03  IDXN                            PIC 9(05).
+           03  IDXS                            PIC 9(05).
            03  IDX-KHN                         PIC 9(05).
            03  IDX-TAX                         PIC 9(05).
            03  IDX-SKJ                         PIC 9(05).
@@ -163,18 +167,16 @@
            03  WRK-NYUKHNKBN                   PIC 9(03).
            03  WRK-NACCT-ZAISKBKBN             PIC X(01).
            03  WRK-KHNTEN                      PIC S9(08).
-           03  WRK-KSNTEN                      PIC S9(08).
            03  WRK-KHNSRYCD                    PIC X(09).
            03  WRK-KSNSRYCD-G.
                05  WRK-KSNSRYCD-MAX            PIC 9(03).
                05  WRK-KSNSRYCD                PIC X(09)
                                                OCCURS   5.
-           03  WRK-HYOKETU-TEN                 PIC S9(08).
-           03  WRK-HYOKETU-SRYCD               PIC X(09).
+           03  WRK-HYOKETSU-TEN                 PIC S9(08).
+           03  WRK-HYOKETSU-SRYCD               PIC X(09).
            03  WRK-SENTEI-TEN                  PIC S9(08).
            03  WRK-SENTEI-SRYCD                PIC X(09).
            03  WRK-SENTEI-IPNCD                PIC X(09).
-           03  WRK-SENTEI-ZAITEN               PIC  9(08).
            03  WRK-SENTEI-KHNTEN               PIC 9(08).
            03  WRK-SENTEISRYCD                 PIC X(09).
            03  WRK-SENTEIIPNCD                  PIC X(09).
@@ -227,8 +229,7 @@
                05  WRK-TOKUKANRIKASAN          PIC 9(01)   OCCURS  31.
            03  WRK-SENTEI-PTFTN-G.
                05  WRK-SENTEI-PTFTN            PIC 9(08)   OCCURS  2.
-           03  WRK-SENTEI-GAIHAKU1             PIC 9(08).
-           03  WRK-SENTEI-GAIHAKU2             PIC 9(08).
+           03  WRK-SENTEI-GAIHAKU              PIC 9(08).
            03  WRK-SENTEI-FTNKBN               PIC X(01).
            03  WRK-SENTEI-TANKA-X              PIC  X(02).
            03  WRK-SENTEI-TANKA-R              REDEFINES
@@ -253,13 +254,19 @@
                05  WRK-SKYEDDD                 PIC  9(02).
            03  WRK-SKJCOMMENTCD                PIC  X(09).
            03  WRK-ZAI-G.
-               05  WRK-ZAI-CNT                 PIC  9(08).
+               05  WRK-ZAI-ZAINUM              PIC  9(02).
+               05  WRK-ZAI-SRYKBN              PIC  X(02).
                05  WRK-ZAI-SRYCDTOTAL          PIC  9(14).
                05  WRK-ZAI-TEN                 PIC  9(08).
                05  WRK-ZAI-KHNSRYCD            PIC  X(09).
                05  WRK-ZAI-KHNTEN              PIC  9(08).
+               05  WRK-ZAI-KHNIDX              PIC  9(05).
+               05  WRK-ZAI-SENTEI-KHNTEN       PIC  9(08).
+               05  WRK-ZAI-KSNTEN              PIC  9(08).
+               05  WRK-ZAI-HYOKETSU-RATE       PIC  9(05).
+               05  WRK-ZAI-CNT                 PIC  9(08).
                05  WRK-ZAI-SRYCD               PIC  X(09)
-                                               OCCURS  5.
+                                               OCCURS  20.
            03  WRK-DOJITU-G.
                05  WRK-DOJITU-OCC              OCCURS  31.
                    07  WRK-DOJITUST            PIC  X(01).
@@ -285,10 +292,14 @@
                    07  WNYUINRYO-SRYKBN        PIC X(02).
       *            剤点数
                    07  WNYUINRYO-ZAITEN        PIC 9(08).
+      *            明細数
+                   07  WNYUINRYO-SRYCDTOTAL    PIC 9(14).
       *            剤回数
-                   07  WNYUINRYO-ZAIKAISU      PIC S9(07).
+                   07  WNYUINRYO-ZAIKAISU      PIC 9(07).
+      *            明細数
+                   07  WNYUINRYO-MEISAISU      PIC 9(03).
       *            診療コード
-                   07  WNYUINRYO-SRYCD         PIC X(09)   OCCURS  5.
+                   07  WNYUINRYO-SRYCD         PIC X(09)   OCCURS  20.
       *            診療回数テーブル
                    07  WNYUINRYO-DAY-TBL.
                        09  WNYUINRYO-DAY       PIC 9(03)   OCCURS  31.
@@ -310,7 +321,7 @@
                    07  WGAIHAKU-ZAIKAISU       PIC 9(07).
       *            診療コード
                    07  WGAIHAKU-SRYCD          PIC X(09)
-                                               OCCURS 5.
+                                               OCCURS 20.
       *            診療回数テーブル
                    07  WGAIHAKU-DAY-TBL.
                        09  WGAIHAKU-DAY        PIC 9(03)   OCCURS  31.
@@ -355,7 +366,7 @@
                05  WSYOKUJI-ZAIKAISU           PIC 9(07).
       *        明細数
                05  WSYOKUJI-MEISAISU           PIC 9(08).
-               05  WSYOKUJI-SRYCD-OCC          OCCURS  5.
+               05  WSYOKUJI-SRYCD-OCC          OCCURS  20.
       *            数量
                    07  WSYOKUJI-SURYO          PIC 9(05).
       *            診療コード
@@ -462,7 +473,7 @@
                05  SRT-ZAIKAISU                PIC 9(07).
                05  SRT-SAGAKUCD                PIC X(02).
                05  SRT-PTFTN                   PIC 9(01).
-               05  SRT-SRYCD-OCC               OCCURS  5.
+               05  SRT-SRYCD-OCC               OCCURS  20.
                    07  SRT-SURYO               PIC 9(05).
                    07  SRT-SRYCD               PIC X(09).
                05  SRT-DAY-TBL.
@@ -670,6 +681,9 @@
       *
       *    入院点数マスタ付加情報サブ
            COPY    "CPORCSNTENSU.INC".
+      *
+      *    夜間看護体制特定日減算取得サブ
+           COPY    "CPORCSKANGOGEN.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -924,6 +938,7 @@
                                            ORCSSYOTOKUAREA
                                            ORCSSKJKEEP-AREA
                                            ORCSSKJHKN-AREA
+                                           ORCSKANGOGEN-AREA
       *
       *    医療機関情報取得処理
            PERFORM 1501-SYS1001-GET-SEC
@@ -1067,6 +1082,21 @@
                ELSE
                    INITIALIZE          ORCSSKJHKN-AREA
                END-IF
+           END-IF
+      *
+           IF    ( HCM34S01-SANTEIYM  >=   CONST-H3004 )
+               INITIALIZE                  ORCSKANGOGEN-AREA
+               MOVE  HCM34S01-HOSPNUM  TO  LNK-KANGOGEN-HOSPNUM
+               MOVE  HCM34S01-PTID     TO  LNK-KANGOGEN-PTID
+               MOVE  HCM34S01-SANTEIYM TO  LNK-KANGOGEN-SANTEIYM
+               CALL  "ORCSKANGOGEN"        USING
+                                           ORCSKANGOGEN-AREA
+                                           SPA-AREA
+              IF     ( LNK-KANGOGEN-RC =   ZERO )
+                  CONTINUE
+              ELSE
+                  INITIALIZE               ORCSKANGOGEN-AREA
+              END-IF
            END-IF
       *
            PERFORM 1501-SHOKUJI-HOKEN-SEC
@@ -1403,31 +1433,34 @@
                                                FLG-NYUINRYODAY-G
                                                FLG-TOKTEIDAY-G
       *
-           MOVE    "1"                     TO  WRK-NACCT-ZAISKBKBN
-           PERFORM 1001-NYUINACCT-KEY17-SEL-SEC
+           PERFORM 900-NYUINACCT-KEY62-SEL-SEC
       *
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
       *
-      *        選定入院料を算定していた日にちを退避
+               PERFORM 20011-NYUINACT-GET-SEC
+      *
                IF    ( NACCT-SRYCDTOTAL    =    099999916 )
-                   IF    ( HCM34S01-HKNNUM =    "975" )
-                       CONTINUE
-                   ELSE
-                       PERFORM VARYING     IDX1    FROM    1   BY  1
+                   PERFORM VARYING     IDX1    FROM    1   BY  1
                                UNTIL     ( IDX1    >   31 )
-                           IF   ( NACCT-DAY(IDX1)  >   ZERO )
-                               MOVE    1       TO  FLG-SENTEIDAY (IDX1)
-                           END-IF
-                       END-PERFORM
-                   END-IF
+                       IF   ( NACCT-DAY(IDX1)  >   ZERO )
+                           MOVE    1       TO   FLG-SENTEIDAY (IDX1)
+                       END-IF
+                   END-PERFORM
                ELSE
+      *
+                   PERFORM 20011-NYUINRYO-CHK-SEC
       *
       *            入院料を算定している日にちを退避
                    PERFORM VARYING     IDX1    FROM    1   BY  1
                            UNTIL     ( IDX1    >   31 )
       *
                        IF   ( NACCT-DAY(IDX1)  >   ZERO )
+      *
                            MOVE    1       TO  FLG-NYUINRYODAY (IDX1)
+      *
+                           IF   ( FLG-SENTEI-OK    =   ZERO )
+                               MOVE    ZERO    TO  FLG-SENTEIDAY (IDX1)
+                           END-IF
                        END-IF
       *
                    END-PERFORM
@@ -1446,16 +1479,47 @@
                    END-IF
                END-IF
       *
-               PERFORM 1001-NYUINACCT-KEY17-READ-SEC
+               PERFORM 900-NYUINACCT-KEY62-FET-SEC
       *
            END-PERFORM
       *
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-           MOVE    "key17"                 TO  MCP-PATHNAME
+           MOVE    "key62"                 TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        2001-NYUINRYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料チェック処理
+      *****************************************************************
+       20011-NYUINRYO-CHK-SEC           SECTION.
+      *
+           MOVE    1               TO  FLG-SENTEI-OK
+      *
+           IF    ( HCM34S01-HKNNUM =   "975" )
+               MOVE    ZERO        TO  FLG-SENTEI-OK
+           ELSE
+               PERFORM VARYING IDXN    FROM    1   BY  1
+                       UNTIL ( IDXN    >   5 )
+                        OR   ( NSRY-SRYCD (IDXN)   =   SPACE )
+                   MOVE    NSRY-SRYCD (IDXN)
+                                   TO  WRK-TNS-SRYCD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   IF    ( TNS-DATAKBN     =   1 )
+                       MOVE    IDXN    TO  IDX-KHN
+                       PERFORM 900-SENTEICDCHG-KEY2-SEL-SEC
+                       IF    ( FLG-SENTEICDCHG =   ZERO )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO    TO  FLG-SENTEI-OK
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       20011-NYUINRYO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院料編集処理
@@ -1489,11 +1553,10 @@
       *****************************************************************
        20011-NYUINRYO-HEN-SEC          SECTION.
       *
-      *    入院料編集処理
-           PERFORM 200111-NYUINRYO-HEN-SEC
+           PERFORM 20011-NYUINACT-GET-SEC
       *
-      *    選定入院料編集処理
-           PERFORM 200111-SENTEI-HEN-SEC
+      *    入院料編集処理
+           PERFORM 200110-NYUINRYO-HEN-SEC
       *
       *    外泊編集処理
            PERFORM 200111-GAIHAKU-HEN-SEC
@@ -1507,43 +1570,120 @@
       *****************************************************************
       *    入院料編集処理
       *****************************************************************
-       200111-NYUINRYO-HEN-SEC         SECTION.
+       200110-NYUINRYO-HEN-SEC         SECTION.
       *
-           IF    ( NACCT-SRYKBN            =   "90" )
-               MOVE    1               TO  IDXA
-           ELSE
-               MOVE    2               TO  IDXA
-           END-IF
-      *
-           IF    ( WNYUINRYO-OCC2-MAX (IDXA)
-                                           >=  CONST-WNYUINRYO-MAX )
-               GO  TO  200111-NYUINRYO-HEN-EXT
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-TAISYO
            PERFORM VARYING IDXD    FROM    1   BY  1
                    UNTIL ( IDXD        >   31 )
+      *
+               INITIALIZE                      WRK-ZAI-G
       *
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                 AND  ( FLG-NYUINDAY (IDXD)     =   1 )
                 AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
-                AND  ( FLG-SENTEIDAY(IDXD)     =   ZERO )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO )
-                   IF    ( FLG-TAISYO      =   ZERO )
-                       MOVE    1           TO  FLG-TAISYO
-      *                入院料基本情報設定処理
-                       PERFORM 2001111-NYUINKHNINF-SET-SEC
+      *
+      *            入院料基本情報設定処理
+                   PERFORM 2001111-NYUINKHNINF-SET-SEC
+      *
+                   IF    ( FLG-SENTEIDAY(IDXD) =   1 )
+                       PERFORM 200111-SENTEI-HEN-SEC
                    END-IF
       *
-                   MOVE    1               TO  WNYUINRYO-DAY
-                                                       (IDXA IDXB IDXD)
+                   IF    ( LNK-KANGOGEN-SRYCD (IDXD)
+                                           NOT =   SPACE )
+                       PERFORM 200111-YKTTYMD-HEN-SEC
+                   END-IF
       *
-                   COMPUTE WNYUINRYO-ZAIKAISU (IDXA IDXB)
-                       =   WNYUINRYO-ZAIKAISU (IDXA IDXB)  +   1
+                   COMPUTE WRK-ZAI-TEN
+                       =   WRK-ZAI-KHNTEN  +   WRK-ZAI-KSNTEN
+      *
+                   IF    ( WRK-ZAI-HYOKETSU-RATE   NOT =   ZERO )
+                       PERFORM 2001111-HYOKETSU-HEN-SEC
+                   END-IF
+      *
+                   PERFORM 200111-NYUINRYO-HEN-SEC
       *
                END-IF
       *
            END-PERFORM
+      *
+           .
+       200110-NYUINRYO-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料編集処理
+      *****************************************************************
+       200111-NYUINRYO-HEN-SEC         SECTION.
+      *
+           IF    ( NACCT-SRYKBN            =   "90" )
+               MOVE    1           TO  IDXA
+           ELSE
+               MOVE    2           TO  IDXA
+           END-IF
+      *
+           MOVE    ZERO            TO  WRK-ZAI-SRYCDTOTAL
+                                       WRK-ZAI-CNT
+           PERFORM VARYING IDXN    FROM    1   BY  1
+                   UNTIL ( IDXN    >   20 )
+                    OR   ( WRK-ZAI-SRYCD (IDXN)    =   SPACE )
+      *
+               MOVE    WRK-ZAI-SRYCD (IDXN)    TO  WRK-SRYCD
+      *
+               COMPUTE WRK-ZAI-SRYCDTOTAL
+                   =   WRK-ZAI-SRYCDTOTAL
+                   +   WRK-SRYCD-9
+               COMPUTE WRK-ZAI-CNT = WRK-ZAI-CNT + 1
+      *
+           END-PERFORM
+      *
+           MOVE    ZERO            TO      IDXB
+           PERFORM VARYING IDXN    FROM    1   BY  1
+                   UNTIL ( IDXN    >   WNYUINRYO-OCC2-MAX (IDXA))
+                    OR   ( IDXB    >   ZERO )
+      *
+               IF    ( WNYUINRYO-ZAITEN (IDXA IDXN)
+                                   =   WRK-ZAI-TEN )
+                AND  ( WNYUINRYO-SRYCDTOTAL (IDXA IDXN)
+                                   =   WRK-ZAI-SRYCDTOTAL )
+                AND  ( WNYUINRYO-MEISAISU (IDXA IDXN)
+                                   =   WRK-ZAI-CNT )
+                   MOVE    IDXN    TO  IDXB
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( IDXB            =   ZERO )
+               IF    ( WNYUINRYO-OCC2-MAX (IDXA)
+                                   <   20 )
+                   COMPUTE WNYUINRYO-OCC2-MAX (IDXA)
+                       =   WNYUINRYO-OCC2-MAX (IDXA)
+                       +   1
+                   MOVE    WNYUINRYO-OCC2-MAX (IDXA)
+                                   TO  IDXB
+                   MOVE    NACCT-SRYKBN
+                                   TO  WNYUINRYO-SRYKBN (IDXA IDXB)
+                   MOVE    WRK-ZAI-ZAINUM
+                                   TO  WNYUINRYO-ZAINUM (IDXA IDXB)
+                   MOVE    WRK-ZAI-TEN
+                                   TO  WNYUINRYO-ZAITEN (IDXA IDXB)
+                   MOVE    WRK-ZAI-SRYCDTOTAL
+                                   TO  WNYUINRYO-SRYCDTOTAL (IDXA IDXB)
+                   MOVE    WRK-ZAI-CNT
+                                   TO  WNYUINRYO-MEISAISU (IDXA IDXB)
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   WRK-ZAI-CNT )
+                       MOVE    WRK-ZAI-SRYCD (IDX0)
+                                   TO  WNYUINRYO-SRYCD (IDXA IDXB IDX0)
+                   END-PERFORM
+               END-IF
+           END-IF
+      *
+           IF    ( IDXB        >   ZERO )
+               MOVE    1           TO  WNYUINRYO-DAY (IDXA IDXB IDXD)
+               COMPUTE WNYUINRYO-ZAIKAISU (IDXA IDXB)
+                   =   WNYUINRYO-ZAIKAISU (IDXA IDXB)
+                   +   1
+           END-IF
       *
            .
        200111-NYUINRYO-HEN-EXT.
@@ -1553,46 +1693,48 @@
       *****************************************************************
        200111-SENTEI-HEN-SEC           SECTION.
       *
-           IF    ( NACCT-SRYKBN            =   "90" )
-               MOVE    1               TO  IDXA
+           MOVE    WRK-ZAI-KHNIDX      TO  IDX-KHN
+           PERFORM 900-SENTEICDCHG-KEY2-SEL-SEC
+      *
+           MOVE    SENCHG-IPNSRYCD     TO  WRK-SENTEIIPNCD
+           MOVE    SENCHG-SENTEISRYCD  TO  WRK-SENTEISRYCD
+      *
+           MOVE    SENCHG-SENTEISRYCD  TO  WRK-TNS-SRYCD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+      *
+           IF    ( SENCHG-IPNSRYCD     =   SENCHG-SENTEISRYCD )
+               COMPUTE WRK-ZAI-KHNTEN
+                   = ( WRK-ZAI-KHNTEN  * 0.85 ) +  0.5
            ELSE
-               MOVE    2               TO  IDXA
+                MOVE   TNS-TEN         TO  WRK-ZAI-KHNTEN
            END-IF
       *
-           IF    ( WNYUINRYO-OCC2-MAX (IDXA)
-                                           >=  CONST-WNYUINRYO-MAX )
-               GO  TO  200111-SENTEI-HEN-EXT
+           MOVE    WRK-SENTEISRYCD     TO  WRK-ZAI-SRYCD
+                                                   (IDX-KHN)
+      *
+           IF    ( WRK-SENTEISRYCD     =   WRK-SENTEIIPNCD )
+               PERFORM 2001111-NYUINRYO-SHIFT-SEC
+               COMPUTE WRK-ZAI-KHNIDX  =   WRK-ZAI-KHNIDX  +   1
+               MOVE    CONST-SENTEI    TO  WRK-ZAI-SRYCD(WRK-ZAI-KHNIDX)
            END-IF
-      *
-           MOVE    ZERO                TO  FLG-TAISYO
-           PERFORM VARYING IDXD    FROM    1   BY  1
-                   UNTIL ( IDXD        >   31 )
-      *
-               IF    ( NACCT-DAY    (IDXD)     >   ZERO )
-                AND  ( FLG-NYUINDAY (IDXD)     =   1 )
-                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
-                AND  ( FLG-SENTEIDAY(IDXD)     =   1 )
-                AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO )
-                   IF    ( FLG-TAISYO      =   ZERO )
-                       MOVE    1           TO  FLG-TAISYO
-      *                入院料基本情報設定処理
-                       PERFORM 2001111-NYUINKHNINF-SET-SEC
-      *                選定入院料置き換え処理
-                       PERFORM 2001111-SENTEI-CHG-SEC
-                   END-IF
-      *
-                   MOVE    1               TO  WNYUINRYO-DAY
-                                                       (IDXA IDXB IDXD)
-      *
-                   COMPUTE WNYUINRYO-ZAIKAISU (IDXA IDXB)
-                       =   WNYUINRYO-ZAIKAISU (IDXA IDXB)  +   1
-      *
-               END-IF
-      *
-           END-PERFORM
       *
            .
        200111-SENTEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    夜間看護体制特定日減算処理
+      *****************************************************************
+       200111-YKTTYMD-HEN-SEC         SECTION.
+      *
+           PERFORM 2001111-NYUINRYO-SHIFT-SEC
+           MOVE    LNK-KANGOGEN-SRYCD (IDXD)
+                           TO  WRK-ZAI-SRYCD (WRK-ZAI-KHNIDX + 1)
+           COMPUTE WRK-ZAI-KHNTEN
+               =   WRK-ZAI-KHNTEN
+               * ( 100 - LNK-KANGOGEN-TEN (IDXD)) / 100 + 0.5
+      *
+           .
+       200111-YKTTYMD-HEN-EXT.
            EXIT.
       *****************************************************************
       *    外泊編集処理
@@ -1664,8 +1806,8 @@
            MOVE    ZERO                TO  WRK-NYUKHNKBN
            MOVE    SPACE               TO  WRK-CHUKSNCD
            MOVE    SPACE               TO  WRK-KHNSRYCD
-           MOVE    ZERO                TO  WRK-HYOKETU-TEN
-           MOVE    SPACE               TO  WRK-HYOKETU-SRYCD
+           MOVE    ZERO                TO  WRK-HYOKETSU-TEN
+           MOVE    SPACE               TO  WRK-HYOKETSU-SRYCD
            MOVE    ZERO                TO  IDX-KHN
            MOVE    ZERO                TO  WRK-GAIHAKU-KSNTEN
            MOVE    SPACE               TO  WRK-SENTEI-SRYCD
@@ -1674,11 +1816,6 @@
            INITIALIZE                      WRK-KSNSRYCD-G
            INITIALIZE                      SNTENSU-AREA
            INITIALIZE                      TTNS-TENSU-REC
-      *
-           PERFORM 20011-NYUINACT-GET-SEC
-           IF    ( FLG-NYUINACT        NOT =    ZERO )
-               GO  TO  200111-GAIHAKU-KHNTEN-GET-EXT
-           END-IF
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   5 )
@@ -1727,8 +1864,8 @@
                                               (WRK-KSNSRYCD-MAX)
                            END-IF
                        WHEN    6
-                           MOVE  TNS-SRYCD TO  WRK-HYOKETU-SRYCD
-                           MOVE  TNS-TEN   TO  WRK-HYOKETU-TEN
+                           MOVE  TNS-SRYCD TO  WRK-HYOKETSU-SRYCD
+                           MOVE  TNS-TEN   TO  WRK-HYOKETSU-TEN
                        END-EVALUATE
                    END-EVALUATE
                END-IF
@@ -2079,6 +2216,19 @@
                    END-IF
                END-IF
       *
+               IF    ( LNK-KANGOGEN-SRYCD (IDXD)   NOT =   SPACE )
+                   MOVE    LNK-KANGOGEN-SRYCD (IDXD)
+                                               TO  WRK-SRYCD
+                   COMPUTE WRK-ZAI-SRYCDTOTAL
+                       =   WRK-ZAI-SRYCDTOTAL
+                       +   WRK-SRYCD-9
+      *
+                   COMPUTE WRK-ZAI-CNT     =   WRK-ZAI-CNT +   1
+                   MOVE    LNK-KANGOGEN-SRYCD (IDXD)
+                                               TO  WRK-ZAI-SRYCD
+                                                     (WRK-ZAI-CNT)
+               END-IF
+      *
            END-IF
       *
            PERFORM VARYING   IDXI  FROM    1   BY  1
@@ -2117,14 +2267,14 @@
                    END-IF
                END-PERFORM
       *
-               IF    ( WRK-HYOKETU-SRYCD       IS  NUMERIC )
-                   MOVE    WRK-HYOKETU-SRYCD   TO  WRK-SRYCD
+               IF    ( WRK-HYOKETSU-SRYCD       IS  NUMERIC )
+                   MOVE    WRK-HYOKETSU-SRYCD   TO  WRK-SRYCD
                    COMPUTE WRK-ZAI-SRYCDTOTAL
                        =   WRK-ZAI-SRYCDTOTAL
                        +   WRK-SRYCD-9
       *
                    COMPUTE WRK-ZAI-CNT =   WRK-ZAI-CNT +   1
-                   MOVE    WRK-HYOKETU-SRYCD
+                   MOVE    WRK-HYOKETSU-SRYCD
                                            TO  WRK-ZAI-SRYCD
                                                 (WRK-ZAI-CNT)
       *
@@ -2751,6 +2901,14 @@
       *****************************************************************
        2002-H28-GAIHAKU-TENSU-GET-SEC  SECTION.
       *
+           MOVE    WRK-ZAI-KHNTEN      TO  WRK-ZAI-TEN
+      *
+           IF    ( LNK-KANGOGEN-SRYCD (IDXD)   NOT =   SPACE )
+               COMPUTE WRK-ZAI-TEN
+                   =   WRK-ZAI-TEN
+                   * ( 100 - LNK-KANGOGEN-TEN (IDXD) ) / 100 + 0.5
+           END-IF
+      *
            IF  ( FLG-SENTEIDAY (IDXD) NOT  =  ZERO )
       *
                PERFORM 200111-SENTEI-KEISU-GET-SEC
@@ -2759,31 +2917,31 @@
                WHEN    1
                WHEN    3
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   WRK-SENTEI-KEISU )  + 0.5
+                       = ( WRK-ZAI-TEN *   WRK-SENTEI-KEISU )  + 0.5
                WHEN    4
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.6 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.6 )   +  0.5
                WHEN    5
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.9 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.9 )   +  0.5
                WHEN    8
                WHEN    9
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.92 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.92 )   +  0.5
                WHEN    13
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.92 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.92 )   +  0.5
                    COMPUTE WRK-ZAI-TEN
                        = ( WRK-ZAI-TEN     *   0.9  )   +  0.5
                WHEN    14
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.95  )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.95  )   +  0.5
                WHEN    15
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.65 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.65 )   +  0.5
                WHEN    17
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.92 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.92 )   +  0.5
                    COMPUTE WRK-ZAI-TEN
                        = ( WRK-ZAI-TEN     *   0.95 )   +  0.5
                END-EVALUATE
@@ -2794,47 +2952,47 @@
                        +   WRK-GAIHAKU-KSNTEN
                    COMPUTE WRK-ZAI-TEN
                        =   WRK-ZAI-TEN
-                       - ( WRK-ZAI-TEN * ( WRK-HYOKETU-TEN / 100 ))
+                       - ( WRK-ZAI-TEN * ( WRK-HYOKETSU-TEN / 100 ))
                        +   0.5
                END-IF
            ELSE
                EVALUATE  FLG-GAIHAKUDAY(IDXD)
                WHEN   1
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.15)   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.15)   +  0.5
                WHEN   2
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.3 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.3 )   +  0.5
                WHEN   4
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.6 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.6 )   +  0.5
                WHEN   5
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.9 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.9 )   +  0.5
                WHEN   6
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.8 )  +  0.5
+                       = ( WRK-ZAI-TEN  *   0.8 )  +  0.5
                WHEN    8
                WHEN    9
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.92 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.92 )   +  0.5
                WHEN    13
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.92 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.92 )   +  0.5
                    COMPUTE WRK-ZAI-TEN
                        = ( WRK-ZAI-TEN     *   0.9  )   +  0.5
                WHEN    14
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.95  )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.95  )   +  0.5
                WHEN    15
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.65 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.65 )   +  0.5
                WHEN    16
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.85 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.85 )   +  0.5
                WHEN    17
                    COMPUTE WRK-ZAI-TEN
-                       = ( WRK-ZAI-KHNTEN  *   0.92 )   +  0.5
+                       = ( WRK-ZAI-TEN  *   0.92 )   +  0.5
                    COMPUTE WRK-ZAI-TEN
                        = ( WRK-ZAI-TEN     *   0.95 )   +  0.5
                END-EVALUATE
@@ -2845,7 +3003,7 @@
                        +   WRK-GAIHAKU-KSNTEN
                    COMPUTE WRK-ZAI-TEN
                        =   WRK-ZAI-TEN
-                       - ( WRK-ZAI-TEN * ( WRK-HYOKETU-TEN / 100 ))
+                       - ( WRK-ZAI-TEN * ( WRK-HYOKETSU-TEN / 100 ))
                        +   0.5
                END-IF
            END-IF
@@ -2907,7 +3065,7 @@
                        +   WRK-GAIHAKU-KSNTEN
                    COMPUTE WRK-ZAI-TEN
                        =   WRK-ZAI-TEN
-                       - ( WRK-ZAI-TEN * ( WRK-HYOKETU-TEN / 100 ))
+                       - ( WRK-ZAI-TEN * ( WRK-HYOKETSU-TEN / 100 ))
                        +   0.5
                END-IF
            ELSE
@@ -2967,7 +3125,7 @@
                        +   WRK-GAIHAKU-KSNTEN
                    COMPUTE WRK-ZAI-TEN
                        =   WRK-ZAI-TEN
-                       - ( WRK-ZAI-TEN * ( WRK-HYOKETU-TEN / 100 ))
+                       - ( WRK-ZAI-TEN * ( WRK-HYOKETSU-TEN / 100 ))
                        +   0.5
                END-IF
            END-IF
@@ -3052,30 +3210,37 @@
       *****************************************************************
        2001111-NYUINKHNINF-SET-SEC     SECTION.
       *
-           COMPUTE WNYUINRYO-OCC2-MAX (IDXA)
-               =   WNYUINRYO-OCC2-MAX (IDXA)   +   1
-      *
-           MOVE    WNYUINRYO-OCC2-MAX (IDXA)   TO  IDXB
-      *
-           MOVE    NACCT-ZAINUM        TO  WNYUINRYO-ZAINUM
-                                                           (IDXA IDXB)
-           MOVE    NACCT-SRYKBN        TO  WNYUINRYO-SRYKBN
-                                                           (IDXA IDXB)
-           MOVE    NACCT-ZAITEN        TO  WNYUINRYO-ZAITEN
-                                                           (IDXA IDXB)
-           PERFORM 20011-NYUINACT-GET-SEC
-           IF    ( FLG-NYUINACT        NOT =    ZERO )
-               GO  TO  2001111-NYUINKHNINF-SET-EXT
-           END-IF
+           MOVE    IDXD                TO  WRK-ZAI-ZAINUM
+           MOVE    NACCT-SRYKBN        TO  WRK-ZAI-SRYKBN
+           MOVE    1                   TO  WRK-ZAI-KHNIDX
       *
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC                >   5 )
                     OR   ( NSRY-SRYCD (IDXC)   =   SPACE )
       *
                MOVE    NSRY-SRYCD (IDXC)
-                                       TO  WNYUINRYO-SRYCD
-                                                       (IDXA IDXB IDXC)
-      *
+                                       TO  WRK-TNS-SRYCD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       =   ZERO )
+                   IF    ( TNS-DATAKBN =   1 )
+                       MOVE    TNS-TEN     TO  WRK-ZAI-KHNTEN
+                       MOVE    IDXC        TO  WRK-ZAI-KHNIDX
+                   ELSE
+                       EVALUATE  TNS-TENSIKIBETU
+                       WHEN     3
+                           COMPUTE WRK-ZAI-KSNTEN
+                               =   WRK-ZAI-KSNTEN  +   TNS-TEN
+                       WHEN     8
+                           COMPUTE WRK-ZAI-KSNTEN
+                               =   WRK-ZAI-KSNTEN
+                               + ( TNS-TEN *   -1 )
+                       WHEN     6
+                           MOVE  TNS-TEN   TO  WRK-ZAI-HYOKETSU-RATE
+                       END-EVALUATE
+                   END-IF
+                   MOVE    NSRY-SRYCD (IDXC)
+                                           TO  WRK-ZAI-SRYCD (IDXC)
+               END-IF
            END-PERFORM
       *
            .
@@ -3100,6 +3265,7 @@
            PERFORM 910-DBSELECT-SEC
            IF   (  MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-NYUINACT
+               INITIALIZE                  NYUINACT-REC
            ELSE
                MOVE    MCPDATA-REC     TO  NYUINACT-REC
            END-IF
@@ -3113,132 +3279,36 @@
        20011-NYUINACT-GET-EXT.
            EXIT.
       *****************************************************************
-      *    選定入院料置き換え処理
+      *    入院料剤編集処理
       *****************************************************************
-       2001111-SENTEI-CHG-SEC          SECTION.
+       2001111-NYUINRYO-SHIFT-SEC          SECTION.
       *
-           PERFORM 20011111-SENTEI-CHG-SEC
+           PERFORM VARYING IDXS    FROM    19  BY  -1
+                   UNTIL ( IDXS    <   WRK-ZAI-KHNIDX )
       *
-           IF    ( WRK-HYOKETU-TEN NOT =   ZERO )
+               MOVE    WRK-ZAI-SRYCD (IDXS)
+                                   TO  WRK-ZAI-SRYCD (IDXS + 1)
       *
-      *        標欠：％減算
-               COMPUTE WRK-SENTEI-KHNTEN
-                   =   WRK-SENTEI-KHNTEN
-                   -   WRK-SENTEI-KHNTEN * ( WRK-HYOKETU-TEN / 100 )
-                   +  0.5
-      *
-               COMPUTE WRK-SENTEI-ZAITEN
-                   =   WRK-SENTEI-ZAITEN
-                   -   WRK-SENTEI-ZAITEN * ( WRK-HYOKETU-TEN / 100 )
-                   +  0.5
-      *
-               COMPUTE WRK-KHNTEN
-                   =   WRK-KHNTEN
-                   -   WRK-KHNTEN * ( WRK-HYOKETU-TEN / 100)
-                   +  0.5
-           END-IF
-      *
-           MOVE    WRK-SENTEISRYCD     TO  WNYUINRYO-SRYCD
-                                                   (IDXA IDXB IDX-KHN)
-      *
-           IF    ( WRK-SENTEISRYCD     =   WRK-SENTEIIPNCD )
-               COMPUTE WRK-STIDX   =   5   -   1
-               PERFORM VARYING IDXJ    FROM    WRK-STIDX   BY  -1
-                       UNTIL ( IDXJ    <=  IDX-KHN )
-      *
-                   MOVE    WNYUINRYO-SRYCD (IDXA IDXB IDXJ)
-                               TO  WNYUINRYO-SRYCD (IDXA IDXB IDXJ + 1)
-      *
-                   IF    ( IDXJ        =  IDX-KHN + 1 )
-                       MOVE    CONST-SENTEI
-                               TO  WNYUINRYO-SRYCD (IDXA IDXB IDXJ)
-                   END-IF
-      *
-               END-PERFORM
-           END-IF
-      *
-           MOVE    WRK-SENTEI-ZAITEN   TO  WNYUINRYO-ZAITEN (IDXA IDXB)
-      *
-           .
-       2001111-SENTEI-CHG-EXT.
-           EXIT.
-      *****************************************************************
-      *    選定入院料置き換え処理
-      *****************************************************************
-       20011111-SENTEI-CHG-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  WRK-SENTEISRYCD
-                                           WRK-SENTEIIPNCD
-      *
-           MOVE    ZERO                TO  WRK-KHNTEN
-                                           WRK-KSNTEN
-                                           WRK-SENTEI-ZAITEN
-                                           WRK-SENTEI-KHNTEN
-                                           WRK-HYOKETU-TEN
-      *
-      *    入院基本料のコードを探す
-           MOVE    ZERO                TO  IDX-KHN
-           PERFORM VARYING IDXC    FROM    1   BY  1
-                   UNTIL ( IDXC    >   5 )
-               MOVE    NSRY-SRYCD (IDXC)
-                                       TO  WRK-TNS-SRYCD
-               PERFORM 900-TENSU-KEY-SEL-SEC
-               IF    ( FLG-TENSU       =   ZERO )
-                   IF    ( TNS-DATAKBN =   1 )
-                       MOVE    TNS-TEN TO  WRK-KHNTEN
-                       MOVE    IDXC    TO  IDX-KHN
-                   ELSE
-                       EVALUATE  TNS-TENSIKIBETU
-                       WHEN     3
-                           MOVE  TNS-TEN   TO  WRK-KSNTEN
-                       WHEN     8
-                           COMPUTE WRK-KSNTEN  =   TNS-TEN *   -1
-                       WHEN     6
-                           MOVE  TNS-TEN   TO  WRK-HYOKETU-TEN
-                       END-EVALUATE
-                   END-IF
-               END-IF
            END-PERFORM
       *
-           IF    ( IDX-KHN             =   ZERO )
-               MOVE    1               TO  IDX-KHN
-      *        MOVE    9               TO  HCM34S01-RC
-      *        PERFORM 990-EXIT-PROGRAM-SEC
+           .
+       2001111-NYUINRYO-SHIFT-EXT.
+           EXIT.
+      *****************************************************************
+      *    標欠・定数超過編集処理
+      *****************************************************************
+       2001111-HYOKETSU-HEN-SEC          SECTION.
+      *
+           IF    ( WRK-ZAI-HYOKETSU-RATE NOT =   ZERO )
+      *
+               COMPUTE WRK-ZAI-TEN
+                   =   WRK-ZAI-TEN
+                   -   WRK-ZAI-TEN * ( WRK-ZAI-HYOKETSU-RATE / 100 )
+                   +   0.5
            END-IF
-      *
-      *    加算分の点数を求める
-      *    COMPUTE WRK-KSNTEN  =   NACCT-ZAITEN    -   WRK-KHNTEN
-      *
-      *    上で求めた入院基本料のコードを選定入院料のコードに置き換える
-           PERFORM 900-SENTEICDCHG-KEY2-SEL-SEC
-      *    IF    ( FLG-SENTEICDCHG NOT =   ZERO )
-      *        MOVE    10              TO  HCM34S01-RC
-      *        PERFORM 990-EXIT-PROGRAM-SEC
-      *    END-IF
-      *
-           MOVE    SENCHG-IPNSRYCD     TO  WRK-SENTEIIPNCD
-           MOVE    SENCHG-SENTEISRYCD  TO  WRK-SENTEISRYCD
-      *
-      *    点数も改めて求めなおす
-           MOVE    SENCHG-SENTEISRYCD  TO  WRK-TNS-SRYCD
-           PERFORM 900-TENSU-KEY-SEL-SEC
-      *    IF    ( FLG-TENSU       NOT =   ZERO )
-      *        MOVE    11              TO  HCM34S01-RC
-      *        PERFORM 990-EXIT-PROGRAM-SEC
-      *    END-IF
-      *
-           IF    ( SENCHG-IPNSRYCD     =   SENCHG-SENTEISRYCD )
-               COMPUTE WRK-SENTEI-KHNTEN
-                   = ( WRK-KHNTEN * 0.85 ) +  0.5
-           ELSE
-                MOVE    TNS-TEN         TO  WRK-SENTEI-KHNTEN
-           END-IF
-      *
-           COMPUTE WRK-SENTEI-ZAITEN
-               =   WRK-SENTEI-KHNTEN   +   WRK-KSNTEN
       *
            .
-       20011111-SENTEI-CHG-EXT.
+       2001111-HYOKETSU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    選定入院料患者自己負担編集処理
@@ -3277,7 +3347,7 @@
                IF    ( NACCT-DAY    (IDXD)     >   ZERO )
                  AND ( FLG-NYUINDAY (IDXD)     =   1 )
                  AND ( FLG-NYUINRYODAY (IDXD)  =   1 )
-                 AND ( FLG-SENTEIDAY(IDXD)     =   1 )
+                 AND ( FLG-SENTEIDAY (IDXD)    =   1 )
                    IF    ( FLG-TAISYO          =   ZERO )
                        MOVE    1       TO  FLG-TAISYO
                        PERFORM 2001111-SENTEI-FTN-TNS-SET-SEC
@@ -3345,25 +3415,60 @@
       *****************************************************************
        2001111-SENTEI-FTN-TNS-SET-SEC  SECTION.
       *
-      *    入院診療行為取得
-           PERFORM 20011-NYUINACT-GET-SEC
-           IF    ( FLG-NYUINACT        NOT =    ZERO )
-               GO  TO  2001111-SENTEI-FTN-TNS-SET-EXT
+           INITIALIZE                      WRK-ZAI-G
+      *
+           MOVE    SPACE               TO  WRK-SENTEISRYCD
+                                           WRK-SENTEIIPNCD
+      *
+      *    入院基本料のコードを探す
+           MOVE    ZERO                TO  IDX-KHN
+           PERFORM VARYING IDXC    FROM    1   BY  1
+                   UNTIL ( IDXC    >   5 )
+               MOVE    NSRY-SRYCD (IDXC)
+                                       TO  WRK-TNS-SRYCD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       =   ZERO )
+                   IF    ( TNS-DATAKBN =   1 )
+                       MOVE    TNS-TEN TO  WRK-ZAI-KHNTEN
+                       MOVE    IDXC    TO  IDX-KHN
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF    ( IDX-KHN             =   ZERO )
+               MOVE    1               TO  IDX-KHN
            END-IF
       *
-      *    選定入院料に置き換え（WRK-KHNTENも取得）
-           PERFORM 20011111-SENTEI-CHG-SEC
+           PERFORM 900-SENTEICDCHG-KEY2-SEL-SEC
+      *
+           MOVE    SENCHG-IPNSRYCD     TO  WRK-SENTEIIPNCD
+           MOVE    SENCHG-SENTEISRYCD  TO  WRK-SENTEISRYCD
+      *
+      *    点数も改めて求めなおす
+           MOVE    SENCHG-SENTEISRYCD  TO  WRK-TNS-SRYCD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+      *
+           IF    ( SENCHG-IPNSRYCD     =   SENCHG-SENTEISRYCD )
+               COMPUTE WRK-ZAI-SENTEI-KHNTEN
+                   = ( WRK-ZAI-KHNTEN * 0.85 ) +  0.5
+           ELSE
+                MOVE    TNS-TEN         TO  WRK-ZAI-SENTEI-KHNTEN
+           END-IF
       *
       *    看護比率基準未達のチェック
-           PERFORM 2001111-KNGMITATU-CHK-SEC
-           IF    ( WRK-GAIHAKU-KHNTEN  NOT =   ZERO )
-               MOVE    WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN
+           IF    ( HCM34S01-SANTEIYM   >=  CONST-H2404 )
+               CONTINUE
+           ELSE
+               PERFORM 2001111-KNGMITATU-CHK-SEC
+               IF    ( WRK-GAIHAKU-KHNTEN  NOT =   ZERO )
+                   MOVE    WRK-GAIHAKU-KHNTEN  TO  WRK-ZAI-KHNTEN
+               END-IF
            END-IF
       *
       *    病棟設定の選定自己負担情報の取得
            IF    SYS-5000-SENTEI-FTNKBN   =   "3"
                INITIALIZE                  ORCSBTUSENTEIAREA
-               MOVE    HCM34S01-HOSPNUM     TO  SBTUSENTEI-HOSPNUM
+               MOVE    HCM34S01-HOSPNUM    TO  SBTUSENTEI-HOSPNUM
                MOVE    HCM34S01-PTID       TO  SBTUSENTEI-PTID
                MOVE    HCM34S01-SANTEIYM   TO  SBTUSENTEI-SRYYM
                CALL    "ORCSBTUSENTEI"     USING
@@ -3379,8 +3484,24 @@
       *****************************************************************
        2001111-SENTEI-PTFTN-SEC        SECTION.
       *
-           MOVE       ZERO             TO  WRK-SENTEI-GAIHAKU1
-                                           WRK-SENTEI-GAIHAKU2
+           MOVE       ZERO             TO  WRK-SENTEI-GAIHAKU
+                                           WRK-KHNTEN
+                                           WRK-SENTEI-KHNTEN
+      *
+           IF    ( LNK-KANGOGEN-SRYCD (IDXD)   NOT =   SPACE )
+               COMPUTE WRK-KHNTEN
+                   =   WRK-ZAI-KHNTEN
+                   * ( 100 - LNK-KANGOGEN-TEN (IDXD) ) / 100 + 0.5
+               COMPUTE WRK-SENTEI-KHNTEN
+                   =   WRK-ZAI-SENTEI-KHNTEN
+                   * ( 100 - LNK-KANGOGEN-TEN (IDXD) ) / 100 + 0.5
+      *
+               DISPLAY IDXD " " WRK-KHNTEN "," WRK-SENTEI-KHNTEN "," 
+                       LNK-KANGOGEN-TEN (IDXD)
+           ELSE
+               MOVE    WRK-ZAI-KHNTEN         TO  WRK-KHNTEN
+               MOVE    WRK-ZAI-SENTEI-KHNTEN  TO  WRK-SENTEI-KHNTEN
+           END-IF
       *
            PERFORM     200111-SENTEI-KEISU-GET-SEC
       *
@@ -3393,7 +3514,6 @@
       *
                EVALUATE    FLG-GAIHAKUDAY(IDXD)
                WHEN    ZERO
-               WHEN    3   THRU 17
                    IF    ( NACCT-SRYYM     >=  CONST-H1604 )
                     AND  ( NACCT-SRYYM     <   CONST-H2204 )
                     AND  ( FLG-GAIHAKUDAY(IDXD)    =   4 )
@@ -3413,6 +3533,28 @@
                                +   WRK-HASU
                        END-IF
                    END-IF
+               WHEN    3   THRU 17
+                   IF    ( NACCT-SRYYM     >=  CONST-H1604 )
+                    AND  ( NACCT-SRYYM     <   CONST-H2204 )
+                    AND  ( FLG-GAIHAKUDAY(IDXD)    =   4 )
+                       CONTINUE
+                   ELSE
+                       COMPUTE WRK-SENTEI-GAIHAKU
+                           =   WRK-KHNTEN * 0.15 + 0.5
+                       IF    ( IDX-TAX             =   1 )
+                           COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
+                               =   WRK-SENTEI-PTFTN (IDX-TAX)
+                               +   WRK-SENTEI-GAIHAKU
+                               *   WRK-SENTEI-TANKA
+                       ELSE
+                           COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
+                               =   WRK-SENTEI-PTFTN (IDX-TAX)
+                               +   WRK-SENTEI-GAIHAKU
+                               *   WRK-SENTEI-TANKA
+                               *   WRK-RATE2
+                               +   WRK-HASU
+                       END-IF
+                   END-IF
                END-EVALUATE
       *    定額設定
            WHEN    "2"
@@ -3423,15 +3565,7 @@
       *
                EVALUATE   FLG-GAIHAKUDAY(IDXD)
                WHEN    ZERO
-               WHEN    3
-               WHEN    4
-               WHEN    5
-               WHEN    8
-               WHEN    9
-               WHEN    10
-               WHEN    11
-               WHEN    12
-               WHEN    13
+               WHEN    3   THRU   17
                    IF    ( IDX-TAX             =   1 )
                        COMPUTE WRK-SENTEI-PTFTN (IDX-TAX)
                            =   WRK-SENTEI-PTFTN (IDX-TAX)
@@ -5999,7 +6133,7 @@
                MOVE    "1"                 TO  SRT-ZAISKBKBN(SRT-MAX)
       *
                PERFORM VARYING IDXC    FROM    1   BY  1
-                       UNTIL ( IDXC    >   5 )
+                       UNTIL ( IDXC    >   20 )
                    MOVE    WNYUINRYO-SRYCD (IDXA IDXB IDXC)
                                            TO  SRT-SRYCD (SRT-MAX IDXC)
                END-PERFORM
@@ -6043,7 +6177,7 @@
                MOVE    "2"                 TO  SRT-ZAISKBKBN(SRT-MAX)
       *
                PERFORM VARYING IDXC    FROM    1   BY  1
-                       UNTIL ( IDXC    >   5 )
+                       UNTIL ( IDXC    >   20 )
                    MOVE    WGAIHAKU-SRYCD (IDXA IDXB IDXC)
                                            TO  SRT-SRYCD (SRT-MAX IDXC)
                END-PERFORM
@@ -6147,7 +6281,7 @@
       *
                MOVE    "4"                 TO  SRT-ZAISKBKBN(SRT-MAX)
                PERFORM VARYING IDXC    FROM    1   BY  1
-                       UNTIL ( IDXC    >   5 )
+                       UNTIL ( IDXC    >   20 )
                    MOVE    WSYOKUJI-SURYO (IDXB IDXC)
                                            TO  SRT-SURYO (SRT-MAX IDXC)
                    MOVE    WSYOKUJI-SRYCD (IDXB IDXC)
@@ -6312,7 +6446,7 @@
                    MOVE    SRT-PRIORITY3(IDXB) TO  HCM34S01-PRIORITY3
                                                               (IDXE)
                    PERFORM VARYING IDXC    FROM    1   BY  1
-                           UNTIL ( IDXC    >   5 )
+                           UNTIL ( IDXC    >   20 )
                        IF    ( HCM34S01-SANTEIYM   >=  CONST-H1804 )
                         AND  ( SRT-SRYKBN (IDXB)   =   "97" )
                            MOVE    SRT-SURYO(IDXB IDXC)
@@ -6442,6 +6576,53 @@
       *
            .
        900-SENTEICDCHG-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計検索処理
+      *****************************************************************
+       900-NYUINACCT-KEY62-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                    TO  FLG-NYUINACCT
+      *
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    HCM34S01-HOSPNUM        TO  NACCT-HOSPNUM
+           MOVE    HCM34S01-PTID           TO  NACCT-PTID
+           MOVE    HCM34S01-SANTEIYM       TO  NACCT-SRYYM
+           MOVE    "1"                     TO  NACCT-ZAISKBKBN
+           MOVE    099999916               TO  NACCT-SRYCDTOTAL
+           MOVE    NYUINACCT-REC           TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key62"                 TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY17-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計読み込み処理
+      *****************************************************************
+       900-NYUINACCT-KEY62-FET-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key62"             TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY62-FET-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
