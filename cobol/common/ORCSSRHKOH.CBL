@@ -39,6 +39,7 @@
       *  04.08.01    NACL-門脇    15/10/21  現物給付対象外の低所得（食事）対応
       *  04.08.02    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
       *                                     での食事算定対応
+      *  04.08.03    NACL-門脇    18/04/04  難病負担者番号追加対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -435,6 +436,12 @@
                         AND  ( TKOH-FTNJANUM(IDX-KOH) (5:3)
                                            =   "601" OR "501"
                                                      OR "602" )
+                        AND  ( TKOH-FTNJANUM(IDX-KOH) (1:2)
+                                           =   "54"           )
+                       WHEN  ( TKOH-KOHNUM  (IDX-KOH)
+                                           =   "054"          )
+                        AND  ( TKOH-FTNJANUM(IDX-KOH) (5:2)
+                                           =   "70" OR "80"   )
                         AND  ( TKOH-FTNJANUM(IDX-KOH) (1:2)
                                            =   "54"           )
                        WHEN  ( TKOH-KOHNUM  (IDX-KOH)
