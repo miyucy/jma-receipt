@@ -6036,7 +6036,7 @@
                    ( LNK-SYU-SRYYMD(1:6) >= "201501"        ))
                OR (((COMB-KOH1HKNNUM = "054"               ) OR
                     (COMB-KOH2HKNNUM = "054"               )) AND
-                   ( WK-KOH-FTNJANUM(5:2) = "70" OR "80"    ) AND
+                   ( WK-KOH-FTNJANUM(5:3) = "700" OR "800"  ) AND
                    ( WK-KOH-FTNJANUM(1:2) = "54"            ) AND
                    ( LNK-SYU-SRYYMD(1:6) >= "201804"        ))
                OR (  WK-KOHJGNGET-TEKIYOFLG(1) =  1          )
