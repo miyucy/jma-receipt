@@ -81,15 +81,17 @@
              05   CONS-KANGOGEN-SRYCD5     PIC X(09) VALUE "190205870".
       *    夜間看護体制特定日減算（地域包括ケア病棟入院料）
              05   CONS-KANGOGEN-SRYCD6     PIC X(09) VALUE "190212670".
+      *    療養病棟・夜間看護体制特定日減算（一般病棟入院基本料）
+             05   CONS-KANGOGEN-SRYCD7     PIC X(09) VALUE "190212670".
            03  CONS-KANGOGEN-R     REDEFINES  CONS-KANGOGEN-AREA.
-             05   CONS-KANGOGEN-SRYCD      PIC X(09)  OCCURS  6.
+             05   CONS-KANGOGEN-SRYCD      PIC X(09)  OCCURS  7.
       *
       *    一時領域
        01  WRK-AREA.
       *
       *    夜間看護体制特定日減算の注加算コード退避エリア
            03  WRK-CHUKSNCD-AREA.
-              05  WRK-CHUKSNCD             PIC X(04)  OCCURS  6.
+              05  WRK-CHUKSNCD             PIC X(04)  OCCURS  7.
       *
       *    病棟設定された夜間看護体制特定日減算の対象日退避エリア
            03  WRK-BTU-TAIHI-AREA.
@@ -397,7 +399,7 @@
       *
       *    CONS-AREAの夜間看護体制特定日減算について注加算コードの取得
            PERFORM   VARYING  IDX   FROM   1  BY  1
-             UNTIL   IDX   >   6
+             UNTIL   IDX   >   7
                 INITIALIZE                           TNS-TENSU-REC
                 MOVE    LNK-KANGOGEN-HOSPNUM     TO  TNS-HOSPNUM
                 MOVE    CONS-KANGOGEN-SRYCD(IDX) TO  TNS-SRYCD
@@ -424,6 +426,7 @@
       **     DISPLAY  "WRK-CDKSNCD(4) = " WRK-CHUKSNCD(4)
       **     DISPLAY  "WRK-CDKSNCD(5) = " WRK-CHUKSNCD(5)
       **     DISPLAY  "WRK-CDKSNCD(6) = " WRK-CHUKSNCD(6)
+      **     DISPLAY  "WRK-CDKSNCD(7) = " WRK-CHUKSNCD(7)
       *
       *    月末日を取得
            INITIALIZE                           STS-AREA-DAY
@@ -584,6 +587,11 @@
                              END-IF
                              IF   TNS-CHUKSNCD  =   WRK-CHUKSNCD(6)
                                  MOVE  CONS-KANGOGEN-SRYCD(6)
+                                                TO  LNK-KANGOGEN-SRYCD
+                                                               (IDX1)
+                             END-IF
+                             IF   TNS-CHUKSNCD  =   WRK-CHUKSNCD(7)
+                                 MOVE  CONS-KANGOGEN-SRYCD(7)
                                                 TO  LNK-KANGOGEN-SRYCD
                                                                (IDX1)
                              END-IF
