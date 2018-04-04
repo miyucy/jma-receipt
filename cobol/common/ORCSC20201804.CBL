@@ -5527,6 +5527,10 @@
                IF     (SPA-TEIGEN30-OK     =   1 )
                  AND  (FLG-GEN30-G         =   1 )
                  AND  (FLG-SYOHOSENN       =   1 )
+      *H30.4
+      *          オンライン診療料算定時なし
+                 AND  (FLG-ONLNE-ARI       =   ZERO )
+      *
                    MOVE    CONS-TEIHP-SYOSEN   TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD2
                    PERFORM 30019-GEN30KSN-HENSYU-SEC
@@ -6025,6 +6029,10 @@
                IF     (SPA-TEIGEN30-OK     =   1 )
                  AND  (FLG-GEN30-N         =   1 )
                  AND  (FLG-SYOHORYO        =   1 )
+      *H30.4
+      *          オンライン診療料算定時なし
+                 AND  (FLG-ONLNE-ARI       =   ZERO )
+      *
                    MOVE    CONS-TEIHP-SYOHOU   TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD2
                    PERFORM 30019-GEN30KSN-HENSYU-SEC
