@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *平成３０年４月改正対応
       *  05.00.00    NACL-小豆沢  18/02/27  入院時食事療養の金額変更対応
+      *  05.00.00    NACL-小豆沢  18/04/4   夜間看護体制特定日減算対応
       *****************************************************************
       *
       *
@@ -342,6 +343,9 @@
            03  WRK-NACCT-DAY-TBL.
                05  WRK-NACCT-DAY               PIC  9(03)  OCCURS 31.
       *
+      *    夜間看護体制特定日減算領域
+           03  WRK-KANGOGEN                    PIC X(09)   OCCURS 31.
+      *
       *    日付全角変換領域
        01  TBL-DAY-AREA.
            03  FILLER              PIC X(04)  VALUE "０１".
@@ -443,6 +447,9 @@
       *
       *    食事保険取得サブ
            COPY    "CPORCSSKJHKN.INC".
+      *
+      *    夜間看護体制特定日減算取得サブ
+           COPY    "CPORCSKANGOGEN.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -616,6 +623,22 @@
            CALL    "ORCSSKJHKN"         USING     ORCSSKJHKN-AREA
                                                   ORCSNYUINDAY-AREA
                                                   SPA-AREA
+      *
+      *夜間看護体制特定日減算取得
+           IF      LNK-RNYURECEDEN-SANTEIYM   >=  "201804"
+             INITIALIZE                           ORCSKANGOGEN-AREA
+             MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  LNK-KANGOGEN-HOSPNUM
+             MOVE    LNK-RNYURECEDEN-PTID     TO  LNK-KANGOGEN-PTID
+             MOVE    LNK-RNYURECEDEN-SANTEIYM TO  LNK-KANGOGEN-SANTEIYM
+             CALL    "ORCSKANGOGEN"     USING     ORCSKANGOGEN-AREA
+                                                  SPA-AREA
+             IF      LNK-KANGOGEN-RC          =   ZERO
+               PERFORM    VARYING   IDX1  FROM   1   BY   1
+                           UNTIL    IDX1   >    31
+                 MOVE  LNK-KANGOGEN-SRYCD(IDX1) TO  WRK-KANGOGEN(IDX1)
+               END-PERFORM
+             END-IF
+           END-IF
       *
       *労災から労災への同日再入院で保険組合せが変更とならない場合は
       *同日再入院扱いとする必要がないので、"ORCSNYUINDAY"の返却値を
@@ -1811,6 +1834,13 @@
                IF         WRK-NYUINKHN(IDX1)  NOT =        SPACE
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-NYUINKHN(IDX1) TO  WRK-SO-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *
+      *        夜間看護体制特定日減算
+               IF         WRK-KANGOGEN(IDX1)  NOT =        SPACE
+                   ADD      1                TO  WRK-MEISAISU
+                   MOVE   WRK-KANGOGEN(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *
