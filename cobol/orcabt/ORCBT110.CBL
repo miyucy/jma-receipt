@@ -1158,6 +1158,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    WHEN    "114012910"
                    WHEN    "114018010"
                    WHEN    "114030310"
+                   WHEN    "114042110"
+                   WHEN    "114042210"
+                   WHEN    "114042810"
+                   WHEN    "114046310"
       *                ±ý¿Ç¶èÊ¬
                        MOVE    1                   TO  TOUKEI04-OSINKBN
                END-EVALUATE

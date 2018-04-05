@@ -148,6 +148,7 @@
       *                                     管理料の算定日コメント対応
       *  04.08.08    NACL-門脇    16/12/07  遠隔モニタリング加算の前回算定年月
       *                                     コメント記載修正
+      *  04.08.09    NACL-門脇    18/04/05  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -740,6 +741,8 @@
            03  CONS-NINRYO2         PIC X(09) VALUE "180035910".
       *    認知療法・認知行動療法（精神保健指定医と看護師が共同で行う場合）
            03  CONS-NINRYO5         PIC X(09) VALUE "180047810".
+      *    認知療法・認知行動療法（医師）
+           03  CONS-NINRYO8         PIC X(09) VALUE "180056410".
       *
       *    認知症専門診断管理料２
            03  CONS-NINSEN          PIC X(09) VALUE "113014610".
@@ -7752,6 +7755,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    MOVE  CONS-NINRYO2       TO  SANTEI-SRYCD
                  WHEN      "5"
                    MOVE  CONS-NINRYO5       TO  SANTEI-SRYCD
+                 WHEN      "8"
+                   MOVE  CONS-NINRYO8       TO  SANTEI-SRYCD
                END-EVALUATE
                MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                 TO  SANTEI-SRYKA

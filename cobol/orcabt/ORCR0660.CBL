@@ -1411,6 +1411,7 @@
            MOVE      ZERO     TO      FLG-RYOCOM
       *
            IF    RECE62-SRYYM   >=  "200610"
+           AND   RECE62-SRYYM   <=  "201803"
              INITIALIZE                   ORCSRYOCOM-AREA
              MOVE    RECE62-HOSPNUM   TO  LNK-RYOCOM-HOSPNUM
              MOVE    RECE62-PTID      TO  LNK-RYOCOM-PTID

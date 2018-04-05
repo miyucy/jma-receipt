@@ -846,6 +846,8 @@
            03  CONS-NINRYO5         PIC X(09) VALUE "180047810".
       *    ∞ÂŒ≈¥—ª°«ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°° ¿∫ø¿ ›∑ÚªÿƒÍ∞Â§»¥«∏Óª’§¨∂¶∆±°À
            03  CONS-NINRYO7         PIC X(09) VALUE "188010610".
+      *    «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°° ∞Âª’°À
+           03  CONS-NINRYO8         PIC X(09) VALUE "180056410".
       *
       *    «ß√Œæ…¿ÏÃÁø«√«¥…Õ˝Œ¡£≤
            03  CONS-NINSEN          PIC X(09) VALUE "113014610".
@@ -9559,6 +9561,8 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                    MOVE  CONS-NINRYO5       TO  SANTEI-SRYCD
                  WHEN      "7"
                    MOVE  CONS-NINRYO7       TO  SANTEI-SRYCD
+                 WHEN      "8"
+                   MOVE  CONS-NINRYO8       TO  SANTEI-SRYCD
                END-EVALUATE
                MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                 TO  SANTEI-SRYKA
@@ -11909,7 +11913,8 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                           "114000110" OR "114001610" OR
       *14
                           "114001110" OR "114012910" OR "114018010" OR
-                          "114030310" OR
+                          "114030310" OR "114042110" OR "114042210" OR
+                          "114042810" OR "114046310" OR
       *16
                           "180027410" OR "180027510" OR "180028010" OR
                           "180028110" OR "180027610" OR "180027710" OR
@@ -11942,6 +11947,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *19
                           "180033210" OR "180035910" OR "188006210" OR
                           "188007010" OR "180047810" OR "188010610" OR
+                          "180056410" OR
       *20
                           "700010000" OR "700030000" OR "700050000" OR
                           "700080000" OR "700110000" OR "700140000" OR

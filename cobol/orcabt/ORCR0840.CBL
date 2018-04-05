@@ -1351,7 +1351,9 @@
       *    ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±£¸ºÐ°Ê¾å¡Ë
            03  CONS-SYOGAI3-COMMENT  PIC X(09)  VALUE  "180028410".
       *    ÀÝ¿©µ¡Ç½ÎÅË¡
-           03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
+           03  CONS-SESYOKU-COMMENT  PIC X(09)  VALUE  "180016610".
+      *    ÀÝ¿©µ¡Ç½ÎÅË¡¡Ê£³£°Ê¬Ì¤Ëþ¡Ë
+           03  CONS-SESYOKU2-COMMENT PIC X(09)  VALUE  "180054310".
       *    ÇÑÍÑ¾É¸õ·²¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë¡Ê£±Ã±°Ì¡Ë
            03  CONS-HAIYO1-COMMENT   PIC X(09)  VALUE  "180044610".
       *    ÇÑÍÑ¾É¸õ·²¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë¡Ê£±Ã±°Ì¡Ë
@@ -1429,6 +1431,30 @@
            03  CONS-JINZOU8-COMMENT  PIC X(09)  VALUE  "140039210".
       *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏßÉ²á¡Ë¡ÊÊ£»¨¡Ë
            03  CONS-JINZOU9-COMMENT  PIC X(09)  VALUE  "140052810".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ë¡Ê£´»þ´ÖÌ¤Ëþ¡Ë
+           03  CONS-JINZOU10-COMMENT PIC X(09)  VALUE  "140057810".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ë¡Ê£´»þ´Ö°Ê¾å£µ»þ´ÖÌ¤Ëþ¡Ë
+           03  CONS-JINZOU11-COMMENT PIC X(09)  VALUE  "140057910".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ë¡Ê£µ»þ´Ö°Ê¾å¡Ë
+           03  CONS-JINZOU12-COMMENT PIC X(09)  VALUE  "140058010".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£²¡Ë¡Ê£´»þ´ÖÌ¤Ëþ¡Ë
+           03  CONS-JINZOU13-COMMENT PIC X(09)  VALUE  "140058110".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£²¡Ë¡Ê£´»þ´Ö°Ê¾å£µ»þ´ÖÌ¤Ëþ¡Ë
+           03  CONS-JINZOU14-COMMENT PIC X(09)  VALUE  "140058210".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£²¡Ë¡Ê£µ»þ´Ö°Ê¾å¡Ë
+           03  CONS-JINZOU15-COMMENT PIC X(09)  VALUE  "140058310".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£³¡Ë¡Ê£´»þ´ÖÌ¤Ëþ¡Ë
+           03  CONS-JINZOU16-COMMENT PIC X(09)  VALUE  "140058410".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£³¡Ë¡Ê£´»þ´Ö°Ê¾å£µ»þ´ÖÌ¤Ëþ¡Ë
+           03  CONS-JINZOU17-COMMENT PIC X(09)  VALUE  "140058510".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£³¡Ë¡Ê£µ»þ´Ö°Ê¾å¡Ë
+           03  CONS-JINZOU18-COMMENT PIC X(09)  VALUE  "140058610".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ë¡Ê£´»þ´ÖÌ¤Ëþ¡Ë¡Ê·Ð²áÁ¼ÃÖ¡Ë
+           03  CONS-JINZOU19-COMMENT PIC X(09)  VALUE  "140059310".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ë¡Ê£´»þ´Ö°Ê¾å£µ»þ´ÖÌ¤Ëþ¡Ë¡Ê·Ð²áÁ¼ÃÖ¡Ë
+           03  CONS-JINZOU20-COMMENT PIC X(09)  VALUE  "140059410".
+      *    ¿Í¹©¿ÕÂ¡¡ÊËýÀ­°Ý»ýÆ©ÀÏ£±¡Ë¡Ê£µ»þ´Ö°Ê¾å¡Ë¡Ê·Ð²áÁ¼ÃÖ¡Ë
+           03  CONS-JINZOU21-COMMENT PIC X(09)  VALUE  "140059510".
       *    ¶É½ê±¢°µÊÄº¿½èÃÖ¡Ê¤½¤ÎÂ¾¡Ë
            03  CONS-KYOKUIN1-COMMENT PIC X(09)  VALUE  "140052410".
       *    ¶É½ê±¢°µÊÄº¿½èÃÖ¡ÊÈïÊ¤ºàÅ½ÉÕ¡Ë¡Ê£±£°£°£ã£í£²Ì¤Ëþ¡Ë
@@ -3853,10 +3879,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                          "170025810"  OR  "170025910" OR
                                          "170026010"  OR  "170026110" OR
                                          "170026210"  OR  "170026310" OR
-                                         "170026810"  OR
-                                         "170000210"  OR  "170016910" OR
-                                         "170017010"  OR  "170026710" OR
-                                         "170028810"
+      ***                                "170026810"  OR
+      ***                                "170000210"  OR  "170016910" OR
+      ***                                "170017010"  OR  "170026710" OR
+      ***                                "170028810"  OR
+                                         "170035710"  OR  "170035810" OR
+                                         "170035910"  OR  "170036010"
                       MOVE   203      TO  RECE85-CDKBN-KBNNUM(IDX4)
                       MOVE   99       TO  RECE85-CDKBN-KOUBAN(IDX4)
                END-IF
@@ -4370,14 +4398,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF    SRY-SRYKBN     =  "14"
       *
-                 IF  SRY-SRYCD(IDX2) =  "114001110"
-                                    OR  "114012910"
-                                    OR  "114018010"
-                                    OR  "114030310"
-                                    OR  "114001470"
-                    MOVE        9         TO    FLG-OSINKBN
-                 END-IF
-      *
                  EVALUATE    SRY-SRYCD(IDX2)
       *±ý¿Ç¡ÊÆÃÊÌ±ý¿Ç¡Ë
                    WHEN    "114000110"
@@ -4385,7 +4405,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "114000970"
                    WHEN    "114002470"
       ***          WHEN    "114002970"
-                   IF  FLG-OSINKBN        NOT = 2  AND  3  AND  9
+                   IF  FLG-OSINKBN        NOT = 2  AND  3
                        MOVE     1         TO    FLG-OSINKBN
                    END-IF
       *Ìë´Ö
@@ -4404,9 +4424,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "114030070"
                    WHEN    "114030170"
                    WHEN    "114030270"
-                   IF  FLG-OSINKBN        NOT = 9
                        MOVE     2         TO    FLG-OSINKBN
-                   END-IF
       *¿¼Ìë¡¦¶ÛµÞ
                    WHEN    "114000370"
                    WHEN    "114000570"
@@ -4420,9 +4438,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "114017770"
                    WHEN    "114017670"
                    WHEN    "114017970"
-                   IF  FLG-OSINKBN        NOT = 9
                        MOVE     3         TO    FLG-OSINKBN
-                   END-IF
                  END-EVALUATE
                END-IF
       *
@@ -4538,6 +4554,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                         OR  CONS-JINZOU7-COMMENT
                                         OR  CONS-JINZOU8-COMMENT
                                         OR  CONS-JINZOU9-COMMENT
+                                        OR  CONS-JINZOU10-COMMENT
+                                        OR  CONS-JINZOU11-COMMENT
+                                        OR  CONS-JINZOU12-COMMENT
+                                        OR  CONS-JINZOU13-COMMENT
+                                        OR  CONS-JINZOU14-COMMENT
+                                        OR  CONS-JINZOU15-COMMENT
+                                        OR  CONS-JINZOU16-COMMENT
+                                        OR  CONS-JINZOU17-COMMENT
+                                        OR  CONS-JINZOU18-COMMENT
+                                        OR  CONS-JINZOU19-COMMENT
+                                        OR  CONS-JINZOU20-COMMENT
+                                        OR  CONS-JINZOU21-COMMENT
                         MOVE   "1"    TO    RECE84-FLG-JINZOU-COMMENT
                 END-IF
       *         ¶É½ê±¢°µÊÄº¿½èÃÖ
@@ -4855,7 +4883,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         MOVE   "1"    TO    RECE82-COMCNTFLG
                         MOVE   "1"    TO    RECE84-SYOGAI-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-SESSYOKU-COMMENT
+                IF   SRY-SRYCD(IDX2)  =     CONS-SESYOKU-COMMENT
+                                      OR    CONS-SESYOKU2-COMMENT
                         MOVE   "1"    TO    RECE82-COMCNTFLG
                         MOVE   "1"    TO    RECE84-SESSYOKU-COMMENT
                 END-IF
@@ -4948,6 +4977,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 IF   SRY-SRYCD(IDX2)  =     CONS-KAISIEN-COMMENT
                         MOVE   "1"    TO    RECE84-FLG-KAISIEN-COMMENT
                 END-IF
+              END-IF
+              IF   RECE82-SRYYM      >=    "201004"
+              AND  RECE82-SRYYM      <=    "201803"
       *         ½¸ÃÄ±ÉÍÜ¿©»ö»ØÆ³ÎÁ
                 IF   SRY-SRYCD(IDX2)  =     CONS-SYUEIYO-COMMENT
                         MOVE   "1"    TO    RECE84-FLG-SYUEIYO-COMMENT
@@ -8330,7 +8362,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                 (WK-SYUTEN   *   WK-ZAIKAISU)
                    END-IF
       *            ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅ
-                   IF (( TNS-OSINKBN           =     1          )  AND
+                   IF  ( TNS-OSINKBN           =     1          )  AND
                        ((SRY-SRYCD(IDX3)   NOT =    "114000110")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114001610")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114000970")   AND
@@ -8361,8 +8393,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                         (SRY-SRYCD(IDX3)   NOT =    "114029970")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114030070")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114030170")   AND
-                        (SRY-SRYCD(IDX3)   NOT =    "114030270")))
-                   OR (  FLG-OSINKBN           =     9           )
+                        (SRY-SRYCD(IDX3)   NOT =    "114030270"))
                        MOVE   1              TO   FLG-ZAITAKU
                        ADD    WK-ZAIKAISU    TO   RECE82-KAISU(13)
                        COMPUTE   RECE82-TENSU(13)   =

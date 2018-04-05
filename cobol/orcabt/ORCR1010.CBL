@@ -859,7 +859,9 @@
       *    障害児（者）リハビリテーション料（１８歳以上）
            03  CONS-SYOGAI3-COMMENT  PIC X(09)  VALUE  "180028410".
       *    摂食機能療法
-           03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
+           03  CONS-SESYOKU-COMMENT  PIC X(09)  VALUE  "180016610".
+      *    摂食機能療法（３０分未満）
+           03  CONS-SESYOKU2-COMMENT PIC X(09)  VALUE  "180054310".
       *    廃用症候群リハビリテーション料（１）（１単位）
            03  CONS-HAIYO1-COMMENT   PIC X(09)  VALUE  "180044610".
       *    廃用症候群リハビリテーション料（２）（１単位）
@@ -923,6 +925,14 @@
            03  CONS-ZAIHOU4-COMMENT  PIC X(09)  VALUE  "114018010".
       *    在宅患者訪問診療料（同一建物居住者）
            03  CONS-ZAIHOU5-COMMENT  PIC X(09)  VALUE  "114030310".
+      *    在宅患者訪問診療料（１）２（同一建物居住者以外）
+           03  CONS-ZAIHOU6-COMMENT  PIC X(09)  VALUE  "114042110".
+      *    在宅患者訪問診療料（１）２（同一建物居住者）
+           03  CONS-ZAIHOU7-COMMENT  PIC X(09)  VALUE  "114042210".
+      *    在宅患者訪問診療料（２）イ
+           03  CONS-ZAIHOU8-COMMENT  PIC X(09)  VALUE  "114042810".
+      *    在宅患者訪問診療料（２）ロ
+           03  CONS-ZAIHOU9-COMMENT  PIC X(09)  VALUE  "114046310".
       *
       *    在宅時医学総合管理料１（院外処方せん）
            03  CONS-ZAIIKAN1-COMMENT PIC X(09)  VALUE  "114012210".
@@ -1207,6 +1217,30 @@
            03  CONS-JINZOU8-COMMENT  PIC X(09)  VALUE  "140039210".
       *    人工腎臓（慢性維持透析濾過）（複雑）
            03  CONS-JINZOU9-COMMENT  PIC X(09)  VALUE  "140052810".
+      *    人工腎臓（慢性維持透析１）（４時間未満）
+           03  CONS-JINZOU10-COMMENT PIC X(09)  VALUE  "140057810".
+      *    人工腎臓（慢性維持透析１）（４時間以上５時間未満）
+           03  CONS-JINZOU11-COMMENT PIC X(09)  VALUE  "140057910".
+      *    人工腎臓（慢性維持透析１）（５時間以上）
+           03  CONS-JINZOU12-COMMENT PIC X(09)  VALUE  "140058010".
+      *    人工腎臓（慢性維持透析２）（４時間未満）
+           03  CONS-JINZOU13-COMMENT PIC X(09)  VALUE  "140058110".
+      *    人工腎臓（慢性維持透析２）（４時間以上５時間未満）
+           03  CONS-JINZOU14-COMMENT PIC X(09)  VALUE  "140058210".
+      *    人工腎臓（慢性維持透析２）（５時間以上）
+           03  CONS-JINZOU15-COMMENT PIC X(09)  VALUE  "140058310".
+      *    人工腎臓（慢性維持透析３）（４時間未満）
+           03  CONS-JINZOU16-COMMENT PIC X(09)  VALUE  "140058410".
+      *    人工腎臓（慢性維持透析３）（４時間以上５時間未満）
+           03  CONS-JINZOU17-COMMENT PIC X(09)  VALUE  "140058510".
+      *    人工腎臓（慢性維持透析３）（５時間以上）
+           03  CONS-JINZOU18-COMMENT PIC X(09)  VALUE  "140058610".
+      *    人工腎臓（慢性維持透析１）（４時間未満）（経過措置）
+           03  CONS-JINZOU19-COMMENT PIC X(09)  VALUE  "140059310".
+      *    人工腎臓（慢性維持透析１）（４時間以上５時間未満）（経過措置）
+           03  CONS-JINZOU20-COMMENT PIC X(09)  VALUE  "140059410".
+      *    人工腎臓（慢性維持透析１）（５時間以上）（経過措置）
+           03  CONS-JINZOU21-COMMENT PIC X(09)  VALUE  "140059510".
       *    局所陰圧閉鎖処置（その他）
            03  CONS-KYOKUIN1-COMMENT PIC X(09)  VALUE  "140052410".
       *    局所陰圧閉鎖処置（被覆材貼付）（１００ｃｍ２未満）
@@ -1235,6 +1269,8 @@
            03  CONS-NINRYO5-COMMENT  PIC X(09)  VALUE  "180047810".
       *    初回算定　　　月　　日
            03  CONS-NINRYO6-COMMENT  PIC X(09)  VALUE  "840000097".
+      *    認知療法・認知行動療法（医師）
+           03  CONS-NINRYO8-COMMENT  PIC X(09)  VALUE  "180056410".
       *
       *    認知症専門診断管理料２
            03  CONS-NINSEN-COMMENT   PIC X(09)  VALUE  "113014610".
@@ -2482,6 +2518,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      SRY-SRYKBN   =   "99"
+                IF     RECE100-SRYYM  <=  "201803"
                   IF      SRY-SRYCD(IDX2)     =   "099140011"
                       MOVE     "1"        TO    RECE120-HOMONCOMFLG
                       MOVE  "810000001"   TO    RECE130-SRYCD(IDX4)
@@ -2494,6 +2531,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       MOVE     "1"        TO    RECE100-COMCNTFLG
                       MOVE     "1"        TO    RECE130-RECEPTFLG(IDX4)
                   END-IF
+                END-IF
                END-IF
       *
                IF   (ACCT-SRYKBN = "40" OR "50" OR "54" OR "60" OR
@@ -2835,10 +2873,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                          "170025810"  OR  "170025910" OR
                                          "170026010"  OR  "170026110" OR
                                          "170026210"  OR  "170026310" OR
-                                         "170026810"  OR
-                                         "170000210"  OR  "170016910" OR
-                                         "170017010"  OR  "170026710" OR
-                                         "170028810"
+      ***                                "170026810"  OR
+      ***                                "170000210"  OR  "170016910" OR
+      ***                                "170017010"  OR  "170026710" OR
+      ***                                "170028810"  OR
+                                         "170035710"  OR  "170035810" OR
+                                         "170035910"  OR  "170036010"
                       MOVE   203      TO  RECE130-CDKBN-KBNNUM(IDX4)
                       MOVE   99       TO  RECE130-CDKBN-KOUBAN(IDX4)
                END-IF
@@ -3131,6 +3171,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                     OR  CONS-ZAIHOU3-COMMENT
                                     OR  CONS-ZAIHOU4-COMMENT
                                     OR  CONS-ZAIHOU5-COMMENT
+                                    OR  CONS-ZAIHOU6-COMMENT
+                                    OR  CONS-ZAIHOU7-COMMENT
+                                    OR  CONS-ZAIHOU8-COMMENT
+                                    OR  CONS-ZAIHOU9-COMMENT
                                     OR  "114001470"
                     MOVE        9         TO    FLG-OSINKBN
                  END-IF
@@ -3247,6 +3291,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    WHEN    "114012910"
                    WHEN    "114018010"
                    WHEN    "114030310"
+                   WHEN    "114042110"
+                   WHEN    "114042210"
+                   WHEN    "114042810"
+                   WHEN    "114046310"
                      PERFORM  VARYING  IDX19  FROM  2  BY  1
                                UNTIL   IDX19   >   10
                        COMPUTE  IDX21 = IDX19 - 1
@@ -3523,6 +3571,18 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                         OR  CONS-JINZOU7-COMMENT
                                         OR  CONS-JINZOU8-COMMENT
                                         OR  CONS-JINZOU9-COMMENT
+                                        OR  CONS-JINZOU10-COMMENT
+                                        OR  CONS-JINZOU11-COMMENT
+                                        OR  CONS-JINZOU12-COMMENT
+                                        OR  CONS-JINZOU13-COMMENT
+                                        OR  CONS-JINZOU14-COMMENT
+                                        OR  CONS-JINZOU15-COMMENT
+                                        OR  CONS-JINZOU16-COMMENT
+                                        OR  CONS-JINZOU17-COMMENT
+                                        OR  CONS-JINZOU18-COMMENT
+                                        OR  CONS-JINZOU19-COMMENT
+                                        OR  CONS-JINZOU20-COMMENT
+                                        OR  CONS-JINZOU21-COMMENT
                         MOVE   "1"    TO    RECE120-FLG-JINZOU-COMMENT
                 END-IF
       *         局所陰圧閉鎖処置
@@ -3786,7 +3846,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                         MOVE   "1"    TO    RECE100-COMCNTFLG
                         MOVE   "1"    TO    RECE120-SYOGAI-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-SESSYOKU-COMMENT
+                IF   SRY-SRYCD(IDX2)  =     CONS-SESYOKU-COMMENT
+                                      OR    CONS-SESYOKU2-COMMENT
                         MOVE   "1"    TO    RECE100-COMCNTFLG
                         MOVE   "1"    TO    RECE120-SESSYOKU-COMMENT
                 END-IF
@@ -3840,6 +3901,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                 IF  (SRY-SRYCD(IDX2)  =     CONS-NINRYO5-COMMENT)
                 AND (FLG-NINRYO-COM   =     ZERO                )
                         MOVE   "5"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-NINRYO8-COMMENT)
+                AND (FLG-NINRYO-COM   =     ZERO                )
+                        MOVE   "8"    TO    RECE120-FLG-NINRYO-COMMENT
                 END-IF
                 IF   SRY-SRYCD(IDX2)  =     CONS-NINRYO6-COMMENT
                         MOVE  SPACE   TO    RECE120-FLG-NINRYO-COMMENT
@@ -3980,6 +4045,9 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                         MOVE   "1"    TO    RECE120-FLG-SINPESU-COMMENT
                   END-IF
                 END-IF
+              END-IF
+              IF   RECE100-SRYYM     >=    "201004"
+              AND  RECE100-SRYYM     <=    "201803"
       *         集団栄養食事指導料
                 IF   SRY-SRYCD(IDX2)  =     CONS-SYUEIYO-COMMENT
                         MOVE   "1"    TO    RECE120-FLG-SYUEIYO-COMMENT
@@ -4175,6 +4243,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                       OR    CONS-ZAIHOU3-COMMENT
                                       OR    CONS-ZAIHOU4-COMMENT
                                       OR    CONS-ZAIHOU5-COMMENT
+                                      OR    CONS-ZAIHOU6-COMMENT
+                                      OR    CONS-ZAIHOU7-COMMENT
+                                      OR    CONS-ZAIHOU8-COMMENT
+                                      OR    CONS-ZAIHOU9-COMMENT
                    MOVE   "1"   TO    RECE100-COMCNTFLG
                    MOVE   "2"   TO    RECE120-FLG-OSIN-COMMENT
               END-IF
@@ -4182,7 +4254,11 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
               IF   (SRY-SRYCD(IDX2)   =     CONS-ZAIHOU-COMMENT
                                       OR    CONS-ZAIHOU3-COMMENT
                                       OR    CONS-ZAIHOU4-COMMENT
-                                      OR    CONS-ZAIHOU5-COMMENT)
+                                      OR    CONS-ZAIHOU5-COMMENT
+                                      OR    CONS-ZAIHOU6-COMMENT
+                                      OR    CONS-ZAIHOU7-COMMENT
+                                      OR    CONS-ZAIHOU8-COMMENT
+                                      OR    CONS-ZAIHOU9-COMMENT)
               AND  (FLG-ZAIHOU-COM    =     ZERO                )
                    MOVE   "1"   TO    RECE120-FLG-ZAIHOU-COMMENT
               END-IF
