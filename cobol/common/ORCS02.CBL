@@ -5923,7 +5923,7 @@
                    ( LNK-SYU-SRYYMD(1:6) >= "201501"        ))
                OR (((COMB-KOH1HKNNUM = "054"               ) OR
                     (COMB-KOH2HKNNUM = "054"               )) AND
-                   ( WK-KOH-FTNJANUM(5:3) = "700" OR "800"  ) AND
+                   ( WK-KOH-FTNJANUM(5:1) = "7" OR "8"      ) AND
                    ( WK-KOH-FTNJANUM(1:2) = "54"            ) AND
                    ( LNK-SYU-SRYYMD(1:6) >= "201804"        ))
                OR (  WK-KOHJGNGET-TEKIYOFLG(1) =  1          )
@@ -6284,7 +6284,7 @@
              END-IF
            END-IF
            IF  (COMB-KOH1HKNNUM      = "054"         )
-           AND (WK-KOH-FTNJANUM(5:3) = "700" OR "800")
+           AND (WK-KOH-FTNJANUM(5:1) = "7" OR "8"    )
            AND (WK-KOH-FTNJANUM(1:2) = "54"          )
            AND (LNK-SYU-SRYYMD(1:6) >= "201804"      )
              IF   WK-KOH-FTNJANUM(5:2) = "80"
@@ -6308,7 +6308,7 @@
              END-IF
            END-IF
            IF  (COMB-KOH2HKNNUM      = "054"         )
-           AND (WK-KOH-FTNJANUM(5:3) = "700" OR "800")
+           AND (WK-KOH-FTNJANUM(5:1) = "7" OR "8"    )
            AND (WK-KOH-FTNJANUM(1:2) = "54"          )
            AND (LNK-SYU-SRYYMD(1:6) >= "201804"      )
              IF   WK-KOH-FTNJANUM(5:2) = "80"
