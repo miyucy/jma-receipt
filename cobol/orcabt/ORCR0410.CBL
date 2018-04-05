@@ -1873,7 +1873,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               OR "112017610"
                                               OR "113024810"
                                               OR "113025710"
-                                              OR "112023210"   )
+                                              OR "112023210"
+                                              OR "112023450"
+                                              OR "112023750"
+                                              OR "112023550"
+                                              OR "112023850"   )
                        OR  (( SRY-SRYCD(IDY) =  CONS-ROUSAI19 ) AND
                             ( RECE41-SRYYM  <=   "201306"     ))
                        OR  (( SRY-SRYCD(IDY) =  CONS-ROUSAI5

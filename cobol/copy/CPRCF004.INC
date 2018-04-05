@@ -82,6 +82,7 @@
       *  04.08.04    NACL-門脇    16/03/31  平成２８年４月改正対応
       *  04.08.05    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
       *                                     （記録）対応
+      *  04.08.06    NACL-門脇    18/04/02  平成３０年４月改正対応
       ************************************************************
       *01  RECE04-REC.
            03  RECE04-KEY.
@@ -182,10 +183,14 @@
            03  RECE04-SAISANTEIKA-COMMENT PIC  X(01).
       *電話再診
            03  RECE04-DENWASAI-COMMENT    PIC  X(01).
+      *電話再診（３０年３月以前継続）
+           03  RECE04-DENWASAI2-COMMENT   PIC  X(01).
       *同日再診
            03  RECE04-DOUJITUSAI-COMMENT  PIC  X(01).
       *同日電話再診
            03  RECE04-DOUDENSAI-COMMENT   PIC  X(01).
+      *同日電話再診（３０年３月以前継続）
+           03  RECE04-DOUDENSAI2-COMMENT  PIC  X(01).
       *再診（４回目以降／人工腎臓）
            03  RECE04-SAIJINKO-COMMENT    PIC  X(01).
       *人工腎臓

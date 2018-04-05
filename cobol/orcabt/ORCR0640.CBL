@@ -2142,6 +2142,8 @@
            03  CONS-TOKKI35        PIC X(14) VALUE "00000099990135".
            03  CONS-TOKKI36        PIC X(14) VALUE "00000099990136".
            03  CONS-TOKKI37        PIC X(14) VALUE "00000099990137".
+           03  CONS-TOKKI38        PIC X(14) VALUE "00000099990138".
+           03  CONS-TOKKI39        PIC X(14) VALUE "00000099990139".
       *
       *    ÉÂ¾²¿ôÊÔ½¸¥Õ¥é¥°ÊÔ½¸¤Î°Ù¤Î¥³¡¼¥É¡ÊÆÃÄê¼À´µÎÅÍÜ»ØÆ³ÎÁÅù¡Ë
            03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
@@ -5072,14 +5074,10 @@
                     (RECE62-SRYYM   >  "201903")             ))
                OR (( RECE62-PTTOKKI-CD(TOKKI-IDX) = "21"     ) AND
                    ( RECE62-SRYYM   <  "200901"              ))
-               OR (( RECE62-PTTOKKI-CD(TOKKI-IDX) = "22"     ) AND
-                   ( RECE62-SRYYM   <  "200905"              ))
                OR (( RECE62-PTTOKKI-CD(TOKKI-IDX) =
                                     "23" OR "24"             ) AND
                    ((RECE62-SRYYM   <  "200905") OR
                     (RECE62-SRYYM   >  "201412")             ))
-               OR (( RECE62-PTTOKKI-CD(TOKKI-IDX) = "25"     ) AND
-                   ( RECE62-SRYYM   <  "200910"              ))
                  CONTINUE
                ELSE
                  ADD    1     TO    TOKKI-IDX2
@@ -7844,6 +7842,7 @@
                      "099209821" OR "099209822" OR
                      "099209711" OR "099209712" OR
                      "099209721" OR "099209722" OR
+                     "099208101" OR
                      "840000136" OR "840000140"            )
       *
                   PERFORM   2101216-MEISAISU-HENSYU-SEC
@@ -7940,6 +7939,7 @@
                        "099209821" OR "099209822" OR
                        "099209711" OR "099209712" OR
                        "099209721" OR "099209722" OR
+                       "099208101" OR
                        "840000136" OR "840000140"            )
       *
                IF   FLG-KIN-OKIKAE   NOT =  ZERO
@@ -11760,6 +11760,10 @@
                        MOVE    "36"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI37
                        MOVE    "37"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI38
+                       MOVE    "38"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI39
+                       MOVE    "39"      TO      WRK-TOKKI
                END-EVALUATE
               END-IF
              WHEN        2
@@ -11837,6 +11841,10 @@
                        MOVE    "36"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI37(6:9)
                        MOVE    "37"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI38(6:9)
+                       MOVE    "38"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI39(6:9)
+                       MOVE    "39"      TO      WRK-TOKKI
                END-EVALUATE
               END-IF
              WHEN        3
@@ -11993,20 +12001,12 @@
                IF  (RECE62-SRYYM   <   "200901")
                    GO  TO  21013-TOKKI-HENSYU-EXT
                END-IF
-             WHEN      "22"
-               IF  (RECE62-SRYYM   <   "200905")
-                   GO  TO  21013-TOKKI-HENSYU-EXT
-               END-IF
              WHEN      "23"
              WHEN      "24"
                IF  (RECE62-SRYYM   >=  "200905")
                AND (RECE62-SRYYM   <=  "201412")
                    CONTINUE
                ELSE
-                   GO  TO  21013-TOKKI-HENSYU-EXT
-               END-IF
-             WHEN      "25"
-               IF  (RECE62-SRYYM   <   "200910")
                    GO  TO  21013-TOKKI-HENSYU-EXT
                END-IF
            END-EVALUATE
