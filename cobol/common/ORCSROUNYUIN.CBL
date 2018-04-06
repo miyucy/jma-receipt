@@ -5961,6 +5961,7 @@
                        END-IF
                     END-PERFORM
                     IF     FLG-ARI  =  ZERO
+                    AND    ID1     <=   20
                          MOVE   "¸áÁ°¸º"
                                 TO    LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:6)
                     END-IF
@@ -6014,6 +6015,7 @@
                        END-IF
                     END-PERFORM
                     IF     FLG-ARI  =  ZERO
+                    AND    ID1     <=   20
                          MOVE   "ÅÚÆü¸º"
                                 TO    LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:6)
                     END-IF
@@ -6074,6 +6076,7 @@
                        END-IF
                     END-PERFORM
                     IF     FLG-ARI  =  ZERO
+                    AND    ID1     <=   20
                          MOVE   "¸áÁ°¸º"
                                 TO    LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:6)
                     END-IF
@@ -6122,6 +6125,7 @@
                        END-IF
                     END-PERFORM
                     IF     FLG-ARI  =  ZERO
+                    AND    ID1     <=   20
                          MOVE   "ÅÚÆü¸º"
                                 TO    LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:6)
                     END-IF
@@ -6179,6 +6183,7 @@
                        END-IF
                     END-PERFORM
                     IF     FLG-ARI  =  ZERO
+                    AND    ID1     <=   20
                          MOVE   "¸áÁ°¸º"
                                 TO    LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:6)
                     END-IF
@@ -6228,6 +6233,7 @@
                        END-IF
                     END-PERFORM
                     IF     FLG-ARI  =  ZERO
+                    AND    ID1     <=   20
                          MOVE   "ÅÚÆü¸º"
                                 TO    LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:6)
                     END-IF
@@ -6584,6 +6590,7 @@
                        END-IF
                     END-PERFORM  
                     IF  FLG-ARI  =  ZERO  
+                    AND ID1     <=   20
                            MOVE   NYURYAKUSHO-RYAKUSHO
                                      TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)
                     END-IF
@@ -6603,6 +6610,7 @@
                          END-IF
                        END-PERFORM  
                        IF  FLG-ARI  =  ZERO  
+                       AND ID1     <=   20
                             MOVE  "Í­´Ç"
                                 TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:4)
                        END-IF
@@ -6620,6 +6628,7 @@
                          END-IF
                        END-PERFORM  
                        IF  FLG-ARI  =  ZERO  
+                       AND ID1     <=   20
                             MOVE  "Í­°å"
                                 TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:4)
                        END-IF
@@ -6637,6 +6646,7 @@
                          END-IF
                        END-PERFORM  
                        IF  FLG-ARI  =  ZERO  
+                       AND ID1     <=   20
                             MOVE  "Í­´Ç°å"
                                 TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)(1:6)
                        END-IF
@@ -6663,6 +6673,7 @@
                        END-IF
                     END-PERFORM  
                     IF  FLG-ARI  =  ZERO  
+                    AND ID1     <=   20
                            MOVE   NYURYAKUSHO-RYAKUSHO
                                      TO   LNK-SROUNYUIN-RYAKUSYO2(ID1)
                     END-IF
@@ -6704,6 +6715,7 @@
                       END-EVALUATE
                     END-PERFORM
                     IF  FLG-ARI  =  ZERO
+                    AND ID1     <=   20
                       EVALUATE   WRK-RYAKU-SRYCD
                         WHEN     "190123250"
                            MOVE   "°ìÈÌ·Ð²á"
@@ -6750,6 +6762,7 @@
                       END-EVALUATE
                     END-PERFORM
                     IF  FLG-ARI  =  ZERO
+                    AND ID1     <=   20
                       EVALUATE   WRK-RYAKU-SRYCD
                         WHEN     "190130810"
                            MOVE   "°ìÈÌ£±£°"
@@ -6830,6 +6843,7 @@
                 END-EVALUATE
               END-PERFORM
               IF  FLG-ARI  =  ZERO
+              AND ID1     <=   20
                 EVALUATE   WRK-RYAKU-SRYCD
       *           Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¡Ê°ìÈÌÉÂÅïÆþ±¡´ðËÜÎÁ¡Ë
                   WHEN     "190200970"

@@ -2072,10 +2072,6 @@
            03  CONS-CHIHOKAT4      PIC X(09) VALUE "112021870".
       *    ÌôºÞÅ¬Àµ»ÈÍÑÏ¢·È²Ã»»¡ÊºÆ¿Ç¡Ë
            03  CONS-YAKRENKEI      PIC X(09) VALUE "112021970".
-      *    Ç¥ÉØ²Ã»»¡ÊºÆ¿Ç¡Ë
-           03  CONS-NINPU          PIC X(09) VALUE "112022070".
-      *    Ç¥ÉØ²Ã»»¡Ê³°Íè¿ÇÎÅÎÁ¡Ë
-           03  CONS-NINPU2         PIC X(09) VALUE "112022870".
       *
       *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  CONS-FILM-YOUJI-KASAN  
@@ -13074,9 +13070,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-DENWASAI-COMMENT
               END-IF
-              IF  (SRY-SRYCD(IDX2)    =     "112023350"
-                                         OR "112023650"     )
-              AND (RECE02-SRYYM       >=    "201804"        )
+              IF   SRY-SRYCD(IDX2)    =     "112023350"
+                                         OR "112023650"
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-DENWASAI2-COMMENT
               END-IF
@@ -13143,9 +13138,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-DOUDENSAI-COMMENT
               END-IF
-              IF  (SRY-SRYCD(IDX2)    =     "112023450"
-                                         OR "112023750"     )
-              AND (RECE02-SRYYM       >=    "201804"        )
+              IF   SRY-SRYCD(IDX2)    =     "112023450"
+                                         OR "112023750"
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-DOUDENSAI2-COMMENT
               END-IF
@@ -17499,11 +17493,11 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                COMPUTE  CNT-YAKRENKEI =  CNT-YAKRENKEI
                                       +  WK-ZAIKAISU
            END-IF
-           IF  SRY-SRYCD(IDX3)  =  CONS-NINPU
+           IF  SRY-SRYCD(IDX3)  =  CONS-NINPU13-COMMENT
                COMPUTE  CNT-NINPU     =  CNT-NINPU
                                       +  WK-ZAIKAISU
            END-IF
-           IF  SRY-SRYCD(IDX3)  =  CONS-NINPU2
+           IF  SRY-SRYCD(IDX3)  =  CONS-NINPU17-COMMENT
                COMPUTE  CNT-NINPU2    =  CNT-NINPU2
                                       +  WK-ZAIKAISU
            END-IF
@@ -17524,8 +17518,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                    OR  CONS-CHIHOKAT3
                                    OR  CONS-CHIHOKAT4
                                    OR  CONS-YAKRENKEI
-                                   OR  CONS-NINPU
-                                   OR  CONS-NINPU2
+                                   OR  CONS-NINPU13-COMMENT
+                                   OR  CONS-NINPU17-COMMENT
                 EVALUATE  SRY-SRYCD(IDX3)
                   WHEN     CONS-JIKANTAI1
                     IF   FLG-JIKANTAI1-ARI  =  ZERO
@@ -17572,12 +17566,12 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                       ADD  WRK-TNS-TEN(IDX3) TO RECE02-KHNTEN(2)
                       MOVE     1             TO FLG-YAKRENKEI-ARI
                     END-IF
-                  WHEN     CONS-NINPU
+                  WHEN     CONS-NINPU13-COMMENT
                     IF   FLG-NINPU-ARI  =  ZERO
                       ADD  WRK-TNS-TEN(IDX3) TO RECE02-KHNTEN(2)
                       MOVE     1             TO FLG-NINPU-ARI
                     END-IF
-                  WHEN     CONS-NINPU2
+                  WHEN     CONS-NINPU17-COMMENT
                     IF   FLG-NINPU2-ARI  =  ZERO
                       ADD  WRK-TNS-TEN(IDX3) TO RECE02-KHNTEN(2)
                       MOVE     1             TO FLG-NINPU2-ARI

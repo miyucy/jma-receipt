@@ -3877,6 +3877,25 @@
       *
            END-IF
       *
+      *    ∆√ Ã§ ¥ÿ∑∏§À§¢§Î¬æ±°
+      *
+           IF   (RECE62-TAINFLG          =  "1"     )
+           AND  (RECE62-SRYYM           >=  "201804")
+             MOVE     ZERO     TO    FLG-ARI
+             PERFORM  VARYING  ID1    FROM    1   BY  1
+                       UNTIL  (ID1                    >  20  )
+                        OR    (RECE62-NYUSYUBETU(ID1) = SPACE)
+                        OR    (FLG-ARI                =   1  )
+               IF  RECE62-NYUSYUBETU(ID1)(1:4) = "∆√ Ã"
+                 MOVE  1   TO   FLG-ARI
+               END-IF
+             END-PERFORM
+             IF    FLG-ARI  =  ZERO
+             AND   ID1     <=   20
+               MOVE   "∆√ Ã"   TO   RECE62-NYUSYUBETU(ID1)(1:4)
+             END-IF
+           END-IF
+      *
            .
        200113-RECE62-HENSYU3-EXT.
            EXIT.
@@ -4013,6 +4032,7 @@
                    END-IF
                  END-PERFORM
                  IF    FLG-ARI  =  ZERO
+                 AND   ID1     <=   20
                      MOVE  "∏·¡∞∏∫"  TO   RECE62-NYUSYUBETU(ID1)(1:6)
                  END-IF
               WHEN          9
@@ -4028,6 +4048,7 @@
                    END-IF
                  END-PERFORM
                  IF    FLG-ARI  =  ZERO
+                 AND   ID1     <=   20
                      MOVE  "≈⁄∆¸∏∫"  TO   RECE62-NYUSYUBETU(ID1)(1:6)
                  END-IF
            END-EVALUATE
@@ -4092,6 +4113,7 @@
              END-EVALUATE
            END-PERFORM
            IF    FLG-ARI  =  ZERO
+           AND   ID1     <=   20
              EVALUATE   WRK-SRYCD
       *        ÃÎ¥÷¥«∏Ó¬Œ¿©∆√ƒÍ∆¸∏∫ªª° ∞Ï»Ã…¬≈Ô∆˛±°¥À‹Œ¡°À
                WHEN     "190200970"
@@ -5210,6 +5232,7 @@
                  END-IF
               END-PERFORM  
               IF  FLG-ARI  =  ZERO  
+              AND ID1     <=   20
                      MOVE   NYURYAKUSHO-RYAKUSHO
                                TO   RECE62-NYUSYUBETU(ID1)
               END-IF
@@ -5229,6 +5252,7 @@
                     END-IF
                  END-PERFORM  
                  IF  FLG-ARI  =  ZERO  
+                 AND ID1     <=   20
                         MOVE   "Õ≠¥«"
                                   TO   RECE62-NYUSYUBETU(ID1)(1:4)
                  END-IF
@@ -5246,6 +5270,7 @@
                     END-IF
                  END-PERFORM  
                  IF  FLG-ARI  =  ZERO  
+                 AND ID1     <=   20
                         MOVE   "Õ≠∞Â"
                                   TO   RECE62-NYUSYUBETU(ID1)(1:4)
                  END-IF
@@ -5263,6 +5288,7 @@
                     END-IF
                  END-PERFORM  
                  IF  FLG-ARI  =  ZERO  
+                 AND ID1     <=   20
                         MOVE   "Õ≠¥«∞Â"
                                   TO   RECE62-NYUSYUBETU(ID1)(1:6)
                  END-IF
@@ -5300,6 +5326,7 @@
                    END-EVALUATE
                 END-PERFORM  
                 IF  FLG-ARI  =  ZERO
+                AND ID1     <=   20
                    EVALUATE   WRK-SRYCD
                      WHEN     "190123250"
                       MOVE   "∞Ï»Ã∑–≤·"
@@ -5341,6 +5368,7 @@
                    END-EVALUATE
                 END-PERFORM  
                 IF  FLG-ARI  =  ZERO
+                AND ID1     <=   20
                    EVALUATE   WRK-SRYCD
                      WHEN     "190130810"
                       MOVE   "∞Ï»Ã£±£∞"

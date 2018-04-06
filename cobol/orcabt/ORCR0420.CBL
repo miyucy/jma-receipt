@@ -1901,10 +1901,6 @@
            03  CONS-CHIHOKAT4        PIC X(09) VALUE   "112021870".
       *    ÌôºÞÅ¬Àµ»ÈÍÑÏ¢·È²Ã»»¡ÊºÆ¿Ç¡Ë
            03  CONS-YAKRENKEI        PIC X(09) VALUE   "112021970".
-      *    Ç¥ÉØ²Ã»»¡ÊºÆ¿Ç¡Ë
-           03  CONS-NINPU            PIC X(09) VALUE   "112022070".
-      *    Ç¥ÉØ²Ã»»¡Ê³°Íè¿ÇÎÅÎÁ¡Ë
-           03  CONS-NINPU2           PIC X(09) VALUE   "112022870".
       *
       *    ºÞ¤Î¿ÇÎÅÆâÍÆ¥Á¥§¥Ã¥¯¥Æ¡¼¥Ö¥ë
        01  TBL-ZAICHECK-AREA.
@@ -4826,9 +4822,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-DENWASAI-COMMENT
               END-IF
-              IF   (SRY-SRYCD(IDX2)   =     "112023350"
-                                         OR "112023650"    )
-              AND  (RECE41-SRYYM      >=    "201804"       )
+              IF    SRY-SRYCD(IDX2)   =     "112023350"
+                                         OR "112023650"
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-DENWASAI2-COMMENT
               END-IF
@@ -4899,9 +4894,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-DOUDENSAI-COMMENT
               END-IF
-              IF   (SRY-SRYCD(IDX2)   =     "112023450"
-                                         OR "112023750"    )
-              AND  (RECE41-SRYYM      >=    "201804"       )
+              IF    SRY-SRYCD(IDX2)   =     "112023450"
+                                         OR "112023750"
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-DOUDENSAI2-COMMENT
               END-IF
@@ -8991,18 +8985,18 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                     WRK-KINGAKU-JI   +
                                (WRK-TNS-TEN(IDX3)    * ACCT-ZAIKAISU)
                      ELSE
-                      IF  (SRY-SRYCD(IDX3) =  CONS-JIKANTAI1  OR
-                                              CONS-JIKANTAI2  OR
-                                              CONS-JIKANTAI3  OR
-                                              CONS-MESAIKSN   OR
-                                              CONS-CHIHOKATU  OR
-                                              CONS-CHIHOKAT2  OR
-                                              CONS-CHIHOKAT3  OR
-                                              CONS-CHIHOKAT4  OR
-                                              CONS-YAKRENKEI  OR
-                                              CONS-NINPU      OR
-                                              CONS-NINPU2       )
-                      AND (RECE41-SRYYM   >=  "201204"          )
+                      IF  (SRY-SRYCD(IDX3) =  CONS-JIKANTAI1
+                                           OR CONS-JIKANTAI2
+                                           OR CONS-JIKANTAI3
+                                           OR CONS-MESAIKSN
+                                           OR CONS-CHIHOKATU
+                                           OR CONS-CHIHOKAT2
+                                           OR CONS-CHIHOKAT3
+                                           OR CONS-CHIHOKAT4
+                                           OR CONS-YAKRENKEI
+                                           OR CONS-NINPU13-COMMENT
+                                           OR CONS-NINPU17-COMMENT)
+                      AND (RECE41-SRYYM   >=  "201204"            )
                          COMPUTE    RECE41-TENSU(8)   =
                                     RECE41-TENSU(8)   +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -9172,18 +9166,18 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                    TBL-SYUTEN-JI(2)  +
                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                       ELSE
-                       IF  (SRY-SRYCD(IDX3) =  CONS-JIKANTAI1   OR
-                                               CONS-JIKANTAI2   OR
-                                               CONS-JIKANTAI3   OR
-                                               CONS-MESAIKSN    OR
-                                               CONS-CHIHOKATU   OR
-                                               CONS-CHIHOKAT2   OR
-                                               CONS-CHIHOKAT3   OR
-                                               CONS-CHIHOKAT4   OR
-                                               CONS-YAKRENKEI   OR
-                                               CONS-NINPU       OR
-                                               CONS-NINPU2        )
-                       AND (RECE41-SRYYM   >=  "201204"           )
+                       IF  (SRY-SRYCD(IDX3) =  CONS-JIKANTAI1
+                                            OR CONS-JIKANTAI2
+                                            OR CONS-JIKANTAI3
+                                            OR CONS-MESAIKSN
+                                            OR CONS-CHIHOKATU
+                                            OR CONS-CHIHOKAT2
+                                            OR CONS-CHIHOKAT3
+                                            OR CONS-CHIHOKAT4
+                                            OR CONS-YAKRENKEI
+                                            OR CONS-NINPU13-COMMENT
+                                            OR CONS-NINPU17-COMMENT)
+                       AND (RECE41-SRYYM   >=  "201204"            )
                         COMPUTE    RECE41-TENSU(8)   =
                                    RECE41-TENSU(8)   +
                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
@@ -10061,16 +10055,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                          (RECE41-SRYYM   >=    "201307"   ))
                          CONTINUE
                      ELSE
-                       IF SRY-SRYCD(IDX3) =  CONS-GAIRAIRYO1  OR
-                                             CONS-GAIRAIRYO3  OR
-                                             CONS-GAIRAIRYO4  OR
-                                             CONS-GAIRAIRYO5  OR
-                                             CONS-GAIRAIRYO6  OR
-                                             CONS-GAIRAIRYO7  OR
-                                             CONS-DOUJITU-GAI OR
-                                             CONS-DOUJITU2-GAI OR
-                                             CONS-DOUJITU3-GAI OR
-                                             CONS-NINPU2
+                       IF SRY-SRYCD(IDX3) =  CONS-GAIRAIRYO1
+                                          OR CONS-GAIRAIRYO3
+                                          OR CONS-GAIRAIRYO4
+                                          OR CONS-GAIRAIRYO5
+                                          OR CONS-GAIRAIRYO6
+                                          OR CONS-GAIRAIRYO7
+                                          OR CONS-DOUJITU-GAI
+                                          OR CONS-DOUJITU2-GAI
+                                          OR CONS-DOUJITU3-GAI
+                                          OR CONS-NINPU17-COMMENT
                         IF    RECE41-SRYYM  >= "201804"
                            PERFORM  21012251-RECE-LEFT12-HEN1-SEC
                         ELSE
@@ -10712,12 +10706,12 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                END-IF
              END-IF
       *
-             IF  SRY-SRYCD(IDX3)  =  CONS-NINPU2
+             IF   SRY-SRYCD(IDX3)  =  CONS-NINPU17-COMMENT
                COMPUTE  CNT-NINPU2    =  CNT-NINPU2
                                       +  WK-ZAIKAISU
              END-IF
       *
-             IF   SRY-SRYCD(IDX3)  =  CONS-NINPU2
+             IF   SRY-SRYCD(IDX3)  =  CONS-NINPU17-COMMENT
                 IF   FLG-NINPU2-ARI  =  ZERO
                   ADD  WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(3)
                   MOVE     1             TO FLG-NINPU2-ARI
@@ -10765,43 +10759,43 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                END-IF
              END-IF
       *
-             IF  SRY-SRYCD(IDX3)  =  CONS-JIKANTAI1
+             IF   SRY-SRYCD(IDX3)  =  CONS-JIKANTAI1
                COMPUTE  CNT-JIKANTAI1 =  CNT-JIKANTAI1
                                       +  WK-ZAIKAISU
              END-IF
-             IF  SRY-SRYCD(IDX3)  =  CONS-JIKANTAI2
+             IF   SRY-SRYCD(IDX3)  =  CONS-JIKANTAI2
                COMPUTE  CNT-JIKANTAI2 =  CNT-JIKANTAI2
                                       +  WK-ZAIKAISU
              END-IF
-             IF  SRY-SRYCD(IDX3)  =  CONS-JIKANTAI3
+             IF   SRY-SRYCD(IDX3)  =  CONS-JIKANTAI3
                COMPUTE  CNT-JIKANTAI3 =  CNT-JIKANTAI3
                                       +  WK-ZAIKAISU
              END-IF
-             IF  SRY-SRYCD(IDX3)  =  CONS-MESAIKSN
+             IF   SRY-SRYCD(IDX3)  =  CONS-MESAIKSN
                COMPUTE  CNT-MESAIKSN  =  CNT-MESAIKSN
                                       +  WK-ZAIKAISU
              END-IF
-             IF  SRY-SRYCD(IDX3)  =  CONS-CHIHOKATU
+             IF   SRY-SRYCD(IDX3)  =  CONS-CHIHOKATU
                COMPUTE  CNT-CHIHOKATU =  CNT-CHIHOKATU
                                       +  WK-ZAIKAISU
              END-IF
-             IF  SRY-SRYCD(IDX3)  =  CONS-CHIHOKAT2
+             IF   SRY-SRYCD(IDX3)  =  CONS-CHIHOKAT2
                COMPUTE  CNT-CHIHOKAT2 =  CNT-CHIHOKAT2
                                       +  WK-ZAIKAISU
              END-IF
-             IF  SRY-SRYCD(IDX3)  =  CONS-CHIHOKAT3
+             IF   SRY-SRYCD(IDX3)  =  CONS-CHIHOKAT3
                COMPUTE  CNT-CHIHOKAT3 =  CNT-CHIHOKAT3
                                       +  WK-ZAIKAISU
              END-IF
-             IF  SRY-SRYCD(IDX3)  =  CONS-CHIHOKAT4
+             IF   SRY-SRYCD(IDX3)  =  CONS-CHIHOKAT4
                COMPUTE  CNT-CHIHOKAT4 =  CNT-CHIHOKAT4
                                       +  WK-ZAIKAISU
              END-IF
-             IF  SRY-SRYCD(IDX3)  =  CONS-YAKRENKEI
+             IF   SRY-SRYCD(IDX3)  =  CONS-YAKRENKEI
                COMPUTE  CNT-YAKRENKEI =  CNT-YAKRENKEI
                                       +  WK-ZAIKAISU
              END-IF
-             IF  SRY-SRYCD(IDX3)  =  CONS-NINPU
+             IF   SRY-SRYCD(IDX3)  =  CONS-NINPU13-COMMENT
                COMPUTE  CNT-NINPU     =  CNT-NINPU
                                       +  WK-ZAIKAISU
              END-IF
@@ -10815,7 +10809,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                   OR  CONS-CHIHOKAT3
                                   OR  CONS-CHIHOKAT4
                                   OR  CONS-YAKRENKEI
-                                  OR  CONS-NINPU
+                                  OR  CONS-NINPU13-COMMENT
                 EVALUATE  SRY-SRYCD(IDX3)
                   WHEN     CONS-JIKANTAI1
                     IF   FLG-JIKANTAI1-ARI  =  ZERO
@@ -10862,7 +10856,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                       ADD  WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(2)
                       MOVE     1             TO FLG-YAKRENKEI-ARI
                     END-IF
-                  WHEN     CONS-NINPU
+                  WHEN     CONS-NINPU13-COMMENT
                     IF   FLG-NINPU-ARI  =  ZERO
                       ADD  WRK-TNS-TEN(IDX3) TO RECE41-KHNTEN(2)
                       MOVE     1             TO FLG-NINPU-ARI
