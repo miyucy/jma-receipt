@@ -229,6 +229,7 @@
            03  FLG-NINPU-IN         PIC 9(01).
            03  FLG-CHKT             PIC 9(01).
            03  FLG-ONLINE           PIC 9(01).
+           03  FLG-SYOSIN-AUTO      PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -7490,6 +7491,10 @@
       *****************************************************************
        10102-SINSATU-CHENGE-SEC              SECTION.
       *
+      *H30.4
+      *    º£²óÊ¬¤Î½é¿ÇÈ½Äê
+           PERFORM 101022-SYOSIN-CHENGE-SEC
+      *
       *    ¿ÇÎÅ¹Ô°ÙÆâÍÆ¤ÎÊÔ½¸
            MOVE    ZERO                TO  FLG-JIKAN
            MOVE    ZERO                TO  FLG-CHK
@@ -7784,14 +7789,23 @@
                                            "099120001"
                MOVE    1               TO  FLG-ARI
            END-IF
-      *    ·ÑÂ³´ÉÍý²Ã»»¼«Æ°È¯À¸Ê¬
-           IF     WRK-SRYCD            =   "112007170"   OR
-                                           "112702270"
-               MOVE    1               TO  FLG-ARI
-           END-IF
+      *
       *    °é»ù±ÉÍÜ»ØÆ³ÎÁ
            IF     WRK-SRYCD            =   "111000470"
                MOVE    1               TO  FLG-ARI
+      *H30.4
+      *        ÃæÅÓ¥Ç¡¼¥¿Å¸³«¤Ç½é¿ÇÎÁ»»Äê»þ
+               IF     (LNK-SC10S-SYORI     =   "W"  )
+                  AND (FLG-SYOSIN-AUTO     =    1   )
+      *            °é»ù±ÉÍÜ²Ã»»¼«Æ°»»Äê¤Î»þ¤Î¤ßºï½üÂÐ¾Ý
+                   IF     (SPA-IKUJIEIYO-FLG   =   "1"  )
+                      AND ((SPA-IKUJIEIYO-SRYKA =   ZERO   )  OR
+                           (SPA-IKUJIEIYO-SRYKA =   SPA-SRYKA))
+                       MOVE    1               TO  FLG-ARI
+                   ELSE
+                       MOVE    ZERO            TO  FLG-ARI
+                   END-IF
+               END-IF
            END-IF
       *H24.4
       *    »þ´Ö³°ÂÐ±þ²Ã»»
@@ -7880,6 +7894,62 @@
            .
        10101-SINSATU-CHK-EXT.
            EXIT.
+      *
+      *H30.4
+      *****************************************************************
+      *    º£²óÊ¬¤ÎÈ½Äê½èÍý
+      *****************************************************************
+       101022-SYOSIN-CHENGE-SEC                 SECTION.
+      *
+           MOVE    SPACE              TO  WRK-KBN
+           MOVE    SPACE              TO  WRK-KBN2
+           MOVE    ZERO               TO  WRK-KAISU
+           MOVE    ZERO               TO  FLG-ARI
+           MOVE    ZERO               TO  FLG-SYOSIN-AUTO
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE    )  OR
+                             ((SPA-COM-INPUTCD(IDX) =   SPACE ) AND
+                              (SPA-GMN-INPUTCD(IDX) =   SPACE ))
+                         OR  ( FLG-ARI     =   1      )
+      *        ¿Ç»¡ÎÁ¸¡º÷
+               SET     TBL-IDX             TO  1
+               SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+                   AT  END
+                       MOVE    ZERO                TO  FLG-ARI
+               WHEN   SPA-COM-INPUTCD (IDX) =
+                                             TBL-SRYCD (TBL-IDX)
+                       MOVE    1                   TO  FLG-ARI
+                       MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN
+                       MOVE    TBL-KBN2 (TBL-IDX)  TO  WRK-KBN2
+                       MOVE    TBL-KAISU (TBL-IDX) TO  WRK-KAISU
+               END-SEARCH
+      *
+               IF      FLG-ARI             =   ZERO
+      *            Ï«ºÒ¥³¡¼¥É¥Á¥§¥Ã¥¯¡Ê½é¿Ç¡Ë
+                   SET     TBL-RSI              TO  1
+                   SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
+                       AT  END
+                           MOVE    ZERO               TO  FLG-ARI
+                       WHEN    SPA-COM-INPUTCD (IDX)
+                                              =   TBLR-SRYCD (TBL-RSI)
+                           MOVE    1                  TO  FLG-ARI
+                           MOVE    TBLR-KBN (TBL-RSI) TO  WRK-KBN
+                           MOVE    TBLR-KBN2(TBL-RSI) TO  WRK-KBN2
+                   END-SEARCH
+               END-IF
+           END-PERFORM
+      *
+           IF     (WRK-KBN             =   "F" )
+              AND (WRK-KAISU           =   1
+                                       OR  ZERO   )
+              AND (WRK-KBN2            =   SPACE)
+               MOVE    1               TO  FLG-SYOSIN-AUTO
+           END-IF
+           .
+       101022-SYOSIN-CHENGE-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *    ¿Ç»¡ÎÁ¤Î¤ß¤ÎÊÑ¹¹½èÍý¡ÊÂ¾ÊÝ¸±¼õ¿Ç¤¢¤ê¡Ë
       *****************************************************************
