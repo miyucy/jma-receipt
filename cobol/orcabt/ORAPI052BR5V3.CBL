@@ -101,10 +101,6 @@
            03  WRK-RECEERR         PIC X(200).
            03  WRK-ERRMSG          PIC X(300).
       *
-           03  WRK-CNT             PIC 9(10).
-           03  WRK-CNT-X           REDEFINES   WRK-CNT
-                                   PIC X(10).
-      *
            03  WRK-PTID            PIC 9(10).
            03  WRK-PTBYO-PTID-X.
                05  WRK-PTBYO-PTID  PIC 9(10).
@@ -292,9 +288,6 @@
       *
            COPY    "CPORCSAPIFILE.INC".
       *
-      *    PUSH
-           COPY    "CPPUSHBATCH01.INC".
-      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -429,7 +422,7 @@
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  WRK-BASE-MONTH
       *
-      *        DISPLAY "SRYYM=" WRK-SRYYM
+               DISPLAY "SRYYM=" WRK-SRYYM
       *
                INITIALIZE                      PTBYOMEI-REC
                MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
@@ -490,7 +483,7 @@
                                            TO  WRK-SRYYM
            END-PERFORM
       *
-           IF      CNT-OUT1            >=  ZERO
+           IF      CNT-OUT1            >   ZERO
                ADD     1                   TO  CNT-XMLCOUNT
                PERFORM 910-XMLEXPORT-SEC
            END-IF
@@ -992,9 +985,6 @@
                MOVE    "処理対象のデータがありませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-      *
-      *        ＰＵＳＨ通知処理
-               PERFORM 3001-PUSH-SEC
            ELSE
                INITIALIZE                 ORCSAPIFILEAREA
                MOVE    SGETTEMP-TEMPDIR
@@ -1012,8 +1002,7 @@
                CALL    "ORCSAPIFILE"   USING   ORCSAPIFILEAREA
       *
                IF      SAPIFILE-RC     =   0
-      *            ＰＵＳＨ通知処理
-                   PERFORM 3001-PUSH-SEC
+                   CONTINUE
                ELSE
                    STRING   "ｘｍｌファイル作成エラー RC="
                                            DELIMITED   BY  SIZE
@@ -1037,46 +1026,6 @@
       *
            .
        300-END-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＰＵＳＨ通知処理
-      *****************************************************************
-       3001-PUSH-SEC        SECTION.
-      *
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           PERFORM 900-CALL-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN
-                                   =   ZERO  )
-           AND   ( JOB-KARTE-UID
-                               NOT =   SPACE )
-               INITIALIZE                  PUSHBA01-REC
-               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
-               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
-               MOVE    "000"           TO  PUSHBA01API-RESULT
-               MOVE    "patient_disease_all_make"
-                                       TO  PUSHBA01-EVENT
-               MOVE    WRK-PARA-BASE-MONTH
-                                       TO  WRK-SYMD (1:6)
-               MOVE    "01"            TO  WRK-SYMD (7:2)
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE (1:7)
-                                       TO  PUSHBA01-PERFORM-MONTH
-               MOVE    CNT-OUT         TO  WRK-CNT
-               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
-      *??
-               display "push=" PUSHBA01-REC "#"
-               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
-               MOVE    "PUSHEVENT"     TO  MCP-FUNC
-               MOVE    "push_batch01"  TO  MCP-TABLE
-               MOVE    "push_batch01"  TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           END-IF
-           .
-       3001-PUSH-EXT.
            EXIT.
       *
       *****************************************************************

@@ -824,7 +824,7 @@
        2003-SYORI-02-SEC           SECTION.
       *
       *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           MOVE    "CH2"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  JOB-JOBID
@@ -841,17 +841,17 @@
                    GO  TO  2003-SYORI-02-EXT
                END-IF
       *
-               IF      JOB-UPDCNT      >   ZERO
-                   MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
-                   MOVE    WRK-UPDCNT-X    TO  LSTRES-OUTPUT-COUNT
-               ELSE
-                   IF      JOB-ENDYMD      =   SPACE
-                       MOVE    "E70"           TO  WRK-ERRCD
-                       STRING  "処理中です【"  DELIMITED  BY  SIZE
-                               JOB-SHELLMSG    DELIMITED  BY  SPACE
-                               "】"            DELIMITED  BY  SIZE
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "E70"           TO  WRK-ERRCD
+                   STRING  "処理中です【"  DELIMITED  BY  SIZE
+                           JOB-SHELLMSG    DELIMITED  BY  SPACE
+                           "】"            DELIMITED  BY  SIZE
                                            INTO  WRK-ERRMSG
-                       END-STRING
+                   END-STRING
+               ELSE
+                   IF      JOB-UPDCNT      >   ZERO
+                       MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
+                       MOVE    WRK-UPDCNT-X    TO  LSTRES-OUTPUT-COUNT
                    ELSE
                        IF    ( JOB-ERRCD   =   SPACE                )
                        OR    ( JOB-YOBI    =
