@@ -4709,8 +4709,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      OR     CONS-NINPU36-COMMENT
                                      OR     CONS-NINPU37-COMMENT
                                      OR     CONS-NINPU38-COMMENT
-                                     OR     CONS-NINPU39-COMMENT
-                        MOVE   "1"    TO    RECE41-NINPUFLG
+                 EVALUATE   RECE41-NINPUFLG
+                    WHEN        0
+                            MOVE    1    TO    RECE41-NINPUFLG
+                    WHEN        2
+                            MOVE    3    TO    RECE41-NINPUFLG
+                 END-EVALUATE
+              END-IF
+           END-IF
+           IF      RECE44-SRYKBN      =     "99"
+              IF   SRY-SRYCD(IDX2)    =     CONS-NINPU39-COMMENT
+                 EVALUATE   RECE41-NINPUFLG
+                    WHEN        0
+                            MOVE    2    TO    RECE41-NINPUFLG
+                    WHEN        1
+                            MOVE    3    TO    RECE41-NINPUFLG
+                 END-EVALUATE
               END-IF
            END-IF
       *

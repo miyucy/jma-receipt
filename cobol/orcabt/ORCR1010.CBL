@@ -3483,8 +3483,22 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                      OR     CONS-NINPU36-COMMENT
                                      OR     CONS-NINPU37-COMMENT
                                      OR     CONS-NINPU38-COMMENT
-                                     OR     CONS-NINPU39-COMMENT
-                        MOVE   "1"    TO    RECE100-NINPUFLG
+                 EVALUATE   RECE100-NINPUFLG
+                    WHEN        0
+                            MOVE    1    TO    RECE100-NINPUFLG
+                    WHEN        2
+                            MOVE    3    TO    RECE100-NINPUFLG
+                 END-EVALUATE
+              END-IF
+           END-IF
+           IF      RECE120-SRYKBN      =     "99"
+              IF   SRY-SRYCD(IDX2)    =     CONS-NINPU39-COMMENT
+                 EVALUATE   RECE100-NINPUFLG
+                    WHEN        0
+                            MOVE    2    TO    RECE100-NINPUFLG
+                    WHEN        1
+                            MOVE    3    TO    RECE100-NINPUFLG
+                 END-EVALUATE
               END-IF
            END-IF
       *
