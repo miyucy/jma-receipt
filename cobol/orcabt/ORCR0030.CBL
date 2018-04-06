@@ -1051,6 +1051,7 @@
            03  FLG-YAKRENKEI-ARI                       PIC 9(01).
            03  FLG-NINPU-ARI                           PIC 9(01).
            03  FLG-NINPU2-ARI                          PIC 9(01).
+      *
       *    ∆˝Õƒª˘≤√ªª•´•¶•Û•»
        01  CNT-SAISIN-AREA.
            03  CNT-NYUYOJI                             PIC 9(02).
@@ -2086,7 +2087,6 @@
       *    ªƒŒÃ«—¥˛
            03  CONS-ZANHAIKI       PIC X(09) VALUE "099309901".
       *
-      *
       *    À˝¿≠§»§¶ƒÀº¿¥µ
            03  CONS-MANSEI           PIC X(09)  VALUE  "113006510".
       *    Ω˝…¬ºÍ≈ˆ∂‚∞’∏´ΩÒ∏Ú…’Œ¡
@@ -2810,6 +2810,85 @@
            03  CONS-SEIJYU4-COMMENT  PIC X(09)  VALUE  "180048810".
       *    ΩÈ≤ÛªªƒÍ°°°°°°∑Ó°°°°∆¸
            03  CONS-SEIJYU5-COMMENT  PIC X(09)  VALUE  "840000097".
+      *
+      *    «•…ÿª˛¥÷≥∞≤√ªª° ΩÈø«°À
+           03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
+      *    «•…ÿµŸ∆¸≤√ªª° ΩÈø«°À
+           03  CONS-NINPU2-COMMENT   PIC X(09)  VALUE  "111013070".
+      *    «•…ÿøºÃÎ≤√ªª° ΩÈø«°À
+           03  CONS-NINPU3-COMMENT   PIC X(09)  VALUE  "111013170".
+      *    «•…ÿª˛¥÷≥∞∆√Œ„∞ÂŒ≈µ°¥ÿ≤√ªª° ΩÈø«°À
+           03  CONS-NINPU4-COMMENT   PIC X(09)  VALUE  "111013270".
+      *    «•…ÿ≤√ªª° ΩÈø«°À
+           03  CONS-NINPU5-COMMENT   PIC X(09)  VALUE  "111013370".
+      *    «•…ÿÃÎ¥÷≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ΩÈø«°À
+           03  CONS-NINPU6-COMMENT   PIC X(09)  VALUE  "111013470".
+      *    «•…ÿµŸ∆¸≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ΩÈø«°À
+           03  CONS-NINPU7-COMMENT   PIC X(09)  VALUE  "111013570".
+      *    «•…ÿøºÃÎ≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ΩÈø«°À
+           03  CONS-NINPU8-COMMENT   PIC X(09)  VALUE  "111013670".
+      *    «•…ÿª˛¥÷≥∞≤√ªª° ∫∆ø«°À° ∆˛±°≥∞°À
+           03  CONS-NINPU9-COMMENT   PIC X(09)  VALUE  "112021370".
+      *    «•…ÿµŸ∆¸≤√ªª° ∫∆ø«°À° ∆˛±°≥∞°À
+           03  CONS-NINPU10-COMMENT  PIC X(09)  VALUE  "112021470".
+      *    «•…ÿøºÃÎ≤√ªª° ∫∆ø«°À° ∆˛±°≥∞°À
+           03  CONS-NINPU11-COMMENT  PIC X(09)  VALUE  "112021570".
+      *    «•…ÿª˛¥÷≥∞∆√Œ„∞ÂŒ≈µ°¥ÿ≤√ªª° ∫∆ø«°À° ∆˛±°≥∞°À
+           03  CONS-NINPU12-COMMENT  PIC X(09)  VALUE  "112021670".
+      *    «•…ÿ≤√ªª° ∫∆ø«°À
+           03  CONS-NINPU13-COMMENT  PIC X(09)  VALUE  "112022070".
+      *    «•…ÿÃÎ¥÷≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° ∆˛±°≥∞°À
+           03  CONS-NINPU14-COMMENT  PIC X(09)  VALUE  "112022170".
+      *    «•…ÿµŸ∆¸≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° ∆˛±°≥∞°À
+           03  CONS-NINPU15-COMMENT  PIC X(09)  VALUE  "112022270".
+      *    «•…ÿøºÃÎ≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° ∆˛±°≥∞°À
+           03  CONS-NINPU16-COMMENT  PIC X(09)  VALUE  "112022370".
+      *    «•…ÿ≤√ªª° ≥∞ÕËø«Œ≈Œ¡°À
+           03  CONS-NINPU17-COMMENT  PIC X(09)  VALUE  "112022870".
+      *    «•…ÿª˛¥÷≥∞≤√ªª° ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°≥∞°À
+           03  CONS-NINPU18-COMMENT  PIC X(09)  VALUE  "112022470".
+      *    «•…ÿµŸ∆¸≤√ªª° ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°≥∞°À
+           03  CONS-NINPU19-COMMENT  PIC X(09)  VALUE  "112022570".
+      *    «•…ÿøºÃÎ≤√ªª° ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°≥∞°À
+           03  CONS-NINPU20-COMMENT  PIC X(09)  VALUE  "112022670".
+      *    «•…ÿª˛¥÷≥∞∆√Œ„∞ÂŒ≈µ°¥ÿ≤√ªª° ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°≥∞°À
+           03  CONS-NINPU21-COMMENT  PIC X(09)  VALUE  "112022770".
+      *    «•…ÿÃÎ¥÷≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°≥∞°À
+           03  CONS-NINPU22-COMMENT  PIC X(09)  VALUE  "112022970".
+      *    «•…ÿµŸ∆¸≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°≥∞°À
+           03  CONS-NINPU23-COMMENT  PIC X(09)  VALUE  "112023070".
+      *    «•…ÿøºÃÎ≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°≥∞°À
+           03  CONS-NINPU24-COMMENT  PIC X(09)  VALUE  "112023170".
+      *    «•…ÿª˛¥÷≥∞≤√ªª° ∫∆ø«°À° √œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU25-COMMENT  PIC X(09)  VALUE  "113024970".
+      *    «•…ÿµŸ∆¸≤√ªª° ∫∆ø«°À° √œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU26-COMMENT  PIC X(09)  VALUE  "113025070".
+      *    «•…ÿøºÃÎ≤√ªª° ∫∆ø«°À° √œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU27-COMMENT  PIC X(09)  VALUE  "113025170".
+      *    «•…ÿª˛¥÷≥∞∆√Œ„∞ÂŒ≈µ°¥ÿ≤√ªª° ∫∆ø«°À° √œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU28-COMMENT  PIC X(09)  VALUE  "113025270".
+      *    «•…ÿÃÎ¥÷≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° √œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU29-COMMENT  PIC X(09)  VALUE  "113025370".
+      *    «•…ÿµŸ∆¸≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° √œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU30-COMMENT  PIC X(09)  VALUE  "113025470".
+      *    «•…ÿøºÃÎ≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° √œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU31-COMMENT  PIC X(09)  VALUE  "113025570".
+      *    «•…ÿª˛¥÷≥∞≤√ªª° ∫∆ø«°À° «ß√Œæ…√œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU32-COMMENT  PIC X(09)  VALUE  "113025870".
+      *    «•…ÿµŸ∆¸≤√ªª° ∫∆ø«°À° «ß√Œæ…√œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU33-COMMENT  PIC X(09)  VALUE  "113025970".
+      *    «•…ÿøºÃÎ≤√ªª° ∫∆ø«°À° «ß√Œæ…√œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU34-COMMENT  PIC X(09)  VALUE  "113026070".
+      *    «•…ÿª˛¥÷≥∞∆√Œ„∞ÂŒ≈µ°¥ÿ≤√ªª° ∫∆ø«°À° «ß√Œæ…√œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU35-COMMENT  PIC X(09)  VALUE  "113026170".
+      *    «•…ÿÃÎ¥÷≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° «ß√Œæ…√œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU36-COMMENT  PIC X(09)  VALUE  "113026270".
+      *    «•…ÿµŸ∆¸≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° «ß√Œæ…√œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU37-COMMENT  PIC X(09)  VALUE  "113026370".
+      *    «•…ÿøºÃÎ≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° «ß√Œæ…√œ∞Ë Ò≥Áø«Œ≈Œ¡°À
+           03  CONS-NINPU38-COMMENT  PIC X(09)  VALUE  "113026470".
+      *    «•…ÿ
+           03  CONS-NINPU39-COMMENT  PIC X(09)  VALUE  "820100348".
       *
       *    ≥∞ÕËø◊¬Æ∏°¬Œ∏°∫∫≤√ªª
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -3707,6 +3786,10 @@ grpsys           PERFORM 900-DBSELECT-SEC
            MOVE    123456789    TO      RECE02-KOH-CHIKAN-KIN2
            MOVE    123456789    TO      RECE02-KOH-CHIKAN-KIN3
            MOVE    123456789    TO      RECE02-KOH-CHIKAN-KIN4
+           MOVE    123456789    TO      RECE02-SEI-CHIKAN-KIN1
+           MOVE    123456789    TO      RECE02-SEI-CHIKAN-KIN2
+           MOVE    123456789    TO      RECE02-SEI-CHIKAN-KIN3
+           MOVE    123456789    TO      RECE02-SEI-CHIKAN-KIN4
       *
            PERFORM     211J-SYUKEIKBN-HANBETU-SEC
       *
@@ -12845,6 +12928,50 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *****************************************************************
        2104411-RECE05-COMCNT-HEN-SEC               SECTION.
       *
+           IF      RECE04-SRYKBN      =     "11" OR "12" OR "13"
+              IF   SRY-SRYCD(IDX2)    =     CONS-NINPU-COMMENT
+                                     OR     CONS-NINPU2-COMMENT
+                                     OR     CONS-NINPU3-COMMENT
+                                     OR     CONS-NINPU4-COMMENT
+                                     OR     CONS-NINPU5-COMMENT
+                                     OR     CONS-NINPU6-COMMENT
+                                     OR     CONS-NINPU7-COMMENT
+                                     OR     CONS-NINPU8-COMMENT
+                                     OR     CONS-NINPU9-COMMENT
+                                     OR     CONS-NINPU10-COMMENT
+                                     OR     CONS-NINPU11-COMMENT
+                                     OR     CONS-NINPU12-COMMENT
+                                     OR     CONS-NINPU13-COMMENT
+                                     OR     CONS-NINPU14-COMMENT
+                                     OR     CONS-NINPU15-COMMENT
+                                     OR     CONS-NINPU16-COMMENT
+                                     OR     CONS-NINPU17-COMMENT
+                                     OR     CONS-NINPU18-COMMENT
+                                     OR     CONS-NINPU19-COMMENT
+                                     OR     CONS-NINPU20-COMMENT
+                                     OR     CONS-NINPU21-COMMENT
+                                     OR     CONS-NINPU22-COMMENT
+                                     OR     CONS-NINPU23-COMMENT
+                                     OR     CONS-NINPU24-COMMENT
+                                     OR     CONS-NINPU25-COMMENT
+                                     OR     CONS-NINPU26-COMMENT
+                                     OR     CONS-NINPU27-COMMENT
+                                     OR     CONS-NINPU28-COMMENT
+                                     OR     CONS-NINPU29-COMMENT
+                                     OR     CONS-NINPU30-COMMENT
+                                     OR     CONS-NINPU31-COMMENT
+                                     OR     CONS-NINPU32-COMMENT
+                                     OR     CONS-NINPU33-COMMENT
+                                     OR     CONS-NINPU34-COMMENT
+                                     OR     CONS-NINPU35-COMMENT
+                                     OR     CONS-NINPU36-COMMENT
+                                     OR     CONS-NINPU37-COMMENT
+                                     OR     CONS-NINPU38-COMMENT
+                                     OR     CONS-NINPU39-COMMENT
+                        MOVE   "1"    TO    RECE02-NINPUFLG
+              END-IF
+           END-IF
+      *
            IF      RECE04-SRYKBN      =     "11"
       *       ΩÈø«Œ¡ªªƒÍ≤ °ß
               IF ( SRY-SRYCD(IDX2)    =     "830000020"          )
@@ -14564,8 +14691,24 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
              OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£≤…È√¥∂‚°ß"
              OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£≥…È√¥∂‚°ß"
              OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£¥…È√¥∂‚°ß"
-               MOVE  WRK-INPUTCOMENT(13:14)
+             OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£±…È√¥∂‚°ß"
+             OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£≤…È√¥∂‚°ß"
+             OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£≥…È√¥∂‚°ß"
+             OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£¥…È√¥∂‚°ß"
+               IF  WRK-INPUTCOMENT(1:12)  =  "∏¯£±…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£≤…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£≥…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£¥…È√¥∂‚°ß"
+                 MOVE  WRK-INPUTCOMENT(13:14)
                                           TO  WRK-INPUTCOMENT2
+               END-IF
+               IF  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£±…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£≤…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£≥…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£¥…È√¥∂‚°ß"
+                 MOVE  WRK-INPUTCOMENT(23:14)
+                                          TO  WRK-INPUTCOMENT2
+               END-IF
                IF  WRK-INPUTCOMENT2 = "°°°°°°°°°°°°°°" OR SPACE
                  CONTINUE
                ELSE
@@ -14628,6 +14771,26 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      MOVE  ZERO     TO  RECE02-KOH-CHIKAN-KIN4
                      MOVE  WRK-INPUTCOMENT-KIN
                                     TO  RECE02-KOH-CHIKAN-KIN4
+                   END-IF
+                   IF  WRK-INPUTCOMENT(1:22) = "∏¯»Ò¿¡µ·ΩÒ∏¯£±…È√¥∂‚°ß"
+                     MOVE  ZERO     TO  RECE02-SEI-CHIKAN-KIN1
+                     MOVE  WRK-INPUTCOMENT-KIN
+                                    TO  RECE02-SEI-CHIKAN-KIN1
+                   END-IF
+                   IF  WRK-INPUTCOMENT(1:22) = "∏¯»Ò¿¡µ·ΩÒ∏¯£≤…È√¥∂‚°ß"
+                     MOVE  ZERO     TO  RECE02-SEI-CHIKAN-KIN2
+                     MOVE  WRK-INPUTCOMENT-KIN
+                                    TO  RECE02-SEI-CHIKAN-KIN2
+                   END-IF
+                   IF  WRK-INPUTCOMENT(1:22) = "∏¯»Ò¿¡µ·ΩÒ∏¯£≥…È√¥∂‚°ß"
+                     MOVE  ZERO     TO  RECE02-SEI-CHIKAN-KIN3
+                     MOVE  WRK-INPUTCOMENT-KIN
+                                    TO  RECE02-SEI-CHIKAN-KIN3
+                   END-IF
+                   IF  WRK-INPUTCOMENT(1:22) = "∏¯»Ò¿¡µ·ΩÒ∏¯£¥…È√¥∂‚°ß"
+                     MOVE  ZERO     TO  RECE02-SEI-CHIKAN-KIN4
+                     MOVE  WRK-INPUTCOMENT-KIN
+                                    TO  RECE02-SEI-CHIKAN-KIN4
                    END-IF
                  END-IF
                END-IF
@@ -29314,10 +29477,113 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                 MOVE    ZERO            TO   RECE02-KOHCHIKAN
                END-IF
              END-IF
+      *
+             MOVE    123456789          TO   RECE02-SEI-CHIKAN-KIN1
+             MOVE    123456789          TO   RECE02-SEI-CHIKAN-KIN2
+             MOVE    123456789          TO   RECE02-SEI-CHIKAN-KIN3
+             MOVE    123456789          TO   RECE02-SEI-CHIKAN-KIN4
            END-IF
       *
-           IF  (IDZ                 =   1)
+           IF  (IDZ                 =   2)
            AND (WRK-TAIHI-OKIKAE2   =   1)
+      *      ∏¯»Ò¿¡µ·ΩÒ∏¯£±∞Ï…Ù…È√¥∂‚√÷§≠¥π§®
+             IF    RECE02-KOHNUM(1)        =  SPACE
+                   MOVE    123456789    TO   RECE02-SEI-CHIKAN-KIN1
+             END-IF
+             IF    RECE02-SEI-CHIKAN-KIN1  =  123456789
+                 CONTINUE
+             ELSE
+               EVALUATE  RECE02-SEI-CHIKAN-KIN1
+                 WHEN      009999999
+                   MOVE   ZERO          TO   RECE02-FTNMONEY(2)
+                   MOVE   SPACE         TO   RECE02-ZEROKISAIFLG(2)
+                 WHEN      000000000
+                   MOVE   ZERO          TO   RECE02-FTNMONEY(2)
+                   MOVE   "1"           TO   RECE02-ZEROKISAIFLG(2)
+                 WHEN      OTHER
+                   MOVE   RECE02-SEI-CHIKAN-KIN1
+                                        TO   RECE02-FTNMONEY(2)
+                   MOVE   "1"           TO   RECE02-KISAIFLG(2)
+               END-EVALUATE
+             END-IF
+      *      ∏¯»Ò¿¡µ·ΩÒ∏¯£≤∞Ï…Ù…È√¥∂‚√÷§≠¥π§®
+             IF    RECE02-KOHNUM(2)        =  SPACE
+                   MOVE    123456789    TO   RECE02-SEI-CHIKAN-KIN2
+             END-IF
+             IF    RECE02-SEI-CHIKAN-KIN2  =  123456789
+                 CONTINUE
+             ELSE
+               EVALUATE  RECE02-SEI-CHIKAN-KIN2
+                 WHEN      009999999
+                   MOVE   ZERO          TO   RECE02-FTNMONEY(3)
+                   MOVE   SPACE         TO   RECE02-ZEROKISAIFLG(3)
+                 WHEN      000000000
+                   MOVE   ZERO          TO   RECE02-FTNMONEY(3)
+                   MOVE   "1"           TO   RECE02-ZEROKISAIFLG(3)
+                 WHEN      OTHER
+                   MOVE   RECE02-SEI-CHIKAN-KIN2
+                                        TO   RECE02-FTNMONEY(3)
+                   MOVE   "1"           TO   RECE02-KISAIFLG(3)
+               END-EVALUATE
+             END-IF
+      *      ∏¯»Ò¿¡µ·ΩÒ∏¯£≥∞Ï…Ù…È√¥∂‚√÷§≠¥π§®
+             IF    RECE02-KOHNUM(3)        =  SPACE
+                   MOVE    123456789    TO   RECE02-SEI-CHIKAN-KIN3
+             END-IF
+             IF    RECE02-SEI-CHIKAN-KIN3  =  123456789
+                 CONTINUE
+             ELSE
+               EVALUATE  RECE02-SEI-CHIKAN-KIN3
+                 WHEN      009999999
+                   MOVE   ZERO          TO   RECE02-FTNMONEY(4)
+                   MOVE   SPACE         TO   RECE02-ZEROKISAIFLG(4)
+                 WHEN      000000000
+                   MOVE   ZERO          TO   RECE02-FTNMONEY(4)
+                   MOVE   "1"           TO   RECE02-ZEROKISAIFLG(4)
+                 WHEN      OTHER
+                   MOVE   RECE02-SEI-CHIKAN-KIN3
+                                        TO   RECE02-FTNMONEY(4)
+                   MOVE   "1"           TO   RECE02-KISAIFLG(4)
+               END-EVALUATE
+             END-IF
+      *      ∏¯»Ò¿¡µ·ΩÒ∏¯£¥∞Ï…Ù…È√¥∂‚√÷§≠¥π§®
+             IF    RECE02-KOHNUM(4)        =  SPACE
+                   MOVE    123456789    TO   RECE02-SEI-CHIKAN-KIN4
+             END-IF
+             IF    RECE02-SEI-CHIKAN-KIN4  =  123456789
+                 CONTINUE
+             ELSE
+               EVALUATE  RECE02-SEI-CHIKAN-KIN4
+                 WHEN      009999999
+                   MOVE   ZERO          TO   RECE02-FTNMONEY(5)
+                   MOVE   SPACE         TO   RECE02-ZEROKISAIFLG(5)
+                 WHEN      000000000
+                   MOVE   ZERO          TO   RECE02-FTNMONEY(5)
+                   MOVE   "1"           TO   RECE02-ZEROKISAIFLG(5)
+                 WHEN      OTHER
+                   MOVE   RECE02-SEI-CHIKAN-KIN4
+                                        TO   RECE02-FTNMONEY(5)
+                   MOVE   "1"           TO   RECE02-KISAIFLG(5)
+               END-EVALUATE
+             END-IF
+      *
+             IF    RECE02-SEI-CHIKAN-KIN1  =  123456789
+             AND   RECE02-SEI-CHIKAN-KIN2  =  123456789
+             AND   RECE02-SEI-CHIKAN-KIN3  =  123456789
+             AND   RECE02-SEI-CHIKAN-KIN4  =  123456789
+               IF  RECE02-KOHCHIKAN  =  1
+                MOVE    ZERO            TO   RECE02-KOHCHIKAN
+               END-IF
+             END-IF
+      *
+             MOVE    123456789          TO   RECE02-KOH-CHIKAN-KIN1
+             MOVE    123456789          TO   RECE02-KOH-CHIKAN-KIN2
+             MOVE    123456789          TO   RECE02-KOH-CHIKAN-KIN3
+             MOVE    123456789          TO   RECE02-KOH-CHIKAN-KIN4
+           END-IF
+      *
+           IF  (IDZ                 =   1 OR 2)
+           AND (WRK-TAIHI-OKIKAE2   =   1     )
              CONTINUE
            ELSE
              MOVE       ZERO            TO   RECE02-KOHCHIKAN
@@ -29325,6 +29591,10 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
              MOVE       123456789       TO   RECE02-KOH-CHIKAN-KIN2
              MOVE       123456789       TO   RECE02-KOH-CHIKAN-KIN3
              MOVE       123456789       TO   RECE02-KOH-CHIKAN-KIN4
+             MOVE       123456789       TO   RECE02-SEI-CHIKAN-KIN1
+             MOVE       123456789       TO   RECE02-SEI-CHIKAN-KIN2
+             MOVE       123456789       TO   RECE02-SEI-CHIKAN-KIN3
+             MOVE       123456789       TO   RECE02-SEI-CHIKAN-KIN4
            END-IF
       *
            .

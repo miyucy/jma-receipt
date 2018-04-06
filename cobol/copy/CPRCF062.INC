@@ -1023,6 +1023,14 @@
            03  RECE62-KOH-CHIKAN-KIN3           PIC 9(09).
       *「公４負担金：」置換金額
            03  RECE62-KOH-CHIKAN-KIN4           PIC 9(09).
+      *「公費請求書公１負担金：」置換金額
+           03  RECE62-SEI-CHIKAN-KIN1           PIC 9(09).
+      *「公費請求書公２負担金：」置換金額
+           03  RECE62-SEI-CHIKAN-KIN2           PIC 9(09).
+      *「公費請求書公３負担金：」置換金額
+           03  RECE62-SEI-CHIKAN-KIN3           PIC 9(09).
+      *「公費請求書公４負担金：」置換金額
+           03  RECE62-SEI-CHIKAN-KIN4           PIC 9(09).
       *
       *生保まとめ用（主保険単独分診区別点数）
            03  RECE62-SYUTANTEN-AREA.
@@ -1065,6 +1073,9 @@
       *夜間看護体制特定日減算情報
            03  RECE62-KANGOGENINF.
                05  RECE62-KANGOGEN-SRYCD        PIC X(09)  OCCURS 31.
+      *
+      *妊婦フラグ
+           03  RECE62-NINPUFLG                  PIC 9(01).
       *
       *予備
            03  RECE62-YOBIETC-AREA.

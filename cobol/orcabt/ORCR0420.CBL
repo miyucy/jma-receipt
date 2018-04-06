@@ -989,7 +989,6 @@
       *    残量廃棄
            03  CONS-ZANHAIKI   PIC X(09)   VALUE   "099309901".
       *
-      *
       *    慢性とう痛疾患
            03  CONS-MANSEI           PIC X(09)  VALUE  "113006510".
       *    傷病手当金意見書交付料
@@ -1753,6 +1752,85 @@
            03  CONS-SEIJYU4-COMMENT  PIC X(09)  VALUE  "180048810".
       *    初回算定　　　月　　日
            03  CONS-SEIJYU5-COMMENT  PIC X(09)  VALUE  "840000097".
+      *
+      *    妊婦時間外加算（初診）
+           03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
+      *    妊婦休日加算（初診）
+           03  CONS-NINPU2-COMMENT   PIC X(09)  VALUE  "111013070".
+      *    妊婦深夜加算（初診）
+           03  CONS-NINPU3-COMMENT   PIC X(09)  VALUE  "111013170".
+      *    妊婦時間外特例医療機関加算（初診）
+           03  CONS-NINPU4-COMMENT   PIC X(09)  VALUE  "111013270".
+      *    妊婦加算（初診）
+           03  CONS-NINPU5-COMMENT   PIC X(09)  VALUE  "111013370".
+      *    妊婦夜間加算（産科又は産婦人科初診）
+           03  CONS-NINPU6-COMMENT   PIC X(09)  VALUE  "111013470".
+      *    妊婦休日加算（産科又は産婦人科初診）
+           03  CONS-NINPU7-COMMENT   PIC X(09)  VALUE  "111013570".
+      *    妊婦深夜加算（産科又は産婦人科初診）
+           03  CONS-NINPU8-COMMENT   PIC X(09)  VALUE  "111013670".
+      *    妊婦時間外加算（再診）（入院外）
+           03  CONS-NINPU9-COMMENT   PIC X(09)  VALUE  "112021370".
+      *    妊婦休日加算（再診）（入院外）
+           03  CONS-NINPU10-COMMENT  PIC X(09)  VALUE  "112021470".
+      *    妊婦深夜加算（再診）（入院外）
+           03  CONS-NINPU11-COMMENT  PIC X(09)  VALUE  "112021570".
+      *    妊婦時間外特例医療機関加算（再診）（入院外）
+           03  CONS-NINPU12-COMMENT  PIC X(09)  VALUE  "112021670".
+      *    妊婦加算（再診）
+           03  CONS-NINPU13-COMMENT  PIC X(09)  VALUE  "112022070".
+      *    妊婦夜間加算（産科又は産婦人科再診）（入院外）
+           03  CONS-NINPU14-COMMENT  PIC X(09)  VALUE  "112022170".
+      *    妊婦休日加算（産科又は産婦人科再診）（入院外）
+           03  CONS-NINPU15-COMMENT  PIC X(09)  VALUE  "112022270".
+      *    妊婦深夜加算（産科又は産婦人科再診）（入院外）
+           03  CONS-NINPU16-COMMENT  PIC X(09)  VALUE  "112022370".
+      *    妊婦加算（外来診療料）
+           03  CONS-NINPU17-COMMENT  PIC X(09)  VALUE  "112022870".
+      *    妊婦時間外加算（外来診療料）（入院外）
+           03  CONS-NINPU18-COMMENT  PIC X(09)  VALUE  "112022470".
+      *    妊婦休日加算（外来診療料）（入院外）
+           03  CONS-NINPU19-COMMENT  PIC X(09)  VALUE  "112022570".
+      *    妊婦深夜加算（外来診療料）（入院外）
+           03  CONS-NINPU20-COMMENT  PIC X(09)  VALUE  "112022670".
+      *    妊婦時間外特例医療機関加算（外来診療料）（入院外）
+           03  CONS-NINPU21-COMMENT  PIC X(09)  VALUE  "112022770".
+      *    妊婦夜間加算（産科又は産婦人科外来診療料）（入院外）
+           03  CONS-NINPU22-COMMENT  PIC X(09)  VALUE  "112022970".
+      *    妊婦休日加算（産科又は産婦人科外来診療料）（入院外）
+           03  CONS-NINPU23-COMMENT  PIC X(09)  VALUE  "112023070".
+      *    妊婦深夜加算（産科又は産婦人科外来診療料）（入院外）
+           03  CONS-NINPU24-COMMENT  PIC X(09)  VALUE  "112023170".
+      *    妊婦時間外加算（再診）（地域包括診療料）
+           03  CONS-NINPU25-COMMENT  PIC X(09)  VALUE  "113024970".
+      *    妊婦休日加算（再診）（地域包括診療料）
+           03  CONS-NINPU26-COMMENT  PIC X(09)  VALUE  "113025070".
+      *    妊婦深夜加算（再診）（地域包括診療料）
+           03  CONS-NINPU27-COMMENT  PIC X(09)  VALUE  "113025170".
+      *    妊婦時間外特例医療機関加算（再診）（地域包括診療料）
+           03  CONS-NINPU28-COMMENT  PIC X(09)  VALUE  "113025270".
+      *    妊婦夜間加算（産科又は産婦人科再診）（地域包括診療料）
+           03  CONS-NINPU29-COMMENT  PIC X(09)  VALUE  "113025370".
+      *    妊婦休日加算（産科又は産婦人科再診）（地域包括診療料）
+           03  CONS-NINPU30-COMMENT  PIC X(09)  VALUE  "113025470".
+      *    妊婦深夜加算（産科又は産婦人科再診）（地域包括診療料）
+           03  CONS-NINPU31-COMMENT  PIC X(09)  VALUE  "113025570".
+      *    妊婦時間外加算（再診）（認知症地域包括診療料）
+           03  CONS-NINPU32-COMMENT  PIC X(09)  VALUE  "113025870".
+      *    妊婦休日加算（再診）（認知症地域包括診療料）
+           03  CONS-NINPU33-COMMENT  PIC X(09)  VALUE  "113025970".
+      *    妊婦深夜加算（再診）（認知症地域包括診療料）
+           03  CONS-NINPU34-COMMENT  PIC X(09)  VALUE  "113026070".
+      *    妊婦時間外特例医療機関加算（再診）（認知症地域包括診療料）
+           03  CONS-NINPU35-COMMENT  PIC X(09)  VALUE  "113026170".
+      *    妊婦夜間加算（産科又は産婦人科再診）（認知症地域包括診療料）
+           03  CONS-NINPU36-COMMENT  PIC X(09)  VALUE  "113026270".
+      *    妊婦休日加算（産科又は産婦人科再診）（認知症地域包括診療料）
+           03  CONS-NINPU37-COMMENT  PIC X(09)  VALUE  "113026370".
+      *    妊婦深夜加算（産科又は産婦人科再診）（認知症地域包括診療料）
+           03  CONS-NINPU38-COMMENT  PIC X(09)  VALUE  "113026470".
+      *    妊婦
+           03  CONS-NINPU39-COMMENT  PIC X(09)  VALUE  "820100348".
       *
       *    外来迅速検体検査加算
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -4591,6 +4669,50 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    レセプトコメントフラグ編集処理
       *****************************************************************
        2101211-RECE45-COMCNT-HEN-SEC               SECTION.
+      *
+           IF      RECE44-SRYKBN      =     "11" OR "12" OR "13"
+              IF   SRY-SRYCD(IDX2)    =     CONS-NINPU-COMMENT
+                                     OR     CONS-NINPU2-COMMENT
+                                     OR     CONS-NINPU3-COMMENT
+                                     OR     CONS-NINPU4-COMMENT
+                                     OR     CONS-NINPU5-COMMENT
+                                     OR     CONS-NINPU6-COMMENT
+                                     OR     CONS-NINPU7-COMMENT
+                                     OR     CONS-NINPU8-COMMENT
+                                     OR     CONS-NINPU9-COMMENT
+                                     OR     CONS-NINPU10-COMMENT
+                                     OR     CONS-NINPU11-COMMENT
+                                     OR     CONS-NINPU12-COMMENT
+                                     OR     CONS-NINPU13-COMMENT
+                                     OR     CONS-NINPU14-COMMENT
+                                     OR     CONS-NINPU15-COMMENT
+                                     OR     CONS-NINPU16-COMMENT
+                                     OR     CONS-NINPU17-COMMENT
+                                     OR     CONS-NINPU18-COMMENT
+                                     OR     CONS-NINPU19-COMMENT
+                                     OR     CONS-NINPU20-COMMENT
+                                     OR     CONS-NINPU21-COMMENT
+                                     OR     CONS-NINPU22-COMMENT
+                                     OR     CONS-NINPU23-COMMENT
+                                     OR     CONS-NINPU24-COMMENT
+                                     OR     CONS-NINPU25-COMMENT
+                                     OR     CONS-NINPU26-COMMENT
+                                     OR     CONS-NINPU27-COMMENT
+                                     OR     CONS-NINPU28-COMMENT
+                                     OR     CONS-NINPU29-COMMENT
+                                     OR     CONS-NINPU30-COMMENT
+                                     OR     CONS-NINPU31-COMMENT
+                                     OR     CONS-NINPU32-COMMENT
+                                     OR     CONS-NINPU33-COMMENT
+                                     OR     CONS-NINPU34-COMMENT
+                                     OR     CONS-NINPU35-COMMENT
+                                     OR     CONS-NINPU36-COMMENT
+                                     OR     CONS-NINPU37-COMMENT
+                                     OR     CONS-NINPU38-COMMENT
+                                     OR     CONS-NINPU39-COMMENT
+                        MOVE   "1"    TO    RECE41-NINPUFLG
+              END-IF
+           END-IF
       *
            IF      RECE44-SRYKBN      =     "11"
       *       初診料算定科：

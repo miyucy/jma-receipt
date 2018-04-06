@@ -2604,6 +2604,53 @@
       *    ƒÃªªº¬ª‹≤ÛøÙ° °°°°≤Û°À
            03  CONS-HAIJRT3-COMMENT  PIC X(09)  VALUE  "840000086".
       *
+      *    «•…ÿª˛¥÷≥∞≤√ªª° ΩÈø«°À
+           03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
+      *    «•…ÿµŸ∆¸≤√ªª° ΩÈø«°À
+           03  CONS-NINPU2-COMMENT   PIC X(09)  VALUE  "111013070".
+      *    «•…ÿøºÃÎ≤√ªª° ΩÈø«°À
+           03  CONS-NINPU3-COMMENT   PIC X(09)  VALUE  "111013170".
+      *    «•…ÿª˛¥÷≥∞∆√Œ„∞ÂŒ≈µ°¥ÿ≤√ªª° ΩÈø«°À
+           03  CONS-NINPU4-COMMENT   PIC X(09)  VALUE  "111013270".
+      *    «•…ÿ≤√ªª° ΩÈø«°À
+           03  CONS-NINPU5-COMMENT   PIC X(09)  VALUE  "111013370".
+      *    «•…ÿÃÎ¥÷≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ΩÈø«°À
+           03  CONS-NINPU6-COMMENT   PIC X(09)  VALUE  "111013470".
+      *    «•…ÿµŸ∆¸≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ΩÈø«°À
+           03  CONS-NINPU7-COMMENT   PIC X(09)  VALUE  "111013570".
+      *    «•…ÿøºÃÎ≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ΩÈø«°À
+           03  CONS-NINPU8-COMMENT   PIC X(09)  VALUE  "111013670".
+      *    «•…ÿª˛¥÷≥∞≤√ªª° ∫∆ø«°À° ∆˛±°°À
+           03  CONS-NINPU9-COMMENT   PIC X(09)  VALUE  "112019990".
+      *    «•…ÿµŸ∆¸≤√ªª° ∫∆ø«°À° ∆˛±°°À
+           03  CONS-NINPU10-COMMENT  PIC X(09)  VALUE  "112020090".
+      *    «•…ÿøºÃÎ≤√ªª° ∫∆ø«°À° ∆˛±°°À
+           03  CONS-NINPU11-COMMENT  PIC X(09)  VALUE  "112020190".
+      *    «•…ÿª˛¥÷≥∞∆√Œ„∞ÂŒ≈µ°¥ÿ≤√ªª° ∫∆ø«°À° ∆˛±°°À
+           03  CONS-NINPU12-COMMENT  PIC X(09)  VALUE  "112020290".
+      *    «•…ÿÃÎ¥÷≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° ∆˛±°°À
+           03  CONS-NINPU13-COMMENT  PIC X(09)  VALUE  "112020390".
+      *    «•…ÿµŸ∆¸≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° ∆˛±°°À
+           03  CONS-NINPU14-COMMENT  PIC X(09)  VALUE  "112020490".
+      *    «•…ÿøºÃÎ≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ∫∆ø«°À° ∆˛±°°À
+           03  CONS-NINPU15-COMMENT  PIC X(09)  VALUE  "112020590".
+      *    «•…ÿª˛¥÷≥∞≤√ªª° ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°°À
+           03  CONS-NINPU16-COMMENT  PIC X(09)  VALUE  "112020690".
+      *    «•…ÿµŸ∆¸≤√ªª° ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°°À
+           03  CONS-NINPU17-COMMENT  PIC X(09)  VALUE  "112020790".
+      *    «•…ÿøºÃÎ≤√ªª° ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°°À
+           03  CONS-NINPU18-COMMENT  PIC X(09)  VALUE  "112020890".
+      *    «•…ÿª˛¥÷≥∞∆√Œ„∞ÂŒ≈µ°¥ÿ≤√ªª° ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°°À
+           03  CONS-NINPU19-COMMENT  PIC X(09)  VALUE  "112020990".
+      *    «•…ÿÃÎ¥÷≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°°À
+           03  CONS-NINPU20-COMMENT  PIC X(09)  VALUE  "112021090".
+      *    «•…ÿµŸ∆¸≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°°À
+           03  CONS-NINPU21-COMMENT  PIC X(09)  VALUE  "112021190".
+      *    «•…ÿøºÃÎ≤√ªª° ª∫≤ ÀÙ§œª∫…ÿøÕ≤ ≥∞ÕËø«Œ≈Œ¡°À° ∆˛±°°À
+           03  CONS-NINPU22-COMMENT  PIC X(09)  VALUE  "112021290".
+      *    «•…ÿ
+           03  CONS-NINPU23-COMMENT  PIC X(09)  VALUE  "820100348".
+      *
       *    ≥∞ÕËø◊¬Æ∏°¬Œ∏°∫∫≤√ªª
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
@@ -3699,6 +3746,10 @@
            MOVE    123456789   TO   RECE62-KOH-CHIKAN-KIN2
            MOVE    123456789   TO   RECE62-KOH-CHIKAN-KIN3
            MOVE    123456789   TO   RECE62-KOH-CHIKAN-KIN4
+           MOVE    123456789   TO   RECE62-SEI-CHIKAN-KIN1
+           MOVE    123456789   TO   RECE62-SEI-CHIKAN-KIN2
+           MOVE    123456789   TO   RECE62-SEI-CHIKAN-KIN3
+           MOVE    123456789   TO   RECE62-SEI-CHIKAN-KIN4
       *
            PERFORM        2118-ETCKISAIFLGINF-HENSYU-SEC
            PERFORM        2119-HOTEIGAI-HENSYU-SEC
@@ -8792,6 +8843,34 @@
       *****************************************************************
        2101211-RECE65-COMCNT-HEN-SEC               SECTION.
       *
+           IF      RECE64-SRYKBN      =     "11" OR "90" OR "92"
+              IF   SRY-SRYCD(IDX2)    =     CONS-NINPU-COMMENT
+                                     OR     CONS-NINPU2-COMMENT
+                                     OR     CONS-NINPU3-COMMENT
+                                     OR     CONS-NINPU4-COMMENT
+                                     OR     CONS-NINPU5-COMMENT
+                                     OR     CONS-NINPU6-COMMENT
+                                     OR     CONS-NINPU7-COMMENT
+                                     OR     CONS-NINPU8-COMMENT
+                                     OR     CONS-NINPU9-COMMENT
+                                     OR     CONS-NINPU10-COMMENT
+                                     OR     CONS-NINPU11-COMMENT
+                                     OR     CONS-NINPU12-COMMENT
+                                     OR     CONS-NINPU13-COMMENT
+                                     OR     CONS-NINPU14-COMMENT
+                                     OR     CONS-NINPU15-COMMENT
+                                     OR     CONS-NINPU16-COMMENT
+                                     OR     CONS-NINPU17-COMMENT
+                                     OR     CONS-NINPU18-COMMENT
+                                     OR     CONS-NINPU19-COMMENT
+                                     OR     CONS-NINPU20-COMMENT
+                                     OR     CONS-NINPU21-COMMENT
+                                     OR     CONS-NINPU22-COMMENT
+                                     OR     CONS-NINPU23-COMMENT
+                        MOVE   "1"    TO    RECE62-NINPUFLG
+              END-IF
+           END-IF
+      *
            IF      RECE64-SRYKBN      =     "11"
       *       ΩÈø«° ∆±∆¸ £øÙø«Œ≈≤ °À
               IF  (SRY-SRYCD(IDX2)    =     CONS-SYODOU-COMMENT
@@ -10078,8 +10157,24 @@
              OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£≤…È√¥∂‚°ß"
              OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£≥…È√¥∂‚°ß"
              OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£¥…È√¥∂‚°ß"
-               MOVE  WRK-INPUTCOMENT(13:14)
+             OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£±…È√¥∂‚°ß"
+             OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£≤…È√¥∂‚°ß"
+             OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£≥…È√¥∂‚°ß"
+             OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£¥…È√¥∂‚°ß"
+               IF  WRK-INPUTCOMENT(1:12)  =  "∏¯£±…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£≤…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£≥…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:12)  =  "∏¯£¥…È√¥∂‚°ß"
+                 MOVE  WRK-INPUTCOMENT(13:14)
                                           TO  WRK-INPUTCOMENT2
+               END-IF
+               IF  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£±…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£≤…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£≥…È√¥∂‚°ß"
+               OR  WRK-INPUTCOMENT(1:22)  =  "∏¯»Ò¿¡µ·ΩÒ∏¯£¥…È√¥∂‚°ß"
+                 MOVE  WRK-INPUTCOMENT(23:14)
+                                          TO  WRK-INPUTCOMENT2
+               END-IF
                IF  WRK-INPUTCOMENT2 = "°°°°°°°°°°°°°°" OR SPACE
                  CONTINUE
                ELSE
@@ -10142,6 +10237,26 @@
                      MOVE  ZERO     TO  RECE62-KOH-CHIKAN-KIN4
                      MOVE  WRK-INPUTCOMENT-KIN
                                     TO  RECE62-KOH-CHIKAN-KIN4
+                   END-IF
+                   IF  WRK-INPUTCOMENT(1:22) = "∏¯»Ò¿¡µ·ΩÒ∏¯£±…È√¥∂‚°ß"
+                     MOVE  ZERO     TO  RECE62-SEI-CHIKAN-KIN1
+                     MOVE  WRK-INPUTCOMENT-KIN
+                                    TO  RECE62-SEI-CHIKAN-KIN1
+                   END-IF
+                   IF  WRK-INPUTCOMENT(1:22) = "∏¯»Ò¿¡µ·ΩÒ∏¯£≤…È√¥∂‚°ß"
+                     MOVE  ZERO     TO  RECE62-SEI-CHIKAN-KIN2
+                     MOVE  WRK-INPUTCOMENT-KIN
+                                    TO  RECE62-SEI-CHIKAN-KIN2
+                   END-IF
+                   IF  WRK-INPUTCOMENT(1:22) = "∏¯»Ò¿¡µ·ΩÒ∏¯£≥…È√¥∂‚°ß"
+                     MOVE  ZERO     TO  RECE62-SEI-CHIKAN-KIN3
+                     MOVE  WRK-INPUTCOMENT-KIN
+                                    TO  RECE62-SEI-CHIKAN-KIN3
+                   END-IF
+                   IF  WRK-INPUTCOMENT(1:22) = "∏¯»Ò¿¡µ·ΩÒ∏¯£¥…È√¥∂‚°ß"
+                     MOVE  ZERO     TO  RECE62-SEI-CHIKAN-KIN4
+                     MOVE  WRK-INPUTCOMENT-KIN
+                                    TO  RECE62-SEI-CHIKAN-KIN4
                    END-IF
                  END-IF
                END-IF
@@ -34874,10 +34989,113 @@
                 MOVE    ZERO            TO   RECE62-KOHCHIKAN
                END-IF
              END-IF
+      *
+             MOVE    123456789          TO   RECE62-SEI-CHIKAN-KIN1
+             MOVE    123456789          TO   RECE62-SEI-CHIKAN-KIN2
+             MOVE    123456789          TO   RECE62-SEI-CHIKAN-KIN3
+             MOVE    123456789          TO   RECE62-SEI-CHIKAN-KIN4
            END-IF
       *
-           IF  (IDZ                 =   1)
+           IF  (IDZ                 =   2)
            AND (WRK-TAIHI-OKIKAE2   =   1)
+      *      ∏¯»Ò¿¡µ·ΩÒ∏¯£±∞Ï…Ù…È√¥∂‚√÷§≠¥π§®
+             IF    RECE62-KOHNUM(1)        =  SPACE
+                   MOVE    123456789    TO   RECE62-SEI-CHIKAN-KIN1
+             END-IF
+             IF    RECE62-SEI-CHIKAN-KIN1  =  123456789
+                 CONTINUE
+             ELSE
+               EVALUATE  RECE62-SEI-CHIKAN-KIN1
+                 WHEN      009999999
+                   MOVE   ZERO          TO   RECE62-FTNMONEY(2)
+                   MOVE   SPACE         TO   RECE62-ZEROKISAIFLG(2)
+                 WHEN      000000000
+                   MOVE   ZERO          TO   RECE62-FTNMONEY(2)
+                   MOVE   "1"           TO   RECE62-ZEROKISAIFLG(2)
+                 WHEN      OTHER
+                   MOVE   RECE62-SEI-CHIKAN-KIN1
+                                        TO   RECE62-FTNMONEY(2)
+                   MOVE   "1"           TO   RECE62-KISAIFLG(2)
+               END-EVALUATE
+             END-IF
+      *      ∏¯»Ò¿¡µ·ΩÒ∏¯£≤∞Ï…Ù…È√¥∂‚√÷§≠¥π§®
+             IF    RECE62-KOHNUM(2)        =  SPACE
+                   MOVE    123456789    TO   RECE62-SEI-CHIKAN-KIN2
+             END-IF
+             IF    RECE62-SEI-CHIKAN-KIN2  =  123456789
+                 CONTINUE
+             ELSE
+               EVALUATE  RECE62-SEI-CHIKAN-KIN2
+                 WHEN      009999999
+                   MOVE   ZERO          TO   RECE62-FTNMONEY(3)
+                   MOVE   SPACE         TO   RECE62-ZEROKISAIFLG(3)
+                 WHEN      000000000
+                   MOVE   ZERO          TO   RECE62-FTNMONEY(3)
+                   MOVE   "1"           TO   RECE62-ZEROKISAIFLG(3)
+                 WHEN      OTHER
+                   MOVE   RECE62-SEI-CHIKAN-KIN2
+                                        TO   RECE62-FTNMONEY(3)
+                   MOVE   "1"           TO   RECE62-KISAIFLG(3)
+               END-EVALUATE
+             END-IF
+      *      ∏¯»Ò¿¡µ·ΩÒ∏¯£≥∞Ï…Ù…È√¥∂‚√÷§≠¥π§®
+             IF    RECE62-KOHNUM(3)        =  SPACE
+                   MOVE    123456789    TO   RECE62-SEI-CHIKAN-KIN3
+             END-IF
+             IF    RECE62-SEI-CHIKAN-KIN3  =  123456789
+                 CONTINUE
+             ELSE
+               EVALUATE  RECE62-SEI-CHIKAN-KIN3
+                 WHEN      009999999
+                   MOVE   ZERO          TO   RECE62-FTNMONEY(4)
+                   MOVE   SPACE         TO   RECE62-ZEROKISAIFLG(4)
+                 WHEN      000000000
+                   MOVE   ZERO          TO   RECE62-FTNMONEY(4)
+                   MOVE   "1"           TO   RECE62-ZEROKISAIFLG(4)
+                 WHEN      OTHER
+                   MOVE   RECE62-SEI-CHIKAN-KIN3
+                                        TO   RECE62-FTNMONEY(4)
+                   MOVE   "1"           TO   RECE62-KISAIFLG(4)
+               END-EVALUATE
+             END-IF
+      *      ∏¯»Ò¿¡µ·ΩÒ∏¯£¥∞Ï…Ù…È√¥∂‚√÷§≠¥π§®
+             IF    RECE62-KOHNUM(4)        =  SPACE
+                   MOVE    123456789    TO   RECE62-SEI-CHIKAN-KIN4
+             END-IF
+             IF    RECE62-SEI-CHIKAN-KIN4  =  123456789
+                 CONTINUE
+             ELSE
+               EVALUATE  RECE62-SEI-CHIKAN-KIN4
+                 WHEN      009999999
+                   MOVE   ZERO          TO   RECE62-FTNMONEY(5)
+                   MOVE   SPACE         TO   RECE62-ZEROKISAIFLG(5)
+                 WHEN      000000000
+                   MOVE   ZERO          TO   RECE62-FTNMONEY(5)
+                   MOVE   "1"           TO   RECE62-ZEROKISAIFLG(5)
+                 WHEN      OTHER
+                   MOVE   RECE62-SEI-CHIKAN-KIN4
+                                        TO   RECE62-FTNMONEY(5)
+                   MOVE   "1"           TO   RECE62-KISAIFLG(5)
+               END-EVALUATE
+             END-IF
+      *
+             IF    RECE62-SEI-CHIKAN-KIN1  =  123456789
+             AND   RECE62-SEI-CHIKAN-KIN2  =  123456789
+             AND   RECE62-SEI-CHIKAN-KIN3  =  123456789
+             AND   RECE62-SEI-CHIKAN-KIN4  =  123456789
+               IF  RECE62-KOHCHIKAN  =  1
+                MOVE    ZERO            TO   RECE62-KOHCHIKAN
+               END-IF
+             END-IF
+      *
+             MOVE    123456789          TO   RECE62-KOH-CHIKAN-KIN1
+             MOVE    123456789          TO   RECE62-KOH-CHIKAN-KIN2
+             MOVE    123456789          TO   RECE62-KOH-CHIKAN-KIN3
+             MOVE    123456789          TO   RECE62-KOH-CHIKAN-KIN4
+           END-IF
+      *
+           IF  (IDZ                 =   1 OR 2)
+           AND (WRK-TAIHI-OKIKAE2   =   1     )
              CONTINUE
            ELSE
              MOVE       ZERO            TO   RECE62-KOHCHIKAN
@@ -34885,6 +35103,10 @@
              MOVE       123456789       TO   RECE62-KOH-CHIKAN-KIN2
              MOVE       123456789       TO   RECE62-KOH-CHIKAN-KIN3
              MOVE       123456789       TO   RECE62-KOH-CHIKAN-KIN4
+             MOVE       123456789       TO   RECE62-SEI-CHIKAN-KIN1
+             MOVE       123456789       TO   RECE62-SEI-CHIKAN-KIN2
+             MOVE       123456789       TO   RECE62-SEI-CHIKAN-KIN3
+             MOVE       123456789       TO   RECE62-SEI-CHIKAN-KIN4
            END-IF
       *
            .
