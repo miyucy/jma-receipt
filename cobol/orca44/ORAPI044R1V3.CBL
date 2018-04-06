@@ -1458,6 +1458,44 @@
       *    MONBLOBAPI処理
       *****************************************************************
        20023-MONBLOBAPI-SEC        SECTION.
+      *
+      *    ジョブ開始セット処理
+           ADD     1               TO  SPA-T01-JOB-JOBID
+      *       
+           MOVE    "DEL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-T01-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           MOVE    "JBS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-T01-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-TERMID      TO  JOB-TERMID
+           MOVE    SPA-T01-JOB-KARTE-UID
+                                   TO  WRK-PARAM-KARTE-UID
+           MOVE    SPA-T01-JOB-ORCA-UID
+                                   TO  WRK-PARAM-ORCA-UID
+           MOVE    WRK-PARAM       TO  JOB-PARAM
+           PERFORM 900-CALL-ORCSJOB-SEC
+      *     
+           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    SPACE               TO  RECEERR
+           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE
+                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
+                                       INTO        RECEERR
+           END-STRING
+      *
+           MOVE    SPA-LNK-PRTKANRI-AREA
+                                   TO  LNK-PRTKANRI-AREA
       *             
            MOVE    SPACE               TO  SHELLTBL
            MOVE    "haori_monblobapi.sh"
@@ -1510,6 +1548,9 @@
            MOVE    "allways"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
+      *    ＪＯＢＩＤ更新処理
+           PERFORM 49032-JIBID-UPD-SEC
+      *
            .
        20023-MONBLOBAPI-EXT.
            EXIT.
@@ -1520,47 +1561,59 @@
        2003-RECEIPTDATA-CHECK-SEC      SECTION.
       *
       *    ジョブ管理チェック処理
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       2
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    IDX             TO  JOB-JOBID
-               MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  JOB-SHELLID
-               PERFORM 900-CALL-ORCSJOB-SEC
-               IF      SJOBKANRI-RETURN
-                                       =   ZERO
-      *            パラメータとカルテUID+オルカUID をチェック
-                   MOVE    SPACE           TO WRK-PARAM
-                   MOVE    RECEDMAKEQ-KARTE-UID
+           MOVE    SPACE               TO  SYS-3003-REC
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  SYS-3003-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-3003-STYUKYMD (7:2)
+           MOVE    SYS-3003-STYUKYMD   TO  SYS-3003-EDYUKYMD 
+           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
+           MOVE    SYS-3003-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-3003-REC 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SYS-3003-JOBID
+                   MOVE    "CHK"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    IDX             TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  JOB-SHELLID
+                   PERFORM 900-CALL-ORCSJOB-SEC
+                   IF      SJOBKANRI-RETURN
+                                           =   ZERO
+      *                パラメータとカルテUID+オルカUID をチェック
+                       MOVE    SPACE       TO  WRK-PARAM
+                       MOVE    RECEDMAKEQ-KARTE-UID
                                            TO  WRK-PARAM-KARTE-UID
-                   MOVE    RECEDMAKEQ-ORCA-UID
+                       MOVE    RECEDMAKEQ-ORCA-UID
                                            TO  WRK-PARAM-ORCA-UID
+                       IF    ( WRK-PARAM   NOT =   JOB-PARAM     )
+                           MOVE    "E41"           TO  WRK-ERRCD
+                           GO  TO  2003-RECEIPTDATA-CHECK-EXT
+                       END-IF
       *
-                   IF    ( WRK-PARAM   NOT =   JOB-PARAM     )
-                       MOVE    "E41"           TO  WRK-ERRCD
+                       IF      JOB-ENDYMD      =   SPACE
+                           MOVE    "E70"           TO  WRK-ERRCD
+                           MOVE    SPACE           TO  WRK-ERRMSG
+                           STRING  "処理中です【"  DELIMITED   BY  SIZE
+                                   JOB-SHELLMSG    DELIMITED   BY  SPACE
+                                   "】"            DELIMITED   BY  SIZE
+                                                   INTO    WRK-ERRMSG
+                           END-STRING
+                           GO  TO  2003-RECEIPTDATA-CHECK-EXT
+                       END-IF
+                   ELSE
+                       MOVE    "E40"           TO  WRK-ERRCD
                        GO  TO  2003-RECEIPTDATA-CHECK-EXT
                    END-IF
       *
-                   IF      JOB-ENDYMD      =   SPACE
-                       MOVE    "E70"           TO  WRK-ERRCD
-                       MOVE    SPACE           TO  WRK-ERRMSG
-                       STRING  "処理中です【"  DELIMITED   BY  SIZE
-                               JOB-SHELLMSG    DELIMITED   BY  SPACE
-                               "】"            DELIMITED   BY  SIZE
-                                           INTO    WRK-ERRMSG
-                       END-STRING
-                       GO  TO  2003-RECEIPTDATA-CHECK-EXT
+                   IF      IDX             =   1
+                       MOVE    JOBKANRI-REC    TO  WRK-JOBKANRI-REC
                    END-IF
-               ELSE
-                   MOVE    "E40"           TO  WRK-ERRCD
-                   GO  TO  2003-RECEIPTDATA-CHECK-EXT
-               END-IF
-      *
-               IF      IDX             =   1
-                   MOVE    JOBKANRI-REC    TO  WRK-JOBKANRI-REC
-               END-IF
-           END-PERFORM
+               END-PERFORM
+           END-IF
       *
            IF      WRK-JOB-UPDCNT2     >   ZERO
       *        対象レセプトあり
