@@ -51,6 +51,8 @@
       *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *  04.08.04    NACL-藤原    18/04/06  平成３０年４月改正対応
+      *                                     カタカナ（氏名）、患者状態の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -801,6 +803,7 @@
                    INSPECT RECEDEN-RECEDATA   TALLYING    WRK-MOJISU
                                                FOR ALL "," 
                    IF      WRK-MOJISU          =   16  OR  17  OR  25
+                                               OR  35
                        PERFORM VARYING IDX FROM    2500 BY  -1
                                UNTIL   IDX <       1
                            IF      RECEDEN-RECEDATA (IDX:1)
@@ -823,6 +826,14 @@
                                                    DELIMITED  BY  SIZE
                                      ",,,,,,,,,,,,,,,,,,"
                                                    DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                       END-IF
+                       IF      WRK-MOJISU          =   35
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,"          DELIMITED  BY  SIZE
                                      WRK-KAIGYO    DELIMITED  BY  SIZE
                                      INTO          WRK-REC
                            END-STRING

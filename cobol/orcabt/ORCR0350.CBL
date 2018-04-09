@@ -424,6 +424,8 @@
       *  04.08.18    NACL-門脇    17/08/28  平成２９年１０月改正
       *                                     （入院時生活療養の見直し）
       *  04.08.19    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *  04.08.20    NACL-藤原    18/04/06  平成３０年４月改正対応
+      *                                     カタカナ（氏名）、患者状態の追加
       *
       *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
       *  05.00.02    NACL-小豆沢  17/11/07  レセ電サブ引数に保険組合せ追加
@@ -3120,8 +3122,16 @@
       *    医学的処置３
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    特定疾病３
-           MOVE    1                   TO  WRK-END 
-           PERFORM 5004-MOJI-HENSYU-SEC         
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    カタカナ（氏名）
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    患者状態 
+           IF      RECE62-NINPUFLG >   ZERO
+               MOVE    "001"           TO  WRK-DATA
+           END-IF
+           MOVE    60                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END
+           PERFORM 5004-MOJI-HENSYU-SEC
       *
            MOVE    1                   TO  FLG-TOTALTEN
            PERFORM 5001-FILE-WRITE-SEC
