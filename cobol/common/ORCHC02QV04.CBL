@@ -3646,6 +3646,8 @@
                        IF     (TBL-SRY-SRYCD (IDXB IDXA)   =   SPACE)
                           OR  (TBL-SRY-SRYCD (IDXB IDXA)(1:4)
                                                            =   "0086")
+                          OR  (TBL-SRY-SRYCD (IDXB IDXA)(1:1)
+                                                           =   "1")
                            CONTINUE
                        ELSE
                            ADD     1               TO  WRK-SRY-MAX
