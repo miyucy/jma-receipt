@@ -1167,6 +1167,9 @@
       *    入院情報の履歴取得処理
       *****************************************************************
        200411-NYUINYMD-HENSYU-SEC                SECTION.
+      *??
+               DISPLAY "200411 IN=" PTNYUINRRK-NYUINYMD "#"
+      *??
       *
            MOVE    PTNYUINRRK-REC  TO  WRK-PTNRRK-REC
       *
@@ -1182,11 +1185,17 @@
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            PERFORM 900-PTNYUINRRK-KEY51-READ-SEC
       *
+      *??
+               DISPLAY "200411 FLG-PTNYUINRRK=" FLG-PTNYUINRRK "#"
+      *??
            IF      FLG-PTNYUINRRK  =   ZERO
                MOVE    PTNYUINRRK-NYUINYMD TO  WRK-PTNRRK-NYUINYMD
            END-IF
       *
            MOVE    WRK-PTNRRK-REC TO  PTNYUINRRK-REC
+      *??
+               DISPLAY "200411 OT =" PTNYUINRRK-NYUINYMD "#"
+      *??
            .
        200411-NYUINYMD-HENSYU-EXT.
            EXIT.
