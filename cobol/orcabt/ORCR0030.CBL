@@ -11507,6 +11507,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
              IF       SRY-SRYCD(IDX2)  =  "099140004" OR "099400001"
                   MOVE    1     TO    FLG-HENSYU-NG
              END-IF
+             IF      (SRY-SRYCD(IDX2)  =  "099140011" OR "099140012")
+             AND     (RECE02-SRYYM    >=  "201804"                  )
+                  MOVE    1     TO    FLG-HENSYU-NG
+             END-IF
       *
              IF       RECE02-DAISANFLG(IDX1)  =   1
                IF  (ACCT-SRYKBN             =  "80"   )
@@ -11938,7 +11942,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      SRY-SRYKBN   =   "99"
-                IF     RECE02-SRYYM  <=  "201803"
                   IF      SRY-SRYCD(IDX2)     =   "099140011"
                       MOVE     "1"        TO    RECE04-HOMONCOMFLG
                       MOVE  "810000001"   TO    RECE05-SRYCD(IDX4)
@@ -11952,7 +11955,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       MOVE     "1"        TO    RECE05-RECEDENFLG(IDX4)
                       MOVE     "1"        TO    RECE05-RECEPTFLG(IDX4)
                   END-IF
-                END-IF
                END-IF
       *
                IF   (ACCT-SRYKBN = "40" OR "50" OR "54" OR "60" OR
