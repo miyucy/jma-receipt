@@ -192,6 +192,8 @@
       *
            03  FLG-CHK-ARI         PIC 9(01).
       *
+           03  FLG-GAICHK          PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -8332,19 +8334,25 @@
                                                             (IDX-Z)
       *
                 IF     (WRK-COM-SRYKBN     (IDX-Z)
-                                           NOT =   "95" AND "96") AND
+                                           NOT =   "95" AND "96")
       *!
       *            ¿ÇÎÅ¼ïÊÌ¤¬ÂÐ¾Ý³°
-                       (WRK-COM-SRYSYUKBN (IDX-Z)  NOT =   "409" )  AND
-      *
-                       (WRK-COM-INPUTCD(IDX-Z)(1:3)
-                                           NOT =   "101"  )   AND
-                       (WRK-COM-GAIKANRIKBN(IDX-Z)
+                   AND (WRK-COM-SRYSYUKBN (IDX-Z)  NOT =   "409" )
+      *H30.4  Ï«ºÒ¤âÂÐ¾Ý¤¢¤ê
+      *            AND (WRK-COM-INPUTCD(IDX-Z)(1:3)
+      ***                                  NOT =   "101"  )
+                   AND (WRK-COM-GAIKANRIKBN(IDX-Z)
                                                =   1   )
       *             ¹ð¼¨¶èÊ¬£²¤¬²Ã»»°Ê³°
                    AND (WRK-COM-DATAKBN (IDX-Z)    =   "1" )
                    AND (WRK-COM-KOKUJISKBKBN2(IDX-Z)
                                                =   1  OR  3  OR  5)
+                   MOVE    1                   TO  FLG-GAICHK
+               ELSE
+                   MOVE    ZERO                TO  FLG-GAICHK
+               END-IF
+      *
+               IF      FLG-GAICHK              =   1
                    IF     (WRK-COM-SYUTEN2 (IDX-Z) >  ZERO )  AND
                           (WRK-COM-SYUTEN2 (IDX-Z)
                                                <   LNK-ORCSC-GAIRAI-TEN)
@@ -8397,10 +8405,14 @@
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
                     IF     (WRK-COM-SRYKBN     (IDX-Z)
-                                          NOT =   "95" AND "96") AND
-                           (WRK-COM-INPUTCD(IDX-Z)(1:3)
-                                           NOT =   "101"  )   AND
-                           (WRK-COM-GAIKANRIKBN(IDX-Z)
+                                          NOT =   "95" AND "96")
+      *!
+      *               ¿ÇÎÅ¼ïÊÌ¤¬ÂÐ¾Ý³°
+                      AND (WRK-COM-SRYSYUKBN (IDX-Z)  NOT =   "409" )
+      *H30.4        Ï«ºÒ¤âÂÐ¾Ý¤¢¤ê
+      ***              AND (WRK-COM-INPUTCD(IDX-Z)(1:3)
+      ***                                  NOT =   "101"  )
+                       AND (WRK-COM-GAIKANRIKBN(IDX-Z)
                                                =   1   )
       *                ¹ð¼¨¶èÊ¬£²¤¬²Ã»»°Ê³°
                        AND (WRK-COM-DATAKBN (IDX-Z)    =   "1" )
