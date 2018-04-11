@@ -74,6 +74,7 @@
       *    一時領域
        01  WRK-AREA.
       *
+           03  WRK-INPUT-SRYCD             PIC X(09).
            03  WRK-MM-X                    PIC X(02).
            03  WRK-MM-9     REDEFINES   WRK-MM-X
                                            PIC 9(02).
@@ -301,6 +302,9 @@
       *    主処理（入院料加算チェック）
       *****************************************************************
        200-MAIN-1-SEC            SECTION.
+      *
+           MOVE    SPACE                   TO  WRK-INPUT-SRYCD
+           MOVE    ORCSCNKSN-SRYCD         TO  WRK-INPUT-SRYCD
       *
       *    短期滞在手術基本料２と３の入院料未算定日について取得
            INITIALIZE                          ORCSNYUINDAY-AREA
@@ -607,7 +611,7 @@
            MOVE    "1"                     TO  NSRY-NYUGAIKBN
            MOVE    SPA-PTID                TO  NSRY-PTID
            MOVE    ORCSCNKSN-SRYYM         TO  NSRY-SRYYM
-           MOVE    ORCSCNKSN-SRYCD         TO  NSRY-SRYCD (1)
+           MOVE    WRK-INPUT-SRYCD         TO  NSRY-SRYCD (1)
                                                NSRY-SRYCD (2)
                                                NSRY-SRYCD (3)
                                                NSRY-SRYCD (4)
