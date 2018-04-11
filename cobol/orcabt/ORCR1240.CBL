@@ -1472,6 +1472,11 @@
                PERFORM   2001-TAIN-TOKUBETU-COMMENT-SEC
            END-IF
       *
+      *    «•…ÿ§Œ•≥•·•Û•»
+           IF   RECE200-NINPUFLG   =   1
+               PERFORM   2001-NINPU-COMMENT-SEC
+           END-IF
+      *
       *****∫ππ˛ ‘Ω∏£≤********************
            PERFORM     250-SASHIKOMI2-SEC
       ***********************************
@@ -1638,6 +1643,40 @@
       *
            .
        2001-TAIN-TOKUBETU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    «•…ÿ§Œ•≥•·•Û•» ‘Ω∏
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                   RECE2209-REC
+           MOVE    RECE200-KEY      TO  RECE2209-KEY1
+           MOVE    99999960         TO  RECE2209-ZAINUM
+           MOVE    "99"             TO  RECE2209-SRYKBN
+           MOVE    1                TO  RECE2209-MEISAISU
+           WRITE   RECE2209-REC
+           ADD     1                TO  CNT-RECE2209
+      *
+           INITIALIZE                   RECE2309-REC
+           MOVE    RECE200-KEY      TO  RECE2309-KEY1
+           MOVE    99999960         TO  RECE2309-ZAINUM
+           MOVE    "99"             TO  RECE2309-SRYKBN
+      *    •≥•·•Û•»§Œ¡ﬁ∆˛
+           MOVE    SPACE            TO  WRK-RECE230XX-REC
+           INITIALIZE                   WRK-RECE230XX-REC
+           MOVE    "820100348"      TO  WRK-RECE230XX-SRYCD(1 1)
+           MOVE    ZERO             TO  WRK-RECE230XX-SRYSURYO(1 1)
+           MOVE    2                TO  WRK-RECE230XX-YUKOKETA(1 1)
+           MOVE    "«•…ÿ"           TO  WRK-RECE230XX-NAME(1 1)
+                                        WRK-RECE230XX-INPUTCOMENT(1 1)
+           MOVE    WRK-RECE230XX-SRYACT-TBL(1 1)
+                                    TO  RECE2309-SRYACT-TBL(1)
+           WRITE   RECE2309-REC
+           ADD     1                TO  CNT-RECE2309
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

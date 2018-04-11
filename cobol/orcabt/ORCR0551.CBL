@@ -1743,6 +1743,11 @@
                PERFORM     2001-ZAISIEN-COMMENT-SEC
            END-IF
       *
+      *    妊婦のコメント
+           IF     RECE41-NINPUFLG   =   1
+               PERFORM     2001-NINPU-COMMENT-SEC
+           END-IF
+      *
       *+++++++++++++++++++++++++++++++++++++++++++++++++
       *    外来管理加算（特)のコメント（レセ電用）
            IF     RECE41-GAITOKU-PRTKBN1    =  "1"
@@ -2770,6 +2775,37 @@
       *
            .
        20011-KAISU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    妊婦のコメント編集
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE41-SET449-SEC
+           MOVE    99999960            TO  RECE449-ZAINUM
+           MOVE    "99"                TO  RECE449-SRYKBN
+           MOVE    RECE41-HKNCOMBI     TO  RECE449-HKNCOMBI
+           MOVE    1                   TO  RECE449-MEISAISU
+           PERFORM 800-RECE449-WRITE-SEC
+      *
+           PERFORM 800-RECE41-SET459-SEC
+           MOVE    99999960            TO  RECE459-ZAINUM
+           MOVE    "99"                TO  RECE459-SRYKBN
+           MOVE    SPACE               TO  WRK-RECE45XX-REC
+           INITIALIZE                      WRK-RECE45XX-REC
+           MOVE    "820100348"         TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    2                   TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "妊婦"              TO  WRK-RECE45XX-NAME(1 1)
+                                           WRK-RECE45XX-INPUTCOMENT(1 1)
+           MOVE    "1"                 TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                       TO  RECE459-SRYACT-TBL(1)
+           PERFORM 800-RECE459-WRITE-SEC
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

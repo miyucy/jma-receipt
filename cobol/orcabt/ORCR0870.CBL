@@ -1551,6 +1551,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
              END-IF
            END-IF
       *
+      *    «•…ÿ§Œ•≥•·•Û•»
+           IF   RECE82-NINPUFLG   =   1
+                PERFORM    2001-NINPU-COMMENT-SEC
+           END-IF
+      *
            PERFORM 800-RECE82-SET84-SEC
            MOVE    ZERO                TO  RECE84-ZAINUM
       *
@@ -2097,6 +2102,39 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
       *
            .
        2001-NYUINRYO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    «•…ÿ§Œ•≥•·•Û•» ‘Ω∏
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE82-SET849-SEC
+           MOVE    99999960            TO  RECE849-ZAINUM
+           MOVE    "99"                TO  RECE849-SRYKBN
+           MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
+           MOVE    1                   TO  RECE849-MEISAISU
+           WRITE   RECE849-REC
+           ADD     1                   TO  CNT-RECE849
+      *
+           PERFORM 800-RECE82-SET859-SEC
+           MOVE    99999960            TO  RECE859-ZAINUM
+           MOVE    "99"                TO  RECE859-SRYKBN
+           MOVE    SPACE               TO  WRK-RECE85XX-REC
+           INITIALIZE                      WRK-RECE85XX-REC
+           MOVE    "820100348"         TO  WRK-RECE85XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE85XX-SRYSURYO(1 1)
+           MOVE    2                   TO  WRK-RECE85XX-YUKOKETA(1 1)
+           MOVE    "«•…ÿ"              TO  WRK-RECE85XX-NAME(1 1)
+                                           WRK-RECE85XX-INPUTCOMENT(1 1)
+           MOVE    "1"                 TO  WRK-RECE85XX-SIKFLG(1 1)
+           MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
+                                       TO  RECE859-SRYACT-TBL(1)
+           WRITE   RECE859-REC
+           ADD     1                   TO  CNT-RECE859
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

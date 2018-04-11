@@ -1881,6 +1881,12 @@
                 PERFORM 2001-GENBAKU-COMMENT-SEC
            END-IF
       *
+      *    «•…ÿ§Œ•≥•·•Û•»
+      *
+           IF   RECE62-NINPUFLG   =   1
+                PERFORM 2001-NINPU-COMMENT-SEC
+           END-IF
+      *
       *****∫ππ˛ ‘Ω∏£≤**********************
            PERFORM     250-SASHIKOMI2-SEC
       *
@@ -2611,6 +2617,41 @@
       *
            .
        2001-KOHSAIKEI-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    «•…ÿ§Œ•≥•·•Û•» ‘Ω∏
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
+           MOVE    99999960            TO  RECE649-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
+           MOVE    "99"                TO  RECE649-SRYKBN
+           MOVE    WRK-HKNCOMBI-JIDO   TO  RECE649-HKNCOMBI
+           MOVE    1                   TO  RECE649-MEISAISU
+           WRITE   RECE649-REC
+           ADD     1                   TO  CNT-RECE649
+      *
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
+           MOVE    99999960            TO  RECE659-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE659-KOHBUNRI
+           MOVE    "99"                TO  RECE659-SRYKBN
+      *    •≥•·•Û•»§Œ¡ﬁ∆˛
+           MOVE    SPACE               TO  WRK-RECE65XX-REC
+           INITIALIZE                      WRK-RECE65XX-REC
+           MOVE    "820100348"         TO  WRK-RECE65XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE65XX-SRYSURYO(1 1)
+           MOVE    2                   TO  WRK-RECE65XX-YUKOKETA(1 1)
+           MOVE    "«•…ÿ"              TO  WRK-RECE65XX-NAME(1 1)
+                                           WRK-RECE65XX-INPUTCOMENT(1 1)
+           MOVE    WRK-RECE65XX-SRYACT-TBL(1 1)
+                                       TO  RECE659-SRYACT-TBL(1)
+           WRITE   RECE659-REC
+           ADD     1                   TO  CNT-RECE659
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

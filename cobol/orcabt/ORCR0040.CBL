@@ -2081,6 +2081,12 @@ grpsys       PERFORM 900-DBSELECT-SEC
               PERFORM   2001-GENBAKU-COMMENT-SEC
            END-IF
       *
+      *    «•…ÿ§Œ•≥•·•Û•»
+      *
+           IF   RECE02-NINPUFLG   =   1
+              PERFORM   2001-NINPU-COMMENT-SEC
+           END-IF
+      *
       *****∆‚…˛ÃÙ∫ﬁŒ¡ƒ˛∏∫§À¥ÿ§π§Î ‘Ω∏£≤****
            PERFORM     240-YAKUTEI-HENSYU2-SEC
       *
@@ -3223,6 +3229,41 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        2001-KOHSAIKEI-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    «•…ÿ§Œ•≥•·•Û•» ‘Ω∏
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE02-SET049-SEC
+           MOVE    99999960            TO  RECE049-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE049-KOHBUNRI
+           MOVE    "99"                TO  RECE049-SRYKBN
+           MOVE    WRK-HKNCOMBI-JIDO   TO  RECE049-HKNCOMBI
+           MOVE    1                   TO  RECE049-MEISAISU
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
+      *
+           PERFORM 800-RECE02-SET059-SEC
+           MOVE    99999960            TO  RECE059-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE059-KOHBUNRI
+           MOVE    "99"                TO  RECE059-SRYKBN
+      *    •≥•·•Û•»§Œ¡ﬁ∆˛
+           MOVE    SPACE               TO  WRK-RECE05XX-REC
+           INITIALIZE                      WRK-RECE05XX-REC
+           MOVE    "820100348"         TO  WRK-RECE05XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE05XX-SRYSURYO(1 1)
+           MOVE    2                   TO  WRK-RECE05XX-YUKOKETA(1 1)
+           MOVE    "«•…ÿ"              TO  WRK-RECE05XX-NAME(1 1)
+                                           WRK-RECE05XX-INPUTCOMENT(1 1)
+           MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
+                                        TO  RECE059-SRYACT-TBL(1)
+           WRITE   RECE059-REC
+           ADD     1                    TO  CNT-RECE059
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

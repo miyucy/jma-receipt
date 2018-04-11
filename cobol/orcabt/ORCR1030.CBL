@@ -1395,6 +1395,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    PERFORM    2001-ZAISIEN-COMMENT-SEC
            END-IF
       *
+      *    妊婦のコメント
+           IF  RECE100-NINPUFLG   =   1
+                   PERFORM    2001-NINPU-COMMENT-SEC
+           END-IF
+      *
       *    パラメータ０４ファイルより編集
            PERFORM 800-RECE100-SET04-SEC
            MOVE    ZERO                TO  RECE120-ZAINUM
@@ -2210,6 +2215,38 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        2001-NYUYOJI-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    妊婦のコメント編集
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE100-SET049-SEC
+           MOVE    99999960         TO  RECE1209-ZAINUM
+           MOVE    "99"             TO  RECE1209-SRYKBN
+           MOVE    1                TO  RECE1209-MEISAISU
+           WRITE   RECE1209-REC
+           ADD     1                TO  CNT-RECE1209
+      *
+           PERFORM 800-RECE100-SET059-SEC
+           MOVE    99999960         TO  RECE1309-ZAINUM
+           MOVE    "99"             TO  RECE1309-SRYKBN
+      *    コメントの挿入
+           MOVE    SPACE            TO  WRK-RECE130XX-REC
+           INITIALIZE                   WRK-RECE130XX-REC
+           MOVE    "820100348"      TO  WRK-RECE130XX-SRYCD(1 1)
+           MOVE    ZERO             TO  WRK-RECE130XX-SRYSURYO(1 1)
+           MOVE    2                TO  WRK-RECE130XX-YUKOKETA(1 1)
+           MOVE    "妊婦"           TO  WRK-RECE130XX-NAME(1 1)
+                                        WRK-RECE130XX-INPUTCOMENT(1 1)
+           MOVE  WRK-RECE130XX-SRYACT-TBL(1 1)
+                                    TO  RECE1309-SRYACT-TBL(1)
+           WRITE RECE1309-REC
+           ADD   1                  TO  CNT-RECE1309
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
