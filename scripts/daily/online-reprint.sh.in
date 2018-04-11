@@ -48,7 +48,8 @@ echo DATASETNAME[${DATASETNAME} ]
 # 正規表現文字列はダブルクォートで括らない
 if [[ "$7" =~ ^API(|_01)$ ]]; then
   shrink_rp.rb ${DATASETNAME}
-  nkf --ic=UTF8 --oc=eucJP-ms --overwrite ${DATASETNAME}
+  iconv -f UTF-8 -t EUC-JISX0213  ${DATASETNAME} > ${DATASETNAME}.tmp
+  mv ${DATASETNAME}.tmp ${DATASETNAME}
 fi
 
 [ "$7" == "API_01" ] && exit 

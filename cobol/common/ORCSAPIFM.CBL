@@ -702,8 +702,8 @@
       *
            CALL    "SYSTEM"    USING
                                FUNCTION CONCATENATE
-                               ("nkf --ic=eucJP-ms "
-                               "--oc=utf-8 "
+                               ("iconv -f EUC-JISX0213 "
+                               "-t UTF-8 "
                                FORMPARA 
                                " > "
                                UTFPARA
