@@ -5301,13 +5301,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         MOVE   "1"    TO    RECE44-UNDOKI-COMMENT
                   END-IF
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT
+                IF  (SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT)
+                AND (RECE41-SRYYM    <=     "201803"           )
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-NANBYO-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
                                       OR    CONS-SYOGAI2-COMMENT
-                                      OR    CONS-SYOGAI3-COMMENT
+                                      OR    CONS-SYOGAI3-COMMENT)
+                AND (RECE41-SRYYM    <=     "201803"            )
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-SYOGAI-COMMENT
                 END-IF

@@ -13503,7 +13503,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                          END-IF
                         END-PERFORM
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT
+                IF  (SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT)
+                AND (RECE02-SRYYM    <=     "201803"           )
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-NANBYO-COMMENT
                         PERFORM  VARYING  IDX16  FROM  1  BY  1
@@ -13513,9 +13514,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                          END-IF
                         END-PERFORM
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
                                       OR    CONS-SYOGAI2-COMMENT
-                                      OR    CONS-SYOGAI3-COMMENT
+                                      OR    CONS-SYOGAI3-COMMENT)
+                AND (RECE02-SRYYM    <=     "201803"            )
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-SYOGAI-COMMENT
                         PERFORM  VARYING  IDX16  FROM  1  BY  1

@@ -3295,13 +3295,15 @@
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-UNDOKI-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT
+                IF  (SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT)
+                AND (RECE200-SRYYM   <=     "201803"           )
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-NANBYO-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
                                       OR    CONS-SYOGAI2-COMMENT
-                                      OR    CONS-SYOGAI3-COMMENT
+                                      OR    CONS-SYOGAI3-COMMENT)
+                AND (RECE200-SRYYM   <=     "201803"            )
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-SYOGAI-COMMENT
                 END-IF

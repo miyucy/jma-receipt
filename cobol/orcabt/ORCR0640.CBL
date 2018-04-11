@@ -9179,7 +9179,8 @@
                          END-IF
                         END-PERFORM
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT
+                IF  (SRY-SRYCD(IDX2)  =     CONS-NANBYO-COMMENT)
+                AND (RECE62-SRYYM    <=     "201803"           )
                         MOVE   "1"    TO    RECE62-COMCNTFLG
                         MOVE   "1"    TO    RECE64-NANBYO-COMMENT
                         PERFORM  VARYING  IDX16  FROM  1  BY  1
@@ -9189,9 +9190,10 @@
                          END-IF
                         END-PERFORM
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SYOGAI1-COMMENT
                                       OR    CONS-SYOGAI2-COMMENT
-                                      OR    CONS-SYOGAI3-COMMENT
+                                      OR    CONS-SYOGAI3-COMMENT)
+                AND (RECE62-SRYYM    <=     "201803"            )
                         MOVE   "1"    TO    RECE62-COMCNTFLG
                         MOVE   "1"    TO    RECE64-SYOGAI-COMMENT
                         PERFORM  VARYING  IDX16  FROM  1  BY  1
