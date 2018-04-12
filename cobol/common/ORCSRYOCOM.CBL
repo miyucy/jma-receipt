@@ -35,6 +35,7 @@
       *                                     ント出力しない
       *平成３０年４月改定対応
       *  05.00.00    NACL-小豆沢  18/03/08  療養病棟入院料の判定変更
+      *  05.00.00    NACL-小豆沢  18/04/11  医療区分コメント改定対応
       *****************************************************************
       *
       *
@@ -1737,6 +1738,27 @@
       *      （３８）  平成２８年４月から
              WHEN   "820000232"
                 MOVE  "820000232"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+      *      （３９）  平成３０年４月から
+             WHEN   "82xxxxxxx"
+                MOVE  "820000241"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+      *      （８１）  平成３０年４月から
+             WHEN   "201804001"
+                MOVE  "820000233"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+      *      （８２）  平成３０年４月から
+             WHEN   "201804002"
+                MOVE  "820000234"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+      *      （８３）  平成３０年４月から
+             WHEN   "201804003"
+                MOVE  "820000235"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+      *      （８４）  平成３０年４月から
+             WHEN   "201804004"
+                MOVE  "820000236"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+      *      （８５）  平成３０年４月から
+             WHEN   "201804005"
+                MOVE  "820000237"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+      *      （８６）  平成３０年４月から
+             WHEN   "201804006"
+                MOVE  "820000238"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
       *      
       *      （９１）  平成２２年４月から平成２４年３月
              WHEN   "820000158"
