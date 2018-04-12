@@ -67,6 +67,7 @@
            03  WRK-ENCODING9       REDEFINES WRK-ENCODING
                                    PIC 9(01).
            03  WRK-MKPRT-ST        PIC 9(05).
+           03  WRK-CLIENT-TEMP-FLG PIC 9(01).
       *
       *    デイレクトリ位置
        01  SHELL-NAME.
@@ -128,11 +129,14 @@ grpsys     COPY    "COMMON-SPA".
        000-PROC-SEC                SECTION.
       *
            IF      SPA-CLIENT-PRT-FLG  =   1
+               MOVE  SPA-CLIENT-TEMP-FLG
+                                       TO  WRK-CLIENT-TEMP-FLG
                MOVE  2                 TO  SPA-CLIENT-TEMP-FLG
                CALL   "ORCSMKPRT1"     USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
-               MOVE  ZERO              TO  SPA-CLIENT-TEMP-FLG
+               MOVE  WRK-CLIENT-TEMP-FLG
+                                       TO  SPA-CLIENT-TEMP-FLG
                EXIT    PROGRAM
            END-IF
            INITIALIZE                  IDX-AREA

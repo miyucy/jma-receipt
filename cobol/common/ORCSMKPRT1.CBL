@@ -318,8 +318,6 @@
                END-IF
            END-IF
       *
-           MOVE    ZERO            TO SPA-CLIENT-TEMP-FLG
-      *
            .
        000-PROC-EXT.
       *
