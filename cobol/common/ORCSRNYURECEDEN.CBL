@@ -31,6 +31,7 @@
       *  05.00.00    NACL-小豆沢  18/02/27  入院時食事療養の金額変更対応
       *  05.00.00    NACL-小豆沢  18/04/4   夜間看護体制特定日減算対応
       *  05.00.00    NACL-小豆沢  18/04/11  他医受診対応
+      *  05.00.00    NACL-小豆沢  18/04/12  入院料加算置き換え対応
       *****************************************************************
       *
       *
@@ -1309,7 +1310,8 @@
                  END-IF
                END-IF
       *        重度認知症加算（精神病棟）（労災用）
-               IF    NSRY-SRYCD(1)  =  "190118570"
+               IF   (NSRY-SRYCD(1)  =  "190118570")   AND
+                    (LNK-RNYURECEDEN-SANTEIYM  <=  "201803")
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                END-IF
       *        慢性維持透析管理加算（療養病棟入院基本料）（労災用）
@@ -1318,6 +1320,10 @@
                END-IF
       *        在宅復帰機能強化加算（療養病棟入院基本料）（労災用）
                IF    NSRY-SRYCD(1)  =  "190168070"
+                   MOVE   7            TO   TNS-KOKUJISKBKBN1
+               END-IF
+      *        夜間看護加算（療養病棟入院基本料）（労災用）
+               IF    NSRY-SRYCD(1)  =  "190204570"
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                END-IF
       *
@@ -1555,7 +1561,8 @@
                             END-IF
                           END-IF
       *                   重度認知症加算（精神病棟）（労災用）
-                          IF     SRY-SRYCD(1)     =    "190118570"
+                          IF    (SRY-SRYCD(1)     =    "190118570")  AND
+                                (LNK-RNYURECEDEN-SANTEIYM <= "201803")
                               MOVE   7            TO   TNS-KOKUJISKBKBN1
                           END-IF
       *                   慢性維持透析管理加算（療養病棟入院基本料）（労災用）
@@ -1564,6 +1571,10 @@
                           END-IF
       *                   在宅復帰機能強化加算（療養病棟入院基本料）（労災用）
                           IF     SRY-SRYCD(1)     =    "190168070"
+                              MOVE   7            TO   TNS-KOKUJISKBKBN1
+                          END-IF
+      *                   夜間看護加算（療養病棟入院基本料）（労災用）
+                          IF     SRY-SRYCD(1)     =    "190204570"
                               MOVE   7            TO   TNS-KOKUJISKBKBN1
                           END-IF
       *
@@ -1599,6 +1610,13 @@
       *                   を直接入力された場合にコード表用番号の番号が
       *                   提供マスタに未設定の為、セットを行う
                           IF     SRY-SRYCD(1)     =    "101900140"
+                              MOVE   101          TO   TNS-CDKBN-KBNNUM
+                          END-IF
+      *
+      *                   夜間看護加算（療養病棟入院基本料）（労災用）
+      *                   を直接入力された場合にコード表用番号の番号が
+      *                   提供マスタに未設定の為、セットを行う
+                          IF    SRY-SRYCD(1)      =   "101900170"
                               MOVE   101          TO   TNS-CDKBN-KBNNUM
                           END-IF
       *
@@ -2374,9 +2392,11 @@
                             MOVE "101900120" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
       *                  重度認知症加算（精神病棟）（労災用）
-                         IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190118570"
+                         IF   (WRK-SO-SRYCD(IDX1 IDX3)  =  "190118570")
+                         AND  (LNK-RNYURECEDEN-SANTEIYM <= "201803")
                             MOVE "101900110" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
+      *
       *                入院料加算の労災用置き換え（平成２６年追加）
       *                  慢性維持透析管理加算（療養病棟入院基本料）（労災用）
                          IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190167970"
@@ -2385,6 +2405,12 @@
       *                  在宅復帰機能強化加算（療養病棟入院基本料）（労災用）
                          IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190168070"
                             MOVE "101900140" TO WRK-SO-SRYCD(IDX1 IDX3)
+                         END-IF
+      *
+      *                入院料加算の労災用置き換え（平成３０年追加）
+      *                  夜間看護加算（療養病棟入院基本料）（労災用）
+                         IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190204570"
+                            MOVE "101900170" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
       *
       *                栄養管理体制減算規定該当の労災用置き換え（平成２６年７月追加）
