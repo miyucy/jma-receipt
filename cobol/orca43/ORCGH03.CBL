@@ -32,6 +32,7 @@
       *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *  04.08.03    NACL-藤原    18/03/28  平成３０年４月改正対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -827,6 +828,12 @@
                                                                   (IDX)
                    WHEN    "2"
                        MOVE    "老健"          TO  H03-BODY-TRECEIPT-KBN
+                                                                  (IDX)
+                   WHEN    "3"
+                       MOVE    "医併"          TO  H03-BODY-TRECEIPT-KBN
+                                                                  (IDX)
+                   WHEN    "4"
+                       MOVE    "医療"          TO  H03-BODY-TRECEIPT-KBN
                                                                   (IDX)
                END-EVALUATE
                EVALUATE    SPA-NAI-H03-B-TDISASTER (IDX)

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.00    NACL-藤原    18/03/28  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1655,6 +1656,8 @@
                                                (WRK-T09-SELNUM) (1:1)
                        WHEN    "1"
                        WHEN    "2"
+                       WHEN    "3"
+                       WHEN    "4"
                            MOVE    "True"  TO  RECEDMAKES-INCARE-CLASS
                                    (WRK-ERR-PATIENT-MAX WRK-T09-SELNUM)
                    END-EVALUATE

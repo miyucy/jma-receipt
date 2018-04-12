@@ -113,6 +113,7 @@
       *  04.08.04    NACL-藤原    16/10/07  自賠責ＰＤＦファイル作成対応
       *  04.08.05    NACL-藤原    17/04/10  患者単位での点数算定設定
       *                                     （労災準拠又は健保準拠）対応
+      *  04.08.06    NACL-藤原    18/03/28  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1992,6 +1993,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    "老併"          TO  SPA-H01GMN-HRECEIPT-KBN
                WHEN    "2"
                    MOVE    "老健"          TO  SPA-H01GMN-HRECEIPT-KBN
+               WHEN    "3"
+                   MOVE    "医併"          TO  SPA-H01GMN-HRECEIPT-KBN
+               WHEN    "4"
+                   MOVE    "医療"          TO  SPA-H01GMN-HRECEIPT-KBN
            END-EVALUATE
       *
            MOVE    RECE10-SKYYM        TO  SPA-H01NAI-SKYYM

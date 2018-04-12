@@ -176,6 +176,7 @@
       *  04.08.09    NACL-ÌçÏÆ    16/08/23  »ý»²ÌôÂÐ±þ
       *  04.08.10    NACL-ÌçÏÆ    16/09/15  ¥ê¥Ï¥Ó¥ê¥Þ¥¹¥¿ÄÉ²ÃÂÐ±þ
       *  04.08.11    NACL-ÌçÏÆ    18/03/01  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.12    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1410,6 +1411,7 @@
            MOVE      ZERO     TO      FLG-RYOCOM
       *
            IF    RECE62-SRYYM   >=  "200610"
+           AND   RECE62-SRYYM   <=  "201803"
              INITIALIZE                   ORCSRYOCOM-AREA
              MOVE    RECE62-HOSPNUM   TO  LNK-RYOCOM-HOSPNUM
              MOVE    RECE62-PTID      TO  LNK-RYOCOM-PTID
@@ -1877,6 +1879,12 @@
       *
            IF   RECE62-GENBAKU-TOKFLG   =   1
                 PERFORM 2001-GENBAKU-COMMENT-SEC
+           END-IF
+      *
+      *    Ç¥ÉØ¤Î¥³¥á¥ó¥È
+      *
+           IF   RECE62-NINPUFLG   =   1
+                PERFORM 2001-NINPU-COMMENT-SEC
            END-IF
       *
       *****º¹¹þÊÔ½¸£²**********************
@@ -2609,6 +2617,41 @@
       *
            .
        2001-KOHSAIKEI-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ç¥ÉØ¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
+           MOVE    99999960            TO  RECE649-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
+           MOVE    "99"                TO  RECE649-SRYKBN
+           MOVE    WRK-HKNCOMBI-JIDO   TO  RECE649-HKNCOMBI
+           MOVE    1                   TO  RECE649-MEISAISU
+           WRITE   RECE649-REC
+           ADD     1                   TO  CNT-RECE649
+      *
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
+           MOVE    99999960            TO  RECE659-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE659-KOHBUNRI
+           MOVE    "99"                TO  RECE659-SRYKBN
+      *    ¥³¥á¥ó¥È¤ÎÁÞÆþ
+           MOVE    SPACE               TO  WRK-RECE65XX-REC
+           INITIALIZE                      WRK-RECE65XX-REC
+           MOVE    "820100348"         TO  WRK-RECE65XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE65XX-SRYSURYO(1 1)
+           MOVE    2                   TO  WRK-RECE65XX-YUKOKETA(1 1)
+           MOVE    "Ç¥ÉØ"              TO  WRK-RECE65XX-NAME(1 1)
+                                           WRK-RECE65XX-INPUTCOMENT(1 1)
+           MOVE    WRK-RECE65XX-SRYACT-TBL(1 1)
+                                       TO  RECE659-SRYACT-TBL(1)
+           WRITE   RECE659-REC
+           ADD     1                   TO  CNT-RECE659
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9395,16 +9438,24 @@
                                       OR "190153190" OR "190153390"
                                       OR "190153290" OR "190153090"
                                       OR "190182990"
-      ***                             OR "190161470" OR "190161570"
-      ***                             OR "190161870" OR "190162070"
-      ***                             OR "190161670" OR "190161770"
-      ***                             OR "190161970" OR "190162170"
-      ***                             OR "190198570" OR "190198670"
                                       OR "190213790" OR "190214290"
                                       OR "190213890" OR "190214090"
                                       OR "190214390" OR "190213990"
-                                      OR "190214190"               )
+                                      OR "190214190"
+                                      OR "190200970" OR "190214470"
+                                      OR "190205270" OR "190205370"
+                                      OR "190205470" OR "190205870"
+                                      OR "190212670"               )
               MOVE    1     TO    FLG-NG
+           END-IF
+           IF   (RECE64-ZAISKBKBN  =  "2"                          )
+           AND  (FLG-RECE65        =  ZERO                         )
+           AND  (WRK-RECE65-SRYCD(2)  =  "190161470" OR "190161570"
+                                      OR "190161870" OR "190162070"
+                                      OR "190161670" OR "190161770"
+                                      OR "190161970" OR "190162170"
+                                      OR "190198570" OR "190198670")
+              MOVE  ZERO    TO    FLG-NG
            END-IF
       *
       *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
@@ -12353,7 +12404,7 @@
                     IF    RECE651-SRYCD(IDX) =
       *1
                           "113000410" OR "113000510" OR "180000110" OR
-                          "180000210" OR
+                          "180000210" OR "113023910" OR
       *3
                           "113001210" OR "113001310" OR "113002110" OR
       *4

@@ -188,6 +188,7 @@
       *  04.08.09    NACL-門脇    17/12/15  第三者行為現物給付に関わる
       *                                     負担金計算対応
       *  04.08.10    NACL-門脇    18/03/01  平成３０年４月改正対応
+      *  04.08.11    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -378,6 +379,14 @@
            02  WRK-YAKTEN-TBL         OCCURS   10.
               03 WRK-CSY-YAKTEN            PIC 9(07).
       *
+       01  WRK-KANGOGEN-TAIHI-TABLE.
+           02  WRK-KANGOGEN-TAIHI-TBL      OCCURS  2.
+              03 WRK-KANGOGEN-TAIHI-SRYCD  PIC X(09)  OCCURS  31.
+      *
+       01  WRK-KANGOGEN-TABLE.
+           02  WRK-KANGOGEN-TBL            OCCURS 10.
+              03 WRK-KANGOGEN-SRYCD        PIC X(09)  OCCURS  31.
+      *
        01  WRK-SKYYM-TABLE.
            02  WRK-SKYYM-TBL     OCCURS    2.
               03   WRK-SKYYM               PIC X(06).
@@ -444,12 +453,21 @@
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
            03  WRK-KHNTEN                  PIC  9(08). 
+           03  WRK-KHNTEN-MOTO             PIC  9(08).
+           03  WRK-KHNTEN-GEN              PIC  9(08).
+           03  WRK-KHN-ZAITEN              PIC  9(08).
+           03  WRK-KHN-ZAITEN-MOTO         PIC  9(08).
+           03  WRK-KHN-ZAITEN-GEN          PIC  9(08).
+           03  WRK-SENTEI-KHNTEN           PIC  9(08).
+           03  WRK-SENTEI-KHNTEN-MOTO      PIC  9(08).
+           03  WRK-SENTEI-KHNTEN-GEN       PIC  9(08).
+           03  WRK-SENTEI-ZAITEN           PIC  9(08).
+           03  WRK-SENTEI-ZAITEN-MOTO      PIC  9(08).
+           03  WRK-SENTEI-ZAITEN-GEN       PIC  9(08).
            03  WRK-NYUKHNKSNKBN            PIC  9(03).
            03  WRK-KSNTEN                  PIC  S9(08).
            03  NYUIN-COUNT                 PIC  9(02). 
            03  SINRYO-COUNT                PIC  9(04). 
-           03  WRK-SENTEI-ZAITEN           PIC  9(08).
-           03  WRK-SENTEI-KHNTEN           PIC  9(08).
            03  WRK-CHK-SRYCD               PIC  X(09).
            03  WRK-CHUKSNCD                PIC  X(04).
       *
@@ -793,6 +811,9 @@
       *    入院料と異なる食事算定保険組み合わせ取得サブ
            COPY    "CPORCSSKJHKN.INC".
       *
+      *    夜間看護体制特定日減算取得サブ
+           COPY    "CPORCSKANGOGEN.INC".
+      *
       /
       ***
        LINKAGE             SECTION.
@@ -856,6 +877,8 @@
                          WRK-KAIKEING2-TABLE
                          WRK-KOREI-TANYUIN-TABLE
                          WRK-DAISANYUSENFLG-TABLE
+                         WRK-KANGOGEN-TAIHI-TABLE
+                         WRK-KANGOGEN-TABLE
                          WRK-YAKTEN-TABLE
                          WRK-SKJHKN-TABLE
                          WRK-SKJHKN-TAIHI-TABLE
@@ -1524,6 +1547,23 @@
                    IF      LNK-SKJHKN-RC    =    5
                      MOVE    1    TO    WRK-SKJ-ERR1
                    END-IF
+                END-IF
+              END-IF
+      *
+      *       夜間看護体制特定日減算取得
+              IF   WRK-SKYYM(IDX)  >=  "201804"
+                INITIALIZE                   ORCSKANGOGEN-AREA
+                MOVE    LNK-S02-HOSPNUM  TO  LNK-KANGOGEN-HOSPNUM
+                MOVE    LNK-S02-PTID     TO  LNK-KANGOGEN-PTID
+                MOVE    WRK-SKYYM(IDX)   TO  LNK-KANGOGEN-SANTEIYM
+                CALL    "ORCSKANGOGEN"   USING  ORCSKANGOGEN-AREA
+                                                SPA-AREA
+                IF      LNK-KANGOGEN-RC  =   ZERO
+                   PERFORM    VARYING   IDY   FROM   1   BY   1
+                               UNTIL    IDY    >    31
+                     MOVE  LNK-KANGOGEN-SRYCD(IDY)
+                               TO  WRK-KANGOGEN-TAIHI-SRYCD(IDX IDY)
+                   END-PERFORM
                 END-IF
               END-IF
       *
@@ -2930,6 +2970,9 @@
                           TO   WRK-SKJHKN-HKNCOMBI-DOU-XXX(IDX IDY)
                 END-IF
       *
+                MOVE  WRK-KANGOGEN-TAIHI-SRYCD(IDX7 IDY)
+                          TO   WRK-KANGOGEN-SRYCD(IDX IDY)
+      *
               END-PERFORM
       *
       ********
@@ -3615,9 +3658,6 @@ grpsys                            SPA-AREA
                    (NACCT-ZAITEN         NOT =  ZERO)
       *            入院基本料と加減算点数の取得
                    PERFORM   NYUINKHN-GET-SEC
-      ***          IF    WRK-GAIHAKU-SRYCD   NOT =   SPACE
-      ***                MOVE  WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN
-      ***          END-IF
       *            病棟設定の選定自己負担情報の取得
                    INITIALIZE                      ORCSBTUSENTEIAREA
                    MOVE    SYU-HOSPNUM         TO  SBTUSENTEI-HOSPNUM
@@ -3631,13 +3671,30 @@ grpsys                            SPA-AREA
                              UNTIL    SYU-IDX  >   31
                        IF  (SYU-DAY(SYU-IDX)        =  "1" )
                        AND (NACCT-DAY(SYU-IDX)  NOT =  ZERO)
+                           IF   WRK-KANGOGEN-SRYCD(IDX SYU-IDX) = SPACE
+                             MOVE  WRK-KHNTEN-MOTO  TO  WRK-KHNTEN
+                             MOVE  WRK-KHN-ZAITEN-MOTO
+                                             TO  WRK-KHN-ZAITEN
+                             MOVE  WRK-SENTEI-KHNTEN-MOTO
+                                             TO  WRK-SENTEI-KHNTEN
+                             MOVE  WRK-SENTEI-ZAITEN-MOTO
+                                             TO  WRK-SENTEI-ZAITEN
+                           ELSE
+                             MOVE  WRK-KHNTEN-GEN   TO  WRK-KHNTEN
+                             MOVE  WRK-KHN-ZAITEN-GEN
+                                             TO  WRK-KHN-ZAITEN
+                             MOVE  WRK-SENTEI-KHNTEN-GEN
+                                             TO  WRK-SENTEI-KHNTEN
+                             MOVE  WRK-SENTEI-ZAITEN-GEN
+                                             TO  WRK-SENTEI-ZAITEN
+                           END-IF
                            ADD        1      TO    NYUIN-COUNT
                            MOVE   NACCT-DAY(SYU-IDX)                   
                                       TO  TBL-NYUIN(SYU-IDX)           
                            IF    TBL-SENTEI(SYU-IDX)   =   ZERO
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
-                                     ADD    NACCT-ZAITEN
+                                     ADD    WRK-KHN-ZAITEN
                                            TO  SYU-HKNTEN(15)
                                                SDAY-HKNTEN(SYU-IDX)    
       *                          外泊（１５％）
@@ -4880,6 +4937,17 @@ grpsys                              SPA-AREA
        NYUINKHN-GET-SEC           SECTION.
       *
            MOVE    ZERO               TO   WRK-KHNTEN
+           MOVE    ZERO               TO   WRK-KHNTEN-MOTO
+           MOVE    ZERO               TO   WRK-KHNTEN-GEN
+           MOVE    ZERO               TO   WRK-KHN-ZAITEN
+           MOVE    ZERO               TO   WRK-KHN-ZAITEN-MOTO
+           MOVE    ZERO               TO   WRK-KHN-ZAITEN-GEN
+           MOVE    ZERO               TO   WRK-SENTEI-KHNTEN
+           MOVE    ZERO               TO   WRK-SENTEI-KHNTEN-MOTO
+           MOVE    ZERO               TO   WRK-SENTEI-KHNTEN-GEN
+           MOVE    ZERO               TO   WRK-SENTEI-ZAITEN
+           MOVE    ZERO               TO   WRK-SENTEI-ZAITEN-MOTO
+           MOVE    ZERO               TO   WRK-SENTEI-ZAITEN-GEN
            MOVE    ZERO               TO   WRK-NYUKHNKSNKBN
            MOVE    ZERO               TO   WRK-KSNTEN
            MOVE    ZERO               TO   WRK-HYOKETU-TEN
@@ -4925,7 +4993,10 @@ grpsys                            SPA-AREA
                      PERFORM  TENSU-READ-SEC
                      IF       FLG-TENSU      =    ZERO
                          IF   TNS-DATAKBN    =    1
-                              MOVE   TNS-TEN   TO   WRK-KHNTEN
+                              MOVE   TNS-TEN   TO   WRK-KHNTEN-MOTO
+      *                       夜間看護体制特定日減算
+                              COMPUTE  WRK-KHNTEN-GEN   =
+                                      (WRK-KHNTEN-MOTO  * 0.95) +  0.5
                               MOVE   TNS-NYUKHNKSNKBN
                                                TO   WRK-NYUKHNKSNKBN
       *                       入院基本料加算区分置き換え
@@ -4968,8 +5039,21 @@ grpsys                            SPA-AREA
                END-PERFORM
            END-IF
       *
+           COMPUTE  WRK-KHN-ZAITEN-MOTO     =
+                    NACCT-ZAITEN
+           COMPUTE  WRK-KHN-ZAITEN-GEN      =
+                    WRK-KHNTEN-GEN          +
+                    WRK-KSNTEN
+           IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      *      標欠：％減算
+             COMPUTE    WRK-KHN-ZAITEN-GEN      =
+                      ( WRK-KHN-ZAITEN-GEN      -
+                       (WRK-KHN-ZAITEN-GEN      *
+                        (WRK-HYOKETU-TEN   /  100)))  +  0.5
+           END-IF
+      *
       *    入院料剤点チェック
-           COMPUTE  WRK-HIKAKU-ZAITEN = WRK-KHNTEN + WRK-KSNTEN
+           COMPUTE  WRK-HIKAKU-ZAITEN = WRK-KHNTEN-MOTO + WRK-KSNTEN
            IF     WRK-HYOKETU-TEN    NOT =   ZERO
              COMPUTE WRK-HIKAKU-ZAITEN =
                    ( WRK-HIKAKU-ZAITEN -
@@ -4990,21 +5074,14 @@ grpsys                            SPA-AREA
              PERFORM  GAIHAKU-NYUINKHN-SET-SEC
            END-IF
            IF    WRK-GAIHAKU-SRYCD   NOT =   SPACE
-                 MOVE  WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN
+                 MOVE  WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN-MOTO
            END-IF
-      *
-      *    初期加算（及び長期減算）の点数取得
-      ***  MOVE      ZERO              TO  WRK-KSNTEN
-      ***  COMPUTE   WRK-KSNTEN        =   NACCT-ZAITEN   -
-      ***                                  WRK-KHNTEN
       *
            MOVE    "tbl_nyuinact" TO  MCP-TABLE
            MOVE    "key2"         TO  MCP-PATHNAME
            PERFORM   CSR-CLOSE-SEC
       *
       *    選定療養の入院剤点数と基本点数の取得
-           MOVE      ZERO              TO   WRK-SENTEI-ZAITEN
-           MOVE      ZERO              TO   WRK-SENTEI-KHNTEN
            IF        FLG-SENTEI-SET    =    1
                MOVE    ZERO            TO  FLG-SENTEICDCHG
                INITIALIZE  SENTEICDCHG-REC
@@ -5034,15 +5111,26 @@ grpsys                                SPA-AREA
       *           夜勤時間経過減算の選定対応
       *           "190131410","190165810","190165910","190131310"
                   IF   SYU-SRYYMD(1:6) >= "201404"
-                    COMPUTE    WRK-SENTEI-KHNTEN  =
-                              (WRK-KHNTEN * 0.85) +  0.5
-                    COMPUTE    WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
-                                                  +  WRK-KSNTEN
+                    COMPUTE  WRK-SENTEI-KHNTEN-MOTO  =
+                            (WRK-KHNTEN-MOTO * 0.85) +  0.5
+      *             夜間看護体制特定日減算
+                    COMPUTE  WRK-SENTEI-KHNTEN-GEN   =
+                            (WRK-SENTEI-KHNTEN-MOTO  * 0.95) +  0.5
+                    COMPUTE  WRK-SENTEI-ZAITEN-MOTO  =
+                             WRK-SENTEI-KHNTEN-MOTO  +
+                             WRK-KSNTEN
+                    COMPUTE  WRK-SENTEI-ZAITEN-GEN   =
+                             WRK-SENTEI-KHNTEN-GEN   +
+                             WRK-KSNTEN
                     IF     WRK-HYOKETU-TEN    NOT =   ZERO
       *               標欠：％減算
-                      COMPUTE    WRK-SENTEI-ZAITEN  =
-                               ( WRK-SENTEI-ZAITEN  -
-                                (WRK-SENTEI-ZAITEN  *
+                      COMPUTE    WRK-SENTEI-ZAITEN-MOTO  =
+                               ( WRK-SENTEI-ZAITEN-MOTO  -
+                                (WRK-SENTEI-ZAITEN-MOTO  *
+                                 (WRK-HYOKETU-TEN   /  100)))  +  0.5
+                      COMPUTE    WRK-SENTEI-ZAITEN-GEN   =
+                               ( WRK-SENTEI-ZAITEN-GEN   -
+                                (WRK-SENTEI-ZAITEN-GEN   *
                                  (WRK-HYOKETU-TEN   /  100)))  +  0.5
                     END-IF
                   END-IF
@@ -5057,18 +5145,25 @@ grpsys                                SPA-AREA
                                                 TNS-YUKOEDYMD(7:2)
                  PERFORM  TENSU-READ-SEC
                  IF       FLG-TENSU      =    ZERO
-                   MOVE   TNS-TEN      TO   WRK-SENTEI-KHNTEN
-                   COMPUTE    WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
-                                                 +  WRK-KSNTEN
+                   MOVE   TNS-TEN      TO   WRK-SENTEI-KHNTEN-MOTO
+      *            夜間看護体制特定日減算
+                   COMPUTE  WRK-SENTEI-KHNTEN-GEN   =
+                           (WRK-SENTEI-KHNTEN-MOTO  * 0.95) +  0.5
+                   COMPUTE  WRK-SENTEI-ZAITEN-MOTO  =
+                            WRK-SENTEI-KHNTEN-MOTO  +
+                            WRK-KSNTEN
+                   COMPUTE  WRK-SENTEI-ZAITEN-GEN   =
+                            WRK-SENTEI-KHNTEN-GEN   +
+                            WRK-KSNTEN
                    IF     WRK-HYOKETU-TEN    NOT =   ZERO
       *              標欠：％減算
-      ***            COMPUTE    WRK-SENTEI-KHNTEN  =
-      ***                     ( WRK-SENTEI-KHNTEN  -
-      ***                      (WRK-SENTEI-KHNTEN  *
-      ***                       (WRK-HYOKETU-TEN   /  100)))  +  0.5
-                     COMPUTE    WRK-SENTEI-ZAITEN  =
-                              ( WRK-SENTEI-ZAITEN  -
-                               (WRK-SENTEI-ZAITEN  *
+                     COMPUTE    WRK-SENTEI-ZAITEN-MOTO  =
+                              ( WRK-SENTEI-ZAITEN-MOTO  -
+                               (WRK-SENTEI-ZAITEN-MOTO  *
+                                (WRK-HYOKETU-TEN   /  100)))  +  0.5
+                     COMPUTE    WRK-SENTEI-ZAITEN-GEN   =
+                              ( WRK-SENTEI-ZAITEN-GEN   -
+                               (WRK-SENTEI-ZAITEN-GEN   *
                                 (WRK-HYOKETU-TEN   /  100)))  +  0.5
                    END-IF
                  END-IF
@@ -5076,14 +5171,6 @@ grpsys                                SPA-AREA
                END-IF
       *
            END-IF
-      *
-      ***  IF     WRK-HYOKETU-TEN    NOT =   ZERO
-      *      標欠：％減算
-      ***    COMPUTE    WRK-KHNTEN  =
-      ***             ( WRK-KHNTEN  -
-      ***              (WRK-KHNTEN  *
-      ***               (WRK-HYOKETU-TEN   /  100)))  +  0.5
-      ***  END-IF
       *
            .
        NYUINKHN-GET-EXT.

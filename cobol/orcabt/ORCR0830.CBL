@@ -1460,6 +1460,25 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            END-PERFORM
       *
+      *    特別な関係にある他院
+      *
+           IF   (RECE82-TAINFLG          =  "1"     )
+           AND  (RECE82-SRYYM           >=  "201804")
+             MOVE     ZERO     TO    FLG-ARI
+             PERFORM  VARYING  IDY2    FROM    1   BY  1
+                       UNTIL  (IDY2                    >  20  )
+                        OR    (RECE82-NYUSYUBETU(IDY2) = SPACE)
+                        OR    (FLG-ARI                 =   1  )
+               IF  RECE82-NYUSYUBETU(IDY2)(1:4) = "特別"
+                 MOVE  1   TO   FLG-ARI
+               END-IF
+             END-PERFORM
+             IF    FLG-ARI  =  ZERO
+             AND   IDY2    <=   20
+               MOVE   "特別"   TO   RECE82-NYUSYUBETU(IDY2)(1:4)
+             END-IF
+           END-IF
+      *
            .
        2302-RYAKUSYO-HENSYU-EXT.
            EXIT.
