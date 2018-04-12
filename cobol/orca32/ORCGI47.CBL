@@ -2372,8 +2372,8 @@
       *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
+           MOVE    ZERO            TO  SPA-CLIENT-TEMP-FLG
       *
            .
        21011-HYOKAHYO-EXT.

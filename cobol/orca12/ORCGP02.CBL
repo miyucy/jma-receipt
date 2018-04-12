@@ -2871,6 +2871,11 @@
       *    帳票プログラム取得
            PERFORM 21000-PRINT-PG-SEC
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *    再印刷指示なし
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
+      *
            IF     (SPA-CLIENT-PRT-FLG  =   2 )
              OR   (SPA-PRTCONF         =   "1" )
       *        クライアント印刷制御情報取得処理
@@ -2905,6 +2910,7 @@
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
            END-IF
            MOVE    SPACE               TO  SPA-PRT-FLG
+           MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
       *
            .
        49023-HC01-SYORI-EXT.
@@ -2958,9 +2964,6 @@
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
       *
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
-      *
       *    INITIALIZE                  PDMY01
       *    MOVE    SPACE               TO  PDMY01-PANDAPRINT1
       *
@@ -2972,10 +2975,6 @@
                                                ORCSPRTCTRLAREA
                                                MCPAREA
       *    MOVE    ORCSPRTCTRL-OUT     TO  PDMY01-PANDAPRINT1
-      *
-      *    再印刷指示なし
-           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           MOVE    1                   TO  FLG-CLIENT-OK
       *
            .
        4901-CLIENT-PRT-EXT.
@@ -3015,9 +3014,9 @@
                MOVE    "4"             TO  ORCHC01-SYORIKBN
            END-IF
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
+      *    IF      FLG-CLIENT-OK       =   1
                MOVE    "01"                TO  SPA-PRT-FLG
-           END-IF
+      *    END-IF
       *
            CALL    WRK-KARUTE-PG     USING  SPA-AREA
                                             ORCHC01AREA
@@ -3050,11 +3049,11 @@
                MOVE    "4"             TO  ORCHC01-SYORIKBN
            END-IF
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
+      *    IF      FLG-CLIENT-OK       =   1
                MOVE    "01"                TO  SPA-PRT-FLG
       *        再印刷指示なし
                MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
+      *    END-IF
       *
            CALL    WRK-KARUTE-PG       USING  SPA-AREA
                                               ORCHC01AREA
@@ -3079,11 +3078,11 @@
            MOVE    SPA-NAI20-DRCD    (IDX2)       TO  SPA-DRCD (2:)
            MOVE    SPA-GMN20-THKNCOMBI(IDX2)       TO  SPA-HKNCOMBINUM
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
+      *    IF      FLG-CLIENT-OK       =   1
                MOVE    "02"                TO  SPA-PRT-FLG
       *        再印刷指示なし
                MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
+      *    END-IF
       *    印刷
            INITIALIZE                  ORCHC19AREA
            MOVE    ZERO                TO  ORCHC19-RENNUM

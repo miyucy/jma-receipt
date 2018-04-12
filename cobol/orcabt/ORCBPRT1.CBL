@@ -475,7 +475,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                END-IF
       *
                IF    ( TPRT-PRTFLG    =    "D" )
-                   PERFORM 2003-PRTKANRI-DEL-SEC
+                   IF    ( PRTKANRI-SHELLID    NOT =   "API" )
+                       PERFORM 2003-PRTKANRI-DEL-SEC
+                   END-IF
                ELSE
                    PERFORM 2003-PRTKANRI-UPD-SEC
                END-IF

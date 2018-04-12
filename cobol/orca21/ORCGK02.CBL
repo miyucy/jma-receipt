@@ -10689,8 +10689,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
       *
       *    処方箋印刷（Ａ５）
-      *    再印刷
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
            MOVE    "01"                TO  SPA-PRT-FLG
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            INITIALIZE                  ORCHC19AREA
            EVALUATE    FLG-SYOHOU
                WHEN    1
@@ -10722,8 +10725,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
+           MOVE    ZERO                    TO  SPA-CLIENT-TEMP-FLG
       *
            .
        4124-SYOHOU-SYORI-EXT.
@@ -10732,12 +10735,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    クライアント印刷前　処理（頭書）
       *****************************************************************
        41241-SYOHOU-CLIENTPRT-SEC         SECTION.
-      *
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
-      *
-           MOVE    "01"                TO  SPA-PRT-FLG
-           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
       *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
@@ -12677,8 +12674,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
+           MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
       *
            MOVE    SPACE               TO  SPA-KID1-FLG
       *

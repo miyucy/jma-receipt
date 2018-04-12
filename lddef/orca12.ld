@@ -166,6 +166,7 @@ db "xml2" {
  xml_patientmodv3req7;
  xml_patientmodv3res7;
  fm_karte_no1;
+ fm_prescription;
 };
 
 #include "orcadb.inc"

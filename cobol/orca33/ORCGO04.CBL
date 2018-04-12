@@ -3069,10 +3069,10 @@
       *
            MOVE    SPACE           TO  SPA-PRT-FLG
            MOVE    ZERO            TO  SPA-CLIENT-TEMP-FLG
-           IF    ( SPA-CLIENT-PRT-FLG  =   1 )
+      *    IF    ( SPA-CLIENT-PRT-FLG  =   1 )
                MOVE    "01"        TO  SPA-PRT-FLG
                MOVE    2           TO  SPA-CLIENT-TEMP-FLG
-           END-IF
+      *    END-IF
       *
            INITIALIZE                  WRK-SKYPRT-SKYMONEY
                                        WRK-SKYPRT-NYUKIN
@@ -3275,10 +3275,10 @@
       *
            MOVE    SPACE           TO  SPA-PRT-FLG
            MOVE    ZERO            TO  SPA-CLIENT-TEMP-FLG
-           IF    ( SPA-CLIENT-PRT-FLG  =   1 )
+      *    IF    ( SPA-CLIENT-PRT-FLG  =   1 )
                MOVE    "02"        TO  SPA-PRT-FLG
                MOVE    2           TO  SPA-CLIENT-TEMP-FLG
-           END-IF
+      *    END-IF
       *
            MOVE    SPA-AREA            TO  WRK-SPA-AREA
            MOVE    SPA-NAI-O04-SRYYMD  TO  WRK-SPA-SRYYMD
@@ -4544,8 +4544,8 @@
       *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
+           MOVE    ZERO                    TO  SPA-CLIENT-TEMP-FLG
       *
            .
        800-ORCHCDUMMY-EXT.

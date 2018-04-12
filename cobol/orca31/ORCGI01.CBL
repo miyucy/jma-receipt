@@ -8624,10 +8624,10 @@
                                            MCPAREA
            END-IF
       *
-           IF    ( SPA-CLIENT-PRT-FLG  =   1 )
+      *    IF    ( SPA-CLIENT-PRT-FLG  =   1 )
                MOVE     2              TO  SPA-CLIENT-TEMP-FLG
                MOVE    "02"            TO  SPA-PRT-FLG
-           END-IF
+      *    END-IF
       *
       *
            MOVE    SPA-AREA            TO  WRK-SPA-AREA
@@ -8698,6 +8698,7 @@
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
            END-IF
+           MOVE     ZERO                   TO  SPA-CLIENT-TEMP-FLG
       *
            .
        4801-ORCHCN01-CALL-EXT.

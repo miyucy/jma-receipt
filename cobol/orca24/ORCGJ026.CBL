@@ -130,7 +130,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA24SCRAREA.INC".
+           COPY    "J02.INC".
+           COPY    "J021.INC".
+           COPY    "J022.INC".
+           COPY    "J025.INC".
+           COPY    "J026.INC".
+           COPY    "J03.INC".
+           COPY    "J04.INC".
+           COPY    "J041.INC".
+           COPY    "J042.INC".
+           COPY    "J98.INC".
+           COPY    "J99.INC".
+           COPY    "JERR.INC".
+           COPY    "JERR2.INC".
+           COPY    "JID1.INC".
+           COPY    "JID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -580,6 +594,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
+      *
       *ver.4.8
       *    クライアント印刷
            IF     (SPA-CLIENT-PRT-FLG  =   2 )
@@ -601,8 +619,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
+           MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 210-BACK
@@ -617,9 +635,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    クライアント印刷前　処理
       *****************************************************************
        23010-CLIENT-PRT-SEC         SECTION.
-      *
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
