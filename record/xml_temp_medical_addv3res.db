@@ -29,7 +29,8 @@ xml_temp_medical_addv3res {
 			Program_Label	varchar(80);
 		} [10];
 		Output_Count		varchar(10);
-		Print_Id_Information {
+		Data_Id_Information {
+			Data_Id         varchar(37);
 			Print_Id        varchar(37);
 		} [10];
 	};
