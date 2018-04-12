@@ -2786,6 +2786,8 @@
                IF      PTTOKKI-CD          =   "07"
       *****************                    OR  "08"
                                            OR  "09"
+      *H30.4       °åÊ»
+                                           OR  "38"
                    IF     (PTTOKKI-STYM    <=  SPA-SRYYMD(1:6))
                       AND (PTTOKKI-EDYM    >=  SPA-SRYYMD(1:6))
                        MOVE    PTTOKKI-CD      TO  SPA-PTTOKK-KBN
@@ -2825,6 +2827,48 @@
                    IF      FLG-PTKOHINF        =   ZERO
       *                07¡¡£°£·Ï·Ê»¡¡¤È¤¹¤ë
                        MOVE    "07"                TO  SPA-PTTOKK-KBN
+      *                Ì¾¾ÎÊÔ½¸
+                       INITIALIZE                  HKNNUM-REC
+                       MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+                       MOVE    PTKOH-KOHNUM        TO  HKN-HKNNUM
+                       MOVE    "00"                TO  HKN-PAYKBN
+                       MOVE    SPA-SRYYMD          TO  HKN-TEKSTYMD
+                       MOVE    SPA-SRYYMD          TO  HKN-TEKEDYMD
+      *                ÊÝ¸±ÈÖ¹æ¥Þ¥¹¥¿¸¡º÷½èÍý
+                       PERFORM 900-HKNNUM-KEY-READ-SEC
+                       MOVE    HKN-TANSEIDONAME    TO  SPA-PTTOKK-NAIYO
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-PTKOHINF
+               END-IF
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+      *
+           END-IF
+      *
+      *H30.4
+      *    ¸øÈñ¡¡948¡¡È½Äê
+           IF      SPA-PTTOKK-KBN      =   SPACE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+               MOVE    SPA-PTID            TO  PTKOH-PTID
+               MOVE    "948"               TO  PTKOH-KOHNUM
+               MOVE    SPA-SRYYMD          TO  PTKOH-TEKSTYMD
+               MOVE    SPA-SRYYMD          TO  PTKOH-TEKEDYMD
+      *
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key6"              TO  MCP-PATHNAME
+                   PERFORM 970-PTKOHINF-READ-SEC
+                   IF      FLG-PTKOHINF        =   ZERO
+      *                38¡¡£³£¸°åÊ»¡¡¤È¤¹¤ë
+                       MOVE    "38"                TO  SPA-PTTOKK-KBN
       *                Ì¾¾ÎÊÔ½¸
                        INITIALIZE                  HKNNUM-REC
                        MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
