@@ -5033,6 +5033,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        49002-PRINT-SYORI-SEC             SECTION.
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
            IF     (SPA-CLIENT-PRT-FLG  =   2 )
              OR   (SPA-PRTCONF         =   "1" )
       *        クライアント印刷制御情報取得処理
@@ -5045,10 +5047,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *    カルテ印刷
            IF      SPA-GMN-KARUTE          =   "1"   OR  "2"  OR  "3"
       *        クライアント印刷あり
-               IF    ( SPA-CLIENT-PRT-FLG  =   1  )
+      *        IF    ( SPA-CLIENT-PRT-FLG  =   1  )
                    MOVE    "01"            TO  SPA-PRT-FLG
                    MOVE    2               TO  SPA-CLIENT-TEMP-FLG
-               END-IF
+      *        END-IF
                MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
                MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
@@ -5066,10 +5068,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *    処方箋印刷
            IF      SPA-GMN-SYOHO          =   "1"
       *        クライアント印刷あり
-               IF    ( SPA-CLIENT-PRT-FLG  =   1  )
+      *        IF    ( SPA-CLIENT-PRT-FLG  =   1  )
                    MOVE    "02"            TO  SPA-PRT-FLG
                    MOVE    2               TO  SPA-CLIENT-TEMP-FLG
-               END-IF
+      *        END-IF
       *
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
@@ -5111,9 +5113,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        4951-CLIENT-PRT-SEC         SECTION.
       *
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
-      *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
       *    MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
@@ -5136,8 +5135,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *    印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
+           MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
       *
       *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
       *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE

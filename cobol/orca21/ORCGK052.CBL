@@ -601,9 +601,9 @@
       *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
            MOVE    SPACE               TO  SPA-PRT-FLG
+           MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
       *
            .
        3001-PRINT-SYORI-EXT.

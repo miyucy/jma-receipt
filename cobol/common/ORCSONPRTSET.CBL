@@ -75,6 +75,9 @@
            DISPLAY "UUID CALL" UIDIO-AREA.
            MOVE    C-UID           TO  SPA-PRT-UUID
       *
+           MOVE    SPACE           TO  SPA-PRT-FLG
+           MOVE    ZERO            TO  SPA-CLIENT-TEMP-FLG
+      *
            DISPLAY "ORCSONPRTSET ED ="
       *???     
       *

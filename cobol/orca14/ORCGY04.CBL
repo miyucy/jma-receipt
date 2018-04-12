@@ -1135,6 +1135,7 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
       *
            IF     (SPA-CLIENT-PRT-FLG  =   2 )
              OR   (SPA-PRTCONF         =   "1" )
@@ -1184,6 +1185,7 @@
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
            END-IF
+           MOVE    ZERO                    TO  SPA-CLIENT-TEMP-FLG
       *
            .
        440-PRINT-EXT.

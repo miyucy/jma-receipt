@@ -2780,6 +2780,8 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *    再印刷指示なし
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
       *
            IF     (SPA-CLIENT-PRT-FLG  =   2 )
              OR   (SPA-PRTCONF         =   "1" )
@@ -2862,8 +2864,6 @@
                                                ORCSPRTCTRLAREA
                                                MCPAREA
       *****MOVE    ORCSPRTCTRL-OUT     TO  KADMY01-PANDAPRINT1
-      *    再印刷指示なし
-           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            MOVE    1                   TO  FLG-CLIENT-OK
       *
            .
@@ -2893,6 +2893,8 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *    再印刷指示なし
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
       *
            IF    ( SPA-CLIENT-PRT-FLG  =   2 )
              OR  ( SPA-PRTCONF         =   "1" )
@@ -4367,9 +4369,9 @@
       *
            MOVE    SPACE               TO  SPA-PRT-FLG
       *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
+      *     IF      FLG-CLIENT-OK       =   1
                MOVE    "01"                TO  SPA-PRT-FLG
-           END-IF
+      *     END-IF
            CALL    WRK-SYOHOU-PG       USING   SPA-AREA
                                                ORCHC19AREA
       *
@@ -4519,9 +4521,9 @@
            IF      SPA-ERRCD           =   SPACE
               MOVE    SPACE               TO  SPA-PRT-FLG
       *        クライアント印刷
-               IF      FLG-CLIENT-OK       =   1
+      *         IF      FLG-CLIENT-OK       =   1
                    MOVE    "02"                TO  SPA-PRT-FLG
-               END-IF
+      *         END-IF
                CALL    "ORCSCH30"          USING   SPA-AREA
                                                    ORCSCH30AREA
            END-IF
@@ -4701,9 +4703,9 @@
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPACE               TO  SPA-PRT-FLG
       *        クライアント印刷
-               IF      FLG-CLIENT-OK       =   1
+      *         IF      FLG-CLIENT-OK       =   1
                    MOVE    "03"                TO  SPA-PRT-FLG
-               END-IF
+      *         END-IF
                CALL    "ORCSCH62"          USING   SPA-AREA
                                                    ORCSCH62AREA
            END-IF

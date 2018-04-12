@@ -580,6 +580,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
+      *
       *ver.4.8
       *    クライアント印刷
            IF     (SPA-CLIENT-PRT-FLG  =   2 )
@@ -601,8 +605,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
            END-IF
+           MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 210-BACK
@@ -617,9 +621,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    クライアント印刷前　処理
       *****************************************************************
        23010-CLIENT-PRT-SEC         SECTION.
-      *
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA

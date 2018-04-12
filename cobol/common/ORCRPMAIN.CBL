@@ -78,6 +78,7 @@
                05  WRK-NUM2            PIC 9(02).
                05  WRK-SHORI-RENNUM    PIC 9(02).
            03  WRK-DATAID              PIC X(80).
+           03  WRK-RC                  PIC S9(8).
       *
        01  SGYOUMU-CODE                PIC 9(03).
       *
@@ -383,16 +384,13 @@
            MOVE    HC01PARA-BASENAME   TO  SHELLTBL-ARG21
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG22
       *
-      *    IF    ( SPA-CLIENT-PRT-FLG  =   1 )
-      *     AND  ( SPA-CLIENT-TEMP-FLG =   2 )
-      *        MOVE    "D"             TO  SHELLTBL-ARG23
-      *    ELSE
-           IF    ( SPA-API-FLG         =   2 OR 3)
+           EVALUATE    TRUE
+           WHEN  ( SPA-CLIENT-TEMP-FLG =   2 )
+           WHEN  ( SPA-API-FLG         =   2 OR 3)
                MOVE    "D"             TO  SHELLTBL-ARG23
-           ELSE
+           WHEN    OTHER
                MOVE    "1"             TO  SHELLTBL-ARG23
-           END-IF
-      *    END-IF
+           END-EVALUATE
            MOVE    HC01PARA-BASENAME   TO  SHELLTBL-ARG24
            MOVE    RPMAIN-ID           TO  SHELLTBL-ARG25
       *
@@ -450,6 +448,11 @@
       *
            CLOSE                       PRT2-FILE
       *
+           CALL    "CBL_DELETE_FILE"   USING
+                                       PRTOUTPARA
+           RETURNING   WRK-RC
+           END-CALL
+      *
            MOVE    SPACE               TO  WRK-DATAID
            STRING  LNK-PRTKANRI-TBL-KEY    DELIMITED BY SPACE
                    "#"                     DELIMITED BY SIZE
@@ -502,11 +505,13 @@
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
            MOVE    "1"                 TO  SPRT-SITEKBN
-           IF    ( SPA-API-FLG         =   2 OR 3 )
+           EVALUATE    TRUE
+           WHEN  ( SPA-CLIENT-TEMP-FLG =   2 )
+           WHEN  ( SPA-API-FLG         =   2 OR 3)
                MOVE    "D"             TO  SPRT-PRTFLG
-           ELSE
+           WHEN    OTHER
                MOVE    "1"             TO  SPRT-PRTFLG
-           END-IF
+           END-EVALUATE
       *
            MOVE    SPA-PTID            TO  SPRT-PTID
            MOVE    SPACE               TO  SPRT-DATA-TYPE

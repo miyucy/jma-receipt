@@ -1326,6 +1326,8 @@
            END-IF
            IF      SPA-ERRCD           =   SPACE
       *
+      *        印刷制御情報取得サブ
+               CALL    "ORCSONPRTSET"      USING   SPA-AREA
                IF    ( SPA-CLIENT-PRT-FLG  =   2 )
                  OR  ( SPA-PRTCONF         =   "1" )
       *            クライアント印刷制御情報取得処理
@@ -1352,6 +1354,7 @@
                    CALL    "ORCHCDUMMY"    USING   SPA-AREA
                    MOVE    SPACE               TO  SPA-PRT-FLG
                END-IF
+               MOVE    ZERO                    TO  SPA-CLIENT-TEMP-FLG
            END-IF
       *
            .
@@ -1434,10 +1437,10 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-CLIENT-OK       =   1
+      *    IF      FLG-CLIENT-OK       =   1
                MOVE    "01"                TO  SPA-PRT-FLG
                MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
+      *    END-IF
       *
            CALL    WRK-SYOHOU-PG       USING
                                        SPA-AREA
@@ -1469,10 +1472,10 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-CLIENT-OK       =   1
+      *    IF      FLG-CLIENT-OK       =   1
                MOVE    "02"                TO  SPA-PRT-FLG
                MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
+      *    END-IF
       *
            CALL    WRK-CHUSYA-PG       USING
                                        SPA-AREA
@@ -1504,10 +1507,10 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-CLIENT-OK       =   1
+      *    IF      FLG-CLIENT-OK       =   1
                MOVE    "03"                TO  SPA-PRT-FLG
                MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
+      *    END-IF
       *
            CALL    WRK-SIJISEN-PG      USING
                                        SPA-AREA
@@ -1521,8 +1524,6 @@
        4901-CLIENT-PRT-SEC         SECTION.
       *
       * 再印刷なし
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
       *    INITIALIZE                  KDMY01
       *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1

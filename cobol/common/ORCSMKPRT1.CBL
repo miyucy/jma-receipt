@@ -307,8 +307,14 @@
                END-IF
       *
       *        再印刷書き出しの判定
-               IF    ( SPA-PRT-FLG     NOT =   SPACE )
-                   PERFORM 300-REPRINT-SEC
+               IF    ( SPA-PRT-FLG             NOT =   SPACE )
+                   IF    ( SPA-CLIENT-PRT-FLG      =   ZERO )
+                    AND  ( SPA-PRTCONF             =   SPACE )
+                    AND  ( SPA-CLIENT-TEMP-FLG     =   2 )
+                       CONTINUE
+                   ELSE
+                       PERFORM 300-REPRINT-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -356,8 +362,7 @@
       *    FROM
            MOVE    MKPASS-OT-03        TO  SHELLTBL-ARG2
       *    イメージ保持フラグ（T:保持）
-           IF    ( SPA-CLIENT-PRT-FLG  =   1 )
-            AND  ( SPA-CLIENT-TEMP-FLG =   2 )
+           IF    ( SPA-CLIENT-TEMP-FLG =   2 )
                MOVE    "T"             TO  SHELLTBL-ARG3
            END-IF
       *    データ内容
@@ -546,8 +551,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    TO  SHELLTBL-ARG21
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG22
       *
-           IF    ( SPA-CLIENT-PRT-FLG  =   1 )
-            AND  ( SPA-CLIENT-TEMP-FLG =   2 )
+           IF    ( SPA-CLIENT-TEMP-FLG =   2 )
                MOVE    "D"         TO  SHELLTBL-ARG23
            ELSE
                MOVE    "1"         TO  SHELLTBL-ARG23
