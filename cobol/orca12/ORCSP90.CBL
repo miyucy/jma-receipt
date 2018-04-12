@@ -681,8 +681,9 @@
                    END-STRING
       *ver.4.7
                WHEN    "0135"
-                   STRING  "０７入所中・０８入所中の期間が"
-                           "重複しています"
+      *H30.4 ****  STRING  "０７入所中・０８入所中の期間が"
+      ***********          "重複しています"
+                   STRING  "入所中公費の期間が重複しています"
                                                DELIMITED   BY  SPACE
                                                INTO   SPA-ERRMSG
                    END-STRING
@@ -1204,6 +1205,12 @@
                WHEN    "2616"
                    STRING  "この特記事項の開始は"
                            "平成２８年４月からです。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2617"
+                   STRING  "この特記事項の開始は"
+                           "平成３０年４月からです。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
