@@ -41,7 +41,7 @@
        INPUT-OUTPUT                              SECTION.
        FILE-CONTROL.
       *
-       DATA                    DIVISION.
+       DATA                        DIVISION.
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
@@ -195,6 +195,9 @@
            03  WRK-KSNNUM-G.
                05  WRK-KSNNUMFL                    PIC X(03).
                05  WRK-KSNNUM                      PIC 9(02).
+           03  WRK-YKTTYMDNUM-G.
+               05  WRK-YKTTYMDNUMDFL               PIC X(07).
+               05  WRK-YKTTYMDNUM                  PIC 9(02).
       *
        01  WRK-ROW.
            03  WRK-BTULST-ROW                      PIC S9(9)   BINARY.
@@ -608,6 +611,7 @@
            03  CONST-BTUMIKJNCD        PIC X(09) VALUE "188000270".
            03  CONST-KNGHJOCD-MAX      PIC 9(03) VALUE 15.
            03  CONST-5001-KSN-MAX      PIC 9(03) VALUE 14.
+           03  CONST-YKTTYMD-MAX       PIC 9(03) VALUE 12.
            03  CONST-KANSATU           PIC X(02) VALUE "10".
            03  CONST-H180401           PIC X(08) VALUE "20060401".
            03  CONST-H180701           PIC X(08) VALUE "20060701".
@@ -633,6 +637,7 @@
            COPY  "CPSYSKANRI.INC".
       *    ÉÂÅï´ÉÍý
            COPY  "CPSK5001.INC".
+           COPY  "CPSK5008.INC".
       *    ÉÂ¼¼´ÉÍý
            COPY  "CPSK5002.INC".
       *    °åÎÅµ¡´Ø¾ðÊó
@@ -2506,6 +2511,8 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            MOVE    SYSKANRI-REC    TO  SYS-1001-REC
            MOVE    SYS-1001-HOSPSBT
                                    TO  SPA-NAI-W20-HOSPSBT
+           MOVE    SYS-1001-BEDSU
+                                   TO  SPA-NAI-W20-BEDSU
       *
            .
        3101-GET-SYS1001-EXT.
@@ -3087,14 +3094,40 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            EVALUATE    SPA-GMN-W20-KSN-PAGENO
            WHEN    0
                MOVE    1           TO  W20-KSN-PAGENO
-               MOVE    315         TO  SPA-GMN-W20-CUR
            WHEN    1
                MOVE    2           TO  W20-KSN-PAGENO
-               MOVE    331         TO  SPA-GMN-W20-CUR
            WHEN    2
+               MOVE    3           TO  W20-KSN-PAGENO
+           WHEN    3
                MOVE    0           TO  W20-KSN-PAGENO
                MOVE    9           TO  SPA-GMN-W20-CUR
            END-EVALUATE
+      *
+           IF   (  W20-KSN-PAGENO  =   1 )
+               IF    ( W20-LBLKSNP02-STATE =   WIDGET-INSENSITIVE )
+                   MOVE    2       TO  W20-KSN-PAGENO
+               ELSE
+                   MOVE    315     TO  SPA-GMN-W20-CUR
+               END-IF
+           END-IF
+      *
+           IF   (  W20-KSN-PAGENO  =   2 )
+               IF    ( W20-LBLKSNP03-STATE =   WIDGET-INSENSITIVE )
+                   MOVE    3       TO  W20-KSN-PAGENO
+               ELSE
+                   MOVE    331     TO  SPA-GMN-W20-CUR
+               END-IF
+           END-IF
+      *
+           IF   (  W20-KSN-PAGENO  =   3 )
+               IF    ( W20-LBLYKTTYMDP-STATE =   WIDGET-INSENSITIVE )
+                   MOVE    0       TO  W20-KSN-PAGENO
+                   MOVE    9       TO  SPA-GMN-W20-CUR
+               ELSE
+                   MOVE    901     TO  SPA-GMN-W20-CUR
+               END-IF
+           END-IF
+      *
       *
            PERFORM 440-TAB-CHANGE-SEC
       *
@@ -3110,6 +3143,9 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
       *    ²èÌÌ£Ó£Ð£ÁÊÔ½¸½èÍý
            PERFORM 4101-GMN-SPA-SET-SEC
            PERFORM 4101-KASAN-CHK-SEC
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-YKTTYMD-CHK-SEC
+           END-IF
            IF    ( SPA-ERRCD   NOT =   SPACE )
                EVALUATE    SPA-GMN-W20-CUR
                WHEN    9
@@ -3119,6 +3155,8 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                    MOVE    1   TO  W20-KSN-PAGENO
                WHEN    331 THRU    346
                    MOVE    2   TO  W20-KSN-PAGENO
+               WHEN    901 THRU    912
+                   MOVE    3   TO  W20-KSN-PAGENO
                END-EVALUATE
            END-IF
       *
@@ -3247,6 +3285,15 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                END-IF
            END-PERFORM
       *
+      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¥Á¥§¥Ã¥¯
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   CONST-YKTTYMD-MAX )
+      *
+               MOVE    W20-YKTTYMD (IDXA)
+                                   TO  SPA-GMN-W20-YKTTYMD (IDXA)
+      *
+           END-PERFORM
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -3351,6 +3398,11 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4101-KASAN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¥Á¥§¥Ã¥¯
+               PERFORM 4101-YKTTYMD-CHK-SEC
            END-IF
       *
            .
@@ -3596,10 +3648,20 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                MOVE    LNK-DAY6-KEISAN     TO  SYS-EDYUKYMD
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "upd1"          TO  MCP-PATHNAME
+               MOVE    "upd3"          TO  MCP-PATHNAME
                PERFORM 910-DBUPDATE-SEC
                IF   (  MCP-RC      NOT =   ZERO )
                    MOVE    "1205"      TO  SPA-ERRCD
+               END-IF
+      *
+               MOVE    "5008"          TO  SYS-KANRICD
+                                           SYSUP-KANRICD
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "upd3"          TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               IF   (  MCP-RC      NOT =   ZERO )
+                   MOVE    "1209"      TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -4029,6 +4091,7 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
            MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
+           MOVE    SPA-OPID        TO  SYS-OPID
       *
            MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
@@ -4039,6 +4102,46 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            IF   (  MCP-RC      NOT =   ZERO )
                MOVE    "1201"      TO  SPA-ERRCD
            END-IF
+      *
+           IF    ( SYS-5008-TBL    =   SPACE )
+               MOVE    SYSUPD-KEY      TO  SYS-KEY
+               MOVE    "5008"          TO  SYS-KANRICD
+               MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"          TO  MCP-PATHNAME
+               PERFORM 910-DBDELETE-SEC
+           ELSE
+               MOVE    "5008"          TO  SYS-KANRICD
+                                           SYSUP-KANRICD
+               MOVE    SYS-5008-TBL    TO  SYS-KANRITBL
+               MOVE    SYSKANRI-REC    TO  SYS-5008-REC
+               MOVE    SYS-5008-REC    TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "upd1"          TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               IF   (  MCP-RC          =   ZERO )
+                   MOVE    SYS-5008-REC
+                                       TO  SYSKANRI-REC
+                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                   IF    ( FLG-SYSKANRI    =    ZERO )
+                       CONTINUE
+                   ELSE
+                       MOVE    SYS-5008-REC    TO  MCPDATA-REC
+                       MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBINSERT-SEC
+                       IF   (  MCP-RC          =   ZERO )
+                           CONTINUE
+                       ELSE
+                           MOVE    "1211"      TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               ELSE
+                   MOVE    "1210"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+      *
            .
       *
        4201-BTU-UPDATE-EXT.
@@ -4082,6 +4185,7 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            MOVE    SMCNDATE-YMD    TO  SYS-5001-CREYMD
                                        SYS-5001-UPYMD
            MOVE    SMCNDATE-HMS    TO  SYS-5001-UPHMS
+           MOVE    SPA-OPID        TO  SYS-5001-OPID
       *
            MOVE    SYS-5001-REC    TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
@@ -4095,6 +4199,25 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                PERFORM 910-DBINSERT-SEC
                IF   (  MCP-RC      NOT =   ZERO )
                    MOVE    "1202"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SYS-5008-TBL    NOT =   SPACE )
+               MOVE    SYS-5001-KEY    TO  SYS-5008-KEY
+               MOVE    "5008"          TO  SYS-5008-KANRICD
+      *
+               MOVE    SYS-5008-REC    TO  SYSKANRI-REC
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   MOVE    "1207"      TO  SPA-ERRCD
+               ELSE
+                   MOVE    SYS-5008-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF   (  MCP-RC      NOT =   ZERO )
+                       MOVE    "1207"      TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
       *
@@ -4123,6 +4246,16 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                MOVE    "1203"      TO  SPA-ERRCD
            END-IF
       *
+           MOVE    SYS-5001-REC       TO  SYS-5008-REC
+           MOVE    "5008"             TO  SYS-5008-KANRICD
+           MOVE    SYS-5008-REC       TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"     TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF   (  MCP-RC         NOT =   ZERO )
+               MOVE    "1208"      TO  SPA-ERRCD
+           END-IF
+      *
            .
        4201-BTU-DELETE-EXT.
            EXIT.
@@ -4133,6 +4266,9 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
       *
       *    MOVE    SPACE       TO  SYS-5001-REC
       *    INITIALIZE              SYS-5001-REC
+      *
+           MOVE    SPACE           TO  SYS-5008-REC
+           INITIALIZE                  SYS-5008-REC
       *
            MOVE    SPA-HOSPNUM         TO  SYS-5001-HOSPNUM
       *
@@ -4262,6 +4398,19 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
       *    ÉÂÅï½ªÎ»¶èÊ¬
            MOVE    SPA-GMN-W20-EDKBN   TO  SYS-5001-BTU-EDKBN
       *
+      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü
+           MOVE    ZERO                TO  IDXB
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   CONST-YKTTYMD-MAX )
+      *
+               IF    ( SPA-NAI-W20-YKTTYMD (IDXA)  NOT =   SPACE )
+                   COMPUTE IDXB = IDXB +   1
+                   MOVE    SPA-NAI-W20-YKTTYMD (IDXA)
+                                       TO  SYS-5008-YAKANGENYMD (IDXB)
+               END-IF
+      *
+           END-PERFORM
+      *
            .
        4201-BTU-EDIT-EXT.
            EXIT.
@@ -4280,8 +4429,14 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
             AND  ( SPA-GMN-W20-SBT        =   "01" )
             AND  ( SPA-NAI-W20-NYUKHNKBN  =   56 OR 57 )
       *
-               IF    ( SPA-NAI-W20-NYUKHNKBN  NOT =   79 )
-                   MOVE    1       TO  FLG-RYOYOSANTEI
+               MOVE    1       TO  FLG-RYOYOSANTEI
+      *
+               IF    ( SPA-NAI-W20-NYUKHNKBN  =   79 )
+                   MOVE    ZERO    TO  FLG-RYOYOSANTEI
+               END-IF
+      *
+               IF    ( SPA-NAI-W20-KHNSRYCD   =   "190079010" )
+                   MOVE    ZERO    TO  FLG-RYOYOSANTEI
                END-IF
            WHEN  ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H240401 )
             AND  ( SPA-GMN-W20-SBT          =  "08" OR "09" )
@@ -7136,6 +7291,11 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                    PERFORM 4101-NYUINRYO-CLEAR-SEC
            END-EVALUATE
       *
+           IF    ( SPA-NAI-W20-YUKOSTYMD   <   CONST-H300401 )
+               INITIALIZE              SPA-GMN-W20-YKTTYMD-G
+                                       SPA-NAI-W20-YKTTYMD-G
+           END-IF
+      *
            IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
                IF    ( SPA-GMN-W20-SBT NOT =   "04" )
                    MOVE  SPA-GMN-W20-YKNKNGLST (01)
@@ -7401,6 +7561,35 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
        4101-SYOUBTUBRM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4101-YKTTYMD-CHK-SEC                SECTION.
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   CONST-YKTTYMD-MAX )
+      *
+               MOVE    SPACE           TO  SPA-NAI-W20-YKTTYMD (IDXA)
+               IF    ( SPA-GMN-W20-YKTTYMD (IDXA)
+                                   NOT =   SPACE )
+                   MOVE    SPA-GMN-W20-YKTTYMD (IDXA)
+                                       TO  WRK-YMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   IF  ( FLG-HIZUKE-ERR    =  ZERO )
+                       MOVE    WRK-HENYMDG TO SPA-GMN-W20-YKTTYMD (IDXA)
+                       MOVE    WRK-SYMD    TO SPA-NAI-W20-YKTTYMD (IDXA)
+                   ELSE
+                       MOVE    "1005"      TO  SPA-ERRCD
+                       COMPUTE SPA-GMN-W20-CUR = IDXA + 900
+                   END-IF
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4101-YKTTYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ´ð½àÆü
       *****************************************************************
        4100-KJNYMD-CHK-SEC             SECTION.
@@ -7531,11 +7720,10 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                                        SYS-5001-EDYUKYMD
            MOVE    SYS-5001-REC    TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           IF    ( FLG-SYSKANRI    =   1 )
+           IF    ( FLG-SYSKANRI    NOT =   ZERO )
                MOVE    1           TO  FLG-SYS5001
                GO  TO  4100-INPUT-AREA-EDIT-EXT
            END-IF
-      *
            MOVE    SYSKANRI-REC    TO  SYS-5001-REC
       *
       *    Í­¸ú³«»ÏÆü
@@ -7572,6 +7760,16 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
       *    ÆþÎÏ¹àÌÜÎÎ°èÊÔ½¸½èÍý
       *****************************************************************
        41001-INPUT-AREA-EDIT-SEC       SECTION.
+      *
+           INITIALIZE                  SYS-5008-REC
+           MOVE    "5008"          TO  SYS-5008-KANRICD
+           MOVE    SYS-5001-KBNCD  TO  SYS-5008-KBNCD
+           MOVE    SYS-5001-STYUKYMD
+                                   TO  SYS-5008-STYUKYMD
+                                       SYS-5008-EDYUKYMD
+           MOVE    SYS-5008-REC    TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5008-REC
       *
       *    ÉÂÅï¼ïÊÌ
            MOVE    SYS-5001-BTU-SBT    TO  WRK-CMB-CD
@@ -7730,6 +7928,20 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            WHEN    OTHER
                PERFORM 41001-KSN-EDIT-SEC
            END-EVALUATE
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   CONST-YKTTYMD-MAX )
+      *
+               IF    ( SYS-5008-YAKANGENYMD (IDXA)
+                                   NOT =   SPACE )
+                   MOVE    SYS-5008-YAKANGENYMD (IDXA)
+                                       TO  WRK-YMD
+                  PERFORM 800-SEIWA-HEN-SEC
+                  MOVE    WRK-HENYMDG  TO  SPA-GMN-W20-YKTTYMD (IDXA)
+                  MOVE    WRK-SYMD     TO  SPA-NAI-W20-YKTTYMD (IDXA)
+               END-IF
+      *
+           END-PERFORM
       *
            .
        41001-INPUT-AREA-EDIT-EXT.
@@ -11796,6 +12008,13 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
       *
            END-PERFORM
       *
+      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   CONST-YKTTYMD-MAX )
+               MOVE    SPA-GMN-W20-YKTTYMD (IDX1)
+                                   TO  W20-YKTTYMD (IDX1)
+           END-PERFORM
+      *
       *    ÁªÂòÈÖ¹æ
            MOVE    SPA-GMN-W20-SELNUM      TO  W20-SELNUM
       *
@@ -11991,6 +12210,7 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                                        W20-TBTUTYPE-STATE
                                        W20-TBTUTYPE-ITM-STATE
                                        W20-TBTUCD-STATE
+                                       W20-LBLYKTTYMDP-STATE
       *
            IF   ( SPA-GMN-W20-BTULST-SEL    >  ZERO )
                MOVE    WIDGET-INSENSITIVE
@@ -12073,6 +12293,21 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                                        TO  W20-TBTUCD-STATE
            END-IF
       *
+           MOVE    WIDGET-NORMAL       TO  WRK-STATE
+           IF    ( SPA-NAI-W20-HOSPSBT     =   1 )
+            AND  ( SPA-NAI-W20-BEDSU       <   100 )
+            AND  ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H300401 )
+               CONTINUE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  WRK-STATE
+           END-IF
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-YKTTYMD-MAX )
+               MOVE    WRK-STATE       TO  W20-YKTTYMD-STATE (IDX0)
+           END-PERFORM
+           MOVE    WRK-STATE           TO  W20-LBLYKTTYMDP-STATE
+      *
            .
        500-EDIT-GMNHEN-STATE-EXT.
            EXIT.
@@ -12138,6 +12373,10 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                MOVE    "KSN"               TO  WRK-KSNNUM-G
                COMPUTE WRK-KSNNUM = SPA-GMN-W20-CUR - 300
                MOVE    WRK-KSNNUM-G        TO  MCP-WIDGET
+           WHEN    901 THRU  912
+               MOVE    "YKTTYMD"           TO  WRK-YKTTYMDNUM-G
+               COMPUTE WRK-YKTTYMDNUM = SPA-GMN-W20-CUR - 900
+               MOVE    WRK-YKTTYMDNUM-G    TO  MCP-WIDGET
            WHEN    051
                MOVE    "YUKOSTYMD"         TO  MCP-WIDGET
            WHEN    052
@@ -12249,6 +12488,8 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                        MOVE    315     TO  SPA-GMN-W20-CUR
                    WHEN    2
                        MOVE    331     TO  SPA-GMN-W20-CUR
+                   WHEN    3
+                       MOVE    901     TO  SPA-GMN-W20-CUR
                    END-EVALUATE
                END-IF
            END-IF
@@ -12275,6 +12516,25 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                            COMPUTE SPA-GMN-W20-CUR
                                =   IDX-GKSN
                                +   301
+                       END-IF
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   CONST-YKTTYMD-MAX )
+      *
+               IF    ( SPA-GMN-W20-CUR =   IDXA    +   900 )
+                   IF    ( W20-YKTTYMD-STATE (IDXA)
+                                       =   WIDGET-INSENSITIVE )
+                       IF    ( IDXA    =   CONST-YKTTYMD-MAX )
+                           COMPUTE SPA-GMN-W20-CUR
+                               =   51
+                       ELSE
+                           COMPUTE SPA-GMN-W20-CUR
+                               =   IDXA
+                               +   901
                        END-IF
                    END-IF
                END-IF
@@ -12332,6 +12592,8 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                    MOVE    315     TO  SPA-GMN-W20-CUR
                WHEN    2
                    MOVE    331     TO  SPA-GMN-W20-CUR
+               WHEN    3
+                   MOVE    901     TO  SPA-GMN-W20-CUR
                END-EVALUATE
            WHEN    "KNGHJO"
                MOVE    301             TO  SPA-GMN-W20-CUR
@@ -12344,6 +12606,12 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
            WHEN    "KSN14"
            WHEN    "KSN30"
            WHEN    "KSN46"
+               MOVE    051             TO  SPA-GMN-W20-CUR
+           WHEN    "YKTTYMD01" THRU    "YKTTYMD11"
+               COMPUTE SPA-GMN-W20-CUR
+                   =   FUNCTION NUMVAL (WRK-MCP-WIDGET(8:2))
+                   +   901
+           WHEN    "YKTTYMD12"
                MOVE    051             TO  SPA-GMN-W20-CUR
            WHEN    "YUKOSTYMD"
                MOVE    052             TO  SPA-GMN-W20-CUR
@@ -12433,6 +12701,9 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                                        TO  SPA-ERRMSG
            WHEN    "1004"
                MOVE    "Í­¸ú´ü´Ö³«»ÏÆü¡äÍ­¸ú´ü´Ö½ªÎ»Æü¤È¤Ê¤Ã¤Æ¤¤¤Þ¤¹"
+                                       TO  SPA-ERRMSG
+           WHEN    "1005"
+               MOVE    "Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¤ÎÆþÎÏ¤Ë¸í¤ê¤¬¤¢¤ê¤Þ¤¹"
                                        TO  SPA-ERRMSG
            WHEN    "1006"
                MOVE    SPACE           TO  SPA-ERRMSG
@@ -12553,11 +12824,7 @@ NEW   *    £Á£³£±£´Ç§ÃÎ¾ÉÌë´ÖÂÐ±þ²Ã»»
                                            DELIMITED   BY  SIZE
                INTO    SPA-ERRMSG
                END-STRING
-           WHEN    "1201"
-           WHEN    "1202"
-           WHEN    "1203"
-           WHEN    "1204"
-           WHEN    "1205"
+           WHEN    "1201"    THRU    "1211"
                MOVE    "¹¹¿·½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
                                        TO  SPA-ERRMSG
            END-EVALUATE

@@ -642,6 +642,14 @@
                                            OR  "112017010"
                                            OR  "112017150"
                                            OR  "112017450"
+      *
+                                           OR  "113024810"
+                                           OR  "113025710"
+                                           OR  "112023210"
+                                           OR  "112023450"
+                                           OR  "112023750"
+                                           OR  "112023550"
+                                           OR  "112023850"
                                                            )
            OR   (( SRY-SRYCD (IDX-SRYCD)   =   "101120100") AND
                  ( SRY-SRYYM              <=   "201306"   ))
@@ -665,8 +673,7 @@
       *
            IF   (( TNS-DATAKBN             =  "2" )
              AND ( TNS-SRYKBN              =  "11" OR "12" OR "13" )
-             AND ( TNS-TIMEKSNKBN          =  1 OR 2 OR 3
-                                           OR 4 OR 5 OR 6 OR 7))
+             AND ( TNS-TIMEKSNKBN      NOT =  ZERO ))
             OR  (  SRY-SRYCD (IDX-SRYCD)   =  "113005570"
                                            OR "113007770"
                                            OR "113009870"

@@ -672,7 +672,7 @@
       *****************************************************************
        2001-TOKKIINFOLST-SEC               SECTION.
       *
-           MOVE    35              TO  QSUB03-TOKKIINFOLST-MAX
+           MOVE    37              TO  QSUB03-TOKKIINFOLST-MAX
       *
            MOVE    "01"            TO  QSUB03-TOKKIINFOL    (01)
            MOVE    "¸ø"            TO  QSUB03-TOKKIINFOMEIL (01)
@@ -778,6 +778,12 @@
       *
            MOVE    "37"            TO  QSUB03-TOKKIINFOL    (35)
            MOVE    "¿½½Ð"          TO  QSUB03-TOKKIINFOMEIL (35)
+      *
+           MOVE    "38"            TO  QSUB03-TOKKIINFOL    (36)
+           MOVE    "°åÊ»"          TO  QSUB03-TOKKIINFOMEIL (36)
+      *
+           MOVE    "39"            TO  QSUB03-TOKKIINFOL    (37)
+           MOVE    "°åÎÅ"          TO  QSUB03-TOKKIINFOMEIL (37)
       *
            .
        2001-TOKKIINFOLST-EXT.
@@ -1001,7 +1007,8 @@
                MOVE    SPACE           TO  QSUB03-PAYKBNL (IDXK)
            END-IF
       *
-           IF    ( HKN-HKNNUM  =   "950" OR "951" OR "954"
+           IF    ( HKN-HKNNUM  =   "948" OR "949"
+                                OR "950" OR "951" OR "954"
                                 OR "955" OR "956" OR "957"
                                 OR "958" OR "959" OR "960"
                                 OR "961" OR "962" OR "963"
