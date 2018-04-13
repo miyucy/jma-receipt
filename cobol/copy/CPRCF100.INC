@@ -148,6 +148,11 @@
       *Ç¥ÉØ¥Õ¥é¥°
            03  RECE100-NINPUFLG            PIC 9(01).
       *
+      *¸¡ºº¥Õ¥é¥°
+           03  RECE100-KENSA-BNPFLG        PIC 9(01).
+           03  RECE100-KENSA-NTPROFLG      PIC 9(01).
+           03  RECE100-KENSA-ANPFLG        PIC 9(01).
+      *
       *Í½È÷
            03  RECE100-YOBIETC-AREA.
                05  RECE100-YOBIETCINF      OCCURS 10.

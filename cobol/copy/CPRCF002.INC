@@ -910,6 +910,11 @@
       *Ç¥ÉØ¥Õ¥é¥°
            03  RECE02-NINPUFLG                  PIC 9(01).
       *
+      *¸¡ºº¥Õ¥é¥°
+           03  RECE02-KENSA-BNPFLG              PIC 9(01).
+           03  RECE02-KENSA-NTPROFLG            PIC 9(01).
+           03  RECE02-KENSA-ANPFLG              PIC 9(01).
+      *
       *Í½È÷
            03  RECE02-YOBIETC-AREA.
                05  RECE02-YOBIETCINF          OCCURS 20.

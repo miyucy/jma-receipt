@@ -436,8 +436,8 @@
                05  CONS-RIHAKSN2-COMMENT  PIC X(09)   VALUE "180030770".
       *
            03  CONS-RIHA-COMMENT-R REDEFINES CONS-RIHA-COMMENT-VAL.
-               05  CONS-RIHA-COMMENT      PIC X(09)   OCCURS 117.
-           03  CONS-RIHA-COMMENT-MAX      PIC 9(03)   VALUE  117.
+               05  CONS-RIHA-COMMENT      PIC X(09)   OCCURS 118.
+           03  CONS-RIHA-COMMENT-MAX      PIC 9(03)   VALUE  118.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -896,7 +896,8 @@
                    END-IF
                  END-PERFORM
              END-IF
-             IF   SRY-SRYCD(IDX12)  =    CONS-NANBYO-COMMENT
+             IF  (SRY-SRYCD(IDX12)  =    CONS-NANBYO-COMMENT)
+             AND (ACCT-SRYYM       <=    "201803"           )
                  PERFORM  VARYING  IDX3  FROM  1  BY  1
                            UNTIL   IDX3   >   31
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
@@ -909,9 +910,10 @@
                    END-IF
                  END-PERFORM
              END-IF
-             IF   SRY-SRYCD(IDX12)  =    CONS-SYOGAI1-COMMENT
+             IF  (SRY-SRYCD(IDX12)  =    CONS-SYOGAI1-COMMENT
                                    OR    CONS-SYOGAI2-COMMENT
-                                   OR    CONS-SYOGAI3-COMMENT
+                                   OR    CONS-SYOGAI3-COMMENT)
+             AND (ACCT-SRYYM       <=    "201803"            )
                  PERFORM  VARYING  IDX3  FROM  1  BY  1
                            UNTIL   IDX3   >   31
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO

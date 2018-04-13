@@ -1077,6 +1077,11 @@
       *Ç¥ÉØ¥Õ¥é¥°
            03  RECE62-NINPUFLG                  PIC 9(01).
       *
+      *¸¡ºº¥Õ¥é¥°
+           03  RECE62-KENSA-BNPFLG              PIC 9(01).
+           03  RECE62-KENSA-NTPROFLG            PIC 9(01).
+           03  RECE62-KENSA-ANPFLG              PIC 9(01).
+      *
       *Í½È÷
            03  RECE62-YOBIETC-AREA.
                05  RECE62-YOBIETCINF          OCCURS 20.
