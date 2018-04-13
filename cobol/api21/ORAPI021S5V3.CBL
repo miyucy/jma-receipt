@@ -324,12 +324,16 @@
       *    磁気による刺激法開始日
            03  FILLER          PIC X(09)   VALUE  "099400001".
            03  FILLER          PIC X(09)   VALUE  SPACE.
+      *H30.4
+      *    精神科ＳＣ疾患別等専門プログラム加算開始日
+           03  FILLER          PIC X(09)   VALUE  "099830104".
+           03  FILLER          PIC X(09)   VALUE  SPACE.
       *
        01  TBL-RRK-SRYCD-GR    REDEFINES   TBL-RRK-SRYCD-G.
-           03  TBL-RRK-SRYCD-GT        OCCURS    20.
+           03  TBL-RRK-SRYCD-GT        OCCURS    21.
                05  TBL-RRK-SRYCD           PIC X(09).
                05  TBL-END-SRYCD           PIC X(09).
-       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   20.
+       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   21.
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".

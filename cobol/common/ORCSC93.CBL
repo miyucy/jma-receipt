@@ -2367,6 +2367,8 @@
                            MOVE    1               TO  FLG-ZAI
       *H28.4           依存症集団療法開始
                        WHEN    "099830103"
+      *H30.4           精神科ＳＣ疾患別等専門プログラム加算開始日
+                       WHEN    "099830104"
                            MOVE    "80"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "830"           TO  SPA-COM-SRYSYUKBN
