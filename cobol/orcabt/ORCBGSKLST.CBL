@@ -785,7 +785,7 @@
                MOVE    MCPDATA-REC     TO  SYS2KANRI-REC
            ELSE
                INITIALIZE                  SYS2KANRI-REC
-               GO  TO  220-MAIN-SUBCHK2-SEC
+               GO  TO  220-MAIN-SUBCHK2-EXT
            END-IF
       *
            INITIALIZE                  ORCSSKDEFAREA
