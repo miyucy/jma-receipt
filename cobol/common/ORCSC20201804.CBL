@@ -2487,10 +2487,11 @@
                MOVE    "0286"              TO  SPA-ERRCD
            END-IF
       *
+      *H30.4.23 削除
       *    ３０日以上の投薬のみ
-           IF      WRK-COM-KAISU(IDX)  <   30
-               MOVE    "0283"              TO  SPA-ERRCD
-           END-IF
+      *    IF      WRK-COM-KAISU(IDX)  <   30
+      *        MOVE    "0283"              TO  SPA-ERRCD
+      **** END-IF
       *    回数合計
            MOVE    ZERO                TO  WRK-BUN-KAISU
            PERFORM VARYING     IDX-BC  FROM    1   BY  1
