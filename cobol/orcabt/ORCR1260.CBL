@@ -82,6 +82,8 @@
       *                                     ¤Ç¤Î¿©»ö»»ÄêÂÐ±þ
       *  04.08.11    NACL-ÌçÏÆ    17/12/13  Êñ³çÅÀ¿ô¤Î¸ø³²Êä½þË¡¸ºÅÀÊ¬¤Î¥Þ¥¤¥Ê¥¹
       *                                     É½¼¨ÂÐ±þ
+      *  04.08.12    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.13    NACL-ÌçÏÆ    18/04/02  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -175,7 +177,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-RECE220         PIC 9(01).
            03  FLG-RECE230         PIC 9(01).
-      *
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
            03  FLG-TEIGEN          PIC 9(01).
@@ -186,7 +187,6 @@
            03  FLG-SRYCD1          PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-NG              PIC 9(01).
-      *
            03  FLG-GAIJINKEN       PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
@@ -214,6 +214,7 @@
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
            03  IDX6                PIC 9(04).
+           03  IDX8                PIC 9(03).
       *
            03  IDXY                PIC 9(03).
            03  IDXZ                PIC 9(03).
@@ -456,10 +457,12 @@
                 "¥¦¥¤¥ë¥¹¹³ÂÎ²ÁÀºÌ©Â¬Äê".                        
                 05  FILLER         PIC X(50)   VALUE
                 "·ìÞùÃÁÇòÌÈ±Ö³ØÅª¸¡ºº".                        
+                05  FILLER         PIC X(50)   VALUE
+                "°­À­¼ðáç°äÅÁ»Ò¸¡ºº".
             03  WRK-CONS-KENSACOMMENT-R
                                    REDEFINES   WRK-CONS-KENSACOMMENT-G.
                 05  WRK-CONS-KENSACOMMENT 
-                                   PIC X(50)   OCCURS  11.
+                                   PIC X(50)   OCCURS  12.
       *
       *³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»»»ÄêÆü¥Æ¡¼¥Ö¥ë
        01  WRK-KENTAIKASAN-TABLE.
@@ -575,9 +578,11 @@
       *
       *    ½é¿Ç¡¦ºÆ¿Ç¤ÎºÞ¤Þ¤È¤á¾ðÊó
        01  TBL-SORT11-INF.
-         02    TBL-SORT11-OCC              OCCURS  50.
+         02    TBL-SORT11-OCC              OCCURS   3.
            03  TBL-SORT11-FLG              PIC  9(01).
            03  TBL-SORT11-TEN              PIC  9(07).
+           03  TBL-SORT11-YUKOKETA         PIC  9(03).
+           03  TBL-SORT11-NAME             PIC  X(200).
            03  TBL-SORT11-ZAIKAISU         PIC  9(04).
            03  TBL-SORT11-HKNCOMBI         PIC  9(04).
       *
@@ -731,6 +736,25 @@
            03  WRK-CONS-SYOSIN32   PIC X(09)  VALUE "111012610".
       *    ½é¿Ç¡ÊÆ±°ìÆüÊ£¿ô²Ê¼õ¿Ç»þ¤Î£²²ÊÌÜ¡¦ÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
            03  WRK-CONS-SYOSIN33   PIC X(09)  VALUE "111012810".
+      *
+      *    Ç¥ÉØ»þ´Ö³°²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN34   PIC X(09)  VALUE "111012970".
+      *    Ç¥ÉØµÙÆü²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN35   PIC X(09)  VALUE "111013070".
+      *    Ç¥ÉØ¿¼Ìë²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN36   PIC X(09)  VALUE "111013170".
+      *    Ç¥ÉØ»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN37   PIC X(09)  VALUE "111013270".
+      *    Ç¥ÉØ²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN38   PIC X(09)  VALUE "111013370".
+      *    Ç¥ÉØÌë´Ö²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN39   PIC X(09)  VALUE "111013470".
+      *    Ç¥ÉØµÙÆü²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN40   PIC X(09)  VALUE "111013570".
+      *    Ç¥ÉØ¿¼Ìë²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN41   PIC X(09)  VALUE "111013670".
+      *    µ¡Ç½¶¯²½²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN42   PIC X(09)  VALUE "111013770".
       *
       *    ½é¿Ç¡ÊÂ¾°åÎÅµ¡´Ø¤«¤é¤Î¾Ò²ð¾õ¤¬¤Ê¤¤´µ¼Ô¡Ë
            03  WRK-CONS-SYOSIN101  PIC X(09)  VALUE "111012510".
@@ -995,7 +1019,7 @@
       *        ½é¿Ç¡¦ºÆ¿Ç¤ÎºÞ¤Þ¤È¤áÊÔ½¸
                MOVE    ZERO      TO    FLG-TEIGEN
                PERFORM  VARYING  IDX6   FROM   1   BY  1
-                         UNTIL   IDX6    >    50
+                         UNTIL   IDX6    >     3
                  IF      TBL-SORT11-FLG(IDX6)  =   1
                    PERFORM 2010-SYOSAIMATOME-HENSYU1-SEC
                  END-IF
@@ -1402,6 +1426,15 @@
                                             OR  WRK-CONS-SYOSIN30
                                             OR  WRK-CONS-SYOSIN32
                                             OR  WRK-CONS-SYOSIN33
+                                            OR  WRK-CONS-SYOSIN34
+                                            OR  WRK-CONS-SYOSIN35
+                                            OR  WRK-CONS-SYOSIN36
+                                            OR  WRK-CONS-SYOSIN37
+                                            OR  WRK-CONS-SYOSIN38
+                                            OR  WRK-CONS-SYOSIN39
+                                            OR  WRK-CONS-SYOSIN40
+                                            OR  WRK-CONS-SYOSIN41
+                                            OR  WRK-CONS-SYOSIN42
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
@@ -1443,6 +1476,10 @@
                MOVE     1             TO  TBL-SORT11-FLG(IDX6)
                MOVE  TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
                                       TO  TBL-SORT11-TEN(IDX6)
+               MOVE  TBL-ZAIW-YUKOKETA(WRK-WIDX1 WRK-WIDX2)
+                                      TO  TBL-SORT11-YUKOKETA(IDX6)
+               MOVE  TBL-ZAIW-NAME(WRK-WIDX1 WRK-WIDX2)
+                                      TO  TBL-SORT11-NAME(IDX6)
                ADD   RECE220-ZAIKAISU TO  TBL-SORT11-ZAIKAISU(IDX6)
                MOVE  RECE220-HKNCOMBI TO  TBL-SORT11-HKNCOMBI(IDX6)
       *
@@ -1665,7 +1702,10 @@
                ADD     1                  TO  WRK-ZAIWMAX (2)
                                               WRK-ZAIWMAX (6)
                MOVE    WRK-ZAIWMAX (2)    TO  IDZ   
-               IF      WRK-TNS-HOUKNSKBN  <   11
+               IF      WRK-TNS-HOUKNSKBN  =   11
+                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
+                                          TO    TBL-ZAIW-NAME (2 IDZ)
+               ELSE
                    STRING  WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
                                               DELIMITED  BY  SPACE
                            "¡Ê"               DELIMITED  BY  SIZE
@@ -1673,9 +1713,6 @@
                            "¹àÌÜ¡Ë"           DELIMITED  BY  SIZE
                                           INTO    TBL-ZAIW-NAME (2 IDZ)
                    END-STRING
-               ELSE
-                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
-                                          TO    TBL-ZAIW-NAME (2 IDZ)
                END-IF
                PERFORM VARYING IDX FROM   200 BY  -1
                        UNTIL   IDX <      1
@@ -2401,10 +2438,7 @@
       *
            IF  TBL-SORT11-ZAIKAISU(IDX6)  NOT =  ZERO
       *
-               EVALUATE  IDX6
-                 WHEN      1
-                 WHEN      3
-      *
+               IF   TBL-SORT11-YUKOKETA(IDX6) <=  16
                    MOVE    SPACE             TO  WRK-ZAI
                    MOVE    TBL-SORT11-TEN(IDX6)  TO  WRK-ZAITENX
                    MOVE    TBL-SORT11-ZAIKAISU(IDX6)
@@ -2413,31 +2447,22 @@
                    MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
       *
                    MOVE    "¡ö"              TO  WRK-ZAI-MK
-                   EVALUATE  IDX6
-                     WHEN      1
-                       MOVE  "ÅÅ»Ò²½²Ã»»"    TO  WRK-ZAI-NAME(1:10)
-                     WHEN      3
-                       MOVE  "½é¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë"
-                                             TO  WRK-ZAI-NAME(1:22)
-                   END-EVALUATE
+                   MOVE    TBL-SORT11-YUKOKETA(IDX6)
+                                             TO  IDX8
+                   COMPUTE IDX8 = IDX8 * 2
+                   MOVE    TBL-SORT11-NAME(IDX6)(1:IDX8)
+                                             TO  WRK-ZAI-NAME(1:IDX8)
       *
                    MOVE    1                 TO  WRK-SET-LINENUM
                    PERFORM 20101-SYOSAIMATOME-WRITE1-SEC
-      *
-                 WHEN      2
-      *
+               ELSE
                    MOVE    SPACE             TO  WRK-ZAI
                    MOVE    "¡ö"              TO  WRK-ZAI-MK
-                   EVALUATE  IDX6
-                     WHEN      2
-                      IF   RECE200-SRYYM   >=  "201604"
-                       MOVE  "½é¿Ç¡ÊÊ¸½ñ¤Ë¤è¤ë¾Ò²ð¤¬¤Ê¤¤´µ¼Ô¡Ë"
-                                             TO  WRK-ZAI-NAME(1:32)
-                      ELSE
-                       MOVE  "½é¿Ç¡ÊÂ¾°åÎÅµ¡´Ø¤«¤é¤Î¾Ò²ð¾õ¤¬¤Ê¤¤´µ¼Ô¡Ë"
-                                             TO  WRK-ZAI-NAME(1:40)
-                      END-IF
-                   END-EVALUATE
+                   MOVE    TBL-SORT11-YUKOKETA(IDX6)
+                                             TO  IDX8
+                   COMPUTE IDX8 = IDX8 * 2
+                   MOVE    TBL-SORT11-NAME(IDX6)(1:IDX8)
+                                             TO  WRK-ZAI-NAME(1:IDX8)
       *
                    MOVE    1                 TO  WRK-SET-LINENUM
                    PERFORM 20101-SYOSAIMATOME-WRITE1-SEC
@@ -2451,8 +2476,7 @@
       *
                    MOVE    2                 TO  WRK-SET-LINENUM
                    PERFORM 20101-SYOSAIMATOME-WRITE1-SEC
-      *
-               END-EVALUATE
+               END-IF
       *
            END-IF
       *
@@ -2490,9 +2514,7 @@
            MOVE    99999999          TO  RECE240-ZAITEN
            MOVE    ZERO              TO  RECE240-KNSJISKBN
       *
-           IF      IDX6  =  1 OR 2
-             CONTINUE
-           ELSE
+           IF      IDX6  =  1
              MOVE    9               TO  RECE240-CDKBN-SYO
              MOVE    99              TO  RECE240-CDKBN-BU
              MOVE    "9"             TO  RECE240-CDKBN-KBN

@@ -451,6 +451,9 @@
       *                                     µ­Ï¿¤¹¤ë¤è¤¦ÊÑ¹¹
       *  04.08.14    NACL-ÌçÏÆ    17/08/28  Ê¿À®£²£¹Ç¯£±£°·î²þÀµ
       *                                     ¡ÊÆþ±¡»þÀ¸³èÎÅÍÜ¤Î¸«Ä¾¤·¡Ë
+      *  04.08.15    NACL-Æ£¸¶    18/04/06  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¥«¥¿¥«¥Ê¡Ê»áÌ¾¡Ë¡¢´µ¼Ô¾õÂÖ¤ÎÄÉ²Ã
+      *
       *  05.00.02    NACL-°ËÆ£    17/12/20  ¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÂÐ±þ
       *****************************************************************
       *
@@ -1561,7 +1564,7 @@ grpsys     COPY    "COMMON-SPA".
       *    ÌôºÞÎÁ¸ºÅÀ¡Ê¼¾ÉÛÌôÌôºÞÎÁ¾å¸ÂÄ¶¡Ë
            03  WRK-CONS-TEIGEN4       PIC X(09)   VALUE   "630010007".
       *
-      *    ºÆ¿Ç¤Î»þ´Ö²Ã»»
+      *    ºÆ¿Ç¤Î»þ´Ö²Ã»»¡Ê¿ÇÎÅ¶èÊ¬£±£²¡¢¥Ç¡¼¥¿¶èÊ¬£²¡¢¹ð¼¨¼±ÊÌ¶èÊ¬£±¡Ë
            03  WRK-CONS-JIKANGAI-TABLE. 
       *    °ìÈÌ
       *        »þ´Ö³°¡ÊºÆ¿Ç¡Ë
@@ -1630,16 +1633,49 @@ grpsys     COPY    "COMMON-SPA".
       *        ºÆ¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»
                05  FILLER             PIC X(09)    VALUE   "112015570".
       *
+      *    Ç¥ÉØ
+      *        Ç¥ÉØ»þ´Ö³°²Ã»»¡ÊºÆ¿Ç¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112021370".
+      *        Ç¥ÉØµÙÆü²Ã»»¡ÊºÆ¿Ç¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112021470".
+      *        Ç¥ÉØ¿¼Ìë²Ã»»¡ÊºÆ¿Ç¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112021570".
+      *        Ç¥ÉØ»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø²Ã»»¡ÊºÆ¿Ç¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112021670".
+      *        Ç¥ÉØÌë´Ö²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²ÊºÆ¿Ç¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112022170".
+      *        Ç¥ÉØµÙÆü²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²ÊºÆ¿Ç¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112022270".
+      *        Ç¥ÉØ¿¼Ìë²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²ÊºÆ¿Ç¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112022370".
+      *        Ç¥ÉØ»þ´Ö³°²Ã»»¡Ê³°Íè¿ÇÎÅÎÁ¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112022470".
+      *        Ç¥ÉØµÙÆü²Ã»»¡Ê³°Íè¿ÇÎÅÎÁ¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112022570".
+      *        Ç¥ÉØ¿¼Ìë²Ã»»¡Ê³°Íè¿ÇÎÅÎÁ¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112022670".
+      *        Ç¥ÉØ»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø²Ã»»¡Ê³°Íè¿ÇÎÅÎÁ¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112022770".
+      *        Ç¥ÉØÌë´Ö²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²Ê³°Íè¿ÇÎÅÎÁ¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112022970".
+      *        Ç¥ÉØµÙÆü²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²Ê³°Íè¿ÇÎÅÎÁ¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112023070".
+      *        Ç¥ÉØ¿¼Ìë²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²Ê³°Íè¿ÇÎÅÎÁ¡Ë¡ÊÆþ±¡³°¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112023170".
+      *
+      *        ÌôºÞÅ¬Àµ»ÈÍÑÏ¢·È²Ã»»¡ÊºÆ¿Ç¡Ë
+               05  FILLER             PIC X(09)    VALUE   "112021970".
+      *
            03  WRK-CONS-JIKANGAI-TABLE-R  REDEFINES   
                                       WRK-CONS-JIKANGAI-TABLE.
-               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  31.
+               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  46.
                    07  WRK-CONS-JIKANGAI-SRYCD
                                       PIC X(09).
            03  WRK-CONS-JIKANGAI-TEN-TABLE.
-               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  31.
+               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  46.
                    07  WRK-CONS-JIKANGAI-TEN
                                       PIC 9(09).
-           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   31.    
+           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   46.
       *
       *    ±ÕÂÎ»ÀÁÇ¡¦²ÄÈÂ¼°±ÕÂÎ»ÀÁÇÍÆ´ï¡Ê£Ì£Ç£Ã¡Ë
            03  WRK-CONS-SANSO1        PIC X(09)   VALUE   "739210000".
@@ -2703,8 +2739,16 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
       *    °å³ØÅª½èÃÖ£³
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    ÆÃÄê¼ÀÉÂ£³
-           MOVE    1                   TO  WRK-END 
-           PERFORM 5004-MOJI-HENSYU-SEC         
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ¥«¥¿¥«¥Ê¡Ê»áÌ¾¡Ë
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ´µ¼Ô¾õÂÖ 
+           IF      RECE02-NINPUFLG >   ZERO
+               MOVE    "001"           TO  WRK-DATA
+           END-IF
+           MOVE    60                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END
+           PERFORM 5004-MOJI-HENSYU-SEC
       *
            MOVE    1                   TO  FLG-TOTALTEN
            PERFORM 5001-FILE-WRITE-SEC

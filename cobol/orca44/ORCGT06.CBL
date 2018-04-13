@@ -75,6 +75,7 @@
       *  04.08.07    NACL-Æ£¸¶    17/03/08  ½é²èÌÌ¤Î¿ÇÎÅÇ¯·î¤¬·îÅÓÃæ¤Î°åÎÅ
       *                                     ´ü´Ö¥³¡¼¥ÉÊÑ¹¹·î¤Î¤È¤­¤ÎÂÐ±þ
       *  04.08.08    NACL-Æ£¸¶    17/03/09  ´ü´ÖÉ½¼¨¤ÎÀßÄê¤ÎÄÉ²Ã
+      *  04.08.10    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -3341,6 +3342,12 @@
                WHEN    "2"
                    MOVE    "Ï··ò"          TO
                                        SPA-GMN-T09-TRECEIPT-KBN (IDX)
+               WHEN    "3"
+                   MOVE    "°åÊ»"          TO
+                                       SPA-GMN-T09-TRECEIPT-KBN (IDX)
+               WHEN    "4"
+                   MOVE    "°åÎÅ"          TO
+                                       SPA-GMN-T09-TRECEIPT-KBN (IDX)
            END-EVALUATE
       *
            MOVE    RECE10-ETC-YKZFTN (1)
@@ -3895,6 +3902,12 @@
                                        SPA-GMN-T06-R-TRECEIPT-KBN(IDX)
                WHEN    "2"
                    MOVE    "Ï··ò"          TO
+                                       SPA-GMN-T06-R-TRECEIPT-KBN(IDX)
+               WHEN    "3"
+                   MOVE    "°åÊ»"          TO
+                                       SPA-GMN-T06-R-TRECEIPT-KBN(IDX)
+               WHEN    "4"
+                   MOVE    "°åÎÅ"          TO
                                        SPA-GMN-T06-R-TRECEIPT-KBN(IDX)
            END-EVALUATE
       *
@@ -4513,6 +4526,12 @@
                                        SPA-GMN-T06-R-TRECEIPT-KBN(IDX)
                    WHEN    "2"
                        MOVE    "Ï··ò"          TO
+                                       SPA-GMN-T06-R-TRECEIPT-KBN(IDX)
+                   WHEN    "3"
+                       MOVE    "°åÊ»"          TO
+                                       SPA-GMN-T06-R-TRECEIPT-KBN(IDX)
+                   WHEN    "4"
+                       MOVE    "°åÎÅ"          TO
                                        SPA-GMN-T06-R-TRECEIPT-KBN(IDX)
                END-EVALUATE
       *

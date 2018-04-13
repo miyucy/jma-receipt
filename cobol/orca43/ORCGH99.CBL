@@ -78,6 +78,7 @@
       *                                     ¥ì¥»¥×¥È¤ÎÊ¬³äÂÐ±þ
       *  04.08.02    NACL-Æ£¸¶    17/04/10  ´µ¼ÔÃ±°Ì¤Ç¤ÎÅÀ¿ô»»ÄêÀßÄê
       *                                     ¡ÊÏ«ºÒ½àµòËô¤Ï·òÊÝ½àµò¡ËÂÐ±þ
+      *  04.08.03    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -538,6 +539,12 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                                            SPA-H99GMN-TRECEIPT-KBN (IDX)
                    WHEN    "2"
                        MOVE    "Ï··ò"          TO
+                                           SPA-H99GMN-TRECEIPT-KBN (IDX)
+                   WHEN    "3"
+                       MOVE    "°åÊ»"          TO
+                                           SPA-H99GMN-TRECEIPT-KBN (IDX)
+                   WHEN    "4"
+                       MOVE    "°åÎÅ"          TO
                                            SPA-H99GMN-TRECEIPT-KBN (IDX)
                END-EVALUATE
                IF      RECE10-ETC-YKZFTN (1)   >   ZERO

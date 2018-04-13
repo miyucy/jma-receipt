@@ -26,6 +26,7 @@
       *  04.08.01    NACL-門脇    16/03/31  平成２８年４月改正対応
       *  04.08.02    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
       *                                     （記録）対応
+      *  04.08.03    NACL-門脇    18/04/02  平成３０年４月改正対応
       ******************************************************************
       *01  RECE441-REC.
            03  RECE441-KEY.
@@ -120,11 +121,17 @@
       *電話再診
                05  RECE441-DENWASAI-COMMENT
                                            PIC X(01).
+      *電話再診（３０年３月以前継続）
+               05  RECE441-DENWASAI2-COMMENT
+                                           PIC X(01).
       *同日再診
                05  RECE441-DOUJITUSAI-COMMENT
                                            PIC X(01).
       *同日電話再診
                05  RECE441-DOUDENSAI-COMMENT
+                                           PIC X(01).
+      *同日電話再診（３０年３月以前継続）
+               05  RECE441-DOUDENSAI2-COMMENT
                                            PIC X(01).
       *リハビリ
                05  RECE441-RIHABIRI-COMMENT

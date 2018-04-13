@@ -146,6 +146,7 @@
       *                                     主保険名に（特）をつける
       *  04.08.08    NACL-門脇    17/11/01  主保険＋052小児特定＋053児童保護の
       *                                     保険組み合わせ作成対応
+      *  04.08.09    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -177,8 +178,10 @@
            03  FLG-ARI             PIC 9(01).
            03  FLG-HIYATOI         PIC 9(01).
            03  FLG-NYUSYO          PIC 9(01).
+           03  FLG-SAIGAI          PIC 9(01).
            03  FLG-TUUKA           PIC 9(01).
            03  FLG-DAIRSIFLG       PIC 9(01).
+           03  FLG-CHECK           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -217,6 +220,8 @@
            03  IDX9                PIC 9(04).
            03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(04).
+           03  IDY4                PIC 9(04).
+           03  IDY5                PIC 9(04).
            03  IDXR                PIC 9(04).
       *
        01  WRK-KCOMB-AREA.
@@ -401,10 +406,32 @@
            03  WRK-SYOCYO-TEKEDYMD         PIC 9(08).
       *
            03  WRK-NYUSYO-TABLE.
-               05  WRK-NYUSYO-OCC          OCCURS   100.
-                   07  WRK-NYUSYO-TEKSTYMD PIC 9(08).
-                   07  WRK-NYUSYO-TEKEDYMD PIC 9(08).
-                   07  WRK-NYUSYO-JKYSNUM  PIC X(20).
+               05  WRK-NYUSYO-OCC            OCCURS   100.
+                   07  WRK-NYUSYO-TEKSTYMD   PIC 9(08).
+                   07  WRK-NYUSYO-TEKEDYMD   PIC 9(08).
+                   07  WRK-NYUSYO-JKYSNUM    PIC X(20).
+                   07  WRK-NYUSYO-CFLG1      PIC X(01).
+                   07  WRK-NYUSYO-CFLG2      PIC X(01).
+      *
+           03  WRK-SAIGAI-TABLE.
+               05  WRK-SAIGAI-OCC            OCCURS   100.
+                   07  WRK-SAIGAI-TEKSTYMD   PIC 9(08).
+                   07  WRK-SAIGAI-TEKEDYMD   PIC 9(08).
+                   07  WRK-SAIGAI-JKYSNUM    PIC X(20).
+                   07  WRK-SAIGAI-CFLG1      PIC X(01).
+                   07  WRK-SAIGAI-CFLG2      PIC X(01).
+      *
+           03  WRK-BUNKAT-TABLE.
+               05  WRK-BUNKAT-OCC            OCCURS   100.
+                   07  WRK-BUNKAT-TEKSTYMD   PIC 9(08).
+                   07  WRK-BUNKAT-TEKEDYMD   PIC 9(08).
+                   07  WRK-BUNKAT-JKYSNUM    PIC X(20).
+                   07  WRK-BUNKAT-CFLG1      PIC X(01).
+                   07  WRK-BUNKAT-CFLG2      PIC X(01).
+      *
+           03  WRK-BUNKAT-DATA               PIC X(38).
+           03  WRK-CHECK-TEKSTYMD            PIC 9(08).
+           03  WRK-CHECK-TEKEDYMD            PIC 9(08).
       *
            03  WRK-SEIHO-YMD               PIC X(08).
       *
@@ -585,6 +612,12 @@
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    ZERO                TO  FLG-DAIRSIFLG
+           MOVE    ZERO                TO  FLG-NYUSYO
+           MOVE    ZERO                TO  FLG-SAIGAI
+           MOVE    ZERO                TO  IDY3
+           MOVE    ZERO                TO  IDY4
+           INITIALIZE                      WRK-NYUSYO-TABLE
+           INITIALIZE                      WRK-SAIGAI-TABLE
       *    公費情報
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
@@ -614,21 +647,25 @@
                OR     (PTKOH-KOHNUM =
                        "950" OR "951" OR "953" OR "954" OR "955" OR
                        "956" OR "957" OR "958" OR "959" OR
-                       "976" OR "977" OR "978" OR "979"       )
+                       "976" OR "977" OR "978" OR "979" OR
+                       "948" OR "949"                         )
                OR     (PTKOH-KOHNUM(1:2)   =   "96"           )
-                   IF  ((PTKOH-KOHNUM     = "950" OR "951") AND
-                        (PTKOH-SAKJOKBN   =  SPACE        ))
-                   OR  ((PTKOH-KOHNUM     = "959"         ) AND
-                        (PTKOH-SAKJOKBN   =  SPACE        ) AND
-                        (PTKOH-TEKSTYMD  >= "20161001"    ))
-                     MOVE    1             TO  FLG-NYUSYO
-                     ADD     1             TO  IDY3
-                     MOVE  PTKOH-TEKSTYMD  TO  WRK-NYUSYO-TEKSTYMD(IDY3)
-                     MOVE  PTKOH-TEKEDYMD  TO  WRK-NYUSYO-TEKEDYMD(IDY3)
-                     IF   (PTKOH-KOHNUM     = "950" OR "951")
-                     AND  (PTKOH-SAKJOKBN   =  SPACE        )
-                       MOVE  PTKOH-JKYSNUM TO  WRK-NYUSYO-JKYSNUM(IDY3)
-                     END-IF
+                   IF   (PTKOH-KOHNUM     =
+                          "950" OR "951" OR "948" OR "949")
+                   AND  (PTKOH-SAKJOKBN   =  SPACE        )
+                     MOVE   1            TO FLG-NYUSYO
+                     ADD    1            TO IDY3
+                     MOVE PTKOH-TEKSTYMD TO WRK-NYUSYO-TEKSTYMD(IDY3)
+                     MOVE PTKOH-TEKEDYMD TO WRK-NYUSYO-TEKEDYMD(IDY3)
+                     MOVE PTKOH-JKYSNUM  TO WRK-NYUSYO-JKYSNUM(IDY3)
+                   END-IF
+                   IF   (PTKOH-KOHNUM     = "959"     )
+                   AND  (PTKOH-SAKJOKBN   =  SPACE    )
+                   AND  (PTKOH-TEKSTYMD  >= "20161001")
+                     MOVE   1            TO FLG-SAIGAI
+                     ADD    1            TO IDY4
+                     MOVE PTKOH-TEKSTYMD TO WRK-SAIGAI-TEKSTYMD(IDY4)
+                     MOVE PTKOH-TEKEDYMD TO WRK-SAIGAI-TEKEDYMD(IDY4)
                    END-IF
                ELSE
                    ADD     1               TO  CNT-KOH
@@ -1123,158 +1160,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
             END-IF
            END-PERFORM
       *
-      *    （入所分がある場合の編集）
+      *    組合せ出力処理（入所分編集）
            IF    FLG-NYUSYO   =   1
-             PERFORM   VARYING   IDY3   FROM    1   BY  1
-                        UNTIL  ( IDY3   >       100               )
-                         OR    ( WRK-NYUSYO-TEKSTYMD(IDY3) = ZERO )
-      *
-               INITIALIZE           WRK-TCOMB3-AREA
-               MOVE     ZERO    TO  WRK-TCOMB2-MAX
-      *
-               PERFORM   VARYING   IDZ    FROM    1   BY  1
-                          UNTIL  ( IDZ    >       100               )
-                           OR    ( WRK-TCOMB2-TEKSTYMD(IDZ) = SPACE )
-                IF  WRK-TCOMB2-SYU-HKNKOHSBTKBN(IDZ)
-                                                = "4" OR "8" OR "9"
-                 ADD       1    TO  WRK-TCOMB2-MAX
-                 MOVE      WRK-TCOMB2-REC(IDZ)
-                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
-                ELSE
-                 MOVE   ZERO    TO  FLG-TUUKA
-                 IF  (WRK-TCOMB2-TEKSTYMD(IDZ)
-                                         >= WRK-NYUSYO-TEKSTYMD(IDY3))
-                 AND (WRK-TCOMB2-TEKEDYMD(IDZ)
-                                         >  WRK-NYUSYO-TEKEDYMD(IDY3))
-                 AND (WRK-TCOMB2-TEKSTYMD(IDZ)
-                                         <= WRK-NYUSYO-TEKEDYMD(IDY3))
-                   MOVE    1    TO  FLG-TUUKA
-      *
-                   ADD     1    TO  WRK-TCOMB2-MAX
-                   MOVE    WRK-TCOMB2-REC(IDZ)
-                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
-                   MOVE    WRK-NYUSYO-TEKEDYMD(IDY3)  TO
-                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
-      *
-                   ADD     1    TO  WRK-TCOMB2-MAX
-                   MOVE    WRK-TCOMB2-REC(IDZ)
-                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
-                   IF   WRK-NYUSYO-JKYSNUM(IDY3)(1:1) = "1"
-                    MOVE    WRK-NYUSYO-TEKEDYMD(IDY3) TO
-                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
-                   ELSE
-                    INITIALIZE                  STS-AREA-DAY
-                    INITIALIZE                  LNK-DAY6-AREA
-                    MOVE    "61"            TO  LNK-DAY6-IRAI
-                    MOVE    WRK-NYUSYO-TEKEDYMD(IDY3)
-                                            TO  LNK-DAY6-KIJUN
-                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                    MOVE     1              TO  LNK-DAY6-ZOGEN
-                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                                    LNK-DAY6-AREA
-                    MOVE    LNK-DAY6-KEISAN TO
-                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
-                   END-IF
-                 END-IF
-                 IF  (WRK-TCOMB2-TEKSTYMD(IDZ)
-                                         <  WRK-NYUSYO-TEKSTYMD(IDY3))
-                 AND (WRK-TCOMB2-TEKEDYMD(IDZ)
-                                         <= WRK-NYUSYO-TEKEDYMD(IDY3))
-                 AND (WRK-TCOMB2-TEKEDYMD(IDZ)
-                                         >= WRK-NYUSYO-TEKSTYMD(IDY3))
-                   MOVE    1    TO  FLG-TUUKA
-      *
-                   ADD     1    TO  WRK-TCOMB2-MAX
-                   MOVE    WRK-TCOMB2-REC(IDZ)
-                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
-                   IF   WRK-NYUSYO-JKYSNUM(IDY3)(1:1) = "1"
-                    MOVE    WRK-NYUSYO-TEKSTYMD(IDY3) TO
-                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
-                   ELSE
-                    INITIALIZE                  STS-AREA-DAY
-                    INITIALIZE                  LNK-DAY6-AREA
-                    MOVE    "61"            TO  LNK-DAY6-IRAI
-                    MOVE    WRK-NYUSYO-TEKSTYMD(IDY3)
-                                            TO  LNK-DAY6-KIJUN
-                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                    MOVE    -1              TO  LNK-DAY6-ZOGEN
-                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                                    LNK-DAY6-AREA
-                    MOVE    LNK-DAY6-KEISAN TO
-                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
-                   END-IF
-      *
-                   ADD     1    TO  WRK-TCOMB2-MAX
-                   MOVE    WRK-TCOMB2-REC(IDZ)
-                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
-                   MOVE    WRK-NYUSYO-TEKSTYMD(IDY3)  TO
-                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
-                 END-IF
-                 IF  (WRK-TCOMB2-TEKSTYMD(IDZ)
-                                         <  WRK-NYUSYO-TEKSTYMD(IDY3))
-                 AND (WRK-TCOMB2-TEKEDYMD(IDZ)
-                                         >  WRK-NYUSYO-TEKEDYMD(IDY3))
-                   MOVE    1    TO  FLG-TUUKA
-      *
-                   ADD     1    TO  WRK-TCOMB2-MAX
-                   MOVE    WRK-TCOMB2-REC(IDZ)
-                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
-                   IF   WRK-NYUSYO-JKYSNUM(IDY3)(1:1) = "1"
-                    MOVE    WRK-NYUSYO-TEKSTYMD(IDY3) TO
-                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
-                   ELSE
-                    INITIALIZE                  STS-AREA-DAY
-                    INITIALIZE                  LNK-DAY6-AREA
-                    MOVE    "61"            TO  LNK-DAY6-IRAI
-                    MOVE    WRK-NYUSYO-TEKSTYMD(IDY3)
-                                            TO  LNK-DAY6-KIJUN
-                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                    MOVE    -1              TO  LNK-DAY6-ZOGEN
-                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                                    LNK-DAY6-AREA
-                    MOVE    LNK-DAY6-KEISAN TO
-                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
-                   END-IF
-      *
-                   ADD     1    TO  WRK-TCOMB2-MAX
-                   MOVE    WRK-TCOMB2-REC(IDZ)
-                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
-                   MOVE    WRK-NYUSYO-TEKSTYMD(IDY3)  TO
-                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
-                   MOVE    WRK-NYUSYO-TEKEDYMD(IDY3)  TO
-                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
-      *
-                   ADD     1    TO  WRK-TCOMB2-MAX
-                   MOVE    WRK-TCOMB2-REC(IDZ)
-                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
-                   IF   WRK-NYUSYO-JKYSNUM(IDY3)(1:1) = "1"
-                    MOVE    WRK-NYUSYO-TEKEDYMD(IDY3) TO
-                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
-                   ELSE
-                    INITIALIZE                  STS-AREA-DAY
-                    INITIALIZE                  LNK-DAY6-AREA
-                    MOVE    "61"            TO  LNK-DAY6-IRAI
-                    MOVE    WRK-NYUSYO-TEKEDYMD(IDY3)
-                                            TO  LNK-DAY6-KIJUN
-                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                    MOVE     1              TO  LNK-DAY6-ZOGEN
-                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                                    LNK-DAY6-AREA
-                    MOVE    LNK-DAY6-KEISAN TO
-                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
-                   END-IF
-                 END-IF
-                 IF   FLG-TUUKA  =  ZERO
-                   ADD     1    TO  WRK-TCOMB2-MAX
-                   MOVE    WRK-TCOMB2-REC(IDZ)
-                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
-                 END-IF
-                END-IF
-               END-PERFORM
-      *
-               MOVE     WRK-TCOMB3-AREA    TO  WRK-TCOMB2-AREA
-      *
-             END-PERFORM
+             MOVE        1                  TO   FLG-CHECK
+             INITIALIZE  WRK-BUNKAT-TABLE
+             MOVE        WRK-NYUSYO-TABLE   TO   WRK-BUNKAT-TABLE
+             PERFORM     57010X-NC01PARA-BUNKAT-HEN-SEC
+           END-IF
+      *    組合せ出力処理（災害分編集）
+           IF    FLG-SAIGAI   =   1
+             MOVE        ZERO               TO   FLG-CHECK
+             INITIALIZE  WRK-BUNKAT-TABLE
+             MOVE        WRK-SAIGAI-TABLE   TO   WRK-BUNKAT-TABLE
+             PERFORM     57010X-NC01PARA-BUNKAT-HEN-SEC
            END-IF
       *
            PERFORM   VARYING   IDZ   FROM    1   BY  1
@@ -1309,6 +1207,232 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        57010-NC01PARA-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    組合せ出力処理（入所分・災害分編集）
+      *****************************************************************
+       57010X-NC01PARA-BUNKAT-HEN-SEC          SECTION.
+      *
+      *    日付順に並び替え
+           PERFORM  VARYING  IDY3  FROM  1  BY  1
+                     UNTIL  (IDY3                      >  100 )
+                      OR    (WRK-BUNKAT-TEKSTYMD(IDY3) =  ZERO)
+             COMPUTE  IDY4  =  IDY3  +  1
+             PERFORM  VARYING  IDY5  FROM  IDY4  BY  1
+                       UNTIL  (IDY5                      >  100 )
+                        OR    (WRK-BUNKAT-TEKSTYMD(IDY5) =  ZERO)
+               IF   WRK-BUNKAT-TEKSTYMD(IDY3) >
+                                        WRK-BUNKAT-TEKSTYMD(IDY5)
+                 MOVE  WRK-BUNKAT-OCC(IDY3) TO  WRK-BUNKAT-DATA
+                 MOVE  WRK-BUNKAT-OCC(IDY5) TO  WRK-BUNKAT-OCC(IDY3)
+                 MOVE  WRK-BUNKAT-DATA      TO  WRK-BUNKAT-OCC(IDY5)
+               END-IF
+             END-PERFORM
+           END-PERFORM
+      *
+           IF    FLG-CHECK   =   1
+             PERFORM  VARYING  IDY3  FROM  1  BY  1
+                       UNTIL  (IDY3                      >  100 )
+                        OR    (WRK-BUNKAT-TEKSTYMD(IDY3) =  ZERO)
+               MOVE    ZERO                       TO  WRK-CHECK-TEKSTYMD
+               MOVE    ZERO                       TO  WRK-CHECK-TEKEDYMD
+               COMPUTE IDY4  =  IDY3  -  1
+               COMPUTE IDY5  =  IDY3  +  1
+               IF   IDY4  >  ZERO
+                 INITIALIZE                           STS-AREA-DAY
+                 INITIALIZE                           LNK-DAY6-AREA
+                 MOVE  "61"                       TO  LNK-DAY6-IRAI
+                 MOVE  WRK-BUNKAT-TEKSTYMD(IDY3)  TO  LNK-DAY6-KIJUN
+                 MOVE  "1"                        TO  LNK-DAY6-ZOGENPTN
+                 MOVE  -1                         TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"  USING  STS-AREA-DAY
+                                         LNK-DAY6-AREA
+                 MOVE  LNK-DAY6-KEISAN            TO  WRK-CHECK-TEKEDYMD
+               END-IF
+               IF  (IDY5  <  101                             )
+               AND (WRK-BUNKAT-TEKEDYMD(IDY3)  NOT = 99999999)
+                 INITIALIZE                           STS-AREA-DAY
+                 INITIALIZE                           LNK-DAY6-AREA
+                 MOVE  "61"                       TO  LNK-DAY6-IRAI
+                 MOVE  WRK-BUNKAT-TEKEDYMD(IDY3)  TO  LNK-DAY6-KIJUN
+                 MOVE  "1"                        TO  LNK-DAY6-ZOGENPTN
+                 MOVE   1                         TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"  USING  STS-AREA-DAY
+                                         LNK-DAY6-AREA
+                 MOVE  LNK-DAY6-KEISAN            TO  WRK-CHECK-TEKSTYMD
+               END-IF
+      *
+               IF  WRK-CHECK-TEKEDYMD  NOT = ZERO
+                 IF  WRK-CHECK-TEKEDYMD = WRK-BUNKAT-TEKEDYMD(IDY4)
+                       MOVE   "1"   TO   WRK-BUNKAT-CFLG1(IDY3)
+                 END-IF
+               END-IF
+               IF  WRK-CHECK-TEKSTYMD  NOT = ZERO
+                 IF  WRK-CHECK-TEKSTYMD = WRK-BUNKAT-TEKSTYMD(IDY5)
+                       MOVE   "1"   TO   WRK-BUNKAT-CFLG2(IDY3)
+                 END-IF
+               END-IF
+             END-PERFORM
+           END-IF
+      *
+           PERFORM   VARYING   IDY3   FROM    1   BY  1
+                      UNTIL  ( IDY3   >       100               )
+                       OR    ( WRK-BUNKAT-TEKSTYMD(IDY3) = ZERO )
+      *
+             INITIALIZE           WRK-TCOMB3-AREA
+             MOVE     ZERO    TO  WRK-TCOMB2-MAX
+      *
+             PERFORM   VARYING   IDZ    FROM    1   BY  1
+                        UNTIL  ( IDZ    >       100               )
+                         OR    ( WRK-TCOMB2-TEKSTYMD(IDZ) = SPACE )
+               IF  WRK-TCOMB2-SYU-HKNKOHSBTKBN(IDZ)
+                                               = "4" OR "8" OR "9"
+                 ADD       1    TO  WRK-TCOMB2-MAX
+                 MOVE      WRK-TCOMB2-REC(IDZ)
+                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
+               ELSE
+                 MOVE   ZERO    TO  FLG-TUUKA
+                 IF  (WRK-TCOMB2-TEKSTYMD(IDZ)
+                                         >= WRK-BUNKAT-TEKSTYMD(IDY3))
+                 AND (WRK-TCOMB2-TEKEDYMD(IDZ)
+                                         >  WRK-BUNKAT-TEKEDYMD(IDY3))
+                 AND (WRK-TCOMB2-TEKSTYMD(IDZ)
+                                         <= WRK-BUNKAT-TEKEDYMD(IDY3))
+                   MOVE    1    TO  FLG-TUUKA
+      *
+                   ADD     1    TO  WRK-TCOMB2-MAX
+                   MOVE    WRK-TCOMB2-REC(IDZ)
+                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
+                   MOVE    WRK-BUNKAT-TEKEDYMD(IDY3)  TO
+                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
+      *
+                   ADD     1    TO  WRK-TCOMB2-MAX
+                   MOVE    WRK-TCOMB2-REC(IDZ)
+                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
+                   IF   WRK-BUNKAT-JKYSNUM(IDY3)(1:1) = "1"
+                   AND  WRK-BUNKAT-CFLG2(IDY3)        = SPACE
+                    MOVE    WRK-BUNKAT-TEKEDYMD(IDY3) TO
+                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
+                   ELSE
+                    INITIALIZE                  STS-AREA-DAY
+                    INITIALIZE                  LNK-DAY6-AREA
+                    MOVE    "61"            TO  LNK-DAY6-IRAI
+                    MOVE    WRK-BUNKAT-TEKEDYMD(IDY3)
+                                            TO  LNK-DAY6-KIJUN
+                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                    MOVE     1              TO  LNK-DAY6-ZOGEN
+                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                    LNK-DAY6-AREA
+                    MOVE    LNK-DAY6-KEISAN TO
+                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
+                   END-IF
+                 END-IF
+                 IF  (WRK-TCOMB2-TEKSTYMD(IDZ)
+                                         <  WRK-BUNKAT-TEKSTYMD(IDY3))
+                 AND (WRK-TCOMB2-TEKEDYMD(IDZ)
+                                         <= WRK-BUNKAT-TEKEDYMD(IDY3))
+                 AND (WRK-TCOMB2-TEKEDYMD(IDZ)
+                                         >= WRK-BUNKAT-TEKSTYMD(IDY3))
+                   MOVE    1    TO  FLG-TUUKA
+      *
+                   ADD     1    TO  WRK-TCOMB2-MAX
+                   MOVE    WRK-TCOMB2-REC(IDZ)
+                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
+                   IF   WRK-BUNKAT-JKYSNUM(IDY3)(1:1) = "1"
+                   AND  WRK-BUNKAT-CFLG1(IDY3)        = SPACE
+                    MOVE    WRK-BUNKAT-TEKSTYMD(IDY3) TO
+                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
+                   ELSE
+                    INITIALIZE                  STS-AREA-DAY
+                    INITIALIZE                  LNK-DAY6-AREA
+                    MOVE    "61"            TO  LNK-DAY6-IRAI
+                    MOVE    WRK-BUNKAT-TEKSTYMD(IDY3)
+                                            TO  LNK-DAY6-KIJUN
+                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                    MOVE    -1              TO  LNK-DAY6-ZOGEN
+                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                    LNK-DAY6-AREA
+                    MOVE    LNK-DAY6-KEISAN TO
+                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
+                   END-IF
+      *
+                   ADD     1    TO  WRK-TCOMB2-MAX
+                   MOVE    WRK-TCOMB2-REC(IDZ)
+                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
+                   MOVE    WRK-BUNKAT-TEKSTYMD(IDY3)  TO
+                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
+                 END-IF
+                 IF  (WRK-TCOMB2-TEKSTYMD(IDZ)
+                                         <  WRK-BUNKAT-TEKSTYMD(IDY3))
+                 AND (WRK-TCOMB2-TEKEDYMD(IDZ)
+                                         >  WRK-BUNKAT-TEKEDYMD(IDY3))
+                   MOVE    1    TO  FLG-TUUKA
+      *
+                   ADD     1    TO  WRK-TCOMB2-MAX
+                   MOVE    WRK-TCOMB2-REC(IDZ)
+                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
+                   IF   WRK-BUNKAT-JKYSNUM(IDY3)(1:1) = "1"
+                   AND  WRK-BUNKAT-CFLG1(IDY3)        = SPACE
+                    MOVE    WRK-BUNKAT-TEKSTYMD(IDY3) TO
+                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
+                   ELSE
+                    INITIALIZE                  STS-AREA-DAY
+                    INITIALIZE                  LNK-DAY6-AREA
+                    MOVE    "61"            TO  LNK-DAY6-IRAI
+                    MOVE    WRK-BUNKAT-TEKSTYMD(IDY3)
+                                            TO  LNK-DAY6-KIJUN
+                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                    MOVE    -1              TO  LNK-DAY6-ZOGEN
+                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                    LNK-DAY6-AREA
+                    MOVE    LNK-DAY6-KEISAN TO
+                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
+                   END-IF
+      *
+                   ADD     1    TO  WRK-TCOMB2-MAX
+                   MOVE    WRK-TCOMB2-REC(IDZ)
+                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
+                   MOVE    WRK-BUNKAT-TEKSTYMD(IDY3)  TO
+                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
+                   MOVE    WRK-BUNKAT-TEKEDYMD(IDY3)  TO
+                               WRK-TCOMB3-TEKEDYMD(WRK-TCOMB2-MAX)
+      *
+                   ADD     1    TO  WRK-TCOMB2-MAX
+                   MOVE    WRK-TCOMB2-REC(IDZ)
+                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
+                   IF   WRK-BUNKAT-JKYSNUM(IDY3)(1:1) = "1"
+                   AND  WRK-BUNKAT-CFLG2(IDY3)        = SPACE
+                    MOVE    WRK-BUNKAT-TEKEDYMD(IDY3) TO
+                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
+                   ELSE
+                    INITIALIZE                  STS-AREA-DAY
+                    INITIALIZE                  LNK-DAY6-AREA
+                    MOVE    "61"            TO  LNK-DAY6-IRAI
+                    MOVE    WRK-BUNKAT-TEKEDYMD(IDY3)
+                                            TO  LNK-DAY6-KIJUN
+                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                    MOVE     1              TO  LNK-DAY6-ZOGEN
+                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                    LNK-DAY6-AREA
+                    MOVE    LNK-DAY6-KEISAN TO
+                               WRK-TCOMB3-TEKSTYMD(WRK-TCOMB2-MAX)
+                   END-IF
+                 END-IF
+                 IF   FLG-TUUKA  =  ZERO
+                   ADD     1    TO  WRK-TCOMB2-MAX
+                   MOVE    WRK-TCOMB2-REC(IDZ)
+                                TO  WRK-TCOMB3-REC(WRK-TCOMB2-MAX)
+                 END-IF
+               END-IF
+             END-PERFORM
+      *
+             MOVE     WRK-TCOMB3-AREA    TO  WRK-TCOMB2-AREA
+      *
+           END-PERFORM
+      *
+           .
+       57010X-NC01PARA-BUNKAT-HEN-EXT.
            EXIT.
       *
       *****************************************************************

@@ -234,6 +234,8 @@
       *                                     ¶¦ºÑÁÈ¹ç¤òÄÉ²Ã
       *  04.08.16    NACL-ÌçÏÆ    17/07/03  ¡ÊºÒ£±¡ËÅù¤Îµ­ºÜ¤ò³ç¸Ì¤Ê¤·¤Ç
       *                                     µ­ºÜ¤¹¤ë¤è¤¦ÊÑ¹¹
+      *  04.08.17    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *
       *  05.00.02    NACL-°ËÆ£    17/12/20  ¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÂÐ±þ
       *****************************************************************
       *
@@ -946,11 +948,15 @@
            03  FILLER          PIC X(10)   VALUE   "£¹£·".
            03  FILLER          PIC X(02)   VALUE   "37".
            03  FILLER          PIC X(10)   VALUE   "£³£·¿½½Ð".
+           03  FILLER          PIC X(02)   VALUE   "38".
+           03  FILLER          PIC X(10)   VALUE   "£³£¸°åÊ»".
+           03  FILLER          PIC X(02)   VALUE   "39".
+           03  FILLER          PIC X(10)   VALUE   "£³£¹°åÎÅ".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   29.
+           03  TBL-TOKKI       OCCURS   31.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
-       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   29.
+       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   31.
       *
       *   ¾É¾õ¾Üµ­¶èÊ¬¤ÎÉ½Âê
        01  TBL-RECECOM-AREA.

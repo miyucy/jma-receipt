@@ -245,6 +245,8 @@
       *                                     （入院時生活療養の見直し）
       *  04.08.22    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
       *                                     での食事算定対応
+      *  04.08.23    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *
       *  05.00.02    NACL-伊藤    17/12/20  診療情報システム対応
       *****************************************************************
       *
@@ -997,11 +999,17 @@
            03  FILLER          PIC X(10)   VALUE   "９７".
            03  FILLER          PIC X(02)   VALUE   "37".
            03  FILLER          PIC X(10)   VALUE   "３７申出".
+           03  FILLER          PIC X(02)   VALUE   "37".
+           03  FILLER          PIC X(10)   VALUE   "３７申出".
+           03  FILLER          PIC X(02)   VALUE   "38".
+           03  FILLER          PIC X(10)   VALUE   "３８医併".
+           03  FILLER          PIC X(02)   VALUE   "39".
+           03  FILLER          PIC X(10)   VALUE   "３９医療".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   37.
+           03  TBL-TOKKI       OCCURS   39.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
-       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   37.
+       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   39.
       *
       *   症状詳記区分の表題
        01  TBL-RECECOM-AREA.

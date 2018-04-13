@@ -56,6 +56,7 @@
       *  04.08.06    NACL-ÌçÏÆ    16/09/15  ¥ê¥Ï¥Ó¥ê¥Þ¥¹¥¿ÄÉ²ÃÂÐ±þ
       *  04.08.07    NACL-Æ£¸¶    17/03/02  Ì¤¥³¡¼¥É²½ÆÃÄê´ïºà¥³¡¼¥ÉÇÑ»ßÂÐ±þ
       *  04.08.08    NACL-ÌçÏÆ    18/03/01  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.09    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -275,6 +276,7 @@
            03  CNT-RECE84-RE       PIC 9(06).
            03  CNT-RECE85-RE       PIC 9(06).
            03  CNT-RIHA            PIC 9(06).
+           03  CNT-KENSA           PIC 9(06).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1152,6 +1154,7 @@
            MOVE      ZERO     TO      FLG-RYOCOM
       *
            IF    RECE82-SRYYM   >=  "200610"
+           AND   RECE82-SRYYM   <=  "201803"
              INITIALIZE                   ORCSRYOCOM-AREA
              MOVE    RECE82-HOSPNUM   TO  LNK-RYOCOM-HOSPNUM
              MOVE    RECE82-PTID      TO  LNK-RYOCOM-PTID
@@ -1191,6 +1194,17 @@
                  END-PERFORM
                END-PERFORM
              END-IF
+           END-IF
+      *
+           MOVE  ZERO        TO    CNT-KENSA
+           IF   RECE82-KENSA-BNPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE82-KENSA-NTPROFLG   =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE82-KENSA-ANPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
            END-IF
       *
            IF   RECE82-COMCNTFLG   =   "1"
@@ -1534,6 +1548,11 @@
              IF      STS-DAY-RC1            =   ZERO
                 PERFORM    2001-SEISIN-SKJ-COMMENT-SEC
              END-IF
+           END-IF
+      *
+      *    Ç¥ÉØ¤Î¥³¥á¥ó¥È
+           IF   RECE82-NINPUFLG   =   1
+                PERFORM    2001-NINPU-COMMENT-SEC
            END-IF
       *
            PERFORM 800-RECE82-SET84-SEC
@@ -2081,6 +2100,37 @@
       *
            .
        2001-NYUINRYO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ç¥ÉØ¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE82-SET849-SEC
+           MOVE    99999960            TO  RECE849-ZAINUM
+           MOVE    "99"                TO  RECE849-SRYKBN
+           MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
+           MOVE    1                   TO  RECE849-MEISAISU
+           PERFORM 800-RECE849-WRITE-SEC
+      *
+           PERFORM 800-RECE82-SET859-SEC
+           MOVE    99999960            TO  RECE859-ZAINUM
+           MOVE    "99"                TO  RECE859-SRYKBN
+           MOVE    SPACE               TO  WRK-RECE85XX-REC
+           INITIALIZE                      WRK-RECE85XX-REC
+           MOVE    "820100348"         TO  WRK-RECE85XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE85XX-SRYSURYO(1 1)
+           MOVE    2                   TO  WRK-RECE85XX-YUKOKETA(1 1)
+           MOVE    "Ç¥ÉØ"              TO  WRK-RECE85XX-NAME(1 1)
+                                           WRK-RECE85XX-INPUTCOMENT(1 1)
+           MOVE    "1"                 TO  WRK-RECE85XX-SIKFLG(1 1)
+           MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
+                                       TO  RECE859-SRYACT-TBL(1)
+           PERFORM 800-RECE859-WRITE-SEC
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6048,7 +6098,11 @@
       *****************************************************************
        2001-KENSA-HANTEI-SEC          SECTION.
       *
-           IF     RECE84-FLG-KENSA-COMMENT    =    "1"
+           IF  ((RECE82-SRYYM  >= "201804"       ) AND
+                (RECE84-FLG-KENSA-COMMENT  =  "1") AND
+                (CNT-KENSA                >=   2 ))
+           OR  ((RECE82-SRYYM  <= "201803"       ) AND
+                (RECE84-FLG-KENSA-COMMENT  =  "1"))
                INITIALIZE            WRK-JIDO-SETCOM-AREA
       ***      MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
       ***      MOVE       15      TO     WRK-JIDO-SETCOMATFLG
@@ -7455,16 +7509,24 @@
                                       OR "190153190" OR "190153390"
                                       OR "190153290" OR "190153090"
                                       OR "190182990"
-      ***                             OR "190161470" OR "190161570"
-      ***                             OR "190161870" OR "190162070"
-      ***                             OR "190161670" OR "190161770"
-      ***                             OR "190161970" OR "190162170"
-      ***                             OR "190198570" OR "190198670"
                                       OR "190213790" OR "190214290"
                                       OR "190213890" OR "190214090"
                                       OR "190214390" OR "190213990"
-                                      OR "190214190"               )
+                                      OR "190214190"
+                                      OR "190200970" OR "190214470"
+                                      OR "190205270" OR "190205370"
+                                      OR "190205470" OR "190205870"
+                                      OR "190212670"               )
               MOVE    1     TO    FLG-NG
+           END-IF
+           IF   (RECE84-ZAISKBKBN  =  "2"                          )
+           AND  (FLG-RECE85        =  ZERO                         )
+           AND  (WRK-RECE85-SRYCD(2)  =  "190161470" OR "190161570"
+                                      OR "190161870" OR "190162070"
+                                      OR "190161670" OR "190161770"
+                                      OR "190161970" OR "190162170"
+                                      OR "190198570" OR "190198670")
+              MOVE  ZERO    TO    FLG-NG
            END-IF
       *
       *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
@@ -10418,7 +10480,7 @@
                     IF   (RECE851-SRYCD(IDX) =
       *1
                           "113000410" OR "113000510" OR "180000110" OR
-                          "180000210" OR
+                          "180000210" OR "113023910" OR
       *3
                           "113001210" OR "113001310" OR "113002110" OR
       *4

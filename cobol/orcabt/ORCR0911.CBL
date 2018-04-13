@@ -50,6 +50,8 @@
       *                                     ¤Ç¤Î¿©»ö»»ÄêÂÐ±þ
       *  04.08.10    NACL-ÌçÏÆ    17/12/13  Êñ³çÅÀ¿ô¤Î¸ø³²Êä½þË¡¸ºÅÀÊ¬¤Î¥Þ¥¤¥Ê¥¹
       *                                     É½¼¨ÂÐ±þ
+      *  04.08.11    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.12    NACL-ÌçÏÆ    18/04/02  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -181,8 +183,10 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
+           03  IDX5                PIC 9(04).
            03  IDX6                PIC 9(04).
-           03  IDX8                PIC 9(04).
+           03  IDX8                PIC 9(03).
+           03  IDX10               PIC 9(03).
       *
            03  IDW3                PIC 9(04).
       *
@@ -411,9 +415,11 @@
                 "¥¦¥¤¥ë¥¹¹³ÂÎ²ÁÀºÌ©Â¬Äê".                        
                 05  FILLER                 PIC X(50)   VALUE
                 "·ìÞùÃÁÇòÌÈ±Ö³ØÅª¸¡ºº".                        
+                05  FILLER                 PIC X(50)   VALUE
+                "°­À­¼ðáç°äÅÁ»Ò¸¡ºº".
             03  WRK-CONS-KENSACOMMENT-R    REDEFINES
                                            WRK-CONS-KENSACOMMENT-G.
-                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  11.
+                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  12.
       *³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»»»ÄêÆü¥Æ¡¼¥Ö¥ë
        01  WRK-KENTAIKASAN-TABLE.
            03  WRK-KENTAIKASAN             PIC 9(01)
@@ -507,9 +513,11 @@
       *
       *    ½é¿Ç¡¦ºÆ¿Ç¤ÎºÞ¤Þ¤È¤á¾ðÊó
        01  TBL-SORT11-INF.
-         02    TBL-SORT11-OCC              OCCURS  50.
+         02    TBL-SORT11-OCC              OCCURS   3.
            03  TBL-SORT11-FLG              PIC  9(01).
            03  TBL-SORT11-TEN              PIC  9(07).
+           03  TBL-SORT11-YUKOKETA         PIC  9(03).
+           03  TBL-SORT11-NAME             PIC  X(200).
            03  TBL-SORT11-ZAIKAISU         PIC  9(04).
            03  TBL-SORT11-HKNCOMBI         PIC  9(04).
       *
@@ -660,6 +668,25 @@
            03  WRK-CONS-SYOSIN32   PIC X(09)  VALUE "111012610".
       *    ½é¿Ç¡ÊÆ±°ìÆüÊ£¿ô²Ê¼õ¿Ç»þ¤Î£²²ÊÌÜ¡¦ÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë
            03  WRK-CONS-SYOSIN33   PIC X(09)  VALUE "111012810".
+      *
+      *    Ç¥ÉØ»þ´Ö³°²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN34   PIC X(09)  VALUE "111012970".
+      *    Ç¥ÉØµÙÆü²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN35   PIC X(09)  VALUE "111013070".
+      *    Ç¥ÉØ¿¼Ìë²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN36   PIC X(09)  VALUE "111013170".
+      *    Ç¥ÉØ»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN37   PIC X(09)  VALUE "111013270".
+      *    Ç¥ÉØ²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN38   PIC X(09)  VALUE "111013370".
+      *    Ç¥ÉØÌë´Ö²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN39   PIC X(09)  VALUE "111013470".
+      *    Ç¥ÉØµÙÆü²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN40   PIC X(09)  VALUE "111013570".
+      *    Ç¥ÉØ¿¼Ìë²Ã»»¡Ê»º²ÊËô¤Ï»ºÉØ¿Í²Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN41   PIC X(09)  VALUE "111013670".
+      *    µ¡Ç½¶¯²½²Ã»»¡Ê½é¿Ç¡Ë
+           03  WRK-CONS-SYOSIN42   PIC X(09)  VALUE "111013770".
       *
       *    ½é¿Ç¡ÊÂ¾°åÎÅµ¡´Ø¤«¤é¤Î¾Ò²ð¾õ¤¬¤Ê¤¤´µ¼Ô¡Ë
            03  WRK-CONS-SYOSIN101  PIC X(09)  VALUE "111012510".
@@ -996,7 +1023,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *        ½é¿Ç¡¦ºÆ¿Ç¤ÎºÞ¤Þ¤È¤áÊÔ½¸
                MOVE    ZERO      TO    FLG-TEIGEN
                PERFORM  VARYING  IDX6   FROM   1   BY  1
-                         UNTIL   IDX6    >    50
+                         UNTIL   IDX6    >     3
                  IF      TBL-SORT11-FLG(IDX6)  =   1
                    PERFORM 2010-SYOSAIMATOME-HENSYU1-SEC
                  END-IF
@@ -1483,6 +1510,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                             OR  WRK-CONS-SYOSIN30
                                             OR  WRK-CONS-SYOSIN32
                                             OR  WRK-CONS-SYOSIN33
+                                            OR  WRK-CONS-SYOSIN34
+                                            OR  WRK-CONS-SYOSIN35
+                                            OR  WRK-CONS-SYOSIN36
+                                            OR  WRK-CONS-SYOSIN37
+                                            OR  WRK-CONS-SYOSIN38
+                                            OR  WRK-CONS-SYOSIN39
+                                            OR  WRK-CONS-SYOSIN40
+                                            OR  WRK-CONS-SYOSIN41
+                                            OR  WRK-CONS-SYOSIN42
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
@@ -1525,6 +1561,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                MOVE     1             TO  TBL-SORT11-FLG(IDX6)
                MOVE  TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
                                       TO  TBL-SORT11-TEN(IDX6)
+               MOVE  TBL-ZAIW-YUKOKETA(WRK-WIDX1 WRK-WIDX2)
+                                      TO  TBL-SORT11-YUKOKETA(IDX6)
+               MOVE  TBL-ZAIW-NAME(WRK-WIDX1 WRK-WIDX2)
+                                      TO  TBL-SORT11-NAME(IDX6)
                ADD   RECE84-ZAIKAISU  TO  TBL-SORT11-ZAIKAISU(IDX6)
                MOVE  RECE84-HKNCOMBI  TO  TBL-SORT11-HKNCOMBI(IDX6)
       *
@@ -1751,7 +1791,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                ADD     1                  TO  WRK-ZAIWMAX (2)
                                               WRK-ZAIWMAX (6)
                MOVE    WRK-ZAIWMAX (2)    TO  IDZ   
-               IF      WRK-TNS-HOUKNSKBN  <   11
+               IF      WRK-TNS-HOUKNSKBN  =   11
+                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
+                                          TO    TBL-ZAIW-NAME (2 IDZ)
+               ELSE
                    STRING  WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
                                               DELIMITED  BY  SPACE
                            "¡Ê"               DELIMITED  BY  SIZE
@@ -1759,9 +1802,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                            "¹àÌÜ¡Ë"           DELIMITED  BY  SIZE
                                           INTO    TBL-ZAIW-NAME (2 IDZ)
                    END-STRING
-               ELSE
-                   MOVE    WRK-CONS-KENSACOMMENT (WRK-TNS-HOUKNSKBN)
-                                          TO    TBL-ZAIW-NAME (2 IDZ)
                END-IF
                PERFORM VARYING IDX FROM   200 BY  -1
                        UNTIL   IDX <      1
@@ -2527,20 +2567,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
            IF  TBL-SORT11-ZAIKAISU(IDX6)  NOT =  ZERO
       *
-               EVALUATE  IDX6
-                 WHEN      1
-                 WHEN      3
-      *
+               IF   TBL-SORT11-YUKOKETA(IDX6) <=  14
                    INITIALIZE                    WRK-ZAI2
                    MOVE    SPACE             TO  WRK-ZAI
                    MOVE    "¡ö"              TO  WRK-ZAI-MK
-                   EVALUATE  IDX6
-                     WHEN      1
-                       MOVE  "ÅÅ»Ò²½²Ã»»"    TO  WRK-ZAI-NAME(1:10)
-                     WHEN      3
-                       MOVE  "½é¿Ç¡ÊÂÅ·ëÎ¨£µ³ä°Ê²¼¡Ë"
-                                             TO  WRK-ZAI-NAME(1:22)
-                   END-EVALUATE
+                   MOVE    TBL-SORT11-YUKOKETA(IDX6)
+                                             TO  IDX8
+                   COMPUTE IDX8 = IDX8 * 2
+                   MOVE    TBL-SORT11-NAME(IDX6)(1:IDX8)
+                                             TO  WRK-ZAI-NAME(1:IDX8)
       *
                    INITIALIZE                          WRK-ZAI2
                    MOVE  1                         TO  WRK-ZAI2-KISAIFLG
@@ -2549,35 +2584,24 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
                    MOVE    1                 TO  WRK-SET-LINENUM
                    PERFORM 20101-SYOSAIMATOME-WRITE1-SEC
-      *
-                 WHEN      2
-      *
+               ELSE
                    INITIALIZE                    WRK-ZAI2
                    MOVE    SPACE             TO  WRK-ZAI
                    MOVE    "¡ö"              TO  WRK-ZAI-MK
-                   EVALUATE  IDX6
-                     WHEN      2
-                      IF   RECE82-SRYYM   >=  "201604"
-                       MOVE  "½é¿Ç¡ÊÊ¸½ñ¤Ë¤è¤ë¾Ò²ð¤¬¤Ê¤¤´µ¡õ"
-                                             TO  WRK-ZAI-NAME(1:30)
-                      ELSE
-                       MOVE  "½é¿Ç¡ÊÂ¾°åÎÅµ¡´Ø¤«¤é¤Î¾Ò²ð¾õ¡õ"
-                                             TO  WRK-ZAI-NAME(1:30)
-                      END-IF
-                   END-EVALUATE
+                   MOVE    TBL-SORT11-NAME(IDX6)(1:28)
+                                             TO  WRK-ZAI-NAME(1:28)
+                   MOVE    "¡õ"              TO  WRK-ZAI-NAME(29:2)
       *
                    MOVE    1                 TO  WRK-SET-LINENUM
                    PERFORM 20101-SYOSAIMATOME-WRITE1-SEC
       *@
                    MOVE    SPACE             TO  WRK-ZAI
-                   EVALUATE  IDX6
-                     WHEN      2
-                      IF   RECE82-SRYYM   >=  "201604"
-                       MOVE  "¼Ô¡Ë"          TO  WRK-ZAI-NAME(1:4)
-                      ELSE
-                       MOVE  "¤¬¤Ê¤¤´µ¼Ô¡Ë"  TO  WRK-ZAI-NAME(1:12)
-                      END-IF
-                   END-EVALUATE
+                   MOVE    TBL-SORT11-YUKOKETA(IDX6)
+                                             TO  IDX8
+                   COMPUTE IDX10 = IDX8 - 14
+                   COMPUTE IDX10 = IDX10 * 2
+                   MOVE    TBL-SORT11-NAME(IDX6)(29:IDX10)
+                                             TO  WRK-ZAI-NAME(1:IDX10)
       *
                    INITIALIZE                          WRK-ZAI2
                    MOVE  1                         TO  WRK-ZAI2-KISAIFLG
@@ -2586,8 +2610,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
                    MOVE    2                 TO  WRK-SET-LINENUM
                    PERFORM 20101-SYOSAIMATOME-WRITE1-SEC
-      *
-               END-EVALUATE
+               END-IF
       *
            END-IF
       *
@@ -2626,9 +2649,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
            MOVE    99999999          TO  RECE86-ZAITEN
            MOVE    ZERO              TO  RECE86-KNSJISKBN
       *
-           IF      IDX6  =  1 OR 2
-             CONTINUE
-           ELSE
+           IF      IDX6  =  1
              MOVE    9               TO  RECE86-CDKBN-SYO
              MOVE    99              TO  RECE86-CDKBN-BU
              MOVE    "9"             TO  RECE86-CDKBN-KBN
@@ -2970,10 +2991,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    MOVE    WRK-KOUI          TO  WRK-ZAI-NAME
                    PERFORM 4303-ZAITBL-TENSO-SEC
              WHEN    WRK-WCLM    <=  58
-                   PERFORM  VARYING  IDX8   FROM   1   BY  28
-                             UNTIL   IDX8    >    28
+                   PERFORM  VARYING  IDX5   FROM   1   BY  28
+                             UNTIL   IDX5    >    28
                      MOVE  SPACE             TO  WRK-ZAI-NAME
-                     MOVE  WRK-KOUI(IDX8:28) TO  WRK-ZAI-NAME(1:28)
+                     MOVE  WRK-KOUI(IDX5:28) TO  WRK-ZAI-NAME(1:28)
                      MOVE  "¡õ"              TO  WRK-ZAI-NAME(29:2)
                      PERFORM 4303-ZAITBL-TENSO-SEC
                    END-PERFORM
@@ -2981,10 +3002,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    MOVE    WRK-KOUI(29:30)   TO  WRK-ZAI-NAME
                    PERFORM 4303-ZAITBL-TENSO-SEC
              WHEN    WRK-WCLM    <=  86
-                   PERFORM  VARYING  IDX8   FROM   1   BY  28
-                             UNTIL   IDX8    >    56
+                   PERFORM  VARYING  IDX5   FROM   1   BY  28
+                             UNTIL   IDX5    >    56
                      MOVE  SPACE             TO  WRK-ZAI-NAME
-                     MOVE  WRK-KOUI(IDX8:28) TO  WRK-ZAI-NAME(1:28)
+                     MOVE  WRK-KOUI(IDX5:28) TO  WRK-ZAI-NAME(1:28)
                      MOVE  "¡õ"              TO  WRK-ZAI-NAME(29:2)
                      PERFORM 4303-ZAITBL-TENSO-SEC
                    END-PERFORM
@@ -2992,10 +3013,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    MOVE    WRK-KOUI(57:30)   TO  WRK-ZAI-NAME
                    PERFORM 4303-ZAITBL-TENSO-SEC
              WHEN    WRK-WCLM    <=  114
-                   PERFORM  VARYING  IDX8   FROM   1   BY  28
-                             UNTIL   IDX8    >    84
+                   PERFORM  VARYING  IDX5   FROM   1   BY  28
+                             UNTIL   IDX5    >    84
                      MOVE  SPACE             TO  WRK-ZAI-NAME
-                     MOVE  WRK-KOUI(IDX8:28) TO  WRK-ZAI-NAME(1:28)
+                     MOVE  WRK-KOUI(IDX5:28) TO  WRK-ZAI-NAME(1:28)
                      MOVE  "¡õ"              TO  WRK-ZAI-NAME(29:2)
                      PERFORM 4303-ZAITBL-TENSO-SEC
                    END-PERFORM
@@ -3003,10 +3024,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    MOVE    WRK-KOUI(85:30)   TO  WRK-ZAI-NAME
                    PERFORM 4303-ZAITBL-TENSO-SEC
              WHEN    WRK-WCLM    <=  142
-                   PERFORM  VARYING  IDX8   FROM   1   BY  28
-                             UNTIL   IDX8    >   112
+                   PERFORM  VARYING  IDX5   FROM   1   BY  28
+                             UNTIL   IDX5    >   112
                      MOVE  SPACE             TO  WRK-ZAI-NAME
-                     MOVE  WRK-KOUI(IDX8:28) TO  WRK-ZAI-NAME(1:28)
+                     MOVE  WRK-KOUI(IDX5:28) TO  WRK-ZAI-NAME(1:28)
                      MOVE  "¡õ"              TO  WRK-ZAI-NAME(29:2)
                      PERFORM 4303-ZAITBL-TENSO-SEC
                    END-PERFORM
@@ -3014,10 +3035,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    MOVE    WRK-KOUI(113:30)  TO  WRK-ZAI-NAME
                    PERFORM 4303-ZAITBL-TENSO-SEC
              WHEN    WRK-WCLM    <=  170
-                   PERFORM  VARYING  IDX8   FROM   1   BY  28
-                             UNTIL   IDX8    >   140
+                   PERFORM  VARYING  IDX5   FROM   1   BY  28
+                             UNTIL   IDX5    >   140
                      MOVE  SPACE             TO  WRK-ZAI-NAME
-                     MOVE  WRK-KOUI(IDX8:28) TO  WRK-ZAI-NAME(1:28)
+                     MOVE  WRK-KOUI(IDX5:28) TO  WRK-ZAI-NAME(1:28)
                      MOVE  "¡õ"              TO  WRK-ZAI-NAME(29:2)
                      PERFORM 4303-ZAITBL-TENSO-SEC
                    END-PERFORM
@@ -3025,10 +3046,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    MOVE    WRK-KOUI(141:30)  TO  WRK-ZAI-NAME
                    PERFORM 4303-ZAITBL-TENSO-SEC
              WHEN    WRK-WCLM    <=  198
-                   PERFORM  VARYING  IDX8   FROM   1   BY  28
-                             UNTIL   IDX8    >   168
+                   PERFORM  VARYING  IDX5   FROM   1   BY  28
+                             UNTIL   IDX5    >   168
                      MOVE  SPACE             TO  WRK-ZAI-NAME
-                     MOVE  WRK-KOUI(IDX8:28) TO  WRK-ZAI-NAME(1:28)
+                     MOVE  WRK-KOUI(IDX5:28) TO  WRK-ZAI-NAME(1:28)
                      MOVE  "¡õ"              TO  WRK-ZAI-NAME(29:2)
                      PERFORM 4303-ZAITBL-TENSO-SEC
                    END-PERFORM
@@ -3036,10 +3057,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    MOVE    WRK-KOUI(169:30)  TO  WRK-ZAI-NAME
                    PERFORM 4303-ZAITBL-TENSO-SEC
              WHEN    WRK-WCLM    <=  226
-                   PERFORM  VARYING  IDX8   FROM   1   BY  28
-                             UNTIL   IDX8    >   196
+                   PERFORM  VARYING  IDX5   FROM   1   BY  28
+                             UNTIL   IDX5    >   196
                      MOVE  SPACE             TO  WRK-ZAI-NAME
-                     MOVE  WRK-KOUI(IDX8:28) TO  WRK-ZAI-NAME(1:28)
+                     MOVE  WRK-KOUI(IDX5:28) TO  WRK-ZAI-NAME(1:28)
                      MOVE  "¡õ"              TO  WRK-ZAI-NAME(29:2)
                      PERFORM 4303-ZAITBL-TENSO-SEC
                    END-PERFORM
@@ -3047,10 +3068,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    MOVE    WRK-KOUI(197:30)  TO  WRK-ZAI-NAME
                    PERFORM 4303-ZAITBL-TENSO-SEC
              WHEN    WRK-WCLM    >   226
-                   PERFORM  VARYING  IDX8   FROM   1   BY  28
-                             UNTIL   IDX8    >   224
+                   PERFORM  VARYING  IDX5   FROM   1   BY  28
+                             UNTIL   IDX5    >   224
                      MOVE  SPACE             TO  WRK-ZAI-NAME
-                     MOVE  WRK-KOUI(IDX8:28) TO  WRK-ZAI-NAME(1:28)
+                     MOVE  WRK-KOUI(IDX5:28) TO  WRK-ZAI-NAME(1:28)
                      MOVE  "¡õ"              TO  WRK-ZAI-NAME(29:2)
                      PERFORM 4303-ZAITBL-TENSO-SEC
                    END-PERFORM

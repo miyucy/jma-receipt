@@ -29,6 +29,8 @@
       *  04.07.02    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
       *                                     算定フラグ追加
       *  04.08.01    NACL-門脇    16/04/15  平成２８年４月改正対応
+      *  04.08.02    NACL-門脇    18/03/27  平成３０年４月改正対応
+      *  04.08.03    NACL-門脇    18/04/06  平成３０年４月改正対応
       ********************************************************************
       *01  RECE200-REC.
            03  RECE200-KEY.
@@ -277,6 +279,18 @@
       *入院料日別診療区分情報
            03  RECE200-NYUDAYINF.
                05  RECE200-NYUDAY-SRYKBN   PIC X(02)  OCCURS 31.
+      *
+      *夜間看護体制特定日減算情報
+           03  RECE200-KANGOGENINF.
+               05  RECE200-KANGOGEN-SRYCD  PIC X(09)  OCCURS 31.
+      *
+      *妊婦フラグ
+           03  RECE200-NINPUFLG            PIC 9(01).
+      *
+      *検査フラグ
+           03  RECE200-KENSA-BNPFLG        PIC 9(01).
+           03  RECE200-KENSA-NTPROFLG      PIC 9(01).
+           03  RECE200-KENSA-ANPFLG        PIC 9(01).
       *
       *予備
            03  RECE200-YOBIETC-AREA.

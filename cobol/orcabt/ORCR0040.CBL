@@ -180,6 +180,7 @@
       *                                     管理料の算定日コメント対応
       *  04.08.11    NACL-門脇    16/12/07  遠隔モニタリング加算の前回算定年月
       *                                     コメント記載修正
+      *  04.08.12    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -408,6 +409,7 @@
            03  CNT-SANTEIKA        PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
+           03  CNT-KENSA           PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -446,6 +448,9 @@
            03  IDX37               PIC 9(03).
            03  IDX38               PIC 9(02).
            03  IDX39               PIC 9(02).
+           03  IDX40               PIC 9(02).
+           03  IDX41               PIC 9(02).
+           03  IDX42               PIC 9(02).
            03  DAY-IDX             PIC 9(04).
            03  DAY-IDX2            PIC 9(02).
            03  IDY                 PIC 9(04).
@@ -594,6 +599,7 @@
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
+           03  WRK-SINPESU-SRYCD             PIC X(09).
            03  WRK-SINPESU-YMD               PIC X(08).
            03  WRK-SINPESUR-YMD              PIC X(08).
            03  WRK-ZAIKYO-YMD                PIC X(08).
@@ -845,6 +851,8 @@
            03  CONS-NINRYO5         PIC X(09) VALUE "180047810".
       *    医療観察認知療法・認知行動療法（精神保健指定医と看護師が共同）
            03  CONS-NINRYO7         PIC X(09) VALUE "188010610".
+      *    認知療法・認知行動療法（医師）
+           03  CONS-NINRYO8         PIC X(09) VALUE "180056410".
       *
       *    認知症専門診断管理料２
            03  CONS-NINSEN          PIC X(09) VALUE "113014610".
@@ -855,6 +863,8 @@
            03  CONS-SINPESUR1       PIC X(09) VALUE "113015010".
       *    心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
            03  CONS-SINPESUR2       PIC X(09) VALUE "113015130".
+      *    心臓ペースメーカー指導管理料（イ以外）
+           03  CONS-SINPESUR3       PIC X(09) VALUE "113001610".
       *
       *    がん患者指導管理料（医師・看護師が心理的不安軽減のため面接）
            03  CONS-GANSIDO1        PIC X(09) VALUE "113015310".
@@ -909,6 +919,8 @@
                05  CNT-DENWA              PIC 9(06).
                05  CNT-DOUJITU            PIC 9(06).
                05  CNT-DOUDEN             PIC 9(06).
+               05  CNT-DENWA2             PIC 9(06).
+               05  CNT-DOUDEN2            PIC 9(06).
                05  TBL-COUNT-HKNCOMBI     PIC 9(04).
       *
        01  TBL-HASSYO-INF.
@@ -1454,6 +1466,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE  ZERO                  TO  WRK-HKNCOMBI-JIDO
            MOVE  ZERO                  TO  WRK-HKNCOMBI-JIDO2
       *
+           MOVE  ZERO        TO    CNT-KENSA
+           IF   RECE02-KENSA-BNPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE02-KENSA-NTPROFLG   =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE02-KENSA-ANPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+      *
            IF   RECE02-COMCNTFLG   =   "1"
       *
              PERFORM 800-RECE02-SET04-SEC
@@ -1506,6 +1529,24 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                    =    RECE04-KOHBUNRI  +  1
                         ADD   RECE04-ZAIKAISU  
                                    TO   CNT-DOUDEN(WRK-KOHBUNRI)
+                        MOVE  RECE04-HKNCOMBI
+                                   TO   TBL-COUNT-HKNCOMBI(WRK-KOHBUNRI)
+                      END-IF
+      *            （電話再診（３０年３月以前継続）のカウント）
+                      IF  RECE04-DENWASAI2-COMMENT    =  "1"
+                        COMPUTE  WRK-KOHBUNRI 
+                                   =    RECE04-KOHBUNRI  +  1
+                        ADD   RECE04-ZAIKAISU  
+                                   TO   CNT-DENWA2(WRK-KOHBUNRI)
+                        MOVE  RECE04-HKNCOMBI
+                                   TO   TBL-COUNT-HKNCOMBI(WRK-KOHBUNRI)
+                      END-IF
+      *            （同日電話再診（３０年３月以前継続）のカウント）
+                      IF  RECE04-DOUDENSAI2-COMMENT   =  "1"
+                        COMPUTE  WRK-KOHBUNRI 
+                                   =    RECE04-KOHBUNRI  +  1
+                        ADD   RECE04-ZAIKAISU  
+                                   TO   CNT-DOUDEN2(WRK-KOHBUNRI)
                         MOVE  RECE04-HKNCOMBI
                                    TO   TBL-COUNT-HKNCOMBI(WRK-KOHBUNRI)
                       END-IF
@@ -2017,6 +2058,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
               IF    CNT-DENWA(IDX)     >   ZERO
               OR    CNT-DOUJITU(IDX)   >   ZERO
               OR    CNT-DOUDEN(IDX)    >   ZERO
+              OR    CNT-DENWA2(IDX)    >   ZERO
+              OR    CNT-DOUDEN2(IDX)   >   ZERO
                   PERFORM    2001-DENWA-DOUJITU-COMMENT-SEC
               END-IF
       *
@@ -2053,6 +2096,12 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            IF   RECE02-GENBAKU-TOKFLG   =   1
               PERFORM   2001-GENBAKU-COMMENT-SEC
+           END-IF
+      *
+      *    妊婦のコメント
+      *
+           IF   RECE02-NINPUFLG   =   1
+              PERFORM   2001-NINPU-COMMENT-SEC
            END-IF
       *
       *****内服薬剤料逓減に関する編集２****
@@ -2409,6 +2458,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF    CNT-DOUDEN(IDX)    >   ZERO
               ADD     1                TO  RECE049-MEISAISU
            END-IF
+           IF    CNT-DENWA2(IDX)    >   ZERO
+              ADD     1                TO  RECE049-MEISAISU
+           END-IF
+           IF    CNT-DOUDEN2(IDX)   >   ZERO
+              ADD     1                TO  RECE049-MEISAISU
+           END-IF
       *
            MOVE    TBL-COUNT-HKNCOMBI(IDX)
                                        TO  RECE049-HKNCOMBI
@@ -2425,8 +2480,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPACE               TO  WRK-RECE05XX-REC
            INITIALIZE                      WRK-RECE05XX-REC
+           MOVE    ZERO                TO  IDX40
       *    電話再診のコメントの挿入
            IF    CNT-DENWA(IDX)     >   ZERO
+             ADD     1                 TO  IDX40
              MOVE    "810000001"       TO  WRK-RECE05XX-SRYCD(1 1)
              MOVE    ZERO              TO  WRK-RECE05XX-SRYSURYO(1 1)
              MOVE    9                 TO  WRK-RECE05XX-YUKOKETA(1 1)
@@ -2438,10 +2495,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
              MOVE    WRK-HENSYU-KAISU2 TO  WRK-RECE05XX-NAME(1 1)(11:4)
       *
              MOVE    WRK-RECE05XX-SRYACT-TBL (1 1)
-                                       TO  RECE059-SRYACT-TBL(1)
+                                       TO  RECE059-SRYACT-TBL(IDX40)
            END-IF
       *    同日複数再診のコメントの挿入
            IF    CNT-DOUJITU(IDX)   >   ZERO
+             ADD     1                 TO  IDX40
              IF   RECE02-SRYYM      >=    "201004"
                MOVE  "810000001"       TO  WRK-RECE05XX-SRYCD(2 1)
                MOVE  ZERO              TO  WRK-RECE05XX-SRYSURYO(2 1)
@@ -2454,7 +2512,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE  WRK-HENSYU-KAISU2 TO  WRK-RECE05XX-NAME(2 1)(11:4)
       *
                MOVE  WRK-RECE05XX-SRYACT-TBL(2 1)
-                                       TO  RECE059-SRYACT-TBL (2)
+                                       TO  RECE059-SRYACT-TBL(IDX40)
              ELSE
                MOVE  "810000001"       TO  WRK-RECE05XX-SRYCD(2 1)
                MOVE  ZERO              TO  WRK-RECE05XX-SRYSURYO(2 1)
@@ -2467,11 +2525,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE  WRK-HENSYU-KAISU2 TO  WRK-RECE05XX-NAME(2 1)(15:4)
       *
                MOVE  WRK-RECE05XX-SRYACT-TBL(2 1)
-                                       TO  RECE059-SRYACT-TBL (2)
+                                       TO  RECE059-SRYACT-TBL(IDX40)
              END-IF
            END-IF
       *    同日電話再診のコメントの挿入
            IF    CNT-DOUDEN(IDX)    >   ZERO
+             ADD     1                 TO  IDX40
              MOVE    "810000001"       TO  WRK-RECE05XX-SRYCD(3 1)
              MOVE    ZERO              TO  WRK-RECE05XX-SRYSURYO(3 1)
              MOVE    11                TO  WRK-RECE05XX-YUKOKETA(3 1)
@@ -2483,36 +2542,39 @@ grpsys     PERFORM 900-DBSELECT-SEC
              MOVE    WRK-HENSYU-KAISU2 TO  WRK-RECE05XX-NAME(3 1)(15:4)
       *
              MOVE    WRK-RECE05XX-SRYACT-TBL(3 1)
-                                       TO  RECE059-SRYACT-TBL (3)
+                                       TO  RECE059-SRYACT-TBL(IDX40)
            END-IF
+      *    電話再診（３０年３月以前継続）のコメントの挿入
+           IF    CNT-DENWA2(IDX)    >   ZERO
+             ADD     1                 TO  IDX40
+             MOVE    "810000001"       TO  WRK-RECE05XX-SRYCD(4 1)
+             MOVE    ZERO              TO  WRK-RECE05XX-SRYSURYO(4 1)
+             MOVE    20                TO  WRK-RECE05XX-YUKOKETA(4 1)
+             MOVE    "電話再診（３０年３月以前継続）（　　回）"
+                                       TO  WRK-RECE05XX-NAME(4 1)
       *
-           IF   RECE059-SRYCD(1) =  SPACE
-              IF     RECE059-SRYCD(2)  NOT =  SPACE
-                 MOVE    RECE059-SRYACT-TBL(2)
-                                       TO  RECE059-SRYACT-TBL(1)
-                 INITIALIZE    RECE059-SRYACT-TBL(2)
-                 IF  RECE059-SRYCD(3)  NOT =  SPACE
-                   MOVE  RECE059-SRYACT-TBL(3)
-                                       TO  RECE059-SRYACT-TBL(2)
-                   INITIALIZE  RECE059-SRYACT-TBL(3)
-                 END-IF
-              ELSE
-                 IF  RECE059-SRYCD(3)  NOT =  SPACE
-                   MOVE  RECE059-SRYACT-TBL(3)
-                                       TO  RECE059-SRYACT-TBL(1)
-                   INITIALIZE  RECE059-SRYACT-TBL(3)
-                 END-IF
-              END-IF
-           ELSE
-              IF     RECE059-SRYCD(2)  NOT =  SPACE
-                 CONTINUE
-              ELSE
-                 IF  RECE059-SRYCD(3)  NOT =  SPACE
-                   MOVE  RECE059-SRYACT-TBL(3)
-                                       TO  RECE059-SRYACT-TBL(2)
-                   INITIALIZE  RECE059-SRYACT-TBL(3)
-                 END-IF
-              END-IF
+             MOVE    CNT-DENWA2(IDX)   TO  DAY-IDX2
+             PERFORM    20011-KAISU-HENSYU-SEC
+             MOVE    WRK-HENSYU-KAISU2 TO  WRK-RECE05XX-NAME(4 1)(33:4)
+      *
+             MOVE    WRK-RECE05XX-SRYACT-TBL (4 1)
+                                       TO  RECE059-SRYACT-TBL(IDX40)
+           END-IF
+      *    同日電話再診（３０年３月以前継続）のコメントの挿入
+           IF    CNT-DOUDEN2(IDX)   >   ZERO
+             ADD     1                 TO  IDX40
+             MOVE    "810000001"       TO  WRK-RECE05XX-SRYCD(5 1)
+             MOVE    ZERO              TO  WRK-RECE05XX-SRYSURYO(5 1)
+             MOVE    22                TO  WRK-RECE05XX-YUKOKETA(5 1)
+             MOVE    "同日電話再診（３０年３月以前継続）（　　回）"
+                                       TO  WRK-RECE05XX-NAME(5 1)
+      *
+             MOVE    CNT-DOUDEN2(IDX)  TO  DAY-IDX2
+             PERFORM    20011-KAISU-HENSYU-SEC
+             MOVE    WRK-HENSYU-KAISU2 TO  WRK-RECE05XX-NAME(5 1)(37:4)
+      *
+             MOVE    WRK-RECE05XX-SRYACT-TBL(5 1)
+                                       TO  RECE059-SRYACT-TBL(IDX40)
            END-IF
       *
            WRITE   RECE059-REC
@@ -3184,6 +3246,41 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        2001-KOHSAIKEI-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    妊婦のコメント編集
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE02-SET049-SEC
+           MOVE    99999960            TO  RECE049-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE049-KOHBUNRI
+           MOVE    "99"                TO  RECE049-SRYKBN
+           MOVE    WRK-HKNCOMBI-JIDO   TO  RECE049-HKNCOMBI
+           MOVE    1                   TO  RECE049-MEISAISU
+           WRITE   RECE049-REC
+           ADD     1                   TO  CNT-RECE049
+      *
+           PERFORM 800-RECE02-SET059-SEC
+           MOVE    99999960            TO  RECE059-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE059-KOHBUNRI
+           MOVE    "99"                TO  RECE059-SRYKBN
+      *    コメントの挿入
+           MOVE    SPACE               TO  WRK-RECE05XX-REC
+           INITIALIZE                      WRK-RECE05XX-REC
+           MOVE    "820100348"         TO  WRK-RECE05XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE05XX-SRYSURYO(1 1)
+           MOVE    2                   TO  WRK-RECE05XX-YUKOKETA(1 1)
+           MOVE    "妊婦"              TO  WRK-RECE05XX-NAME(1 1)
+                                           WRK-RECE05XX-INPUTCOMENT(1 1)
+           MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
+                                        TO  RECE059-SRYACT-TBL(1)
+           WRITE   RECE059-REC
+           ADD     1                    TO  CNT-RECE059
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6852,6 +6949,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
             IF    RECE02-SRYYM  >=  "201604"
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
              MOVE    SPACE               TO  WRK-SINPESU-YMD
+             IF   RECE02-SRYYM  >=  "201804"
+               MOVE    CONS-SINPESUR3    TO  WRK-SINPESU-SRYCD
+             ELSE
+               MOVE    CONS-SINPESU2     TO  WRK-SINPESU-SRYCD
+             END-IF
              PERFORM   20011-SINPESU-CHECK-SEC
             ELSE
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
@@ -6902,9 +7004,19 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                 ADD        1       TO     IDZ
       *
-                MOVE       13      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "前回算定年月　　　年　　月"
+                IF   RECE02-SRYYM  >=  "201804"
+                  MOVE    18       TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "指導管理料前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
+                  MOVE    25       TO     IDX41
+                  MOVE    31       TO     IDX42
+                ELSE
+                  MOVE    13       TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "前回算定年月　　　年　　月"
+                                   TO     WK-FREE-NAME2(IDZ)
+                  MOVE    15       TO     IDX41
+                  MOVE    21       TO     IDX42
+                END-IF
       *
                 INITIALIZE                         STS-AREA-DAY
                 INITIALIZE                         LNK-DAY2-AREA
@@ -6920,7 +7032,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(15:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX41:4)
                    END-IF
       *
                    MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
@@ -6930,7 +7042,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(21:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX42:4)
                    END-IF
                 END-IF
       *
@@ -6986,11 +7098,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE    RECE02-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    RECE02-PTID           TO  SRY-PTID
            MOVE    RECE02-SRYYM          TO  SRY-SRYYM
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(1)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(2)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(3)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(4)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(5)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(1)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(2)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(3)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(4)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(5)
            MOVE    SRYACT-REC            TO  MCPDATA-REC
            MOVE    "tbl_sryact"          TO  MCP-TABLE
            MOVE    "key23"               TO  MCP-PATHNAME
@@ -8902,7 +9014,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-KENSA-HANTEI-SEC          SECTION.
       *
-           IF     RECE04-FLG-KENSA-COMMENT    =    "1"
+           IF  ((RECE02-SRYYM  >= "201804"       ) AND
+                (RECE04-FLG-KENSA-COMMENT  =  "1") AND
+                (CNT-KENSA                >=   2 ))
+           OR  ((RECE02-SRYYM  <= "201803"       ) AND
+                (RECE04-FLG-KENSA-COMMENT  =  "1"))
                INITIALIZE            WRK-JIDO-SETCOM-AREA
       ***      MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
       ***      MOVE       15      TO     WRK-JIDO-SETCOMATFLG
@@ -9558,6 +9674,8 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                    MOVE  CONS-NINRYO5       TO  SANTEI-SRYCD
                  WHEN      "7"
                    MOVE  CONS-NINRYO7       TO  SANTEI-SRYCD
+                 WHEN      "8"
+                   MOVE  CONS-NINRYO8       TO  SANTEI-SRYCD
                END-EVALUATE
                MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                 TO  SANTEI-SRYKA
@@ -11883,7 +12001,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                     IF    RECE051-SRYCD(IDX) =
       *1
                           "113000410" OR "113000510" OR "180000110" OR
-                          "180000210" OR
+                          "180000210" OR "113023910" OR
       *3
                           "113001210" OR "113001310" OR "113002110" OR
       *4
@@ -11908,7 +12026,8 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                           "114000110" OR "114001610" OR
       *14
                           "114001110" OR "114012910" OR "114018010" OR
-                          "114030310" OR
+                          "114030310" OR "114042110" OR "114042210" OR
+                          "114042810" OR "114046310" OR
       *16
                           "180027410" OR "180027510" OR "180028010" OR
                           "180028110" OR "180027610" OR "180027710" OR
@@ -11941,6 +12060,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *19
                           "180033210" OR "180035910" OR "188006210" OR
                           "188007010" OR "180047810" OR "188010610" OR
+                          "180056410" OR
       *20
                           "700010000" OR "700030000" OR "700050000" OR
                           "700080000" OR "700110000" OR "700140000" OR
@@ -11965,7 +12085,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *25
                           "112015810" OR "112015950" OR "112016210" OR
                           "112016410" OR "112017010" OR "112017150" OR
-                          "112017610" OR
+                          "112017610" OR "112023550" OR "112023850" OR
       *26
                           "114009710" OR
       *27

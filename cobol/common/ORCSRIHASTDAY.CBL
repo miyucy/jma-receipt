@@ -28,6 +28,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.08.01    NACL-門脇    16/03/28  平成２８年４月改正対応
       *  04.08.02    NACL-門脇    16/09/15  リハビリマスタ追加対応
+      *  04.08.03    NACL-門脇    18/04/05  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -372,7 +373,9 @@
       *        障害児（者）リハビリテーション料（１８歳以上）
                05  CONS-SYOGAI3-COMMENT   PIC X(09)   VALUE "180028410".
       *        摂食機能療法
-               05  CONS-SESSYOKU-COMMENT  PIC X(09)   VALUE "180016610".
+               05  CONS-SESYOKU-COMMENT   PIC X(09)   VALUE "180016610".
+      *        摂食機能療法（３０分未満）
+               05  CONS-SESYOKU2-COMMENT  PIC X(09)   VALUE "180054310".
       *        廃用症候群リハビリテーション料（１）（１単位）
                05  CONS-HAIYO1-COMMENT    PIC X(09)   VALUE "180044610".
       *        廃用症候群リハビリテーション料（２）（１単位）
@@ -433,8 +436,8 @@
                05  CONS-RIHAKSN2-COMMENT  PIC X(09)   VALUE "180030770".
       *
            03  CONS-RIHA-COMMENT-R REDEFINES CONS-RIHA-COMMENT-VAL.
-               05  CONS-RIHA-COMMENT      PIC X(09)   OCCURS 117.
-           03  CONS-RIHA-COMMENT-MAX      PIC 9(03)   VALUE  117.
+               05  CONS-RIHA-COMMENT      PIC X(09)   OCCURS 118.
+           03  CONS-RIHA-COMMENT-MAX      PIC 9(03)   VALUE  118.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -879,7 +882,8 @@
                    END-IF
                  END-PERFORM
              END-IF
-             IF   SRY-SRYCD(IDX12)  =    CONS-SESSYOKU-COMMENT
+             IF   SRY-SRYCD(IDX12)  =    CONS-SESYOKU-COMMENT
+                                   OR    CONS-SESYOKU2-COMMENT
                  PERFORM  VARYING  IDX3  FROM  1  BY  1
                            UNTIL   IDX3   >   31
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
@@ -892,7 +896,8 @@
                    END-IF
                  END-PERFORM
              END-IF
-             IF   SRY-SRYCD(IDX12)  =    CONS-NANBYO-COMMENT
+             IF  (SRY-SRYCD(IDX12)  =    CONS-NANBYO-COMMENT)
+             AND (ACCT-SRYYM       <=    "201803"           )
                  PERFORM  VARYING  IDX3  FROM  1  BY  1
                            UNTIL   IDX3   >   31
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO
@@ -905,9 +910,10 @@
                    END-IF
                  END-PERFORM
              END-IF
-             IF   SRY-SRYCD(IDX12)  =    CONS-SYOGAI1-COMMENT
+             IF  (SRY-SRYCD(IDX12)  =    CONS-SYOGAI1-COMMENT
                                    OR    CONS-SYOGAI2-COMMENT
-                                   OR    CONS-SYOGAI3-COMMENT
+                                   OR    CONS-SYOGAI3-COMMENT)
+             AND (ACCT-SRYYM       <=    "201803"            )
                  PERFORM  VARYING  IDX3  FROM  1  BY  1
                            UNTIL   IDX3   >   31
                    IF   ACCT-DAY(1 IDX3)  NOT = ZERO

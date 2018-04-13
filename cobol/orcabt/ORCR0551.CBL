@@ -56,7 +56,8 @@
       *                                     管理料の算定日コメント対応
       *  04.08.07    NACL-門脇    16/12/07  遠隔モニタリング加算の前回算定年月
       *                                     コメント記載修正
-      *  04.08.08   NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
+      *  04.08.08    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
+      *  04.08.09    NACL-門脇    18/03/27  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -281,6 +282,9 @@
            03  CNT-DOUJITU         PIC 9(06).
            03  CNT-DENWA           PIC 9(06).
            03  CNT-DOUDEN          PIC 9(06).
+           03  CNT-DENWA2          PIC 9(06).
+           03  CNT-DOUDEN2         PIC 9(06).
+           03  CNT-KENSA           PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -315,6 +319,9 @@
            03  IDX35               PIC 9(03).
            03  IDX36               PIC 9(03).
            03  IDX37               PIC 9(03).
+           03  IDX40               PIC 9(02).
+           03  IDX41               PIC 9(02).
+           03  IDX42               PIC 9(02).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  DAY-IDX             PIC 9(04).
@@ -439,6 +446,7 @@
            03  WRK-MCP-TABLE         PIC X(64).
            03  WRK-MCP-PATHNAME      PIC X(64).
       *
+           03  WRK-SINPESU-SRYCD             PIC X(09).
            03  WRK-SINPESU-YMD               PIC X(08).
            03  WRK-SINPESUR-YMD              PIC X(08).
            03  WRK-ZAIKYO-YMD                PIC X(08).
@@ -706,6 +714,8 @@
            03  CONS-NINRYO2         PIC X(09) VALUE "180035910".
       *    認知療法・認知行動療法（精神保健指定医と看護師が共同で行う場合）
            03  CONS-NINRYO5         PIC X(09) VALUE "180047810".
+      *    認知療法・認知行動療法（医師）
+           03  CONS-NINRYO8         PIC X(09) VALUE "180056410".
       *
       *    認知症専門診断管理料２
            03  CONS-NINSEN          PIC X(09) VALUE "113014610".
@@ -720,6 +730,8 @@
            03  CONS-SINPESUR1       PIC X(09) VALUE "113015010".
       *    心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
            03  CONS-SINPESUR2       PIC X(09) VALUE "113015130".
+      *    心臓ペースメーカー指導管理料（イ以外）
+           03  CONS-SINPESUR3       PIC X(09) VALUE "113001610".
       *
       *    がん患者指導管理料（医師・看護師が心理的不安軽減のため面接）
            03  CONS-GANSIDO1        PIC X(09) VALUE "113015310".
@@ -1218,6 +1230,8 @@
                                            CNT-DOUJITU
                                            CNT-DENWA
                                            CNT-DOUDEN
+                                           CNT-DENWA2
+                                           CNT-DOUDEN2
       *
            INITIALIZE                      TBL-HASSYO-INF
            INITIALIZE                      TBL-HASSYO9-INF
@@ -1235,6 +1249,17 @@
       *
            MOVE       ZERO             TO  IDX33
            MOVE       ZERO             TO  IDX34
+      *
+           MOVE  ZERO        TO    CNT-KENSA
+           IF   RECE41-KENSA-BNPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE41-KENSA-NTPROFLG   =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE41-KENSA-ANPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
       *
            IF   RECE41-COMCNTFLG   =   "1"
       *
@@ -1281,6 +1306,14 @@
       *               （同日電話再診のカウント）
                          IF  RECE44-DOUDENSAI-COMMENT    =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUDEN
+                         END-IF
+      *               （電話再診（３０年３月以前継続）のカウント）
+                         IF  RECE44-DENWASAI2-COMMENT    =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DENWA2
+                         END-IF
+      *               （同日電話再診（３０年３月以前継続）のカウント）
+                         IF  RECE44-DOUDENSAI2-COMMENT   =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DOUDEN2
                          END-IF
                       WHEN      "13"
       *               （退院時共同指導料特別管理指導加算に関する編集）
@@ -1445,6 +1478,14 @@
       *               （同日電話再診のカウント）
                          IF  RECE44-DOUDENSAI-COMMENT    =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUDEN
+                         END-IF
+      *               （電話再診（３０年３月以前継続）のカウント）
+                         IF  RECE44-DENWASAI2-COMMENT    =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DENWA2
+                         END-IF
+      *               （同日電話再診（３０年３月以前継続）のカウント）
+                         IF  RECE44-DOUDENSAI2-COMMENT   =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DOUDEN2
                          END-IF
                       WHEN      "13"
       *               （退院時共同指導料特別管理指導加算に関する編集）
@@ -1668,6 +1709,8 @@
            IF   CNT-DENWA     >   ZERO
            OR   CNT-DOUJITU   >   ZERO
            OR   CNT-DOUDEN    >   ZERO
+           OR   CNT-DENWA2    >   ZERO
+           OR   CNT-DOUDEN2   >   ZERO
                   PERFORM    2001-DENWA-DOUJITU-COMMENT-SEC
            END-IF
       *
@@ -1715,6 +1758,11 @@
       *    在支援コメント
            IF     TBL-ZAISIEN-COMMENT   NOT =  ZERO
                PERFORM     2001-ZAISIEN-COMMENT-SEC
+           END-IF
+      *
+      *    妊婦のコメント
+           IF     RECE41-NINPUFLG   =   1
+               PERFORM     2001-NINPU-COMMENT-SEC
            END-IF
       *
       *+++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2595,6 +2643,12 @@
            IF    CNT-DOUDEN    >   ZERO
               ADD     1                TO  RECE449-MEISAISU
            END-IF
+           IF    CNT-DENWA2    >   ZERO
+              ADD     1                TO  RECE449-MEISAISU
+           END-IF
+           IF    CNT-DOUDEN2   >   ZERO
+              ADD     1                TO  RECE449-MEISAISU
+           END-IF
       *
            MOVE    RECE41-HKNCOMBI     TO  RECE449-HKNCOMBI
            PERFORM 800-RECE449-WRITE-SEC
@@ -2605,8 +2659,10 @@
       *
            MOVE    SPACE               TO  WRK-RECE45XX-REC
            INITIALIZE                      WRK-RECE45XX-REC
+           MOVE    ZERO                TO  IDX40
       *    電話再診のコメントの挿入
            IF    CNT-DENWA     >   ZERO
+             ADD     1                 TO  IDX40
              MOVE    "810000001"       TO  WRK-RECE45XX-SRYCD(1 1)
              MOVE    ZERO              TO  WRK-RECE45XX-SRYSURYO(1 1)
              MOVE    9                 TO  WRK-RECE45XX-YUKOKETA(1 1)
@@ -2619,10 +2675,11 @@
       *
              MOVE    "1"               TO  WRK-RECE45XX-SIKFLG(1 1)
              MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
-                                       TO  RECE459-SRYACT-TBL(1)
+                                       TO  RECE459-SRYACT-TBL(IDX40)
            END-IF
       *    同日複数再診のコメントの挿入
            IF    CNT-DOUJITU   >   ZERO
+             ADD     1                 TO  IDX40
              IF   RECE41-SRYYM      >=    "201004"
                MOVE  "810000001"       TO  WRK-RECE45XX-SRYCD(2 1)
                MOVE  ZERO              TO  WRK-RECE45XX-SRYSURYO(2 1)
@@ -2636,7 +2693,7 @@
       *
                MOVE  "1"               TO  WRK-RECE45XX-SIKFLG(2 1)
                MOVE  WRK-RECE45XX-SRYACT-TBL(2 1)
-                                       TO  RECE459-SRYACT-TBL(2)
+                                       TO  RECE459-SRYACT-TBL(IDX40)
              ELSE
                MOVE  "810000001"       TO  WRK-RECE45XX-SRYCD(2 1)
                MOVE  ZERO              TO  WRK-RECE45XX-SRYSURYO(2 1)
@@ -2650,11 +2707,12 @@
       *
                MOVE  "1"               TO  WRK-RECE45XX-SIKFLG(2 1)
                MOVE  WRK-RECE45XX-SRYACT-TBL(2 1)
-                                       TO  RECE459-SRYACT-TBL(2)
+                                       TO  RECE459-SRYACT-TBL(IDX40)
              END-IF
            END-IF
       *    同日電話再診のコメントの挿入
            IF    CNT-DOUDEN    >   ZERO
+             ADD     1                 TO  IDX40
              MOVE    "810000001"       TO  WRK-RECE45XX-SRYCD(3 1)
              MOVE    ZERO              TO  WRK-RECE45XX-SRYSURYO(3 1)
              MOVE    11                TO  WRK-RECE45XX-YUKOKETA(3 1)
@@ -2667,36 +2725,41 @@
       *
              MOVE    "1"               TO  WRK-RECE45XX-SIKFLG(3 1)
              MOVE    WRK-RECE45XX-SRYACT-TBL(3 1)
-                                       TO  RECE459-SRYACT-TBL(3)
+                                       TO  RECE459-SRYACT-TBL(IDX40)
            END-IF
+      *    電話再診（３０年３月以前継続）のコメントの挿入
+           IF    CNT-DENWA2    >   ZERO
+             ADD     1                 TO  IDX40
+             MOVE    "810000001"       TO  WRK-RECE45XX-SRYCD(4 1)
+             MOVE    ZERO              TO  WRK-RECE45XX-SRYSURYO(4 1)
+             MOVE    20                TO  WRK-RECE45XX-YUKOKETA(4 1)
+             MOVE    "電話再診（３０年３月以前継続）（　　回）"
+                                       TO  WRK-RECE45XX-NAME(4 1)
       *
-           IF   RECE459-SRYCD(1) =  SPACE
-              IF     RECE459-SRYCD(2)  NOT =  SPACE
-                 MOVE    RECE459-SRYACT-TBL(2)
-                                       TO  RECE459-SRYACT-TBL(1)
-                 INITIALIZE    RECE459-SRYACT-TBL(2)
-                 IF  RECE459-SRYCD(3)  NOT =  SPACE
-                   MOVE  RECE459-SRYACT-TBL(3)
-                                       TO  RECE459-SRYACT-TBL(2)
-                   INITIALIZE  RECE459-SRYACT-TBL(3)
-                 END-IF
-              ELSE
-                 IF  RECE459-SRYCD(3)  NOT =  SPACE
-                   MOVE  RECE459-SRYACT-TBL(3)
-                                       TO  RECE459-SRYACT-TBL(1)
-                   INITIALIZE  RECE459-SRYACT-TBL(3)
-                 END-IF
-              END-IF
-           ELSE
-              IF     RECE459-SRYCD(2)  NOT =  SPACE
-                 CONTINUE
-              ELSE
-                 IF  RECE459-SRYCD(3)  NOT =  SPACE
-                   MOVE  RECE459-SRYACT-TBL(3)
-                                       TO  RECE459-SRYACT-TBL(2)
-                   INITIALIZE  RECE459-SRYACT-TBL(3)
-                 END-IF
-              END-IF
+             MOVE    CNT-DENWA2        TO  DAY-IDX2
+             PERFORM    20011-KAISU-HENSYU-SEC
+             MOVE    WRK-HENSYU-KAISU2 TO  WRK-RECE45XX-NAME(4 1)(33:4)
+      *
+             MOVE    "1"               TO  WRK-RECE45XX-SIKFLG(4 1)
+             MOVE    WRK-RECE45XX-SRYACT-TBL(4 1)
+                                       TO  RECE459-SRYACT-TBL(IDX40)
+           END-IF
+      *    同日電話再診（３０年３月以前継続）のコメントの挿入
+           IF    CNT-DOUDEN2   >   ZERO
+             ADD     1                 TO  IDX40
+             MOVE    "810000001"       TO  WRK-RECE45XX-SRYCD(5 1)
+             MOVE    ZERO              TO  WRK-RECE45XX-SRYSURYO(5 1)
+             MOVE    22                TO  WRK-RECE45XX-YUKOKETA(5 1)
+             MOVE    "同日電話再診（３０年３月以前継続）（　　回）"
+                                       TO  WRK-RECE45XX-NAME(5 1)
+      *
+             MOVE    CNT-DOUDEN2       TO  DAY-IDX2
+             PERFORM    20011-KAISU-HENSYU-SEC
+             MOVE    WRK-HENSYU-KAISU2 TO  WRK-RECE45XX-NAME(5 1)(37:4)
+      *
+             MOVE    "1"               TO  WRK-RECE45XX-SIKFLG(5 1)
+             MOVE    WRK-RECE45XX-SRYACT-TBL(5 1)
+                                       TO  RECE459-SRYACT-TBL(IDX40)
            END-IF
       *
            PERFORM 800-RECE459-WRITE-SEC
@@ -2729,6 +2792,37 @@
       *
            .
        20011-KAISU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    妊婦のコメント編集
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE41-SET449-SEC
+           MOVE    99999960            TO  RECE449-ZAINUM
+           MOVE    "99"                TO  RECE449-SRYKBN
+           MOVE    RECE41-HKNCOMBI     TO  RECE449-HKNCOMBI
+           MOVE    1                   TO  RECE449-MEISAISU
+           PERFORM 800-RECE449-WRITE-SEC
+      *
+           PERFORM 800-RECE41-SET459-SEC
+           MOVE    99999960            TO  RECE459-ZAINUM
+           MOVE    "99"                TO  RECE459-SRYKBN
+           MOVE    SPACE               TO  WRK-RECE45XX-REC
+           INITIALIZE                      WRK-RECE45XX-REC
+           MOVE    "820100348"         TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    2                   TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "妊婦"              TO  WRK-RECE45XX-NAME(1 1)
+                                           WRK-RECE45XX-INPUTCOMENT(1 1)
+           MOVE    "1"                 TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                       TO  RECE459-SRYACT-TBL(1)
+           PERFORM 800-RECE459-WRITE-SEC
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5068,6 +5162,11 @@
             IF    RECE41-SRYYM  >=  "201604"
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
              MOVE    SPACE               TO  WRK-SINPESU-YMD
+             IF   RECE41-SRYYM  >=  "201804"
+               MOVE    CONS-SINPESUR3    TO  WRK-SINPESU-SRYCD
+             ELSE
+               MOVE    CONS-SINPESU2     TO  WRK-SINPESU-SRYCD
+             END-IF
              PERFORM   20011-SINPESU-CHECK-SEC
             ELSE
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
@@ -5118,9 +5217,19 @@
       *
                 ADD        1       TO     IDZ
       *
-                MOVE       13      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "前回算定年月　　　年　　月"
+                IF   RECE41-SRYYM  >=  "201804"
+                  MOVE    18       TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "指導管理料前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
+                  MOVE    25       TO     IDX41
+                  MOVE    31       TO     IDX42
+                ELSE
+                  MOVE    13       TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "前回算定年月　　　年　　月"
+                                   TO     WK-FREE-NAME2(IDZ)
+                  MOVE    15       TO     IDX41
+                  MOVE    21       TO     IDX42
+                END-IF
       *
                 INITIALIZE                         STS-AREA-DAY
                 INITIALIZE                         LNK-DAY2-AREA
@@ -5136,7 +5245,7 @@
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(15:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX41:4)
                    END-IF
       *
                    MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
@@ -5146,7 +5255,7 @@
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(21:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX42:4)
                    END-IF
                 END-IF
       *
@@ -5204,11 +5313,11 @@
            MOVE    RECE41-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    RECE41-PTID           TO  SRY-PTID
            MOVE    RECE41-SRYYM          TO  SRY-SRYYM
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(1)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(2)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(3)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(4)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(5)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(1)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(2)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(3)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(4)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(5)
            MOVE    SRYACT-REC            TO  MCPDATA-REC
            MOVE    "tbl_sryact"          TO  MCP-TABLE
            MOVE    "key23"               TO  MCP-PATHNAME
@@ -7140,7 +7249,11 @@
       *****************************************************************
        2001-KENSA-HANTEI-SEC          SECTION.
       *
-           IF     RECE44-FLG-KENSA-COMMENT    =    "1"
+           IF  ((RECE41-SRYYM  >= "201804"       ) AND
+                (RECE44-FLG-KENSA-COMMENT  =  "1") AND
+                (CNT-KENSA                >=   2 ))
+           OR  ((RECE41-SRYYM  <= "201803"       ) AND
+                (RECE44-FLG-KENSA-COMMENT  =  "1"))
                INITIALIZE            WRK-JIDO-SETCOM-AREA
       ***      MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
       ***      MOVE       15      TO     WRK-JIDO-SETCOMATFLG
@@ -7790,6 +7903,8 @@
                    MOVE  CONS-NINRYO2       TO  SANTEI-SRYCD
                  WHEN      "5"
                    MOVE  CONS-NINRYO5       TO  SANTEI-SRYCD
+                 WHEN      "8"
+                   MOVE  CONS-NINRYO8       TO  SANTEI-SRYCD
                END-EVALUATE
                MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                 TO  SANTEI-SRYKA
@@ -10488,7 +10603,7 @@
                     IF   (RECE451-SRYCD(IDX) =
       *1
                           "113000410" OR "113000510" OR "180000110" OR
-                          "180000210" OR
+                          "180000210" OR "113023910" OR
       *3
                           "113001210" OR "113001310" OR "113002110" OR
       *4
@@ -10513,7 +10628,8 @@
                           "114000110" OR "114001610" OR
       *14
                           "114001110" OR "114012910" OR "114018010" OR
-                          "114030310" OR
+                          "114030310" OR "114042110" OR "114042210" OR
+                          "114042810" OR "114046310" OR
       *16
                           "180027410" OR "180027510" OR "180028010" OR
                           "180028110" OR "180027610" OR "180027710" OR
@@ -10545,6 +10661,7 @@
                           "113003410" OR
       *19
                           "180033210" OR "180035910" OR "180047810" OR
+                          "180056410" OR
       *20
                           "700010000" OR "700030000" OR "700050000" OR
                           "700080000" OR "700110000" OR "700140000" OR
@@ -10569,7 +10686,7 @@
       *25
                           "112015810" OR "112015950" OR "112016210" OR
                           "112016410" OR "112017010" OR "112017150" OR
-                          "112017610" OR
+                          "112017610" OR "112023550" OR "112023850" OR
       *26
                           "114009710" OR
       *27

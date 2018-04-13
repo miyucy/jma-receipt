@@ -280,6 +280,7 @@
       *  04.08.05    NACL-門脇    16/03/28  平成２８年４月改正対応
       *  04.08.06    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
       *                                     での食事算定対応
+      *  04.08.07    NACL-藤原    18/03/28  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2177,17 +2178,21 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    PERFORM 900-CLOSE-SEC
                END-IF
            END-IF
-      *    老併、老健の編集
-           IF      RECE01-RECEIPT-KBN (1:1)
-                                        =   "1"
-               ADD      1                   TO  TOKKI-IDX
-               MOVE    "07"                 TO  RECE02-TOKKI (TOKKI-IDX)
-           END-IF
-           IF      RECE01-RECEIPT-KBN (1:1)
-                                        =   "2"
-               ADD      1                   TO  TOKKI-IDX
-               MOVE    "08"                 TO  RECE02-TOKKI (TOKKI-IDX)
-           END-IF
+      *    老併、老健、医併、医療の編集
+           EVALUATE    RECE01-RECEIPT-KBN (1:1)
+               WHEN    "1"
+                   ADD      1               TO  TOKKI-IDX
+                   MOVE    "07"             TO  RECE02-TOKKI (TOKKI-IDX)
+               WHEN    "2"
+                   ADD      1               TO  TOKKI-IDX
+                   MOVE    "08"             TO  RECE02-TOKKI (TOKKI-IDX)
+               WHEN    "3"
+                   ADD      1               TO  TOKKI-IDX
+                   MOVE    "38"             TO  RECE02-TOKKI (TOKKI-IDX)
+               WHEN    "4"
+                   ADD      1               TO  TOKKI-IDX
+                   MOVE    "39"             TO  RECE02-TOKKI (TOKKI-IDX)
+           END-EVALUATE
       *
            IF   RECE01-SRYYM    >=  "200210"
       *      低所得情報編集

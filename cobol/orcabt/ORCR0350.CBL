@@ -423,6 +423,11 @@
       *                                     µ­Ï¿¤¹¤ë¤è¤¦ÊÑ¹¹
       *  04.08.18    NACL-ÌçÏÆ    17/08/28  Ê¿À®£²£¹Ç¯£±£°·î²þÀµ
       *                                     ¡ÊÆþ±¡»þÀ¸³èÎÅÍÜ¤Î¸«Ä¾¤·¡Ë
+      *  04.08.19    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.20    NACL-Æ£¸¶    18/04/06  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¥«¥¿¥«¥Ê¡Ê»áÌ¾¡Ë¡¢´µ¼Ô¾õÂÖ¤ÎÄÉ²Ã
+      *
+      *
       *  05.00.02    NACL-¾®Æ¦Âô  17/11/07  ¥ì¥»ÅÅ¥µ¥Ö°ú¿ô¤ËÊÝ¸±ÁÈ¹ç¤»ÄÉ²Ã
       *  05.00.03    NACL-°ËÆ£    17/12/20  ¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÂÐ±þ
       *****************************************************************
@@ -1759,6 +1764,12 @@
       *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
                05  WRK-CONS-HYOJYUN-FUTAN32
                                       PIC X(09)   VALUE   "197005010".
+      *        À¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN33
+                                      PIC X(09)   VALUE   "197005110".
+      *        À¸³èÎÅÍÜ¡Ê£²¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
+               05  WRK-CONS-HYOJYUN-FUTAN34
+                                      PIC X(09)   VALUE   "197005210".
       *
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
@@ -3098,8 +3109,16 @@
       *    °å³ØÅª½èÃÖ£³
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    ÆÃÄê¼ÀÉÂ£³
-           MOVE    1                   TO  WRK-END 
-           PERFORM 5004-MOJI-HENSYU-SEC         
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ¥«¥¿¥«¥Ê¡Ê»áÌ¾¡Ë
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ´µ¼Ô¾õÂÖ 
+           IF      RECE62-NINPUFLG >   ZERO
+               MOVE    "001"           TO  WRK-DATA
+           END-IF
+           MOVE    60                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END
+           PERFORM 5004-MOJI-HENSYU-SEC
       *
            MOVE    1                   TO  FLG-TOTALTEN
            PERFORM 5001-FILE-WRITE-SEC
@@ -7771,7 +7790,9 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN29
                                            OR  WRK-CONS-HYOJYUN-FUTAN30
                                            OR  WRK-CONS-HYOJYUN-FUTAN31
-                                           OR  WRK-CONS-HYOJYUN-FUTAN32)
+                                           OR  WRK-CONS-HYOJYUN-FUTAN32
+                                           OR  WRK-CONS-HYOJYUN-FUTAN33
+                                           OR  WRK-CONS-HYOJYUN-FUTAN34)
                                    EVALUATE    WRK-FTNKBN
                                        WHEN    "5"
                                        WHEN    "7"
@@ -7854,7 +7875,9 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN29
                                            OR  WRK-CONS-HYOJYUN-FUTAN30
                                            OR  WRK-CONS-HYOJYUN-FUTAN31
-                                           OR  WRK-CONS-HYOJYUN-FUTAN32)
+                                           OR  WRK-CONS-HYOJYUN-FUTAN32
+                                           OR  WRK-CONS-HYOJYUN-FUTAN33
+                                           OR  WRK-CONS-HYOJYUN-FUTAN34)
                                        CONTINUE
                                    ELSE
                                       IF    ( RECE62-HKNNUM (1:2)
@@ -7896,7 +7919,9 @@
                                            OR  WRK-CONS-HYOJYUN-FUTAN29
                                            OR  WRK-CONS-HYOJYUN-FUTAN30
                                            OR  WRK-CONS-HYOJYUN-FUTAN31
-                                           OR  WRK-CONS-HYOJYUN-FUTAN32)
+                                           OR  WRK-CONS-HYOJYUN-FUTAN32
+                                           OR  WRK-CONS-HYOJYUN-FUTAN33
+                                           OR  WRK-CONS-HYOJYUN-FUTAN34)
                                            CONTINUE
                                        ELSE
                                            MOVE    1   TO  FLG-PRT
@@ -7937,7 +7962,9 @@
                                            WRK-CONS-HYOJYUN-FUTAN29 OR
                                            WRK-CONS-HYOJYUN-FUTAN30 OR
                                            WRK-CONS-HYOJYUN-FUTAN31 OR
-                                           WRK-CONS-HYOJYUN-FUTAN32)
+                                           WRK-CONS-HYOJYUN-FUTAN32 OR
+                                           WRK-CONS-HYOJYUN-FUTAN33 OR
+                                           WRK-CONS-HYOJYUN-FUTAN34)
                                      PERFORM  200773-SKJFTNFLG-CHECK-SEC
                                    END-IF
                                END-IF   

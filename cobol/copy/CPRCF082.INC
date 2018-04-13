@@ -69,6 +69,7 @@
       *                                     区分追加
       *  04.08.02    NACL-門脇    16/04/15  平成２８年４月改正対応
       *  04.08.03    NACL-門脇    17/02/24  レセプト種別不明エラー情報修正
+      *  04.08.04    NACL-門脇    18/04/06  平成３０年４月改正対応
       ************************************************************
       *01  RECE82-REC.
            03  RECE82-KEY.
@@ -471,6 +472,14 @@
       *入院料日別診療区分情報
            03  RECE82-NYUDAYINF.
                05  RECE82-NYUDAY-SRYKBN   PIC  X(02)  OCCURS 31.
+      *
+      *妊婦フラグ
+           03  RECE82-NINPUFLG            PIC  9(01).
+      *
+      *検査フラグ
+           03  RECE82-KENSA-BNPFLG        PIC  9(01).
+           03  RECE82-KENSA-NTPROFLG      PIC  9(01).
+           03  RECE82-KENSA-ANPFLG        PIC  9(01).
       *
       *予備
            03  RECE82-YOBIETC-AREA.

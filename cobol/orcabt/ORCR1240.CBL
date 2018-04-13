@@ -291,6 +291,7 @@
            03  CNT-RIHA            PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
+           03  CNT-KENSA           PIC 9(06).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1026,6 +1027,7 @@
            MOVE      ZERO     TO      FLG-RYOCOM
       *
            IF    RECE200-SRYYM   >=  "200610"
+           AND   RECE200-SRYYM   <=  "201803"
              INITIALIZE                    ORCSRYOCOM-AREA
              MOVE    RECE200-HOSPNUM   TO  LNK-RYOCOM-HOSPNUM
              MOVE    RECE200-PTID      TO  LNK-RYOCOM-PTID
@@ -1065,6 +1067,17 @@
                  END-PERFORM
                END-PERFORM
              END-IF
+           END-IF
+      *
+           MOVE  ZERO        TO    CNT-KENSA
+           IF   RECE200-KENSA-BNPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE200-KENSA-NTPROFLG   =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE200-KENSA-ANPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
            END-IF
       *
            IF   RECE200-COMCNTFLG   =   "1"
@@ -1471,6 +1484,11 @@
                PERFORM   2001-TAIN-TOKUBETU-COMMENT-SEC
            END-IF
       *
+      *    Ç¥ÉØ¤Î¥³¥á¥ó¥È
+           IF   RECE200-NINPUFLG   =   1
+               PERFORM   2001-NINPU-COMMENT-SEC
+           END-IF
+      *
       *****º¹¹þÊÔ½¸£²********************
            PERFORM     250-SASHIKOMI2-SEC
       ***********************************
@@ -1637,6 +1655,40 @@
       *
            .
        2001-TAIN-TOKUBETU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ç¥ÉØ¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-NINPU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                   RECE2209-REC
+           MOVE    RECE200-KEY      TO  RECE2209-KEY1
+           MOVE    99999960         TO  RECE2209-ZAINUM
+           MOVE    "99"             TO  RECE2209-SRYKBN
+           MOVE    1                TO  RECE2209-MEISAISU
+           WRITE   RECE2209-REC
+           ADD     1                TO  CNT-RECE2209
+      *
+           INITIALIZE                   RECE2309-REC
+           MOVE    RECE200-KEY      TO  RECE2309-KEY1
+           MOVE    99999960         TO  RECE2309-ZAINUM
+           MOVE    "99"             TO  RECE2309-SRYKBN
+      *    ¥³¥á¥ó¥È¤ÎÁÞÆþ
+           MOVE    SPACE            TO  WRK-RECE230XX-REC
+           INITIALIZE                   WRK-RECE230XX-REC
+           MOVE    "820100348"      TO  WRK-RECE230XX-SRYCD(1 1)
+           MOVE    ZERO             TO  WRK-RECE230XX-SRYSURYO(1 1)
+           MOVE    2                TO  WRK-RECE230XX-YUKOKETA(1 1)
+           MOVE    "Ç¥ÉØ"           TO  WRK-RECE230XX-NAME(1 1)
+                                        WRK-RECE230XX-INPUTCOMENT(1 1)
+           MOVE    WRK-RECE230XX-SRYACT-TBL(1 1)
+                                    TO  RECE2309-SRYACT-TBL(1)
+           WRITE   RECE2309-REC
+           ADD     1                TO  CNT-RECE2309
+      *
+           .
+       2001-NINPU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5010,7 +5062,11 @@
       *****************************************************************
        2001-KENSA-HANTEI-SEC          SECTION.
       *
-           IF     RECE220-FLG-KENSA-COMMENT    =    "1"
+           IF  ((RECE200-SRYYM  >= "201804"       ) AND
+                (RECE220-FLG-KENSA-COMMENT  =  "1") AND
+                (CNT-KENSA                 >=   2 ))
+           OR  ((RECE200-SRYYM  <= "201803"       ) AND
+                (RECE220-FLG-KENSA-COMMENT  =  "1"))
                MOVE       7       TO     FLG-COMMENT
                PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
@@ -6274,16 +6330,24 @@
                                       OR "190153190" OR "190153390"
                                       OR "190153290" OR "190153090"
                                       OR "190182990"
-      ***                             OR "190161470" OR "190161570"
-      ***                             OR "190161870" OR "190162070"
-      ***                             OR "190161670" OR "190161770"
-      ***                             OR "190161970" OR "190162170"
-      ***                             OR "190198570" OR "190198670"
                                       OR "190213790" OR "190214290"
                                       OR "190213890" OR "190214090"
                                       OR "190214390" OR "190213990"
-                                      OR "190214190"               )
+                                      OR "190214190"
+                                      OR "190200970" OR "190214470"
+                                      OR "190205270" OR "190205370"
+                                      OR "190205470" OR "190205870"
+                                      OR "190212670"               )
               MOVE    1     TO    FLG-NG
+           END-IF
+           IF   (RECE220-ZAISKBKBN  =  "2"                          )
+           AND  (FLG-RECE230        =  ZERO                         )
+           AND  (WRK-RECE230-SRYCD(2) =  "190161470" OR "190161570"
+                                      OR "190161870" OR "190162070"
+                                      OR "190161670" OR "190161770"
+                                      OR "190161970" OR "190162170"
+                                      OR "190198570" OR "190198670")
+              MOVE  ZERO    TO    FLG-NG
            END-IF
       *
       *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò

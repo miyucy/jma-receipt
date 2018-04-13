@@ -99,6 +99,8 @@
       *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *  04.08.04    NACL-藤原    18/04/06  平成３０年４月改正対応
+      *                                     カタカナ（氏名）、患者状態の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -276,7 +278,10 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
       *    日付変換用
-           03  WRK-SYMD                PIC X(08).
+           03  WRK-SYMD.
+               05  WRK-SYY             PIC X(04).
+               05  WRK-SMM             PIC X(02).
+               05  WRK-SDD             PIC X(02).
       *
       *    パラメタＤＢ編集用
            03  WRK-BTPARA-INFO-PARA.
@@ -928,6 +933,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                    INSPECT RECEDEN-RECEDATA   TALLYING    WRK-MOJISU
                                                FOR ALL "," 
                    IF      WRK-MOJISU          =   16  OR  17  OR  25
+                                               OR  35
                        PERFORM VARYING IDX FROM    2500 BY  -1
                                UNTIL   IDX <       1
                            IF      RECEDEN-RECEDATA (IDX:1)
@@ -950,6 +956,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                                    DELIMITED  BY  SIZE
                                      ",,,,,,,,,,,,,,,,,,"
                                                    DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                       END-IF
+                       IF      WRK-MOJISU          =   35
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,"          DELIMITED  BY  SIZE
                                      WRK-KAIGYO    DELIMITED  BY  SIZE
                                      INTO          WRK-REC
                            END-STRING
