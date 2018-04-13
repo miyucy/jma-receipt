@@ -44,8 +44,11 @@
            03  DTCHK005-DAYCNT2-G.
                05  DTCHK005-DAYCNT2-OCC  OCCURS 9.
                    07  DTCHK005-DAYCNT2  PIC 9(03).
-                   07  DTCHK005-DAYCNT2-DENPNUM
-                                         PIC 9(07).
+                   07  DTCHK005-DAYCNT2-GROUP.
+                       09  DTCHK005-DAYCNT2-SRYKA
+                                       PIC X(02).
+                       09  DTCHK005-DAYCNT2-DENPNUM
+                                       PIC 9(07).
                    07  DTCHK005-DAYCNT2-IDX
                                        PIC 9(03).
            03  DTCHK005-STATUS         PIC 9(05).
