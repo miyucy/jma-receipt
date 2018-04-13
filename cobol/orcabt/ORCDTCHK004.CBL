@@ -136,10 +136,12 @@
        FD  DTCHK021-FILE.
        01  DTCHK021-REC.
            03  DTCHK021-KEY.
-               05  DTCHK021-NYUGAIKBN  PIC X(01).
-               05  DTCHK021-PTID       PIC 9(10).
-               05  DTCHK021-DENPNUM    PIC 9(07).
-           03  DTCHK021-IDX            PIC 9(03).
+               05  DTCHK021-NYUGAIKBN      PIC X(01).
+               05  DTCHK021-PTID           PIC 9(10).
+               05  DTCHK021-GROUP.
+                   07  DTCHK021-SRYKA      PIC X(02).
+                   07  DTCHK021-DENPNUM    PIC 9(07).
+           03  DTCHK021-IDX                PIC 9(03).
       *
       *    エラーファイル
        FD  DTCHKERR-FILE.
@@ -219,11 +221,16 @@
            03  WRK-INGAITEN                            PIC 9(07).
            03  WRK-ZAINUM                              PIC 9(08).
            03  WRK-RSI-HKNKBN                          PIC X(01).
+           03  WRK-GROUP.
+               05  WRK-SRYKA                           PIC X(02).
+               05  WRK-DENPNUM                         PIC 9(07).
       *
        01  KEY-AREA.
            03  KEY-NYUGAIKBN                           PIC X(01).
            03  KEY-PTID                                PIC 9(10).
-           03  KEY-DENPNUM                             PIC 9(07).
+           03  KEY-GROUP.
+               05  KEY-SRYKA                           PIC X(02).
+               05  KEY-DENPNUM                         PIC 9(07).
            03  KEY-HKNCOMBI                            PIC 9(04).
       *
            COPY    "CPDTCHK005.INC".
@@ -556,9 +563,17 @@
       *****************************************************************
        2001-DTCHK021-EDIT-SEC          SECTION.
       *
+           INITIALIZE                          WRK-GROUP
+           IF    ( JYURRK-GRP-DENPNUM  NOT =   ZERO )
+               MOVE    JYURRK-GRP-DENPNUM  TO  WRK-DENPNUM
+           ELSE
+               MOVE    JYURRK-DENPNUM      TO  WRK-DENPNUM
+           END-IF
+           MOVE    JYURRK-SRYKA            TO  WRK-SRYKA
+      *
            IF    ( KEY-NYUGAIKBN   NOT =   JYURRK-NYUGAIKBN )
              OR  ( KEY-PTID        NOT =   JYURRK-PTID )
-             OR  ( KEY-DENPNUM     NOT =   JYURRK-DENPNUM )
+             OR  ( KEY-GROUP       NOT =   WRK-GROUP )
                IF    ( KEY-NYUGAIKBN   NOT =   JYURRK-NYUGAIKBN )
                 OR   ( KEY-PTID        NOT =   JYURRK-PTID )
                    MOVE    ZERO        TO  IDXN
@@ -566,14 +581,14 @@
       *
                MOVE    JYURRK-NYUGAIKBN    TO  KEY-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  KEY-PTID
-               MOVE    JYURRK-DENPNUM      TO  KEY-DENPNUM
+               MOVE    WRK-GROUP           TO  KEY-GROUP
       *
                COMPUTE IDXN    =   IDXN    +   1
       *
                INITIALIZE              DTCHK021-REC
                MOVE    JYURRK-NYUGAIKBN    TO  DTCHK021-NYUGAIKBN
                MOVE    JYURRK-PTID         TO  DTCHK021-PTID
-               MOVE    JYURRK-DENPNUM      TO  DTCHK021-DENPNUM
+               MOVE    WRK-GROUP           TO  DTCHK021-GROUP
                MOVE    IDXN                TO  DTCHK021-IDX
                WRITE   DTCHK021-REC
       *
@@ -975,16 +990,17 @@
       *****************************************************************
        20011-DCACCT-UPD-SEC            SECTION.
       *
-           MOVE    ZERO                TO  KEY-DENPNUM
+           INITIALIZE                          KEY-GROUP
       *
            IF    ( JYURRK-GRP-DENPNUM  NOT =   ZERO )
                MOVE    JYURRK-GRP-DENPNUM  TO  KEY-DENPNUM
            ELSE
                MOVE    JYURRK-DENPNUM      TO  KEY-DENPNUM
            END-IF
+           MOVE    JYURRK-SRYKA            TO  KEY-SRYKA
       *
-           MOVE    KEY-DENPNUM
-                           TO  DCACCT-DAYCNT2-DENPNUM (JYURRK-RENNUM)
+           MOVE    KEY-GROUP
+                           TO  DCACCT-DAYCNT2-GROUP (JYURRK-RENNUM)
            PERFORM 900-DTCHK021-READ-SEC
            IF    ( FLG-DTCHK021    =   ZERO )
                MOVE    DTCHK021-IDX
@@ -1501,7 +1517,7 @@
            INITIALIZE                      DTCHK021-REC
            MOVE    JYURRK-NYUGAIKBN    TO  DTCHK021-NYUGAIKBN
            MOVE    JYURRK-PTID         TO  DTCHK021-PTID
-           MOVE    KEY-DENPNUM         TO  DTCHK021-DENPNUM
+           MOVE    KEY-GROUP           TO  DTCHK021-GROUP
       *
            READ    DTCHK021-FILE
            INVALID
