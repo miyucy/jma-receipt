@@ -5080,7 +5080,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *       ¿´Â¡¥Ú¡¼¥¹¥á¡¼¥«¡¼»ØÆ³´ÉÍýÎÁ¡Ê¥í¡¦¿¢¹þ·¿½üºÙÆ°´ï°Ü¹Ô´ü²Ã»»´Þ¤à¡Ë
       *       ¤¬¤ó´µ¼Ô»ØÆ³´ÉÍýÎÁ£²¡¦£³
               IF   RECE82-SRYYM    >=     "201404"
-                IF   SRY-SRYCD(IDX2) =  CONS-SINPESUR1-COMMENT
+                IF  (SRY-SRYCD(IDX2) =  CONS-SINPESUR1-COMMENT)
+                AND (RECE82-SRYYM   <=  "201803"              )
                    MOVE   "1"   TO    RECE84-FLG-SINPESUR-COMMENT
                 END-IF
                 IF   SRY-SRYCD(IDX2) =  CONS-SINPESUR2-COMMENT
@@ -5457,6 +5458,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       OR    CONS-KENSA3-COMMENT)
               AND  (FLG-KENSA-COM     =     ZERO               )
                    MOVE   "1"   TO    RECE84-FLG-KENSA-COMMENT
+              END-IF
+              IF    SRY-SRYCD(IDX2)   =     CONS-KENSA1-COMMENT
+                   MOVE    1    TO    RECE82-KENSA-BNPFLG
+              END-IF
+              IF    SRY-SRYCD(IDX2)   =     CONS-KENSA2-COMMENT
+                   MOVE    1    TO    RECE82-KENSA-NTPROFLG
+              END-IF
+              IF    SRY-SRYCD(IDX2)   =     CONS-KENSA3-COMMENT
+                   MOVE    1    TO    RECE82-KENSA-ANPFLG
               END-IF
            END-IF
       *

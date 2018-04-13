@@ -283,6 +283,7 @@
            03  CNT-SANTEIKA        PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
+           03  CNT-KENSA           PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -317,6 +318,8 @@
            03  IDX36               PIC 9(03).
            03  IDX37               PIC 9(03).
            03  IDX40               PIC 9(02).
+           03  IDX41               PIC 9(02).
+           03  IDX42               PIC 9(02).
            03  DAY-IDX             PIC 9(04).
            03  DAY-IDX2            PIC 9(02).
            03  IDY                 PIC 9(04).
@@ -436,6 +439,7 @@
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
+           03  WRK-SINPESU-SRYCD             PIC X(09).
            03  WRK-SINPESU-YMD               PIC X(08).
            03  WRK-SINPESUR-YMD              PIC X(08).
            03  WRK-ZAIKYO-YMD                PIC X(08).
@@ -664,6 +668,8 @@
            03  CONS-SINPESUR1       PIC X(09) VALUE "113015010".
       *    心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
            03  CONS-SINPESUR2       PIC X(09) VALUE "113015130".
+      *    心臓ペースメーカー指導管理料（イ以外）
+           03  CONS-SINPESUR3       PIC X(09) VALUE "113001610".
       *
       *    がん患者指導管理料（医師・看護師が心理的不安軽減のため面接）
            03  CONS-GANSIDO1        PIC X(09) VALUE "113015310".
@@ -1112,6 +1118,17 @@
       *
            MOVE       ZERO             TO  IDX33
            MOVE       ZERO             TO  IDX34
+      *
+           MOVE  ZERO        TO    CNT-KENSA
+           IF   RECE100-KENSA-BNPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE100-KENSA-NTPROFLG   =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE100-KENSA-ANPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
       *
            IF   RECE100-COMCNTFLG   =   "1"
       *
@@ -4101,6 +4118,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
             IF    RECE100-SRYYM  >=  "201604"
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
              MOVE    SPACE               TO  WRK-SINPESU-YMD
+             IF   RECE100-SRYYM  >=  "201804"
+               MOVE    CONS-SINPESUR3    TO  WRK-SINPESU-SRYCD
+             ELSE
+               MOVE    CONS-SINPESU2     TO  WRK-SINPESU-SRYCD
+             END-IF
              PERFORM   20011-SINPESU-CHECK-SEC
             ELSE
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
@@ -4148,9 +4170,19 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                 ADD        1       TO     IDZ
       *
-                MOVE       13      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "前回算定年月　　　年　　月"
+                IF   RECE100-SRYYM  >=  "201804"
+                  MOVE    18       TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "指導管理料前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
+                  MOVE    25       TO     IDX41
+                  MOVE    31       TO     IDX42
+                ELSE
+                  MOVE    13       TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "前回算定年月　　　年　　月"
+                                   TO     WK-FREE-NAME2(IDZ)
+                  MOVE    15       TO     IDX41
+                  MOVE    21       TO     IDX42
+                END-IF
       *
                 INITIALIZE                         STS-AREA-DAY
                 INITIALIZE                         LNK-DAY2-AREA
@@ -4166,7 +4198,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(15:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX41:4)
                    END-IF
       *
                    MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
@@ -4176,7 +4208,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(21:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX42:4)
                    END-IF
                 END-IF
       *
@@ -4222,11 +4254,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE    RECE100-NYUGAIKBN     TO  SRY-NYUGAIKBN
            MOVE    RECE100-PTID          TO  SRY-PTID
            MOVE    RECE100-SRYYM         TO  SRY-SRYYM
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(1)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(2)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(3)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(4)
-           MOVE    CONS-SINPESU2         TO  SRY-SRYCD(5)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(1)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(2)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(3)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(4)
+           MOVE    WRK-SINPESU-SRYCD     TO  SRY-SRYCD(5)
            MOVE    SRYACT-REC            TO  MCPDATA-REC
            MOVE    "tbl_sryact"          TO  MCP-TABLE
            MOVE    "key23"               TO  MCP-PATHNAME
@@ -6005,7 +6037,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-KENSA-HANTEI-SEC          SECTION.
       *
-           IF     RECE120-FLG-KENSA-COMMENT    =    "1"
+           IF  ((RECE100-SRYYM  >= "201804"       ) AND
+                (RECE120-FLG-KENSA-COMMENT  =  "1") AND
+                (CNT-KENSA                 >=   2 ))
+           OR  ((RECE100-SRYYM  <= "201803"       ) AND
+                (RECE120-FLG-KENSA-COMMENT  =  "1"))
                MOVE       7       TO     FLG-COMMENT
                PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF

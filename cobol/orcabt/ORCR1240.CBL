@@ -291,6 +291,7 @@
            03  CNT-RIHA            PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
+           03  CNT-KENSA           PIC 9(06).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1066,6 +1067,17 @@
                  END-PERFORM
                END-PERFORM
              END-IF
+           END-IF
+      *
+           MOVE  ZERO        TO    CNT-KENSA
+           IF   RECE200-KENSA-BNPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE200-KENSA-NTPROFLG   =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE200-KENSA-ANPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
            END-IF
       *
            IF   RECE200-COMCNTFLG   =   "1"
@@ -5050,7 +5062,11 @@
       *****************************************************************
        2001-KENSA-HANTEI-SEC          SECTION.
       *
-           IF     RECE220-FLG-KENSA-COMMENT    =    "1"
+           IF  ((RECE200-SRYYM  >= "201804"       ) AND
+                (RECE220-FLG-KENSA-COMMENT  =  "1") AND
+                (CNT-KENSA                 >=   2 ))
+           OR  ((RECE200-SRYYM  <= "201803"       ) AND
+                (RECE220-FLG-KENSA-COMMENT  =  "1"))
                MOVE       7       TO     FLG-COMMENT
                PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF

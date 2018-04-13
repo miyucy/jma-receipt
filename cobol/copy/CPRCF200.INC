@@ -287,6 +287,11 @@
       *Ç¥ÉØ¥Õ¥é¥°
            03  RECE200-NINPUFLG            PIC 9(01).
       *
+      *¸¡ºº¥Õ¥é¥°
+           03  RECE200-KENSA-BNPFLG        PIC 9(01).
+           03  RECE200-KENSA-NTPROFLG      PIC 9(01).
+           03  RECE200-KENSA-ANPFLG        PIC 9(01).
+      *
       *Í½È÷
            03  RECE200-YOBIETC-AREA.
                05  RECE200-YOBIETCINF      OCCURS 10.

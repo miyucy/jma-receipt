@@ -408,6 +408,11 @@
       *Ç¥ÉØ¥Õ¥é¥°
            03  RECE41-NINPUFLG            PIC  9(01).
       *
+      *¸¡ºº¥Õ¥é¥°
+           03  RECE41-KENSA-BNPFLG        PIC  9(01).
+           03  RECE41-KENSA-NTPROFLG      PIC  9(01).
+           03  RECE41-KENSA-ANPFLG        PIC  9(01).
+      *
       *Í½È÷
            03  RECE41-YOBIETC-AREA.
                05  RECE41-YOBIETCINF           OCCURS  10.

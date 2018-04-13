@@ -452,6 +452,7 @@
            03  CNT-RIHA            PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
+           03  CNT-KENSA           PIC 9(06).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1455,6 +1456,17 @@
       *
            MOVE  RECE62-KOHBUNRI-MIN   TO  WRK-KOHBUNRI-JIDO
            MOVE  ZERO                  TO  WRK-HKNCOMBI-JIDO
+      *
+           MOVE  ZERO        TO    CNT-KENSA
+           IF   RECE62-KENSA-BNPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE62-KENSA-NTPROFLG   =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
+           IF   RECE62-KENSA-ANPFLG     =   1
+                 ADD    1    TO    CNT-KENSA
+           END-IF
       *
            IF   RECE62-COMCNTFLG   =   "1"
       *
@@ -7931,7 +7943,11 @@
       *****************************************************************
        2001-KENSA-HANTEI-SEC          SECTION.
       *
-           IF     RECE64-FLG-KENSA-COMMENT    =    "1"
+           IF  ((RECE62-SRYYM  >= "201804"       ) AND
+                (RECE64-FLG-KENSA-COMMENT  =  "1") AND
+                (CNT-KENSA                >=   2 ))
+           OR  ((RECE62-SRYYM  <= "201803"       ) AND
+                (RECE64-FLG-KENSA-COMMENT  =  "1"))
                INITIALIZE            WRK-JIDO-SETCOM-AREA
       ***      MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
       ***      MOVE       15      TO     WRK-JIDO-SETCOMATFLG
