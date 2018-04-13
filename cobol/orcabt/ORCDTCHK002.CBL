@@ -792,10 +792,12 @@
            03  PTZAI-KOHNUM                    PIC X(03).
            03  PTZAI-DAY                       PIC 9(05)
                                                OCCURS  31.
-           03  PTZAI-DENPNUM-OCC               OCCURS  100.
-               05  PTZAI-DENPNUM               PIC 9(07).
-               05  PTZAI-DENPNUM-KAISU         PIC 9(09).
-               05  PTZAI-DENPNUM-DAY           PIC 9(02).
+           03  PTZAI-GROUP-OCC               OCCURS  100.
+               05  PTZAI-GROUP.
+                   07  PTZAI-SRYKA             PIC X(02).
+                   07  PTZAI-DENPNUM           PIC 9(07).
+               05  PTZAI-GROUP-KAISU         PIC 9(09).
+               05  PTZAI-GROUP-DAY           PIC 9(02).
       *
       *    データチェック診療会計（患者別）
        01  PTACCT-AREA.
@@ -836,7 +838,7 @@
                                                    VALUE   1000.
            03  CONST-TSRYCD-MAX                    PIC 9(05)
                                                    VALUE   2000.
-           03  CONST-DENPNUM-MAX                   PIC 9(05)
+           03  CONST-GROUP-MAX                   PIC 9(05)
                                                    VALUE   100.
            03  CONST-TJNISSU-MAX                   PIC 9(05)
                                                    VALUE   20.
@@ -3007,14 +3009,17 @@
       *
                    IF    ( PTZAI-DENPNUM (IDX-ZAI IDXI)
                                        =   ZERO )
-                       MOVE    DCACCT-DAYCNT2-DENPNUM (IDXN)
-                                   TO  PTZAI-DENPNUM (IDX-ZAI IDXI)
+                       MOVE    DCACCT-DAYCNT2-GROUP (IDXN)
+                                   TO  PTZAI-GROUP (IDX-ZAI IDXI)
+           DISPLAY IDX-ZAI ":" IDXI " GROUP = "
+           PTZAI-GROUP (IDX-ZAI IDXI)
+           DISPLAY "DCACCT-DAY = " DCACCT-DAY
                        MOVE    DCACCT-DAY
-                                   TO  PTZAI-DENPNUM-DAY(IDX-ZAI IDXI)
+                                   TO  PTZAI-GROUP-DAY(IDX-ZAI IDXI)
                    END-IF
       *
-                   COMPUTE PTZAI-DENPNUM-KAISU(IDX-ZAI IDXI)
-                       =   PTZAI-DENPNUM-KAISU(IDX-ZAI IDXI)
+                   COMPUTE PTZAI-GROUP-KAISU(IDX-ZAI IDXI)
+                       =   PTZAI-GROUP-KAISU(IDX-ZAI IDXI)
                        +   DCACCT-DAYCNT2  (IDXN)
       *
                END-IF
@@ -3925,22 +3930,22 @@
        2001111-TSRYCD-HEN-SEC              SECTION.
       *
            PERFORM VARYING IDXI   FROM    1    BY  1
-                   UNTIL ( IDXI   >   CONST-DENPNUM-MAX )
+                   UNTIL ( IDXI   >   CONST-GROUP-MAX )
       *
                IF    ( PTZAI-DENPNUM (IDX-ZAI IDXI)
                                           NOT  =   ZERO )
                    IF    ( TSRYCD-DENPNUM (IDX26 IDXI)    =   ZERO )
-                       MOVE    PTZAI-DENPNUM (IDX-ZAI IDXI)
-                               TO  TSRYCD-DENPNUM (IDX26 IDXI)
-                       MOVE    PTZAI-DENPNUM-DAY (IDX-ZAI IDXI)
-                               TO  TSRYCD-DENPNUM-DAY   (IDX26 IDXI)
+                       MOVE    PTZAI-GROUP (IDX-ZAI IDXI)
+                               TO  TSRYCD-GROUP (IDX26 IDXI)
+                       MOVE    PTZAI-GROUP-DAY (IDX-ZAI IDXI)
+                               TO  TSRYCD-GROUP-DAY   (IDX26 IDXI)
                    END-IF
-                   COMPUTE TSRYCD-DENPNUM-KAISU (IDX26 IDXI)
-                       =   TSRYCD-DENPNUM-KAISU (IDX26 IDXI)
-                       +   PTZAI-DENPNUM-KAISU (IDX-ZAI IDXI)
+                   COMPUTE TSRYCD-GROUP-KAISU (IDX26 IDXI)
+                       =   TSRYCD-GROUP-KAISU (IDX26 IDXI)
+                       +   PTZAI-GROUP-KAISU (IDX-ZAI IDXI)
       *
                    IF    ( WRK-HKNFLG  =   1 )
-                       MOVE    1    TO  TSRYCD-DENPNUM-HKNFLG
+                       MOVE    1    TO  TSRYCD-GROUP-HKNFLG
                                                     (IDX26 IDXI)
                    END-IF
                END-IF
@@ -8932,11 +8937,11 @@
       *
            IF    ( WRK-CHK-CD      =   TSRYCD-SRYCD (IDX0) )
                PERFORM VARYING IDXI    FROM    1   BY  1
-                       UNTIL ( IDXI  > CONST-DENPNUM-MAX )
-                   IF    ( TSRYCD-DENPNUM (IDX-TSRYCD IDXI)
+                       UNTIL ( IDXI  > CONST-GROUP-MAX )
+                   IF    ( TSRYCD-GROUP (IDX-TSRYCD IDXI)
                                NOT =   ZERO )
-                    AND  ( TSRYCD-DENPNUM (IDX-TSRYCD IDXI)
-                                   =   TSRYCD-DENPNUM  (IDX0 IDXI))
+                    AND  ( TSRYCD-GROUP (IDX-TSRYCD IDXI)
+                                   =   TSRYCD-GROUP  (IDX0 IDXI))
                        PERFORM 200112111-HEIYOU-T-SET-CHK-SEC
                    END-IF
                END-PERFORM
@@ -8958,16 +8963,16 @@
            MOVE    1               TO  FLG-TARGET
       *
            IF    ( IDX-TSRYCD  =   IDX0 )
-               IF    ( TSRYCD-DENPNUM-KAISU (IDX0 IDXI)
+               IF    ( TSRYCD-GROUP-KAISU (IDX0 IDXI)
                                    >   1 )
                    CONTINUE
                ELSE
                    MOVE    ZERO    TO  FLG-TARGET
                END-IF
            ELSE
-               IF    ( TSRYCD-DENPNUM-KAISU (IDX-TSRYCD IDXI)
+               IF    ( TSRYCD-GROUP-KAISU (IDX-TSRYCD IDXI)
                                    >   ZERO )
-               AND   ( TSRYCD-DENPNUM-KAISU (IDX0 IDXI)
+               AND   ( TSRYCD-GROUP-KAISU (IDX0 IDXI)
                                    >   ZERO )
                            CONTINUE
                ELSE
@@ -8975,9 +8980,9 @@
                END-IF
            END-IF
       *
-           IF    ( TSRYCD-DENPNUM-HKNFLG   (IDX-TSRYCD IDXI)
+           IF    ( TSRYCD-GROUP-HKNFLG   (IDX-TSRYCD IDXI)
                                            =   1 )
-            OR   ( TSRYCD-DENPNUM-HKNFLG   (IDX0 IDXI)
+            OR   ( TSRYCD-GROUP-HKNFLG   (IDX0 IDXI)
                                            =   1 )
                     CONTINUE
            ELSE
@@ -8985,7 +8990,7 @@
            END-IF
       *
            IF    ( FLG-TARGET     =   1 )
-               MOVE    TSRYCD-DENPNUM-DAY (IDX-TSRYCD IDXI)
+               MOVE    TSRYCD-GROUP-DAY (IDX-TSRYCD IDXI)
                                TO  IDX-DAY
                MOVE    1       TO  FLG-SRYHEI1-DAY (IDX-DAY)
                                    FLG-SRYHEI2-DAY (IDX-DAY)
