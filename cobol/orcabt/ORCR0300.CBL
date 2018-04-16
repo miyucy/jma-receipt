@@ -2755,49 +2755,48 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
       *    ÆÃÄê¼ÀÉÂ£³
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ¥«¥¿¥«¥Ê¡Ê»áÌ¾¡Ë
-           MOVE    1                   TO  IDY
-           PERFORM VARYING IDX FROM    1   BY  2
-                   UNTIL   IDX >       49
-                   OR      RECE02-KANANAME (IDX:1) =   SPACE
-               IF      RECE02-KANANAME (IDX:2)
-                                           >=  "¥¡"  AND
-                                           <=  "¥ö"
-                   EVALUATE    RECE02-KANANAME (IDX:2)
-                       WHEN    "¥î"
-                           MOVE    "¥ï"        TO  WRK-DATA (IDY:2)
-                       WHEN    "¥õ"
-                           MOVE    "¥«"        TO  WRK-DATA (IDY:2)
-                       WHEN    "¥ö"
-                           MOVE    "¥±"        TO  WRK-DATA (IDY:2)
-                       WHEN    OTHER
-                           MOVE    RECE02-KANANAME (IDX:2)
-                                               TO  WRK-DATA (IDY:2)
-                   END-EVALUATE
-                   ADD     2               TO  IDY    
-               ELSE    
-                   EVALUATE    RECE02-KANANAME (IDX:2)
-      *                A8 A1
-                       WHEN    "¨¡"
-      *                A1 DD
-                       WHEN    "¡Ý"
-      *                A1 BE
-                       WHEN    "¡¾"
-      *                A1 BD
-                       WHEN    "¡½"
-      *                    A1 BC
-                           MOVE    "¡¼"            TO  WRK-DATA (IDY:2)
-                           ADD     2               TO  IDY
-      *                    A1 BC
-                       WHEN    "¡¼"
-                           MOVE    RECE02-KANANAME (IDX:2)
+           IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM-201804
+               MOVE    1                   TO  IDY
+               PERFORM VARYING IDX FROM    1   BY  2
+                       UNTIL   IDX >       49
+                       OR      RECE02-KANANAME (IDX:1) =   SPACE
+                   IF      RECE02-KANANAME (IDX:2)
+                                               >=  "¥¡"  AND
+                                               <=  "¥ö"
+                       EVALUATE    RECE02-KANANAME (IDX:2)
+                           WHEN    "¥î"
+                               MOVE    "¥ï"        TO  WRK-DATA (IDY:2)
+                           WHEN    "¥õ"
+                               MOVE    "¥«"        TO  WRK-DATA (IDY:2)
+                           WHEN    "¥ö"
+                               MOVE    "¥±"        TO  WRK-DATA (IDY:2)
+                           WHEN    OTHER
+                               MOVE    RECE02-KANANAME (IDX:2)
                                                    TO  WRK-DATA (IDY:2)
-                           ADD     2               TO  IDY
-                   END-EVALUATE
-               END-IF
-           END-PERFORM
-      *****IF      IDY                 =   1
-      *****    MOVE    RECE02-KANANAME     TO  WRK-DATA
-      *****END-IF
+                       END-EVALUATE
+                       ADD     2               TO  IDY
+                   ELSE
+                       EVALUATE    RECE02-KANANAME (IDX:2)
+      *                    A8 A1
+                           WHEN    "¨¡"
+      *                    A1 DD
+                           WHEN    "¡Ý"
+      *                    A1 BE
+                           WHEN    "¡¾"
+      *                    A1 BD
+                           WHEN    "¡½"
+      *                        A1 BC
+                               MOVE    "¡¼"        TO  WRK-DATA (IDY:2)
+                               ADD     2           TO  IDY
+      *                        A1 BC
+                           WHEN    "¡¼"
+                               MOVE    RECE02-KANANAME (IDX:2)
+                                                   TO  WRK-DATA (IDY:2)
+                               ADD     2               TO  IDY
+                       END-EVALUATE
+                   END-IF
+               END-PERFORM
+           END-IF
            MOVE    80                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-MOJI-CHK
            PERFORM 5004-MOJI-HENSYU-SEC
