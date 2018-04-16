@@ -53,6 +53,7 @@
       *  04.08.05    NACL-門脇    16/09/20  １５円以下薬剤の提出用レセプト記載
       *                                     （記録）対応
       *  04.08.06    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
+      *  04.08.07    NACL-藤原    18/04/06  平成３０年４月改正対応
       *
       *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
       *  05.00.02    NACL-伊藤    17/12/22  診療情報システム対応
@@ -1024,16 +1025,49 @@
       *        再診（夜間・早朝等）加算
                05  FILLER             PIC X(09)    VALUE   "112015570".
       *
+      *    妊婦
+      *        妊婦時間外加算（再診）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112021370".
+      *        妊婦休日加算（再診）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112021470".
+      *        妊婦深夜加算（再診）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112021570".
+      *        妊婦時間外特例医療機関加算（再診）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112021670".
+      *        妊婦夜間加算（産科又は産婦人科再診）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112022170".
+      *        妊婦休日加算（産科又は産婦人科再診）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112022270".
+      *        妊婦深夜加算（産科又は産婦人科再診）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112022370".
+      *        妊婦時間外加算（外来診療料）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112022470".
+      *        妊婦休日加算（外来診療料）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112022570".
+      *        妊婦深夜加算（外来診療料）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112022670".
+      *        妊婦時間外特例医療機関加算（外来診療料）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112022770".
+      *        妊婦夜間加算（産科又は産婦人科外来診療料）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112022970".
+      *        妊婦休日加算（産科又は産婦人科外来診療料）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112023070".
+      *        妊婦深夜加算（産科又は産婦人科外来診療料）（入院外）
+               05  FILLER             PIC X(09)    VALUE   "112023170".
+      *
+      *        薬剤適正使用連携加算（再診）
+               05  FILLER             PIC X(09)    VALUE   "112021970".
+      *
            03  WRK-CONS-JIKANGAI-TABLE-R  REDEFINES   
                                       WRK-CONS-JIKANGAI-TABLE.
-               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  31.
+               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  46.
                    07  WRK-CONS-JIKANGAI-SRYCD
                                       PIC X(09).
            03  WRK-CONS-JIKANGAI-TEN-TABLE.
-               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  31.
+               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  46.
                    07  WRK-CONS-JIKANGAI-TEN
                                       PIC 9(09).
-           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   31.    
+           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   46.
       *
       *    液体酸素・可搬式液体酸素容器（ＬＧＣ）
            03  WRK-CONS-SANSO1        PIC X(09)   VALUE   "739210000".
