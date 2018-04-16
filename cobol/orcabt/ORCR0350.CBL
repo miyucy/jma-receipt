@@ -3124,6 +3124,52 @@
       *    特定疾病３
            PERFORM 5004-MOJI-HENSYU-SEC
       *    カタカナ（氏名）
+      *    カタカナ（氏名）
+           MOVE    1                   TO  IDY
+           PERFORM VARYING IDX FROM    1   BY  2
+                   UNTIL   IDX >       49
+                   OR      RECE62-KANANAME (IDX:1) =   SPACE
+               IF      RECE62-KANANAME (IDX:2)
+                                           >=  "ァ"  AND
+                                           <=  "ヶ"
+                   EVALUATE    RECE62-KANANAME (IDX:2)
+                       WHEN    "ヮ"
+                           MOVE    "ワ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ヵ"
+                           MOVE    "カ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ヶ"
+                           MOVE    "ケ"        TO  WRK-DATA (IDY:2)
+                       WHEN    OTHER
+                           MOVE    RECE62-KANANAME (IDX:2)
+                                               TO  WRK-DATA (IDY:2)
+                   END-EVALUATE
+                   ADD     2               TO  IDY    
+               ELSE    
+                   EVALUATE    RECE62-KANANAME (IDX:2)
+      *                A8 A1
+                       WHEN    "─"
+      *                A1 DD
+                       WHEN    "−"
+      *                A1 BE
+                       WHEN    "‐"
+      *                A1 BD
+                       WHEN    "―"
+      *                    A1 BC
+                           MOVE    "ー"            TO  WRK-DATA (IDY:2)
+                           ADD     2               TO  IDY
+      *                    A1 BC
+                       WHEN    "ー"
+                           MOVE    RECE62-KANANAME (IDX:2)
+                                                   TO  WRK-DATA (IDY:2)
+                           ADD     2               TO  IDY
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+      *****IF      IDY                 =   1
+      *****    MOVE    RECE62-KANANAME     TO  WRK-DATA
+      *****END-IF
+           MOVE    80                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-MOJI-CHK
            PERFORM 5004-MOJI-HENSYU-SEC
       *    患者状態 
            IF      RECE62-NINPUFLG >   ZERO
