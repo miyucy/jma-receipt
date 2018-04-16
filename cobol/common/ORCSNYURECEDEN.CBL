@@ -114,6 +114,8 @@
       *                                     居住費負担額変更対応
       *  05.00.00    NACL-小豆沢  18/04/3   夜間看護体制特定日減算対応
       *  05.00.00    NACL-小豆沢  18/04/11  他医受診対応
+      *  05.00.00    NACL-小豆沢  18/04/16  医療区分、ＡＤＬ点数情報の
+      *                                     記録を平成３０年３月迄とする
       *****************************************************************
       *
       *
@@ -5707,15 +5709,20 @@
       *          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
       *     END-PERFORM
       *
-      *    医療区分、ＡＤＬ点数情報の取得
-           INITIALIZE                          ORCSRYOCOM-AREA
-           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  LNK-RYOCOM-HOSPNUM
-           MOVE    LNK-NYURECEDEN-PTID     TO  LNK-RYOCOM-PTID
-           MOVE    LNK-NYURECEDEN-SANTEIYM TO  LNK-RYOCOM-SANTEIYM
-           CALL    "ORCSRYOCOM"     USING  ORCSRYOCOM-AREA
-                                           SPA-AREA
-           IF      LNK-RYOCOM-RC           NOT =  ZERO
-               DISPLAY  "LNK-RYOCOM-RC = " LNK-RYOCOM-RC
+      *    医療区分、ＡＤＬ点数情報の取得（平成３０年３月迄）
+           IF      LNK-NYURECEDEN-SANTEIYM <=  "201803"
+               INITIALIZE                          ORCSRYOCOM-AREA
+               MOVE    LNK-NYURECEDEN-HOSPNUM  TO  LNK-RYOCOM-HOSPNUM
+               MOVE    LNK-NYURECEDEN-PTID     TO  LNK-RYOCOM-PTID
+               MOVE    LNK-NYURECEDEN-SANTEIYM TO  LNK-RYOCOM-SANTEIYM
+               CALL    "ORCSRYOCOM"     USING  ORCSRYOCOM-AREA
+                                               SPA-AREA
+               IF      LNK-RYOCOM-RC           NOT =  ZERO
+                   DISPLAY  "LNK-RYOCOM-RC = " LNK-RYOCOM-RC
+               END-IF
+           ELSE
+               INITIALIZE                          ORCSRYOCOM-AREA
+               MOVE      1                 TO      LNK-RYOCOM-RC
            END-IF
       *
       *     PERFORM   VARYING  IDX1   FROM  1   BY   1
