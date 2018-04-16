@@ -2119,15 +2119,20 @@
       *          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
       *     END-PERFORM
       *
-      *    医療区分、ＡＤＬ点数情報の取得
-           INITIALIZE                          ORCSRYOCOM-AREA
-           MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  LNK-RYOCOM-HOSPNUM
-           MOVE    LNK-RNYURECEDEN-PTID     TO  LNK-RYOCOM-PTID
-           MOVE    LNK-RNYURECEDEN-SANTEIYM TO  LNK-RYOCOM-SANTEIYM
-           CALL    "ORCSRYOCOM"     USING  ORCSRYOCOM-AREA
-                                           SPA-AREA
-           IF      LNK-RYOCOM-RC           NOT =  ZERO
-               DISPLAY  "LNK-RYOCOM-RC = " LNK-RYOCOM-RC
+      *    医療区分、ＡＤＬ点数情報の取得（平成３０年３月迄）
+           IF      LNK-RNYURECEDEN-SANTEIYM <=  "201803"
+               INITIALIZE                          ORCSRYOCOM-AREA
+               MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  LNK-RYOCOM-HOSPNUM
+               MOVE    LNK-RNYURECEDEN-PTID     TO  LNK-RYOCOM-PTID
+               MOVE    LNK-RNYURECEDEN-SANTEIYM TO  LNK-RYOCOM-SANTEIYM
+               CALL    "ORCSRYOCOM"     USING  ORCSRYOCOM-AREA
+                                               SPA-AREA
+               IF      LNK-RYOCOM-RC           NOT =  ZERO
+                   DISPLAY  "LNK-RYOCOM-RC = " LNK-RYOCOM-RC
+               END-IF
+           ELSE
+               INITIALIZE                          ORCSRYOCOM-AREA
+               MOVE      1                 TO      LNK-RYOCOM-RC
            END-IF
       *
       *     PERFORM   VARYING  IDX1   FROM  1   BY   1
