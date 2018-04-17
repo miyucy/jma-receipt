@@ -302,6 +302,8 @@
            03  IDX30               PIC 9(02).
            03  IDX32               PIC 9(02).
            03  IDX33               PIC 9(02).
+           03  IDX41               PIC 9(02).
+           03  IDX42               PIC 9(02).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  DAY-IDX             PIC 9(04).
@@ -709,6 +711,11 @@
       *
       *    排尿自立指導料
            03  CONS-HAIJRT          PIC X(09) VALUE "113022810".
+      *
+      *    在宅酸素療法指導管理料（その他）
+           03  CONS-ZAISAN          PIC X(09) VALUE "114003710".
+      *    在宅持続陽圧呼吸療法指導管理料２
+           03  CONS-YOUATU2         PIC X(09) VALUE "114040810".
       *
       *    在宅患者共同診療料テーブル
        01  TBL-ZAIKYO-CHECK-AREA.
@@ -1592,7 +1599,6 @@
                          MOVE    2     TO  FLG-HANTEI
                       END-IF
                       MOVE   ZERO   TO  FLG-COMMENT
-      *               （初診（同日複数診療科）算定科のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYODOU-HANTEI-SEC
                       END-IF
@@ -1601,49 +1607,36 @@
                       END-IF
                    WHEN      "13"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （薬剤管理指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-YAKUKANSIDO-HANTEI-SEC
                       END-IF
-      *            （入院栄養食事指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NYUEIYOSIDO-HANTEI-SEC
                       END-IF
-      *            （退院前訪問指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HOUMONSIDO-HANTEI-SEC
                       END-IF
-      *            （傷病手当金意見書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYOBYO-HANTEI-SEC
                       END-IF
-      *            （療養費同意書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-RYOYO-HANTEI-SEC
                       END-IF
-      *            （退院時服薬指導加算算定時の
-      *              前月薬剤管理指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-TAIIN-HANTEI-SEC
                       END-IF
-      *            （介護支援連携指導料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISIEN-HANTEI-SEC
                       END-IF
-      *            （集団栄養食事指導料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYUEIYO-HANTEI-SEC
                       END-IF
-      *             (心臓ペースメーカー指導管理料（ロ）の直近の算定年月
-      *              のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
-      *            （がん患者指導管理料２・３の過去の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GANSIDO-HANTEI-SEC
                       END-IF
-      *            （排尿自立指導料の初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HAIJRT-HANTEI-SEC
                       END-IF
@@ -1652,46 +1645,39 @@
                       END-IF
                    WHEN      "14"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （訪問看護指示料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HOUSIJI-HANTEI-SEC
                       END-IF
-      *            （在宅血液透析頻回指導管理料算定時の
-      *              在宅血液透析指導管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
-      *            （往診・特別往診算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-OSIN-HANTEI-SEC
                       END-IF
-      *            （介護職員等喀痰吸引等指示料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISYOKU-HANTEI-SEC
                       END-IF
-      *            （在宅持続陽圧呼吸療法指導管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-YOUATU-HANTEI-SEC
                       END-IF
-      *             (在宅患者共同診療料の初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIKYO-HANTEI-SEC
+                      END-IF
+      *               診区１３と共用分
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "40"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （人工腎臓等の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-JINZOUETC-HANTEI-SEC
                       END-IF
-      *            （局所陰圧閉鎖処置の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KYOKUIN-HANTEI-SEC
                       END-IF
-      *            （磁気による膀胱等刺激法の初回実施日、
-      *              初回からの通算実施日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-BOKOHO-HANTEI-SEC
                       END-IF
@@ -1699,19 +1685,15 @@
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "50"
-      *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "54"
-      *            （麻酔日のセット）
                       PERFORM    2001-MASUI-HANTEI-SEC
                    WHEN      "60"
                    WHEN      "64"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （（検選）日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KENSEN-HANTEI-SEC
                       END-IF
-      *            （実施日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KENSA-HANTEI-SEC
                       END-IF
@@ -1719,15 +1701,12 @@
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "70"
-      *            （ＣＴ・ＭＲＩ実施日のセット）
                       PERFORM    2001-CTMRI-HANTEI-SEC
                    WHEN      "80"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （精神科退院前訪問指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HOUMONSIDO-SEI-HANTEI-SEC
                       END-IF
-      *            （リハビリのセット）
                       IF   FLG-COMMENT  =  ZERO
                         IF    RECE84-RIHABIRI-COMMENT  NOT = SPACE
                           IF  RECE84-RIHABIRI-COMMENT      =  "1"
@@ -1739,15 +1718,12 @@
                           END-IF
                         END-IF
                       END-IF
-      *            （（リハ選）日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-RIHASEN-HANTEI-SEC
                       END-IF
-      *            （精神科ショート・ケア・精神科デイ・ケアの算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SEIKEA-HANTEI-SEC
                       END-IF
-      *            （救急医療管理加算の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-KYUKYU-HANTEI-SEC
                       END-IF
@@ -1761,36 +1737,27 @@
                           PERFORM   2001-NYU-COMMENT-SEC
                         WHEN   "6"
                           MOVE   ZERO   TO  FLG-COMMENT
-      *                  （精神科隔離病室管理加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                              PERFORM   2001-KAKURI-HANTEI-SEC
                           END-IF
-      *                  （労災治療計画加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                              PERFORM   2001-CHIRYO-HANTEI-SEC
                           END-IF
-      *                  （栄養サポートチーム加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-EISAPO-HANTEI-SEC
                           END-IF
-      *                  （呼吸ケアチーム加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-KOKKEA-HANTEI-SEC
                           END-IF
-      *                  （重症者加算（精神療養病棟入院料）の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-JYUSYO-HANTEI-SEC
                           END-IF
-      *                  （精神科リエゾンチーム加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-SEIRIE-HANTEI-SEC
                           END-IF
-      *                  （病棟薬剤業務実施加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-BYOYAK-HANTEI-SEC
                           END-IF
-      *                  （超重症児（者）入院診療加算・準超重症児（者）
-      *                    入院診療加算の算定開始日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-CYOJKSN-HANTEI-SEC
                           END-IF
@@ -1813,7 +1780,6 @@
                           MOVE    1     TO  FLG-HANTEI
                       END-IF
                       MOVE   ZERO   TO  FLG-COMMENT
-      *               （初診（同日複数診療科）算定科のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYODOU-HANTEI-SEC
                       END-IF
@@ -1822,49 +1788,36 @@
                       END-IF
                    WHEN      "13"                                       
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （薬剤管理指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-YAKUKANSIDO-HANTEI-SEC
                       END-IF
-      *            （入院栄養食事指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NYUEIYOSIDO-HANTEI-SEC
                       END-IF
-      *            （退院前訪問指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HOUMONSIDO-HANTEI-SEC
                       END-IF
-      *            （傷病手当金意見書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYOBYO-HANTEI-SEC
                       END-IF
-      *            （療養費同意書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-RYOYO-HANTEI-SEC
                       END-IF
-      *            （退院時服薬指導加算算定時の
-      *              前月薬剤管理指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-TAIIN-HANTEI-SEC
                       END-IF
-      *            （介護支援連携指導料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISIEN-HANTEI-SEC
                       END-IF
-      *            （集団栄養食事指導料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYUEIYO-HANTEI-SEC
                       END-IF
-      *             (心臓ペースメーカー指導管理料（ロ）の直近の算定年月
-      *              のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
-      *            （がん患者指導管理料２・３の過去の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GANSIDO-HANTEI-SEC
                       END-IF
-      *            （排尿自立指導料の初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HAIJRT-HANTEI-SEC
                       END-IF
@@ -1874,11 +1827,9 @@
                    WHEN      "40"          
                    WHEN      "80"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （精神科退院前訪問指導料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HOUMONSIDO-SEI-HANTEI-SEC
                       END-IF
-      *            （リハビリのセット）
                       IF   FLG-COMMENT  =  ZERO
                         IF    RECE84-RIHABIRI-COMMENT  NOT = SPACE
                           IF  RECE84-RIHABIRI-COMMENT      =  "1"
@@ -1890,75 +1841,59 @@
                           END-IF
                         END-IF
                       END-IF
-      *            （（リハ選）日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-RIHASEN-HANTEI-SEC
                       END-IF
-      *            （精神科ショート・ケア・精神科デイ・ケアの算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SEIKEA-HANTEI-SEC
                       END-IF
-      *
-      *            （訪問看護指示料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-HOUSIJI-HANTEI-SEC
                       END-IF
-      *            （在宅血液透析頻回指導管理料算定時の
-      *              在宅血液透析指導管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-HINKAI-HANTEI-SEC
                       END-IF
-      *            （往診・特別往診算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-OSIN-HANTEI-SEC
                       END-IF
-      *            （介護職員等喀痰吸引等指示料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISYOKU-HANTEI-SEC
                       END-IF
-      *            （在宅持続陽圧呼吸療法指導管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-YOUATU-HANTEI-SEC
                       END-IF
-      *            （人工腎臓等の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-JINZOUETC-HANTEI-SEC
                       END-IF
-      *            （局所陰圧閉鎖処置の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-KYOKUIN-HANTEI-SEC
                       END-IF
-      *            （救急医療管理加算の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-KYUKYU-HANTEI-SEC
                       END-IF
-      *             (在宅患者共同診療料の初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIKYO-HANTEI-SEC
                       END-IF
-      *            （磁気による膀胱等刺激法の初回実施日、
-      *              初回からの通算実施日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-BOKOHO-HANTEI-SEC
                       END-IF
-      *
+      *               診区１３と共用分
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SINPESUR-HANTEI-SEC
+                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "50"                                       
-      *            （手術日のセット）                                   
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC               
                    WHEN      "54"
-      *            （麻酔日のセット）
                       PERFORM    2001-MASUI-HANTEI-SEC
                    WHEN      "60"
                    WHEN      "64"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （（検選）日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KENSEN-HANTEI-SEC
                       END-IF
-      *            （実施日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KENSA-HANTEI-SEC
                       END-IF
@@ -1966,7 +1901,6 @@
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "70"
-      *            （ＣＴ・ＭＲＩ実施日のセット）
                       PERFORM    2001-CTMRI-HANTEI-SEC
                    WHEN      "90"                                       
                    WHEN      "92"
@@ -1975,36 +1909,27 @@
                           PERFORM   2001-NYU-COMMENT-SEC
                         WHEN   "6"
                           MOVE   ZERO   TO  FLG-COMMENT
-      *                  （精神科隔離病室管理加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                              PERFORM   2001-KAKURI-HANTEI-SEC
                           END-IF
-      *                  （労災治療計画加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                              PERFORM   2001-CHIRYO-HANTEI-SEC
                           END-IF
-      *                  （栄養サポートチーム加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-EISAPO-HANTEI-SEC
                           END-IF
-      *                  （呼吸ケアチーム加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-KOKKEA-HANTEI-SEC
                           END-IF
-      *                  （重症者加算（精神療養病棟入院料）の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-JYUSYO-HANTEI-SEC
                           END-IF
-      *                  （精神科リエゾンチーム加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-SEIRIE-HANTEI-SEC
                           END-IF
-      *                  （病棟薬剤業務実施加算の算定日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-BYOYAK-HANTEI-SEC
                           END-IF
-      *                  （超重症児（者）入院診療加算・準超重症児（者）
-      *                    入院診療加算の算定開始日のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-CYOJKSN-HANTEI-SEC
                           END-IF
@@ -4390,7 +4315,17 @@
       *****************************************************************
        2001-SINPESUR-HANTEI-SEC          SECTION.
       *
-           IF     RECE84-FLG-SINPESUR-COMMENT   =    "1" OR "2"
+           IF   ((RECE82-SRYYM                  <    "201804"  ) AND
+                 (RECE84-FLG-SINPESUR-COMMENT   =    "1" OR "2"))
+           OR   ((RECE82-SRYYM                 >=    "201804"  ) AND
+                 (RECE84-FLG-SINPESUR-COMMENT   =    "1" OR "2") AND
+                 (RECE84-FLG-SINPESU-COMMENT    =     SPACE    ))
+           OR   ((RECE82-SRYYM                 >=    "201804"  ) AND
+                 (RECE84-FLG-SINPESU-COMMENT    =    "A"       ) AND
+                 (RECE84-FLG-SINPESUR-COMMENT   =    "A"       ))
+           OR   ((RECE82-SRYYM                 >=    "201804"  ) AND
+                 (RECE84-FLG-SINPESU-COMMENT    =    "B"       ) AND
+                 (RECE84-FLG-SINPESUR-COMMENT   =    "B"       ))
              MOVE    ZERO                TO  FLG-SINPESUR-COMMENT
              MOVE    SPACE               TO  WRK-SINPESUR-YMD
              INITIALIZE                      SANTEI-REC
@@ -4401,6 +4336,10 @@
                  MOVE    CONS-SINPESUR1  TO  SANTEI-SRYCD
                WHEN     "2"
                  MOVE    CONS-SINPESUR2  TO  SANTEI-SRYCD
+               WHEN     "A"
+                 MOVE    CONS-ZAISAN     TO  SANTEI-SRYCD
+               WHEN     "B"
+                 MOVE    CONS-YOUATU2    TO  SANTEI-SRYCD
              END-EVALUATE
              MOVE    ZERO                TO  SANTEI-NYUGAIKBN
              MOVE    ZERO                TO  SANTEI-SRYKA
@@ -4443,9 +4382,22 @@
       *
                 ADD        1       TO     IDZ
       *
-                MOVE       13      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "前回算定年月　　　年　　月"
+                EVALUATE  RECE84-FLG-SINPESUR-COMMENT
+                  WHEN     "1"
+                  WHEN     "2"
+                     MOVE    13    TO     WK-FREE-YUKOKETA2(IDZ)
+                     MOVE   "前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
+                     MOVE    15    TO     IDX41
+                     MOVE    21    TO     IDX42
+                  WHEN     "A"
+                  WHEN     "B"
+                     MOVE    18    TO     WK-FREE-YUKOKETA2(IDZ)
+                     MOVE   "指導管理料前回算定年月　　　年　　月"
+                                   TO     WK-FREE-NAME2(IDZ)
+                     MOVE    25    TO     IDX41
+                     MOVE    31    TO     IDX42
+                END-EVALUATE
       *
                 INITIALIZE                         STS-AREA-DAY
                 INITIALIZE                         LNK-DAY2-AREA
@@ -4461,7 +4413,7 @@
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(15:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX41:4)
                    END-IF
       *
                    MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
@@ -4471,7 +4423,7 @@
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(21:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX42:4)
                    END-IF
                 END-IF
       *
@@ -10533,7 +10485,8 @@
       *26
                           "114009710" OR
       *27
-                          "113015010" OR "113015130" OR
+                          "113015010" OR "113015130" OR "114045470" OR
+                          "114045670" OR
       *29
                           "114027610" OR "114027710" OR "114027810" OR
                           "114027910" OR
