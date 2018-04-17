@@ -999,8 +999,6 @@
            03  FILLER          PIC X(10)   VALUE   "£π£∑".
            03  FILLER          PIC X(02)   VALUE   "37".
            03  FILLER          PIC X(10)   VALUE   "£≥£∑øΩΩ–".
-           03  FILLER          PIC X(02)   VALUE   "37".
-           03  FILLER          PIC X(10)   VALUE   "£≥£∑øΩΩ–".
            03  FILLER          PIC X(02)   VALUE   "38".
            03  FILLER          PIC X(10)   VALUE   "£≥£∏∞Â ª".
            03  FILLER          PIC X(02)   VALUE   "39".

@@ -578,6 +578,8 @@
       *
            03  WRK-INGAISIPPU-NAME           PIC X(200).
       *
+           03  WRK-CHECK-SRYCD               PIC X(09).
+      *
        01  WRK-RECE44-REC. 
            COPY    "CPRCF044.INC"  REPLACING   //RECE44//
                                    BY          //WRK-RECE44//.
@@ -753,6 +755,13 @@
       *
       *    認知症専門診断管理料２
            03  CONS-NINSEN          PIC X(09) VALUE "113014610".
+      *    小児運動器疾患指導管理料
+           03  CONS-SYOUNDO         PIC X(09) VALUE "113024310".
+      *    療養・就労両立支援指導料
+           03  CONS-RYOSYU          PIC X(09) VALUE "113027910".
+      *    認知症サポート指導料
+           03  CONS-NINSAPO         PIC X(09) VALUE "113028310".
+      *
       *    介護職員等喀痰吸引等指示料
            03  CONS-KAISYOKU        PIC X(09) VALUE "114020910".
       *
@@ -790,6 +799,37 @@
            03  CONS-SEIJYU3         PIC X(09) VALUE "180048710".
       *    精神科重症患者早期集中支援管理料２（単一建物２人以上）
            03  CONS-SEIJYU4         PIC X(09) VALUE "180048810".
+      *
+      *    精神科在宅患者支援管理料１（集中的支援必要）（単一建物１人）
+           03  CONS-SEIZAI          PIC X(09) VALUE "180057210".
+      *    精神科在宅患者支援管理料１（集中的支援必要）（単一建物２人以上）
+           03  CONS-SEIZAI2         PIC X(09) VALUE "180057310".
+      *    精神科在宅患者支援管理料１（重度精神障害者）（単一建物１人）
+           03  CONS-SEIZAI3         PIC X(09) VALUE "180057410".
+      *    精神科在宅患者支援管理料１（重度精神障害者）（単一建物２人以上）
+           03  CONS-SEIZAI4         PIC X(09) VALUE "180057510".
+      *    精神科在宅患者支援管理料１（イ及びロ以外）（単一建物１人）
+           03  CONS-SEIZAI5         PIC X(09) VALUE "180057610".
+      *    精神科在宅患者支援管理料１（イ及びロ以外）（単一建物２人以上）
+           03  CONS-SEIZAI6         PIC X(09) VALUE "180057710".
+      *    精神科在宅患者支援管理料２（集中的支援必要）（単一建物１人）
+           03  CONS-SEIZAI7         PIC X(09) VALUE "180057810".
+      *    精神科在宅患者支援管理料２（集中的支援必要）（単一建物２人以上）
+           03  CONS-SEIZAI8         PIC X(09) VALUE "180057910".
+      *    精神科在宅患者支援管理料２（重度精神障害者）（単一建物１人）
+           03  CONS-SEIZAI9         PIC X(09) VALUE "180058010".
+      *    精神科在宅患者支援管理料２（重度精神障害者）（単一建物２人以上）
+           03  CONS-SEIZAI10        PIC X(09) VALUE "180058110".
+      *
+      *    乳腺炎重症化予防ケア・指導料（初回）
+           03  CONS-NYUSEN          PIC X(09) VALUE "113024410".
+      *    乳腺炎重症化予防ケア・指導料（２回目から４回目まで）
+           03  CONS-NYUSEN2         PIC X(09) VALUE "113024510".
+      *
+      *    在宅酸素療法指導管理料（その他）
+           03  CONS-ZAISAN          PIC X(09) VALUE "114003710".
+      *    在宅持続陽圧呼吸療法指導管理料２
+           03  CONS-YOUATU2         PIC X(09) VALUE "114040810".
       *
       *    在宅患者共同診療料テーブル
        01  TBL-ZAIKYO-CHECK-AREA.
@@ -1811,7 +1851,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       IF   RECE41-HKNKBN     =   "5"
                       AND  RECE41-KOMUKBN    =   "2"
                           MOVE   ZERO   TO  FLG-COMMENT
-      *                （初診（同日複数診療科）算定科のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-SYODOU-HANTEI-SEC
                           END-IF
@@ -1825,7 +1864,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       IF   RECE41-HKNKBN     =   "5"
                       AND  RECE41-KOMUKBN    =   "2"
                           MOVE   ZERO   TO  FLG-COMMENT
-      *                （再診（同一日２科目）算定科のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-SAIDOU-HANTEI-SEC
                           END-IF
@@ -1837,96 +1875,80 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       END-IF
                    WHEN      "13"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （慢性疼痛疾患管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SHIDOU-HANTEI-SEC
                       END-IF
-      *            （傷病手当金意見書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYOBYO-HANTEI-SEC
                       END-IF
-      *            （療養費同意書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-RYOYO-HANTEI-SEC
                       END-IF
-      *            （ニコチン依存症管理料初回算定日のセット）
-      *            （重度喘息患者治療管理加算第１回目治療管理日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NIKOCHINTOU-HANTEI-SEC
                       END-IF
-      *            （小児特定疾患カウンセリング料初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYOUNI-HANTEI-SEC
                       END-IF
-      *            （心臓ペースメーカー指導管理料（遠隔モニタリング）
-      *              の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESU-HANTEI-SEC
                       END-IF
-      *            （集団栄養食事指導料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYUEIYO-HANTEI-SEC
                       END-IF
-      *            （認知症専門診断管理料２の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NINSEN-HANTEI-SEC
                       END-IF
-      *            （退院時共同指導料特別管理指導加算の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-TAKYOKSN-HANTEI-SEC
                       END-IF
-      *            （外来リハビリテーション診療料・外来放射線照射診療料
-      *                                              の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GAIRIHA-HANTEI-SEC
                       END-IF
-      *             (心臓ペースメーカー指導管理料（ロ）の直近の算定年月
-      *              のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
-      *            （がん患者指導管理料２・３の過去の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GANSIDO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-NYUSEN-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "14"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （訪問看護指示料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HOUSIJI-HANTEI-SEC
                       END-IF
-      *            （在宅血液透析頻回指導管理料算定時の
-      *              在宅血液透析指導管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
-      *            （往診・特別往診算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-OSIN-HANTEI-SEC
                       END-IF
-      *            （在宅患者訪問診療料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIHOU-HANTEI-SEC
                       END-IF
-      *            （介護職員等喀痰吸引等指示料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISYOKU-HANTEI-SEC
                       END-IF
-      *            （在宅持続陽圧呼吸療法指導管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-YOUATU-HANTEI-SEC
                       END-IF
-      *             (在宅患者共同診療料の初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIKYO-HANTEI-SEC
                       END-IF
-      *             (在宅患者訪問リハビリテーション指導管理料の
-      *              算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIRIHA-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ZAIYAK-HANTEI-SEC
+                      END-IF
+      *               診区１３と共用分
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE44-TENSOU-SEC
@@ -1947,21 +1969,15 @@ grpsys       PERFORM 900-DBSELECT-SEC
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "33"
-      *            （在宅患者訪問点滴注射管理指導料算定時の点滴注射の
-      *              コメントのセット）
                       PERFORM    2001-HOUTEN-HANTEI-SEC
                    WHEN      "40"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （人工腎臓等の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-JINZOUETC-HANTEI-SEC
                       END-IF
-      *            （局所陰圧閉鎖処置の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KYOKUIN-HANTEI-SEC
                       END-IF
-      *            （磁気による膀胱等刺激法の初回実施日、
-      *              初回からの通算実施日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-BOKOHO-HANTEI-SEC
                       END-IF
@@ -1969,19 +1985,15 @@ grpsys       PERFORM 900-DBSELECT-SEC
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "50"
-      *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "54"
-      *            （麻酔日のセット）
                       PERFORM    2001-MASUI-HANTEI-SEC
                    WHEN      "60"
                    WHEN      "64"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （（検選）日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KENSEN-HANTEI-SEC
                       END-IF
-      *            （実施日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KENSA-HANTEI-SEC
                       END-IF
@@ -1989,11 +2001,9 @@ grpsys       PERFORM 900-DBSELECT-SEC
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "70"
-      *            （ＣＴ・ＭＲＩ実施日のセット）
                       PERFORM    2001-CTMRI-HANTEI-SEC
                    WHEN      "80"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （リハビリのセット）
                       IF   FLG-COMMENT  =  ZERO
                         IF    RECE44-RIHABIRI-COMMENT  NOT = SPACE
                           IF  RECE44-RIHABIRI-COMMENT      =  "1"
@@ -2005,29 +2015,21 @@ grpsys       PERFORM 900-DBSELECT-SEC
                           END-IF
                         END-IF
                       END-IF
-      *            （（リハ選）日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-RIHASEN-HANTEI-SEC
                       END-IF
-      *            （認知療法・認知行動療法の初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-NINRYO-HANTEI-SEC
                       END-IF
-      *            （通院・在宅精神療法（２０歳未満）加算の
-      *              精神科を初めて受診した日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-TUINZAI-HANTEI-SEC
                       END-IF
-      *            （依存症集団療法の治療開始日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-IZONSYO-HANTEI-SEC
                       END-IF
-      *            （精神科重症患者早期集中支援管理料の
-      *              初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-SEIJYU-HANTEI-SEC
                       END-IF
-      *            （院外湿布薬７０枚超理由コメントの剤番号変換）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-SIPPUCOM-HANTEI-SEC
                       END-IF
@@ -2036,7 +2038,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       END-IF
                    WHEN      "99"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *             (訪問診療にかかる記録書コメント（日・人数）のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-HOMONCOM-HANTEI-SEC
                       END-IF
@@ -2054,7 +2055,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
                           PERFORM      2099-RECE44-TENSOU-SEC
                       ELSE
                           MOVE   ZERO   TO  FLG-COMMENT
-      *                （初診（同日複数診療科）算定科のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-SYODOU-HANTEI-SEC
                           END-IF
@@ -2068,7 +2068,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
                           PERFORM      2099-RECE44-TENSOU-SEC
                       ELSE
                           MOVE   ZERO   TO  FLG-COMMENT
-      *                （再診（同一日２科目）算定科のセット）
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2001-SAIDOU-HANTEI-SEC
                           END-IF
@@ -2078,96 +2077,80 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       END-IF
                    WHEN      "13"                                       
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （慢性疼痛疾患管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SHIDOU-HANTEI-SEC
                       END-IF
-      *            （傷病手当金意見書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYOBYO-HANTEI-SEC
                       END-IF
-      *            （療養費同意書交付料交付日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-RYOYO-HANTEI-SEC
                       END-IF
-      *            （ニコチン依存症管理料初回算定日のセット）
-      *            （重度喘息患者治療管理加算第１回目治療管理日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NIKOCHINTOU-HANTEI-SEC
                       END-IF
-      *            （小児特定疾患カウンセリング料初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYOUNI-HANTEI-SEC
                       END-IF
-      *            （心臓ペースメーカー指導管理料（遠隔モニタリング）
-      *              の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESU-HANTEI-SEC
                       END-IF
-      *            （集団栄養食事指導料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYUEIYO-HANTEI-SEC
                       END-IF
-      *            （認知症専門診断管理料２の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NINSEN-HANTEI-SEC
                       END-IF
-      *            （退院時共同指導料特別管理指導加算の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-TAKYOKSN-HANTEI-SEC
                       END-IF
-      *            （外来リハビリテーション診療料・外来放射線照射診療料
-      *                                              の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GAIRIHA-HANTEI-SEC
                       END-IF
-      *             (心臓ペースメーカー指導管理料（ロ）の直近の算定年月
-      *              のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
-      *            （がん患者指導管理料２・３の過去の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GANSIDO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-NYUSEN-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "14"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （訪問看護指示料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HOUSIJI-HANTEI-SEC
                       END-IF
-      *            （在宅血液透析頻回指導管理料算定時の
-      *              在宅血液透析指導管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
-      *            （往診・特別往診算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-OSIN-HANTEI-SEC
                       END-IF
-      *            （在宅患者訪問診療料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIHOU-HANTEI-SEC
                       END-IF
-      *            （介護職員等喀痰吸引等指示料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISYOKU-HANTEI-SEC
                       END-IF
-      *            （在宅持続陽圧呼吸療法指導管理料算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-YOUATU-HANTEI-SEC
                       END-IF
-      *             (在宅患者共同診療料の初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIKYO-HANTEI-SEC
                       END-IF
-      *             (在宅患者訪問リハビリテーション指導管理料の
-      *              算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIRIHA-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ZAIYAK-HANTEI-SEC
+                      END-IF
+      *               診区１３と共用分
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE44-TENSOU-SEC
@@ -2188,23 +2171,17 @@ grpsys       PERFORM 900-DBSELECT-SEC
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "33"
-      *            （在宅患者訪問点滴注射管理指導料算定時の点滴注射の
-      *              コメントのセット）
                       PERFORM    2001-HOUTEN-HANTEI-SEC
                    WHEN      "50"                                       
-      *            （手術日のセット）                                   
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "54"
-      *            （麻酔日のセット）
                       PERFORM    2001-MASUI-HANTEI-SEC
                    WHEN      "60"
                    WHEN      "64"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （（検選）日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KENSEN-HANTEI-SEC
                       END-IF
-      *            （実施日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KENSA-HANTEI-SEC
                       END-IF
@@ -2212,12 +2189,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
                    WHEN      "70"
-      *            （ＣＴ・ＭＲＩ実施日のセット）
                       PERFORM    2001-CTMRI-HANTEI-SEC
                    WHEN      "40"          
                    WHEN      "80"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *            （リハビリのセット）
                       IF   FLG-COMMENT  =  ZERO
                         IF    RECE44-RIHABIRI-COMMENT  NOT = SPACE
                           IF  RECE44-RIHABIRI-COMMENT      =  "1"
@@ -2229,42 +2204,30 @@ grpsys       PERFORM 900-DBSELECT-SEC
                           END-IF
                         END-IF
                       END-IF
-      *            （（リハ選）日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-RIHASEN-HANTEI-SEC
                       END-IF
-      *            （人工腎臓等の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-JINZOUETC-HANTEI-SEC
                       END-IF
-      *            （局所陰圧閉鎖処置の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-KYOKUIN-HANTEI-SEC
                       END-IF
-      *            （認知療法・認知行動療法の初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-NINRYO-HANTEI-SEC
                       END-IF
-      *            （磁気による膀胱等刺激法の初回実施日、
-      *              初回からの通算実施日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-BOKOHO-HANTEI-SEC
                       END-IF
-      *            （通院・在宅精神療法（２０歳未満）加算の
-      *              精神科を初めて受診した日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-TUINZAI-HANTEI-SEC
                       END-IF
-      *            （依存症集団療法の治療開始日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-IZONSYO-HANTEI-SEC
                       END-IF
-      *            （精神科重症患者早期集中支援管理料の
-      *              初回算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-SEIJYU-HANTEI-SEC
                       END-IF
-      *            （院外湿布薬７０枚超理由コメントの剤番号変換）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-SIPPUCOM-HANTEI-SEC
                       END-IF
@@ -2273,7 +2236,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       END-IF
                    WHEN      "99"
                       MOVE   ZERO   TO  FLG-COMMENT
-      *             (訪問診療にかかる記録書コメント（日・人数）のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-HOMONCOM-HANTEI-SEC
                       END-IF
@@ -5117,16 +5079,13 @@ grpsys       PERFORM  900-DBSELECT-SEC
            IF   ((RECE41-SRYYM                 <  "201604") AND
                  (RECE44-FLG-SINPESU-COMMENT   =  "1"     ))
            OR   ((RECE41-SRYYM                >=  "201604") AND
+                 (RECE41-SRYYM                 <  "201804") AND
                  (RECE44-FLG-SINPESU-COMMENT   =  "1"     ) AND
                  (RECE44-FLG-SINPESUR-COMMENT  =  "3"     ))
             IF    RECE41-SRYYM  >=  "201604"
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
              MOVE    SPACE               TO  WRK-SINPESU-YMD
-             IF   RECE41-SRYYM  >=  "201804"
-               MOVE    CONS-SINPESUR3    TO  WRK-SINPESU-SRYCD
-             ELSE
-               MOVE    CONS-SINPESU2     TO  WRK-SINPESU-SRYCD
-             END-IF
+             MOVE    CONS-SINPESU2       TO  WRK-SINPESU-SRYCD
              PERFORM   20011-SINPESU-CHECK-SEC
             ELSE
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
@@ -5177,19 +5136,11 @@ grpsys       PERFORM  900-DBSELECT-SEC
       *
                 ADD        1       TO     IDZ
       *
-                IF   RECE41-SRYYM  >=  "201804"
-                  MOVE    18       TO     WK-FREE-YUKOKETA2(IDZ)
-                  MOVE   "指導管理料前回算定年月　　　年　　月"
+                MOVE       13      TO     WK-FREE-YUKOKETA2(IDZ)
+                MOVE   "前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
-                  MOVE    25       TO     IDX41
-                  MOVE    31       TO     IDX42
-                ELSE
-                  MOVE    13       TO     WK-FREE-YUKOKETA2(IDZ)
-                  MOVE   "前回算定年月　　　年　　月"
-                                   TO     WK-FREE-NAME2(IDZ)
-                  MOVE    15       TO     IDX41
-                  MOVE    21       TO     IDX42
-                END-IF
+                MOVE       15      TO     IDX41
+                MOVE       21      TO     IDX42
       *
                 INITIALIZE                         STS-AREA-DAY
                 INITIALIZE                         LNK-DAY2-AREA
@@ -5316,6 +5267,15 @@ grpsys       PERFORM  900-DBSELECT-SEC
            OR   ((RECE41-SRYYM                 >=    "201604"  ) AND
                  (RECE44-FLG-SINPESUR-COMMENT   =    "1" OR "2") AND
                  (RECE44-FLG-SINPESU-COMMENT    =     SPACE    ))
+           OR   ((RECE41-SRYYM                 >=    "201804"  ) AND
+                 (RECE44-FLG-SINPESU-COMMENT    =    "1"       ) AND
+                 (RECE44-FLG-SINPESUR-COMMENT   =    "3"       ))
+           OR   ((RECE41-SRYYM                 >=    "201804"  ) AND
+                 (RECE44-FLG-SINPESU-COMMENT    =    "A"       ) AND
+                 (RECE44-FLG-SINPESUR-COMMENT   =    "A"       ))
+           OR   ((RECE41-SRYYM                 >=    "201804"  ) AND
+                 (RECE44-FLG-SINPESU-COMMENT    =    "B"       ) AND
+                 (RECE44-FLG-SINPESUR-COMMENT   =    "B"       ))
              MOVE    ZERO                TO  FLG-SINPESUR-COMMENT
              MOVE    SPACE               TO  WRK-SINPESUR-YMD
              INITIALIZE                      SANTEI-REC
@@ -5326,6 +5286,12 @@ grpsys       PERFORM  900-DBSELECT-SEC
                  MOVE    CONS-SINPESUR1  TO  SANTEI-SRYCD
                WHEN     "2"
                  MOVE    CONS-SINPESUR2  TO  SANTEI-SRYCD
+               WHEN     "3"
+                 MOVE    CONS-SINPESUR3  TO  SANTEI-SRYCD
+               WHEN     "A"
+                 MOVE    CONS-ZAISAN     TO  SANTEI-SRYCD
+               WHEN     "B"
+                 MOVE    CONS-YOUATU2    TO  SANTEI-SRYCD
              END-EVALUATE
              MOVE    ZERO                TO  SANTEI-NYUGAIKBN
              MOVE    ZERO                TO  SANTEI-SRYKA
@@ -5368,9 +5334,23 @@ grpsys       PERFORM  900-DBSELECT-SEC
       *
                 ADD        1       TO     IDZ
       *
-                MOVE       13      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "前回算定年月　　　年　　月"
+                EVALUATE  RECE44-FLG-SINPESUR-COMMENT
+                  WHEN     "1"
+                  WHEN     "2"
+                     MOVE    13    TO     WK-FREE-YUKOKETA2(IDZ)
+                     MOVE   "前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
+                     MOVE    15    TO     IDX41
+                     MOVE    21    TO     IDX42
+                  WHEN     "3"
+                  WHEN     "A"
+                  WHEN     "B"
+                     MOVE    18    TO     WK-FREE-YUKOKETA2(IDZ)
+                     MOVE   "指導管理料前回算定年月　　　年　　月"
+                                   TO     WK-FREE-NAME2(IDZ)
+                     MOVE    25    TO     IDX41
+                     MOVE    31    TO     IDX42
+                END-EVALUATE
       *
                 INITIALIZE                         STS-AREA-DAY
                 INITIALIZE                         LNK-DAY2-AREA
@@ -5386,7 +5366,7 @@ grpsys       PERFORM  900-DBSELECT-SEC
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(15:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX41:4)
                    END-IF
       *
                    MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
@@ -5396,7 +5376,7 @@ grpsys       PERFORM  900-DBSELECT-SEC
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(21:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX42:4)
                    END-IF
                 END-IF
       *
@@ -5606,6 +5586,128 @@ grpsys       PERFORM  900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    乳腺炎重症化予防ケア・指導料（２回目から４回目まで）があるか判定
+      *****************************************************************
+       2001-NYUSEN-HANTEI-SEC          SECTION.
+      *
+           IF     RECE44-FLG-NYUSEN-COMMENT   =    "1"
+             MOVE   CONS-NYUSEN   TO   WRK-CHECK-SRYCD
+             PERFORM       20011-ZAIKYO-CHECK-SEC
+      *
+             MOVE       ZERO                TO  WRK-ZAIKYO-KAISU
+             IF   WRK-ZAIKYO-YMD   NOT =  SPACE
+                MOVE    1                   TO  WRK-ZAIKYO-KAISU
+                INITIALIZE                      SANTEI-REC
+                MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
+                MOVE    RECE41-PTID         TO  SANTEI-PTID
+                MOVE    CONS-NYUSEN2        TO  SANTEI-SRYCD
+                MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+                MOVE    ZERO                TO  SANTEI-SRYKA
+                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+                MOVE    SANTEI-REC          TO  MCPDATA-REC
+                MOVE    "tbl_santei"        TO  MCP-TABLE
+                MOVE    "key3"              TO  MCP-PATHNAME
+                PERFORM 900-DBSELECT-SEC
+                IF      MCP-RC              =   ZERO
+                  MOVE    "tbl_santei"      TO  MCP-TABLE
+                  MOVE    "key3"            TO  MCP-PATHNAME
+                  PERFORM  900-SANTEI-READ-SEC
+                  PERFORM   UNTIL   FLG-SANTEI  =   1
+      *
+                    IF   SANTEI-SRYYM  <=  RECE41-SRYYM
+                    AND  SANTEI-SRYYM  >=  WRK-ZAIKYO-YMD(1:6)
+                      MOVE  WRK-ZAIKYO-YMD(7:2)  TO  IDX28
+                      MOVE  WRK-ZAIKYO-YMD9(7:2) TO  IDX29
+                      PERFORM  VARYING  IDX26  FROM  31  BY  -1
+                                UNTIL   IDX26   <     1
+                        IF   SANTEI-DAY(IDX26)  NOT =  ZERO
+                          IF ((SANTEI-SRYYM =
+                                      WRK-ZAIKYO-YMD(1:6) ) AND
+                              (IDX26        < IDX28       ))
+                          OR ((SANTEI-SRYYM =
+                                      WRK-ZAIKYO-YMD9(1:6)) AND
+                              (IDX26       >= IDX29       ))
+                            CONTINUE
+                          ELSE
+                            ADD    1    TO   WRK-ZAIKYO-KAISU
+                          END-IF
+                        END-IF
+                      END-PERFORM
+                    END-IF
+      *
+                    MOVE    "tbl_santei"    TO  MCP-TABLE
+                    MOVE    "key3"          TO  MCP-PATHNAME
+                    PERFORM  900-SANTEI-READ-SEC
+                  END-PERFORM
+                END-IF
+                MOVE    "tbl_santei"        TO  MCP-TABLE
+                MOVE    "key3"              TO  MCP-PATHNAME
+                PERFORM 900-CLOSE-SEC
+             END-IF
+      *
+             IF   WRK-ZAIKYO-KAISU  NOT =  ZERO
+             AND  WRK-ZAIKYO-KAISU     <=   31
+                INITIALIZE                WRK-JIDO-SETCOM-AREA
+                MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+                MOVE       37      TO     WRK-JIDO-SETCOMATFLG
+                MOVE       99      TO     FLG-COMMENT
+      *
+                MOVE      ZERO     TO     IDZ
+                INITIALIZE                WRK-FREE-AREA2
+      *
+                ADD        1       TO     IDZ
+      *
+                MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
+                MOVE     "通算実施回数（　　回）"
+                                   TO     WK-FREE-NAME2(IDZ)
+                MOVE      WRK-ZAIKYO-KAISU TO  DAY-IDX2
+                MOVE      TBL-DAY(DAY-IDX2)
+                                   TO     WK-FREE-NAME2(IDZ)(15:4)
+      *
+                IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+                  MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
+                  MOVE  WRK-JIDO-SETCOMATFLG
+                                   TO     WK-FREE-SETCOMATFLG2(IDZ)
+                END-IF
+      *
+                PERFORM  200111-RECE45-TAIHI-SEC
+      *
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
+                MOVE    ZERO                 TO  IDX-RECE45
+                MOVE    SPACE                TO  WRK-RECE45XX-REC
+                INITIALIZE                       WRK-RECE45XX-REC
+      *
+                MOVE    RECE44-MEISAISU      TO  MAX-MEISAISU
+      *
+                PERFORM   VARYING   IDX   FROM    1   BY  1
+                           UNTIL  ( IDX                >   50    )
+                            OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+                  COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+                  MOVE  "810000001"
+                          TO  WRK-RECE45XX-SRYCD(MAX-MEISAISU 1)
+                  MOVE  ZERO
+                          TO  WRK-RECE45XX-SRYSURYO(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-YUKOKETA2(IDX)
+                          TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-NAME2(IDX)
+                          TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-MEISKYFLG2(IDX)
+                          TO  WRK-RECE45XX-MEISKYFLG(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-SETCOMATFLG2(IDX)
+                          TO  WRK-RECE45XX-SETCOMATFLG(MAX-MEISAISU 1)
+                  MOVE  "1"
+                          TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
+                END-PERFORM
+      *
+                PERFORM    200111-SRYACTINF-HENSYU-SEC
+             END-IF
+           END-IF
+      *
+           .
+       2001-NYUSEN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    集団栄養食事指導料があるか判定
       *****************************************************************
        2001-SYUEIYO-HANTEI-SEC          SECTION.
@@ -5776,16 +5878,28 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
       *****************************************************************
       *    認知症専門診断管理料２があるか判定
+      *    小児運動器疾患指導管理料があるか判定
+      *    療養・就労両立支援指導料があるか判定
+      *    認知症サポート指導料があるか判定
       *****************************************************************
        2001-NINSEN-HANTEI-SEC          SECTION.
       *
-           IF     RECE44-FLG-NINSEN-COMMENT   =    "1"
+           IF     RECE44-FLG-NINSEN-COMMENT   NOT =   SPACE
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
              MOVE    SPACE               TO  WRK-SINPESU-YMD
              INITIALIZE                      SANTEI-REC
              MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
              MOVE    RECE41-PTID         TO  SANTEI-PTID
-             MOVE    CONS-NINSEN         TO  SANTEI-SRYCD
+             EVALUATE  RECE44-FLG-NINSEN-COMMENT
+               WHEN      "1"
+                 MOVE  CONS-NINSEN       TO  SANTEI-SRYCD
+               WHEN      "2"
+                 MOVE  CONS-SYOUNDO      TO  SANTEI-SRYCD
+               WHEN      "3"
+                 MOVE  CONS-RYOSYU       TO  SANTEI-SRYCD
+               WHEN      "4"
+                 MOVE  CONS-NINSAPO      TO  SANTEI-SRYCD
+             END-EVALUATE
              MOVE    ZERO                TO  SANTEI-NYUGAIKBN
              MOVE    ZERO                TO  SANTEI-SRYKA
              MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
@@ -5826,47 +5940,84 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                 ADD        1       TO     IDZ
       *
-                MOVE       17      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "前回算定年月日　　　年　　月　　日"
+                EVALUATE  RECE44-FLG-NINSEN-COMMENT
+                  WHEN    "1"
+                    MOVE    17     TO     WK-FREE-YUKOKETA2(IDZ)
+                    MOVE   "前回算定年月日　　　年　　月　　日"
                                    TO     WK-FREE-NAME2(IDZ)
       *
-                INITIALIZE                         STS-AREA-DAY
-                INITIALIZE                         LNK-DAY2-AREA
-                MOVE    "21"                   TO  LNK-DAY2-IRAI
-                MOVE    WRK-SINPESU-YMD        TO  LNK-DAY2-YMD
-                CALL    "ORCSDAY"    USING     STS-AREA-DAY
-                                               LNK-DAY2-AREA
-                IF      STS-DAY-RC1            =   ZERO
-                   MOVE    LNK-DAY2-EDTYMD1-Y   TO  WRK-TAIHI-XX
-                   INITIALIZE                       ORCSKANACHKAREA
-                   MOVE    "2"                  TO  KANACHK-SYORI
-                   MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
-                   IF      KANACHK-RC      =   ZERO
-                      MOVE    KANACHK-OUT-INPUT(1:4)
+                    INITIALIZE                      STS-AREA-DAY
+                    INITIALIZE                      LNK-DAY2-AREA
+                    MOVE    "21"                TO  LNK-DAY2-IRAI
+                    MOVE    WRK-SINPESU-YMD     TO  LNK-DAY2-YMD
+                    CALL    "ORCSDAY"    USING      STS-AREA-DAY
+                                                    LNK-DAY2-AREA
+                    IF      STS-DAY-RC1  =  ZERO
+                      MOVE  LNK-DAY2-EDTYMD1-Y  TO  WRK-TAIHI-XX
+                      INITIALIZE                    ORCSKANACHKAREA
+                      MOVE  "2"                 TO  KANACHK-SYORI
+                      MOVE  WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
+                      CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                      IF    KANACHK-RC  =  ZERO
+                        MOVE  KANACHK-OUT-INPUT(1:4)
                                         TO  WK-FREE-NAME2(IDZ)(17:4)
-                   END-IF
+                      END-IF
       *
-                   MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
-                   INITIALIZE                       ORCSKANACHKAREA
-                   MOVE    "2"                  TO  KANACHK-SYORI
-                   MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
-                   IF      KANACHK-RC      =   ZERO
-                      MOVE    KANACHK-OUT-INPUT(1:4)
+                      MOVE  LNK-DAY2-EDTYMD1-M  TO  WRK-TAIHI-XX
+                      INITIALIZE                    ORCSKANACHKAREA
+                      MOVE  "2"                 TO  KANACHK-SYORI
+                      MOVE  WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
+                      CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                      IF    KANACHK-RC  =  ZERO
+                        MOVE  KANACHK-OUT-INPUT(1:4)
                                         TO  WK-FREE-NAME2(IDZ)(23:4)
-                   END-IF
+                      END-IF
       *
-                   MOVE    LNK-DAY2-EDTYMD1-D   TO  WRK-TAIHI-XX
-                   INITIALIZE                       ORCSKANACHKAREA
-                   MOVE    "2"                  TO  KANACHK-SYORI
-                   MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
-                   IF      KANACHK-RC      =   ZERO
-                      MOVE    KANACHK-OUT-INPUT(1:4)
+                      MOVE  LNK-DAY2-EDTYMD1-D  TO  WRK-TAIHI-XX
+                      INITIALIZE                    ORCSKANACHKAREA
+                      MOVE  "2"                 TO  KANACHK-SYORI
+                      MOVE  WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
+                      CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                      IF    KANACHK-RC  =  ZERO
+                        MOVE  KANACHK-OUT-INPUT(1:4)
                                         TO  WK-FREE-NAME2(IDZ)(29:4)
-                   END-IF
-                END-IF
+                      END-IF
+                    END-IF
+                  WHEN    "2"
+                  WHEN    "3"
+                  WHEN    "4"
+                    MOVE    13     TO     WK-FREE-YUKOKETA2(IDZ)
+                    MOVE   "前回算定年月　　　年　　月"
+                                   TO     WK-FREE-NAME2(IDZ)
+      *
+                    INITIALIZE                      STS-AREA-DAY
+                    INITIALIZE                      LNK-DAY2-AREA
+                    MOVE    "21"                TO  LNK-DAY2-IRAI
+                    MOVE    WRK-SINPESU-YMD     TO  LNK-DAY2-YMD
+                    CALL    "ORCSDAY"    USING      STS-AREA-DAY
+                                                    LNK-DAY2-AREA
+                    IF      STS-DAY-RC1  =  ZERO
+                      MOVE  LNK-DAY2-EDTYMD1-Y  TO  WRK-TAIHI-XX
+                      INITIALIZE                    ORCSKANACHKAREA
+                      MOVE  "2"                 TO  KANACHK-SYORI
+                      MOVE  WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
+                      CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                      IF    KANACHK-RC  =  ZERO
+                        MOVE  KANACHK-OUT-INPUT(1:4)
+                                        TO  WK-FREE-NAME2(IDZ)(15:4)
+                      END-IF
+      *
+                      MOVE  LNK-DAY2-EDTYMD1-M  TO  WRK-TAIHI-XX
+                      INITIALIZE                    ORCSKANACHKAREA
+                      MOVE  "2"                 TO  KANACHK-SYORI
+                      MOVE  WRK-TAIHI-XX        TO  KANACHK-MAE-INPUT
+                      CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                      IF    KANACHK-RC  =  ZERO
+                        MOVE  KANACHK-OUT-INPUT(1:4)
+                                        TO  WK-FREE-NAME2(IDZ)(21:4)
+                      END-IF
+                    END-IF
+                END-EVALUATE
              ELSE
                 MOVE      ZERO     TO     IDZ
                 INITIALIZE                WRK-FREE-AREA2
@@ -6289,107 +6440,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
        2001-ZAIKYO-HANTEI-SEC          SECTION.
       *
            IF     RECE44-FLG-ZAIKYO-COMMENT   =    "1"
-             MOVE    RECE41-SRYYM        TO  WRK-ZAIKYO-YMD9(1:6)
-             MOVE    "99"                TO  WRK-ZAIKYO-YMD9(7:2)
-      *
-             MOVE    ZERO                TO  FLG-ZAIKYO-COMMENT
-             MOVE    SPACE               TO  WRK-ZAIKYO-YMD
-             MOVE    ZERO                TO  FLG-RETRY
-             INITIALIZE                      SANTEI-REC
-             MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
-             MOVE    RECE41-PTID         TO  SANTEI-PTID
-             MOVE    CONS-ZAIKYO         TO  SANTEI-SRYCD
-             MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-             MOVE    ZERO                TO  SANTEI-SRYKA
-             MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-             MOVE    SANTEI-REC          TO  MCPDATA-REC
-             MOVE    "tbl_santei"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-             PERFORM 900-DBSELECT-SEC
-             IF      MCP-RC              =   ZERO
-                 MOVE    "tbl_santei"    TO  MCP-TABLE
-                 MOVE    "key3"          TO  MCP-PATHNAME
-                 PERFORM  900-SANTEI-READ-SEC
-                 PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
-                             OR   ( FLG-ZAIKYO-COMMENT  =   1 )
-      *
-                   IF   SANTEI-SRYYM  <=  RECE41-SRYYM
-                     MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
-                     MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
-                     MOVE    1              TO  FLG-ZAIKYO-COMMENT
-      *
-                     IF   SANTEI-SRYYM  =  RECE41-SRYYM
-                       MOVE   ZERO  TO  FLG-CHECK-MAE
-                       MOVE   ZERO  TO  FLG-CHECK-ATO
-                       MOVE  WRK-ZAIKYO-YMD(7:2)  TO  IDX28
-                       PERFORM  VARYING  IDX26  FROM   1  BY  1
-                                 UNTIL   IDX26   >    31
-                         IF  RECE44-KAISU(1 IDX26)  NOT =  ZERO
-                           IF    IDX26  <  IDX28
-                             MOVE    1   TO  FLG-CHECK-MAE
-                           ELSE
-                             MOVE    1   TO  FLG-CHECK-ATO
-                           END-IF
-                         END-IF
-                       END-PERFORM
-                       IF  ((FLG-CHECK-MAE = 1   ) AND
-                            (FLG-CHECK-ATO = ZERO))
-                       OR  ((FLG-CHECK-MAE = 1   ) AND
-                            (FLG-CHECK-ATO = 1   ))
-                         MOVE    WRK-ZAIKYO-YMD
-                                         TO  WRK-ZAIKYO-YMD9
-                         MOVE    SPACE   TO  WRK-ZAIKYO-YMD
-                         MOVE    1       TO  FLG-RETRY
-                       END-IF
-                     END-IF
-                   END-IF
-      *
-                   MOVE    "tbl_santei"  TO  MCP-TABLE
-                   MOVE    "key3"        TO  MCP-PATHNAME
-                   PERFORM  900-SANTEI-READ-SEC
-                 END-PERFORM
-             END-IF
-             MOVE    "tbl_santei"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-             PERFORM 900-CLOSE-SEC
-      *
-             IF   FLG-RETRY =  1
-               MOVE    ZERO                TO  FLG-ZAIKYO-COMMENT
-               MOVE    SPACE               TO  WRK-ZAIKYO-YMD
-               MOVE    ZERO                TO  FLG-RETRY
-               INITIALIZE                      SANTEI-REC
-               MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
-               MOVE    RECE41-PTID         TO  SANTEI-PTID
-               MOVE    CONS-ZAIKYO         TO  SANTEI-SRYCD
-               MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-               MOVE    ZERO                TO  SANTEI-SRYKA
-               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                 MOVE    "tbl_santei"    TO  MCP-TABLE
-                 MOVE    "key3"          TO  MCP-PATHNAME
-                 PERFORM  900-SANTEI-READ-SEC
-                 PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
-                             OR   ( FLG-ZAIKYO-COMMENT  =   1 )
-      *
-                   IF   SANTEI-SRYYM  <   RECE41-SRYYM
-                     MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
-                     MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
-                     MOVE    1              TO  FLG-ZAIKYO-COMMENT
-                   END-IF
-      *
-                   MOVE    "tbl_santei"  TO  MCP-TABLE
-                   MOVE    "key3"        TO  MCP-PATHNAME
-                   PERFORM  900-SANTEI-READ-SEC
-                 END-PERFORM
-               END-IF
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-             END-IF
+             MOVE   CONS-ZAIKYO   TO   WRK-CHECK-SRYCD
+             PERFORM       20011-ZAIKYO-CHECK-SEC
       *
              IF   WRK-ZAIKYO-YMD   NOT =  SPACE
       *
@@ -6534,6 +6586,117 @@ grpsys       PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    
+      *****************************************************************
+       20011-ZAIKYO-CHECK-SEC          SECTION.
+      *
+           MOVE    RECE41-SRYYM        TO  WRK-ZAIKYO-YMD9(1:6)
+           MOVE    "99"                TO  WRK-ZAIKYO-YMD9(7:2)
+      *
+           MOVE    ZERO                TO  FLG-ZAIKYO-COMMENT
+           MOVE    SPACE               TO  WRK-ZAIKYO-YMD
+           MOVE    ZERO                TO  FLG-RETRY
+           INITIALIZE                      SANTEI-REC
+           MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
+           MOVE    RECE41-PTID         TO  SANTEI-PTID
+           MOVE    WRK-CHECK-SRYCD     TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"    TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM  900-SANTEI-READ-SEC
+               PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
+                           OR   ( FLG-ZAIKYO-COMMENT  =   1 )
+      *
+                 IF   SANTEI-SRYYM  <=  RECE41-SRYYM
+                   MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
+                   MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
+                   MOVE    1              TO  FLG-ZAIKYO-COMMENT
+      *
+                   IF   SANTEI-SRYYM  =  RECE41-SRYYM
+                     MOVE   ZERO  TO  FLG-CHECK-MAE
+                     MOVE   ZERO  TO  FLG-CHECK-ATO
+                     MOVE  WRK-ZAIKYO-YMD(7:2)  TO  IDX28
+                     PERFORM  VARYING  IDX26  FROM   1  BY  1
+                               UNTIL   IDX26   >    31
+                       IF  RECE44-KAISU(1 IDX26)  NOT =  ZERO
+                         IF    IDX26  <  IDX28
+                           MOVE    1   TO  FLG-CHECK-MAE
+                         ELSE
+                           MOVE    1   TO  FLG-CHECK-ATO
+                         END-IF
+                       END-IF
+                     END-PERFORM
+                     IF  ((FLG-CHECK-MAE = 1   ) AND
+                          (FLG-CHECK-ATO = ZERO))
+                     OR  ((FLG-CHECK-MAE = 1   ) AND
+                          (FLG-CHECK-ATO = 1   ))
+                       MOVE    WRK-ZAIKYO-YMD
+                                       TO  WRK-ZAIKYO-YMD9
+                       MOVE    SPACE   TO  WRK-ZAIKYO-YMD
+                       MOVE    1       TO  FLG-RETRY
+                     END-IF
+                   END-IF
+                 END-IF
+      *
+                 MOVE    "tbl_santei"  TO  MCP-TABLE
+                 MOVE    "key3"        TO  MCP-PATHNAME
+                 PERFORM  900-SANTEI-READ-SEC
+               END-PERFORM
+           END-IF
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF   FLG-RETRY =  1
+             MOVE    ZERO                TO  FLG-ZAIKYO-COMMENT
+             MOVE    SPACE               TO  WRK-ZAIKYO-YMD
+             MOVE    ZERO                TO  FLG-RETRY
+             INITIALIZE                      SANTEI-REC
+             MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
+             MOVE    RECE41-PTID         TO  SANTEI-PTID
+             MOVE    WRK-CHECK-SRYCD     TO  SANTEI-SRYCD
+             MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+             MOVE    ZERO                TO  SANTEI-SRYKA
+             MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+             MOVE    SANTEI-REC          TO  MCPDATA-REC
+             MOVE    "tbl_santei"        TO  MCP-TABLE
+             MOVE    "key3"              TO  MCP-PATHNAME
+             PERFORM 900-DBSELECT-SEC
+             IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"    TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM  900-SANTEI-READ-SEC
+               PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
+                           OR   ( FLG-ZAIKYO-COMMENT  =   1 )
+      *
+                 IF   SANTEI-SRYYM  <   RECE41-SRYYM
+                   MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
+                   MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
+                   MOVE    1              TO  FLG-ZAIKYO-COMMENT
+                 END-IF
+      *
+                 MOVE    "tbl_santei"  TO  MCP-TABLE
+                 MOVE    "key3"        TO  MCP-PATHNAME
+                 PERFORM  900-SANTEI-READ-SEC
+               END-PERFORM
+             END-IF
+             MOVE    "tbl_santei"        TO  MCP-TABLE
+             MOVE    "key3"              TO  MCP-PATHNAME
+             PERFORM 900-CLOSE-SEC
+           END-IF
+      *
+           .
+       20011-ZAIKYO-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    在宅患者共同診療料開始日の剤検索
       *****************************************************************
        20011-ZAIKYO-KENSAKU-SEC          SECTION.
@@ -6668,6 +6831,24 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            .
        2001-ZAIRIHA-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    在宅患者訪問薬剤管理指導料があるか判定
+      *****************************************************************
+       2001-ZAIYAK-HANTEI-SEC          SECTION.
+      *
+           IF     RECE44-FLG-ZAIYAK-COMMENT   =    "1"
+           AND    RECE44-ZAIKAISU            >=     2
+               INITIALIZE            WRK-JIDO-SETCOM-AREA
+               MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+               MOVE       36      TO     WRK-JIDO-SETCOMATFLG
+               MOVE       3       TO     FLG-COMMENT
+               PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-ZAIYAK-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8240,6 +8421,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
       *****************************************************************
       *    精神科重症患者早期集中支援管理料があるか判定
+      *    精神科在宅患者支援管理料があるか判定
       *****************************************************************
        2001-SEIJYU-HANTEI-SEC          SECTION.
       *
@@ -8258,6 +8440,26 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    MOVE  CONS-SEIJYU3       TO  SANTEI-SRYCD
                  WHEN      "4"
                    MOVE  CONS-SEIJYU4       TO  SANTEI-SRYCD
+                 WHEN      "A"
+                   MOVE  CONS-SEIZAI        TO  SANTEI-SRYCD
+                 WHEN      "B"
+                   MOVE  CONS-SEIZAI2       TO  SANTEI-SRYCD
+                 WHEN      "C"
+                   MOVE  CONS-SEIZAI3       TO  SANTEI-SRYCD
+                 WHEN      "D"
+                   MOVE  CONS-SEIZAI4       TO  SANTEI-SRYCD
+                 WHEN      "E"
+                   MOVE  CONS-SEIZAI5       TO  SANTEI-SRYCD
+                 WHEN      "F"
+                   MOVE  CONS-SEIZAI6       TO  SANTEI-SRYCD
+                 WHEN      "G"
+                   MOVE  CONS-SEIZAI7       TO  SANTEI-SRYCD
+                 WHEN      "H"
+                   MOVE  CONS-SEIZAI8       TO  SANTEI-SRYCD
+                 WHEN      "I"
+                   MOVE  CONS-SEIZAI9       TO  SANTEI-SRYCD
+                 WHEN      "J"
+                   MOVE  CONS-SEIZAI10      TO  SANTEI-SRYCD
                END-EVALUATE
                MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                 TO  SANTEI-SRYKA

@@ -2604,6 +2604,15 @@
       *    通算実施回数（　　回）
            03  CONS-HAIJRT3-COMMENT  PIC X(09)  VALUE  "840000086".
       *
+      *    遠隔モニタリング加算（在宅酸素療法指導管理料（その他））
+           03  CONS-ZAIMONI-COMMENT  PIC X(09)  VALUE  "114045470".
+      *    遠隔モニタリング加算（在宅持続陽圧呼吸療法指導管理料２）
+           03  CONS-ZAIMONI2-COMMENT PIC X(09)  VALUE  "114045670".
+      *    在宅酸素療法指導管理料（その他）
+           03  CONS-ZAISAN-COMMENT   PIC X(09)  VALUE  "114003710".
+      *    在宅持続陽圧呼吸療法指導管理料２
+           03  CONS-YOUATU2-COMMENT  PIC X(09)  VALUE  "114040810".
+      *
       *    妊婦時間外加算（初診）
            03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
       *    妊婦休日加算（初診）
@@ -9452,6 +9461,22 @@
                    MOVE  SPACE  TO    RECE64-FLG-ZAIKYO-COMMENT
                    MOVE    1    TO    FLG-ZAIKYO-COM
                 END-IF
+              END-IF
+      *       遠隔モニタリング加算（在宅酸素療法指導管理料（その他））
+      *       遠隔モニタリング加算（在宅持続陽圧呼吸療法指導管理料２）
+              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIMONI-COMMENT
+                   MOVE   "A"   TO    RECE64-FLG-SINPESU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIMONI2-COMMENT
+                   MOVE   "B"   TO    RECE64-FLG-SINPESU-COMMENT
+              END-IF
+      *       在宅酸素療法指導管理料（その他）
+      *       在宅持続陽圧呼吸療法指導管理料２
+              IF   SRY-SRYCD(IDX2)    =     CONS-ZAISAN-COMMENT
+                   MOVE   "A"   TO    RECE64-FLG-SINPESUR-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-YOUATU2-COMMENT
+                   MOVE   "B"   TO    RECE64-FLG-SINPESUR-COMMENT
               END-IF
            END-IF
       *
