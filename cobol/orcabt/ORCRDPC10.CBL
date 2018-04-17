@@ -182,6 +182,10 @@
       *                                     不具合修正
       *              NACL-小豆沢  17/09/08  きざみ計算の出来高実績点数端数処理追加
       *              NACL-小豆沢  17/12/07  同日再入院の食事記録修正
+      *  平成３０年度仕様対応
+      *              NACL-小豆沢  18/04/17  短期滞在手術等基本料２をＤＰＣに
+      *                                     係る特定入院料等に変更
+      *              NACL-小豆沢  18/04/17  改正による療養病棟入院料の判定変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2225,35 +2229,71 @@
                                                TO  TNS-SRYCD
                        PERFORM 900-TENSU-READ-SEC
                        IF   TNS-CDKBN-KBN     =   "A"
-                         IF ((TNS-CDKBN-KBNNUM      =  300)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  3))    OR
-                            ((TNS-CDKBN-KBNNUM      =  301)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  4))    OR
-                            ((TNS-CDKBN-KBNNUM      =  302)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  303)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  303)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
-                            ((TNS-CDKBN-KBNNUM      =  305)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  307)   AND
-                             (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
-                            ((TNS-CDKBN-KBNNUM      =  400)   AND
-                             (TNS-CDKBN-KOUBAN      =  3))
-                            MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                         IF   RECE62-SRYYM    <=  "201803"
+                           IF ((TNS-CDKBN-KBNNUM      =  300)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  301)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  301)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
+                              ((TNS-CDKBN-KBNNUM      =  301)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  3))    OR
+                              ((TNS-CDKBN-KBNNUM      =  301)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  4))    OR
+                              ((TNS-CDKBN-KBNNUM      =  302)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  303)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  303)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
+                              ((TNS-CDKBN-KBNNUM      =  305)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  307)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  400)   AND
+                               (TNS-CDKBN-KOUBAN      =  3))
+                              MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                           END-IF
+                         ELSE
+      *                    平成３０年度から短期滞在手術等基本料２を追加
+                           IF ((TNS-CDKBN-KBNNUM      =  300)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  301)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  301)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
+                              ((TNS-CDKBN-KBNNUM      =  301)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  3))    OR
+                              ((TNS-CDKBN-KBNNUM      =  301)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  4))    OR
+                              ((TNS-CDKBN-KBNNUM      =  302)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  303)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  303)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
+                              ((TNS-CDKBN-KBNNUM      =  305)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  307)   AND
+                               (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                              ((TNS-CDKBN-KBNNUM      =  400)   AND
+                               (TNS-CDKBN-KOUBAN      =  2))    OR
+                              ((TNS-CDKBN-KBNNUM      =  400)   AND
+                               (TNS-CDKBN-KOUBAN      =  3))
+                              MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                           END-IF
                          END-IF
                        END-IF
                     END-IF
       *
       *             補助マスターチェック用
                     IF  LNK-NYUINDAY-TANKI3-KBN(IDX)   = "1"  OR  "2"
+                        MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
+                    END-IF
+      *             平成３０年度から短期滞在手術等基本料２を追加の
+      *             補助マスターチェック用
+                    IF  (RECE62-SRYYM         >=     "201804")   AND
+                        (LNK-NYUINDAY-TANKI2-KBN(IDX)   = "1"  OR  "2")
                         MOVE   "1"    TO   WRK-HOUKATU-KBN(IDX)
                     END-IF
                 END-IF
@@ -2284,6 +2324,7 @@
                             MOVE    NSRY-SRYCD(1)   TO  TNS-SRYCD
                             PERFORM 900-TENSU-READ-SEC
                             IF   TNS-CDKBN-KBN     =   "A"
+                             IF   RECE62-SRYYM    <=   "201803"
                               IF ((TNS-CDKBN-KBNNUM      =  300)   AND
                                   (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
                                  ((TNS-CDKBN-KBNNUM      =  301)   AND
@@ -2312,9 +2353,43 @@
                               END-IF
                               MOVE  NSRY-SRYCD(1)   TO
                                            WRK-IHO-IGAI-TOKNYUINCD(IDX)
+                             ELSE
+      *                       平成３０年度から短期滞在手術等基本料２を追加
+                              IF ((TNS-CDKBN-KBNNUM      =  300)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
+                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  3))    OR
+                                 ((TNS-CDKBN-KBNNUM      =  301)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  4))    OR
+                                 ((TNS-CDKBN-KBNNUM      =  302)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                                 ((TNS-CDKBN-KBNNUM      =  303)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                                 ((TNS-CDKBN-KBNNUM      =  303)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  2))    OR
+                                 ((TNS-CDKBN-KBNNUM      =  305)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                                 ((TNS-CDKBN-KBNNUM      =  307)   AND
+                                  (TNS-CDKBN-KBNNUM-EDA  =  ZERO)) OR
+                                 ((TNS-CDKBN-KBNNUM      =  400)   AND
+                                  (TNS-CDKBN-KOUBAN      =  2))    OR
+                                 ((TNS-CDKBN-KBNNUM      =  400)   AND
+                                  (TNS-CDKBN-KOUBAN      =  3))
+                                     MOVE  "1" TO  WRK-HOUKATU-KBN(IDX)
+                              ELSE
+                                     MOVE  "2" TO  WRK-HOUKATU-KBN(IDX)
+                              END-IF
+                              MOVE  NSRY-SRYCD(1)   TO
+                                           WRK-IHO-IGAI-TOKNYUINCD(IDX)
+                             END-IF
                             END-IF
                          END-IF
       *--- AZU-ADD START 2017.05.09
+      *                  療養病棟入院基本料の判定
                          IF   (NACCT-SRYKBN         =   "90")  AND
                               (NACCT-DAY(IDX)       =   1)
       *                     該当入院行為テーブルの読み込み
@@ -2323,6 +2398,7 @@
                             MOVE    NSRY-SRYCD(1)   TO  TNS-SRYCD
                             PERFORM 900-TENSU-READ-SEC
                             IF   TNS-CDKBN-KBN     =   "A"
+                             IF   RECE62-SRYYM     <=   "201803"
                               IF ((TNS-CDKBN-KBNNUM      =  101)   AND
                                   (TNS-CDKBN-KOUBAN      =  1))    OR
                                  ((TNS-CDKBN-KBNNUM      =  101)   AND
@@ -2339,6 +2415,22 @@
                               END-IF
                               MOVE  NSRY-SRYCD(1)   TO
                                            WRK-IHO-IGAI-TOKNYUINCD(IDX)
+                             ELSE
+                              IF ((TNS-CDKBN-KBNNUM      =  101)   AND
+                                  (TNS-CDKBN-KOUBAN      =  1))    OR
+                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
+                                  (TNS-CDKBN-KOUBAN      =  2))    OR
+                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
+                                  (TNS-CDKBN-KOUBAN      =  10))   OR
+                                 ((TNS-CDKBN-KBNNUM      =  101)   AND
+                                  (TNS-CDKBN-KOUBAN      =  11))   OR
+                                 ((TNS-CDKBN-KBNNUM      =  100)   AND
+                                  (TNS-CDKBN-KOUBAN      =  14))
+                                     MOVE  "2" TO  WRK-HOUKATU-KBN(IDX)
+                              END-IF
+                              MOVE  NSRY-SRYCD(1)   TO
+                                           WRK-IHO-IGAI-TOKNYUINCD(IDX)
+                             END-IF
                             END-IF
                          END-IF
       *--- AZU-ADD END   2017.05.09
@@ -2456,6 +2548,7 @@
                     MOVE    SPACE           TO  ETENSU1-REC
                     INITIALIZE                  ETENSU1-REC
       *             グループ番号取得なので短手３のコードはなんでもよい
+      *             暫定で短手３（経皮的シャント拡張術・血栓除去術）をセット
                     MOVE    "190196410"     TO  ETENSU1-SRYCD
                     MOVE    RECE62-SRYYM    TO  ETENSU1-YUKOSTYMD(1:6)
                     MOVE    "01"            TO  ETENSU1-YUKOSTYMD(7:2)
