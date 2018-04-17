@@ -4105,16 +4105,13 @@ grpsys       PERFORM 900-DBSELECT-SEC
            IF   ((RECE100-SRYYM                 <  "201604") AND
                  (RECE120-FLG-SINPESU-COMMENT   =  "1"     ))
            OR   ((RECE100-SRYYM                >=  "201604") AND
+                 (RECE100-SRYYM                <=  "201803") AND
                  (RECE120-FLG-SINPESU-COMMENT   =  "1"     ) AND
                  (RECE120-FLG-SINPESUR-COMMENT  =  "3"     ))
             IF    RECE100-SRYYM  >=  "201604"
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
              MOVE    SPACE               TO  WRK-SINPESU-YMD
-             IF   RECE100-SRYYM  >=  "201804"
-               MOVE    CONS-SINPESUR3    TO  WRK-SINPESU-SRYCD
-             ELSE
-               MOVE    CONS-SINPESU2     TO  WRK-SINPESU-SRYCD
-             END-IF
+             MOVE    CONS-SINPESU2       TO  WRK-SINPESU-SRYCD
              PERFORM   20011-SINPESU-CHECK-SEC
             ELSE
              MOVE    ZERO                TO  FLG-SINPESU-COMMENT
@@ -4162,19 +4159,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                 ADD        1       TO     IDZ
       *
-                IF   RECE100-SRYYM  >=  "201804"
-                  MOVE    18       TO     WK-FREE-YUKOKETA2(IDZ)
-                  MOVE   "指導管理料前回算定年月　　　年　　月"
+                MOVE       13      TO     WK-FREE-YUKOKETA2(IDZ)
+                MOVE   "前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
-                  MOVE    25       TO     IDX41
-                  MOVE    31       TO     IDX42
-                ELSE
-                  MOVE    13       TO     WK-FREE-YUKOKETA2(IDZ)
-                  MOVE   "前回算定年月　　　年　　月"
-                                   TO     WK-FREE-NAME2(IDZ)
-                  MOVE    15       TO     IDX41
-                  MOVE    21       TO     IDX42
-                END-IF
+                MOVE       15      TO     IDX41
+                MOVE       21      TO     IDX42
       *
                 INITIALIZE                         STS-AREA-DAY
                 INITIALIZE                         LNK-DAY2-AREA
@@ -4289,6 +4278,9 @@ grpsys       PERFORM 900-DBSELECT-SEC
            OR   ((RECE100-SRYYM                 >=    "201604"  ) AND
                  (RECE120-FLG-SINPESUR-COMMENT   =    "1" OR "2") AND
                  (RECE120-FLG-SINPESU-COMMENT    =     SPACE    ))
+           OR   ((RECE100-SRYYM                 >=    "201804"  ) AND
+                 (RECE120-FLG-SINPESU-COMMENT    =    "1"       ) AND
+                 (RECE120-FLG-SINPESUR-COMMENT   =    "3"       ))
              MOVE    ZERO                TO  FLG-SINPESUR-COMMENT
              MOVE    SPACE               TO  WRK-SINPESUR-YMD
              INITIALIZE                      SANTEI-REC
@@ -4299,6 +4291,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
                  MOVE    CONS-SINPESUR1  TO  SANTEI-SRYCD
                WHEN     "2"
                  MOVE    CONS-SINPESUR2  TO  SANTEI-SRYCD
+               WHEN     "3"
+                 MOVE    CONS-SINPESUR3  TO  SANTEI-SRYCD
              END-EVALUATE
              MOVE    ZERO                TO  SANTEI-NYUGAIKBN
              MOVE    ZERO                TO  SANTEI-SRYKA
@@ -4338,9 +4332,21 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                 ADD        1       TO     IDZ
       *
-                MOVE       13      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "前回算定年月　　　年　　月"
+                EVALUATE  RECE120-FLG-SINPESUR-COMMENT
+                  WHEN     "1"
+                  WHEN     "2"
+                     MOVE    13    TO     WK-FREE-YUKOKETA2(IDZ)
+                     MOVE   "前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
+                     MOVE    15    TO     IDX41
+                     MOVE    21    TO     IDX42
+                  WHEN     "3"
+                     MOVE    18    TO     WK-FREE-YUKOKETA2(IDZ)
+                     MOVE   "指導管理料前回算定年月　　　年　　月"
+                                   TO     WK-FREE-NAME2(IDZ)
+                     MOVE    25    TO     IDX41
+                     MOVE    31    TO     IDX42
+                END-EVALUATE
       *
                 INITIALIZE                         STS-AREA-DAY
                 INITIALIZE                         LNK-DAY2-AREA
@@ -4356,7 +4362,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(15:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX41:4)
                    END-IF
       *
                    MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
@@ -4366,7 +4372,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                       MOVE    KANACHK-OUT-INPUT(1:4)
-                                        TO  WK-FREE-NAME2(IDZ)(21:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX42:4)
                    END-IF
                 END-IF
       *
