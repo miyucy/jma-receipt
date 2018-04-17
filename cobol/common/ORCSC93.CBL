@@ -2345,6 +2345,9 @@
       *H26.4
       *                ¼§µ¤¤Ë¤è¤ë»É·ãË¡³«»ÏÆü
                        WHEN    "099400001"
+      *H30.4
+      *                ¹âµ¤°µ»ÀÁÇ¼£ÎÅ³«»ÏÆü
+                       WHEN    "099400002"
                            MOVE    "40"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "400"           TO  SPA-COM-SRYSYUKBN
