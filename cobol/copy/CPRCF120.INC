@@ -254,6 +254,10 @@
            03  RECE120-FLG-IZONSYO-COMMENT PIC  X(01).
       *精神科重症患者早期集中支援管理料
            03  RECE120-FLG-SEIJYU-COMMENT  PIC  X(01).
+      *在宅患者訪問薬剤管理指導料
+           03  RECE120-FLG-ZAIYAK-COMMENT  PIC  X(01).
+      *乳腺炎重症化予防ケア・指導料
+           03  RECE120-FLG-NYUSEN-COMMENT  PIC  X(01).
       *
       *日数回数テーブル
            03  RECE120-DAY-AREA.
