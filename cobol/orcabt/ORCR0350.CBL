@@ -1787,6 +1787,7 @@
            03  WRK-CONS-SRYYM-200704   PIC 9(06)   VALUE   200704.
            03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.
            03  WRK-CONS-SRYYM-201204   PIC 9(06)   VALUE   201204.
+           03  WRK-CONS-SRYYM-201804   PIC 9(06)   VALUE   201804.
       *    レセプトコメント
            03  WRK-CONS-RECECOM-MAX
                                    PIC 9(02)   VALUE   48.
@@ -3124,6 +3125,50 @@
       *    特定疾病３
            PERFORM 5004-MOJI-HENSYU-SEC
       *    カタカナ（氏名）
+           IF      RECE62-SRYYM        >=  WRK-CONS-SRYYM-201804
+               MOVE    1                   TO  IDY
+               PERFORM VARYING IDX FROM    1   BY  2
+                       UNTIL   IDX >       49
+                       OR      RECE62-KANANAME (IDX:1) =   SPACE
+                   IF      RECE62-KANANAME (IDX:2)
+                                               >=  "ァ"  AND
+                                               <=  "ヶ"
+                       EVALUATE    RECE62-KANANAME (IDX:2)
+                           WHEN    "ヮ"
+                               MOVE    "ワ"        TO  WRK-DATA (IDY:2)
+                           WHEN    "ヵ"
+                               MOVE    "カ"        TO  WRK-DATA (IDY:2)
+                           WHEN    "ヶ"
+                               MOVE    "ケ"        TO  WRK-DATA (IDY:2)
+                           WHEN    OTHER
+                               MOVE    RECE62-KANANAME (IDX:2)
+                                                   TO  WRK-DATA (IDY:2)
+                       END-EVALUATE
+                       ADD     2               TO  IDY
+                   ELSE
+                       EVALUATE    RECE62-KANANAME (IDX:2)
+      *                    A8 A1
+                           WHEN    "─"
+      *                    A1 DD
+                           WHEN    "−"
+      *                    A1 BE
+                           WHEN    "‐"
+      *                    A1 BD
+                           WHEN    "―"
+      *                        A1 BC
+                               MOVE    "ー"        TO  WRK-DATA (IDY:2)
+                               ADD     2           TO  IDY
+      *                        A1 BC
+                           WHEN    "ー"
+                               MOVE    RECE62-KANANAME (IDX:2)
+                                                   TO  WRK-DATA (IDY:2)
+                               ADD     2               TO  IDY
+                       END-EVALUATE
+                   END-IF
+               END-PERFORM
+           END-IF
+           MOVE    80                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-MOJI-CHK
            PERFORM 5004-MOJI-HENSYU-SEC
       *    患者状態 
            IF      RECE62-NINPUFLG >   ZERO
