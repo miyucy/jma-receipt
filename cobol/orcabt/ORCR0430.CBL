@@ -826,6 +826,11 @@
       *    ∆˝¡£±ÍΩ≈æ…≤ΩÕΩÀ…•±•¢°¶ªÿ∆≥Œ¡° £≤≤ÛÃ‹§´§È£¥≤ÛÃ‹§ﬁ§«°À
            03  CONS-NYUSEN2         PIC X(09) VALUE "113024510".
       *
+      *    ∫ﬂ¬ª¿¡«Œ≈À°ªÿ∆≥¥…Õ˝Œ¡° §Ω§Œ¬æ°À
+           03  CONS-ZAISAN          PIC X(09) VALUE "114003710".
+      *    ∫ﬂ¬ª˝¬≥Õ€∞µ∏∆µ€Œ≈À°ªÿ∆≥¥…Õ˝Œ¡£≤
+           03  CONS-YOUATU2         PIC X(09) VALUE "114040810".
+      *
       *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡•∆°º•÷•Î
        01  TBL-ZAIKYO-CHECK-AREA.
            03  FILLER          PIC X(09)   VALUE    "114027610".
@@ -1941,6 +1946,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIYAK-HANTEI-SEC
                       END-IF
+      *               ø«∂Ë£±£≥§»∂¶Õ— ¨
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SINPESUR-HANTEI-SEC
+                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE44-TENSOU-SEC
                       END-IF
@@ -2138,6 +2147,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIYAK-HANTEI-SEC
+                      END-IF
+      *               ø«∂Ë£±£≥§»∂¶Õ— ¨
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE44-TENSOU-SEC
@@ -5066,7 +5079,7 @@ grpsys       PERFORM  900-DBSELECT-SEC
            IF   ((RECE41-SRYYM                 <  "201604") AND
                  (RECE44-FLG-SINPESU-COMMENT   =  "1"     ))
            OR   ((RECE41-SRYYM                >=  "201604") AND
-                 (RECE41-SRYYM                <=  "201803") AND
+                 (RECE41-SRYYM                 <  "201804") AND
                  (RECE44-FLG-SINPESU-COMMENT   =  "1"     ) AND
                  (RECE44-FLG-SINPESUR-COMMENT  =  "3"     ))
             IF    RECE41-SRYYM  >=  "201604"
@@ -5257,6 +5270,12 @@ grpsys       PERFORM  900-DBSELECT-SEC
            OR   ((RECE41-SRYYM                 >=    "201804"  ) AND
                  (RECE44-FLG-SINPESU-COMMENT    =    "1"       ) AND
                  (RECE44-FLG-SINPESUR-COMMENT   =    "3"       ))
+           OR   ((RECE41-SRYYM                 >=    "201804"  ) AND
+                 (RECE44-FLG-SINPESU-COMMENT    =    "A"       ) AND
+                 (RECE44-FLG-SINPESUR-COMMENT   =    "A"       ))
+           OR   ((RECE41-SRYYM                 >=    "201804"  ) AND
+                 (RECE44-FLG-SINPESU-COMMENT    =    "B"       ) AND
+                 (RECE44-FLG-SINPESUR-COMMENT   =    "B"       ))
              MOVE    ZERO                TO  FLG-SINPESUR-COMMENT
              MOVE    SPACE               TO  WRK-SINPESUR-YMD
              INITIALIZE                      SANTEI-REC
@@ -5269,6 +5288,10 @@ grpsys       PERFORM  900-DBSELECT-SEC
                  MOVE    CONS-SINPESUR2  TO  SANTEI-SRYCD
                WHEN     "3"
                  MOVE    CONS-SINPESUR3  TO  SANTEI-SRYCD
+               WHEN     "A"
+                 MOVE    CONS-ZAISAN     TO  SANTEI-SRYCD
+               WHEN     "B"
+                 MOVE    CONS-YOUATU2    TO  SANTEI-SRYCD
              END-EVALUATE
              MOVE    ZERO                TO  SANTEI-NYUGAIKBN
              MOVE    ZERO                TO  SANTEI-SRYKA
@@ -5320,6 +5343,8 @@ grpsys       PERFORM  900-DBSELECT-SEC
                      MOVE    15    TO     IDX41
                      MOVE    21    TO     IDX42
                   WHEN     "3"
+                  WHEN     "A"
+                  WHEN     "B"
                      MOVE    18    TO     WK-FREE-YUKOKETA2(IDZ)
                      MOVE   "ªÿ∆≥¥…Õ˝Œ¡¡∞≤ÛªªƒÍ«Ø∑Ó°°°°°°«Ø°°°°∑Ó"
                                    TO     WK-FREE-NAME2(IDZ)
