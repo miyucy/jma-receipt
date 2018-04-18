@@ -140,6 +140,8 @@
            03  FLG-YKJYO           PIC 9(01). 
            03  FLG-CHOKI           PIC 9(01). 
       *
+           03  FLG-NINPUKBN        PIC 9(01).
+      *
       *    キー領域
        01  KEY-AREA                    VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -1653,8 +1655,12 @@
                          ELSE
                            IF      TNS-TIMEKSNKBN   =   WRK-JIKAN
                                OR  WRK-TIMEKBN      =   WRK-JIKAN
+      *H30.4
+      *                      妊婦時間外はそのまま
+                             IF      FLG-NINPUKBN     =   ZERO
                                MOVE    SPACE        TO  LF04-IJICD
                                                (IDX1 IDX2)
+                             END-IF
                            END-IF
                          END-IF
                        END-IF
@@ -1711,6 +1717,7 @@
        20029-JIKAN-HEN-SEC                SECTION.
       *
            MOVE    SPACE               TO  WRK-TIMEKBN
+           MOVE    ZERO                TO  FLG-NINPUKBN
       *H30.4 から
            IF      SPA-SRYYMD          >=  "20180401"
                PERFORM 200291-JIKAN208-HEN-SEC
@@ -1870,6 +1877,7 @@
                        ELSE
                            MOVE    TBL-NP18-TIMKBN (TBL-NPIDX18)
                                                TO  WRK-TIMEKBN
+                           MOVE    1           TO  FLG-NINPUKBN
                        END-IF
                END-SEARCH
            END-IF
