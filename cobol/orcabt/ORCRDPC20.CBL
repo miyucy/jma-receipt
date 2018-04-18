@@ -1433,24 +1433,26 @@
       *
       *    診療年月・患者ID・レセ科別処理
            MOVE    KEY-NEW         TO  KEY-OLD
+      *
+      *    傷病名の順序番号の取り込み
+           MOVE    ZERO            TO  WRK-RENNUM-SY
+           IF      KEY-N-SRYYM         >=  WRK-CONS-SRYYM-201804
+               INITIALIZE                      RECE900-REC
+               MOVE    KEY-N-HOSPNUM       TO  RECE900-HOSPNUM
+               MOVE    KEY-N-SRYYM         TO  RECE900-SRYYM
+               MOVE    KEY-N-PTID          TO  RECE900-PTID
+               MOVE    "SY"                TO  RECE900-SRYKBN
+               PERFORM 900-RECE900-READ-SEC
+               IF      FLG-RECE900     =   1
+                   MOVE    ZERO            TO  WRK-RENNUM-SY
+               ELSE
+                   MOVE    RECE900-RENNUM  TO  WRK-RENNUM-SY
+               END-IF
+           END-IF
+      *
            PERFORM                 UNTIL   FLG-END     =   1
                                    OR      KEY-NEW1
                                                    NOT =   KEY-OLD1
-      *        傷病名の順序番号の取り込み
-               MOVE    ZERO            TO  WRK-RENNUM-SY
-               IF      KEY-N-SRYYM         >=  WRK-CONS-SRYYM-201804
-                   INITIALIZE                      RECE900-REC
-                   MOVE    KEY-N-HOSPNUM       TO  RECE900-HOSPNUM
-                   MOVE    KEY-N-SRYYM         TO  RECE900-SRYYM
-                   MOVE    KEY-N-PTID          TO  RECE900-PTID
-                   MOVE    "SY"                TO  RECE900-SRYKBN
-                   PERFORM 900-RECE900-READ-SEC
-                   IF      FLG-RECE900     =   1
-                       MOVE    ZERO            TO  WRK-RENNUM-SY
-                   ELSE
-                       MOVE    RECE900-RENNUM  TO  WRK-RENNUM-SY
-                   END-IF
-               END-IF
       *
       *        診療年月・患者ID・レセ科・提出先別処理
                MOVE    KEY-NEW         TO  KEY-OLD
