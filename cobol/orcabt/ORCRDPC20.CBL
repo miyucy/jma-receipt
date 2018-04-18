@@ -113,6 +113,7 @@
       *              NACL-門脇    17/03/22  後発品変更可（処方単位）
       *              NACL-小豆沢  17/09/08  きざみ計算の出来高実績点数
       *                                     端数処理追加
+      *  04.08.02    NACL-藤原    18/04/17  傷病名レコードの作成対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,6 +140,12 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE05-KEY
                                    FILE    STATUS  IS  STS-RECE05.
+      *
+           SELECT  RECE031-FILE     ASSIGN  RECE031PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE031-KEY
+                                   FILE    STATUS  IS  STS-RECE03.
       *
       *    順序番号情報
            SELECT  RECE900-FILE    ASSIGN  RECE900PARA
@@ -168,6 +175,10 @@
        01  RECE05-REC.
            COPY    "CPRCF005.INC".
       *
+       FD  RECE031-FILE.
+       01  RECE031-REC.
+           COPY    "CPRCF0031.INC".
+      *
       *    順序番号データ
        FD  RECE900-FILE.
        01  RECE900-REC. 
@@ -180,7 +191,7 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
-            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE02PARA//.
       *
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
@@ -188,6 +199,9 @@
       *
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE05PARA//.
+      *
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //RECE031PARA//.
       *
       *     順序番号情報ファイル 名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
@@ -198,13 +212,13 @@
       *
       *    ファイル名取得
            COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECE02              PIC X(02).
            03  STS-RECE04              PIC X(02).
            03  STS-RECE05              PIC X(02).
+           03  STS-RECE03              PIC X(02).
            03  STS-RECE900             PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
@@ -213,31 +227,24 @@
            03  FLG-BYOMEI              PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
            03  FLG-TENSUPLUS           PIC 9(01).
-           03  FLG-PTCOM               PIC 9(01).
-           03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
-           03  FLG-JYURRK              PIC 9(01).
-           03  FLG-RECE35              PIC 9(01).
            03  FLG-RECE02              PIC 9(01).
            03  FLG-RECE04              PIC 9(01).
            03  FLG-RECE05              PIC 9(01).
+           03  FLG-RECE031             PIC 9(01).
            03  FLG-RECE900             PIC 9(01).
       *
            03  FLG-READ                PIC 9(01).
       *
            03  FLG-TEIGEN              PIC 9(01).
-           03  FLG-YKZ20               PIC 9(01).
            03  FLG-KOKUJISKBKBN1       PIC 9(01).
-           03  FLG-GAITENTTLKBN        PIC 9(03).
            03  FLG-TBLMAX              PIC 9(01).
            03  FLG-SRYSYUKBN721        PIC 9(01).
            03  FLG-SRYKBN70-TEIGEN     PIC 9(01).
            03  FLG-KENSA-KASAN         PIC 9(01).
            03  FLG-KENSA-TEIGEN        PIC 9(01).
            03  FLG-SET                 PIC 9(01).
-           03  FLG-NYUTAI-RIREKI       PIC 9(01).
            03  FLG-HIT                 PIC 9(01).
-           03  FLG-COMMENT             PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
            03  FLG-DAYSET              PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
@@ -253,6 +260,7 @@
            03  CNT-OUT-E               PIC 9(06).
            03  CNT-OUT-F               PIC 9(06).
            03  CNT-RECE04              PIC 9(06).
+           03  CNT-RECE03              PIC 9(06).
            03  CNT-RECE900             PIC 9(06).
            03  CNT-COMMIT              PIC 9(03).
       *
@@ -342,7 +350,6 @@
            03  WRK-HENSYU              PIC X(20).
       *    出力データ編集用
            03  WRK-SRYKBN              PIC X(02).
-           03  WRK-COM-SRYKBN          PIC X(02).
            03  WRK-REC                 PIC X(2500).
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
@@ -368,27 +375,14 @@
       *  WRK-RENNUM と WRK-MEISAI-RENNUM は桁数変更不可
            03  WRK-RENNUM              PIC 9(04).
            03  WRK-MEISAI-RENNUM       PIC 9(03).
+           03  WRK-RENNUM-SY           PIC 9(04).
+           03  WRK-MEISAI-RENNUM-SY    PIC 9(03).
            03  WRK-COM-RENNUM          PIC 9(04).
       *
-           03  WRK-COM-FTNKBN          PIC X(01).
            03  WRK-TAIHI-FTNKBN        PIC X(01).
            03  WRK-SJ-KBN              PIC X(02).
            03  WRK-RECECOM-SJKBN       PIC X(02).
            03  WRK-SJ-CHK              PIC 9(01).
-      *
-      *    1桁目:生保 2桁目:結核 3桁目:精神
-           03  WRK-3SYU-KBN.
-               05  WRK-3SYU            PIC X(03).
-      *    生保
-           03  SEHIDX                  PIC 9(01).
-      *    精神
-           03  SESIDX                  PIC 9(01).
-      *    結核
-           03  KEKIDX                  PIC 9(01).
-      *
-           03  IDX1                    PIC 9(01).
-           03  IDX2                    PIC 9(01).
-           03  IDX3                    PIC 9(01).
       *
       *    摘要レコード編集用
            03  WRK-ZAIWMAX             PIC 9(03).
@@ -422,12 +416,6 @@
            03  WRK-HENYMDGR            REDEFINES   WRK-HENYMDG.
                05  FILLER              PIC 9(01).
                05  WRK-HENYMD          PIC 9(07).
-      *
-      *    診療年月の末日
-           03  WRK-EDYMD               PIC 9(08).
-           03  WRK-EDYMD-R             REDEFINES   WRK-EDYMD.
-               05  WRK-EDYM            PIC X(06).
-               05  WRK-EDDD            PIC 9(02).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -814,31 +802,12 @@
                                    BY        //WRK-GEN11//.
       *
        01  WRK-CONS-AREA.
-      *    日計表レコード記載の条件点数
-           03  WRK-CONS-JYOKEN-TENSU   PIC 9(08)   VALUE   350000.
-      *    外来迅速検体検査加算
-           03  WRK-CONS-SRYCD          PIC X(09)   VALUE   "160177770".
-      *    検査日　日
-           03  WRK-CONS-COMMENT        PIC X(09)   VALUE   "840000099".
       *    コンマ
            03  WRK-KUGIRI             PIC X(01)   VALUE   ",".
       *    ＴＡＢ
            03  WRK-KUGIRI-TAB         PIC X(01)   VALUE   X"09".
       *    改行コード
            03  WRK-KAIGYO             PIC X(01)   VALUE   X"0D".
-      *    退職者保険番号
-      *        組合
-           03  WRK-CONS-HKNNUM1       PIC X(03)   VALUE  "063".
-      *        国公
-           03  WRK-CONS-HKNNUM2       PIC X(03)   VALUE  "072".
-      *        地公
-           03  WRK-CONS-HKNNUM3       PIC X(03)   VALUE  "073".
-      *        警察
-           03  WRK-CONS-HKNNUM4       PIC X(03)   VALUE  "074".
-      *        公学・私学
-           03  WRK-CONS-HKNNUM5       PIC X(03)   VALUE  "075".
-      *        国保
-           03  WRK-CONS-HKNNUM6       PIC X(03)   VALUE  "067".
       *    薬剤料逓減（９０／１００）（内服薬）
            03  WRK-CONS-TEIGEN        PIC X(09)   VALUE   "630010002".
       *    薬剤料逓減（８０／１００）（向精神薬多剤投与）
@@ -847,92 +816,6 @@
            03  WRK-CONS-TEIGEN3       PIC X(09)   VALUE   "630010006".
       *    薬剤料減点（湿布薬薬剤料上限超）
            03  WRK-CONS-TEIGEN4       PIC X(09)   VALUE   "630010007".
-      *****退院時投薬
-      *****03  WRK-CONS-TAITOYAKU     PIC X(09)   VALUE   "840000006".
-      *****03  WRK-CONS-TAITOYAKU1    PIC X(09)   VALUE   "008400002".
-      *    内服薬２０５円以下
-      *****03  WRK-CONS-NAI205        PIC X(09)   VALUE   "610010002".
-      *    注射２０５円以下
-      *****03  WRK-CONS-CHU205        PIC X(09)   VALUE   "640010002".
-      *    外服薬２０５円以下
-      *****03  WRK-CONS-GAI205        PIC X(09)   VALUE   "660010002".
-      *
-      *    再診の時間加算
-           03  WRK-CONS-JIKANGAI-TABLE. 
-      *    一般
-      *        時間外（再診）
-               05  FILLER             PIC X(09)    VALUE   "112001110".
-      *        休日（再診）
-               05  FILLER             PIC X(09)    VALUE   "112001210".
-      *        深夜（再診）
-               05  FILLER             PIC X(09)    VALUE   "112001310".
-      *        時間外特例（再診）
-               05  FILLER             PIC X(09)    VALUE   "112001410".
-      *        時間外（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112006470".
-      *        休日（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112006570".
-      *        深夜（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112006670".
-      *        時間外特例（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112006770".
-      *    老人
-      *        時間外（再診）
-               05  FILLER             PIC X(09)    VALUE   "112701010".
-      *        休日（再診）
-               05  FILLER             PIC X(09)    VALUE   "112701110".
-      *        深夜（再診）
-               05  FILLER             PIC X(09)    VALUE   "112701210".
-      *        時間外特例（再診）
-               05  FILLER             PIC X(09)    VALUE   "112701310".
-      *        時間外（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112701710".
-      *        休日（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112701810".
-      *        深夜（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112701910".
-      *        時間外特例（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112702010".
-      *    乳幼児
-      *        夜間（再診）
-               05  FILLER             PIC X(09)    VALUE   "112014170".
-      *        休日（再診）
-               05  FILLER             PIC X(09)    VALUE   "112014270".
-      *        深夜（再診）
-               05  FILLER             PIC X(09)    VALUE   "112014370".
-      *        夜間（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112014470".
-      *        休日（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112014570".
-      *        深夜（外来診療科）
-               05  FILLER             PIC X(09)    VALUE   "112014670".
-      *        再診（乳幼児時間外）加算
-               05  FILLER             PIC X(09)    VALUE   "112014770".
-      *        再診（乳幼児休日）加算
-               05  FILLER             PIC X(09)    VALUE   "112014870".
-      *        再診（乳幼児深夜）加算
-               05  FILLER             PIC X(09)    VALUE   "112014970".
-      *        再診（乳幼児時間外特例医療機関）加算
-               05  FILLER             PIC X(09)    VALUE   "112015070".
-      *        外来診療科（乳幼児時間外）加算
-               05  FILLER             PIC X(09)    VALUE   "112015170".
-      *        外来診療科（乳幼児休日）加算
-               05  FILLER             PIC X(09)    VALUE   "112015270".
-      *        外来診療科（乳幼児深夜）加算
-               05  FILLER             PIC X(09)    VALUE   "112015370".
-      *        外来診療科（乳幼児時間外特例医療機関）加算
-               05  FILLER             PIC X(09)    VALUE   "112015470".
-      *
-           03  WRK-CONS-JIKANGAI-TABLE-R  REDEFINES   
-                                      WRK-CONS-JIKANGAI-TABLE.
-               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  30.
-                   07  WRK-CONS-JIKANGAI-SRYCD
-                                      PIC X(09).
-           03  WRK-CONS-JIKANGAI-TEN-TABLE.
-               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  30.
-                   07  WRK-CONS-JIKANGAI-TEN
-                                      PIC 9(09).
-           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   30.    
       *
       *    液体酸素・可搬式液体酸素容器（ＬＧＣ）
            03  WRK-CONS-SANSO1        PIC X(09)   VALUE   "739210000".
@@ -981,31 +864,10 @@
       *    酸素補正率１．３（１気圧）
            03  WRK-CONS-SANSO-HOSEI   PIC X(09)   VALUE   "770020070".
       *
-      *    出力対象のコメント
-           03  WRK-CONS-COMMENT-G.
-      *        複数診療科受診
-               05  WRK-CONS-COMMENT1  PIC X(09)   VALUE   "099999901".
-      *        他保険にて診察料算定済
-               05  WRK-CONS-COMMENT2  PIC X(09)   VALUE   "099999902".
-      *********（粉砕）
-      *********05  WRK-CONS-COMMENT3  PIC X(09)   VALUE   "099209901".
-      *********（残量廃棄）
-      *********05  WRK-CONS-COMMENT4  PIC X(09)   VALUE   "099309901".
-      *
-      *    再入院年月日
-           03  WRK-CONS-NYUIN-SRYCD   PIC X(09)   VALUE   "840000014".
-      *    退院年月日
-           03  WRK-CONS-TAIIN-SRYCD   PIC X(09)   VALUE   "840000013".
-      *
-           03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.
+           03  WRK-CONS-SRYYM-201804   PIC 9(06)   VALUE   201804.
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
-      *
-       01  WRK-NYUIN-RIREKI.
-           03  WRK-NYUIN-RIREKI-OCC    OCCURS   10.
-               05  WRK-NYUIN-RIREKI-NYUINYMD    PIC X(08).
-               05  WRK-NYUIN-RIREKI-TAIINYMD    PIC X(08).
       *
        01  WRK-FEDT-AREA.
            03  WRK-FEDT-1ST-FLG        PIC 9(01).
@@ -1060,13 +922,6 @@
              05  WRK-FEDT-KOUI-MEISAI11  PIC 9(01).
              05  WRK-FEDT-KOUI-MEISAI12  PIC 9(01).
       *
-      *    保険組み合わせ退避ワーク
-       01  THKNCOMBI-AREA.
-           02      TCOMB-MAX        PIC 9(05).
-           02      TCOMB-OCC        OCCURS     30.
-           COPY    "CPHKNCOMBI.INC" REPLACING   //COMB-//
-                                    BY          //TCOMB-//.
-      *
        01  WRK-ERR-AREA.
            03  WRK-RECEERR                         PIC X(200).
            03  WRK-ERRMSG                          PIC X(300).
@@ -1095,8 +950,6 @@
       *
            COPY    "CPSK1009.INC".
       *
-           COPY    "CPSK2005.INC".
-      *
            COPY    "CPSK2009.INC".
       *
       *    医療機関情報
@@ -1124,10 +977,6 @@
       *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
-      *
-      *    保険組み合わせ
-       01  HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC".
       *
       *    レセプト電算
            COPY    "CPRECEDEN.INC".
@@ -1162,6 +1011,9 @@
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    病名組立サブ
+           COPY    "CPORCSMKBYOMEI.INC".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -1251,6 +1103,10 @@
            PERFORM 800-FILENM-SET-SEC
            MOVE    RECEDAT1PARA-BASENAME
                                        TO  SGETTEMP-BASENAMES  (5)
+           MOVE    "RECE031"           TO  RECEDAT1PARA-FILE-ID
+           PERFORM 800-FILENM-SET-SEC
+           MOVE    RECEDAT1PARA-BASENAME
+                                       TO  SGETTEMP-BASENAMES  (6)
            CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
            MOVE    SPACE               TO  RECEERR
            MOVE    SGETTEMP-FULLNAMES (1)
@@ -1263,6 +1119,8 @@
                                        TO  RECE05PARA
            MOVE    SGETTEMP-FULLNAMES (5)
                                        TO  RECE900PARA
+           MOVE    SGETTEMP-FULLNAMES (6)
+                                       TO  RECE031PARA
       *
            MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
@@ -1300,6 +1158,18 @@
                PERFORM 500-FILE-ERR-ABORT-SEC
            END-IF
       *
+           OPEN    INPUT               RECE031-FILE
+           IF      STS-RECE03          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE031PARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE03          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            OPEN    OUTPUT              RECE900-FILE
            CLOSE                       RECE900-FILE
            OPEN    I-O                 RECE900-FILE
@@ -1307,18 +1177,6 @@
            IF      FLG-END             =   ZERO
       *        ファイル読み込み
                PERFORM 900-RECE02-READ-SEC
-      *
-      *        時間外加算点数取得
-               INITIALIZE                  WRK-CONS-JIKANGAI-TEN-TABLE
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       WRK-CONS-JIKANGAI-MAX
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    WRK-CONS-JIKANGAI-SRYCD (IDX)
-                                           TO  TNS-SRYCD
-                   PERFORM 900-TENSU-READ-SEC
-                   MOVE    TNS-TEN         TO
-                                           WRK-CONS-JIKANGAI-TEN (IDX)
-               END-PERFORM
            END-IF
            .
        100-INIT-EXT.
@@ -1573,23 +1431,26 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    診療年月の末日の取得
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY7-AREA
-           MOVE    "71"                TO  LNK-DAY7-IRAI
-           MOVE    RECE02-SRYYM        TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
-      *
-      *    患者保険組み合わせ取得処理
-           PERFORM 2001-HKNCOMBI-GET-SEC
-      *
       *    診療年月・患者ID・レセ科別処理
            MOVE    KEY-NEW         TO  KEY-OLD
            PERFORM                 UNTIL   FLG-END     =   1
                                    OR      KEY-NEW1
                                                    NOT =   KEY-OLD1
+      *        傷病名の順序番号の取り込み
+               MOVE    ZERO            TO  WRK-RENNUM-SY
+               IF      KEY-N-SRYYM         >=  WRK-CONS-SRYYM-201804
+                   INITIALIZE                      RECE900-REC
+                   MOVE    KEY-N-HOSPNUM       TO  RECE900-HOSPNUM
+                   MOVE    KEY-N-SRYYM         TO  RECE900-SRYYM
+                   MOVE    KEY-N-PTID          TO  RECE900-PTID
+                   MOVE    "SY"                TO  RECE900-SRYKBN
+                   PERFORM 900-RECE900-READ-SEC
+                   IF      FLG-RECE900     =   1
+                       MOVE    ZERO            TO  WRK-RENNUM-SY
+                   ELSE
+                       MOVE    RECE900-RENNUM  TO  WRK-RENNUM-SY
+                   END-IF
+               END-IF
       *
       *        診療年月・患者ID・レセ科・提出先別処理
                MOVE    KEY-NEW         TO  KEY-OLD
@@ -1600,24 +1461,18 @@
                    MOVE    ZERO                TO  WRK-MEISAI-RENNUM
                    MOVE    SPACE               TO  WRK-FEDT-SRYKBN-SAVE
                    MOVE    ZERO                TO  WRK-COM-RENNUM
-                                                   FLG-COMMENT
                                                    FLG-TOKUTEINYUIN
-                   MOVE    SPACE               TO  WRK-COM-SRYKBN
-                                                   WRK-COM-FTNKBN
       *
                    MOVE    ZERO               TO  WRK-RENNUM-E
                                                   WRK-RENNUM-F 
-      *
-      *            実日数・合計点数等のＩＮＤＥＸ
-                   MOVE    1                   TO  IDX1
-                   MOVE    2                   TO  IDX2
-                   MOVE    3                   TO  IDX3
       *
       *            包括分データ作成
       **AZU
       **             PERFORM     9999-HOUKATU-SEC
       *            摘要レコード
                    PERFORM     2007-HENSYU-SEC
+      *            傷病名レコード
+                   PERFORM     2006-HENSYU-SEC
       *
                    ADD     1           TO  CNT-COMMIT
                    IF      CNT-COMMIT      =    10
@@ -1634,37 +1489,345 @@
            EXIT.
       *
       *****************************************************************
-      *    保険組合せ取得処理
+      *    傷病名レコード編集処理
       *****************************************************************
-       2001-HKNCOMBI-GET-SEC    SECTION.
+       2006-HENSYU-SEC              SECTION.
       *
-           INITIALIZE                  THKNCOMBI-AREA
-      *
-           MOVE    ZERO            TO  FLG-HKNCOMBI
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    RECE02-PTID     TO  COMB-PTID
-           MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
-           MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
-           PERFORM 910-HKNCOMBI-KEY2-SEL-SEC
-           IF    ( FLG-HKNCOMBI    =   ZERO )
-               PERFORM 910-HKNCOMBI-KEY2-FETCH-SEC
+           IF      RECE02-SRYYM     <   WRK-CONS-SRYYM-201804
+               GO  TO  2006-HENSYU-EXT
            END-IF
       *
-           PERFORM UNTIL ( FLG-HKNCOMBI    =   1 )
-                    OR   ( TCOMB-MAX      >=   30 )
+           MOVE    ZERO                TO  WRK-MEISAI-RENNUM-SY
       *
-               COMPUTE TCOMB-MAX   =   TCOMB-MAX   +   1
-               MOVE    HKNCOMBI-REC    TO  TCOMB-OCC (TCOMB-MAX)
+      *    傷病名情報
+           INITIALIZE                      RECE031-REC
+           MOVE    RECE02-KEY          TO  RECE031-KEY1
       *
-               PERFORM 910-HKNCOMBI-KEY2-FETCH-SEC
+           START   RECE031-FILE
+               KEY IS    >=   RECE031-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE031
+               NOT INVALID
+                   PERFORM 990-RECE03-NEXT-SEC
+           END-START
       *
+           PERFORM UNTIL  ( FLG-RECE031  =   1            )
+                   OR     ( RECE02-KEY
+                                     NOT =   RECE031-KEY1 )
+      *        転帰区分:8(移行)以外 処理対象
+               IF      RECE031-TENKIKBN     =   "8"
+                   CONTINUE
+               ELSE    
+                   PERFORM 20061-BYOMEI-HENSYU-SEC
+               END-IF
+      *             
+               PERFORM 990-RECE03-NEXT-SEC
            END-PERFORM
-      *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
            .
-       2001-HKNCOMBI-GET-EXT.
+       2006-HENSYU-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    帳票編集<傷病名>処理
+      *****************************************************************
+       20061-BYOMEI-HENSYU-SEC         SECTION.
+      *     
+      *    廃止年月日が設定されているとき廃止年月日＜診療開始日なら
+      *    未傷病名コードにする
+      *    保険請求対象外のときは未傷病名コードにする
+      *    保険請求対象外の傷病名コードのみのときはそのまま記録する
+      *
+           IF      RECE031-BYOMEIHENFLG =   "1"
+                CONTINUE
+           ELSE    
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                       OR      RECE031-BYOMEICD(IDX)   =   SPACE
+                   IF      RECE031-BYOMEICD(IDX)   =   ALL "9"
+                       CONTINUE
+                   ELSE  
+                       IF      RECE031-BYOMEICD(IDX)(1:3)
+                                                   NOT =   "ZZZ"
+                           MOVE    RECE031-BYOMEICD(IDX)
+                                                   TO  BYO-BYOMEICD
+                           PERFORM 900-BYOMEI-READ-SEC
+                           IF      BYO-HKNSKYKBN   =   1
+                               IF      RECE031-BYOMEICD (2)
+                                                   NOT =   SPACE
+                                   MOVE    "1" TO  RECE031-BYOMEIHENFLG
+                               END-IF
+                               MOVE    21      TO  IDX
+                           ELSE
+                               IF      BYO-HAISIYMD    NOT =   SPACE
+                                   IF      BYO-HAISIYMD    <
+                                                       RECE031-SRYYMD
+                                       MOVE    "1"     TO
+                                                   RECE031-BYOMEIHENFLG
+                                       MOVE    21      TO  IDX
+                                   END-IF 
+                               END-IF
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    疑いフラグより病名を編集
+           IF      RECE031-UTAGAIFLG   NOT =   SPACE
+               INITIALIZE                      ORCSMKBYOMEIAREA
+               MOVE    RECE031-UTAGAIFLG   TO  SMKBYO-UTAGAIFLG
+               MOVE    RECE031-IN-BYOMEI   TO  SMKBYO-BYOMEI
+               MOVE    RECE031-BYOMEIHENFLG
+                                           TO  SMKBYO-BYOMEIHENFLG
+               MOVE    RECE031-BYOMEICD-G  TO  SMKBYO-BYOMEICD-G
+               CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
+               MOVE    SMKBYO-BYOMEI       TO  RECE031-BYOMEI
+               MOVE    SMKBYO-BYOMEIHENFLG TO  RECE031-BYOMEIHENFLG
+               MOVE    SMKBYO-BYOMEICD-G   TO  RECE031-BYOMEICD-G
+           ELSE
+               MOVE    RECE031-IN-BYOMEI   TO  RECE031-BYOMEI 
+           END-IF
+      *
+      *    傷病名コード／修飾語コードの取得
+           MOVE    SPACE           TO  WRK-BYOMEI-AREA
+      *
+           IF      RECE031-BYOMEIHENFLG =   "1"
+      *        編集病名のとき未傷病名コードにする
+               MOVE    "0000999"           TO  WRK-BYOMEICD
+           ELSE
+               MOVE    ZERO                TO  IDY
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                       OR      RECE031-BYOMEICD(IDX)   =   SPACE
+                 IF      RECE031-BYOMEICD(IDX) =   ALL "9"
+                     CONTINUE
+                 ELSE
+                   IF      RECE031-BYOMEICD(IDX)(1:3)  NOT =   "ZZZ"
+                       IF      WRK-BYOMEICD                =   SPACE
+                           MOVE    RECE031-BYOMEICD(IDX)
+                                                   TO  WRK-BYOMEICD
+                       END-IF
+                   END-IF
+                 END-IF
+               END-PERFORM
+           END-IF
+      *
+           ADD     1                   TO  WRK-RENNUM-SY
+           MOVE    ZERO                TO  WRK-MEISAI-RENNUM-SY
+      *
+           MOVE    "E"                 TO  WRK-FEDT-REC-FLG
+           PERFORM 200611-BYOMEI-WRITE-SEC
+      * 
+           MOVE    "F"                 TO  WRK-FEDT-REC-FLG
+           PERFORM 200611-BYOMEI-WRITE-SEC
+           .
+       20061-BYOMEI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    傷病名レコード出力処理
+      *****************************************************************
+       200611-BYOMEI-WRITE-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  WRK-REC
+      *
+      *    施設コード
+           STRING  SYS-1001-PREFNUM    DELIMITED   BY  SIZE
+                   SYS-1001-HOSPCD     DELIMITED   BY  SIZE
+                   WRK-KUGIRI-TAB      DELIMITED   BY  SIZE
+                   INTO                WRK-REC
+           END-STRING
+           MOVE    10                  TO  WRK-REC-LENGTH
+      *    データ識別番号
+           IF      SYS-9102-NUMBER     =   "0"
+               MOVE    11                  TO  IDW3
+               MOVE    "0000000000"        TO  WRK-DATA
+               PERFORM VARYING IDW4    FROM    20  BY  -1
+                       UNTIL   IDW4    <       1
+                   IF      RECE02-PTNUM (IDW4:1)    NOT =   SPACE
+                       IF      IDW3        =   1
+                           MOVE    SPACE               TO  WRK-ERR-AREA
+                           INITIALIZE                      WRK-ERR-AREA
+                           MOVE    MCP-RC              TO  WRK-MCP-RC
+      *
+                           STRING "患者番号の桁数が１０桁を超えています"
+                                               DELIMITED   BY  SIZE
+                           " 患者番号＝"           DELIMITED   BY  SIZE
+                           RECE02-PTNUM        DELIMITED   BY  SIZE
+                                               INTO    WRK-RECEERR
+                           END-STRING
+                           PERFORM 500-ERR-HENSYU-SEC
+                           MOVE   "ptnum err"     TO  WRK-ERRMSG
+                           PERFORM 500-COBABORT-SEC
+                       ELSE
+                           COMPUTE IDW3    =   IDW3    -   1
+                           MOVE    RECE02-PTNUM (IDW4:1)
+                                               TO  WRK-DATA (IDW3:1)
+                       END-IF
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    RECE02-PTID         TO  WRK-DATA
+           END-IF
+           MOVE    10                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    生年月日
+           MOVE    RECE02-BIRTHDAY     TO  WRK-DATA
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    外来受診年月日
+           MOVE    RECE02-SRYYM        TO  WRK-DATA
+           MOVE    "00"                TO  WRK-DATA (7:2)
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    データ区分（診療識別）
+           MOVE    "SY"                TO  WRK-DATA
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    順序番号
+           MOVE    WRK-RENNUM-SY       TO  WRK-DATA
+           MOVE    4                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *
+           IF      WRK-FEDT-REC-FLG    =   "F"
+      *      行為明細番号
+             ADD   1                       TO  WRK-MEISAI-RENNUM-SY
+             MOVE  WRK-MEISAI-RENNUM-SY    TO  WRK-DATA
+             MOVE  3                       TO  WRK-NAGASA
+             PERFORM 5004-MOJI-HENSYU-SEC
+           END-IF
+      *
+      *    病院点数マスタコード
+           MOVE    WRK-BYOMEICD        TO  WRK-DATA
+           MOVE    12                  TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    レセプト電算処理システム用コード
+           MOVE    WRK-BYOMEICD        TO  WRK-DATA
+           MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    解釈番号（基本）
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    診療行為名称
+           MOVE    RECE031-BYOMEI      TO  WRK-DATA
+           MOVE    254                 TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *
+           IF      WRK-FEDT-REC-FLG    =   "F"
+      *        使用量
+               MOVE    "00000000000"       TO  WRK-DATA
+               MOVE    11                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        基準単位
+               MOVE    "000"               TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+           END-IF
+      *
+      *    行為点数・行為明細点数
+           MOVE    "00000000"          TO  WRK-DATA
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    行為薬剤料・行為明細薬剤料
+           MOVE    "000000000000"      TO  WRK-DATA
+           IF      WRK-FEDT-REC-FLG    =   "F"
+               MOVE    12                  TO  WRK-NAGASA
+           ELSE
+               MOVE    8                   TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    行為材料料・行為明細材料料
+           MOVE    "000000000000"      TO  WRK-DATA
+           IF      WRK-FEDT-REC-FLG    =   "F"
+               MOVE    12                  TO  WRK-NAGASA
+           ELSE
+               MOVE    8                   TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    円・点区分
+           MOVE    "1"                 TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *
+           IF      WRK-FEDT-REC-FLG    =   "E"
+      *        行為回数
+               MOVE    "001"               TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        保険者番号
+               MOVE    WRK-FEDT-HKNJANUM   TO  WRK-DATA
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        レセプト種別
+               MOVE    WRK-FEDT-RECESYUBETU
+                                           TO  WRK-NUM
+               MOVE    4                   TO  WRK-NAGASA
+               PERFORM 5005-NUM-HENSYU-SEC
+      *        診療開始日
+               MOVE    RECE031-SRYYMD      TO  WRK-DATA
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        レセプト科区分
+               MOVE    WRK-FEDT-RECESRYKA  TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        診療科区分
+               MOVE    WRK-FEDT-SRYKA      TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        医師コード
+               MOVE    WRK-FEDT-DRCD       TO  WRK-DATA
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        病棟コード
+               MOVE    WRK-FEDT-BYOTOCD    TO  WRK-DATA
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        病棟区分
+               MOVE    WRK-FEDT-BYOTOKBN   TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        入外区分
+               MOVE    "1"                 TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        施設タイプ
+               MOVE    1                   TO  WRK-END
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *
+               PERFORM 5001-FILE-WRITE-SEC
+           END-IF
+      *
+           IF      WRK-FEDT-REC-FLG    =   "F"
+      *        出来高実績点数
+               MOVE    "00000000"          TO  WRK-DATA
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        行為明細区分情報（性別＋転記区分＋主病名）
+               MOVE    "000000000000"      TO  WRK-DATA (1:12)
+               MOVE    RECE02-SEX          TO  WRK-DATA (3:1)
+               EVALUATE    RECE031-TENKIKBN
+                   WHEN    "1"
+                       MOVE    "2"         TO  WRK-DATA (4:1)
+                   WHEN    "2"
+                       MOVE    "3"         TO  WRK-DATA (4:1)
+                   WHEN    "3"
+                       MOVE    "4"         TO  WRK-DATA (4:1)
+                   WHEN    SPACE
+                       MOVE    "1"         TO  WRK-DATA (4:1)
+               END-EVALUATE
+               IF      RECE031-SYUBYOFLG   =   "1"
+                   MOVE    "1"                TO  WRK-DATA (5:1)
+               ELSE
+                   MOVE    "0"                TO  WRK-DATA (5:1)
+               END-IF 
+               MOVE    12                  TO  WRK-NAGASA
+               MOVE    1                   TO  WRK-END
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *
+               PERFORM 5001-FILE-F-WRITE-SEC
+           END-IF
+           .
+       200611-BYOMEI-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1824,11 +1987,8 @@
                                            WRK-TBLMAX7
                                            WRK-TBLMAX8
                                            FLG-TEIGEN
-                                           FLG-YKZ20
                                            FLG-KOKUJISKBKBN1
-                                           FLG-GAITENTTLKBN
                                            FLG-SRYSYUKBN721
-      *************************************FLG-SRYSYUKBN700
                                            FLG-SRYKBN70-TEIGEN
                                            FLG-KENSA-KASAN
                                            FLG-KENSA-TEIGEN
@@ -3867,7 +4027,11 @@
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *退院年月日
-           MOVE    WRK-FEDT-TAIINYMD   TO  WRK-DATA
+           IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM-201804
+               MOVE    RECE02-BIRTHDAY     TO  WRK-DATA
+           ELSE
+               MOVE    WRK-FEDT-TAIINYMD   TO  WRK-DATA
+           END-IF
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
            MOVE    "00000000"          TO  WRK-FEDT-TAIINYMD
@@ -4132,8 +4296,17 @@
                ELSE
                     MOVE    ZERO           TO  WRK-FEDT-KOUI-MEISAI2
                END-IF
-               MOVE    ZERO                TO  WRK-FEDT-KOUI-MEISAI3
-                                               WRK-FEDT-KOUI-MEISAI4
+               IF     WRK-FEDT-SRYYM       >=  WRK-CONS-SRYYM-201804
+                   EVALUATE    RECE02-SEX
+                       WHEN    "1"
+                           MOVE   1            TO  WRK-FEDT-KOUI-MEISAI3
+                       WHEN    "2"
+                           MOVE   2            TO  WRK-FEDT-KOUI-MEISAI3
+                   END-EVALUATE
+               ELSE
+                   MOVE    ZERO                TO  WRK-FEDT-KOUI-MEISAI3
+               END-IF
+               MOVE    ZERO                TO  WRK-FEDT-KOUI-MEISAI4
                                                WRK-FEDT-KOUI-MEISAI5
                                                WRK-FEDT-KOUI-MEISAI6
                                                WRK-FEDT-KOUI-MEISAI7
@@ -4242,6 +4415,7 @@
                    RECE04-FILE
                    RECE05-FILE
                    RECE900-FILE
+                   RECE031-FILE
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -4252,6 +4426,7 @@
            PERFORM 900-DBDISCONNECT-SEC
            DISPLAY "RECE02  CNT-IN  :" CNT-IN
            DISPLAY "RECE04  CNT-IN  :" CNT-RECE04
+           DISPLAY "RECE03  CNT-IN  :" CNT-RECE03
            DISPLAY "DB      CNT-OUT :" CNT-OUT
            DISPLAY "DB         E    :" CNT-OUT-E
            DISPLAY "DB         F    :" CNT-OUT-F
@@ -4428,7 +4603,7 @@
        50011-KEY-HENSYU-SEC        SECTION.
       *          
            INITIALIZE                      RECEDEN-REC
-grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
+           MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            MOVE    RECE02-SRYYM        TO  RECEDEN-SRYYM
            MOVE    RECE02-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
            MOVE    RECE02-PTID         TO  RECEDEN-PTID
@@ -4614,77 +4789,6 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
            .
        800-FILENM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せマスタ読込
-      *****************************************************************
-       910-HKNCOMBI-INV-SEC         SECTION.
-      *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM   900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-HKNCOMBI
-                   MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
-               ELSE
-                   MOVE    1                   TO  FLG-HKNCOMBI
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-HKNCOMBI
-           END-IF
-      *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *????
-           IF      FLG-HKNCOMBI        =   1
-               DISPLAY "HKNCOMBI INV " COMB-HOSPNUM " " COMB-PTID " "
-                                       COMB-HKNCOMBINUM " "
-           END-IF
-      *????
-           .
-       910-HKNCOMBI-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せマスタ検索処理(KEY2)
-      *****************************************************************
-       910-HKNCOMBI-KEY2-SEL-SEC         SECTION.
-      *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM   900-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    ZERO            TO  FLG-HKNCOMBI
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-           END-IF
-           .
-       910-HKNCOMBI-KEY2-SEL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せマスタ読込処理(KEY2)
-      *****************************************************************
-       910-HKNCOMBI-KEY2-FETCH-SEC     SECTION.
-      *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM   900-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    ZERO            TO  FLG-HKNCOMBI
-               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-               INITIALIZE                  HKNCOMBI-REC
-           END-IF
-           .
-       910-HKNCOMBI-KEY2-FETCH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5559,6 +5663,34 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
        9999-HOUKATU-SAKUSEI-RECE05-EXT.
            EXIT.
       *
+      ****************************************************************
+      *    レセプト０３１データ読み
+      ****************************************************************
+       990-RECE03-NEXT-SEC           SECTION.
+      *
+           READ    RECE031-FILE      NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE031
+               NOT AT  END
+                   IF      STS-RECE03          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+                       MOVE    2                   TO  WRK-ERR-FLG
+                       MOVE    RECE031PARA         TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE03          TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
+                   MOVE    ZERO      TO  FLG-RECE031
+                   ADD     1         TO  CNT-RECE03
+           END-READ
+      *
+           .
+       990-RECE03-NEXT-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    診療会計マスタＲＥＡＤ
       *****************************************************************
@@ -5630,6 +5762,40 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            PERFORM 900-CLOSE-SEC
            .
        900-TENSUPLUS-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名マスター読込
+      *****************************************************************
+       900-BYOMEI-READ-SEC         SECTION.
+      *
+           MOVE    BYOMEI-REC          TO  MCPDATA-REC
+      *
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_byomei"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  BYOMEI-REC
+                   MOVE    ZERO                TO  FLG-BYOMEI
+               ELSE
+                   MOVE    1                   TO  FLG-BYOMEI
+                   INITIALIZE                  BYOMEI-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-BYOMEI
+               INITIALIZE                  BYOMEI-REC
+           END-IF
+      *
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-BYOMEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
