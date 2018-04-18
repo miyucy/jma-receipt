@@ -30,6 +30,7 @@
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *平成３０年４月改正対応
       *  05.00.00    NACL-小豆沢  18/03/05  療養病棟の読み替えコード追加
+      *  05.00.00    NACL-小豆沢  18/04/18  食事個別指示対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1375,6 +1376,15 @@
                MOVE   WRK-TAIHI-SHOKUJI-YORU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
            END-IF
+           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+               MOVE   PTNYUINRRK-SKJKBN-ASA
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+               MOVE   PTNYUINRRK-SKJKBN-HIRU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+               MOVE   PTNYUINRRK-SKJKBN-YU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+           END-IF
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI        =    ZERO
@@ -1700,6 +1710,15 @@
                MOVE   WRK-TAIHI-SHOKUJI-HIRU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
                MOVE   WRK-TAIHI-SHOKUJI-YORU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+           END-IF
+           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+               MOVE   PTNYUINRRK-SKJKBN-ASA
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+               MOVE   PTNYUINRRK-SKJKBN-HIRU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+               MOVE   PTNYUINRRK-SKJKBN-YU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
            END-IF
       *    食堂加算

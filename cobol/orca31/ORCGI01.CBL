@@ -162,6 +162,7 @@
       *  05.00.00    NACL-小豆沢  18/03/07  短期滞在手術等基本料の判定変更
       *  05.00.00    NACL-小豆沢  18/03/20  在宅患者支援療養病床初期加算（療養病棟入院基本料）
       *                                     在宅患者支援病床初期加算（地域包括ケア病棟入院料）
+      *  05.00.00    NACL-小豆沢  18/04/18  食事個別指示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -539,6 +540,12 @@
                    07  WRK-TENROOM-GAIHAKU PIC 9(03)  OCCURS  31.
            03  WRK-TENROOM-MAE-SKJ1        PIC 9(03).
            03  WRK-TENROOM-MAE-SKJ2        PIC 9(03).
+           03  WRK-TENROOM-MAE-SKJ1-ASA    PIC 9(03).
+           03  WRK-TENROOM-MAE-SKJ1-HIRU   PIC 9(03).
+           03  WRK-TENROOM-MAE-SKJ1-YORU   PIC 9(03).
+           03  WRK-TENROOM-MAE-SKJ2-ASA    PIC 9(03).
+           03  WRK-TENROOM-MAE-SKJ2-HIRU   PIC 9(03).
+           03  WRK-TENROOM-MAE-SKJ2-YORU   PIC 9(03).
       *    転科／転棟／転室時に食堂加算を退避する項目
            03  WRK-SHOKUDOU-AREA.
                05  WRK-SHOKUDOU-SRYYM.
@@ -11953,6 +11960,14 @@
                    MOVE   2     TO  LNK-SCNYUACCT-SHOKUJIKBN
                WHEN   "3"
                    MOVE   3     TO  LNK-SCNYUACCT-SHOKUJIKBN
+               WHEN   "C"
+                   MOVE  "1"    TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+                   MOVE  PTNYUINRRK-SKJKBN-ASA
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+                   MOVE  PTNYUINRRK-SKJKBN-HIRU
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+                   MOVE  PTNYUINRRK-SKJKBN-YU
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
            END-EVALUATE
       *    食堂加算
            PERFORM     4801-BTUSEL-SEC
@@ -11962,6 +11977,12 @@
                                 LNK-SCNYUACCT-SHOKUDO-SRYCD
                     MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
                     IF   PTNYUINRRK-SKJKBN   =   "0"
+                         MOVE   ZERO     TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                    END-IF
+                    IF  (PTNYUINRRK-SKJKBN      =   "C")   AND
+                        (PTNYUINRRK-SKJKBN-ASA  =   "0")   AND
+                        (PTNYUINRRK-SKJKBN-HIRU =   "0")   AND
+                        (PTNYUINRRK-SKJKBN-YU   =   "0")
                          MOVE   ZERO     TO  LNK-SCNYUACCT-SHOKUDO-KBN
                     END-IF
                END-IF
@@ -12146,7 +12167,7 @@
       *    同日再入院でない、又は他院歴からの同日再入院の場合は、
       *    入院時食事時間区分に従い入院会計データを更新する。
            IF   PTNYUINRRK-NYUINYMD      >=   "20060401"
-             IF   PTNYUINRRK-SKJKBN        =    "1"   OR   "2"  OR  "3"
+             IF   PTNYUINRRK-SKJKBN       =    "1" OR "2" OR "3" OR "C"
                IF   PTNYUINRRK-DOUJITSUKBN     =   SPACE  OR  "2"
       *            通常の入院又は他院歴からの同日入院
       *
@@ -12374,6 +12395,17 @@
                            IF   PTNYUINRRK-SKJKBN        =    "3"
                                MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
                            END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "C"
+                              IF   PTNYUINRRK-SKJKBN-ASA    =    "1"
+                                  MOVE  1   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-ASA    =    "2"
+                                  MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-ASA    =    "3"
+                                  MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                           END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
                            PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
@@ -12413,6 +12445,17 @@
                            IF   PTNYUINRRK-SKJKBN        =    "3"
                                MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
                            END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "C"
+                              IF   PTNYUINRRK-SKJKBN-HIRU   =    "1"
+                                  MOVE  1   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-HIRU   =    "2"
+                                  MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-HIRU   =    "3"
+                                  MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                           END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
                            PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
@@ -12451,6 +12494,17 @@
                            END-IF
                            IF   PTNYUINRRK-SKJKBN        =    "3"
                                MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                           END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "C"
+                              IF   PTNYUINRRK-SKJKBN-YU     =    "1"
+                                  MOVE  1   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-YU     =    "2"
+                                  MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-YU     =    "3"
+                                  MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
                            END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
@@ -12495,6 +12549,17 @@
                            IF   PTNYUINRRK-SKJKBN        =    "3"
                                MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
                            END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "C"
+                              IF   PTNYUINRRK-SKJKBN-HIRU   =    "1"
+                                  MOVE  1   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-HIRU   =    "2"
+                                  MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-HIRU   =    "3"
+                                  MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                           END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
                            PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
@@ -12533,6 +12598,17 @@
                            END-IF
                            IF   PTNYUINRRK-SKJKBN        =    "3"
                                MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                           END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "C"
+                              IF   PTNYUINRRK-SKJKBN-YU     =    "1"
+                                  MOVE  1   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-YU     =    "2"
+                                  MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-YU     =    "3"
+                                  MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
                            END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
@@ -12576,6 +12652,17 @@
                            END-IF
                            IF   PTNYUINRRK-SKJKBN        =    "3"
                                MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                           END-IF
+                           IF   PTNYUINRRK-SKJKBN        =    "C"
+                              IF   PTNYUINRRK-SKJKBN-YU     =    "1"
+                                  MOVE  1   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-YU     =    "2"
+                                  MOVE  2   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
+                              IF   PTNYUINRRK-SKJKBN-YU     =    "3"
+                                  MOVE  3   TO  NACCT-DAY(IDX-SHOKUJI9)
+                              END-IF
                            END-IF
       *                    剤回数再セット
                            MOVE  ZERO              TO  NACCT-ZAIKAISU
@@ -13821,6 +13908,15 @@
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE   WRK-TAIHI-SHOKUJI
                                 TO  LNK-SCNYUACCT-SHOKUJIKBN
+           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+               MOVE   PTNYUINRRK-SKJKBN-ASA
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+               MOVE   PTNYUINRRK-SKJKBN-HIRU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+               MOVE   PTNYUINRRK-SKJKBN-YU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+           END-IF
       *    食堂加算
            PERFORM     4801-BTUSEL-SEC
            IF   FLG-SYSKANRI           =    ZERO
@@ -14577,7 +14673,7 @@
            INITIALIZE                          WRK-TENROOM-SKJ-TABLE
       *
            IF  SPA-NAI-I01-IDOYMD(1:6)  >= "200604"
-            IF  PTNYUINRRK-SKJKBN       =  "A"
+            IF  PTNYUINRRK-SKJKBN       =  "A" OR  "B"
       *      前月末日の食事会計取得
       *     （異動日の入院会計が存在しない場合、前月末の食事情報取得の為）
              MOVE    SPA-NAI-I01-IDOYMD(1:6)
@@ -14596,6 +14692,42 @@
              CALL    "ORCSDAY"       USING     STS-AREA-DAY
                                                LNK-DAY7-AREA
              MOVE    LNK-DAY7-KOYOMI       TO  IDX-MATSUBI
+      *      異動日前月末日の食事会計（朝食）を読み込み
+             INITIALIZE                        NYUINACCT-REC
+             MOVE    PTNYUINRRK-HOSPNUM    TO  NACCT-HOSPNUM
+             MOVE    PTNYUINRRK-PTID       TO  NACCT-PTID
+             MOVE    WRK-CHK-SRYYM         TO  NACCT-SRYYM
+             MOVE    "key30"               TO  MCP-PATHNAME
+             PERFORM  910-NYUINACCT-SELECT-SEC
+             MOVE    "key30"               TO  MCP-PATHNAME
+             PERFORM  910-NYUINACCT-READ-SEC
+             IF      FLG-NYUINACCT         =   ZERO
+                 MOVE     MCPDATA-REC      TO  NYUINACCT-REC
+                 MOVE     NACCT-DAY(IDX-MATSUBI)
+                                           TO WRK-TENROOM-MAE-SKJ1-ASA
+             END-IF
+      *      入院会計マスタクローズ
+             MOVE    "tbl_nyuinacct"       TO  MCP-TABLE
+             MOVE    "key30"               TO  MCP-PATHNAME
+             PERFORM 910-DBCLOSECURSOR-SEC
+      *      異動日前月末日の食事会計（昼食）を読み込み
+             INITIALIZE                        NYUINACCT-REC
+             MOVE    PTNYUINRRK-HOSPNUM    TO  NACCT-HOSPNUM
+             MOVE    PTNYUINRRK-PTID       TO  NACCT-PTID
+             MOVE    WRK-CHK-SRYYM         TO  NACCT-SRYYM
+             MOVE    "key31"               TO  MCP-PATHNAME
+             PERFORM  910-NYUINACCT-SELECT-SEC
+             MOVE    "key31"               TO  MCP-PATHNAME
+             PERFORM  910-NYUINACCT-READ-SEC
+             IF      FLG-NYUINACCT         =   ZERO
+                 MOVE     MCPDATA-REC      TO  NYUINACCT-REC
+                 MOVE     NACCT-DAY(IDX-MATSUBI)
+                                           TO WRK-TENROOM-MAE-SKJ1-HIRU
+             END-IF
+      *      入院会計マスタクローズ
+             MOVE    "tbl_nyuinacct"       TO  MCP-TABLE
+             MOVE    "key31"               TO  MCP-PATHNAME
+             PERFORM 910-DBCLOSECURSOR-SEC
       *      異動日前月末日の食事会計（夕食）を読み込み
              INITIALIZE                        NYUINACCT-REC
              MOVE    PTNYUINRRK-HOSPNUM    TO  NACCT-HOSPNUM
@@ -14609,6 +14741,7 @@
                  MOVE     MCPDATA-REC      TO  NYUINACCT-REC
                  MOVE     NACCT-DAY(IDX-MATSUBI)
                                            TO WRK-TENROOM-MAE-SKJ1
+                                              WRK-TENROOM-MAE-SKJ1-YORU
              END-IF
       *      入院会計マスタクローズ
              MOVE    "tbl_nyuinacct"       TO  MCP-TABLE
@@ -14644,6 +14777,17 @@
                END-EVALUATE
                PERFORM  910-NYUINACCT-READ-SEC
                IF      FLG-NYUINACCT        =   ZERO
+      *
+      *          月末日を算定
+                 INITIALIZE                  STS-AREA-DAY
+                 INITIALIZE                  LNK-DAY7-AREA
+                 MOVE      "71"          TO  LNK-DAY7-IRAI
+                 MOVE    SPA-NAI-I01-IDOYMD(1:6)
+                                         TO  LNK-DAY7-YM
+                 CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                 LNK-DAY7-AREA
+                 MOVE    LNK-DAY7-KOYOMI TO  IDX-MATSUBI
+      *
                  MOVE     MCPDATA-REC    TO  NYUINACCT-REC
       *          食事を退避
                  MOVE    NACCT-SRYYM     TO  WRK-TENROOM-SKJ-SRYYM(1)
@@ -14655,31 +14799,30 @@
                            UNTIL     IDX-SKJ   >   31
                                MOVE   NACCT-DAY(IDX-SKJ)
                                          TO WRK-TENROOM-SKJ18(1 IDX-SKJ)
+                               IF    IDX-SKJ   =    IDX-MATSUBI
+                                   MOVE    NACCT-DAY(IDX-SKJ)
+                                         TO    WRK-TENROOM-MAE-SKJ2-ASA
+                               END-IF
                         END-PERFORM
                      WHEN  2
                         PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
                            UNTIL     IDX-SKJ   >   31
                                MOVE   NACCT-DAY(IDX-SKJ)
                                          TO WRK-TENROOM-SKJ19(1 IDX-SKJ)
+                               IF    IDX-SKJ   =    IDX-MATSUBI
+                                   MOVE    NACCT-DAY(IDX-SKJ)
+                                         TO    WRK-TENROOM-MAE-SKJ2-HIRU
+                               END-IF
                         END-PERFORM
                      WHEN  3
-      *                 月末日を算定
-                        INITIALIZE                  STS-AREA-DAY
-                        INITIALIZE                  LNK-DAY7-AREA
-                        MOVE      "71"          TO  LNK-DAY7-IRAI
-                        MOVE    SPA-NAI-I01-IDOYMD(1:6)
-                                                TO  LNK-DAY7-YM
-                        CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                                        LNK-DAY7-AREA
-                        MOVE    LNK-DAY7-KOYOMI TO  IDX-MATSUBI
-      *
                         PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
                            UNTIL     IDX-SKJ   >   31
                                MOVE   NACCT-DAY(IDX-SKJ)
                                          TO WRK-TENROOM-SKJ20(1 IDX-SKJ)
                                IF    IDX-SKJ   =    IDX-MATSUBI
                                    MOVE    NACCT-DAY(IDX-SKJ)
-                                               TO  WRK-TENROOM-MAE-SKJ2
+                                           TO  WRK-TENROOM-MAE-SKJ2
+                                               WRK-TENROOM-MAE-SKJ2-YORU
                                END-IF
                         END-PERFORM
                  END-EVALUATE
@@ -14704,23 +14847,41 @@
                            UNTIL     IDX-SKJ   >   IDX-MATSUBI
                               MOVE   WRK-TENROOM-MAE-SKJ1
                                         TO WRK-TENROOM-SKJ18(1 IDX-SKJ)
+                              IF  PTNYUINRRK-SKJKBN  =  "B"
+                                  MOVE   WRK-TENROOM-MAE-SKJ1-ASA
+                                        TO WRK-TENROOM-SKJ18(1 IDX-SKJ)
+                              END-IF
                         END-PERFORM
                      WHEN  2
                         PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
                            UNTIL     IDX-SKJ   >   IDX-MATSUBI
                               MOVE   WRK-TENROOM-MAE-SKJ1
                                         TO WRK-TENROOM-SKJ19(1 IDX-SKJ)
+                              IF  PTNYUINRRK-SKJKBN  =  "B"
+                                  MOVE   WRK-TENROOM-MAE-SKJ1-HIRU
+                                        TO WRK-TENROOM-SKJ19(1 IDX-SKJ)
+                              END-IF
                         END-PERFORM
                      WHEN  3
                         PERFORM VARYING IDX-SKJ FROM IDX-SHOKUJI9 BY  1
                            UNTIL     IDX-SKJ   >   IDX-MATSUBI
                               MOVE   WRK-TENROOM-MAE-SKJ1
                                         TO WRK-TENROOM-SKJ20(1 IDX-SKJ)
+                              IF  PTNYUINRRK-SKJKBN  =  "B"
+                                  MOVE   WRK-TENROOM-MAE-SKJ1-YORU
+                                        TO WRK-TENROOM-SKJ20(1 IDX-SKJ)
+                              END-IF
                         END-PERFORM
                  END-EVALUATE
       *          異動日前月末日の食事（夕食）を異動翌月の食事退避項目へ
       *          セットしておく
                  MOVE    WRK-TENROOM-MAE-SKJ1  TO  WRK-TENROOM-MAE-SKJ2
+                 MOVE    WRK-TENROOM-MAE-SKJ1-ASA
+                                          TO  WRK-TENROOM-MAE-SKJ2-ASA
+                 MOVE    WRK-TENROOM-MAE-SKJ1-HIRU
+                                          TO  WRK-TENROOM-MAE-SKJ2-HIRU
+                 MOVE    WRK-TENROOM-MAE-SKJ1-YORU
+                                          TO  WRK-TENROOM-MAE-SKJ2-YORU
       *
                  MOVE    SPACE           TO  WRK-TENROOM-SKJ-SRYYM(1)
                END-IF
@@ -14814,18 +14975,30 @@
                            UNTIL     IDX-SKJ   >   IDX-MATSUBI
                               MOVE   WRK-TENROOM-MAE-SKJ2
                                         TO WRK-TENROOM-SKJ18(2 IDX-SKJ)
+                              IF   PTNYUINRRK-SKJKBN   =   "B"
+                                  MOVE   WRK-TENROOM-MAE-SKJ2-ASA
+                                        TO WRK-TENROOM-SKJ18(2 IDX-SKJ)
+                              END-IF
                         END-PERFORM
                      WHEN  2
                         PERFORM VARYING IDX-SKJ FROM 1  BY  1
                            UNTIL     IDX-SKJ   >   IDX-MATSUBI
                               MOVE   WRK-TENROOM-MAE-SKJ2
                                         TO WRK-TENROOM-SKJ19(2 IDX-SKJ)
+                              IF   PTNYUINRRK-SKJKBN   =   "B"
+                                  MOVE   WRK-TENROOM-MAE-SKJ2-HIRU
+                                        TO WRK-TENROOM-SKJ19(2 IDX-SKJ)
+                              END-IF
                         END-PERFORM
                      WHEN  3
                         PERFORM VARYING IDX-SKJ FROM 1  BY  1
                            UNTIL     IDX-SKJ   >   IDX-MATSUBI
                               MOVE   WRK-TENROOM-MAE-SKJ2
                                         TO WRK-TENROOM-SKJ20(2 IDX-SKJ)
+                              IF   PTNYUINRRK-SKJKBN   =   "B"
+                                  MOVE   WRK-TENROOM-MAE-SKJ2-YORU
+                                        TO WRK-TENROOM-SKJ20(2 IDX-SKJ)
+                              END-IF
                         END-PERFORM
                  END-EVALUATE
                END-IF
@@ -15225,6 +15398,38 @@
                       MOVE   2     TO  LNK-SCNYUACCT-SHOKUJIKBN
                WHEN   "3"
                       MOVE   3     TO  LNK-SCNYUACCT-SHOKUJIKBN
+               WHEN   "C"
+                   MOVE     "1"    TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+                   EVALUATE   PTNYUINRRK-SKJKBN-ASA
+                      WHEN   "0"
+                           MOVE   0   TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+                      WHEN   "1"
+                           MOVE   1   TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+                      WHEN   "2"
+                           MOVE   2   TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+                      WHEN   "3"
+                           MOVE   3   TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+                   END-EVALUATE
+                   EVALUATE   PTNYUINRRK-SKJKBN-HIRU
+                      WHEN   "0"
+                           MOVE   0   TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+                      WHEN   "1"
+                           MOVE   1   TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+                      WHEN   "2"
+                           MOVE   2   TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+                      WHEN   "3"
+                           MOVE   3   TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+                   END-EVALUATE
+                   EVALUATE   PTNYUINRRK-SKJKBN-YU
+                      WHEN   "0"
+                           MOVE   0   TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+                      WHEN   "1"
+                           MOVE   1   TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+                      WHEN   "2"
+                           MOVE   2   TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+                      WHEN   "3"
+                           MOVE   3   TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+                   END-EVALUATE
            END-EVALUATE
       *    入院日と異動日が同日である場合、入院時にセットした
       *    「入院日食事開始時間区分」以降が食事の更新対象となる為
@@ -15481,7 +15686,7 @@
       *
       *    入院会計作成後に退避データの食事区分を復元
            IF  SPA-NAI-I01-IDOYMD(1:6)  >= "200604"
-             IF  PTNYUINRRK-SKJKBN       =  "A"
+             IF  PTNYUINRRK-SKJKBN       =  "A"  OR  "B"
       *       （異動月分）
                IF   WRK-TENROOM-SKJ-SRYYM(1)  NOT =   SPACE
                 PERFORM    VARYING  IDX-SKJ-TAIHI  FROM  1  BY  1
@@ -17459,7 +17664,11 @@
                MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
                MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
                MOVE    IPN-SANTEISTYMD   TO   PTNYUINRRK-TENNYUYMD
-               MOVE    "A"               TO   PTNYUINRRK-SKJKBN
+               IF      PTNYUINRRK-SKJKBN  =   "B"  OR  "C"
+                   CONTINUE
+               ELSE
+                   MOVE    "A"               TO   PTNYUINRRK-SKJKBN
+               END-IF
                PERFORM   4801-TENROOM-EDIT-SEC
            END-IF
       *

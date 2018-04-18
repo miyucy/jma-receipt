@@ -113,6 +113,7 @@
       *                                     Ê¿À®£³£°Ç¯£³·î¤Þ¤Ç
       *  05.00.00    NACL-¾®Æ¦Âô  18/04/16  ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê·Ð²áÁ¼ÃÖ¡Ë
       *                                     ¤ÎÈ½ÄêÄÉ²Ã
+      *  05.00.00    NACL-¾®Æ¦Âô  18/04/18  ¿©»ö¸ÄÊÌ»Ø¼¨ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7115,6 +7116,15 @@ grpsys                                     SPA-AREA
                MOVE   SPA-TAIHI-SHOKUJI-YORU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
            END-IF
+           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+               MOVE   PTNYUINRRK-SKJKBN-ASA
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+               MOVE   PTNYUINRRK-SKJKBN-HIRU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+               MOVE   PTNYUINRRK-SKJKBN-YU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+           END-IF
       *    ¿©Æ²²Ã»»
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI        =    ZERO
@@ -7478,6 +7488,15 @@ grpsys                                     SPA-AREA
                MOVE   SPA-TAIHI-SHOKUJI-HIRU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
                MOVE   SPA-TAIHI-SHOKUJI-YORU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+           END-IF
+           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+               MOVE   PTNYUINRRK-SKJKBN-ASA
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+               MOVE   PTNYUINRRK-SKJKBN-HIRU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+               MOVE   PTNYUINRRK-SKJKBN-YU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
            END-IF
       *    ¿©Æ²²Ã»»

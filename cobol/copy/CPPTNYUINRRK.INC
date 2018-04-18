@@ -104,15 +104,15 @@
            03  PTNYUINRRK-DOUJITSUKBN             PIC  X(01).
       *入院履歴最大枝番号
            03  PTNYUINRRK-MAXEDANUM               PIC  9(03).
-      *入院食事区分（０：食なし／１：食あり／２：特食）
-      *　　　　　　（Ａ：変更なし／Ｂ：個別指示／Ｃ：個別指示変更なし）
+      *入院食事区分（０：食なし／１：食あり／２：特食／３：流動食）
+      *　　　　　　（Ａ：変更なし／Ｃ：個別指示／Ｂ：個別指示変更なし）
            03  PTNYUINRRK-SKJKBN                  PIC  X(01).
            03  PTNYUINRRK-SKJKBN-KOBETSU-G.
-      *入院食事区分　朝（０：食なし／１：食あり／２：特食）
+      *入院食事区分　朝（０：食なし／１：食あり／２：特食／３：流動食）
                05  PTNYUINRRK-SKJKBN-ASA              PIC  X(01).
-      *入院食事区分　昼（０：食なし／１：食あり／２：特食）
+      *入院食事区分　昼（０：食なし／１：食あり／２：特食／３：流動食）
                05  PTNYUINRRK-SKJKBN-HIRU             PIC  X(01).
-      *入院食事区分　夕（０：食なし／１：食あり／２：特食）
+      *入院食事区分　夕（０：食なし／１：食あり／２：特食／３：流動食）
                05  PTNYUINRRK-SKJKBN-YU               PIC  X(01).
            03  PTNYUINRRK-SKJKBN-KOBETSU-R
                            REDEFINES PTNYUINRRK-SKJKBN-KOBETSU-G.
