@@ -256,7 +256,6 @@
            03  FLG-ZAIKYO-COM                          PIC 9(01).
            03  FLG-BOKOHO-COM                          PIC 9(01).
            03  FLG-IZONSYO-COM                         PIC 9(01).
-           03  FLG-SEIJYU-COM                          PIC 9(01).
            03  FLG-NINRYO-COM                          PIC 9(01).
            03  FLG-ZENSOKU-COM                         PIC 9(01).
            03  FLG-KENSA-COM                           PIC 9(01).
@@ -1258,6 +1257,7 @@
            03  CONS-KYOKUIN9-COMMENT  PIC X(09) VALUE  "140054370".
       *    ∂…ΩÍ±¢∞µ ƒ∫øΩË√÷ΩÈ≤Û≤√ªª° ∆˛±°≥∞°À° £≤£∞£∞£„£Ì£≤∞ æÂ°À
            03  CONS-KYOKUIN10-COMMENT PIC X(09) VALUE  "140054470".
+      *
       *    «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°
            03  CONS-NINRYO-COMMENT   PIC X(09)  VALUE  "180033210".
       *    «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°° ¿∫ø¿≤ µﬂµﬁ¬Œ¿©§Œ¿∫ø¿ ›∑ÚªÿƒÍ∞Â°À
@@ -1268,6 +1268,39 @@
            03  CONS-NINRYO6-COMMENT  PIC X(09)  VALUE  "840000097".
       *    «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°° ∞Âª’°À
            03  CONS-NINRYO8-COMMENT  PIC X(09)  VALUE  "180056410".
+      *
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° Ω∏√Ê≈™ªŸ±Á…¨Õ◊°À° √±∞Ï∑˙ ™£±øÕ°À
+           03  CONS-SEIZAI-COMMENT   PIC X(09)  VALUE  "180057210".
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° Ω∏√Ê≈™ªŸ±Á…¨Õ◊°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
+           03  CONS-SEIZAI2-COMMENT  PIC X(09)  VALUE  "180057310".
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° Ω≈≈Ÿ¿∫ø¿æ„≥≤º‘°À° √±∞Ï∑˙ ™£±øÕ°À
+           03  CONS-SEIZAI3-COMMENT  PIC X(09)  VALUE  "180057410".
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° Ω≈≈Ÿ¿∫ø¿æ„≥≤º‘°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
+           03  CONS-SEIZAI4-COMMENT  PIC X(09)  VALUE  "180057510".
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° •§µ⁄§”•Ì∞ ≥∞°À° √±∞Ï∑˙ ™£±øÕ°À
+           03  CONS-SEIZAI5-COMMENT  PIC X(09)  VALUE  "180057610".
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° •§µ⁄§”•Ì∞ ≥∞°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
+           03  CONS-SEIZAI6-COMMENT  PIC X(09)  VALUE  "180057710".
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£≤° Ω∏√Ê≈™ªŸ±Á…¨Õ◊°À° √±∞Ï∑˙ ™£±øÕ°À
+           03  CONS-SEIZAI7-COMMENT  PIC X(09)  VALUE  "180057810".
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£≤° Ω∏√Ê≈™ªŸ±Á…¨Õ◊°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
+           03  CONS-SEIZAI8-COMMENT  PIC X(09)  VALUE  "180057910".
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£≤° Ω≈≈Ÿ¿∫ø¿æ„≥≤º‘°À° √±∞Ï∑˙ ™£±øÕ°À
+           03  CONS-SEIZAI9-COMMENT  PIC X(09)  VALUE  "180058010".
+      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£≤° Ω≈≈Ÿ¿∫ø¿æ„≥≤º‘°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
+           03  CONS-SEIZAI10-COMMENT PIC X(09)  VALUE  "180058110".
+      *
+      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£±° √±∞Ï∑˙ ™£±øÕ°À
+           03  CONS-SEIJYU-COMMENT   PIC X(09)  VALUE  "180042110".
+      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£≤° √±∞Ï∑˙ ™£±øÕ°À
+           03  CONS-SEIJYU2-COMMENT  PIC X(09)  VALUE  "180042410".
+      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£±° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
+           03  CONS-SEIJYU3-COMMENT  PIC X(09)  VALUE  "180048710".
+      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£≤° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
+           03  CONS-SEIJYU4-COMMENT  PIC X(09)  VALUE  "180048810".
+      *
+      *    ∫ﬂ¬»æ∏«∑¡±…Õ‹∑–¥…±…Õ‹À°ªÿ∆≥¥…Õ˝Œ¡
+           03  CONS-ZAIHANKO-COMMENT PIC X(09)  VALUE  "114045510".
       *
       *    «ß√Œæ…¿ÏÃÁø«√«¥…Õ˝Œ¡£≤
            03  CONS-NINSEN-COMMENT   PIC X(09)  VALUE  "113014610".
@@ -1336,38 +1369,6 @@
            03  CONS-IZONSYO-COMMENT  PIC X(09)  VALUE  "180047910".
       *    º£Œ≈≥´ªœ∆¸°°°°°°∑Ó°°°°∆¸
            03  CONS-IZONSYO2-COMMENT PIC X(09)  VALUE  "840000076".
-      *
-      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£±° √±∞Ï∑˙ ™£±øÕ°À
-           03  CONS-SEIJYU-COMMENT   PIC X(09)  VALUE  "180042110".
-      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£≤° √±∞Ï∑˙ ™£±øÕ°À
-           03  CONS-SEIJYU2-COMMENT  PIC X(09)  VALUE  "180042410".
-      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£±° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
-           03  CONS-SEIJYU3-COMMENT  PIC X(09)  VALUE  "180048710".
-      *    ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡£≤° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
-           03  CONS-SEIJYU4-COMMENT  PIC X(09)  VALUE  "180048810".
-      *    ΩÈ≤ÛªªƒÍ°°°°°°∑Ó°°°°∆¸
-           03  CONS-SEIJYU5-COMMENT  PIC X(09)  VALUE  "840000097".
-      *
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° Ω∏√Ê≈™ªŸ±Á…¨Õ◊°À° √±∞Ï∑˙ ™£±øÕ°À
-           03  CONS-SEIZAI-COMMENT   PIC X(09)  VALUE  "180057210".
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° Ω∏√Ê≈™ªŸ±Á…¨Õ◊°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
-           03  CONS-SEIZAI2-COMMENT  PIC X(09)  VALUE  "180057310".
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° Ω≈≈Ÿ¿∫ø¿æ„≥≤º‘°À° √±∞Ï∑˙ ™£±øÕ°À
-           03  CONS-SEIZAI3-COMMENT  PIC X(09)  VALUE  "180057410".
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° Ω≈≈Ÿ¿∫ø¿æ„≥≤º‘°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
-           03  CONS-SEIZAI4-COMMENT  PIC X(09)  VALUE  "180057510".
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° •§µ⁄§”•Ì∞ ≥∞°À° √±∞Ï∑˙ ™£±øÕ°À
-           03  CONS-SEIZAI5-COMMENT  PIC X(09)  VALUE  "180057610".
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£±° •§µ⁄§”•Ì∞ ≥∞°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
-           03  CONS-SEIZAI6-COMMENT  PIC X(09)  VALUE  "180057710".
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£≤° Ω∏√Ê≈™ªŸ±Á…¨Õ◊°À° √±∞Ï∑˙ ™£±øÕ°À
-           03  CONS-SEIZAI7-COMMENT  PIC X(09)  VALUE  "180057810".
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£≤° Ω∏√Ê≈™ªŸ±Á…¨Õ◊°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
-           03  CONS-SEIZAI8-COMMENT  PIC X(09)  VALUE  "180057910".
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£≤° Ω≈≈Ÿ¿∫ø¿æ„≥≤º‘°À° √±∞Ï∑˙ ™£±øÕ°À
-           03  CONS-SEIZAI9-COMMENT  PIC X(09)  VALUE  "180058010".
-      *    ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡£≤° Ω≈≈Ÿ¿∫ø¿æ„≥≤º‘°À° √±∞Ï∑˙ ™£≤øÕ∞ æÂ°À
-           03  CONS-SEIZAI10-COMMENT PIC X(09)  VALUE  "180058110".
       *
       *    ∫ﬂ¬¥µº‘À¨Ã‰ÃÙ∫ﬁ¥…Õ˝ªÿ∆≥Œ¡° √±∞Ï∑˙ ™ø«Œ≈¥µº‘§¨£±øÕ°À
            03  CONS-ZAIYAK-COMMENT   PIC X(09)  VALUE  "114044710".
@@ -2074,7 +2075,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 FLG-ZAIKYO-COM
                                                 FLG-BOKOHO-COM
                                                 FLG-IZONSYO-COM
-                                                FLG-SEIJYU-COM
                                                 FLG-NINRYO-COM
                                                 FLG-NYUSEN-COM
       *
@@ -2145,7 +2145,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        FLG-ZAIKYO-COM
                                                        FLG-BOKOHO-COM
                                                        FLG-IZONSYO-COM
-                                                       FLG-SEIJYU-COM
                                                        FLG-NINRYO-COM
                                                        FLG-NYUSEN-COM
       *
@@ -2392,7 +2391,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       "09960" OR "09970" OR "09980" OR "09983"
                   MOVE    1     TO    FLG-HENSYU-NG
              END-IF
-             IF       SRY-SRYCD(IDX2)  =  "099140004" OR "099400001"
+             IF       SRY-SRYCD(IDX2)  =  "099140004" OR
+                                          "099400001" OR "099400002"
                   MOVE    1     TO    FLG-HENSYU-NG
              END-IF
              IF      (SRY-SRYCD(IDX2)  =  "099140011" OR "099140012")
@@ -4075,8 +4075,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                 END-IF
               END-IF
       *
+      *       «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°
               IF   RECE100-SRYYM     >=    "201004"
-      *         «ß√ŒŒ≈À°°¶«ß√Œπ‘∆∞Œ≈À°
                 IF  (SRY-SRYCD(IDX2)  =     CONS-NINRYO-COMMENT )
                 AND (FLG-NINRYO-COM   =     ZERO                )
                         MOVE   "1"    TO    RECE120-FLG-NINRYO-COMMENT
@@ -4093,11 +4093,73 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                 AND (FLG-NINRYO-COM   =     ZERO                )
                         MOVE   "8"    TO    RECE120-FLG-NINRYO-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-NINRYO6-COMMENT
-                        MOVE  SPACE   TO    RECE120-FLG-NINRYO-COMMENT
-                        MOVE    1     TO    FLG-NINRYO-COM
+              END-IF
+      *       ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡
+      *       ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡
+              IF   RECE100-SRYYM     >=    "201604"
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI-COMMENT  )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "A"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI2-COMMENT )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "B"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI3-COMMENT )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "C"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI4-COMMENT )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "D"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI5-COMMENT )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "E"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI6-COMMENT )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "F"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI7-COMMENT )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "G"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI8-COMMENT )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "H"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI9-COMMENT )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "I"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI10-COMMENT)
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "J"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+      *
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU-COMMENT )
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "K"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU2-COMMENT)
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "L"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU3-COMMENT)
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "M"    TO    RECE120-FLG-NINRYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU4-COMMENT)
+                AND (FLG-NINRYO-COM   =     ZERO                 )
+                        MOVE   "N"    TO    RECE120-FLG-NINRYO-COMMENT
                 END-IF
               END-IF
+              IF     SRY-SRYCD(IDX2)  =     CONS-NINRYO6-COMMENT
+                        MOVE  SPACE   TO    RECE120-FLG-NINRYO-COMMENT
+                        MOVE    1     TO    FLG-NINRYO-COM
+              END-IF
+      *
       *       ƒÃ±°°¶∫ﬂ¬¿∫ø¿Œ≈À°° £≤£∞∫–Ã§À˛°À≤√ªª
               IF   RECE100-SRYYM     >=    "201404"
       ***       IF   SRY-SRYCD(IDX2)  =     CONS-TUINZAI-COMMENT
@@ -4132,72 +4194,6 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                 IF   SRY-SRYCD(IDX2)  =     CONS-IZONSYO2-COMMENT
                         MOVE  SPACE   TO    RECE120-FLG-IZONSYO-COMMENT
                         MOVE    1     TO    FLG-IZONSYO-COM
-                END-IF
-              END-IF
-      *       ¿∫ø¿≤ Ω≈æ…¥µº‘¡·¥¸Ω∏√ÊªŸ±Á¥…Õ˝Œ¡
-      *       ¿∫ø¿≤ ∫ﬂ¬¥µº‘ªŸ±Á¥…Õ˝Œ¡
-              IF   RECE100-SRYYM     >=    "201604"
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                )
-                        MOVE   "1"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU2-COMMENT)
-                AND (FLG-SEIJYU-COM   =     ZERO                )
-                        MOVE   "2"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU3-COMMENT)
-                AND (FLG-SEIJYU-COM   =     ZERO                )
-                        MOVE   "3"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIJYU4-COMMENT)
-                AND (FLG-SEIJYU-COM   =     ZERO                )
-                        MOVE   "4"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-      *
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI-COMMENT  )
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "A"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI2-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "B"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI3-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "C"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI4-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "D"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI5-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "E"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI6-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "F"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI7-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "G"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI8-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "H"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI9-COMMENT )
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "I"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-                IF  (SRY-SRYCD(IDX2)  =     CONS-SEIZAI10-COMMENT)
-                AND (FLG-SEIJYU-COM   =     ZERO                 )
-                        MOVE   "J"    TO    RECE120-FLG-SEIJYU-COMMENT
-                END-IF
-      *
-                IF   SRY-SRYCD(IDX2)  =     CONS-SEIJYU5-COMMENT
-                        MOVE  SPACE   TO    RECE120-FLG-SEIJYU-COMMENT
-                        MOVE    1     TO    FLG-SEIJYU-COM
                 END-IF
               END-IF
            END-IF
@@ -4620,6 +4616,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-YOUATU2-COMMENT
                    MOVE   "B"   TO    RECE120-FLG-SINPESUR-COMMENT
+              END-IF
+      *       ∫ﬂ¬»æ∏«∑¡±…Õ‹∑–¥…±…Õ‹À°ªÿ∆≥¥…Õ˝Œ¡
+              IF  (SRY-SRYCD(IDX2)    =     CONS-ZAIHANKO-COMMENT)
+              AND (FLG-NINRYO-COM     =     ZERO                 )
+                   MOVE   "9"   TO    RECE120-FLG-NINRYO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-NINRYO6-COMMENT
+                   MOVE  SPACE  TO    RECE120-FLG-NINRYO-COMMENT
+                   MOVE    1    TO    FLG-NINRYO-COM
               END-IF
            END-IF
       *

@@ -291,8 +291,6 @@
                05  RECE44-FLG-TUINZAI-COMMENT  PIC  X(01).
       *╟мб╦╬и╫╦цднек║
                05  RECE44-FLG-IZONSYO-COMMENT  PIC  X(01).
-      *ю╨©ю╡й╫е╬и╢╣╪таА╢Э╫╦цФ╩ы╠Г╢имЩна
-               05  RECE44-FLG-SEIJYU-COMMENT   PIC  X(01).
       *╨ъбП╢╣╪тк╛лДлТ╨ч╢имЩ╩ьфЁна
                05  RECE44-FLG-ZAIYAK-COMMENT   PIC  X(01).
       *фЩаё╠Й╫е╬и╡╫м╫ки╔╠╔╒║╕╩ьфЁна

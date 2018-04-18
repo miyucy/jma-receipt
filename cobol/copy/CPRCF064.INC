@@ -283,6 +283,8 @@
            03  RECE64-FLG-CYOJKSN-COMMENT   PIC  X(01).
       *排尿自立指導料
            03  RECE64-FLG-HAIJRT-COMMENT    PIC  X(01).
+      *在宅半固形栄養経管栄養法指導管理料
+           03  RECE64-FLG-ZAIHANKO-COMMENT  PIC  X(01).
       *
       *日数回数テーブル
            03  RECE64-DAY-AREA.

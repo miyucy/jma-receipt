@@ -893,6 +893,7 @@
            03  FLG-ZAIKYO-COM                          PIC 9(01).
            03  FLG-BOKOHO-COM                          PIC 9(01).
            03  FLG-HAIJRT-COM                          PIC 9(01).
+           03  FLG-ZAIHANKO-COM                        PIC 9(01).
            03  FLG-CYOJKSN-COM                         PIC 9(01).
            03  FLG-CYOJKSN-OK                          PIC 9(01).
            03  FLG-RECESKYKBN                          PIC 9(01).
@@ -2612,6 +2613,11 @@
            03  CONS-ZAISAN-COMMENT   PIC X(09)  VALUE  "114003710".
       *    ∫ﬂ¬ª˝¬≥Õ€∞µ∏∆µ€Œ≈À°ªÿ∆≥¥…Õ˝Œ¡£≤
            03  CONS-YOUATU2-COMMENT  PIC X(09)  VALUE  "114040810".
+      *
+      *    ∫ﬂ¬»æ∏«∑¡±…Õ‹∑–¥…±…Õ‹À°ªÿ∆≥¥…Õ˝Œ¡
+           03  CONS-ZAIHANKO-COMMENT PIC X(09)  VALUE  "114045510".
+      *    ΩÈ≤ÛªªƒÍ°°°°°°∑Ó°°°°∆¸
+           03  CONS-ZAIHANK2-COMMENT PIC X(09)  VALUE  "840000097".
       *
       *    «•…ÿª˛¥÷≥∞≤√ªª° ΩÈø«°À
            03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
@@ -7868,7 +7874,8 @@
                      "09960" OR "09970" OR "09980" OR "09983"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
-            IF       SRY-SRYCD(IDX2)   =  "099140004" OR "099400001" OR
+            IF       SRY-SRYCD(IDX2)   =  "099140004" OR
+                                          "099400001" OR "099400002" OR
                                           "099140011" OR "099140012"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
@@ -9478,6 +9485,15 @@
               IF   SRY-SRYCD(IDX2)    =     CONS-YOUATU2-COMMENT
                    MOVE   "B"   TO    RECE64-FLG-SINPESUR-COMMENT
               END-IF
+      *       ∫ﬂ¬»æ∏«∑¡±…Õ‹∑–¥…±…Õ‹À°ªÿ∆≥¥…Õ˝Œ¡
+              IF  (SRY-SRYCD(IDX2)    =     CONS-ZAIHANKO-COMMENT)
+              AND (FLG-ZAIHANKO-COM   =     ZERO                 )
+                   MOVE   "1"    TO   RECE64-FLG-ZAIHANKO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHANK2-COMMENT
+                   MOVE  SPACE   TO   RECE64-FLG-ZAIHANKO-COMMENT
+                   MOVE    1     TO   FLG-ZAIHANKO-COM
+              END-IF
            END-IF
       *
            IF      RECE64-SRYKBN      =     "50"
@@ -10008,6 +10024,10 @@
            IF    RECE65-SRYCD(IDX4)   = CONS-HOUSIJI-COMMENT
                  MOVE   11            TO  WRK-SETCOM-JIDO
            END-IF
+      *    ∫ﬂ¬»æ∏«∑¡±…Õ‹∑–¥…±…Õ‹À°ªÿ∆≥¥…Õ˝Œ¡
+           IF    RECE65-SRYCD(IDX4)   = CONS-ZAIHANKO-COMMENT
+                 MOVE   19            TO  WRK-SETCOM-JIDO
+           END-IF
       *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡
            IF    RECE65-SRYCD(IDX4)   = CONS-ZAIKYO1-COMMENT
                                      OR CONS-ZAIKYO2-COMMENT
@@ -10044,6 +10064,8 @@
                 (RECE65-SRYCD(IDX4) = CONS-RYOYO2-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  11                       ) AND
                 (RECE65-SRYCD(IDX4) = CONS-HOUSIJI2-COMMENT     ))
+           OR  ((WRK-SETCOM-JIDO    =  19                       ) AND
+                (RECE65-SRYCD(IDX4) = CONS-ZAIHANK2-COMMENT     ))
            OR  ((WRK-SETCOM-JIDO    =  29                       ) AND
                 (RECE65-SRYCD(IDX4) = CONS-ZAIKYO5-COMMENT
                                    OR CONS-ZAIKYO6-COMMENT      ))
@@ -12338,6 +12360,7 @@
                               FLG-BOKOHO-COM
                               FLG-CYOJKSN-COM
                               FLG-HAIJRT-COM
+                              FLG-ZAIHANKO-COM
       *
            MOVE   ZERO   TO   WRK-FILMTEN
       *

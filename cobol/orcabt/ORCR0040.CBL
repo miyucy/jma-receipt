@@ -606,7 +606,6 @@
            03  WRK-BOKOHO-YMD                PIC X(08).
            03  WRK-TUINZAI-YMD               PIC X(08).
            03  WRK-NINRYO-FSANTEIYMD         PIC X(08).
-           03  WRK-SEIJYU-FSANTEIYMD         PIC X(08).
       *
            03  WRK-BUNKAKUKETA               PIC 9(02).
            03  WRK-BUNKAKU-N                 PIC X(10).
@@ -923,6 +922,9 @@
            03  CONS-SEIZAI9         PIC X(09) VALUE "180058010".
       *    Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£²¡Ê½ÅÅÙÀº¿À¾ã³²¼Ô¡Ë¡ÊÃ±°ì·úÊª£²¿Í°Ê¾å¡Ë
            03  CONS-SEIZAI10        PIC X(09) VALUE "180058110".
+      *
+      *    ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ
+           03  CONS-ZAIHANKO        PIC X(09) VALUE "114045510".
       *
       *    ÆýÁ£±ê½Å¾É²½Í½ËÉ¥±¥¢¡¦»ØÆ³ÎÁ¡Ê½é²ó¡Ë
            03  CONS-NYUSEN          PIC X(09) VALUE "113024410".
@@ -1843,6 +1845,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
+      *               ¿Ç¶è£¸£°¤È¶¦ÍÑÊ¬
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-NINRYO-HANTEI-SEC
+                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE04-TENSOU-SEC
                       END-IF
@@ -1919,9 +1925,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-IZONSYO-HANTEI-SEC
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-SEIJYU-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-SIPPUCOM-HANTEI-SEC
@@ -9869,7 +9872,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ç§ÃÎÎÅË¡¡¦Ç§ÃÎ¹ÔÆ°ÎÅË¡
+      *    Ç§ÃÎÎÅË¡¡¦Ç§ÃÎ¹ÔÆ°ÎÅË¡¤¬¤¢¤ë¤«È½Äê
       *****************************************************************
        2001-NINRYO-HANTEI-SEC          SECTION.
       *
@@ -9894,6 +9897,39 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                    MOVE  CONS-NINRYO7       TO  SANTEI-SRYCD
                  WHEN      "8"
                    MOVE  CONS-NINRYO8       TO  SANTEI-SRYCD
+      *
+                 WHEN      "9"
+                   MOVE  CONS-ZAIHANKO      TO  SANTEI-SRYCD
+      *
+                 WHEN      "A"
+                   MOVE  CONS-SEIZAI        TO  SANTEI-SRYCD
+                 WHEN      "B"
+                   MOVE  CONS-SEIZAI2       TO  SANTEI-SRYCD
+                 WHEN      "C"
+                   MOVE  CONS-SEIZAI3       TO  SANTEI-SRYCD
+                 WHEN      "D"
+                   MOVE  CONS-SEIZAI4       TO  SANTEI-SRYCD
+                 WHEN      "E"
+                   MOVE  CONS-SEIZAI5       TO  SANTEI-SRYCD
+                 WHEN      "F"
+                   MOVE  CONS-SEIZAI6       TO  SANTEI-SRYCD
+                 WHEN      "G"
+                   MOVE  CONS-SEIZAI7       TO  SANTEI-SRYCD
+                 WHEN      "H"
+                   MOVE  CONS-SEIZAI8       TO  SANTEI-SRYCD
+                 WHEN      "I"
+                   MOVE  CONS-SEIZAI9       TO  SANTEI-SRYCD
+                 WHEN      "J"
+                   MOVE  CONS-SEIZAI10      TO  SANTEI-SRYCD
+      *
+                 WHEN      "K"
+                   MOVE  CONS-SEIJYU        TO  SANTEI-SRYCD
+                 WHEN      "L"
+                   MOVE  CONS-SEIJYU2       TO  SANTEI-SRYCD
+                 WHEN      "M"
+                   MOVE  CONS-SEIJYU3       TO  SANTEI-SRYCD
+                 WHEN      "N"
+                   MOVE  CONS-SEIJYU4       TO  SANTEI-SRYCD
                END-EVALUATE
                MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                 TO  SANTEI-SRYKA
@@ -10255,123 +10291,6 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *
            .
        2001-IZONSYO-HANTEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Àº¿À²Ê½Å¾É´µ¼ÔÁá´ü½¸Ãæ»Ù±ç´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
-      *    Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
-      *****************************************************************
-       2001-SEIJYU-HANTEI-SEC          SECTION.
-      *
-           IF     RECE04-FLG-SEIJYU-COMMENT   NOT =  SPACE
-               MOVE    SPACE                TO  WRK-SEIJYU-FSANTEIYMD
-               INITIALIZE                       SANTEI-REC
-               MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
-               MOVE    RECE02-PTID          TO  SANTEI-PTID
-               MOVE    RECE02-SRYYM         TO  SANTEI-SRYYM
-               EVALUATE  RECE04-FLG-SEIJYU-COMMENT
-                 WHEN      "1"
-                   MOVE  CONS-SEIJYU        TO  SANTEI-SRYCD
-                 WHEN      "2"
-                   MOVE  CONS-SEIJYU2       TO  SANTEI-SRYCD
-                 WHEN      "3"
-                   MOVE  CONS-SEIJYU3       TO  SANTEI-SRYCD
-                 WHEN      "4"
-                   MOVE  CONS-SEIJYU4       TO  SANTEI-SRYCD
-                 WHEN      "A"
-                   MOVE  CONS-SEIZAI        TO  SANTEI-SRYCD
-                 WHEN      "B"
-                   MOVE  CONS-SEIZAI2       TO  SANTEI-SRYCD
-                 WHEN      "C"
-                   MOVE  CONS-SEIZAI3       TO  SANTEI-SRYCD
-                 WHEN      "D"
-                   MOVE  CONS-SEIZAI4       TO  SANTEI-SRYCD
-                 WHEN      "E"
-                   MOVE  CONS-SEIZAI5       TO  SANTEI-SRYCD
-                 WHEN      "F"
-                   MOVE  CONS-SEIZAI6       TO  SANTEI-SRYCD
-                 WHEN      "G"
-                   MOVE  CONS-SEIZAI7       TO  SANTEI-SRYCD
-                 WHEN      "H"
-                   MOVE  CONS-SEIZAI8       TO  SANTEI-SRYCD
-                 WHEN      "I"
-                   MOVE  CONS-SEIZAI9       TO  SANTEI-SRYCD
-                 WHEN      "J"
-                   MOVE  CONS-SEIZAI10      TO  SANTEI-SRYCD
-               END-EVALUATE
-               MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
-               MOVE    ZERO                 TO  SANTEI-SRYKA
-               MOVE    ZERO                 TO  SANTEI-HKNCOMBINUM
-               MOVE    SANTEI-REC           TO  MCPDATA-REC
-               MOVE    "tbl_santei"         TO  WRK-MCP-TABLE
-               MOVE    "key"                TO  WRK-MCP-PATHNAME
-               PERFORM  900-SANTEI-INV-SEC
-               IF       FLG-SANTEI        =   ZERO
-                  MOVE  SANTEI-FSANTEIYMD   TO  WRK-SEIJYU-FSANTEIYMD
-               END-IF
-      *
-               IF   WRK-SEIJYU-FSANTEIYMD   NOT =  SPACE
-      *
-                  INITIALIZE                WRK-JIDO-SETCOM-AREA
-                  MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
-                  MOVE       35      TO     WRK-JIDO-SETCOMATFLG
-                  MOVE       99      TO     FLG-COMMENT
-      *
-                  MOVE      ZERO     TO     IDZ
-                  INITIALIZE                WRK-FREE-AREA2
-      *
-                  ADD        1       TO     IDZ
-      *
-                  MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                  MOVE   "½é²ó»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü"
-                                     TO     WK-FREE-NAME2(IDZ)
-                  MOVE   WRK-SEIJYU-FSANTEIYMD(5:2)   TO  DAY-IDX2
-                  MOVE   TBL-DAY(DAY-IDX2)
-                                     TO     WK-FREE-NAME2(IDZ)(11:4)
-                  MOVE   WRK-SEIJYU-FSANTEIYMD(7:2)   TO  DAY-IDX2
-                  MOVE   TBL-DAY(DAY-IDX2)
-                                     TO     WK-FREE-NAME2(IDZ)(17:4)
-      *
-                  IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
-                    MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
-                    MOVE  WRK-JIDO-SETCOMATFLG
-                                     TO     WK-FREE-SETCOMATFLG2(IDZ)
-                  END-IF
-      *
-                  PERFORM  200111-RECE05-TAIHI-SEC
-      *
-      *           £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
-                  MOVE    ZERO                 TO  IDX-RECE05
-                  MOVE    SPACE                TO  WRK-RECE05XX-REC
-                  INITIALIZE                       WRK-RECE05XX-REC
-      *
-                  MOVE    RECE04-MEISAISU      TO  MAX-MEISAISU
-      *
-                  PERFORM   VARYING   IDX   FROM    1   BY  1
-                             UNTIL  ( IDX                >   50    )
-                              OR    ( WK-FREE-NAME2(IDX) =   SPACE )
-                    COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
-                    MOVE  "810000001"
-                            TO  WRK-RECE05XX-SRYCD(MAX-MEISAISU 1)
-                    MOVE  ZERO
-                            TO  WRK-RECE05XX-SRYSURYO(MAX-MEISAISU 1)
-                    MOVE  WK-FREE-YUKOKETA2(IDX)
-                            TO  WRK-RECE05XX-YUKOKETA(MAX-MEISAISU 1)
-                    MOVE  WK-FREE-NAME2(IDX)
-                            TO  WRK-RECE05XX-NAME(MAX-MEISAISU 1)
-                    MOVE  WK-FREE-MEISKYFLG2(IDX)
-                            TO  WRK-RECE05XX-MEISKYFLG(MAX-MEISAISU 1)
-                    MOVE  WK-FREE-SETCOMATFLG2(IDX)
-                            TO  WRK-RECE05XX-SETCOMATFLG(MAX-MEISAISU 1)
-                  END-PERFORM
-      *
-                  PERFORM    200111-SRYACTINF-HENSYU-SEC
-      *
-               END-IF
-           END-IF
-      *
-           .
-       2001-SEIJYU-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -12300,6 +12219,12 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                           "180033210" OR "180035910" OR "188006210" OR
                           "188007010" OR "180047810" OR "188010610" OR
                           "180056410" OR
+                          "180042110" OR "180042410" OR "180048710" OR
+                          "180048810" OR "180057210" OR "180057310" OR
+                          "180057410" OR "180057510" OR "180057610" OR
+                          "180057710" OR "180057810" OR "180057910" OR
+                          "180058010" OR "180058110" OR
+                          "114045510" OR
       *20
                           "700010000" OR "700030000" OR "700050000" OR
                           "700080000" OR "700110000" OR "700140000" OR
@@ -12338,12 +12263,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                           "114006410" OR "114015010" OR
       *33
                           "180047910" OR "188010710" OR
-      *35
-                          "180042110" OR "180042410" OR "180048710" OR
-                          "180048810" OR "180057210" OR "180057310" OR
-                          "180057410" OR "180057510" OR "180057610" OR
-                          "180057710" OR "180057810" OR "180057910" OR
-                          "180058010" OR "180058110" OR
+      ****35
       *36
                           "114044710" OR "114044810" OR "114044910" OR
       *37

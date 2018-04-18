@@ -237,6 +237,8 @@
                05  RECE841-FLG-CYOJKSN-COMMENT   PIC  X(01).
       *排尿自立指導料
                05  RECE841-FLG-HAIJRT-COMMENT    PIC  X(01).
+      *在宅半固形栄養経管栄養法指導管理料
+               05  RECE841-FLG-ZAIHANKO-COMMENT  PIC  X(01).
       *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE841-ACCTP-SYUGI-TBL-G.

@@ -708,6 +708,8 @@
                05  WRK-GENBAKU-FTNRATE1         PIC 9(02).
                05  WRK-GENBAKU-FTNRATE2         PIC 9(01).
       *
+           03  WRK-ZAIHANKO-FSANTEIYMD          PIC X(08).
+      *
            03  WRK-MCP-TABLE                 PIC X(64).
            03  WRK-MCP-PATHNAME              PIC X(64).
       *
@@ -899,6 +901,9 @@
            03  CONS-ZAISAN          PIC X(09) VALUE "114003710".
       *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ£²
            03  CONS-YOUATU2         PIC X(09) VALUE "114040810".
+      *
+      *    ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ
+           03  CONS-ZAIHANKO        PIC X(09) VALUE "114045510".
       *
       *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-ZAIKYO-CHECK-AREA.
@@ -1673,6 +1678,9 @@
       *               ¿Ç¶è£±£³¤È¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ZAIHANKO-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE64-TENSOU-SEC
@@ -7455,6 +7463,96 @@
            EXIT.
       *
       *****************************************************************
+      *    ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-ZAIHANKO-HANTEI-SEC          SECTION.
+      *
+           IF     RECE64-FLG-ZAIHANKO-COMMENT   NOT =  SPACE
+               MOVE    SPACE                TO  WRK-ZAIHANKO-FSANTEIYMD
+               INITIALIZE                       SANTEI-REC
+               MOVE    RECE62-HOSPNUM       TO  SANTEI-HOSPNUM
+               MOVE    RECE62-PTID          TO  SANTEI-PTID
+               MOVE    RECE62-SRYYM         TO  SANTEI-SRYYM
+               EVALUATE  RECE64-FLG-ZAIHANKO-COMMENT
+                 WHEN      "1"
+                   MOVE  CONS-ZAIHANKO      TO  SANTEI-SRYCD
+               END-EVALUATE
+               MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
+               MOVE    ZERO                 TO  SANTEI-SRYKA
+               MOVE    ZERO                 TO  SANTEI-HKNCOMBINUM
+               MOVE    SANTEI-REC           TO  MCPDATA-REC
+               MOVE    "tbl_santei"         TO  WRK-MCP-TABLE
+               MOVE    "key"                TO  WRK-MCP-PATHNAME
+               PERFORM  900-SANTEI-INV-SEC
+               IF       FLG-SANTEI        =   ZERO
+                  MOVE  SANTEI-FSANTEIYMD   TO  WRK-ZAIHANKO-FSANTEIYMD
+               END-IF
+      *
+               IF   WRK-ZAIHANKO-FSANTEIYMD   NOT =  SPACE
+      *
+                  INITIALIZE                WRK-JIDO-SETCOM-AREA
+                  MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+                  MOVE       19      TO     WRK-JIDO-SETCOMATFLG
+                  MOVE       99      TO     FLG-COMMENT
+      *
+                  MOVE      ZERO     TO     IDZ
+                  INITIALIZE                WRK-FREE-AREA2
+      *
+                  ADD        1       TO     IDZ
+      *
+                  MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "½é²ó»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü"
+                                     TO     WK-FREE-NAME2(IDZ)
+                  MOVE   WRK-ZAIHANKO-FSANTEIYMD(5:2)   TO  DAY-IDX2
+                  MOVE   TBL-DAY(DAY-IDX2)
+                                     TO     WK-FREE-NAME2(IDZ)(11:4)
+                  MOVE   WRK-ZAIHANKO-FSANTEIYMD(7:2)   TO  DAY-IDX2
+                  MOVE   TBL-DAY(DAY-IDX2)
+                                     TO     WK-FREE-NAME2(IDZ)(17:4)
+      *
+                  IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+                    MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
+                    MOVE  WRK-JIDO-SETCOMATFLG
+                                     TO     WK-FREE-SETCOMATFLG2(IDZ)
+                  END-IF
+      *
+                  PERFORM  200111-RECE65-TAIHI-SEC
+      *
+      *           £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+                  MOVE    ZERO                 TO  IDX-RECE65
+                  MOVE    SPACE                TO  WRK-RECE65XX-REC
+                  INITIALIZE                       WRK-RECE65XX-REC
+      *
+                  MOVE    RECE64-MEISAISU      TO  MAX-MEISAISU
+      *
+                  PERFORM   VARYING   IDX   FROM    1   BY  1
+                             UNTIL  ( IDX                >   50    )
+                              OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+                    COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+                    MOVE  "810000001"
+                            TO  WRK-RECE65XX-SRYCD(MAX-MEISAISU 1)
+                    MOVE  ZERO
+                            TO  WRK-RECE65XX-SRYSURYO(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-YUKOKETA2(IDX)
+                            TO  WRK-RECE65XX-YUKOKETA(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-NAME2(IDX)
+                            TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-MEISKYFLG2(IDX)
+                            TO  WRK-RECE65XX-MEISKYFLG(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-SETCOMATFLG2(IDX)
+                            TO  WRK-RECE65XX-SETCOMATFLG(MAX-MEISAISU 1)
+                  END-PERFORM
+      *
+                  PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+               END-IF
+           END-IF
+      *
+           .
+       2001-ZAIHANKO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¼§µ¤¤Ë¤è¤ëç¯æùÅù»É·ãË¡¤¬¤¢¤ë¤«È½Äê
       *****************************************************************
        2001-BOKOHO-HANTEI-SEC          SECTION.
@@ -12451,6 +12549,8 @@
                           "180051830" OR "180052030" OR "180052230" OR
       *18
                           "113003410" OR
+      *19
+                          "114045510" OR
       *20
                           "700010000" OR "700030000" OR "700050000" OR
                           "700080000" OR "700110000" OR "700140000" OR

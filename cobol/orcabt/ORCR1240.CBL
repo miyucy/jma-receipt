@@ -493,6 +493,8 @@
       *
            03  WRK-SRYACCT-PATHNAME             PIC X(64).
       *
+           03  WRK-ZAIHANKO-FSANTEIYMD          PIC X(08).
+      *
            03  WRK-MCP-TABLE                 PIC X(64).
            03  WRK-MCP-PATHNAME              PIC X(64).
       *
@@ -678,6 +680,9 @@
            03  CONS-ZAISAN          PIC X(09) VALUE "114003710".
       *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ£²
            03  CONS-YOUATU2         PIC X(09) VALUE "114040810".
+      *
+      *    ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ
+           03  CONS-ZAIHANKO        PIC X(09) VALUE "114045510".
       *
       *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-ZAIKYO-CHECK-AREA.
@@ -1330,6 +1335,9 @@
       *               ¿Ç¶è£±£³¤È¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ZAIHANKO-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE220-TENSOU-SEC
@@ -4588,6 +4596,83 @@
       *
            .
        20011-ZAIKYO-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-ZAIHANKO-HANTEI-SEC          SECTION.
+      *
+           IF     RECE220-FLG-ZAIHANKO-COMMENT   NOT =  SPACE
+               MOVE    SPACE                TO  WRK-ZAIHANKO-FSANTEIYMD
+               INITIALIZE                       SANTEI-REC
+               MOVE    RECE200-HOSPNUM      TO  SANTEI-HOSPNUM
+               MOVE    RECE200-PTID         TO  SANTEI-PTID
+               MOVE    RECE200-SRYYM        TO  SANTEI-SRYYM
+               EVALUATE  RECE220-FLG-ZAIHANKO-COMMENT
+                 WHEN      "1"
+                   MOVE  CONS-ZAIHANKO      TO  SANTEI-SRYCD
+               END-EVALUATE
+               MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
+               MOVE    ZERO                 TO  SANTEI-SRYKA
+               MOVE    ZERO                 TO  SANTEI-HKNCOMBINUM
+               MOVE    SANTEI-REC           TO  MCPDATA-REC
+               MOVE    "tbl_santei"         TO  WRK-MCP-TABLE
+               MOVE    "key"                TO  WRK-MCP-PATHNAME
+               PERFORM  900-SANTEI-INV-SEC
+               IF       FLG-SANTEI        =   ZERO
+                  MOVE  SANTEI-FSANTEIYMD   TO  WRK-ZAIHANKO-FSANTEIYMD
+               END-IF
+      *
+               IF   WRK-ZAIHANKO-FSANTEIYMD   NOT =  SPACE
+      *
+                  MOVE       99      TO     FLG-COMMENT
+      *
+                  MOVE      ZERO     TO     IDZ
+                  INITIALIZE                WRK-FREE-AREA2
+      *
+                  ADD        1       TO     IDZ
+      *
+                  MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "½é²ó»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü"
+                                     TO     WK-FREE-NAME2(IDZ)
+                  MOVE   WRK-ZAIHANKO-FSANTEIYMD(5:2)   TO  DAY-IDX2
+                  MOVE   TBL-DAY(DAY-IDX2)
+                                     TO     WK-FREE-NAME2(IDZ)(11:4)
+                  MOVE   WRK-ZAIHANKO-FSANTEIYMD(7:2)   TO  DAY-IDX2
+                  MOVE   TBL-DAY(DAY-IDX2)
+                                     TO     WK-FREE-NAME2(IDZ)(17:4)
+      *
+                  PERFORM  200111-RECE230-TAIHI-SEC
+      *
+      *           £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+                  MOVE    ZERO                 TO  IDX-RECE230
+                  MOVE    SPACE                TO  WRK-RECE230XX-REC
+                  INITIALIZE                       WRK-RECE230XX-REC
+      *
+                  MOVE    RECE220-MEISAISU     TO  MAX-MEISAISU
+      *
+                  PERFORM   VARYING   IDX   FROM    1   BY  1
+                             UNTIL  ( IDX                >   50    )
+                              OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+                    COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+                    MOVE  "810000001"
+                            TO  WRK-RECE230XX-SRYCD(MAX-MEISAISU 1)
+                    MOVE  ZERO
+                            TO  WRK-RECE230XX-SRYSURYO(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-YUKOKETA2(IDX)
+                            TO  WRK-RECE230XX-YUKOKETA(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-NAME2(IDX)
+                            TO  WRK-RECE230XX-NAME(MAX-MEISAISU 1)
+                  END-PERFORM
+      *
+                  PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+               END-IF
+           END-IF
+      *
+           .
+       2001-ZAIHANKO-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
