@@ -2345,6 +2345,9 @@
       *H26.4
       *                磁気による刺激法開始日
                        WHEN    "099400001"
+      *H30.4
+      *                高気圧酸素治療開始日
+                       WHEN    "099400002"
                            MOVE    "40"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "400"           TO  SPA-COM-SRYSYUKBN
@@ -2367,6 +2370,8 @@
                            MOVE    1               TO  FLG-ZAI
       *H28.4           依存症集団療法開始
                        WHEN    "099830103"
+      *H30.4           精神科ＳＣ疾患別等専門プログラム加算開始日
+                       WHEN    "099830104"
                            MOVE    "80"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "830"           TO  SPA-COM-SRYSYUKBN
