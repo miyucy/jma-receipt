@@ -1714,7 +1714,7 @@
       *
            IF      WRK-FEDT-REC-FLG    =   "F"
       *        ª»Õ—ŒÃ
-               MOVE    "00000000000"       TO  WRK-DATA
+               MOVE    "0000000.000"       TO  WRK-DATA
                MOVE    11                  TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
       *        ¥Ω‡√±∞Ã
@@ -1728,7 +1728,7 @@
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    π‘∞ŸÃÙ∫ﬁŒ¡°¶π‘∞ŸÃ¿∫ŸÃÙ∫ﬁŒ¡
-           MOVE    "000000000000"      TO  WRK-DATA
+           MOVE    "00000000.000"      TO  WRK-DATA
            IF      WRK-FEDT-REC-FLG    =   "F"
                MOVE    12                  TO  WRK-NAGASA
            ELSE
@@ -1736,10 +1736,11 @@
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    π‘∞Ÿ∫‡Œ¡Œ¡°¶π‘∞ŸÃ¿∫Ÿ∫‡Œ¡Œ¡
-           MOVE    "000000000000"      TO  WRK-DATA
            IF      WRK-FEDT-REC-FLG    =   "F"
+               MOVE    "00000000.000"      TO  WRK-DATA
                MOVE    12                  TO  WRK-NAGASA
            ELSE
+               MOVE    "00000000"          TO  WRK-DATA
                MOVE    8                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
