@@ -3605,7 +3605,7 @@ NEW   *    Ａ３１４認知症夜間対応加算
       *    病棟情報追加編集処理
            PERFORM 4201-BTU-INSERT-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  420-TUIKA-EXT
+               GO  TO  4201-TUIKA-EXT
            END-IF
       *
            PERFORM 421-CLEAR-SEC
