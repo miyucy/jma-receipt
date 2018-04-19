@@ -464,6 +464,8 @@
            03  FLG-BOKOHO-COM                          PIC 9(01).
            03  FLG-HAIJRT-COM                          PIC 9(01).
            03  FLG-ZAIHANKO-COM                        PIC 9(01).
+           03  FLG-KIATU-COM                           PIC 9(01).
+           03  FLG-SCPRO-COM                           PIC 9(01).
            03  FLG-CYOJKSN-COM                         PIC 9(01).
            03  FLG-CYOJKSN-OK                          PIC 9(01).
            03  FLG-TAIGAI                              PIC 9(01).
@@ -1578,6 +1580,22 @@
            03  CONS-ZAIHANKO-COMMENT PIC X(09)  VALUE  "114045510".
       *    ½é²ó»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü
            03  CONS-ZAIHANK2-COMMENT PIC X(09)  VALUE  "840000097".
+      *
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ¡Ê¸º°µ¾ÉËô¤Ï¶õµ¤ºÉÀò¡Ë
+           03  CONS-KIATU-COMMENT    PIC X(09)  VALUE  "140057510".
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ¡Ê¤½¤ÎÂ¾¤Î¤â¤Î¡Ë
+           03  CONS-KIATU2-COMMENT   PIC X(09)  VALUE  "140057610".
+      *    ½é²ó¼Â»Ü¡¡¡¡¡¡·î¡¡¡¡Æü
+           03  CONS-KIATU3-COMMENT   PIC X(09)  VALUE  "840000085".
+      *    ÄÌ»»¼Â»Ü²ó¿ô¡Ê¡¡¡¡²ó¡Ë
+           03  CONS-KIATU4-COMMENT   PIC X(09)  VALUE  "840000086".
+      *    È¯¾É¡¡¡¡¡¡·î¡¡¡¡Æü
+           03  CONS-KIATU5-COMMENT   PIC X(09)  VALUE  "840000045".
+      *
+      *    ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»¡ÊÀº¿À²Ê¥·¥ç¡¼¥È¡¦¥±¥¢¡¢¾®µ¬ÌÏ¤Ê¤â¤Î¡Ë
+           03  CONS-SCPRO-COMMENT    PIC X(09)  VALUE  "180056570".
+      *    ¼£ÎÅ³«»ÏÆü¡¡¡¡¡¡·î¡¡¡¡Æü
+           03  CONS-SCPRO2-COMMENT   PIC X(09)  VALUE  "840000076".
       *
       *    Ç¥ÉØ»þ´Ö³°²Ã»»¡Ê½é¿Ç¡Ë
            03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
@@ -4700,6 +4718,21 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    1    TO    FLG-BOKOHO-COM
                 END-IF
               END-IF
+      *       ¹âµ¤°µ»ÀÁÇ¼£ÎÅ
+              IF  (SRY-SRYCD(IDX2)    =     CONS-KIATU-COMMENT )
+              AND (FLG-KIATU-COM      =     ZERO               )
+                   MOVE   "1"   TO    RECE84-FLG-KIATU-COMMENT
+              END-IF
+              IF  (SRY-SRYCD(IDX2)    =     CONS-KIATU2-COMMENT)
+              AND (FLG-KIATU-COM      =     ZERO               )
+                   MOVE   "2"   TO    RECE84-FLG-KIATU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-KIATU3-COMMENT
+                                      OR    CONS-KIATU4-COMMENT
+                                      OR    CONS-KIATU5-COMMENT
+                   MOVE  SPACE  TO    RECE84-FLG-KIATU-COMMENT
+                   MOVE    1    TO    FLG-KIATU-COM
+              END-IF
            END-IF
       *
            IF    ((RECE82-HKNKBN    NOT  =  "4" AND "6" ) AND
@@ -5028,6 +5061,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     MOVE   "1"    TO    RECE84-HAIYO9-COMMENT
                 END-IF
               END-IF
+      *
+      *       ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»
+              IF  (SRY-SRYCD(IDX2)  =    CONS-SCPRO-COMMENT)
+              AND (FLG-SCPRO-COM    =    ZERO              )
+                    MOVE   "2"    TO    RECE84-FLG-SCPRO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)  =    CONS-SCPRO2-COMMENT
+                    MOVE  SPACE   TO    RECE84-FLG-SCPRO-COMMENT
+                    MOVE    1     TO    FLG-SCPRO-COM
+              END-IF
            END-IF
       *
            IF      RECE84-SRYKBN      =     "13"
@@ -5235,7 +5278,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *       ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ
               IF  (SRY-SRYCD(IDX2)    =     CONS-ZAIHANKO-COMMENT)
               AND (FLG-ZAIHANKO-COM   =     ZERO                 )
-                   MOVE   "1"    TO   RECE84-FLG-ZAIHANKO-COMMENT
+                   MOVE   "9"    TO   RECE84-FLG-ZAIHANKO-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHANK2-COMMENT
                    MOVE  SPACE   TO   RECE84-FLG-ZAIHANKO-COMMENT
@@ -5884,9 +5927,18 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                      OR CONS-ZAIKYO4-COMMENT
                  MOVE   29            TO  WRK-SETCOM-JIDO
            END-IF
+      *    ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»
+           IF    RECE85-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
+                 MOVE   33            TO  WRK-SETCOM-JIDO
+           END-IF
       *    ÇÓÇ¢¼«Î©»ØÆ³ÎÁ
            IF    RECE85-SRYCD(IDX4)   = CONS-HAIJRT-COMMENT
                  MOVE   34            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ
+           IF    RECE85-SRYCD(IDX4)   = CONS-KIATU-COMMENT
+                                     OR CONS-KIATU2-COMMENT
+                 MOVE   35            TO  WRK-SETCOM-JIDO
            END-IF
       *    Âà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
            IF    RECE85-SRYCD(IDX4)   = CONS-HOUMON-COMMENT1
@@ -5917,9 +5969,15 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
            OR  ((WRK-SETCOM-JIDO    =  29                       ) AND
                 (RECE85-SRYCD(IDX4) = CONS-ZAIKYO5-COMMENT
                                    OR CONS-ZAIKYO6-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO    =  33                       ) AND
+                (RECE85-SRYCD(IDX4) = CONS-SCPRO2-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  34                       ) AND
                 (RECE85-SRYCD(IDX4) = CONS-HAIJRT2-COMMENT
                                    OR CONS-HAIJRT3-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO    =  35                       ) AND
+                (RECE85-SRYCD(IDX4) = CONS-KIATU3-COMMENT
+                                   OR CONS-KIATU4-COMMENT
+                                   OR CONS-KIATU5-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  103                      ) AND
                 (RECE85-SRYCD(IDX4) = CONS-HOUMON-COMMENT3      ))
            OR  ((WRK-SETCOM-JIDO    =  105                      ) AND
@@ -9031,6 +9089,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                               FLG-CYOJKSN-COM
                               FLG-HAIJRT-COM
                               FLG-ZAIHANKO-COM
+                              FLG-KIATU-COM
+                              FLG-SCPRO-COM
       *
            MOVE   SPACE  TO   WRK-FORMALNAME
            MOVE   ZERO   TO   WRK-KZI058-TEN

@@ -256,6 +256,8 @@
            03  RECE120-FLG-ZAIYAK-COMMENT  PIC  X(01).
       *ÆýÁ£±ê½Å¾É²½Í½ËÉ¥±¥¢¡¦»ØÆ³ÎÁ
            03  RECE120-FLG-NYUSEN-COMMENT  PIC  X(01).
+      *¹âµ¤°µ»ÀÁÇ¼£ÎÅ
+           03  RECE120-FLG-KIATU-COMMENT   PIC  X(01).
       *
       *Æü¿ô²ó¿ô¥Æ¡¼¥Ö¥ë
            03  RECE120-DAY-AREA.

@@ -261,6 +261,7 @@
            03  FLG-KENSA-COM                           PIC 9(01).
            03  FLG-ZAIRIHA-COM                         PIC 9(01).
            03  FLG-NYUSEN-COM                          PIC 9(01).
+           03  FLG-KIATU-COM                           PIC 9(01).
            03  FLG-RINYAK                              PIC 9(01).
            03  FLG-WRITE05                             PIC 9(01).
            03  FLG-WRITE05X                            PIC 9(01).
@@ -1370,6 +1371,9 @@
       *    ¼£ÎÅ³«»ÏÆü¡¡¡¡¡¡·î¡¡¡¡Æü
            03  CONS-IZONSYO2-COMMENT PIC X(09)  VALUE  "840000076".
       *
+      *    ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»¡ÊÀº¿À²Ê¥·¥ç¡¼¥È¡¦¥±¥¢¡¢¾®µ¬ÌÏ¤Ê¤â¤Î¡Ë
+           03  CONS-SCPRO-COMMENT    PIC X(09)  VALUE  "180056570".
+      *
       *    ºßÂð´µ¼ÔË¬ÌäÌôºÞ´ÉÍý»ØÆ³ÎÁ¡ÊÃ±°ì·úÊª¿ÇÎÅ´µ¼Ô¤¬£±¿Í¡Ë
            03  CONS-ZAIYAK-COMMENT   PIC X(09)  VALUE  "114044710".
       *    ºßÂð´µ¼ÔË¬ÌäÌôºÞ´ÉÍý»ØÆ³ÎÁ¡ÊÃ±°ì·úÊª¿ÇÎÅ´µ¼Ô¤¬£²¿Í¡Á£¹¿Í¡Ë
@@ -1390,6 +1394,17 @@
            03  CONS-ZAISAN-COMMENT   PIC X(09)  VALUE  "114003710".
       *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ£²
            03  CONS-YOUATU2-COMMENT  PIC X(09)  VALUE  "114040810".
+      *
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ¡Ê¸º°µ¾ÉËô¤Ï¶õµ¤ºÉÀò¡Ë
+           03  CONS-KIATU-COMMENT    PIC X(09)  VALUE  "140057510".
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ¡Ê¤½¤ÎÂ¾¤Î¤â¤Î¡Ë
+           03  CONS-KIATU2-COMMENT   PIC X(09)  VALUE  "140057610".
+      *    ½é²ó¼Â»Ü¡¡¡¡¡¡·î¡¡¡¡Æü
+           03  CONS-KIATU3-COMMENT   PIC X(09)  VALUE  "840000085".
+      *    ÄÌ»»¼Â»Ü²ó¿ô¡Ê¡¡¡¡²ó¡Ë
+           03  CONS-KIATU4-COMMENT   PIC X(09)  VALUE  "840000086".
+      *    È¯¾É¡¡¡¡¡¡·î¡¡¡¡Æü
+           03  CONS-KIATU5-COMMENT   PIC X(09)  VALUE  "840000045".
       *
       *    Ç¥ÉØ»þ´Ö³°²Ã»»¡Ê½é¿Ç¡Ë
            03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
@@ -2077,6 +2092,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 FLG-IZONSYO-COM
                                                 FLG-NINRYO-COM
                                                 FLG-NYUSEN-COM
+                                                FLG-KIATU-COM
       *
                                MOVE  ZERO  TO   WRK-FILMTEN
                                MOVE  ZERO  TO   FLG-NEBU
@@ -2147,6 +2163,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        FLG-IZONSYO-COM
                                                        FLG-NINRYO-COM
                                                        FLG-NYUSEN-COM
+                                                       FLG-KIATU-COM
       *
                                       MOVE  ZERO  TO   WRK-FILMTEN
                                       MOVE  ZERO  TO   FLG-NEBU
@@ -3805,6 +3822,21 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    MOVE    1    TO    FLG-BOKOHO-COM
                 END-IF
               END-IF
+      *       ¹âµ¤°µ»ÀÁÇ¼£ÎÅ
+              IF  (SRY-SRYCD(IDX2)    =     CONS-KIATU-COMMENT )
+              AND (FLG-KIATU-COM      =     ZERO               )
+                   MOVE   "1"   TO    RECE120-FLG-KIATU-COMMENT
+              END-IF
+              IF  (SRY-SRYCD(IDX2)    =     CONS-KIATU2-COMMENT)
+              AND (FLG-KIATU-COM      =     ZERO               )
+                   MOVE   "2"   TO    RECE120-FLG-KIATU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-KIATU3-COMMENT
+                                      OR    CONS-KIATU4-COMMENT
+                                      OR    CONS-KIATU5-COMMENT
+                   MOVE  SPACE  TO    RECE120-FLG-KIATU-COMMENT
+                   MOVE    1    TO    FLG-KIATU-COM
+              END-IF
            END-IF
       *
            IF      RECE120-SRYKBN      =     "80"
@@ -4186,10 +4218,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                 END-IF
               END-IF
       *       °ÍÂ¸¾É½¸ÃÄÎÅË¡
+      *       ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»
               IF   RECE100-SRYYM     >=    "201604"
                 IF  (SRY-SRYCD(IDX2)  =     CONS-IZONSYO-COMMENT)
                 AND (FLG-IZONSYO-COM  =     ZERO                )
                         MOVE   "1"    TO    RECE120-FLG-IZONSYO-COMMENT
+                END-IF
+                IF  (SRY-SRYCD(IDX2)  =     CONS-SCPRO-COMMENT)
+                AND (FLG-IZONSYO-COM  =     ZERO              )
+                        MOVE   "2"    TO    RECE120-FLG-IZONSYO-COMMENT
                 END-IF
                 IF   SRY-SRYCD(IDX2)  =     CONS-IZONSYO2-COMMENT
                         MOVE  SPACE   TO    RECE120-FLG-IZONSYO-COMMENT

@@ -894,6 +894,8 @@
            03  FLG-BOKOHO-COM                          PIC 9(01).
            03  FLG-HAIJRT-COM                          PIC 9(01).
            03  FLG-ZAIHANKO-COM                        PIC 9(01).
+           03  FLG-KIATU-COM                           PIC 9(01).
+           03  FLG-SCPRO-COM                           PIC 9(01).
            03  FLG-CYOJKSN-COM                         PIC 9(01).
            03  FLG-CYOJKSN-OK                          PIC 9(01).
            03  FLG-RECESKYKBN                          PIC 9(01).
@@ -2618,6 +2620,24 @@
            03  CONS-ZAIHANKO-COMMENT PIC X(09)  VALUE  "114045510".
       *    初回算定　　　月　　日
            03  CONS-ZAIHANK2-COMMENT PIC X(09)  VALUE  "840000097".
+      *
+      *    高気圧酸素治療（減圧症又は空気塞栓）
+           03  CONS-KIATU-COMMENT    PIC X(09)  VALUE  "140057510".
+      *    高気圧酸素治療（その他のもの）
+           03  CONS-KIATU2-COMMENT   PIC X(09)  VALUE  "140057610".
+      *    初回実施　　　月　　日
+           03  CONS-KIATU3-COMMENT   PIC X(09)  VALUE  "840000085".
+      *    通算実施回数（　　回）
+           03  CONS-KIATU4-COMMENT   PIC X(09)  VALUE  "840000086".
+      *    発症　　　月　　日
+           03  CONS-KIATU5-COMMENT   PIC X(09)  VALUE  "840000045".
+      *
+      *    疾患別等専門プログラム加算（精神科ショート・ケア、小規模なもの）
+           03  CONS-SCPRO-COMMENT    PIC X(09)  VALUE  "180056570".
+      *    治療開始日　　　月　　日
+           03  CONS-SCPRO2-COMMENT   PIC X(09)  VALUE  "840000076".
+      *    疾患別等専門プログラム加算（医療観察精神科ショート・ケア）
+           03  CONS-SCPRO3-COMMENT   PIC X(09)  VALUE  "188011270".
       *
       *    妊婦時間外加算（初診）
            03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
@@ -8979,6 +8999,21 @@
                    MOVE    1    TO    FLG-BOKOHO-COM
                 END-IF
               END-IF
+      *       高気圧酸素治療
+              IF  (SRY-SRYCD(IDX2)    =     CONS-KIATU-COMMENT )
+              AND (FLG-KIATU-COM      =     ZERO               )
+                   MOVE   "1"   TO    RECE64-FLG-KIATU-COMMENT
+              END-IF
+              IF  (SRY-SRYCD(IDX2)    =     CONS-KIATU2-COMMENT)
+              AND (FLG-KIATU-COM      =     ZERO               )
+                   MOVE   "2"   TO    RECE64-FLG-KIATU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-KIATU3-COMMENT
+                                      OR    CONS-KIATU4-COMMENT
+                                      OR    CONS-KIATU5-COMMENT
+                   MOVE  SPACE  TO    RECE64-FLG-KIATU-COMMENT
+                   MOVE    1    TO    FLG-KIATU-COM
+              END-IF
            END-IF
       *
            IF      RECE64-SRYKBN      =     "80"
@@ -9284,6 +9319,17 @@
                     END-PERFORM
                 END-IF
               END-IF
+      *
+      *       疾患別等専門プログラム加算
+              IF  (SRY-SRYCD(IDX2)  =    CONS-SCPRO-COMMENT
+                                    OR   CONS-SCPRO3-COMMENT)
+              AND (FLG-SCPRO-COM    =    ZERO               )
+                    MOVE   "2"    TO    RECE64-FLG-SCPRO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)  =     CONS-SCPRO2-COMMENT
+                    MOVE  SPACE   TO    RECE64-FLG-SCPRO-COMMENT
+                    MOVE    1     TO    FLG-SCPRO-COM
+              END-IF
            END-IF
       *
            IF      RECE64-SRYKBN      =     "13"
@@ -9488,7 +9534,7 @@
       *       在宅半固形栄養経管栄養法指導管理料
               IF  (SRY-SRYCD(IDX2)    =     CONS-ZAIHANKO-COMMENT)
               AND (FLG-ZAIHANKO-COM   =     ZERO                 )
-                   MOVE   "1"    TO   RECE64-FLG-ZAIHANKO-COMMENT
+                   MOVE   "9"    TO   RECE64-FLG-ZAIHANKO-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHANK2-COMMENT
                    MOVE  SPACE   TO   RECE64-FLG-ZAIHANKO-COMMENT
@@ -10035,9 +10081,19 @@
                                      OR CONS-ZAIKYO4-COMMENT
                  MOVE   29            TO  WRK-SETCOM-JIDO
            END-IF
+      *    疾患別等専門プログラム加算
+           IF    RECE65-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
+                                     OR CONS-SCPRO3-COMMENT
+                 MOVE   33            TO  WRK-SETCOM-JIDO
+           END-IF
       *    排尿自立指導料
            IF    RECE65-SRYCD(IDX4)   = CONS-HAIJRT-COMMENT
                  MOVE   34            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    高気圧酸素治療
+           IF    RECE65-SRYCD(IDX4)   = CONS-KIATU-COMMENT
+                                     OR CONS-KIATU2-COMMENT
+                 MOVE   35            TO  WRK-SETCOM-JIDO
            END-IF
       *    退院前訪問指導料
            IF    RECE65-SRYCD(IDX4)   = CONS-HOUMON-COMMENT1
@@ -10069,9 +10125,15 @@
            OR  ((WRK-SETCOM-JIDO    =  29                       ) AND
                 (RECE65-SRYCD(IDX4) = CONS-ZAIKYO5-COMMENT
                                    OR CONS-ZAIKYO6-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO    =  33                       ) AND
+                (RECE65-SRYCD(IDX4) = CONS-SCPRO2-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  34                       ) AND
                 (RECE65-SRYCD(IDX4) = CONS-HAIJRT2-COMMENT
                                    OR CONS-HAIJRT3-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO    =  35                       ) AND
+                (RECE65-SRYCD(IDX4) = CONS-KIATU3-COMMENT
+                                   OR CONS-KIATU4-COMMENT
+                                   OR CONS-KIATU5-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  103                      ) AND
                 (RECE65-SRYCD(IDX4) = CONS-HOUMON-COMMENT3      ))
            OR  ((WRK-SETCOM-JIDO    =  105                      ) AND
@@ -12361,6 +12423,8 @@
                               FLG-CYOJKSN-COM
                               FLG-HAIJRT-COM
                               FLG-ZAIHANKO-COM
+                              FLG-KIATU-COM
+                              FLG-SCPRO-COM
       *
            MOVE   ZERO   TO   WRK-FILMTEN
       *

@@ -293,6 +293,8 @@
                05  RECE441-FLG-ZAIYAK-COMMENT   PIC  X(01).
       *∆˝¡£±ÍΩ≈æ…≤ΩÕΩÀ…•±•¢°¶ªÿ∆≥Œ¡
                05  RECE441-FLG-NYUSEN-COMMENT   PIC  X(01).
+      *π‚µ§∞µª¿¡«º£Œ≈
+               05  RECE441-FLG-KIATU-COMMENT    PIC  X(01).
       *
       *ºÍµªÀË§Œ∆‚Õ∆° ºÍΩ—°¶≤Ë¡¸ø«√«°¶ΩË√÷°À
                05  RECE441-ACCTP-SYUGI-TBL-G.
