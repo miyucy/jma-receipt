@@ -507,3 +507,33 @@ path	key29	{
 		;
 	};
 };
+
+path	del3	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syskanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
+			AND   KBNCD       LIKE :KBNCD
+			AND   STYUKYMD    <=   :STYUKYMD
+			AND   EDYUKYMD    >=   :EDYUKYMD
+		;
+	};
+};
+
+path	upd3	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_syskanri 
+				SET	EDYUKYMD     =   :EDYUKYMD,
+					OPID         =   :OPID,
+					UPYMD        =   :UPYMD,
+					UPHMS        =   :UPHMS
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =      :KANRICD
+			AND   KBNCD        =      :KBNCD
+			AND		STYUKYMD     <=   :STYUKYMD
+			AND		EDYUKYMD     >=   :EDYUKYMD
+		;
+	};
+};
+
