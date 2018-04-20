@@ -60,89 +60,154 @@
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-SRYCD-TABLE.
-               05 FILLER           PIC X(09)   VALUE   "113001810". 
-               05 FILLER           PIC X(09)   VALUE   "113001910". 
-               05 FILLER           PIC X(09)   VALUE   "113002010". 
+      *        ÆÃÄê¼À´µÎÅÍÜ´ÉÍýÎÁ¡Ê¿ÇÎÅ½ê¡Ë
+               05 FILLER           PIC X(09)   VALUE   "113001810".
+      *        ÆÃÄê¼À´µÎÅÍÜ´ÉÍýÎÁ¡Ê£±£°£°¾²Ì¤Ëþ¡Ë
+               05 FILLER           PIC X(09)   VALUE   "113001910".
+      *        ÆÃÄê¼À´µÎÅÍÜ´ÉÍýÎÁ¡Ê£±£°£°¾²°Ê¾å£²£°£°¾²Ì¤Ëþ¡Ë
+               05 FILLER           PIC X(09)   VALUE   "113002010".
                05 FILLER           PIC X(333)  VALUE   SPACE.
       *
-               05 FILLER           PIC X(09)   VALUE   "113002210". 
+      *        ¾®»ù²ÊÎÅÍÜ»ØÆ³ÎÁ
+               05 FILLER           PIC X(09)   VALUE   "113002210".
+               05 FILLER           PIC X(351)  VALUE   SPACE.
+      *        
+      *        ¤Æ¤ó¤«¤ó»ØÆ³ÎÁ
+               05 FILLER           PIC X(09)   VALUE   "113002850".
                05 FILLER           PIC X(351)  VALUE   SPACE.
       *
-               05 FILLER           PIC X(09)   VALUE   "113002850". 
+      *        ÆñÉÂ³°Íè»ØÆ³´ÉÍýÎÁ
+               05 FILLER           PIC X(09)   VALUE   "113002910".
                05 FILLER           PIC X(351)  VALUE   SPACE.
       *
-               05 FILLER           PIC X(09)   VALUE   "113002910". 
-               05 FILLER           PIC X(351)  VALUE   SPACE.
-      *
-               05 FILLER           PIC X(09)   VALUE   "113013610". 
-               05 FILLER           PIC X(09)   VALUE   "113015610". 
+      *        ÅüÇ¢ÉÂÆ©ÀÏÍ½ËÉ»ØÆ³´ÉÍýÎÁ
+               05 FILLER           PIC X(09)   VALUE   "113013610".
+      *        ÅüÇ¢ÉÂÆ©ÀÏÍ½ËÉ»ØÆ³´ÉÍýÎÁ¡ÊÆÃÄêÃÏ°è¡Ë
+               05 FILLER           PIC X(09)   VALUE   "113015610".
                05 FILLER           PIC X(342)  VALUE   SPACE.
       *
-               05 FILLER           PIC X(09)   VALUE   "113015810". 
-               05 FILLER           PIC X(09)   VALUE   "113024810". 
+      *        ÃÏ°èÊñ³ç¿ÇÎÅÎÁ£²
+               05 FILLER           PIC X(09)   VALUE   "113015810".
+      *        ÃÏ°èÊñ³ç¿ÇÎÅÎÁ£±
+               05 FILLER           PIC X(09)   VALUE   "113024810".
                05 FILLER           PIC X(342)  VALUE   SPACE.
       *
+      *        Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅÎÁ£²
                05 FILLER           PIC X(09)   VALUE   "113018410".
+      *        Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅÎÁ£±
                05 FILLER           PIC X(09)   VALUE   "113025710".
                05 FILLER           PIC X(342)  VALUE   SPACE.
       *
+      *        À¸³è½¬´·ÉÂ´ÉÍýÎÁ¡Ê½èÊýäµ¤ò¸òÉÕ¡Ë¡Ê¹â·ì°µ¾É¤ò¼çÉÂ¡Ë
                05 FILLER           PIC X(09)   VALUE   "113003910".
+      *        À¸³è½¬´·ÉÂ´ÉÍýÎÁ¡Ê½èÊýäµ¤ò¸òÉÕ¤·¤Ê¤¤¡Ë¡Ê¹â·ì°µ¾É¤ò¼çÉÂ¡Ë
                05 FILLER           PIC X(09)   VALUE   "113004010".
+      *        À¸³è½¬´·ÉÂ´ÉÍýÎÁ¡Ê½èÊýäµ¤ò¸òÉÕ¡Ë¡Ê»é¼Á°Û¾ï¾É¤ò¼çÉÂ¡Ë
                05 FILLER           PIC X(09)   VALUE   "113005810".
+      *        À¸³è½¬´·ÉÂ´ÉÍýÎÁ¡Ê½èÊýäµ¤ò¸òÉÕ¡Ë¡ÊÅüÇ¢ÉÂ¤ò¼çÉÂ¡Ë
                05 FILLER           PIC X(09)   VALUE   "113005910".
+      *        À¸³è½¬´·ÉÂ´ÉÍýÎÁ¡Ê½èÊýäµ¤ò¸òÉÕ¤·¤Ê¤¤¡Ë¡Ê»é¼Á°Û¾ï¾É¤ò¼çÉÂ¡Ë
                05 FILLER           PIC X(09)   VALUE   "113006010".
+      *        À¸³è½¬´·ÉÂ´ÉÍýÎÁ¡Ê½èÊýäµ¤ò¸òÉÕ¤·¤Ê¤¤¡Ë¡ÊÅüÇ¢ÉÂ¤ò¼çÉÂ¡Ë
                05 FILLER           PIC X(09)   VALUE   "113006110".
                05 FILLER           PIC X(306)  VALUE   SPACE.
       *
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114030710".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114030810".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114030910".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031010".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031110".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031210".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£±²ó¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031310".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031410".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Í­¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031510".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031610".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031710".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031810".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114031910".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032010".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032110".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£±²ó¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032210".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032310".
+      *        ºß°åÁí´É¡Êµ¡Ç½¶¯²½ºß»Ù¿ÇÅù¡¦ÉÂ¾²Ìµ¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032410".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032510".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032610".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032710".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032810".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114032910".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033010".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£±²ó¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033110".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033210".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033310".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033410".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033510".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦ÆñÉÂÅù·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033610".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£²²ó°Ê¾å¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033710".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£²²ó°Ê¾å¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033810".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£²²ó°Ê¾å¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114033910".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£±²ó¡¦£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114034010".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£±²ó¡¦£²¡Á£¹¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "114034110".
+      *        ºß°åÁí´É¡Êºß»Ù¿ÇÅù°Ê³°¡¦·î£±²ó¡¦£±£°¿Í¡Á¡Ë
                05 FILLER           PIC X(09)   VALUE   "114034210".
                05 FILLER           PIC X(36)   VALUE   SPACE.
       *
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£±¡Ê½¸ÃæÅª»Ù±çÉ¬Í×¡Ë¡ÊÃ±°ì·úÊª£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "180057210".
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£±¡Ê½¸ÃæÅª»Ù±çÉ¬Í×¡Ë¡ÊÃ±°ì·úÊª£²¿Í°Ê¾å¡Ë
                05 FILLER           PIC X(09)   VALUE   "180057310".
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£±¡Ê½ÅÅÙÀº¿À¾ã³²¼Ô¡Ë¡ÊÃ±°ì·úÊª£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "180057410".
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£±¡Ê½ÅÅÙÀº¿À¾ã³²¼Ô¡Ë¡ÊÃ±°ì·úÊª£²¿Í°Ê¾å¡Ë
                05 FILLER           PIC X(09)   VALUE   "180057510".
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£±¡Ê¥¤µÚ¤Ó¥í°Ê³°¡Ë¡ÊÃ±°ì·úÊª£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "180057610".
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£±¡Ê¥¤µÚ¤Ó¥í°Ê³°¡Ë¡ÊÃ±°ì·úÊª£²¿Í°Ê¾å¡Ë
                05 FILLER           PIC X(09)   VALUE   "180057710".
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£²¡Ê½¸ÃæÅª»Ù±çÉ¬Í×¡Ë¡ÊÃ±°ì·úÊª£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "180057810".
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£²¡Ê½¸ÃæÅª»Ù±çÉ¬Í×¡Ë¡ÊÃ±°ì·úÊª£²¿Í°Ê¾å¡Ë
                05 FILLER           PIC X(09)   VALUE   "180057910".
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£²¡Ê½ÅÅÙÀº¿À¾ã³²¼Ô¡Ë¡ÊÃ±°ì·úÊª£±¿Í¡Ë
                05 FILLER           PIC X(09)   VALUE   "180058010".
+      *        Àº¿À²ÊºßÂð´µ¼Ô»Ù±ç´ÉÍýÎÁ£²¡Ê½ÅÅÙÀº¿À¾ã³²¼Ô¡Ë¡ÊÃ±°ì·úÊª£²¿Í°Ê¾å¡Ë
                05 FILLER           PIC X(09)   VALUE   "180058110".
                05 FILLER           PIC X(270)  VALUE   SPACE.
+      *
            03  WRK-CONS-SRYCD-TABLE-R          REDEFINES
                                        WRK-CONS-SRYCD-TABLE.
                05  WRK-CONS-SRYCD-G            OCCURS  10.
@@ -176,7 +241,10 @@
                    07  WRK-CONS-COMMENT-SRYCD
                                    PIC X(09).
       *
-           03 WRK-CONS-SRYCD-MAX   PIC 9(03)   VALUE   40.
+      *    ¥Á¥§¥Ã¥¯¤¹¤ë»»Äê¤Î¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤ÎºÇÂç¿ô
+           03  WRK-CONS-SRYCD-MAX  PIC 9(03)   VALUE   40.
+      *    ¥Á¥§¥Ã¥¯¤¹¤ë·î¿ô
+           03  WRK-CONS-YM-MAX     PIC 9(03)   VALUE   3.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -250,12 +318,11 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-           MOVE    ZERO                TO  LNK-RECESRCHK-RC
-           INITIALIZE                      LNK-RECESRCHK-HENKYAKU-AREA
+           MOVE    ZERO            TO  LNK-RECESRCHK-RC
+           INITIALIZE                  LNK-RECESRCHK-HENKYAKU-AREA
       *
       *    ÆþÎÏÃÍ¥Á¥§¥Ã¥¯
-           IF    ( LNK-RECESRCHK-HOSPNUM   =   ZERO  )
-           OR    ( LNK-RECESRCHK-PTID      =   ZERO  )
+           IF    ( LNK-RECESRCHK-PTID      =   ZERO  )
            OR    ( LNK-RECESRCHK-SRYYM     =   SPACE )
            OR    ( LNK-RECESRCHK-CHKKBN    =   SPACE )
                MOVE    1                   TO  LNK-RECESRCHK-RC
@@ -277,8 +344,7 @@
                IF      LNK-RECESRCHK-RC    =   ZERO
       *            ´µ¼Ô£É£Ä¥Á¥§¥Ã¥¯
                    INITIALIZE                      PTINF-REC
-                   MOVE    LNK-RECESRCHK-HOSPNUM
-                                               TO  PTINF-HOSPNUM
+                   MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                    MOVE    LNK-RECESRCHK-PTID  TO  PTINF-PTID
                    PERFORM 900-PTINF-READ-SEC
                    IF      FLG-PTINF       NOT =   ZERO
@@ -337,7 +403,7 @@
       *
       *    ½èÍýÇ¯·î¤Î»°¥ö·îÁ°¤Þ¤Ç¤Î»»ÄêÍúÎò¤ò¥Á¥§¥Ã¥¯
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       3
+                   UNTIL   IDX     >       WRK-CONS-YM-MAX
                    OR      FLG-CHK =       1
                INITIALIZE                  STS-AREA-DAY
                INITIALIZE                  LNK-DAY6-AREA
@@ -365,8 +431,7 @@
                                 WRK-CONS-SRYCD (IDXX IDYY)
       *
                        INITIALIZE                  SANTEI-REC
-                       MOVE    LNK-RECESRCHK-HOSPNUM
-                                               TO  SANTEI-HOSPNUM
+                       MOVE    SPA-HOSPNUM     TO  SANTEI-HOSPNUM
                        MOVE    LNK-RECESRCHK-PTID
                                                TO  SANTEI-PTID
                        MOVE    WRK-SANTEIYM    TO  SANTEI-SRYYM

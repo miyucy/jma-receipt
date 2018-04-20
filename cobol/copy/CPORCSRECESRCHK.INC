@@ -25,8 +25,6 @@
       ************************************************************
        01  ORCSRECESRCHKAREA.
       *入力値
-      *    医療機関ＩＤ
-           03  LNK-RECESRCHK-HOSPNUM       PIC 9(02).
       *    患者ＩＤ
            03  LNK-RECESRCHK-PTID          PIC 9(10).
       *    処理年月
