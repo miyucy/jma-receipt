@@ -8538,7 +8538,12 @@ grpsys       PERFORM 900-DBSELECT-SEC
              IF   WRK-ZAIKYO-YMD   NOT =  SPACE
                 INITIALIZE                WRK-JIDO-SETCOM-AREA
                 MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
-                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+                EVALUATE  RECE44-FLG-IZONSYO-COMMENT
+                  WHEN      "1"
+                    MOVE   33      TO     WRK-JIDO-SETCOMATFLG
+                  WHEN      "2"
+                    MOVE   108     TO     WRK-JIDO-SETCOMATFLG
+                END-EVALUATE
                 MOVE       99      TO     FLG-COMMENT
       *
                 MOVE      ZERO     TO     IDZ

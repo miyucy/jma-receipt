@@ -7717,7 +7717,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
              IF   RECE84-FLG-SEIKEA-COMMENT  =  "1"
                 INITIALIZE                WRK-JIDO-SETCOM-AREA
                 MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
-                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+                MOVE       107     TO     WRK-JIDO-SETCOMATFLG
       **********MOVE       99      TO     FLG-COMMENT
                 MOVE       3       TO     FLG-COMMENT
                 PERFORM   200111-SANTEI-DAY-SEC
@@ -7733,7 +7733,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
              IF   WRK-ZAIKYO-YMD   NOT =  SPACE
                 INITIALIZE                WRK-JIDO-SETCOM-AREA
                 MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
-                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+                MOVE       108     TO     WRK-JIDO-SETCOMATFLG
                 MOVE       99      TO     FLG-COMMENT
       *
                 ADD        1       TO     IDZ

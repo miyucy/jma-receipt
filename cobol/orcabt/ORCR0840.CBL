@@ -5929,10 +5929,6 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                      OR CONS-ZAIKYO4-COMMENT
                  MOVE   29            TO  WRK-SETCOM-JIDO
            END-IF
-      *    º¿¥µ Ã≈˘¿ÏÃÁ•◊•Ì•∞•È•‡≤√ªª
-           IF    RECE85-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
-                 MOVE   33            TO  WRK-SETCOM-JIDO
-           END-IF
       *    «”«¢º´Œ©ªÿ∆≥Œ¡
            IF    RECE85-SRYCD(IDX4)   = CONS-HAIJRT-COMMENT
                  MOVE   34            TO  WRK-SETCOM-JIDO
@@ -5949,6 +5945,10 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       *    ¿∫ø¿≤ ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
            IF    RECE85-SRYCD(IDX4)   = CONS-HOUSEI-COMMENT
                  MOVE   105           TO  WRK-SETCOM-JIDO
+           END-IF
+      *    º¿¥µ Ã≈˘¿ÏÃÁ•◊•Ì•∞•È•‡≤√ªª
+           IF    RECE85-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
+                 MOVE   107           TO  WRK-SETCOM-JIDO2
            END-IF
       *
            IF  ((WRK-SETCOM-JIDO    =  1                        ) AND
@@ -5971,8 +5971,6 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
            OR  ((WRK-SETCOM-JIDO    =  29                       ) AND
                 (RECE85-SRYCD(IDX4) = CONS-ZAIKYO5-COMMENT
                                    OR CONS-ZAIKYO6-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  33                       ) AND
-                (RECE85-SRYCD(IDX4) = CONS-SCPRO2-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  34                       ) AND
                 (RECE85-SRYCD(IDX4) = CONS-HAIJRT2-COMMENT
                                    OR CONS-HAIJRT3-COMMENT      ))
@@ -5984,6 +5982,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                 (RECE85-SRYCD(IDX4) = CONS-HOUMON-COMMENT3      ))
            OR  ((WRK-SETCOM-JIDO    =  105                      ) AND
                 (RECE85-SRYCD(IDX4) = CONS-HOUSEI-COMMENT2      ))
+           OR  ((WRK-SETCOM-JIDO2   =  107                      ) AND
+                (RECE85-SRYCD(IDX4) = CONS-SCPRO2-COMMENT       ))
       *
                  MOVE  "1"              TO  RECE84-SETCOMFLG
                  MOVE  "2"              TO  RECE85-MEISKYFLG(IDX4)
@@ -5991,6 +5991,10 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                  IF  (WRK-SETCOM-JIDO2   =  1         )
                  AND (RECE85-SRYCD(IDX4) = "840000077")
                    MOVE    2            TO  RECE85-SETCOMATFLG(IDX4)
+                 END-IF
+                 IF  (WRK-SETCOM-JIDO2   =  107               )
+                 AND (RECE85-SRYCD(IDX4) = CONS-SCPRO2-COMMENT)
+                   MOVE    108          TO  RECE85-SETCOMATFLG(IDX4)
                  END-IF
       *
            END-IF

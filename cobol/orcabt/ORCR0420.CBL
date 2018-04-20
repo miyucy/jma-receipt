@@ -6550,9 +6550,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                  MOVE   29            TO  WRK-SETCOM-JIDO
            END-IF
       *    依存症集団療法
-      *    疾患別等専門プログラム加算
            IF    RECE45-SRYCD(IDX4)   = CONS-IZONSYO-COMMENT
-                                     OR CONS-SCPRO-COMMENT
                  MOVE   33            TO  WRK-SETCOM-JIDO
            END-IF
       *    高気圧酸素治療
@@ -6563,6 +6561,10 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *    乳腺炎重症化予防ケア・指導料（２回目から４回目まで）
            IF    RECE45-SRYCD(IDX4)   = CONS-NYUSEN-COMMENT
                  MOVE   37            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    疾患別等専門プログラム加算
+           IF    RECE45-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
+                 MOVE   107           TO  WRK-SETCOM-JIDO2
            END-IF
            IF  ((RECE45-SRYCD(IDX4)   = CONS-ROUSAI19) AND
                 (RECE41-SRYYM        <= "201306"     ))
@@ -6612,6 +6614,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                    OR CONS-KIATU5-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  37                       ) AND
                 (RECE45-SRYCD(IDX4) = CONS-NYUSEN2-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO2   =  107                      ) AND
+                (RECE45-SRYCD(IDX4) = CONS-IZONSYO2-COMMENT     ))
            OR  ((WRK-SETCOM-JIDO    =  225                      ) AND
                 (RECE45-SRYCD(IDX4) = CONS-DOUJITU-COMMENT      ))
       *
@@ -6621,6 +6625,10 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                  IF  (WRK-SETCOM-JIDO2   =  1         )
                  AND (RECE45-SRYCD(IDX4) = "840000077")
                    MOVE    2            TO  RECE45-SETCOMATFLG(IDX4)
+                 END-IF
+                 IF  (WRK-SETCOM-JIDO2   =  107                 )
+                 AND (RECE45-SRYCD(IDX4) = CONS-IZONSYO2-COMMENT)
+                   MOVE    108          TO  RECE45-SETCOMATFLG(IDX4)
                  END-IF
       *
            END-IF

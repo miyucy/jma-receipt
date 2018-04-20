@@ -7675,7 +7675,7 @@
              IF   RECE84-FLG-SEIKEA-COMMENT  =  "1"
                 INITIALIZE                WRK-JIDO-SETCOM-AREA
                 MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
-                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+                MOVE       107     TO     WRK-JIDO-SETCOMATFLG
       **********MOVE       99      TO     FLG-COMMENT
                 MOVE       3       TO     FLG-COMMENT
                 PERFORM   200111-SANTEI-DAY-SEC
@@ -7691,7 +7691,7 @@
              IF   WRK-ZAIKYO-YMD   NOT =  SPACE
                 INITIALIZE                WRK-JIDO-SETCOM-AREA
                 MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
-                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+                MOVE       108     TO     WRK-JIDO-SETCOMATFLG
                 MOVE       99      TO     FLG-COMMENT
       *
                 ADD        1       TO     IDZ
@@ -10801,6 +10801,7 @@
                             ADD    1             TO  WRK-HEN-SEQNO-X
                           END-IF
                         WHEN    2
+                        WHEN  108
                           ADD  1                 TO  WRK-HEN-SEQNO-J2
                           IF   WRK-HEN-SEQNO-J2 >  3
                             MOVE   SPACE   TO  RECE851-MEISKYFLG(IDX)
@@ -10896,8 +10897,6 @@
       *29
                           "114027610" OR "114027710" OR "114027810" OR
                           "114027910" OR
-      *33
-                          "180056570" OR
       *34
                           "113022810" OR
       *35
@@ -10944,7 +10943,9 @@
       *
                     IF    RECE851-SRYCD(IDX) =
       *2
-                          "113000670"
+                          "113000670" OR
+      *108
+                          "180056570"
       *
                        MOVE   RECE851-RENNUM  TO  WRK-HEN-RENNUM-J2
                        MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J2
