@@ -17657,6 +17657,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *
            IF ( WRK-TNS-CHUKSNTUBAN(IDX3)  NOT = "0"   )
            OR ( SRY-SRYCD(IDX3)(1:1)       NOT = "1"   )
+           OR ( SRY-SRYCD(IDX3) = CONS-YAKRENKEI       )
              CONTINUE
            ELSE
              ADD   WK-ZAIKAISU      TO   RECE02-KAISU(2)
