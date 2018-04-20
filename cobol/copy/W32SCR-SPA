@@ -43,7 +43,7 @@
                    07  SPA-GMN-EDYUKYMD       PIC X(10).
       *
                    07  SPA-GMN-KIKANTBL.
-                       09  SPA-GMN-TBLO          OCCURS  10.
+                       09  SPA-GMN-TBLO          OCCURS  99.
                            11  SPA-GMN-TBANGO     PIC 9(02).
                            11  SPA-GMN-TSTYUKYMD  PIC X(09).
                            11  SPA-GMN-TEDYUKYMD  PIC X(09).
