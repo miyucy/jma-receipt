@@ -263,6 +263,9 @@
            03  FLG-ZAIKYO-COM      PIC 9(01).
            03  FLG-BOKOHO-COM      PIC 9(01).
            03  FLG-HAIJRT-COM      PIC 9(01).
+           03  FLG-ZAIHANKO-COM    PIC 9(01).
+           03  FLG-KIATU-COM       PIC 9(01).
+           03  FLG-SCPRO-COM       PIC 9(01).
            03  FLG-CYOJKSN-COM     PIC 9(01).
            03  FLG-CYOJKSN-OK      PIC 9(01).
            03  FLG-RINYAK          PIC 9(01).
@@ -1137,6 +1140,27 @@
            03  CONS-ZAISAN-COMMENT   PIC X(09)  VALUE  "114003710".
       *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ£²
            03  CONS-YOUATU2-COMMENT  PIC X(09)  VALUE  "114040810".
+      *
+      *    ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ
+           03  CONS-ZAIHANKO-COMMENT PIC X(09)  VALUE  "114045510".
+      *    ½é²ó»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü
+           03  CONS-ZAIHANK2-COMMENT PIC X(09)  VALUE  "840000097".
+      *
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ¡Ê¸º°µ¾ÉËô¤Ï¶õµ¤ºÉÀò¡Ë
+           03  CONS-KIATU-COMMENT    PIC X(09)  VALUE  "140057510".
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ¡Ê¤½¤ÎÂ¾¤Î¤â¤Î¡Ë
+           03  CONS-KIATU2-COMMENT   PIC X(09)  VALUE  "140057610".
+      *    ½é²ó¼Â»Ü¡¡¡¡¡¡·î¡¡¡¡Æü
+           03  CONS-KIATU3-COMMENT   PIC X(09)  VALUE  "840000085".
+      *    ÄÌ»»¼Â»Ü²ó¿ô¡Ê¡¡¡¡²ó¡Ë
+           03  CONS-KIATU4-COMMENT   PIC X(09)  VALUE  "840000086".
+      *    È¯¾É¡¡¡¡¡¡·î¡¡¡¡Æü
+           03  CONS-KIATU5-COMMENT   PIC X(09)  VALUE  "840000045".
+      *
+      *    ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»¡ÊÀº¿À²Ê¥·¥ç¡¼¥È¡¦¥±¥¢¡¢¾®µ¬ÌÏ¤Ê¤â¤Î¡Ë
+           03  CONS-SCPRO-COMMENT    PIC X(09)  VALUE  "180056570".
+      *    ¼£ÎÅ³«»ÏÆü¡¡¡¡¡¡·î¡¡¡¡Æü
+           03  CONS-SCPRO2-COMMENT   PIC X(09)  VALUE  "840000076".
       *
       *    Ç¥ÉØ»þ´Ö³°²Ã»»¡Ê½é¿Ç¡Ë
            03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
@@ -2237,7 +2261,8 @@
                      "09960" OR "09970" OR "09980" OR "09983"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
-            IF       SRY-SRYCD(IDX2)   =  "099140004" OR "099400001" OR
+            IF       SRY-SRYCD(IDX2)   =  "099140004" OR
+                                          "099400001" OR "099400002" OR
                                           "099140011" OR "099140012"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
@@ -3112,6 +3137,21 @@
                    MOVE    1    TO    FLG-BOKOHO-COM
                 END-IF
               END-IF
+      *       ¹âµ¤°µ»ÀÁÇ¼£ÎÅ
+              IF  (SRY-SRYCD(IDX2)    =     CONS-KIATU-COMMENT )
+              AND (FLG-KIATU-COM      =     ZERO               )
+                   MOVE   "1"   TO    RECE220-FLG-KIATU-COMMENT
+              END-IF
+              IF  (SRY-SRYCD(IDX2)    =     CONS-KIATU2-COMMENT)
+              AND (FLG-KIATU-COM      =     ZERO               )
+                   MOVE   "2"   TO    RECE220-FLG-KIATU-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-KIATU3-COMMENT
+                                      OR    CONS-KIATU4-COMMENT
+                                      OR    CONS-KIATU5-COMMENT
+                   MOVE  SPACE  TO    RECE220-FLG-KIATU-COMMENT
+                   MOVE    1    TO    FLG-KIATU-COM
+              END-IF
            END-IF
       *
            IF      RECE220-SRYKBN      =     "80"
@@ -3351,6 +3391,16 @@
                     MOVE   "1"    TO    RECE220-HAIYO9-COMMENT
                 END-IF
               END-IF
+      *
+      *       ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»
+              IF  (SRY-SRYCD(IDX2)  =    CONS-SCPRO-COMMENT)
+              AND (FLG-SCPRO-COM    =    ZERO              )
+                    MOVE   "2"    TO    RECE220-FLG-SCPRO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)  =    CONS-SCPRO2-COMMENT
+                    MOVE  SPACE   TO    RECE220-FLG-SCPRO-COMMENT
+                    MOVE    1     TO    FLG-SCPRO-COM
+              END-IF
            END-IF
       *
            IF      RECE220-SRYKBN      =     "13"
@@ -3551,6 +3601,15 @@
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-YOUATU2-COMMENT
                    MOVE   "B"   TO    RECE220-FLG-SINPESUR-COMMENT
+              END-IF
+      *       ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ
+              IF  (SRY-SRYCD(IDX2)    =     CONS-ZAIHANKO-COMMENT)
+              AND (FLG-ZAIHANKO-COM   =     ZERO                 )
+                   MOVE   "9"    TO   RECE220-FLG-ZAIHANKO-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHANK2-COMMENT
+                   MOVE  SPACE   TO   RECE220-FLG-ZAIHANKO-COMMENT
+                   MOVE    1     TO   FLG-ZAIHANKO-COM
               END-IF
            END-IF
       *
@@ -4464,6 +4523,9 @@
                               FLG-BOKOHO-COM
                               FLG-CYOJKSN-COM
                               FLG-HAIJRT-COM
+                              FLG-ZAIHANKO-COM
+                              FLG-KIATU-COM
+                              FLG-SCPRO-COM
       *
            MOVE   ZERO   TO   WRK-FILMTEN
       *

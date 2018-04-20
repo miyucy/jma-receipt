@@ -233,6 +233,12 @@
            03  RECE220-FLG-CYOJKSN-COMMENT   PIC  X(01).
       *排尿自立指導料
            03  RECE220-FLG-HAIJRT-COMMENT    PIC  X(01).
+      *在宅半固形栄養経管栄養法指導管理料
+           03  RECE220-FLG-ZAIHANKO-COMMENT  PIC  X(01).
+      *高気圧酸素治療
+           03  RECE220-FLG-KIATU-COMMENT     PIC  X(01).
+      *疾患別等専門プログラム加算
+           03  RECE220-FLG-SCPRO-COMMENT     PIC  X(01).
       *
       *日数回数テーブル
            03  RECE220-DAY-AREA.
