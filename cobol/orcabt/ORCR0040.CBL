@@ -10372,7 +10372,12 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
              IF   WRK-ZAIKYO-YMD   NOT =  SPACE
                 INITIALIZE                WRK-JIDO-SETCOM-AREA
                 MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
-                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+                EVALUATE  RECE04-FLG-IZONSYO-COMMENT
+                  WHEN      "1"
+                    MOVE   33      TO     WRK-JIDO-SETCOMATFLG
+                  WHEN      "2"
+                    MOVE   108     TO     WRK-JIDO-SETCOMATFLG
+                END-EVALUATE
                 MOVE       99      TO     FLG-COMMENT
       *
                 MOVE      ZERO     TO     IDZ
@@ -12264,6 +12269,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                             ADD    1             TO  WRK-HEN-SEQNO-X
                           END-IF
                         WHEN    2
+                        WHEN  108
                           ADD  1                 TO  WRK-HEN-SEQNO-J2
                           IF   WRK-HEN-SEQNO-J2 >  3
                             MOVE   SPACE   TO  RECE051-MEISKYFLG(IDX)
@@ -12401,8 +12407,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *32
                           "114006410" OR "114015010" OR
       *33
-                          "180047910" OR "188010710" OR "180056570" OR
-                          "188011270" OR
+                          "180047910" OR "188010710" OR
       *35
                           "140057510" OR "140057610" OR
       *36
@@ -12417,7 +12422,9 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *
                     IF    RECE051-SRYCD(IDX) =
       *2
-                          "113000670"
+                          "113000670" OR
+      *108
+                          "180056570" OR  "188011270"
       *
                        MOVE   RECE051-RENNUM  TO  WRK-HEN-RENNUM-J2
                        MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J2

@@ -296,6 +296,9 @@
       *π‚µ§∞µª¿¡«º£Œ≈
                05  RECE441-FLG-KIATU-COMMENT    PIC  X(01).
       *
+      *•™•Û•È•§•Ûø«Œ≈Œ¡
+               05  RECE441-FLG-ONLINE-COMMENT   PIC  X(01).
+      *
       *ºÍµªÀË§Œ∆‚Õ∆° ºÍΩ—°¶≤Ë¡¸ø«√«°¶ΩË√÷°À
                05  RECE441-ACCTP-SYUGI-TBL-G.
                    07  RECE441-ACCTP-SYUGI-TBL OCCURS  5.
