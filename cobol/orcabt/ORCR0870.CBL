@@ -763,6 +763,9 @@
       *    高気圧酸素治療開始日
            03  CONS-KIATU3          PIC X(09) VALUE "099400002".
       *
+      *    精神科ＳＣ疾患別等専門プログラム加算開始日
+           03  CONS-SCPRO           PIC X(09) VALUE "099830104".
+      *
       *    在宅患者共同診療料テーブル
        01  TBL-ZAIKYO-CHECK-AREA.
            03  FILLER          PIC X(09)   VALUE    "114027610".
@@ -1760,6 +1763,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                         PERFORM    2001-SEIKEA-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SCPRO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "90"                                       
@@ -1914,6 +1920,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KIATU-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SCPRO-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
@@ -4372,6 +4381,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
       *****************************************************************
       *    心臓ペースメーカー指導管理料（ロ）があるか判定
+      *    遠隔モニタリング加算があるか判定
       *****************************************************************
        2001-SINPESUR-HANTEI-SEC          SECTION.
       *
@@ -7684,6 +7694,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
        2001-SEIKEA-HANTEI-SEC          SECTION.
       *
            IF     RECE84-FLG-SEIKEA-COMMENT   =    "1"
+           AND    RECE84-FLG-SCPRO-COMMENT    =    SPACE
                INITIALIZE            WRK-JIDO-SETCOM-AREA
                MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
                MOVE       107     TO     WRK-JIDO-SETCOMATFLG
@@ -7693,6 +7704,95 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            .
        2001-SEIKEA-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    疾患別等専門プログラム加算があるか判定
+      *****************************************************************
+       2001-SCPRO-HANTEI-SEC          SECTION.
+      *
+           IF     RECE84-FLG-SCPRO-COMMENT   NOT =  SPACE
+             MOVE         ZERO     TO     IDZ
+             INITIALIZE                   WRK-FREE-AREA2
+             IF   RECE84-FLG-SEIKEA-COMMENT  =  "1"
+                INITIALIZE                WRK-JIDO-SETCOM-AREA
+                MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+      **********MOVE       99      TO     FLG-COMMENT
+                MOVE       3       TO     FLG-COMMENT
+                PERFORM   200111-SANTEI-DAY-SEC
+                PERFORM   20011-FREE-COMMENT2-SEC
+             END-IF
+      *
+             EVALUATE  RECE84-FLG-SCPRO-COMMENT
+               WHEN      "2"
+                 MOVE  CONS-SCPRO  TO     WRK-CHECK-SRYCD
+             END-EVALUATE
+             PERFORM       20011-ZAIKYO-CHECK-SEC
+      *
+             IF   WRK-ZAIKYO-YMD   NOT =  SPACE
+                INITIALIZE                WRK-JIDO-SETCOM-AREA
+                MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+                MOVE       99      TO     FLG-COMMENT
+      *
+                ADD        1       TO     IDZ
+      *
+                MOVE       12      TO     WK-FREE-YUKOKETA2(IDZ)
+                MOVE   "治療開始日　　　月　　日"
+                                   TO     WK-FREE-NAME2(IDZ)
+      *
+                MOVE    WRK-ZAIKYO-YMD(5:2)   TO  DAY-IDX2
+                MOVE    TBL-DAY(DAY-IDX2)
+                                   TO     WK-FREE-NAME2(IDZ)(13:4)
+                MOVE    WRK-ZAIKYO-YMD(7:2)   TO  DAY-IDX2
+                MOVE    TBL-DAY(DAY-IDX2)
+                                   TO     WK-FREE-NAME2(IDZ)(19:4)
+      *
+                IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+                  MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
+                  MOVE  WRK-JIDO-SETCOMATFLG
+                                   TO     WK-FREE-SETCOMATFLG2(IDZ)
+                END-IF
+             END-IF
+      *
+             IF  (RECE84-FLG-SEIKEA-COMMENT  =  "1"  )
+             OR  (WRK-ZAIKYO-YMD         NOT =  SPACE)
+                PERFORM  200111-RECE85-TAIHI-SEC
+      *
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
+                MOVE    ZERO                 TO  IDX-RECE85
+                MOVE    SPACE                TO  WRK-RECE85XX-REC
+                INITIALIZE                       WRK-RECE85XX-REC
+      *
+                MOVE    RECE84-MEISAISU      TO  MAX-MEISAISU
+      *
+                PERFORM   VARYING   IDX   FROM    1   BY  1
+                           UNTIL  ( IDX                >   50    )
+                            OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+                  COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+                  MOVE  "810000001"
+                          TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+                  MOVE  ZERO
+                          TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-YUKOKETA2(IDX)
+                          TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-NAME2(IDX)
+                          TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-MEISKYFLG2(IDX)
+                          TO  WRK-RECE85XX-MEISKYFLG(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-SETCOMATFLG2(IDX)
+                          TO  WRK-RECE85XX-SETCOMATFLG(MAX-MEISAISU 1)
+                  MOVE  "1"
+                          TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+                END-PERFORM
+      *
+                PERFORM    200111-SRYACTINF-HENSYU-SEC
+             END-IF
+           END-IF
+      *
+           .
+       2001-SCPRO-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************

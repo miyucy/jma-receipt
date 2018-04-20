@@ -895,6 +895,9 @@
       *    依存症集団療法開始日
            03  CONS-IZONSYO         PIC X(09) VALUE "099830103".
       *
+      *    精神科ＳＣ疾患別等専門プログラム加算開始日
+           03  CONS-SCPRO           PIC X(09) VALUE "099830104".
+      *
       *    精神科重症患者早期集中支援管理料１（単一建物１人）
            03  CONS-SEIJYU          PIC X(09) VALUE "180042110".
       *    精神科重症患者早期集中支援管理料２（単一建物１人）
@@ -7138,6 +7141,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
       *****************************************************************
       *    心臓ペースメーカー指導管理料（ロ）があるか判定
+      *    遠隔モニタリング加算があるか判定
       *****************************************************************
        2001-SINPESUR-HANTEI-SEC          SECTION.
       *
@@ -10055,6 +10059,9 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *
       *****************************************************************
       *    認知療法・認知行動療法があるか判定
+      *    精神科重症患者早期集中支援管理料があるか判定
+      *    精神科在宅患者支援管理料があるか判定
+      *    在宅半固形栄養経管栄養法指導管理料があるか判定
       *****************************************************************
        2001-NINRYO-HANTEI-SEC          SECTION.
       *
@@ -10349,69 +10356,20 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *
       *****************************************************************
       *    依存症集団療法があるか判定
+      *    疾患別等専門プログラム加算があるか判定
       *****************************************************************
        2001-IZONSYO-HANTEI-SEC          SECTION.
       *
-           IF     RECE04-FLG-IZONSYO-COMMENT   =    "1"
-             MOVE    ZERO                TO  FLG-TUINZAI-COMMENT
-             MOVE    SPACE               TO  WRK-TUINZAI-YMD
-             INITIALIZE                      SANTEI-REC
-             MOVE    RECE02-HOSPNUM      TO  SANTEI-HOSPNUM
-             MOVE    RECE02-PTID         TO  SANTEI-PTID
-             MOVE    CONS-IZONSYO        TO  SANTEI-SRYCD
-             MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-             MOVE    ZERO                TO  SANTEI-SRYKA
-             MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-             MOVE    SANTEI-REC          TO  MCPDATA-REC
-             MOVE    "tbl_santei"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-             PERFORM 900-DBSELECT-SEC
-             IF      MCP-RC              =   ZERO
-                 MOVE    "tbl_santei"    TO  MCP-TABLE
-                 MOVE    "key3"          TO  MCP-PATHNAME
-                 PERFORM  900-SANTEI-READ-SEC
-                 PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
-                             OR   ( FLG-TUINZAI-COMMENT =   1 )
+           IF     RECE04-FLG-IZONSYO-COMMENT   NOT =  SPACE
+             EVALUATE  RECE04-FLG-IZONSYO-COMMENT
+               WHEN      "1"
+                 MOVE  CONS-IZONSYO  TO  WRK-CHECK-SRYCD
+               WHEN      "2"
+                 MOVE  CONS-SCPRO    TO  WRK-CHECK-SRYCD
+             END-EVALUATE
+             PERFORM       20011-ZAIKYO-CHECK-SEC
       *
-                   IF   SANTEI-SRYYM  <=  RECE02-SRYYM
-                     MOVE  SANTEI-SRYYM     TO  WRK-TUINZAI-YMD(1:6)
-                     MOVE  SANTEI-MSANTEID  TO  WRK-TUINZAI-YMD(7:2)
-                     MOVE    1              TO  FLG-TUINZAI-COMMENT
-      *
-                     IF   SANTEI-SRYYM  =  RECE02-SRYYM
-                       MOVE   ZERO  TO  FLG-CHECK-MAE
-                       MOVE   ZERO  TO  FLG-CHECK-ATO
-                       MOVE  WRK-TUINZAI-YMD(7:2)  TO  IDX28
-                       PERFORM  VARYING  IDX26  FROM   1  BY  1
-                                 UNTIL   IDX26   >    31
-                         IF  RECE04-KAISU(1 IDX26)  NOT =  ZERO
-                           IF    IDX26  <  IDX28
-                             MOVE    1   TO  FLG-CHECK-MAE
-                           ELSE
-                             MOVE    1   TO  FLG-CHECK-ATO
-                           END-IF
-                         END-IF
-                       END-PERFORM
-                       IF  ((FLG-CHECK-MAE = 1   ) AND
-                            (FLG-CHECK-ATO = ZERO))
-                       OR  ((FLG-CHECK-MAE = 1   ) AND
-                            (FLG-CHECK-ATO = 1   ))
-                         MOVE    SPACE   TO  WRK-TUINZAI-YMD
-                       END-IF
-                     END-IF
-                   END-IF
-      *
-                   MOVE    "tbl_santei"  TO  MCP-TABLE
-                   MOVE    "key3"        TO  MCP-PATHNAME
-                   PERFORM  900-SANTEI-READ-SEC
-                 END-PERFORM
-             END-IF
-             MOVE    "tbl_santei"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-             PERFORM 900-CLOSE-SEC
-      *
-             IF   WRK-TUINZAI-YMD   NOT =  SPACE
-      *
+             IF   WRK-ZAIKYO-YMD   NOT =  SPACE
                 INITIALIZE                WRK-JIDO-SETCOM-AREA
                 MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
                 MOVE       33      TO     WRK-JIDO-SETCOMATFLG
@@ -10426,10 +10384,10 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                 MOVE   "治療開始日　　　月　　日"
                                    TO     WK-FREE-NAME2(IDZ)
       *
-                MOVE    WRK-TUINZAI-YMD(5:2)   TO  DAY-IDX2
+                MOVE    WRK-ZAIKYO-YMD(5:2)   TO  DAY-IDX2
                 MOVE    TBL-DAY(DAY-IDX2)
                                    TO     WK-FREE-NAME2(IDZ)(13:4)
-                MOVE    WRK-TUINZAI-YMD(7:2)   TO  DAY-IDX2
+                MOVE    WRK-ZAIKYO-YMD(7:2)   TO  DAY-IDX2
                 MOVE    TBL-DAY(DAY-IDX2)
                                    TO     WK-FREE-NAME2(IDZ)(19:4)
       *
@@ -10467,7 +10425,6 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
                 END-PERFORM
       *
                 PERFORM    200111-SRYACTINF-HENSYU-SEC
-      *
              END-IF
            END-IF
       *
@@ -12444,7 +12401,8 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *32
                           "114006410" OR "114015010" OR
       *33
-                          "180047910" OR "188010710" OR
+                          "180047910" OR "188010710" OR "180056570" OR
+                          "188011270" OR
       *35
                           "140057510" OR "140057610" OR
       *36

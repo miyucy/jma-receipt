@@ -2636,8 +2636,6 @@
            03  CONS-SCPRO-COMMENT    PIC X(09)  VALUE  "180056570".
       *    治療開始日　　　月　　日
            03  CONS-SCPRO2-COMMENT   PIC X(09)  VALUE  "840000076".
-      *    疾患別等専門プログラム加算（医療観察精神科ショート・ケア）
-           03  CONS-SCPRO3-COMMENT   PIC X(09)  VALUE  "188011270".
       *
       *    妊婦時間外加算（初診）
            03  CONS-NINPU-COMMENT    PIC X(09)  VALUE  "111012970".
@@ -9321,9 +9319,8 @@
               END-IF
       *
       *       疾患別等専門プログラム加算
-              IF  (SRY-SRYCD(IDX2)  =    CONS-SCPRO-COMMENT
-                                    OR   CONS-SCPRO3-COMMENT)
-              AND (FLG-SCPRO-COM    =    ZERO               )
+              IF  (SRY-SRYCD(IDX2)  =    CONS-SCPRO-COMMENT)
+              AND (FLG-SCPRO-COM    =    ZERO              )
                     MOVE   "2"    TO    RECE64-FLG-SCPRO-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)  =     CONS-SCPRO2-COMMENT
@@ -10083,7 +10080,6 @@
            END-IF
       *    疾患別等専門プログラム加算
            IF    RECE65-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
-                                     OR CONS-SCPRO3-COMMENT
                  MOVE   33            TO  WRK-SETCOM-JIDO
            END-IF
       *    排尿自立指導料
