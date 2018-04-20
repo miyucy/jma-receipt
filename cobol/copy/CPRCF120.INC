@@ -259,6 +259,9 @@
       *高気圧酸素治療
            03  RECE120-FLG-KIATU-COMMENT   PIC  X(01).
       *
+      *オンライン診療料
+           03  RECE120-FLG-ONLINE-COMMENT  PIC  X(01).
+      *
       *日数回数テーブル
            03  RECE120-DAY-AREA.
       *        診療回数テーブル（1:合計、2-9:１回〜９回）

@@ -14709,11 +14709,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                  MOVE   29            TO  WRK-SETCOM-JIDO
            END-IF
       *    ∞Õ¬∏æ…Ω∏√ƒŒ≈À°
-      *    º¿¥µ Ã≈˘¿ÏÃÁ•◊•Ì•∞•È•‡≤√ªª
            IF    RECE05-SRYCD(IDX4)   = CONS-IZONSYO-COMMENT
                                      OR CONS-IZONSYO3-COMMENT
-                                     OR CONS-SCPRO-COMMENT
-                                     OR CONS-SCPRO3-COMMENT
                  MOVE   33            TO  WRK-SETCOM-JIDO
            END-IF
       *    π‚µ§∞µª¿¡«º£Œ≈
@@ -14724,6 +14721,11 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *    ∆˝¡£±ÍΩ≈æ…≤ΩÕΩÀ…•±•¢°¶ªÿ∆≥Œ¡° £≤≤ÛÃ‹§´§È£¥≤ÛÃ‹§ﬁ§«°À
            IF    RECE05-SRYCD(IDX4)   = CONS-NYUSEN-COMMENT
                  MOVE   37            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    º¿¥µ Ã≈˘¿ÏÃÁ•◊•Ì•∞•È•‡≤√ªª
+           IF    RECE05-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
+                                     OR CONS-SCPRO3-COMMENT
+                 MOVE   107           TO  WRK-SETCOM-JIDO2
            END-IF
       *
            IF  ((WRK-SETCOM-JIDO    =  1                        ) AND
@@ -14766,6 +14768,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                    OR CONS-KIATU5-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  37                       ) AND
                 (RECE05-SRYCD(IDX4) = CONS-NYUSEN2-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO2   =  107                      ) AND
+                (RECE05-SRYCD(IDX4) = CONS-IZONSYO2-COMMENT     ))
       *
                  MOVE  "1"              TO  RECE04-SETCOMFLG
                  MOVE  "2"              TO  RECE05-MEISKYFLG(IDX4)
@@ -14773,6 +14777,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                  IF  (WRK-SETCOM-JIDO2   =  1         )
                  AND (RECE05-SRYCD(IDX4) = "840000077")
                    MOVE    2            TO  RECE05-SETCOMATFLG(IDX4)
+                 END-IF
+                 IF  (WRK-SETCOM-JIDO2   =  107                 )
+                 AND (RECE05-SRYCD(IDX4) = CONS-IZONSYO2-COMMENT)
+                   MOVE    108          TO  RECE05-SETCOMATFLG(IDX4)
                  END-IF
       *
            END-IF

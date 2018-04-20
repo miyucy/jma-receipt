@@ -8572,7 +8572,12 @@
              IF   WRK-ZAIKYO-YMD   NOT =  SPACE
                 INITIALIZE                WRK-JIDO-SETCOM-AREA
                 MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
-                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+                EVALUATE  RECE44-FLG-IZONSYO-COMMENT
+                  WHEN      "1"
+                    MOVE   33      TO     WRK-JIDO-SETCOMATFLG
+                  WHEN      "2"
+                    MOVE   108     TO     WRK-JIDO-SETCOMATFLG
+                END-EVALUATE
                 MOVE       99      TO     FLG-COMMENT
       *
                 MOVE      ZERO     TO     IDZ
@@ -10824,6 +10829,7 @@
                             ADD    1             TO  WRK-HEN-SEQNO-X
                           END-IF
                         WHEN    2
+                        WHEN  108
                           ADD  1                 TO  WRK-HEN-SEQNO-J2
                           IF   WRK-HEN-SEQNO-J2 >  3
                             MOVE   SPACE   TO  RECE451-MEISKYFLG(IDX)
@@ -10967,7 +10973,7 @@
       *32
                           "114006410" OR "114015010" OR
       *33
-                          "180047910" OR "180056570" OR
+                          "180047910" OR
       *35
                           "140057510" OR "140057610" OR
       *36
@@ -11000,7 +11006,9 @@
       *
                     IF    RECE451-SRYCD(IDX) =
       *2
-                          "113000670"
+                          "113000670" OR
+      *108
+                          "180056570"
       *
                        MOVE   RECE451-RENNUM  TO  WRK-HEN-RENNUM-J2
                        MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J2
