@@ -512,6 +512,12 @@
                05  WRK-CYOJKSN2-TAIHIMM         PIC X(04).
                05  WRK-CYOJKSN2-TAIHIDD         PIC X(04).
       *
+           03  WRK-ZAIHANKO-FSANTEIYMD          PIC X(08).
+      *
+           03  WRK-CHECK-SRYCD                  PIC X(09).
+      *
+           03  WRK-SJIYMD                       PIC X(08).
+      *
        01  WRK-ERR-AREA.
            03  WRK-RECEERR             PIC X(200).
            03  WRK-ERRMSG              PIC X(300).
@@ -716,6 +722,19 @@
            03  CONS-ZAISAN          PIC X(09) VALUE "114003710".
       *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ£²
            03  CONS-YOUATU2         PIC X(09) VALUE "114040810".
+      *
+      *    ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ
+           03  CONS-ZAIHANKO        PIC X(09) VALUE "114045510".
+      *
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ¡Ê¸º°µ¾ÉËô¤Ï¶õµ¤ºÉÀò¡Ë
+           03  CONS-KIATU           PIC X(09) VALUE "140057510".
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ¡Ê¤½¤ÎÂ¾¤Î¤â¤Î¡Ë
+           03  CONS-KIATU2          PIC X(09) VALUE "140057610".
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ³«»ÏÆü
+           03  CONS-KIATU3          PIC X(09) VALUE "099400002".
+      *
+      *    Àº¿À²Ê£Ó£Ã¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»³«»ÏÆü
+           03  CONS-SCPRO           PIC X(09) VALUE "099830104".
       *
       *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-ZAIKYO-CHECK-AREA.
@@ -1668,6 +1687,9 @@
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ZAIHANKO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "40"
@@ -1682,12 +1704,15 @@
                         PERFORM    2001-BOKOHO-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-KIATU-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "50"
-                      PERFORM    2001-SHUJUTSU-HANTEI-SEC
+                      PERFORM      2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "54"
-                      PERFORM    2001-MASUI-HANTEI-SEC
+                      PERFORM      2001-MASUI-HANTEI-SEC
                    WHEN      "60"
                    WHEN      "64"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -1701,7 +1726,7 @@
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "70"
-                      PERFORM    2001-CTMRI-HANTEI-SEC
+                      PERFORM      2001-CTMRI-HANTEI-SEC
                    WHEN      "80"
                       MOVE   ZERO   TO  FLG-COMMENT
                       IF   FLG-COMMENT  =  ZERO
@@ -1719,22 +1744,25 @@
                         END-IF
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-RIHASEN-HANTEI-SEC
+                        PERFORM    2001-RIHASEN-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SEIKEA-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-KYUKYU-HANTEI-SEC
+                        PERFORM    2001-KYUKYU-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2099-RECE84-WRITE-SEC
+                        PERFORM    2001-SCPRO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "90"                                       
                    WHEN      "92"
                       EVALUATE    RECE84-ZAISKBKBN
                         WHEN   "2"
-                          PERFORM   2001-NYU-COMMENT-SEC
+                          PERFORM      2001-NYU-COMMENT-SEC
                         WHEN   "6"
                           MOVE   ZERO   TO  FLG-COMMENT
                           IF   FLG-COMMENT  =  ZERO
@@ -1765,10 +1793,10 @@
                              PERFORM   2099-RECE84-WRITE-SEC
                           END-IF
                         WHEN   OTHER
-                         PERFORM    2099-RECE84-WRITE-SEC
+                         PERFORM       2099-RECE84-WRITE-SEC
                       END-EVALUATE
                    WHEN   OTHER
-                         PERFORM    2099-RECE84-WRITE-SEC
+                         PERFORM       2099-RECE84-WRITE-SEC
                  END-EVALUATE
                 ELSE                                                     
                  EVALUATE      RECE84-SRYKBN                            
@@ -1842,19 +1870,19 @@
                         END-IF
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-RIHASEN-HANTEI-SEC
+                        PERFORM    2001-RIHASEN-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SEIKEA-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-HOUSIJI-HANTEI-SEC
+                        PERFORM    2001-HOUSIJI-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-HINKAI-HANTEI-SEC
+                        PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-OSIN-HANTEI-SEC
+                        PERFORM    2001-OSIN-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISYOKU-HANTEI-SEC
@@ -1863,13 +1891,13 @@
                         PERFORM    2001-YOUATU-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-JINZOUETC-HANTEI-SEC
+                        PERFORM    2001-JINZOUETC-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-KYOKUIN-HANTEI-SEC
+                        PERFORM    2001-KYOKUIN-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2001-KYUKYU-HANTEI-SEC
+                        PERFORM    2001-KYUKYU-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIKYO-HANTEI-SEC
@@ -1882,12 +1910,21 @@
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM       2099-RECE84-WRITE-SEC
+                        PERFORM    2001-ZAIHANKO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-KIATU-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SCPRO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "50"                                       
-                      PERFORM    2001-SHUJUTSU-HANTEI-SEC               
+                      PERFORM      2001-SHUJUTSU-HANTEI-SEC               
                    WHEN      "54"
-                      PERFORM    2001-MASUI-HANTEI-SEC
+                      PERFORM      2001-MASUI-HANTEI-SEC
                    WHEN      "60"
                    WHEN      "64"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -1901,12 +1938,12 @@
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "70"
-                      PERFORM    2001-CTMRI-HANTEI-SEC
+                      PERFORM      2001-CTMRI-HANTEI-SEC
                    WHEN      "90"                                       
                    WHEN      "92"
                       EVALUATE    RECE84-ZAISKBKBN
                         WHEN   "2"
-                          PERFORM   2001-NYU-COMMENT-SEC
+                          PERFORM      2001-NYU-COMMENT-SEC
                         WHEN   "6"
                           MOVE   ZERO   TO  FLG-COMMENT
                           IF   FLG-COMMENT  =  ZERO
@@ -1937,10 +1974,10 @@
                              PERFORM   2099-RECE84-WRITE-SEC
                           END-IF
                         WHEN   OTHER
-                          PERFORM   2099-RECE84-WRITE-SEC
+                          PERFORM      2099-RECE84-WRITE-SEC
                       END-EVALUATE
                    WHEN   OTHER                                         
-                         PERFORM    2099-RECE84-WRITE-SEC
+                         PERFORM       2099-RECE84-WRITE-SEC
                  END-EVALUATE                                           
                 END-IF
                END-IF                                                   
@@ -4312,6 +4349,7 @@
       *
       *****************************************************************
       *    ¿´Â¡¥Ú¡¼¥¹¥á¡¼¥«¡¼»ØÆ³´ÉÍýÎÁ¡Ê¥í¡Ë¤¬¤¢¤ë¤«È½Äê
+      *    ±ó³Ö¥â¥Ë¥¿¥ê¥ó¥°²Ã»»¤¬¤¢¤ë¤«È½Äê
       *****************************************************************
        2001-SINPESUR-HANTEI-SEC          SECTION.
       *
@@ -5202,107 +5240,8 @@
        2001-ZAIKYO-HANTEI-SEC          SECTION.
       *
            IF     RECE84-FLG-ZAIKYO-COMMENT   =    "1"
-             MOVE    RECE82-SRYYM        TO  WRK-ZAIKYO-YMD9(1:6)
-             MOVE    "99"                TO  WRK-ZAIKYO-YMD9(7:2)
-      *
-             MOVE    ZERO                TO  FLG-ZAIKYO-COMMENT
-             MOVE    SPACE               TO  WRK-ZAIKYO-YMD
-             MOVE    ZERO                TO  FLG-RETRY
-             INITIALIZE                      SANTEI-REC
-             MOVE    RECE82-HOSPNUM      TO  SANTEI-HOSPNUM
-             MOVE    RECE82-PTID         TO  SANTEI-PTID
-             MOVE    CONS-ZAIKYO         TO  SANTEI-SRYCD
-             MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-             MOVE    ZERO                TO  SANTEI-SRYKA
-             MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-             MOVE    SANTEI-REC          TO  MCPDATA-REC
-             MOVE    "tbl_santei"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-             PERFORM 900-DBSELECT-SEC
-             IF      MCP-RC              =   ZERO
-                 MOVE    "tbl_santei"    TO  MCP-TABLE
-                 MOVE    "key3"          TO  MCP-PATHNAME
-                 PERFORM  900-SANTEI-READ-SEC
-                 PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
-                             OR   ( FLG-ZAIKYO-COMMENT  =   1 )
-      *
-                   IF   SANTEI-SRYYM  <=  RECE82-SRYYM
-                     MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
-                     MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
-                     MOVE    1              TO  FLG-ZAIKYO-COMMENT
-      *
-                     IF   SANTEI-SRYYM  =  RECE82-SRYYM
-                       MOVE   ZERO  TO  FLG-CHECK-MAE
-                       MOVE   ZERO  TO  FLG-CHECK-ATO
-                       MOVE  WRK-ZAIKYO-YMD(7:2)  TO  IDX28
-                       PERFORM  VARYING  IDX26  FROM   1  BY  1
-                                 UNTIL   IDX26   >    31
-                         IF  RECE84-KAISU(1 IDX26)  NOT =  ZERO
-                           IF    IDX26  <  IDX28
-                             MOVE    1   TO  FLG-CHECK-MAE
-                           ELSE
-                             MOVE    1   TO  FLG-CHECK-ATO
-                           END-IF
-                         END-IF
-                       END-PERFORM
-                       IF  ((FLG-CHECK-MAE = 1   ) AND
-                            (FLG-CHECK-ATO = ZERO))
-                       OR  ((FLG-CHECK-MAE = 1   ) AND
-                            (FLG-CHECK-ATO = 1   ))
-                         MOVE    WRK-ZAIKYO-YMD
-                                         TO  WRK-ZAIKYO-YMD9
-                         MOVE    SPACE   TO  WRK-ZAIKYO-YMD
-                         MOVE    1       TO  FLG-RETRY
-                       END-IF
-                     END-IF
-                   END-IF
-      *
-                   MOVE    "tbl_santei"  TO  MCP-TABLE
-                   MOVE    "key3"        TO  MCP-PATHNAME
-                   PERFORM  900-SANTEI-READ-SEC
-                 END-PERFORM
-             END-IF
-             MOVE    "tbl_santei"        TO  MCP-TABLE
-             MOVE    "key3"              TO  MCP-PATHNAME
-             PERFORM 900-CLOSE-SEC
-      *
-             IF   FLG-RETRY =  1
-               MOVE    ZERO                TO  FLG-ZAIKYO-COMMENT
-               MOVE    SPACE               TO  WRK-ZAIKYO-YMD
-               MOVE    ZERO                TO  FLG-RETRY
-               INITIALIZE                      SANTEI-REC
-               MOVE    RECE82-HOSPNUM      TO  SANTEI-HOSPNUM
-               MOVE    RECE82-PTID         TO  SANTEI-PTID
-               MOVE    CONS-ZAIKYO         TO  SANTEI-SRYCD
-               MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-               MOVE    ZERO                TO  SANTEI-SRYKA
-               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                 MOVE    "tbl_santei"    TO  MCP-TABLE
-                 MOVE    "key3"          TO  MCP-PATHNAME
-                 PERFORM  900-SANTEI-READ-SEC
-                 PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
-                             OR   ( FLG-ZAIKYO-COMMENT  =   1 )
-      *
-                   IF   SANTEI-SRYYM  <   RECE82-SRYYM
-                     MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
-                     MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
-                     MOVE    1              TO  FLG-ZAIKYO-COMMENT
-                   END-IF
-      *
-                   MOVE    "tbl_santei"  TO  MCP-TABLE
-                   MOVE    "key3"        TO  MCP-PATHNAME
-                   PERFORM  900-SANTEI-READ-SEC
-                 END-PERFORM
-               END-IF
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-             END-IF
+             MOVE   CONS-ZAIKYO   TO   WRK-CHECK-SRYCD
+             PERFORM       20011-ZAIKYO-CHECK-SEC
       *
              IF   WRK-ZAIKYO-YMD   NOT =  SPACE
       *
@@ -5447,6 +5386,117 @@
            EXIT.
       *
       *****************************************************************
+      *    
+      *****************************************************************
+       20011-ZAIKYO-CHECK-SEC          SECTION.
+      *
+           MOVE    RECE82-SRYYM        TO  WRK-ZAIKYO-YMD9(1:6)
+           MOVE    "99"                TO  WRK-ZAIKYO-YMD9(7:2)
+      *
+           MOVE    ZERO                TO  FLG-ZAIKYO-COMMENT
+           MOVE    SPACE               TO  WRK-ZAIKYO-YMD
+           MOVE    ZERO                TO  FLG-RETRY
+           INITIALIZE                      SANTEI-REC
+           MOVE    RECE82-HOSPNUM      TO  SANTEI-HOSPNUM
+           MOVE    RECE82-PTID         TO  SANTEI-PTID
+           MOVE    WRK-CHECK-SRYCD     TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"    TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM  900-SANTEI-READ-SEC
+               PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
+                           OR   ( FLG-ZAIKYO-COMMENT  =   1 )
+      *
+                 IF   SANTEI-SRYYM  <=  RECE82-SRYYM
+                   MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
+                   MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
+                   MOVE    1              TO  FLG-ZAIKYO-COMMENT
+      *
+                   IF   SANTEI-SRYYM  =  RECE82-SRYYM
+                     MOVE   ZERO  TO  FLG-CHECK-MAE
+                     MOVE   ZERO  TO  FLG-CHECK-ATO
+                     MOVE  WRK-ZAIKYO-YMD(7:2)  TO  IDX28
+                     PERFORM  VARYING  IDX26  FROM   1  BY  1
+                               UNTIL   IDX26   >    31
+                       IF  RECE84-KAISU(1 IDX26)  NOT =  ZERO
+                         IF    IDX26  <  IDX28
+                           MOVE    1   TO  FLG-CHECK-MAE
+                         ELSE
+                           MOVE    1   TO  FLG-CHECK-ATO
+                         END-IF
+                       END-IF
+                     END-PERFORM
+                     IF  ((FLG-CHECK-MAE = 1   ) AND
+                          (FLG-CHECK-ATO = ZERO))
+                     OR  ((FLG-CHECK-MAE = 1   ) AND
+                          (FLG-CHECK-ATO = 1   ))
+                       MOVE    WRK-ZAIKYO-YMD
+                                       TO  WRK-ZAIKYO-YMD9
+                       MOVE    SPACE   TO  WRK-ZAIKYO-YMD
+                       MOVE    1       TO  FLG-RETRY
+                     END-IF
+                   END-IF
+                 END-IF
+      *
+                 MOVE    "tbl_santei"  TO  MCP-TABLE
+                 MOVE    "key3"        TO  MCP-PATHNAME
+                 PERFORM  900-SANTEI-READ-SEC
+               END-PERFORM
+           END-IF
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF   FLG-RETRY =  1
+             MOVE    ZERO                TO  FLG-ZAIKYO-COMMENT
+             MOVE    SPACE               TO  WRK-ZAIKYO-YMD
+             MOVE    ZERO                TO  FLG-RETRY
+             INITIALIZE                      SANTEI-REC
+             MOVE    RECE82-HOSPNUM      TO  SANTEI-HOSPNUM
+             MOVE    RECE82-PTID         TO  SANTEI-PTID
+             MOVE    WRK-CHECK-SRYCD     TO  SANTEI-SRYCD
+             MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+             MOVE    ZERO                TO  SANTEI-SRYKA
+             MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+             MOVE    SANTEI-REC          TO  MCPDATA-REC
+             MOVE    "tbl_santei"        TO  MCP-TABLE
+             MOVE    "key3"              TO  MCP-PATHNAME
+             PERFORM 900-DBSELECT-SEC
+             IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"    TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM  900-SANTEI-READ-SEC
+               PERFORM   UNTIL  ( FLG-SANTEI          =   1 )
+                           OR   ( FLG-ZAIKYO-COMMENT  =   1 )
+      *
+                 IF   SANTEI-SRYYM  <   RECE82-SRYYM
+                   MOVE  SANTEI-SRYYM     TO  WRK-ZAIKYO-YMD(1:6)
+                   MOVE  SANTEI-MSANTEID  TO  WRK-ZAIKYO-YMD(7:2)
+                   MOVE    1              TO  FLG-ZAIKYO-COMMENT
+                 END-IF
+      *
+                 MOVE    "tbl_santei"  TO  MCP-TABLE
+                 MOVE    "key3"        TO  MCP-PATHNAME
+                 PERFORM  900-SANTEI-READ-SEC
+               END-PERFORM
+             END-IF
+             MOVE    "tbl_santei"        TO  MCP-TABLE
+             MOVE    "key3"              TO  MCP-PATHNAME
+             PERFORM 900-CLOSE-SEC
+           END-IF
+      *
+           .
+       20011-ZAIKYO-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ºßÂð´µ¼Ô¶¦Æ±¿ÇÎÅÎÁ³«»ÏÆü¤ÎºÞ¸¡º÷
       *****************************************************************
        20011-ZAIKYO-KENSAKU-SEC          SECTION.
@@ -5564,6 +5614,98 @@
       *
            .
        20011-ZAIKYO-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂðÈ¾¸Ç·Á±ÉÍÜ·Ð´É±ÉÍÜË¡»ØÆ³´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-ZAIHANKO-HANTEI-SEC          SECTION.
+      *
+           IF     RECE84-FLG-ZAIHANKO-COMMENT   NOT =  SPACE
+               MOVE    SPACE                TO  WRK-ZAIHANKO-FSANTEIYMD
+               INITIALIZE                       SANTEI-REC
+               MOVE    RECE82-HOSPNUM       TO  SANTEI-HOSPNUM
+               MOVE    RECE82-PTID          TO  SANTEI-PTID
+               MOVE    RECE82-SRYYM         TO  SANTEI-SRYYM
+               EVALUATE  RECE84-FLG-ZAIHANKO-COMMENT
+                 WHEN      "9"
+                   MOVE  CONS-ZAIHANKO      TO  SANTEI-SRYCD
+               END-EVALUATE
+               MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
+               MOVE    ZERO                 TO  SANTEI-SRYKA
+               MOVE    ZERO                 TO  SANTEI-HKNCOMBINUM
+               MOVE    SANTEI-REC           TO  MCPDATA-REC
+               MOVE    "tbl_santei"         TO  WRK-MCP-TABLE
+               MOVE    "key"                TO  WRK-MCP-PATHNAME
+               PERFORM  900-SANTEI-INV-SEC
+               IF       FLG-SANTEI        =   ZERO
+                  MOVE  SANTEI-FSANTEIYMD   TO  WRK-ZAIHANKO-FSANTEIYMD
+               END-IF
+      *
+               IF   WRK-ZAIHANKO-FSANTEIYMD   NOT =  SPACE
+      *
+                  INITIALIZE                WRK-JIDO-SETCOM-AREA
+                  MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+                  MOVE       19      TO     WRK-JIDO-SETCOMATFLG
+                  MOVE       99      TO     FLG-COMMENT
+      *
+                  MOVE      ZERO     TO     IDZ
+                  INITIALIZE                WRK-FREE-AREA2
+      *
+                  ADD        1       TO     IDZ
+      *
+                  MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "½é²ó»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü"
+                                     TO     WK-FREE-NAME2(IDZ)
+                  MOVE   WRK-ZAIHANKO-FSANTEIYMD(5:2)   TO  DAY-IDX2
+                  MOVE   TBL-DAY(DAY-IDX2)
+                                     TO     WK-FREE-NAME2(IDZ)(11:4)
+                  MOVE   WRK-ZAIHANKO-FSANTEIYMD(7:2)   TO  DAY-IDX2
+                  MOVE   TBL-DAY(DAY-IDX2)
+                                     TO     WK-FREE-NAME2(IDZ)(17:4)
+      *
+                  IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+                    MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
+                    MOVE  WRK-JIDO-SETCOMATFLG
+                                     TO     WK-FREE-SETCOMATFLG2(IDZ)
+                  END-IF
+      *
+                  PERFORM  200111-RECE85-TAIHI-SEC
+      *
+      *           £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+                  MOVE    ZERO                 TO  IDX-RECE85
+                  MOVE    SPACE                TO  WRK-RECE85XX-REC
+                  INITIALIZE                       WRK-RECE85XX-REC
+      *
+                  MOVE    RECE84-MEISAISU      TO  MAX-MEISAISU
+      *
+                  PERFORM   VARYING   IDX   FROM    1   BY  1
+                             UNTIL  ( IDX                >   50    )
+                              OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+                    COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+                    MOVE  "810000001"
+                            TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+                    MOVE  ZERO
+                            TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-YUKOKETA2(IDX)
+                            TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-NAME2(IDX)
+                            TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-MEISKYFLG2(IDX)
+                            TO  WRK-RECE85XX-MEISKYFLG(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-SETCOMATFLG2(IDX)
+                            TO  WRK-RECE85XX-SETCOMATFLG(MAX-MEISAISU 1)
+                    MOVE  "1"
+                            TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+                  END-PERFORM
+      *
+                  PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+               END-IF
+           END-IF
+      *
+           .
+       2001-ZAIHANKO-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5830,6 +5972,178 @@
       *
            .
        2001-BOKOHO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-KIATU-HANTEI-SEC          SECTION.
+      *
+           IF     RECE84-FLG-KIATU-COMMENT    NOT =  SPACE
+             MOVE   CONS-KIATU3   TO   WRK-CHECK-SRYCD
+             PERFORM       20011-ZAIKYO-CHECK-SEC
+      *
+             MOVE       SPACE               TO  WRK-SJIYMD
+             MOVE       ZERO                TO  WRK-ZAIKYO-KAISU
+             IF   WRK-ZAIKYO-YMD   NOT =  SPACE
+                INITIALIZE                      SANTEI-REC
+                MOVE    RECE82-HOSPNUM      TO  SANTEI-HOSPNUM
+                MOVE    RECE82-PTID         TO  SANTEI-PTID
+                EVALUATE  RECE84-FLG-KIATU-COMMENT
+                  WHEN      "1"
+                    MOVE    CONS-KIATU      TO  SANTEI-SRYCD
+                  WHEN      "2"
+                    MOVE    CONS-KIATU2     TO  SANTEI-SRYCD
+                END-EVALUATE
+                MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+                MOVE    ZERO                TO  SANTEI-SRYKA
+                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+                MOVE    SANTEI-REC          TO  MCPDATA-REC
+                MOVE    "tbl_santei"        TO  MCP-TABLE
+                MOVE    "key3"              TO  MCP-PATHNAME
+                PERFORM 900-DBSELECT-SEC
+                IF      MCP-RC              =   ZERO
+                  MOVE    "tbl_santei"      TO  MCP-TABLE
+                  MOVE    "key3"            TO  MCP-PATHNAME
+                  PERFORM  900-SANTEI-READ-SEC
+                  PERFORM   UNTIL   FLG-SANTEI  =   1
+      *
+                    IF   SANTEI-SRYYM  <=  RECE82-SRYYM
+                    AND  SANTEI-SRYYM  >=  WRK-ZAIKYO-YMD(1:6)
+                      MOVE  WRK-ZAIKYO-YMD(7:2)  TO  IDX28
+                      MOVE  WRK-ZAIKYO-YMD9(7:2) TO  IDX29
+                      PERFORM  VARYING  IDX26  FROM  31  BY  -1
+                                UNTIL   IDX26   <     1
+                        IF   SANTEI-DAY(IDX26)  NOT =  ZERO
+                          IF ((SANTEI-SRYYM =
+                                      WRK-ZAIKYO-YMD(1:6) ) AND
+                              (IDX26        < IDX28       ))
+                          OR ((SANTEI-SRYYM =
+                                      WRK-ZAIKYO-YMD9(1:6)) AND
+                              (IDX26       >= IDX29       ))
+                            CONTINUE
+                          ELSE
+                            ADD   1       TO  WRK-ZAIKYO-KAISU
+                            MOVE  SANTEI-SRYYM
+                                          TO  WRK-SJIYMD(1:6)
+                            MOVE  IDX26   TO  WRK-SJIYMD(7:2)
+                          END-IF
+                        END-IF
+                      END-PERFORM
+                    END-IF
+      *
+                    MOVE    "tbl_santei"    TO  MCP-TABLE
+                    MOVE    "key3"          TO  MCP-PATHNAME
+                    PERFORM  900-SANTEI-READ-SEC
+                  END-PERFORM
+                END-IF
+                MOVE    "tbl_santei"        TO  MCP-TABLE
+                MOVE    "key3"              TO  MCP-PATHNAME
+                PERFORM 900-CLOSE-SEC
+             END-IF
+      *
+             IF   WRK-ZAIKYO-KAISU  NOT =  ZERO
+             AND  WRK-ZAIKYO-KAISU     <=   31
+                INITIALIZE                WRK-JIDO-SETCOM-AREA
+                MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+                MOVE       35      TO     WRK-JIDO-SETCOMATFLG
+                MOVE       99      TO     FLG-COMMENT
+      *
+                MOVE      ZERO     TO     IDZ
+                INITIALIZE                WRK-FREE-AREA2
+      *
+                IF    RECE84-FLG-KIATU-COMMENT  =  "1"
+      *
+                  ADD        1       TO     IDZ
+      *
+                  MOVE       9       TO     WK-FREE-YUKOKETA2(IDZ)
+                  MOVE   "È¯¾É¡¡¡¡¡¡·î¡¡¡¡Æü"
+                                     TO     WK-FREE-NAME2(IDZ)
+      *
+                  MOVE    WRK-ZAIKYO-YMD(5:2)  TO  DAY-IDX2
+                  MOVE    TBL-DAY(DAY-IDX2)
+                                     TO     WK-FREE-NAME2(IDZ)(7:4)
+                  MOVE    WRK-ZAIKYO-YMD(7:2)  TO  DAY-IDX2
+                  MOVE    TBL-DAY(DAY-IDX2)
+                                     TO     WK-FREE-NAME2(IDZ)(13:4)
+      *
+                  IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+                    MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
+                    MOVE  WRK-JIDO-SETCOMATFLG
+                                     TO     WK-FREE-SETCOMATFLG2(IDZ)
+                  END-IF
+      *
+                END-IF
+      *
+                ADD        1       TO     IDZ
+      *
+                MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
+                MOVE   "½é²ó¼Â»Ü¡¡¡¡¡¡·î¡¡¡¡Æü"
+                                   TO     WK-FREE-NAME2(IDZ)
+      *
+                MOVE    WRK-SJIYMD(5:2)   TO  DAY-IDX2
+                MOVE    TBL-DAY(DAY-IDX2)
+                                   TO     WK-FREE-NAME2(IDZ)(11:4)
+                MOVE    WRK-SJIYMD(7:2)   TO  DAY-IDX2
+                MOVE    TBL-DAY(DAY-IDX2)
+                                   TO     WK-FREE-NAME2(IDZ)(17:4)
+      *
+                IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+                  MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
+                  MOVE  WRK-JIDO-SETCOMATFLG
+                                   TO     WK-FREE-SETCOMATFLG2(IDZ)
+                END-IF
+      *
+                ADD        1       TO     IDZ
+      *
+                MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
+                MOVE   "ÄÌ»»¼Â»Ü²ó¿ô¡Ê¡¡¡¡²ó¡Ë"
+                                   TO     WK-FREE-NAME2(IDZ)
+                MOVE    WRK-ZAIKYO-KAISU  TO  DAY-IDX2
+                MOVE    TBL-DAY(DAY-IDX2)
+                                   TO     WK-FREE-NAME2(IDZ)(15:4)
+      *
+                IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+                  MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
+                  MOVE  WRK-JIDO-SETCOMATFLG
+                                   TO     WK-FREE-SETCOMATFLG2(IDZ)
+                END-IF
+      *
+                PERFORM  200111-RECE85-TAIHI-SEC
+      *
+      *         £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+                MOVE    ZERO                 TO  IDX-RECE85
+                MOVE    SPACE                TO  WRK-RECE85XX-REC
+                INITIALIZE                       WRK-RECE85XX-REC
+      *
+                MOVE    RECE84-MEISAISU      TO  MAX-MEISAISU
+      *
+                PERFORM   VARYING   IDX   FROM    1   BY  1
+                           UNTIL  ( IDX                >   50    )
+                            OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+                  COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+                  MOVE  "810000001"
+                          TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+                  MOVE  ZERO
+                          TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-YUKOKETA2(IDX)
+                          TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-NAME2(IDX)
+                          TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-MEISKYFLG2(IDX)
+                          TO  WRK-RECE85XX-MEISKYFLG(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-SETCOMATFLG2(IDX)
+                          TO  WRK-RECE85XX-SETCOMATFLG(MAX-MEISAISU 1)
+                  MOVE  "1"
+                          TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+                END-PERFORM
+      *
+                PERFORM    200111-SRYACTINF-HENSYU-SEC
+             END-IF
+           END-IF
+      *
+           .
+       2001-KIATU-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7338,6 +7652,7 @@
        2001-SEIKEA-HANTEI-SEC          SECTION.
       *
            IF     RECE84-FLG-SEIKEA-COMMENT   =    "1"
+           AND    RECE84-FLG-SCPRO-COMMENT    =    SPACE
                INITIALIZE            WRK-JIDO-SETCOM-AREA
                MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
                MOVE       107     TO     WRK-JIDO-SETCOMATFLG
@@ -7347,6 +7662,95 @@
       *
            .
        2001-SEIKEA-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-SCPRO-HANTEI-SEC          SECTION.
+      *
+           IF     RECE84-FLG-SCPRO-COMMENT   NOT =  SPACE
+             MOVE         ZERO     TO     IDZ
+             INITIALIZE                   WRK-FREE-AREA2
+             IF   RECE84-FLG-SEIKEA-COMMENT  =  "1"
+                INITIALIZE                WRK-JIDO-SETCOM-AREA
+                MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+      **********MOVE       99      TO     FLG-COMMENT
+                MOVE       3       TO     FLG-COMMENT
+                PERFORM   200111-SANTEI-DAY-SEC
+                PERFORM   20011-FREE-COMMENT2-SEC
+             END-IF
+      *
+             EVALUATE  RECE84-FLG-SCPRO-COMMENT
+               WHEN      "2"
+                 MOVE  CONS-SCPRO  TO     WRK-CHECK-SRYCD
+             END-EVALUATE
+             PERFORM       20011-ZAIKYO-CHECK-SEC
+      *
+             IF   WRK-ZAIKYO-YMD   NOT =  SPACE
+                INITIALIZE                WRK-JIDO-SETCOM-AREA
+                MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+                MOVE       33      TO     WRK-JIDO-SETCOMATFLG
+                MOVE       99      TO     FLG-COMMENT
+      *
+                ADD        1       TO     IDZ
+      *
+                MOVE       12      TO     WK-FREE-YUKOKETA2(IDZ)
+                MOVE   "¼£ÎÅ³«»ÏÆü¡¡¡¡¡¡·î¡¡¡¡Æü"
+                                   TO     WK-FREE-NAME2(IDZ)
+      *
+                MOVE    WRK-ZAIKYO-YMD(5:2)   TO  DAY-IDX2
+                MOVE    TBL-DAY(DAY-IDX2)
+                                   TO     WK-FREE-NAME2(IDZ)(13:4)
+                MOVE    WRK-ZAIKYO-YMD(7:2)   TO  DAY-IDX2
+                MOVE    TBL-DAY(DAY-IDX2)
+                                   TO     WK-FREE-NAME2(IDZ)(19:4)
+      *
+                IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+                  MOVE  "2"        TO     WK-FREE-MEISKYFLG2(IDZ)
+                  MOVE  WRK-JIDO-SETCOMATFLG
+                                   TO     WK-FREE-SETCOMATFLG2(IDZ)
+                END-IF
+             END-IF
+      *
+             IF  (RECE84-FLG-SEIKEA-COMMENT  =  "1"  )
+             OR  (WRK-ZAIKYO-YMD         NOT =  SPACE)
+                PERFORM  200111-RECE85-TAIHI-SEC
+      *
+      *         £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+                MOVE    ZERO                 TO  IDX-RECE85
+                MOVE    SPACE                TO  WRK-RECE85XX-REC
+                INITIALIZE                       WRK-RECE85XX-REC
+      *
+                MOVE    RECE84-MEISAISU      TO  MAX-MEISAISU
+      *
+                PERFORM   VARYING   IDX   FROM    1   BY  1
+                           UNTIL  ( IDX                >   50    )
+                            OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+                  COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+                  MOVE  "810000001"
+                          TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+                  MOVE  ZERO
+                          TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-YUKOKETA2(IDX)
+                          TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-NAME2(IDX)
+                          TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-MEISKYFLG2(IDX)
+                          TO  WRK-RECE85XX-MEISKYFLG(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-SETCOMATFLG2(IDX)
+                          TO  WRK-RECE85XX-SETCOMATFLG(MAX-MEISAISU 1)
+                  MOVE  "1"
+                          TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+                END-PERFORM
+      *
+                PERFORM    200111-SRYACTINF-HENSYU-SEC
+             END-IF
+           END-IF
+      *
+           .
+       2001-SCPRO-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10375,7 +10779,7 @@
                     ELSE
                       EVALUATE   RECE851-SETCOMATFLG(IDX)
                         WHEN    1
-                        WHEN    3  THRU   35
+                        WHEN    3  THRU   37
                         WHEN  101  THRU  107
                         WHEN  204
                         WHEN  225
@@ -10467,6 +10871,8 @@
                           "180051830" OR "180052030" OR "180052230" OR
       *18
                           "113003410" OR
+      *19
+                          "114045510" OR
       *20
                           "700010000" OR "700030000" OR "700050000" OR
                           "700080000" OR "700110000" OR "700140000" OR
@@ -10490,8 +10896,12 @@
       *29
                           "114027610" OR "114027710" OR "114027810" OR
                           "114027910" OR
+      *33
+                          "180056570" OR
       *34
                           "113022810" OR
+      *35
+                          "140057510" OR "140057610" OR
       *101
                           "113010710" OR "113010810" OR "120001610" OR
       *102

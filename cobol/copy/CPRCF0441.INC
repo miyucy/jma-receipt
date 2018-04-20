@@ -289,12 +289,12 @@
                05  RECE441-FLG-TUINZAI-COMMENT  PIC  X(01).
       *依存症集団療法
                05  RECE441-FLG-IZONSYO-COMMENT  PIC  X(01).
-      *精神科重症患者早期集中支援管理料
-               05  RECE441-FLG-SEIJYU-COMMENT   PIC  X(01).
       *在宅患者訪問薬剤管理指導料
                05  RECE441-FLG-ZAIYAK-COMMENT   PIC  X(01).
       *乳腺炎重症化予防ケア・指導料
                05  RECE441-FLG-NYUSEN-COMMENT   PIC  X(01).
+      *高気圧酸素治療
+               05  RECE441-FLG-KIATU-COMMENT    PIC  X(01).
       *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE441-ACCTP-SYUGI-TBL-G.
