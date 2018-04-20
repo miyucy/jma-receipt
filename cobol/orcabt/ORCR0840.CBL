@@ -2515,7 +2515,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  OR "190201770"
                                  OR "190201870"
       *（対応保留分）
-                                 OR "190204570"
                                  OR "190205570"
                                  OR "190205670"
                                  OR "190205770"
@@ -2557,6 +2556,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            ADD     1          TO  IDX14
            MOVE  "190212670"  TO  WRK-CHUKSNSRYCD(IDX14)
+      *
+           ADD     1          TO  IDX14
+           MOVE  "101900170"  TO  WRK-CHUKSNSRYCD(IDX14)
       *
            .
        140-NYUINKASAN-JYOGAI-EXT.

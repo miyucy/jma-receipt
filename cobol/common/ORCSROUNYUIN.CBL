@@ -302,6 +302,10 @@
            03  CONS-201804-KSN3            PIC X(09) VALUE "190206070".
       *    êóáìÂÐºö²Ã»»£²¡ÊÍ­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ë
            03  CONS-201804-KSN4            PIC X(09) VALUE "190206170".
+      *    Ìë´Ö´Ç¸î²Ã»»
+           03  CONS-201804-KSN5            PIC X(09) VALUE "190204570".
+      *    Ìë´Ö´Ç¸î²Ã»»¡ÊÏ«ºÒÍÑ¡Ë
+           03  CONS-201804-KSN6            PIC X(09) VALUE "101900170".
       *----------------------------------------------------------------
       *
       *    Ï«ºÒ¼£ÎÅ·×²è²Ã»»
@@ -489,6 +493,7 @@
            03  WRK-201804-KSN2             PIC 9(03) OCCURS 31.
            03  WRK-201804-KSN3             PIC 9(03) OCCURS 31.
            03  WRK-201804-KSN4             PIC 9(03) OCCURS 31.
+           03  WRK-201804-KSN5             PIC 9(03) OCCURS 31.
       *----------------------------------------------------------------
       *
       *    ¿ÇÎÅ¥³¡¼¥É·×½¸·×ÍÑ
@@ -3906,7 +3911,9 @@
                          OR (NACCT-SRYCDTOTAL(6:9) = CONS-201804-KSN1
                                                   OR CONS-201804-KSN2
                                                   OR CONS-201804-KSN3
-                                                  OR CONS-201804-KSN4)
+                                                  OR CONS-201804-KSN4
+                                                  OR CONS-201804-KSN5
+                                                  OR CONS-201804-KSN6)
                           IF  (WRK-NYUINKHN(IDX1)      NOT = SPACE)
                           AND ((LNK-SROUNYUIN-GAIHAKU(IDX1)
                                                            = ZERO) OR
@@ -4054,6 +4061,10 @@
                              WHEN  CONS-201804-KSN4
                                   MOVE   NACCT-DAY(IDX1)
                                         TO  WRK-201804-KSN4(IDX1)
+                             WHEN  CONS-201804-KSN5
+                             WHEN  CONS-201804-KSN6
+                                  MOVE   NACCT-DAY(IDX1)
+                                        TO  WRK-201804-KSN5(IDX1)
                            END-EVALUATE
       *
                            IF   FLG-RYAKU   =   ZERO
@@ -4206,7 +4217,9 @@
                             OR (SRY-SRYCD(1)  =  CONS-201804-KSN1
                                               OR CONS-201804-KSN2
                                               OR CONS-201804-KSN3
-                                              OR CONS-201804-KSN4)
+                                              OR CONS-201804-KSN4
+                                              OR CONS-201804-KSN5
+                                              OR CONS-201804-KSN6)
                                 MOVE  SRY-SRYCD(1)   TO
                                                ACCT-SRYCDTOTAL(6:9)
                             END-IF
@@ -4273,7 +4286,9 @@
                                             CONS-201804-KSN1
                                         OR  CONS-201804-KSN2
                                         OR  CONS-201804-KSN3
-                                        OR  CONS-201804-KSN4)
+                                        OR  CONS-201804-KSN4
+                                        OR  CONS-201804-KSN5
+                                        OR  CONS-201804-KSN6)
       *                Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
@@ -4425,6 +4440,10 @@
                                 WHEN  CONS-201804-KSN4
                                       MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-201804-KSN4(IDX1)
+                                WHEN  CONS-201804-KSN5
+                                WHEN  CONS-201804-KSN6
+                                      MOVE   ACCT-DAY(1 IDX1)
+                                        TO  WRK-201804-KSN5(IDX1)
                               END-EVALUATE
       *
                               IF   FLG-RYAKU   =   ZERO
@@ -5019,6 +5038,19 @@
                                            (IDX1 WRK-MEISAISU)
                    ELSE
                        MOVE  CONS-201407-KSN4  TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   END-IF
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *        Ìë´Ö´Ç¸î²Ã»»(0000-0))
+               IF         WRK-201804-KSN5(IDX1)       NOT =   ZERO
+                   ADD      1                  TO  WRK-MEISAISU
+                   IF     FLG-KENPOJYUNKYO  =  1
+                       MOVE  CONS-201804-KSN5  TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   ELSE
+                       MOVE  CONS-201804-KSN6  TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
                    END-IF
                    MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
@@ -7150,7 +7182,7 @@
                MOVE     "key30"            TO  MCP-PATHNAME
                PERFORM   910-TENSU-FETCH-SEC
                PERFORM   UNTIL   (FLG-TENSU  =   1)   OR
-                                 (IDX1       >=  50)
+                                 (IDX1      >= 100)
                  IF   TNS-SRYCD  =  "190134270"
                                  OR "190135470"
                                  OR "190135670"
@@ -7186,7 +7218,6 @@
                                  OR "190201770"
                                  OR "190201870"
       *¡ÊÂÐ±þÊÝÎ±Ê¬¡Ë
-                                 OR "190204570"
                                  OR "190205570"
                                  OR "190205670"
                                  OR "190205770"
@@ -7228,6 +7259,9 @@
       *
            ADD     1          TO  IDX1
            MOVE  "190212670"  TO  LNK-SROUNYUIN-CHUKSNSRYCD(IDX1)
+      *
+           ADD     1          TO  IDX1
+           MOVE  "101900170"  TO  LNK-SROUNYUIN-CHUKSNSRYCD(IDX1)
       *
            .
       *
