@@ -3316,6 +3316,16 @@
            ELSE
                MOVE    ZERO            TO  SPA-PSY80-ARI(IDX-80)
            END-IF
+      *H30.4
+      *    精神科継続外来支援のチェック（不安・睡眠２種類は対象外）
+           IF    (ORCSPSYCHO-COUNT (1) >=  3 )
+             OR  (ORCSPSYCHO-COUNT (2) >=  3 )
+             OR  (ORCSPSYCHO-COUNT (3) >=  3 )
+             OR  (ORCSPSYCHO-COUNT (4) >=  3 )
+               IF      SPA-PSY80-ARI(IDX-80)   =   ZERO
+                   MOVE    3               TO  SPA-PSY80-ARI(IDX-80)
+               END-IF
+           END-IF
       *!!
       *H30.4
       *    不安不眠薬入力あり
