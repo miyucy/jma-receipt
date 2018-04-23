@@ -106,6 +106,8 @@
       *                                     ORCBM500を複写して作成
       *                                     請求管理なしでデータ作成
       *                                     tbl_receden_tmp使用
+      *  04.08.04    NACL-伊藤    18/04/23  平成３０年４月改正対応
+      *                                     カタカナ（氏名）、患者状態の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -848,6 +850,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                    INSPECT RECEDEN-RECEDATA   TALLYING    WRK-MOJISU
                                                FOR ALL "," 
                    IF      WRK-MOJISU          =   16  OR  17  OR  25
+                                               OR  35
                        PERFORM VARYING IDX FROM    2500 BY  -1
                                UNTIL   IDX <       1
                            IF      RECEDEN-RECEDATA (IDX:1)
@@ -870,6 +873,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                                    DELIMITED  BY  SIZE
                                      ",,,,,,,,,,,,,,,,,,"
                                                    DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                       END-IF
+                       IF      WRK-MOJISU          =   35
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,"          DELIMITED  BY  SIZE
                                      WRK-KAIGYO    DELIMITED  BY  SIZE
                                      INTO          WRK-REC
                            END-STRING
