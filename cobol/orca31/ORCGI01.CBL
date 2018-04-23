@@ -1764,7 +1764,7 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SPA-GMN-I01-SKJKBN-CNT )
       *
-               IF    ( SPA-GMN-I01-TSKJKBNL (IDX0) =   "A" )
+               IF    ( SPA-GMN-I01-SKJKBNL (IDX0) =   "A" )
                    CONTINUE
                ELSE
                    COMPUTE SPA-GMN-I01-TSKJKBN-CNT
@@ -19907,7 +19907,10 @@
                MOVE    "T"             TO  I01-TSKJKBN-VISIBLE (1)
                                            I01-TSKJKBN-VISIBLE (2)
                                            I01-TSKJKBN-VISIBLE (3)
-               IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" OR "08" )
+               EVALUATE    TRUE
+               WHEN  ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
+               WHEN  ( SPA-GMN-I01-SYORIKBN-CD =   "08" )
+                 AND ( SPA-GMN-I01-SKJKBN-CD   =   "C" )
                    MOVE    WIDGET-NORMAL
                                        TO  I01-TSKJKBN-STT (1)
                                            I01-TSKJKBN-STT (2)
@@ -19915,7 +19918,7 @@
                                            I01-TSKJKBN-ITM-STT (1)
                                            I01-TSKJKBN-ITM-STT (2)
                                            I01-TSKJKBN-ITM-STT (3)
-               END-IF
+               END-EVALUATE
            END-IF
       *
       *    Âà±¡¾ÚÌÀ½ñºÆÈ¯¹Ô
