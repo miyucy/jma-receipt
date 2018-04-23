@@ -2536,8 +2536,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    œ´∫“Õ—•≥°º•… ‘Ω∏
            ADD     1          TO  IDX14
            MOVE  "101900100"  TO  WRK-CHUKSNSRYCD(IDX14)
-           ADD     1          TO  IDX14
-           MOVE  "101900110"  TO  WRK-CHUKSNSRYCD(IDX14)
+           IF    RECE82-SRYYM  <=  "201803"
+            ADD    1          TO  IDX14
+            MOVE "101900110"  TO  WRK-CHUKSNSRYCD(IDX14)
+           END-IF
            ADD     1          TO  IDX14
            MOVE  "101900120"  TO  WRK-CHUKSNSRYCD(IDX14)
       *
