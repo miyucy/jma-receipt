@@ -4709,6 +4709,15 @@
                    MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
+      *        重度認知症加算（精神病棟入院基本料）(9024-3)
+               IF         WRK-201004-KSN15(IDX1)      NOT =   ZERO
+               AND        LNK-SROUNYUIN-SANTEIYM      >=  "201804"
+                   ADD      1                  TO  WRK-MEISAISU
+                   MOVE   CONS-201004-KSN15    TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
                IF   LNK-SROUNYUIN-SANTEIYM   >=   "201604"
       *          看護必要度加算１（特定機能病院入院基本料）(9026-3)
                  IF       WRK-201604-KSN4 (IDX1)      NOT =   ZERO
@@ -4975,6 +4984,7 @@
                END-IF
       *        重度認知症加算（精神病棟入院基本料）(0000-0)
                IF         WRK-201004-KSN15(IDX1)      NOT =   ZERO
+               AND        LNK-SROUNYUIN-SANTEIYM      <=  "201803"
                    ADD      1                  TO  WRK-MEISAISU
                    IF    LNK-SROUNYUIN-SANTEIYM   >=   "201307"
                      IF     FLG-KENPOJYUNKYO  =  1
@@ -7239,8 +7249,10 @@
       *    労災用コード編集
            ADD     1          TO  IDX1
            MOVE  "101900100"  TO  LNK-SROUNYUIN-CHUKSNSRYCD(IDX1)
-           ADD     1          TO  IDX1
-           MOVE  "101900110"  TO  LNK-SROUNYUIN-CHUKSNSRYCD(IDX1)
+           IF    LNK-SROUNYUIN-SANTEIYM  <=  "201803"
+            ADD    1          TO  IDX1
+            MOVE "101900110"  TO  LNK-SROUNYUIN-CHUKSNSRYCD(IDX1)
+           END-IF
            ADD     1          TO  IDX1
            MOVE  "101900120"  TO  LNK-SROUNYUIN-CHUKSNSRYCD(IDX1)
       *
