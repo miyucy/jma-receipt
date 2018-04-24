@@ -313,6 +313,7 @@
       *??  DISPLAY "LNK-RECESRCHK PTID  =" LNK-RECESRCHK-PTID
       *??  DISPLAY "LNK-RECESRCHK SRYYM =" LNK-RECESRCHK-SRYYM
       *??  DISPLAY "LNK-RECESRCHK CHKKBN=" LNK-RECESRCHK-CHKKBN
+      *??  DISPLAY "LNK-RECESRCHK CHKNO =" LNK-RECESRCHK-CHKNO
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
@@ -364,6 +365,13 @@
                            MOVE    4               TO  LNK-RECESRCHK-RC
                    END-EVALUATE
                END-IF
+      *
+               IF      LNK-RECESRCHK-RC    =   ZERO
+      *            チェック番号チェック
+                   IF      LNK-RECESRCHK-CHKNO >   10
+                       MOVE    5               TO  LNK-RECESRCHK-RC
+                   END-IF
+               END-IF
            END-IF
       *
            IF      LNK-RECESRCHK-RC    =   ZERO
@@ -386,20 +394,27 @@
                                        WRK-ED-IDX
                                        FLG-CHK
       *
-           EVALUATE    LNK-RECESRCHK-CHKKBN
-               WHEN    "1"
-                   MOVE    1               TO  WRK-ST-IDX
-                   MOVE    10              TO  WRK-ED-IDX
-               WHEN    "2"
-                   MOVE    1               TO  WRK-ST-IDX
-                   MOVE    8               TO  WRK-ED-IDX
-               WHEN    "3"
-                   MOVE    9               TO  WRK-ST-IDX
-                   MOVE    9               TO  WRK-ED-IDX
-               WHEN    "4"
-                   MOVE    10              TO  WRK-ST-IDX
-                   MOVE    10              TO  WRK-ED-IDX
-           END-EVALUATE
+           IF      LNK-RECESRCHK-CHKNO
+                                   >   ZERO
+               MOVE    LNK-RECESRCHK-CHKNO
+                                       TO  WRK-ST-IDX
+                                           WRK-ED-IDX
+           ELSE
+               EVALUATE    LNK-RECESRCHK-CHKKBN
+                   WHEN    "1"
+                       MOVE    1               TO  WRK-ST-IDX
+                       MOVE    10              TO  WRK-ED-IDX
+                   WHEN    "2"
+                       MOVE    1               TO  WRK-ST-IDX
+                       MOVE    8               TO  WRK-ED-IDX
+                   WHEN    "3"
+                       MOVE    9               TO  WRK-ST-IDX
+                       MOVE    9               TO  WRK-ED-IDX
+                   WHEN    "4"
+                       MOVE    10              TO  WRK-ST-IDX
+                       MOVE    10              TO  WRK-ED-IDX
+               END-EVALUATE
+           END-IF
       *
       *    処理年月の三ヶ月前までの算定履歴をチェック
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -427,8 +442,8 @@
                            OR      WRK-CONS-SRYCD (IDXX IDYY)
                                            =       SPACE
                            OR      FLG-CHK =       1
-      *??               DISPLAY "SRYCD=" IDXX " " IDYY " " 
-      *??                        WRK-CONS-SRYCD (IDXX IDYY)
+      *??              DISPLAY "SRYCD=" IDXX " " IDYY " " 
+      *??                       WRK-CONS-SRYCD (IDXX IDYY)
       *
                        INITIALIZE                  SANTEI-REC
                        MOVE    SPA-HOSPNUM     TO  SANTEI-HOSPNUM
@@ -467,7 +482,7 @@
       *    
            IF      FLG-CHK         =   ZERO
       *        算定履歴情報編集なし
-               MOVE    5               TO  LNK-RECESRCHK-RC
+               MOVE    9               TO  LNK-RECESRCHK-RC
            END-IF
       *
            MOVE    1               TO  FLG-END

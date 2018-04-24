@@ -31,6 +31,8 @@
            03  LNK-RECESRCHK-SRYYM         PIC X(06).
       *    チェック区分
            03  LNK-RECESRCHK-CHKKBN        PIC X(01).
+      *    チェック番号
+           03  LNK-RECESRCHK-CHKNO         PIC 9(02).
       *返却項目
            03  LNK-RECESRCHK-HENKYAKU-AREA.
       *算定履歴情報
@@ -50,6 +52,7 @@
       *           ２：処理年月エラー
       *           ３：患者ＩＤエラー
       *           ４：チェック区分エラー
-      *           ５：算定履歴情報編集なし
+      *           ５：チェック番号エラー
+      *           ９：算定履歴情報編集なし
            03  LNK-RECESRCHK-RC            PIC S9(9) BINARY.
       *
