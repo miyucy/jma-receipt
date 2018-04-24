@@ -244,7 +244,7 @@
       *    チェックする算定の診療行為コードの最大数
            03  WRK-CONS-SRYCD-MAX  PIC 9(03)   VALUE   40.
       *    チェックする月数
-           03  WRK-CONS-YM-MAX     PIC 9(03)   VALUE   3.
+           03  WRK-CONS-YM-MAX     PIC 9(03)   VALUE   4.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -310,9 +310,9 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           DISPLAY "LNK-RECESRCHK PTID  =" LNK-RECESRCHK-PTID
-           DISPLAY "LNK-RECESRCHK SRYYM =" LNK-RECESRCHK-SRYYM
-           DISPLAY "LNK-RECESRCHK CHKKBN=" LNK-RECESRCHK-CHKKBN
+      *??  DISPLAY "LNK-RECESRCHK PTID  =" LNK-RECESRCHK-PTID
+      *??  DISPLAY "LNK-RECESRCHK SRYYM =" LNK-RECESRCHK-SRYYM
+      *??  DISPLAY "LNK-RECESRCHK CHKKBN=" LNK-RECESRCHK-CHKKBN
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
@@ -412,12 +412,12 @@
                                        TO  LNK-DAY6-KIJUN (1:6)
                MOVE    "01"            TO  LNK-DAY6-KIJUN (7:2)
                MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
-               COMPUTE LNK-DAY6-ZOGEN  =   -1  *   IDX
+               COMPUTE LNK-DAY6-ZOGEN  =   -1  *   ( IDX -   1 )
                CALL    "ORCSDAY"       USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
                MOVE    LNK-DAY6-KEISAN (1:6)
                                        TO  WRK-SANTEIYM
-               DISPLAY "SANTEIYM=" WRK-SANTEIYM
+      *??      DISPLAY "SANTEIYM=" WRK-SANTEIYM
       *
                PERFORM VARYING IDXX    FROM    WRK-ST-IDX  BY  1
                        UNTIL   IDXX    >       WRK-ED-IDX
@@ -427,8 +427,8 @@
                            OR      WRK-CONS-SRYCD (IDXX IDYY)
                                            =       SPACE
                            OR      FLG-CHK =       1
-                       DISPLAY "SRYCD=" IDXX " " IDYY " " 
-                                WRK-CONS-SRYCD (IDXX IDYY)
+      *??               DISPLAY "SRYCD=" IDXX " " IDYY " " 
+      *??                        WRK-CONS-SRYCD (IDXX IDYY)
       *
                        INITIALIZE                  SANTEI-REC
                        MOVE    SPA-HOSPNUM     TO  SANTEI-HOSPNUM
