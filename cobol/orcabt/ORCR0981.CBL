@@ -1650,6 +1650,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYUEIYO-HANTEI-SEC
                       END-IF
+      *               ¿Ç¶è£±£³¡¦£±£´¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
@@ -1682,7 +1683,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIKYO-HANTEI-SEC
                       END-IF
-      *               ¿Ç¶è£±£³¤È¶¦ÍÑÊ¬
+      *               ¿Ç¶è£±£³¡¦£±£´¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
@@ -1840,6 +1841,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYUEIYO-HANTEI-SEC
                       END-IF
+      *               ¿Ç¶è£±£³¡¦£±£´¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
@@ -1905,7 +1907,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-BOKOHO-HANTEI-SEC
                       END-IF
-      *               ¿Ç¶è£±£³¤È¶¦ÍÑÊ¬
+      *               ¿Ç¶è£±£³¡¦£±£´¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
@@ -10779,7 +10781,7 @@
                     ELSE
                       EVALUATE   RECE851-SETCOMATFLG(IDX)
                         WHEN    1
-                        WHEN    3  THRU   37
+                        WHEN    3  THRU   38
                         WHEN  101  THRU  107
                         WHEN  204
                         WHEN  225
@@ -10801,6 +10803,7 @@
                             ADD    1             TO  WRK-HEN-SEQNO-X
                           END-IF
                         WHEN    2
+                        WHEN   39
                         WHEN  108
                           ADD  1                 TO  WRK-HEN-SEQNO-J2
                           IF   WRK-HEN-SEQNO-J2 >  3
