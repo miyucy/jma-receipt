@@ -27647,7 +27647,7 @@
                    MOVE ZERO  TO  RECE62-TENSU(KOHFTN-IDX2 KOHFTN-IDX3)
                  END-PERFORM
                  PERFORM  VARYING  KOHFTN-IDX2  FROM  1  BY  1
-                           UNTIL   KOHFTN-IDX2   >   10
+                           UNTIL   KOHFTN-IDX2   >   20
                    MOVE ZERO  TO
                               RECE62-NYUKHNKEI(KOHFTN-IDX2 KOHFTN-IDX3)
                               RECE62-NYUTOKKEI(KOHFTN-IDX2 KOHFTN-IDX3)
@@ -27962,7 +27962,7 @@
                           RECE62-TENSU(KOHFTN-IDX 2)
                END-PERFORM
                PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                           UNTIL    KOHFTN-IDX     >   10
+                           UNTIL    KOHFTN-IDX     >   20
                  COMPUTE  RECE62-NYUKHNKEI(KOHFTN-IDX 3) =
                           RECE62-NYUKHNKEI(KOHFTN-IDX 3) -
                           RECE62-NYUKHNKEI(KOHFTN-IDX 2)
@@ -28000,7 +28000,7 @@
                  MOVE   ZERO    TO    RECE62-TENSU(KOHFTN-IDX 3)
                END-PERFORM
                PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                           UNTIL    KOHFTN-IDX     >   10
+                           UNTIL    KOHFTN-IDX     >   20
                  MOVE   ZERO    TO    RECE62-NYUKHNKEI(KOHFTN-IDX 3)
                                       RECE62-NYUTOKKEI(KOHFTN-IDX 3)
                END-PERFORM
@@ -34329,7 +34329,7 @@
                        RECE62-TENSU(KOHFTN-IDX2 2)
            END-PERFORM
            PERFORM    VARYING   KOHFTN-IDX2   FROM   1   BY   1
-                       UNTIL    KOHFTN-IDX2     >   10
+                       UNTIL    KOHFTN-IDX2     >   20
               COMPUTE  RECE62-NYUKHNKEI(KOHFTN-IDX2 KOHFTN-IDX)
                     =  RECE62-NYUKHNKEI(KOHFTN-IDX2 1)
                     -  RECE62-NYUKHNKEI(KOHFTN-IDX2 2)
@@ -34360,7 +34360,7 @@
                        RECE62-TENSU(KOHFTN-IDX2 3)
            END-PERFORM
            PERFORM    VARYING   KOHFTN-IDX2   FROM   1   BY   1
-                       UNTIL    KOHFTN-IDX2     >   10
+                       UNTIL    KOHFTN-IDX2     >   20
               COMPUTE  RECE62-NYUKHNKEI(KOHFTN-IDX2 KOHFTN-IDX)
                     =  RECE62-NYUKHNKEI(KOHFTN-IDX2 1)
                     -  RECE62-NYUKHNKEI(KOHFTN-IDX2 3)
@@ -34389,7 +34389,7 @@
               MOVE  ZERO  TO  RECE62-TENSU(KOHFTN-IDX2 KOHFTN-IDX)
            END-PERFORM
            PERFORM    VARYING   KOHFTN-IDX2   FROM   1   BY   1
-                       UNTIL    KOHFTN-IDX2     >   10
+                       UNTIL    KOHFTN-IDX2     >   20
               MOVE  ZERO  TO  RECE62-NYUKHNKEI(KOHFTN-IDX2 KOHFTN-IDX)
               MOVE  ZERO  TO  RECE62-NYUTOKKEI(KOHFTN-IDX2 KOHFTN-IDX)
            END-PERFORM
@@ -35283,7 +35283,7 @@
                INITIALIZE              RECE62-TENSUINF-AREA (IDX)
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
+                   UNTIL   IDX >       20
                INITIALIZE              RECE62-NYUKHNKEIINF-AREA (IDX)
                                        RECE62-NYUTOKKEIINF-AREA (IDX)
            END-PERFORM
@@ -35325,7 +35325,7 @@
                                            TO  RECE62-TENSU (IDX 1)
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
+                   UNTIL   IDX >       20
                MOVE    RECE6W-NYUKHNKEIINF (IDX 1)
                                        TO  RECE62-NYUKHNKEIINF (IDX 1)
                MOVE    RECE6W-NYUTOKKEIINF (IDX 1)
@@ -35387,7 +35387,7 @@
                                            TO  RECE62-TENSU (IDX1 IDYX)
                            END-PERFORM
                            PERFORM VARYING IDX1    FROM    1   BY  1
-                                   UNTIL   IDX1    >       10
+                                   UNTIL   IDX1    >       20
                                MOVE
                                    RECE6W-NYUKHNKEIINF (IDX1 IDXX)
                                            TO  RECE62-NYUKHNKEIINF

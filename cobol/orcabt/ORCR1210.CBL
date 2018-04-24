@@ -1201,7 +1201,7 @@
                   IF   WRK-NYUKHNRYO  NOT = ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
-                              UNTIL (ID1                      > 10  )
+                              UNTIL (ID1                      > 20  )
                                 OR  (RECE200-NYUKHNNISSU(ID1) = ZERO)
                                 OR  (FLG-ARI                  = 1   )
                       IF  RECE200-NYUKHNRYO(ID1)  =  WRK-NYUKHNRYO
@@ -1359,7 +1359,7 @@
                    IF     FLG-GAIHAKU  =  ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
-                        UNTIL ( ID1                          > 10    )
+                        UNTIL ( ID1                          > 20    )
                           OR  ( RECE200-NYUTOKNISSU(ID1)     = ZERO  )
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE200-NYUTOKRYO-RYAKU(ID1)  =  WRK-RYAKUSHO
@@ -1385,7 +1385,7 @@
                    ELSE
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
-                        UNTIL ( ID1                          > 10    )
+                        UNTIL ( ID1                          > 20    )
                           OR  ( RECE200-NYUTOKNISSU(ID1)     = ZERO  )
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE200-NYUTOKRYO(ID1)  =  WRK-NYUTOKRYO
@@ -2288,7 +2288,7 @@
            END-PERFORM
       *
            PERFORM    VARYING    IDY    FROM   1   BY   1
-                       UNTIL     IDY    >     10
+                       UNTIL     IDY    >     20
               IF   RECE200-NYUTOKRYO(IDY)  =  999999999
                     MOVE    ZERO    TO   RECE200-NYUTOKRYO(IDY)
               END-IF

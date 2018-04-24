@@ -6099,7 +6099,7 @@
            IF        RECE62-NYUKHNRYO (5)    >   ZERO
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    4   BY  1
-                         UNTIL     IDX       >   10
+                         UNTIL     IDX       >   20
                          OR        RECE62-NYUKHNRYO (IDX)    =   ZERO
       *            <日数>
                    ADD     RECE62-NYUKHNNISSU(IDX)
@@ -6338,7 +6338,7 @@
            IF        RECE62-NYUTOKNISSU (5)  >   ZERO
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    4   BY  1
-                         UNTIL     IDX       >   10
+                         UNTIL     IDX       >   20
                          OR        RECE62-NYUTOKNISSU (IDX)  =   ZERO
       *            <日数>
                    ADD     RECE62-NYUTOKNISSU(IDX)
@@ -10880,7 +10880,7 @@
            IF        RECE62-NYUKHNRYO (5)    >   ZERO
                MOVE    ZERO                  TO  RECE10-KHNTEN (26)
                PERFORM   VARYING   IDY   FROM    5   BY  1
-                         UNTIL     IDY       >   10
+                         UNTIL     IDY       >   20
                          OR        RECE62-NYUKHNRYO (IDY)    =   ZERO
                    ADD     RECE62-NYUKHNNISSU(IDY)
                                                  TO  RECE10-KAISU  (26)
@@ -10918,7 +10918,7 @@
            IF        RECE62-NYUTOKNISSU (5)  >   ZERO
                MOVE    ZERO                  TO  RECE10-KHNTEN (31)
                PERFORM   VARYING   IDY   FROM    5   BY  1
-                         UNTIL     IDY       >   10
+                         UNTIL     IDY       >   20
                          OR        RECE62-NYUTOKNISSU(IDY)   =   ZERO
                    ADD     RECE62-NYUTOKNISSU(IDY)
                                                  TO  RECE10-KAISU  (31)
@@ -12452,7 +12452,7 @@
                                                TO  WRK-TOTALTEN (IDY)
                            END-PERFORM
                            PERFORM VARYING IDX FROM    1   BY  1
-                                   UNTIL   IDX >       10
+                                   UNTIL   IDX >       20
                                ADD     RECE62-NYUKHNKEI  (IDX IDY)
                                                TO  WRK-TOTALTEN (IDY)
                                ADD     RECE62-NYUTOKKEI  (IDX IDY)

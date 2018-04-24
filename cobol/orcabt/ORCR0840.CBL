@@ -14017,7 +14017,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
                   END-PERFORM
       ***
                   PERFORM    VARYING    ID3    FROM    1   BY   1
-                              UNTIL     ID3     >     10
+                              UNTIL     ID3     >     20
       *
                     COMPUTE  RECE82-NYUKHNKIN-JYU(ID3) =
                              RECE82-NYUKHNKIN-JYU(ID3) +
@@ -14091,7 +14091,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
                   END-PERFORM
       ***
                   PERFORM    VARYING    ID3    FROM    1   BY   1
-                              UNTIL     ID3     >     10
+                              UNTIL     ID3     >     20
       *
                      COMPUTE  RECE82-NYUKHNKIN-JYU(ID3) =
                               RECE82-NYUKHNKIN-JYU(ID3) +
@@ -14301,7 +14301,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
                END-PERFORM
       ***
                PERFORM    VARYING    ID3    FROM    1   BY   1
-                           UNTIL     ID3     >     10
+                           UNTIL     ID3     >     20
       *
                   COMPUTE  RECE82-NYUKHNKIN-JYU(ID3) =
                            RECE82-NYUKHNKIN-JYU(ID3) +
