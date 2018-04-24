@@ -1314,6 +1314,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SYUEIYO-HANTEI-SEC
                       END-IF
+      *               ¿Ç¶è£±£³¡¦£±£´¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
@@ -1346,7 +1347,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIKYO-HANTEI-SEC
                       END-IF
-      *               ¿Ç¶è£±£³¤È¶¦ÍÑÊ¬
+      *               ¿Ç¶è£±£³¡¦£±£´¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF

@@ -261,6 +261,7 @@
       *
       *オンライン診療料
            03  RECE120-FLG-ONLINE-COMMENT  PIC  X(01).
+           03  RECE120-FLG-ONLINE2-COMMENT PIC  9(02).
       *
       *日数回数テーブル
            03  RECE120-DAY-AREA.

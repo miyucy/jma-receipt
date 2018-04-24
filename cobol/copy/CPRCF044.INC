@@ -300,6 +300,7 @@
       *
       *オンライン診療料
                05  RECE44-FLG-ONLINE-COMMENT   PIC  X(01).
+               05  RECE44-FLG-ONLINE2-COMMENT  PIC  9(02).
       *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE44-ACCTP-SYUGI-TBL-G.
