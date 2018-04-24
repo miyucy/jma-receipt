@@ -74,6 +74,7 @@
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.03    NACL-門脇    16/04/15  平成２８年４月改正対応
+      *  04.08.04    NACL-門脇    18/04/24  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1919,7 +1920,7 @@
            IF        RECE200-NYUKHNRYO (5) >   ZERO
                MOVE    ZERO                    TO  SUM-AREA  
                PERFORM VARYING     IDX     FROM    4   BY  1
-                       UNTIL       IDX     >      10
+                       UNTIL       IDX     >      20
                        OR          RECE200-NYUKHNRYO (IDX) =   ZERO
                    ADD     RECE200-NYUKHNNISSU (IDX)
                                                    TO  SUM-NYUKHNNISSU
@@ -1975,7 +1976,7 @@
       *    <特定入院料・その他>
            MOVE    ZERO                    TO  SUM-AREA
            PERFORM VARYING   IDX   FROM    1   BY  1
-                   UNTIL     IDX       >   10
+                   UNTIL     IDX       >   20
                    OR        RECE200-NYUTOKNISSU (IDX)  =   ZERO
       *        <日数>
                ADD     RECE200-NYUTOKNISSU(IDX)
@@ -3118,7 +3119,7 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            IF        RECE200-NYUKHNRYO (5)    >   ZERO
                MOVE    ZERO              TO  RECE10-KHNTEN (25)
                PERFORM   VARYING   IDY   FROM    5   BY  1
-                         UNTIL     IDY       >   10
+                         UNTIL     IDY       >   20
                          OR        RECE200-NYUKHNRYO (IDY)    =   ZERO
                    ADD     RECE200-NYUKHNNISSU(IDY)
                                          TO  RECE10-KAISU  (25)
@@ -3149,7 +3150,7 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            MOVE    ZERO    TO    RECE10-KAISU(31)
            MOVE    ZERO    TO    RECE10-TENSU(31 1)
            PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL     IDY       >   10
+                     UNTIL     IDY       >   20
                      OR        RECE200-NYUTOKNISSU(IDY)  =   ZERO
                ADD     RECE200-NYUTOKNISSU(IDY)
                                          TO  RECE10-KAISU  (31)

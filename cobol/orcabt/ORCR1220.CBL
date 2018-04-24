@@ -9050,7 +9050,7 @@
            MOVE      WRK-TOTALTEN2     TO    RECE200-SYOUKEI(2)
       *
            PERFORM VARYING IDX    FROM    1   BY  1
-                   UNTIL   IDX    >      10
+                   UNTIL   IDX    >      20
                ADD    RECE200-NYUKHNKEI(IDX) TO   RECE200-SYOUKEI(1)
                ADD    RECE200-NYUTOKKEI(IDX) TO   RECE200-SYOUKEI(1)
            END-PERFORM

@@ -61,6 +61,7 @@
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-門脇    18/04/24  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1838,7 +1839,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            IF        RECE82-NYUKHNRYO (5)    >   ZERO
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    4   BY  1
-                         UNTIL     IDX       >   10
+                         UNTIL     IDX       >   20
                          OR        RECE82-NYUKHNRYO (IDX)    =   ZERO
       *            <日数>
                    ADD     RECE82-NYUKHNNISSU(IDX)
@@ -1907,7 +1908,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            IF        RECE82-NYUTOKNISSU (4)  >   ZERO
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    3   BY  1
-                         UNTIL     IDX       >   10
+                         UNTIL     IDX       >   20
                          OR        RECE82-NYUTOKNISSU (IDX)  =   ZERO
       *            <日数>
                    ADD     RECE82-NYUTOKNISSU(IDX)

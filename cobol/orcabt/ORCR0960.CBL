@@ -79,6 +79,7 @@
       *                                     載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.03    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
+      *  04.08.04    NACL-門脇    18/04/24  平成３０年４月改正対応
       *  05.00.02    NACL-伊藤    17/12/22  診療情報システム対応
       *****************************************************************
       *
@@ -1954,7 +1955,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            IF        RECE82-NYUKHNRYO (5)    >   ZERO
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    4   BY  1
-                         UNTIL     IDX       >   10
+                         UNTIL     IDX       >   20
                          OR        RECE82-NYUKHNRYO (IDX)    =   ZERO
       *            <日数>
                    ADD     RECE82-NYUKHNNISSU(IDX)
@@ -2023,7 +2024,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            IF        RECE82-NYUTOKNISSU (4)  >   ZERO
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    3   BY  1
-                         UNTIL     IDX       >   10
+                         UNTIL     IDX       >   20
                          OR        RECE82-NYUTOKNISSU (IDX)  =   ZERO
       *            <日数>
                    ADD     RECE82-NYUTOKNISSU(IDX)
