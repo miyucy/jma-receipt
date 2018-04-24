@@ -5587,6 +5587,7 @@ grpsys                                     SPA-AREA
                    (TNS-NYUKHNKSNKBN       =       13   OR
                                                    14   OR
                                                    26   OR
+                                                   51   OR
                                                    53))
                CONTINUE
            ELSE
