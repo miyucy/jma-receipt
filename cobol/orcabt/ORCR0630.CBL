@@ -327,7 +327,7 @@
            03  WRK-HYOKETU-TEN                         PIC 9(09)V99.
       *
            03  WRK-NYUINF-TABLE.
-               05  WRK-NYUINF-TBL                      OCCURS  10.
+               05  WRK-NYUINF-TBL                      OCCURS  20.
                    07  WRK-NYUKHNKEI                   PIC 9(09)
                                                            OCCURS 5.
                    07  WRK-NYUTOKKEI                   PIC 9(09)
@@ -2261,7 +2261,7 @@
                   IF   WRK-NYUKHNRYO  NOT = ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
-                                UNTIL   ID1                   > 10
+                                UNTIL   ID1                   > 20
                                   OR    RECE62-NYUKHNNISSU(ID1)
                                                               = ZERO
                                   OR    FLG-ARI               = 1
@@ -2661,7 +2661,7 @@
                    IF     FLG-GAIHAKU  =  ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
-                        UNTIL ( ID1                          > 10    )  
+                        UNTIL ( ID1                          > 20    )  
                           OR  ( RECE62-NYUTOKNISSU(ID1)      = ZERO  )
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE62-NYUTOKRYO-RYAKU(ID1)  =  WRK-RYAKUSHO
@@ -2712,7 +2712,7 @@
                    ELSE
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
-                        UNTIL ( ID1                          > 10    )  
+                        UNTIL ( ID1                          > 20    )  
                           OR  ( RECE62-NYUTOKNISSU(ID1)      = ZERO  )
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE62-NYUTOKRYO(ID1)  =  WRK-NYUTOKRYO
@@ -4756,7 +4756,7 @@
            END-PERFORM
       *
            PERFORM    VARYING    IDX    FROM   1   BY   1
-                      UNTIL      IDX    >      10
+                      UNTIL      IDX    >      20
                PERFORM    VARYING    IDY    FROM    1   BY   1
                           UNTIL      IDY    >     5
                     COMPUTE  RECE62-TOTALTEN(IDY)  = 
@@ -4806,7 +4806,7 @@
              CONTINUE
            ELSE
              PERFORM    VARYING    IDX    FROM   1   BY   1
-                        UNTIL      IDX    >      10
+                        UNTIL      IDX    >      20
                PERFORM    VARYING    IDY    FROM    2   BY   1
                           UNTIL      IDY    >     5
                  IF  ( RECE62-HENTOTALTEN(IDY) NOT =  ZERO       )
@@ -4834,7 +4834,7 @@
            END-IF
       *
            PERFORM    VARYING    IDX    FROM   1   BY   1
-                      UNTIL      IDX    >      10
+                      UNTIL      IDX    >      20
                  IF   RECE62-NYUTOKRYO(IDX)  =  999999999
                     MOVE    ZERO    TO   RECE62-NYUTOKRYO(IDX)
                  END-IF

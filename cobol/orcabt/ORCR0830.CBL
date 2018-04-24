@@ -99,6 +99,7 @@
       *                                     ÆÃÊÌÏ«ºÒÉÕÅº´Ç¸îÎÁº¹³ÛÀÁµá
       *                                     ¥Þ¥¹¥¿¤ÎÂÐ±þ
       *  04.08.05    NACL-ÌçÏÆ    18/02/01  Âè»°¼Ô¹Ô°Ù¤ÎÁªÄêÆþ±¡ÎÁÂÐ±þ
+      *  04.08.06    NACL-ÌçÏÆ    18/04/24  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1318,7 +1319,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 IF    LNK-SROUNYUIN-ZAITEN(IDY)  NOT = ZERO
                   MOVE     ZERO     TO    FLG-ARI
                   PERFORM  VARYING  ID1    FROM    1   BY  1
-                                UNTIL   ID1                   > 10
+                                UNTIL   ID1                   > 20
                                   OR    RECE82-NYUKHNNISSU(ID1)
                                                               = ZERO
                                   OR    FLG-ARI               = 1
@@ -1365,7 +1366,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   IF     LNK-SROUNYUIN-GAIHAKU(IDY) =  ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
-                        UNTIL ( ID1                          > 10    )  
+                        UNTIL ( ID1                          > 20    )  
                           OR  ( RECE82-NYUTOKNISSU(ID1)      = ZERO  )
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE82-NYUTOKRYO-RYAKU(ID1)  =  
@@ -1389,7 +1390,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   ELSE
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
-                        UNTIL ( ID1                          > 10    )  
+                        UNTIL ( ID1                          > 20    )  
                           OR  ( RECE82-NYUTOKNISSU(ID1)      = ZERO  )
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE82-NYUTOKRYO(ID1)  =  
@@ -2687,7 +2688,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF    RECE82-HKNKBN   =   "4" OR "6"
       *
               PERFORM    VARYING    IDX    FROM   1   BY   1
-                      UNTIL      IDX    >      10
+                      UNTIL      IDX    >      20
                     COMPUTE  RECE82-TOTALTEN  = 
                              RECE82-TOTALTEN  + 
                              RECE82-NYUKHNKEI(IDX)
@@ -2741,7 +2742,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE
       *
               PERFORM    VARYING    IDX    FROM   1   BY   1
-                      UNTIL      IDX    >      10
+                      UNTIL      IDX    >      20
                     COMPUTE  RECE82-TOTALTEN  = 
                              RECE82-TOTALTEN  + 
                              RECE82-NYUKHNKEI(IDX)
@@ -2776,7 +2777,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *
            PERFORM    VARYING    IDX    FROM   1   BY   1
-                      UNTIL      IDX    >      10
+                      UNTIL      IDX    >      20
                  IF   RECE82-NYUTOKRYO(IDX)  =  99999999
                     MOVE    ZERO    TO   RECE82-NYUTOKRYO(IDX)
                  END-IF

@@ -79,6 +79,7 @@
       *                                     ºÜÂÐ±þ
       *  04.08.02    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       *  04.08.03    NACL-Æ£¸¶    17/03/02  Ì¤¥³¡¼¥É²½ÆÃÄê´ïºà¥³¡¼¥ÉÇÑ»ßÂÐ±þ
+      *  04.08.04    NACL-ÌçÏÆ    18/04/24  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *
       *  05.00.01    NACL-Æ£¸¶    17/07/04  £È£Á£Ï£Ò£ÉÂÐ±þ
       *****************************************************************
@@ -1937,7 +1938,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            IF        RECE82-NYUKHNRYO (5)    >   ZERO
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    4   BY  1
-                         UNTIL     IDX       >   10
+                         UNTIL     IDX       >   20
                          OR        RECE82-NYUKHNRYO (IDX)    =   ZERO
       *            <Æü¿ô>
                    ADD     RECE82-NYUKHNNISSU(IDX)
@@ -2006,7 +2007,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            IF        RECE82-NYUTOKNISSU (4)  >   ZERO
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    3   BY  1
-                         UNTIL     IDX       >   10
+                         UNTIL     IDX       >   20
                          OR        RECE82-NYUTOKNISSU (IDX)  =   ZERO
       *            <Æü¿ô>
                    ADD     RECE82-NYUTOKNISSU(IDX)

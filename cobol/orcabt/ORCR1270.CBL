@@ -74,6 +74,7 @@
       *                                     ºÜÂÐ±þ
       *  04.08.02    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       *  04.08.03    NACL-ÌçÏÆ    16/04/15  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.04    NACL-ÌçÏÆ    18/04/24  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *
       *  05.00.01    NACL-Æ£¸¶    17/07/04  £È£Á£Ï£Ò£ÉÂÐ±þ
       *****************************************************************
@@ -1930,7 +1931,7 @@
            IF        RECE200-NYUKHNRYO (5) >   ZERO
                MOVE    ZERO                    TO  SUM-AREA  
                PERFORM VARYING     IDX     FROM    4   BY  1
-                       UNTIL       IDX     >      10
+                       UNTIL       IDX     >      20
                        OR          RECE200-NYUKHNRYO (IDX) =   ZERO
                    ADD     RECE200-NYUKHNNISSU (IDX)
                                                    TO  SUM-NYUKHNNISSU
@@ -1986,7 +1987,7 @@
       *    <ÆÃÄêÆþ±¡ÎÁ¡¦¤½¤ÎÂ¾>
            MOVE    ZERO                    TO  SUM-AREA
            PERFORM VARYING   IDX   FROM    1   BY  1
-                   UNTIL     IDX       >   10
+                   UNTIL     IDX       >   20
                    OR        RECE200-NYUTOKNISSU (IDX)  =   ZERO
       *        <Æü¿ô>
                ADD     RECE200-NYUTOKNISSU(IDX)
@@ -3129,7 +3130,7 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            IF        RECE200-NYUKHNRYO (5)    >   ZERO
                MOVE    ZERO              TO  RECE10-KHNTEN (25)
                PERFORM   VARYING   IDY   FROM    5   BY  1
-                         UNTIL     IDY       >   10
+                         UNTIL     IDY       >   20
                          OR        RECE200-NYUKHNRYO (IDY)    =   ZERO
                    ADD     RECE200-NYUKHNNISSU(IDY)
                                          TO  RECE10-KAISU  (25)
@@ -3160,7 +3161,7 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            MOVE    ZERO    TO    RECE10-KAISU(31)
            MOVE    ZERO    TO    RECE10-TENSU(31 1)
            PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL     IDY       >   10
+                     UNTIL     IDY       >   20
                      OR        RECE200-NYUTOKNISSU(IDY)  =   ZERO
                ADD     RECE200-NYUTOKNISSU(IDY)
                                          TO  RECE10-KAISU  (31)
