@@ -498,6 +498,12 @@
       *
            03  WRK-SJIYMD                    PIC X(08).
       *
+           03  WRK-ONLINE-COMCD              PIC X(09).
+           03  WRK-ONLINE-FSANTEIYM          PIC X(08).
+      *
+           03  WRK-TENSU-SRYCD               PIC X(09).
+           03  WRK-TENSU-SRYYM               PIC X(06).
+      *
        01  WK-RECE120-REC. 
            COPY    "CPRCF120.INC"  REPLACING   //RECE120//
                                    BY          //WK-RECE120//.
@@ -1021,6 +1027,9 @@
       *
            COPY    "CPORCSGETTEMP.INC".
       *
+      *    ¥ª¥ó¥é¥¤¥ó¿ÇÎÅÎÁÅù¤Ë´Ø¤ï¤ë»»ÄêÍúÎò¥Á¥§¥Ã¥¯¥µ¥Ö
+           COPY    "CPORCSRECESRCHK.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
@@ -1503,6 +1512,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SAIDOU-HANTEI-SEC
                       END-IF
+      *               ¿Ç¶è£±£²¡¦£±£³¡¦£±£´¡¦£¸£°¶¦ÍÑÊ¬
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ONLINE-HANTEI-SEC
+                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE120-TENSOU-SEC
                       END-IF
@@ -1538,6 +1551,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GAIRIHA-HANTEI-SEC
                       END-IF
+      *               ¿Ç¶è£±£³¡¦£±£´¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
@@ -1546,6 +1560,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NYUSEN-HANTEI-SEC
+                      END-IF
+      *               ¿Ç¶è£±£²¡¦£±£³¡¦£±£´¡¦£¸£°¶¦ÍÑÊ¬
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE120-TENSOU-SEC
@@ -1579,13 +1597,17 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIYAK-HANTEI-SEC
                       END-IF
-      *               ¿Ç¶è£±£³¤È¶¦ÍÑÊ¬
+      *               ¿Ç¶è£±£³¡¦£±£´¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
-      *               ¿Ç¶è£¸£°¤È¶¦ÍÑÊ¬
+      *               ¿Ç¶è£±£´¡¦£¸£°¤È¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NINRYO-HANTEI-SEC
+                      END-IF
+      *               ¿Ç¶è£±£²¡¦£±£³¡¦£±£´¡¦£¸£°¶¦ÍÑÊ¬
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE120-TENSOU-SEC
@@ -1658,6 +1680,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-RIHASEN-HANTEI-SEC
                       END-IF
+      *               ¿Ç¶è£±£´¡¦£¸£°¤È¶¦ÍÑÊ¬
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NINRYO-HANTEI-SEC
                       END-IF
@@ -1669,6 +1692,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SIPPUCOM-HANTEI-SEC
+                      END-IF
+      *               ¿Ç¶è£±£²¡¦£±£³¡¦£±£´¡¦£¸£°¶¦ÍÑÊ¬
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE120-TENSOU-SEC
@@ -2668,6 +2695,9 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                            END-IF
                          END-PERFORM
                        ELSE
+                         MOVE    SRY-SRYCD(IDX12)
+                                             TO  WRK-TENSU-SRYCD
+                         MOVE    SRY-SRYYM   TO  WRK-TENSU-SRYYM
                          PERFORM      900-TENSU-TBL-SEC
                          ADD     1           TO  IDZ
                          MOVE    TNS-NAME    TO  WK-FREE-NAME(IDZ)
@@ -3767,6 +3797,167 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            .
        20011-SAIDOU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ª¥ó¥é¥¤¥ó¿ÇÎÅÎÁ¤¬¤¢¤ë¤«È½Äê
+      *    ¥ª¥ó¥é¥¤¥ó°å³Ø´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
+      *    ¥ª¥ó¥é¥¤¥óºßÂð´ÉÍýÎÁ¡Êºß°åÁí´É¡Ê·î£±²óË¬Ìä¿ÇÎÅ¡Ë¡Ë¤¬¤¢¤ë¤«È½Äê
+      *    Àº¿À²Ê¥ª¥ó¥é¥¤¥óºßÂð´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-ONLINE-HANTEI-SEC          SECTION.
+      *
+           IF      RECE120-FLG-ONLINE-COMMENT   NOT =  SPACE
+             MOVE      ZERO         TO     IDZ
+             INITIALIZE                    WRK-FREE-AREA2
+             IF  (RECE120-FLG-NINRYO-COMMENT   =  "A" OR "B" OR
+                                                  "G" OR "H"   )
+             AND (RECE120-FLG-ONLINE-COMMENT   =  "4"          )
+               PERFORM   2001-NINRYO-HENSYU-SEC
+               IF   WRK-NINRYO-FSANTEIYMD   NOT =  SPACE
+                 MOVE       99      TO     FLG-COMMENT
+      *
+                 ADD        1       TO     IDZ
+      *
+                 MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
+                 MOVE   "½é²ó»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü"
+                                    TO     WK-FREE-NAME2(IDZ)
+                 MOVE   WRK-NINRYO-FSANTEIYMD(5:2)   TO  DAY-IDX2
+                 MOVE   TBL-DAY(DAY-IDX2)
+                                    TO     WK-FREE-NAME2(IDZ)(11:4)
+                 MOVE   WRK-NINRYO-FSANTEIYMD(7:2)   TO  DAY-IDX2
+                 MOVE   TBL-DAY(DAY-IDX2)
+                                    TO     WK-FREE-NAME2(IDZ)(17:4)
+               END-IF
+             END-IF
+      *
+             MOVE  SPACE            TO  WRK-ONLINE-COMCD
+             MOVE  SPACE            TO  WRK-ONLINE-FSANTEIYM
+             INITIALIZE                 ORCSRECESRCHKAREA
+             MOVE  RECE100-PTID     TO  LNK-RECESRCHK-PTID
+             MOVE  RECE100-SRYYM    TO  LNK-RECESRCHK-SRYYM
+             MOVE  RECE120-FLG-ONLINE-COMMENT
+                                    TO  LNK-RECESRCHK-CHKKBN
+             IF    RECE120-FLG-ONLINE-COMMENT       =  "1"
+             AND   RECE120-FLG-ONLINE2-COMMENT  NOT =  ZERO
+                MOVE  RECE120-FLG-ONLINE2-COMMENT
+                                    TO  LNK-RECESRCHK-CHKNO
+             END-IF
+             CALL  "ORCSRECESRCHK"  USING  SPA-AREA
+                                           ORCSRECESRCHKAREA
+             IF    LNK-RECESRCHK-RC  =  ZERO
+                MOVE  LNK-RECESRCHK-COMCD
+                                    TO  WRK-ONLINE-COMCD
+                MOVE  LNK-RECESRCHK-FSANTEIYMD
+                                    TO  WRK-ONLINE-FSANTEIYM
+             END-IF
+      *
+             IF   WRK-ONLINE-COMCD   NOT =  SPACE
+                IF   RECE120-FLG-ONLINE-COMMENT   =   "1"
+                AND  RECE120-FLG-ONLINE2-COMMENT  =   ZERO
+                  MOVE  WRK-ONLINE-COMCD
+                                       TO  WRK-TENSU-SRYCD
+                  MOVE  RECE100-SRYYM  TO  WRK-TENSU-SRYYM
+                  PERFORM      900-TENSU-TBL-SEC
+      *
+                  MOVE       99        TO  FLG-COMMENT
+      *
+                  ADD        1         TO  IDZ
+      *
+                  MOVE  TNS-YUKOKETA   TO  WK-FREE-YUKOKETA2(IDZ)
+                  MOVE  TNS-NAME       TO  WK-FREE-NAME2(IDZ)
+                END-IF
+      *
+                MOVE       99      TO     FLG-COMMENT
+      *
+                ADD        1       TO     IDZ
+      *
+                EVALUATE  RECE120-FLG-ONLINE-COMMENT
+                  WHEN      "1"
+                  WHEN      "2"
+                    MOVE       17      TO     WK-FREE-YUKOKETA2(IDZ)
+                    MOVE   "´ÉÍýÎÁÅù»»Äê³«»ÏÇ¯·î¡¡¡¡¡¡Ç¯¡¡¡¡·î"
+                                       TO     WK-FREE-NAME2(IDZ)
+                    MOVE       23      TO     IDX41
+                    MOVE       29      TO     IDX42
+                  WHEN      "3"
+                  WHEN      "4"
+                    MOVE       16      TO     WK-FREE-YUKOKETA2(IDZ)
+                    MOVE   "´ÉÍýÎÁ»»Äê³«»ÏÇ¯·î¡¡¡¡¡¡Ç¯¡¡¡¡·î"
+                                       TO     WK-FREE-NAME2(IDZ)
+                    MOVE       21      TO     IDX41
+                    MOVE       27      TO     IDX42
+                END-EVALUATE
+      *
+                INITIALIZE                          STS-AREA-DAY
+                INITIALIZE                          LNK-DAY2-AREA
+                MOVE    "21"                    TO  LNK-DAY2-IRAI
+                MOVE    WRK-ONLINE-FSANTEIYM    TO  LNK-DAY2-YMD
+                CALL    "ORCSDAY"    USING     STS-AREA-DAY
+                                               LNK-DAY2-AREA
+                IF      STS-DAY-RC1            =   ZERO
+                   MOVE    LNK-DAY2-EDTYMD1-Y   TO  WRK-TAIHI-XX
+                   INITIALIZE                       ORCSKANACHKAREA
+                   MOVE    "2"                  TO  KANACHK-SYORI
+                   MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                      MOVE    KANACHK-OUT-INPUT(1:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX41:4)
+                   END-IF
+      *
+                   MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
+                   INITIALIZE                       ORCSKANACHKAREA
+                   MOVE    "2"                  TO  KANACHK-SYORI
+                   MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                      MOVE    KANACHK-OUT-INPUT(1:4)
+                                        TO  WK-FREE-NAME2(IDZ)(IDX42:4)
+                   END-IF
+                END-IF
+             END-IF
+      *
+             IF   IDZ    NOT =  ZERO
+                PERFORM  200111-RECE130-TAIHI-SEC
+      *
+      *         £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+                MOVE    ZERO                 TO  IDX-RECE130
+                MOVE    SPACE                TO  WRK-RECE130XX-REC
+                INITIALIZE                       WRK-RECE130XX-REC
+      *
+                MOVE    RECE120-MEISAISU     TO  MAX-MEISAISU
+      *
+                PERFORM   VARYING   IDX   FROM    1   BY  1
+                           UNTIL  ( IDX                >   50    )
+                            OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+                  COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+                  IF   (IDX                          =    1  )
+                  AND  (WRK-ONLINE-COMCD         NOT =  SPACE)
+                  AND  (RECE120-FLG-ONLINE-COMMENT   =   "1" )
+                  AND  (RECE120-FLG-ONLINE2-COMMENT  =   ZERO)
+                    MOVE  WRK-ONLINE-COMCD
+                          TO  WRK-RECE130XX-SRYCD(MAX-MEISAISU 1)
+                    MOVE  WK-FREE-NAME2(IDX)
+                          TO  WRK-RECE130XX-INPUTCOMENT(MAX-MEISAISU 1)
+                  ELSE
+                    MOVE  "810000001"
+                          TO  WRK-RECE130XX-SRYCD(MAX-MEISAISU 1)
+                  END-IF
+                  MOVE  ZERO
+                          TO  WRK-RECE130XX-SRYSURYO(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-YUKOKETA2(IDX)
+                          TO  WRK-RECE130XX-YUKOKETA(MAX-MEISAISU 1)
+                  MOVE  WK-FREE-NAME2(IDX)
+                          TO  WRK-RECE130XX-NAME(MAX-MEISAISU 1)
+                END-PERFORM
+      *
+                PERFORM    200111-SRYACTINF-HENSYU-SEC
+             END-IF
+           END-IF
+      *
+           .
+       2001-ONLINE-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7012,65 +7203,12 @@ grpsys     MOVE    RECE100-HOSPNUM      TO  SANTEI-HOSPNUM
        2001-NINRYO-HANTEI-SEC          SECTION.
       *
            IF     RECE120-FLG-NINRYO-COMMENT   NOT =  SPACE
-               MOVE    SPACE                TO  WRK-NINRYO-FSANTEIYMD
-               INITIALIZE                       SANTEI-REC
-               MOVE    RECE100-HOSPNUM      TO  SANTEI-HOSPNUM
-               MOVE    RECE100-PTID         TO  SANTEI-PTID
-               MOVE    RECE100-SRYYM        TO  SANTEI-SRYYM
-               EVALUATE  RECE120-FLG-NINRYO-COMMENT
-                 WHEN      "1"
-                   MOVE  CONS-NINRYO        TO  SANTEI-SRYCD
-                 WHEN      "2"
-                   MOVE  CONS-NINRYO2       TO  SANTEI-SRYCD
-                 WHEN      "5"
-                   MOVE  CONS-NINRYO5       TO  SANTEI-SRYCD
-                 WHEN      "8"
-                   MOVE  CONS-NINRYO8       TO  SANTEI-SRYCD
-      *
-                 WHEN      "9"
-                   MOVE  CONS-ZAIHANKO      TO  SANTEI-SRYCD
-      *
-                 WHEN      "A"
-                   MOVE  CONS-SEIZAI        TO  SANTEI-SRYCD
-                 WHEN      "B"
-                   MOVE  CONS-SEIZAI2       TO  SANTEI-SRYCD
-                 WHEN      "C"
-                   MOVE  CONS-SEIZAI3       TO  SANTEI-SRYCD
-                 WHEN      "D"
-                   MOVE  CONS-SEIZAI4       TO  SANTEI-SRYCD
-                 WHEN      "E"
-                   MOVE  CONS-SEIZAI5       TO  SANTEI-SRYCD
-                 WHEN      "F"
-                   MOVE  CONS-SEIZAI6       TO  SANTEI-SRYCD
-                 WHEN      "G"
-                   MOVE  CONS-SEIZAI7       TO  SANTEI-SRYCD
-                 WHEN      "H"
-                   MOVE  CONS-SEIZAI8       TO  SANTEI-SRYCD
-                 WHEN      "I"
-                   MOVE  CONS-SEIZAI9       TO  SANTEI-SRYCD
-                 WHEN      "J"
-                   MOVE  CONS-SEIZAI10      TO  SANTEI-SRYCD
-      *
-                 WHEN      "K"
-                   MOVE  CONS-SEIJYU        TO  SANTEI-SRYCD
-                 WHEN      "L"
-                   MOVE  CONS-SEIJYU2       TO  SANTEI-SRYCD
-                 WHEN      "M"
-                   MOVE  CONS-SEIJYU3       TO  SANTEI-SRYCD
-                 WHEN      "N"
-                   MOVE  CONS-SEIJYU4       TO  SANTEI-SRYCD
-               END-EVALUATE
-               MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
-               MOVE    ZERO                 TO  SANTEI-SRYKA
-               MOVE    ZERO                 TO  SANTEI-HKNCOMBINUM
-               MOVE    SANTEI-REC           TO  MCPDATA-REC
-               MOVE    "tbl_santei"         TO  WRK-MCP-TABLE
-               MOVE    "key"                TO  WRK-MCP-PATHNAME
-               PERFORM  900-SANTEI-INV-SEC
-               IF       FLG-SANTEI        =   ZERO
-                  MOVE  SANTEI-FSANTEIYMD   TO  WRK-NINRYO-FSANTEIYMD
-               END-IF
-      *
+             IF  (RECE120-FLG-NINRYO-COMMENT   =  "A" OR "B" OR
+                                                  "G" OR "H"   )
+             AND (RECE120-FLG-ONLINE-COMMENT   =  "4"          )
+               CONTINUE
+             ELSE
+               PERFORM   2001-NINRYO-HENSYU-SEC
                IF   WRK-NINRYO-FSANTEIYMD   NOT =  SPACE
       *
                   MOVE       99      TO     FLG-COMMENT
@@ -7116,10 +7254,79 @@ grpsys     MOVE    RECE100-HOSPNUM      TO  SANTEI-HOSPNUM
                   PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
                END-IF
+             END-IF
            END-IF
       *
            .
        2001-NINRYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    
+      *****************************************************************
+       2001-NINRYO-HENSYU-SEC          SECTION.
+      *
+           MOVE    SPACE                TO  WRK-NINRYO-FSANTEIYMD
+           INITIALIZE                       SANTEI-REC
+           MOVE    RECE100-HOSPNUM      TO  SANTEI-HOSPNUM
+           MOVE    RECE100-PTID         TO  SANTEI-PTID
+           MOVE    RECE100-SRYYM        TO  SANTEI-SRYYM
+           EVALUATE  RECE120-FLG-NINRYO-COMMENT
+             WHEN      "1"
+               MOVE  CONS-NINRYO        TO  SANTEI-SRYCD
+             WHEN      "2"
+               MOVE  CONS-NINRYO2       TO  SANTEI-SRYCD
+             WHEN      "5"
+               MOVE  CONS-NINRYO5       TO  SANTEI-SRYCD
+             WHEN      "8"
+               MOVE  CONS-NINRYO8       TO  SANTEI-SRYCD
+      *
+             WHEN      "9"
+               MOVE  CONS-ZAIHANKO      TO  SANTEI-SRYCD
+      *
+             WHEN      "A"
+               MOVE  CONS-SEIZAI        TO  SANTEI-SRYCD
+             WHEN      "B"
+               MOVE  CONS-SEIZAI2       TO  SANTEI-SRYCD
+      ***    WHEN      "C"
+      ***      MOVE  CONS-SEIZAI3       TO  SANTEI-SRYCD
+      ***    WHEN      "D"
+      ***      MOVE  CONS-SEIZAI4       TO  SANTEI-SRYCD
+      ***    WHEN      "E"
+      ***      MOVE  CONS-SEIZAI5       TO  SANTEI-SRYCD
+      ***    WHEN      "F"
+      ***      MOVE  CONS-SEIZAI6       TO  SANTEI-SRYCD
+             WHEN      "G"
+               MOVE  CONS-SEIZAI7       TO  SANTEI-SRYCD
+             WHEN      "H"
+               MOVE  CONS-SEIZAI8       TO  SANTEI-SRYCD
+      ***    WHEN      "I"
+      ***      MOVE  CONS-SEIZAI9       TO  SANTEI-SRYCD
+      ***    WHEN      "J"
+      ***      MOVE  CONS-SEIZAI10      TO  SANTEI-SRYCD
+      *
+             WHEN      "K"
+               MOVE  CONS-SEIJYU        TO  SANTEI-SRYCD
+             WHEN      "L"
+               MOVE  CONS-SEIJYU2       TO  SANTEI-SRYCD
+             WHEN      "M"
+               MOVE  CONS-SEIJYU3       TO  SANTEI-SRYCD
+             WHEN      "N"
+               MOVE  CONS-SEIJYU4       TO  SANTEI-SRYCD
+           END-EVALUATE
+           MOVE    ZERO                 TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                 TO  SANTEI-SRYKA
+           MOVE    ZERO                 TO  SANTEI-HKNCOMBINUM
+           MOVE    SANTEI-REC           TO  MCPDATA-REC
+           MOVE    "tbl_santei"         TO  WRK-MCP-TABLE
+           MOVE    "key"                TO  WRK-MCP-PATHNAME
+           PERFORM  900-SANTEI-INV-SEC
+           IF       FLG-SANTEI        =   ZERO
+              MOVE  SANTEI-FSANTEIYMD   TO  WRK-NINRYO-FSANTEIYMD
+           END-IF
+      *
+           .
+       2001-NINRYO-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9273,10 +9480,10 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            INITIALIZE                       TNS-TENSU-REC
 grpsys     MOVE    SPA-HOSPNUM      TO      TNS-HOSPNUM
-           MOVE    SRY-SRYCD(IDX12) TO      TNS-SRYCD
-           MOVE    SRY-SRYYM        TO      TNS-YUKOSTYMD(1:6)
+           MOVE    WRK-TENSU-SRYCD  TO      TNS-SRYCD
+           MOVE    WRK-TENSU-SRYYM  TO      TNS-YUKOSTYMD(1:6)
            MOVE    "01"             TO      TNS-YUKOSTYMD(7:2)
-           MOVE    SRY-SRYYM        TO      TNS-YUKOEDYMD(1:6)
+           MOVE    WRK-TENSU-SRYYM  TO      TNS-YUKOEDYMD(1:6)
            MOVE    "01"             TO      TNS-YUKOEDYMD(7:2)
            MOVE    TNS-TENSU-REC    TO      MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
