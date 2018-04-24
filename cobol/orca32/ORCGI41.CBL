@@ -5584,7 +5584,9 @@ grpsys                                     SPA-AREA
                    (SPA-NAI-SRYYM          >=      "201804")
                                            AND
                    (TNS-NYUKHNKSNKBN       =       13   OR
-                                                   14   ))
+                                                   14   OR
+                                                   26   OR
+                                                   53))
                CONTINUE
            ELSE
       *        短期滞在手術基本料以外とする
