@@ -4512,7 +4512,7 @@
                                     LNK-RNYURECEDEN-SRYCD(3 IDX2 IDX4)
                                 MOVE      WRK-SKJ7-RYOYO-RYU-SU(IDX1) TO
                                       LNK-RNYURECEDEN-SURYO(3 IDX2 IDX4)
-                                MOVE   546     TO  
+                                MOVE   550     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  2
       *                         Ï«ºÒ¡Ê£±¡¥£²ÇÜ¡Ë¡Ê¿©»öÎÅÍÜ¡Ë
@@ -4523,7 +4523,7 @@
                                     LNK-RNYURECEDEN-SRYCD(3 IDX2 IDX4)
                                 MOVE      WRK-SKJ7-RYOYO-RYU-SU(IDX1) TO
                                       LNK-RNYURECEDEN-SURYO(3 IDX2 IDX4)
-                                MOVE  1092     TO  
+                                MOVE  1100     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  3
       *                         Ï«ºÒ¡Ê£±¡¥£²ÇÜ¡Ë¡Ê¿©»öÎÅÍÜ¡Ë
@@ -4534,7 +4534,7 @@
                                     LNK-RNYURECEDEN-SRYCD(3 IDX2 IDX4)
                                 MOVE      WRK-SKJ7-RYOYO-RYU-SU(IDX1) TO
                                       LNK-RNYURECEDEN-SURYO(3 IDX2 IDX4)
-                                MOVE  1638     TO  
+                                MOVE  1650     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                           END-EVALUATE
                         ELSE
@@ -4548,7 +4548,7 @@
                                     LNK-RNYURECEDEN-SRYCD(3 IDX2 IDX4)
                                 MOVE      WRK-SKJ7-RYOYO-RYU-SU(IDX1) TO
                                       LNK-RNYURECEDEN-SURYO(3 IDX2 IDX4)
-                                MOVE   552     TO  
+                                MOVE   550     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  2
       *                         Ï«ºÒ¡Ê£±¡¥£²ÇÜ¡Ë¡Ê¿©»öÎÅÍÜ¡Ë
@@ -4559,7 +4559,7 @@
                                     LNK-RNYURECEDEN-SRYCD(3 IDX2 IDX4)
                                 MOVE      WRK-SKJ7-RYOYO-RYU-SU(IDX1) TO
                                       LNK-RNYURECEDEN-SURYO(3 IDX2 IDX4)
-                                MOVE  1104     TO  
+                                MOVE  1100     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  3
       *                         Ï«ºÒ¡Ê£±¡¥£²ÇÜ¡Ë¡Ê¿©»öÎÅÍÜ¡Ë
@@ -4570,7 +4570,7 @@
                                     LNK-RNYURECEDEN-SRYCD(3 IDX2 IDX4)
                                 MOVE      WRK-SKJ7-RYOYO-RYU-SU(IDX1) TO
                                       LNK-RNYURECEDEN-SURYO(3 IDX2 IDX4)
-                                MOVE  1656     TO  
+                                MOVE  1650     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                           END-EVALUATE
                         END-IF
