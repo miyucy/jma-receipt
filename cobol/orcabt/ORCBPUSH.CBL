@@ -295,6 +295,22 @@
                    WHEN    "address_master_make"
                        MOVE    JOB-UPDCNT  TO  WRK-CNT
                        MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
+                   WHEN    "receipt_print"
+                       IF      WRK-PARA-DATA (1)
+                                           =   "2"
+                           MOVE    "9999-12"   TO
+                                               PUSHBA01-PERFORM-MONTH
+                       ELSE
+                           MOVE    WRK-PARA-DATA (2)
+                                               TO  WRK-SYMD (1:6)
+                           MOVE    "01"        TO  WRK-SYMD (7:2)
+                           PERFORM 801-DAYHEN01-SEC
+                           MOVE    WRK-HEN-DATE (1:7)
+                                               TO
+                                               PUSHBA01-PERFORM-MONTH
+                       END-IF
+                       MOVE    JOB-UPDCNT  TO  WRK-CNT
+                       MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
                END-EVALUATE
       *??
              display "push=" PUSHBA01-REC "#"

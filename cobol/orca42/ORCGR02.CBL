@@ -5999,6 +5999,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            MONBLOB
                MOVE    MONBLOB-ID      TO  SHELLTBL-ARG32
                                            SPA-R01-MONBLOB-ID
+               MOVE    "receipt_print" TO  SHELLTBL-ARG33
       *
                DISPLAY "SPA-R01-MONBLOB-ID=" SPA-R01-MONBLOB-ID "#"
            ELSE
