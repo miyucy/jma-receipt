@@ -40,6 +40,7 @@
       *
       *  04.08.01    NACL-門脇    16/02/12  第三者行為対応
       *  04.08.02    NACL-門脇    17/07/14  和歌山県地方公費対応
+      *  04.08.03    NACL-門脇    18/04/26  現物給付メッセージフラグクリア
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -400,6 +401,8 @@ grpsys     COPY    "COMMON-SPA".
       *
            MOVE     LNK-S01-KOUREI-ZAITAKU-KBN
                                            TO  WRK-ZAITAKU-KBN.
+      *
+           MOVE       SPACE     TO    LNK-S01-GENBUTU-MSG-FLG.
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX                 >    15 )
@@ -1410,6 +1413,8 @@ grpsys     COPY    "COMMON-SPA".
       *    特殊計算（再計算）
       ******************************************************************
        100-TOKUSYU-SANTEI-SEC                     SECTION.
+      *
+           MOVE       SPACE     TO    LNK-S01-GENBUTU-MSG-FLG
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX                 >    15 )
