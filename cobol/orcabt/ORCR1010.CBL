@@ -3128,6 +3128,18 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    MOVE    TNS-YUKOKETA    TO    RECE130-YUKOKETA(IDX4)
                END-IF
       *
+               IF      RECE100-SRYYM   >=  "201804"
+                 IF  ((SRY-SRYKBN       =  "11"       ) AND
+                      (SRY-SRYCD(IDX2)  =  "830000020"))
+                 OR  ((SRY-SRYKBN       =  "12"       ) AND
+                      (SRY-SRYCD(IDX2)  =  "830000021"))
+                   MOVE  "810000001"  TO  RECE130-SRYCD(IDX4)
+                   MOVE  RECE130-NAME(IDX4)
+                                      TO  RECE130-INPUTCOMENT(IDX4)
+                   MOVE  "1"          TO  RECE130-RECEPTFLG(IDX4)
+                 END-IF
+               END-IF
+      *
                IF          SRY-SRYKBN       =  "21" OR "22" OR "23"
                     IF    SRY-SRYCD(IDX2)  =  CONS-YAKTEIGEN
                                            OR CONS-YAKTEIGEN2

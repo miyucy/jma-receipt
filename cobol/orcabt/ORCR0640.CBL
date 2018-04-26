@@ -8663,6 +8663,16 @@
                   END-IF
                END-IF
       *
+               IF      RECE62-SRYYM    >=  "201804"
+                 IF   (SRY-SRYKBN       =  "11"       )
+                 AND  (SRY-SRYCD(IDX2)  =  "830000020")
+                   MOVE  "810000001"  TO  RECE65-SRYCD(IDX4)
+                   MOVE  RECE65-NAME(IDX4)
+                                      TO  RECE65-INPUTCOMENT(IDX4)
+                   MOVE  "1"          TO  RECE65-RECEPTFLG(IDX4)
+                 END-IF
+               END-IF
+      *
                IF    (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                      (SRY-SRYCD    (IDX2)(1:3)     =   "008")
                         MOVE     "1"       TO    RECE64-COMCDFLG

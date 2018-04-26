@@ -4086,6 +4086,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
+               IF      RECE41-SRYYM    >=  "201804"
+                 IF  ((SRY-SRYKBN       =  "11"       ) AND
+                      (SRY-SRYCD(IDX2)  =  "830000020"))
+                 OR  ((SRY-SRYKBN       =  "12"       ) AND
+                      (SRY-SRYCD(IDX2)  =  "830000021"))
+                   MOVE  "810000001"  TO  RECE45-SRYCD(IDX4)
+                   MOVE  RECE45-NAME(IDX4)
+                                      TO  RECE45-INPUTCOMENT(IDX4)
+                   MOVE  "1"          TO  RECE45-RECEPTFLG(IDX4)
+                 END-IF
+               END-IF
+      *
                IF          SRY-SRYKBN       =  "21" OR "22" OR "23"
                     IF    SRY-SRYCD(IDX2)  =  CONS-YAKTEIGEN
                                            OR CONS-YAKTEIGEN2
