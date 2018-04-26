@@ -68,6 +68,7 @@
            03  IDX3                    PIC 9(05).
            03  IDX4                    PIC 9(05).
            03  IDXA                    PIC 9(05).
+           03  IDXF                    PIC 9(05).
            03  IDX-ODR                 PIC 9(05).
            03  IDX-DAY                 PIC 9(05).
       *
@@ -914,12 +915,17 @@
       *****************************************************************
        20021-NISSU-CHK-SEC             SECTION.
       *
+           DISPLAY "TRRK-TAIINYMD=" TRRK-TAIINYMD
            IF    ( ITEM-DAY-G (IDXA)   =   ZERO )
                 MOVE   SODR-SRYYMD     TO  WRK-SRYYMD
+                MOVE   WRK-SRYDD       TO  IDXF
                 IF  (  ITEM-SAME-AFTER (IDXA)   =   "1" )
-                   PERFORM VARYING IDX0    FROM    WRK-SRYDD   BY  1
-                           UNTIL ( IDX0    >       WRK-EOMDD )
-                       MOVE    1       TO  ITEM-DAY (IDXA IDX0)
+                   PERFORM VARYING WRK-SRYDD    FROM    IDXF   BY  1
+                           UNTIL ( WRK-SRYDD    >       WRK-EOMDD )
+                       IF    ( WRK-SRYYMD  >=      TRRK-NYUINYMD )
+                        AND  ( WRK-SRYYMD  <=      TRRK-TAIINYMD )
+                           MOVE    1   TO  ITEM-DAY (IDXA WRK-SRYDD)
+                       END-IF
                    END-PERFORM
                 ELSE
                     MOVE    1          TO  ITEM-DAY (IDXA WRK-SRYDD)
