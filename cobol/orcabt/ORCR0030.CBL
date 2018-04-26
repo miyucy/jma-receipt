@@ -12569,6 +12569,18 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                   END-IF
                END-IF
       *
+               IF      RECE02-SRYYM    >=  "201804"
+                 IF  ((SRY-SRYKBN       =  "11"       ) AND
+                      (SRY-SRYCD(IDX2)  =  "830000020"))
+                 OR  ((SRY-SRYKBN       =  "12"       ) AND
+                      (SRY-SRYCD(IDX2)  =  "830000021"))
+                   MOVE  "810000001"  TO  RECE05-SRYCD(IDX4)
+                   MOVE  RECE05-NAME(IDX4)
+                                      TO  RECE05-INPUTCOMENT(IDX4)
+                   MOVE  "1"          TO  RECE05-RECEPTFLG(IDX4)
+                 END-IF
+               END-IF
+      *
                IF          SRY-SRYKBN       =  "21" OR "22" OR "23"
                     IF    SRY-SRYCD(IDX2)  =  CONS-YAKTEIGEN
                                            OR CONS-YAKTEIGEN2
