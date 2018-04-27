@@ -41,6 +41,7 @@
       *  05.00.00    NACL-¾®Æ¦Âô  18/03/13  Â¾°å¼õ¿Ç¤ÎÄÉ²Ã
       *  05.00.00    NACL-¾®Æ¦Âô  18/03/20  ºßÂð´µ¼Ô»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¡ÊÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ë
       *                                     ºßÂð´µ¼Ô»Ù±çÉÂ¾²½é´ü²Ã»»¡ÊÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ¡Ë
+      *  05.00.00    NACL-¾®Æ¦Âô  18/04/27  ¿©»ö·ÑÂ³¶èÊ¬ÂÐ±þ
      *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6961,6 +6962,114 @@
       *     MOVE     "key17"                 TO  MCP-PATHNAME
       *     PERFORM   910-DBCLOSECURSOR-SEC
       *-------------------¿©Æ²²Ã»»¤³¤³¤Þ¤Ç----------------------------
+      *
+      *    ¿©»ö·ÑÂ³¶èÊ¬¤Ë¤è¤ë¼¡·î°Ê¹ß¤Î¿©»ö¥»¥Ã¥È¡ÊÂà±¡·î¤ÏÂà±¡Æü¤Þ¤Ç¡Ë
+           IF    SODRNACCT-SAME-AFTER      =   "1"
+             INITIALIZE                          NYUINACCT-REC
+             MOVE    LNK-PTNYUINRRK-HOSPNUM  TO  NACCT-HOSPNUM
+             MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+             MOVE    SODRNACCT-STARTYMD(1:6) TO  NACCT-SRYYM
+             MOVE    "4"                     TO  NACCT-ZAISKBKBN
+             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+             EVALUATE   SODRNACCT-SKJTIME
+                WHEN    "01"
+                    MOVE    "key63"          TO  MCP-PATHNAME
+                WHEN    "02"
+                    MOVE    "key64"          TO  MCP-PATHNAME
+                WHEN    "03"
+                    MOVE    "key65"          TO  MCP-PATHNAME
+             END-EVALUATE
+             PERFORM 910-NYUINACCT-SELECT-SEC
+             IF      FLG-NYUINACCT           =   ZERO
+                 MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+                 EVALUATE   SODRNACCT-SKJTIME
+                     WHEN    "01"
+                         MOVE   "key63"      TO  MCP-PATHNAME
+                     WHEN    "02"
+                         MOVE   "key64"      TO  MCP-PATHNAME
+                     WHEN    "03"
+                         MOVE   "key65"      TO  MCP-PATHNAME
+                 END-EVALUATE
+                 PERFORM   910-NYUINACCT-READ-SEC
+                 PERFORM    UNTIL   FLG-NYUINACCT   =   1
+                     IF   LNK-PTNYUINRRK-TAIINYMD(1:6)  =  NACCT-SRYYM
+                       MOVE   LNK-PTNYUINRRK-TAIINYMD
+                                                 TO   WRK-GETSUMATSU-YMD
+                     ELSE
+      *                ·îËöÆü¤Î»»Äê
+                       INITIALIZE                STS-AREA-DAY
+                       INITIALIZE                LNK-DAY7-AREA
+                       MOVE    "71"              TO  LNK-DAY7-IRAI
+                       MOVE   NACCT-SRYYM        TO  LNK-DAY7-YM
+                       CALL  "ORCSDAY"           USING STS-AREA-DAY
+                                                       LNK-DAY7-AREA
+                       MOVE   LNK-DAY7-KOYOMI    TO   WRK-GETSUMATSU-YMD
+                     END-IF
+      *              ¿©»ö¶èÊ¬¤Î¥»¥Ã¥È
+                     PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                              UNTIL     IDX-SKJ   >   WRK-GETSUMATSU-D
+                        EVALUATE   SODRNACCT-ORDERID(3:2)
+                            WHEN   "01"
+                                MOVE   1     TO   NACCT-DAY(IDX-SKJ)
+                            WHEN   "02"
+                                MOVE   2     TO   NACCT-DAY(IDX-SKJ)
+                            WHEN   "05"
+                                MOVE   0     TO   NACCT-DAY(IDX-SKJ)
+                            WHEN   "07"
+                                MOVE   3     TO   NACCT-DAY(IDX-SKJ)
+                        END-EVALUATE
+                     END-PERFORM
+      *              ºÞ²ó¿ôºÆ¥»¥Ã¥È
+                     MOVE  ZERO           TO  NACCT-ZAIKAISU
+                     PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                              UNTIL     IDX-SKJ   >   31
+                         IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                             ADD   1        TO  NACCT-ZAIKAISU
+                         END-IF
+                     END-PERFORM
+      *
+      *              ¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+                     MOVE   SODRNACCT-OPID   TO   NACCT-OPID
+      *              ¹¹¿·Ç¯·îÆü
+                     MOVE   SODRNACCT-UPYMD  TO   NACCT-UPYMD
+      *              ¹¹¿·»þ´Ö
+                     MOVE   SODRNACCT-UPHMS  TO   NACCT-UPHMS
+      *
+                     MOVE    NYUINACCT-REC   TO   MCPDATA-REC
+                     MOVE    "DBUPDATE"      TO   MCP-FUNC
+                     MOVE    "tbl_nyuinacct" TO   MCP-TABLE
+                     MOVE    "key"           TO   MCP-PATHNAME
+                     CALL    "ORCDBMAIN"          USING
+                                                  MCPAREA
+                                                  MCPDATA-REC
+                                                  SPA-AREA
+      *
+      *
+                     MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+                     EVALUATE   SODRNACCT-SKJTIME
+                         WHEN    "01"
+                             MOVE   "key63"      TO  MCP-PATHNAME
+                         WHEN    "02"
+                             MOVE   "key64"      TO  MCP-PATHNAME
+                         WHEN    "03"
+                             MOVE   "key65"      TO  MCP-PATHNAME
+                     END-EVALUATE
+                     PERFORM   910-NYUINACCT-READ-SEC
+                 END-PERFORM
+             END-IF
+      *      Æþ±¡²ñ·×¥¯¥í¡¼¥º
+             MOVE     "tbl_nyuinacct"        TO  MCP-TABLE
+             EVALUATE   SODRNACCT-SKJTIME
+                WHEN    "01"
+                    MOVE    "key63"          TO  MCP-PATHNAME
+                WHEN    "02"
+                    MOVE    "key64"          TO  MCP-PATHNAME
+                WHEN    "03"
+                    MOVE    "key65"          TO  MCP-PATHNAME
+             END-EVALUATE
+             PERFORM   910-DBCLOSECURSOR-SEC
+           END-IF
+      *
            .
        4801-SHOKUJI-201604-EXT.
            EXIT.
