@@ -10714,7 +10714,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    1
       *            頭書
                    MOVE    "2"                 TO  ORCHC19-KBN
-                   MOVE    SPACE               TO  SPA-PRT-FLG
       *            クライアント印刷用
                    IF    ( SPA-CLIENT-PRT-FLG  =   2 )
                      OR  ( SPA-PRTCONF         =   "1" )
