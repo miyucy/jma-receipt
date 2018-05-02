@@ -4062,16 +4062,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
-               IF      RECE82-SRYYM    >=  "201804"
-                 IF   (SRY-SRYKBN       =  "11"       )
-                 AND  (SRY-SRYCD(IDX2)  =  "830000020")
-                   MOVE  "810000001"  TO  RECE85-SRYCD(IDX4)
-                   MOVE  RECE85-NAME(IDX4)
-                                      TO  RECE85-INPUTCOMENT(IDX4)
-                   MOVE  "1"          TO  RECE85-RECEPTFLG(IDX4)
-                 END-IF
-               END-IF
-      *
                IF    (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                      (SRY-SRYCD    (IDX2)(1:3)     =   "008")
                         MOVE     "1"       TO    RECE84-COMCDFLG
