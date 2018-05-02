@@ -230,6 +230,7 @@
            03  FLG-CHKT             PIC 9(01).
            03  FLG-ONLINE           PIC 9(01).
            03  FLG-SYOSIN-AUTO      PIC 9(01).
+           03  FLG-SYUKSN           PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -6218,6 +6219,8 @@
       *
            MOVE    ZERO                TO  SPA-NINPUKBN-IN
            MOVE    ZERO                TO  IDX-SYU
+      *
+           MOVE    ZERO                TO  FLG-SYUKSN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
@@ -6240,9 +6243,13 @@
                            AND   (IDX-SYU          >   ZERO   )
                                MOVE    1           TO  SPA-NINPUKBN-IN
                            ELSE
+      *                      ≤√ªªø«Œ≈ºÔ Ã§œOK
+                             IF    FLG-SYUKSN      =   ZERO
                                MOVE    "0187"      TO  SPA-ERRCD
                                MOVE    "1"         TO  SPA-COM-CUR
                                                                 (IDX)
+      *
+                             END-IF
                            END-IF
                    END-SEARCH
       *            ºÍµªŒ¡
@@ -6281,9 +6288,17 @@
                        MOVE    IDX                 TO  IDX-SYU
                END-EVALUATE
              END-IF
+      *???
+      *      ≤√ªªø«Œ≈ºÔ Ã§œOK§»§π§Î
+             IF     SPA-GMN-INPUTCD(IDX)   =   ".114"
+                                           OR  ".124"
+                                           OR  ".134"
+                 MOVE    1                 TO  FLG-SYUKSN
+             END-IF
       *
              IF     SPA-COM-ZAIEND (IDX)   =   "1"
                  MOVE    ZERO              TO  IDX-SYU
+                 MOVE    ZERO              TO  FLG-SYUKSN
              END-IF
            END-PERFORM
            .
