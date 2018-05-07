@@ -82,6 +82,7 @@
       *  04.08.07    NACL-門脇    16/12/07  遠隔モニタリング加算の前回算定年月
       *                                     コメント記載修正
       *  04.08.08    NACL-門脇    18/04/05  平成３０年４月改正対応
+      *  04.08.09    NACL-門脇    18/05/07  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3853,8 +3854,9 @@ grpsys       PERFORM 900-DBSELECT-SEC
              END-IF
       *
              IF   WRK-ONLINE-COMCD   NOT =  SPACE
-                IF   RECE120-FLG-ONLINE-COMMENT   =   "1"
-                AND  RECE120-FLG-ONLINE2-COMMENT  =   ZERO
+               IF   RECE120-FLG-ONLINE-COMMENT   =   "1"
+               AND  RECE120-FLG-ONLINE2-COMMENT  =   ZERO
+      *
                   MOVE  WRK-ONLINE-COMCD
                                        TO  WRK-TENSU-SRYCD
                   MOVE  RECE100-SRYYM  TO  WRK-TENSU-SRYYM
@@ -3866,7 +3868,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                   MOVE  TNS-YUKOKETA   TO  WK-FREE-YUKOKETA2(IDZ)
                   MOVE  TNS-NAME       TO  WK-FREE-NAME2(IDZ)
-                END-IF
+      *
+               END-IF
+      *
+               IF   RECE120-FLG-ONLINE3-COMMENT  =   SPACE
       *
                 MOVE       99      TO     FLG-COMMENT
       *
@@ -3916,6 +3921,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
                                         TO  WK-FREE-NAME2(IDZ)(IDX42:4)
                    END-IF
                 END-IF
+      *
+               END-IF
              END-IF
       *
              IF   IDZ    NOT =  ZERO

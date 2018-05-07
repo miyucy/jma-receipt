@@ -58,6 +58,7 @@
       *                                     ¥³¥á¥ó¥Èµ­ºÜ½¤Àµ
       *  04.08.08    NACL-Æ£¸¶    17/03/02  Ì¤¥³¡¼¥É²½ÆÃÄê´ïºà¥³¡¼¥ÉÇÑ»ßÂÐ±þ
       *  04.08.09    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.10    NACL-ÌçÏÆ    18/05/07  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4836,8 +4837,9 @@
              END-IF
       *
              IF   WRK-ONLINE-COMCD   NOT =  SPACE
-                IF   RECE44-FLG-ONLINE-COMMENT   =   "1"
-                AND  RECE44-FLG-ONLINE2-COMMENT  =   ZERO
+               IF   RECE44-FLG-ONLINE-COMMENT   =   "1"
+               AND  RECE44-FLG-ONLINE2-COMMENT  =   ZERO
+      *
                   MOVE  WRK-ONLINE-COMCD
                                        TO  WRK-TENSU-SRYCD
                   MOVE  RECE41-SRYYM   TO  WRK-TENSU-SRYYM
@@ -4858,7 +4860,10 @@
                     MOVE  WRK-JIDO-SETCOMATFLG
                                        TO  WK-FREE-SETCOMATFLG2(IDZ)
                   END-IF
-                END-IF
+      *
+               END-IF
+      *
+               IF   RECE44-FLG-ONLINE3-COMMENT  =   SPACE
       *
                 INITIALIZE                WRK-JIDO-SETCOM-AREA
                 MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
@@ -4924,6 +4929,8 @@
                   MOVE  WRK-JIDO-SETCOMATFLG
                                    TO     WK-FREE-SETCOMATFLG2(IDZ)
                 END-IF
+      *
+               END-IF
              END-IF
       *
              IF   IDZ    NOT =  ZERO
