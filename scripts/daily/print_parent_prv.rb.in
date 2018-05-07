@@ -74,7 +74,7 @@ class Jma_print
             puts "print_order #{@print_order}"
           end
 
-          if @print_order == "5" and @show_dialog == false
+          if ( @print_order == "5" and @show_dialog == false ) or ( @print_order == "8" )
             if @items.size >= MAX_PAGES
               print_reports
             end
@@ -148,7 +148,7 @@ class Jma_print
     item[:site_program] = true if "#{report_info[60, 1]}" == '2'
 
     item[:print_order] = "#{report_info[61, 1]}".strip
-    item[:print_order] = "6" if "#{ENV['MCP_MIDDLEWARE_NAME']}" == "ginbee" && ["1", "2"].include?(item[:print_order])
+    item[:print_order] = "8" if "#{ENV['MCP_MIDDLEWARE_NAME']}" == "ginbee" and ["1", "2"].include?(item[:print_order])
 
     item[:out_dir] = format_dir("#{report_info[62, 165]}")
     item[:tbl_key] = "#{report_info[227, 8]}".strip
@@ -242,7 +242,7 @@ class Jma_print
       @items.each {|item| create_pdf(item)}
     end
 
-    if ["3", "4", "5", "6", "7" ].include?(@print_order)
+    if ["3", "4", "5", "6", "7", "8" ].include?(@print_order)
       threads=[]
       MAX_THREADS.times.each_with_index do |index|
         threads << Thread.start do
@@ -252,7 +252,7 @@ class Jma_print
       threads.each {|t| t.join}
     end
 
-    concatenate_pdf if ["5", "6", "7"].include?(@print_order)
+    concatenate_pdf if ["5", "6", "7", "8"].include?(@print_order)
 
     @items.clear
     @print_data.clear
@@ -268,7 +268,7 @@ class Jma_print
     when "5"
       monupload_options = (@show_dialog ? "-s" : "-p #{printer}")
       execute("#{ENV['MONUPLOAD']} -t report -T \"#{@report_title}\" #{monupload_options} #{out_file}")
-    when "6"
+    when "6", "8"
       execute("lpr -P #{printer} #{out_file}")
     when "7"
       item = @items.first
