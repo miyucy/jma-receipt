@@ -315,6 +315,7 @@
       *  04.08.20    NACL-門脇    17/12/15  第三者行為現物給付に関わる
       *                                     負担金計算対応
       *  04.08.21    NACL-門脇    18/03/27  平成３０年４月改正対応
+      *  04.08.22    NACL-門脇    18/05/02  残量廃棄コメントの記載内容修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4065,12 +4066,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                     MOVE    SPACE      TO  RECE45-NAME(IDX4)
                     MOVE    SPACE      TO  RECE45-INPUTCOMENT(IDX4)
-                    STRING  TNS-NAME          DELIMITED  BY  " "
-      ***                   "  "              DELIMITED  BY  SIZE
-                            "　"              DELIMITED  BY  SIZE
+      ***           STRING  TNS-NAME          DELIMITED  BY  " "
+      ***                   "　"              DELIMITED  BY  SIZE
+      ***                   WRK-SRYSURYOW     DELIMITED  BY  " "
+      ***                   RECE45-TANINAME(IDX4)
+      ***                                     DELIMITED  BY  " "
+      ***                   INTO              RECE45-NAME(IDX4)
+      ***           END-STRING
+                    STRING  "（使用量　"      DELIMITED  BY  SIZE
                             WRK-SRYSURYOW     DELIMITED  BY  " "
                             RECE45-TANINAME(IDX4)
                                               DELIMITED  BY  " "
+                            "　残量廃棄）"    DELIMITED  BY  SIZE
                             INTO              RECE45-NAME(IDX4)
                     END-STRING
                     MOVE  RECE45-NAME(IDX4)
@@ -6377,7 +6384,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            MOVE    SPACE           TO  WRK-SRYSURYOW
       *
       *    数字表示用編集（半角）
-           MOVE    RECE45-SRYSURYO(IDX4)  TO  WRK-SURYO
+      ***  MOVE    RECE45-SRYSURYO(IDX4)  TO  WRK-SURYO
+           MOVE    WRK-SRYSURYO           TO  WRK-SURYO
            MOVE    WRK-SURYO-S1           TO  WRK-SURYO-Z1
       *
            MOVE    ZERO            TO  FLG-SP
