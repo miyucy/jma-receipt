@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    18/05/07  算定履歴取得方法の変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -55,8 +56,6 @@
        01  WRK-AREA.
            03  WRK-ST-IDX          PIC 9(03).
            03  WRK-ED-IDX          PIC 9(03).
-      *
-           03  WRK-SANTEIYM        PIC X(06).
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-SRYCD-TABLE.
@@ -243,8 +242,6 @@
       *
       *    チェックする算定の診療行為コードの最大数
            03  WRK-CONS-SRYCD-MAX  PIC 9(03)   VALUE   40.
-      *    チェックする月数
-           03  WRK-CONS-YM-MAX     PIC 9(03)   VALUE   4.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -390,9 +387,7 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           MOVE    ZERO            TO  WRK-ST-IDX
-                                       WRK-ED-IDX
-                                       FLG-CHK
+           INITIALIZE                  FLG-CHK
       *
            IF      LNK-RECESRCHK-CHKNO
                                    >   ZERO
@@ -416,50 +411,34 @@
                END-EVALUATE
            END-IF
       *
-      *    処理年月の三ヶ月前までの算定履歴をチェック
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       WRK-CONS-YM-MAX
-                   OR      FLG-CHK =       1
-               INITIALIZE                  STS-AREA-DAY
-               INITIALIZE                  LNK-DAY6-AREA
-               MOVE    "61"            TO  LNK-DAY6-IRAI
-               MOVE    LNK-RECESRCHK-SRYYM
-                                       TO  LNK-DAY6-KIJUN (1:6)
-               MOVE    "01"            TO  LNK-DAY6-KIJUN (7:2)
-               MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
-               COMPUTE LNK-DAY6-ZOGEN  =   -1  *   ( IDX -   1 )
-               CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KEISAN (1:6)
-                                       TO  WRK-SANTEIYM
-      *??      DISPLAY "SANTEIYM=" WRK-SANTEIYM
+      *    処理年月以前の算定履歴をチェック
+           PERFORM VARYING IDXX    FROM    WRK-ST-IDX  BY  1
+                   UNTIL   IDXX    >       WRK-ED-IDX
+               PERFORM VARYING IDYY    FROM    1   BY  1
+                       UNTIL   IDYY    >       WRK-CONS-SRYCD-MAX
+                       OR      WRK-CONS-SRYCD (IDXX IDYY)
+                                       =       SPACE
+                   DISPLAY "SRYCD=" IDXX " " IDYY " " 
+                            WRK-CONS-SRYCD (IDXX IDYY)
       *
-               PERFORM VARYING IDXX    FROM    WRK-ST-IDX  BY  1
-                       UNTIL   IDXX    >       WRK-ED-IDX
-                       OR      FLG-CHK =       1
-                   PERFORM VARYING IDYY    FROM    1   BY  1
-                           UNTIL   IDYY    >       WRK-CONS-SRYCD-MAX
-                           OR      WRK-CONS-SRYCD (IDXX IDYY)
-                                           =       SPACE
-                           OR      FLG-CHK =       1
-      *??              DISPLAY "SRYCD=" IDXX " " IDYY " " 
-      *??                       WRK-CONS-SRYCD (IDXX IDYY)
-      *
-                       INITIALIZE                  SANTEI-REC
-                       MOVE    SPA-HOSPNUM     TO  SANTEI-HOSPNUM
-                       MOVE    LNK-RECESRCHK-PTID
-                                               TO  SANTEI-PTID
-                       MOVE    WRK-SANTEIYM    TO  SANTEI-SRYYM
-                       MOVE    WRK-CONS-SRYCD (IDXX IDYY)
-                                               TO  SANTEI-SRYCD
-                       MOVE    ZERO            TO  SANTEI-NYUGAIKBN
-                       MOVE    ZERO            TO  SANTEI-SRYKA
-                       MOVE    ZERO            TO  SANTEI-HKNCOMBINUM
-                       MOVE    SANTEI-REC      TO  MCPDATA-REC
-                       MOVE    "tbl_santei"    TO  MCP-TABLE
-                       MOVE    "key"           TO  MCP-PATHNAME
-                       PERFORM  900-SANTEI-READ-SEC
-                       IF       FLG-SANTEI     =   ZERO
+                   INITIALIZE                  SANTEI-REC
+                   MOVE    SPA-HOSPNUM     TO  SANTEI-HOSPNUM
+                   MOVE    LNK-RECESRCHK-PTID
+                                           TO  SANTEI-PTID
+                   MOVE    WRK-CONS-SRYCD (IDXX IDYY)
+                                           TO  SANTEI-SRYCD
+                   MOVE    ZERO            TO  SANTEI-NYUGAIKBN
+                   MOVE    ZERO            TO  SANTEI-SRYKA
+                   MOVE    ZERO            TO  SANTEI-HKNCOMBINUM
+                   MOVE    SANTEI-REC      TO  MCPDATA-REC
+                   MOVE    "tbl_santei"    TO  MCP-TABLE
+                   MOVE    "key3"          TO  MCP-PATHNAME
+                   PERFORM  900-SANTEI-READ-SEC
+                   IF       FLG-SANTEI     =   ZERO
+                       IF    ( LNK-RECESRCHK-FSANTEIYMD
+                                               >   SANTEI-FSANTEIYMD )
+                       OR    ( LNK-RECESRCHK-FSANTEIYMD
+                                               =   SPACE             )
                            MOVE    SANTEI-SRYYM    TO
                                                LNK-RECESRCHK-SANTEIYM
                            MOVE    SANTEI-SRYCD    TO
@@ -469,19 +448,18 @@
                                                LNK-RECESRCHK-FSANTEIYMD
                            MOVE    SANTEI-MSANTEID TO
                                                LNK-RECESRCHK-MSANTEID
-                           MOVE    SANTEI-SRYCD    TO
-                                               LNK-RECESRCHK-SRYCD
                            MOVE    WRK-CONS-COMMENT-SRYCD (IDXX)
                                                    TO
                                                LNK-RECESRCHK-COMCD
                            MOVE    1               TO  FLG-CHK
                        END-IF
-                   END-PERFORM
+                   END-IF
                END-PERFORM
            END-PERFORM
       *    
            IF      FLG-CHK         =   ZERO
       *        算定履歴情報編集なし
+               INITIALIZE                  LNK-RECESRCHK-HENKYAKU-AREA
                MOVE    9               TO  LNK-RECESRCHK-RC
            END-IF
       *
@@ -512,30 +490,44 @@
        900-SANTEI-READ-SEC          SECTION.
       *
            MOVE    "tbl_santei"    TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-DBSELECT-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_santei"    TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC          =   ZERO
-                   MOVE    MCPDATA-REC     TO  SANTEI-REC
-                   MOVE    ZERO            TO  FLG-SANTEI
-               ELSE
-                   MOVE    1               TO  FLG-SANTEI
-                   INITIALIZE                   SANTEI-REC
-               END-IF
+               PERFORM 900-SANTEI-READ-N-SEC
            ELSE
                MOVE    1               TO  FLG-SANTEI
                INITIALIZE                  SANTEI-REC
            END-IF
       *
            MOVE    "tbl_santei"    TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .
        900-SANTEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    算定履歴読込
+      *****************************************************************
+       900-SANTEI-READ-N-SEC       SECTION.
+      *
+           MOVE    "tbl_santei"    TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+               MOVE    ZERO            TO  FLG-SANTEI
+               IF      SANTEI-SRYYM    >    LNK-RECESRCHK-SRYYM
+                   GO  TO  900-SANTEI-READ-N-SEC
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SANTEI
+               INITIALIZE                  SANTEI-REC
+           END-IF
+      *
+           .
+       900-SANTEI-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
