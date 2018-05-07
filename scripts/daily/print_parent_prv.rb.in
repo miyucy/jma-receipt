@@ -146,7 +146,10 @@ class Jma_print
     item[:offset_x] = "#{report_info[50, 5]}".strip unless "#{report_info[50, 5]}".strip.empty?
     item[:offset_y] = "#{report_info[55, 5]}".strip unless "#{report_info[55, 5]}".strip.empty?
     item[:site_program] = true if "#{report_info[60, 1]}" == '2'
+
     item[:print_order] = "#{report_info[61, 1]}".strip
+    item[:print_order] = "6" if "#{ENV['MCP_MIDDLEWARE_NAME']}" == "ginbee" && ["1", "2"].include?(item[:print_order])
+
     item[:out_dir] = format_dir("#{report_info[62, 165]}")
     item[:tbl_key] = "#{report_info[227, 8]}".strip
     item[:seq] = "#{report_info[235, 4]}".strip
