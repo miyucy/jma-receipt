@@ -1342,6 +1342,19 @@
                IF    NSRY-SRYCD(1)  =  "190182690"
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                END-IF
+      *-------------------------------------------------------------
+      *        入院料加算で告示等識別区分１が７（注加算項目）のもので、
+      *        注加算となる加算については、１（基本項目）をセット
+      *        しておく
+      *-------------------------------------------------------------
+               IF   (TNS-KOKUJISKBKBN1   =   7)     AND
+                    (TNS-CDKBN-KBN       =  "A")    AND
+                   ((TNS-CDKBN-KBNNUM    >=  200)   AND
+                    (TNS-CDKBN-KBNNUM    <=  299))  AND
+                    (TNS-CHUKSNCD        NOT = "0000")  AND
+                    (TNS-CHUKSNTUBAN     NOT = "0")
+                   MOVE   1            TO   TNS-KOKUJISKBKBN1
+               END-IF
       *
       *        告示等識別区分（１）が７（加算項目）以外の入院料加算の退避
                IF   TNS-KOKUJISKBKBN1   NOT =   7
@@ -1628,6 +1641,20 @@
                      MOVE     "tbl_sryact"   TO  MCP-TABLE
                      MOVE     "key"          TO  MCP-PATHNAME
                      PERFORM   900-CLOSE-SEC
+      *
+      *-------------------------------------------------------------
+      *             入院料加算で告示等識別区分１が７（注加算項目）のもので、
+      *             注加算となる加算については、１（基本項目）をセット
+      *             しておく
+      *-------------------------------------------------------------
+                     IF   (TNS-KOKUJISKBKBN1   =   7)     AND
+                          (TNS-CDKBN-KBN       =  "A")    AND
+                         ((TNS-CDKBN-KBNNUM    >=  200)   AND
+                          (TNS-CDKBN-KBNNUM    <=  299))  AND
+                          (TNS-CHUKSNCD        NOT = "0000")  AND
+                          (TNS-CHUKSNTUBAN     NOT = "0")
+                         MOVE   1            TO   TNS-KOKUJISKBKBN1
+                     END-IF
       *
       *              告示等識別区分（１）が７（加算項目）以外の入院料加算の退避
                      IF   TNS-KOKUJISKBKBN1   NOT =   7
