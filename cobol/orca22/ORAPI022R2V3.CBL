@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/05/01  急性フラグの追加
+      *                                     傷病名コードを２１に変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -162,10 +164,10 @@
       *
            03  WRK-BYOMEI-TBL. 
                05  WRK-BYOMEICD-G.
-                   07  WRK-TBYOMEICD   PIC X(10)   OCCURS  7.
+                   07  WRK-TBYOMEICD   PIC X(10)   OCCURS  22.
                05  WRK-SPICOD-G.
-                   07  WRK-TSPICOD     PIC X(10)   OCCURS  7.
-               05  WRK-BYOMEI-G    OCCURS  7.
+                   07  WRK-TSPICOD     PIC X(10)   OCCURS  22.
+               05  WRK-BYOMEI-G    OCCURS  22.
                    07  WRK-TBYOMEI     PIC X(100).
                    07  WRK-TTANDOKUKBN PIC 9(02).
                    07  WRK-TUTAGAIFLG  PIC X(01).
@@ -182,7 +184,7 @@
            03  WRK-POSITION        PIC 9(02).
            03  WRK-POSITION-X      REDEFINES   WRK-POSITION
                                    PIC X(02).
-           03 WRK-DISEASES-SPICOD1 PIC X(50).
+           03 WRK-DISEASES-SPICOD1 PIC X(155).
       *
            03  WRK-DIAG-AREA.
                05  WRK-DIAG-POSITION
@@ -195,7 +197,7 @@
                    07  WRK-DIAG-CHANGE
                                    PIC X(02).
                    07  WRK-DIAG-CODE
-                                   PIC X(50).
+                                   PIC X(155).
       *
            03  WRK-ERR-BYOMEI      PIC X(80).
            03  WRK-ERR-SRYYMD      PIC X(22).
@@ -255,6 +257,7 @@
                05  WRK-DISEASEQ-TENKIKBN   PIC X(01).
                05  WRK-DISEASEQ-SYUBYOFLG  PIC X(01).
                05  WRK-DISEASEQ-UTAGAIFLG  PIC X(01).
+               05  WRK-DISEASEQ-KYUSEIFLG  PIC X(01).
                05  WRK-DISEASEQ-KARTE-NAME PIC X(80).
                05  WRK-DISEASEQ-MANSEIKBN  PIC 9(2).
                05 WRK-DISEASEQ-INSURANCE-CLASS
@@ -885,18 +888,7 @@
       *
                INITIALIZE                  WRK-DISEASEQ-AREA
       *
-               IF    ( DISEASEQ-SPICOD2 (IDX 1)  =   SPACE )
-               AND   ( DISEASEQ-SPINAME2(IDX 1)  =   SPACE )
-               AND   ( DISEASEQ-SPICOD2 (IDX 2)  =   SPACE )
-               AND   ( DISEASEQ-SPINAME2(IDX 2)  =   SPACE )
-               AND   ( DISEASEQ-SPICOD2 (IDX 3)  =   SPACE )
-               AND   ( DISEASEQ-SPINAME2(IDX 3)  =   SPACE )
-               AND   ( DISEASEQ-SPICOD2 (IDX 4)  =   SPACE )
-               AND   ( DISEASEQ-SPINAME2(IDX 4)  =   SPACE )
-               AND   ( DISEASEQ-SPICOD2 (IDX 5)  =   SPACE )
-               AND   ( DISEASEQ-SPINAME2(IDX 5)  =   SPACE )
-               AND   ( DISEASEQ-SPICOD2 (IDX 6)  =   SPACE )
-               AND   ( DISEASEQ-SPINAME2(IDX 6)  =   SPACE )
+               IF    ( DISEASEQ-SNDSPITBL(IDX)   =   SPACE )
                    IF    ( DISEASEQ-SPICOD1 (IDX)  =   SPACE )
                    AND   ( DISEASEQ-SPINAME1(IDX)  =   SPACE )
                        MOVE    50                  TO  IDX
@@ -951,11 +943,26 @@
                                                   WRK-TBYOMEICD (5)
                                                   WRK-TBYOMEICD (6)
                                                   WRK-TBYOMEICD (7)
+                                                  WRK-TBYOMEICD (8)
+                                                  WRK-TBYOMEICD (9)
+                                                  WRK-TBYOMEICD (10)
+                                                  WRK-TBYOMEICD (11)
+                                                  WRK-TBYOMEICD (12)
+                                                  WRK-TBYOMEICD (13)
+                                                  WRK-TBYOMEICD (14) 
+                                                  WRK-TBYOMEICD (15)
+                                                  WRK-TBYOMEICD (16)
+                                                  WRK-TBYOMEICD (17)
+                                                  WRK-TBYOMEICD (18)
+                                                  WRK-TBYOMEICD (19)
+                                                  WRK-TBYOMEICD (20)
+                                                  WRK-TBYOMEICD (21)
+                                                  WRK-TBYOMEICD (22)
                END-UNSTRING
            END-IF
       *
-      *    ７個以上のコードが設定されているとき
-           IF      WRK-TBYOMEICD (7)   NOT =   SPACE
+      *    ２２個以上のコードが設定されているとき
+           IF      WRK-TBYOMEICD (22)  NOT =   SPACE
                MOVE    1                   TO  FLG-BYOMEI-CHK
            END-IF
       *
@@ -983,7 +990,7 @@
       *
       *    病名のみ設定のときコードチェック
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       6
+                   UNTIL   IDY >       21
                    OR (    DISEASEQ-SPINAME2(IDX IDY) 
                                                =   SPACE
                        AND DISEASEQ-SPICOD2 (IDX IDY)
@@ -1016,6 +1023,21 @@
                        DISEASEQ-SPINAME2 (IDX 4)   DELIMITED BY SPACE
                        DISEASEQ-SPINAME2 (IDX 5)   DELIMITED BY SPACE
                        DISEASEQ-SPINAME2 (IDX 6)   DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 7)   DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 8)   DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 9)   DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 10)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 11)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 12)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 13)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 14)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 15)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 16)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 17)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 18)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 19)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 20)  DELIMITED BY SPACE
+                       DISEASEQ-SPINAME2 (IDX 21)  DELIMITED BY SPACE
                                                    INTO    WRK-BYOMEI
                END-STRING
            END-IF
@@ -1041,7 +1063,7 @@
            END-IF
       *
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       6
+                   UNTIL   IDY >       21
                    OR      WRK-TBYOMEICD (IDY) =   SPACE
                    OR      FLG-BYOMEI-CHK      =   1
       *
@@ -1075,27 +1097,49 @@
                    IF      WRK-TBYOMEICD (IDY)     =   WRK-CONS-BYOMEICD
                        MOVE    5               TO  FLG-BYOMEI-CHK
                    ELSE
-                       INITIALIZE                      BYOMEI-REC
-                       MOVE    WRK-TBYOMEICD (IDY) TO  BYO-BYOMEICD
-                       PERFORM 900-BYOMEI-READ-SEC
-                       IF      FLG-BYOMEI          =   1
-                           MOVE    1               TO  FLG-BYOMEI-CHK
+                       IF  (   WRK-TBYOMEICD (IDY) (1:3)   =   "ZZZ"   )
+                       AND ( ( WRK-TBYOMEICD (IDY) (4:1)   <   "1" ) OR 
+                             ( WRK-TBYOMEICD (IDY) (4:1)   =   "C" )   )
+      *                    予約病名コード検索
+                           SET     TBL-BYOMEICD-IDX    TO  1
+                           SEARCH  TBL-BYOMEICD-OCC
+                                               VARYING TBL-BYOMEICD-IDX
+                               AT  END
+                                   MOVE    1       TO  FLG-BYOMEI
+                                   MOVE    1       TO  FLG-BYOMEI-CHK
+                               WHEN    WRK-TBYOMEICD (IDY) =
+                                                   TBL-YYK-BYOMEICD
+                                                      (TBL-BYOMEICD-IDX)
+                                   MOVE    ZERO        TO  FLG-BYOMEI
+                                   MOVE    TBL-YYK-BYOMEI
+                                                      (TBL-BYOMEICD-IDX)
+                                                       TO
+                                                       WRK-TBYOMEI (IDY)
+                           END-SEARCH
                        ELSE
-                           MOVE    BYO-BYOMEI      TO
+                           INITIALIZE                      BYOMEI-REC
+                           MOVE    WRK-TBYOMEICD (IDY) TO  BYO-BYOMEICD
+                           PERFORM 900-BYOMEI-READ-SEC
+                           IF      FLG-BYOMEI          =   1
+                               MOVE    1               TO
+                                                       FLG-BYOMEI-CHK
+                           ELSE
+                               MOVE    BYO-BYOMEI      TO
                                                    WRK-TBYOMEI    (IDY)
-                           MOVE    BYO-TANDOKUKBN  TO
+                               MOVE    BYO-TANDOKUKBN  TO
                                                    WRK-TTANDOKUKBN(IDY)
-                           MOVE    BYO-UTAGAIFLG   TO
+                               MOVE    BYO-UTAGAIFLG   TO
                                                    WRK-TUTAGAIFLG (IDY)
-                           IF      WRK-TBYOMEICD (IDY) (1:1)
-                                               NOT =   "Z"
-                               IF      BYO-NANBYOCD
-                                                   NOT =   ZERO
-                                   MOVE    BYO-NANBYOCD
+                               IF      WRK-TBYOMEICD (IDY) (1:1)
+                                                   NOT =   "Z"
+                                   IF      BYO-NANBYOCD
+                                                       NOT =   ZERO
+                                       MOVE    BYO-NANBYOCD
                                                        TO  WRK-TOKSKNCD
-                               ELSE 
-                                   MOVE    BYO-TOKSKNCD
+                                   ELSE 
+                                       MOVE    BYO-TOKSKNCD
                                                        TO  WRK-TOKSKNCD
+                                   END-IF
                                END-IF
                            END-IF
                        END-IF
@@ -1108,7 +1152,7 @@
                MOVE    SPACE                TO  WRK-RECECD-TBL
       *
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       6
+                       UNTIL   IDY >       21
                        OR      WRK-TBYOMEICD (IDY) =   SPACE
                        OR      FLG-BYOMEI-CHK      =   3
                    EVALUATE    WRK-TBYOMEICD (IDY)(1:3)
@@ -1149,7 +1193,7 @@
                IF      FLG-BYOMEI-CHK      =   ZERO
                    MOVE    ZERO                TO  WRK-TANDOKUKBN
                    PERFORM VARYING IDY FROM    1   BY  1
-                           UNTIL   IDY >       6
+                           UNTIL   IDY >       21
                            OR      WRK-TBYOMEICD (IDY) =   SPACE
                        IF      WRK-TTANDOKUKBN (IDY)   =   ZERO
                            MOVE    1               TO  WRK-TANDOKUKBN
@@ -1179,15 +1223,24 @@
                        WRK-TBYOMEI (4)     DELIMITED   BY  SPACE
                        WRK-TBYOMEI (5)     DELIMITED   BY  SPACE
                        WRK-TBYOMEI (6)     DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (7)     DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (8)     DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (9)     DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (10)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (11)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (12)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (13)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (14)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (15)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (16)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (17)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (18)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (19)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (20)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (21)    DELIMITED   BY  SPACE
                                            INTO    WRK-BYOMEI
                END-STRING
-               INITIALIZE                      WRK-TBYOMEICD (1)
-                                               WRK-TBYOMEICD (2)
-                                               WRK-TBYOMEICD (3)
-                                               WRK-TBYOMEICD (4)
-                                               WRK-TBYOMEICD (5)
-                                               WRK-TBYOMEICD (6)
-                                               WRK-TBYOMEICD (7)
+               INITIALIZE                      WRK-BYOMEICD-G
                MOVE    WRK-CONS-BYOMEICD   TO  WRK-TBYOMEICD (1) 
            ELSE
                STRING  WRK-TBYOMEI (1)     DELIMITED   BY  SPACE
@@ -1196,6 +1249,21 @@
                        WRK-TBYOMEI (4)     DELIMITED   BY  SPACE
                        WRK-TBYOMEI (5)     DELIMITED   BY  SPACE
                        WRK-TBYOMEI (6)     DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (7)     DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (8)     DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (9)     DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (10)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (11)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (12)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (13)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (14)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (15)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (16)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (17)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (18)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (19)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (20)    DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (21)    DELIMITED   BY  SPACE
                                            INTO    WRK-BYOMEI
                END-STRING
            END-IF
@@ -1534,10 +1602,19 @@
            END-IF
       *
       *    疑いフラグ
-           IF       DISEASEQ-UTAGAIFLG (IDX)
-                                   =   "S"
-               MOVE    "1"             TO  WRK-UTAGAIFLG
-           END-IF
+           DISPLAY " SuspectedFlag ="   DISEASEQ-UTAGAIFLG (IDX)
+           DISPLAY " AcuteFlag     ="   DISEASEQ-KYUSEIFLG (IDX)
+           EVALUATE    DISEASEQ-UTAGAIFLG (IDX)
+                                   ALSO    DISEASEQ-KYUSEIFLG (IDX)
+               WHEN    "S"         ALSO    SPACE
+                   MOVE    "1"             TO  WRK-UTAGAIFLG
+               WHEN    SPACE       ALSO    "A"
+                   MOVE    "2"             TO  WRK-UTAGAIFLG
+               WHEN    "S"         ALSO    "A"
+                   MOVE    "3"             TO  WRK-UTAGAIFLG
+               WHEN    OTHER
+                   MOVE    SPACE           TO  WRK-UTAGAIFLG
+           END-EVALUATE
       *
       *    入外区分
            DISPLAY " "
@@ -2533,18 +2610,20 @@
            MOVE    WRK-TENKI           TO  PTBYO-TENKIKBN
       *    疑いフラグ
            EVALUATE    PTBYO-UTAGAIFLG ALSO    WRK-UTAGAIFLG
+               WHEN    ANY             ALSO    SPACE
+                   MOVE    SPACE           TO  PTBYO-UTAGAIFLG
+               WHEN    ANY             ALSO    "3"
+               WHEN    "1"             ALSO    "2"
+               WHEN    "2"             ALSO    "1"
+               WHEN    "3"             ALSO    "1"
+               WHEN    "3"             ALSO    "2"
+                   MOVE    "3"             TO  PTBYO-UTAGAIFLG
+               WHEN    SPACE           ALSO    "2"
+               WHEN    "2"             ALSO    "2"
+                   MOVE    "2"             TO  PTBYO-UTAGAIFLG
                WHEN    SPACE           ALSO    "1"
                WHEN    "1"             ALSO    "1"
                    MOVE    "1"             TO  PTBYO-UTAGAIFLG
-               WHEN    "2"             ALSO    "1"
-               WHEN    "3"             ALSO    "1"
-                   MOVE    "3"             TO  PTBYO-UTAGAIFLG
-               WHEN    SPACE           ALSO    SPACE
-               WHEN    "1"             ALSO    SPACE
-                   MOVE    SPACE           TO  PTBYO-UTAGAIFLG
-               WHEN    "2"             ALSO    SPACE
-               WHEN    "3"             ALSO    SPACE
-                   MOVE    "2"             TO  PTBYO-UTAGAIFLG
            END-EVALUATE
       *
       *    病名編集処理
@@ -2600,7 +2679,7 @@
            IF      FLG-BYOMEI-CHK      NOT =   1   AND 5 AND 6
                MOVE    ZERO                TO  IDZ
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       6
+                       UNTIL   IDY >       21
                        OR      WRK-TBYOMEICD (IDY) =   SPACE
       *            病名コード
                    MOVE    WRK-TBYOMEICD (IDY) 
@@ -3101,13 +3180,13 @@
                                            TO  WRK-DISEASES-SPICOD1
                    IF      PTBYO-BYOMEICD (IDXX) (1:3)
                                            =   "ZZZ"
-                       IF      WRK-DISEASES-SPICOD1 (46:)
+                       IF      WRK-DISEASES-SPICOD1 (151:)
                                               =   SPACE
                            MOVE    PTBYO-BYOMEICD (IDXX) (4:)
                                                    TO  WRK-BYOMEICD
                        END-IF
                    ELSE
-                       IF      WRK-DISEASES-SPICOD1 (43:)
+                       IF      WRK-DISEASES-SPICOD1 (148:)
                                               =   SPACE
                            MOVE    PTBYO-BYOMEICD (IDXX)
                                                    TO  WRK-BYOMEICD
@@ -3136,7 +3215,7 @@
                    MOVE    PTBYO-HOSOKUCD (IDXX)   TO
                                        DISEASES-HOSOKUCD-O (IDY IDXX)
       *            補足コメントコードからコメント内容を編集
-                   PERFORM 20011-HOSOKUCD-COMMENT-HENSYU-SEC
+                   PERFORM 200311-HOSOKUCD-COMMENT-SEC
                END-PERFORM
                MOVE    PTBYO-HOSOKU-COMMENT
                                            TO  DISEASES-HOSOKU-COMMENT
@@ -3152,6 +3231,10 @@
                                                DISEASES-SYUOBYOFLG (IDY)
                END-IF
                MOVE    PTBYO-UTAGAIFLG     TO  DISEASES-UTAGAIFLG  (IDY)
+               IF      PTBYO-UTAGAIFLG     =   "2" OR "3"
+                   MOVE    "A"                 TO
+                                               DISEASES-KYUSEIFLG  (IDY)
+               END-IF
                MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  DISEASES-STARTDATE  (IDY)
@@ -3229,7 +3312,7 @@
       *****************************************************************
       *    補足コメントコードからコメント内容を編集
       *****************************************************************
-       20011-HOSOKUCD-COMMENT-HENSYU-SEC   SECTION.
+       200311-HOSOKUCD-COMMENT-SEC   SECTION.
       *
            IF      PTBYO-HOSOKUCD (IDXX)
                                        =   SPACE
@@ -3297,7 +3380,7 @@
                END-IF
            END-IF
            .
-       20011-HOSOKUCD-COMMENT-HENSYU-XT.
+       200311-HOSOKUCD-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3492,7 +3575,7 @@
            EVALUATE    WRK-DIAG-WARNING
                WHEN    "W01"
                    PERFORM VARYING IDXX    FROM    1   BY  1
-                           UNTIL   IDXX    >       7
+                           UNTIL   IDXX    >       21
                            OR      PTBYO-BYOMEICD (IDXX)   =   SPACE
                        MOVE    DISEASES-DIAG-CODE (CNT-DIAG)
                                                    TO  WRK-DIAG-CODE
@@ -3519,7 +3602,7 @@
                    END-PERFORM
                WHEN    OTHER
                    PERFORM VARYING IDXX    FROM    1   BY  1
-                           UNTIL   IDXX    >       7
+                           UNTIL   IDXX    >       22
                            OR      WRK-TSPICOD (IDXX)   =   SPACE
                        MOVE    DISEASES-DIAG-CODE (CNT-DIAG)
                                                    TO  WRK-DIAG-CODE

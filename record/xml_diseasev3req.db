@@ -13,12 +13,12 @@ xml_diseasev3req {
 		};
 		Disease_Information  {
 			Disease_Insurance_Class		varchar(1);
-			Disease_Code			varchar(50);
+			Disease_Code			varchar(155);
 			Disease_Name			varchar(80);
 			Disease_Single	{
 				Disease_Single_Code	varchar(7);
 				Disease_Single_Name	varchar(20);
-			}[6] ;
+			}[21] ;
 			Disease_Supplement_Name		varchar(40);
 			Disease_Supplement_Single	{
 				Disease_Supplement_Single_Code	varchar(10);
@@ -29,6 +29,7 @@ xml_diseasev3req {
 			Disease_Category		varchar(2);
 #---------------> 疑いフラグ
 			Disease_SuspectedFlag		varchar(1);
+			Disease_AcuteFlag		varchar(1);
 			Disease_StartDate		varchar(10);
 			Disease_EndDate			varchar(10);
 #---------------> 転帰区分

@@ -24,14 +24,14 @@ xml_diseasev3res {
 				 Disease_Warning_Item_Position  varchar(2);
 				 Disease_Warning_StartDate	varchar(10);
 				 Disease_Warning_Name	varchar(80);
-				 Disease_Warning_Code	varchar(50);
+				 Disease_Warning_Code	varchar(155);
 				 Disease_Warning_Change varchar(2);
 			};
 		} [50];
 		Disease_Unmatch_Information	{
 			Disease_Unmatch_Information_Overflow    varchar(5);
 			Disease_Unmatch_Info {
-				Disease_Code			varchar(50);
+				Disease_Code			varchar(155);
 				Disease_Name			varchar(80);
 				Disease_Supplement_Name		varchar(80);
 				Disease_Supplement_Single	{
@@ -41,6 +41,7 @@ xml_diseasev3res {
 				Disease_InOut			varchar(1);
 				Disease_Category		varchar(2);
 				Disease_SuspectedFlag		varchar(1);
+				Disease_AcuteFlag		varchar(1);
 				Disease_StartDate		varchar(10);
 				Disease_EndDate			varchar(10);
 				Disease_OutCome			varchar(1);
