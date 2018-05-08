@@ -315,6 +315,8 @@
       *  04.08.20    NACL-門脇    17/12/15  第三者行為現物給付に関わる
       *                                     負担金計算対応
       *  04.08.21    NACL-門脇    18/03/27  平成３０年４月改正対応
+      *  04.08.22    NACL-門脇    18/05/02  残量廃棄コメントの記載内容修正
+      *  04.08.23    NACL-門脇    18/05/07  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4065,12 +4067,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                     MOVE    SPACE      TO  RECE45-NAME(IDX4)
                     MOVE    SPACE      TO  RECE45-INPUTCOMENT(IDX4)
-                    STRING  TNS-NAME          DELIMITED  BY  " "
-      ***                   "  "              DELIMITED  BY  SIZE
-                            "　"              DELIMITED  BY  SIZE
+      ***           STRING  TNS-NAME          DELIMITED  BY  " "
+      ***                   "　"              DELIMITED  BY  SIZE
+      ***                   WRK-SRYSURYOW     DELIMITED  BY  " "
+      ***                   RECE45-TANINAME(IDX4)
+      ***                                     DELIMITED  BY  " "
+      ***                   INTO              RECE45-NAME(IDX4)
+      ***           END-STRING
+                    STRING  "（使用量　"      DELIMITED  BY  SIZE
                             WRK-SRYSURYOW     DELIMITED  BY  " "
                             RECE45-TANINAME(IDX4)
                                               DELIMITED  BY  " "
+                            "　残量廃棄）"    DELIMITED  BY  SIZE
                             INTO              RECE45-NAME(IDX4)
                     END-STRING
                     MOVE  RECE45-NAME(IDX4)
@@ -4179,6 +4187,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         MOVE     1    TO  FLG-ZAIRIHA-COM
                       END-IF
                     END-PERFORM
+               END-IF
+      *
+               IF  ( SRY-SRYKBN = "12" OR "13" OR
+                                  "14" OR "80"      )
+               AND ((SRY-SRYCD(IDX2)(1:1)  =  "8"  ) OR
+                    (SRY-SRYCD(IDX2)(1:3)  =  "008"))
+                 IF (RECE45-NAME(IDX4)(1:20) = "管理料等算定開始年月")
+                 OR (RECE45-NAME(IDX4)(1:18) = "管理料算定開始年月"  )
+                   MOVE   "1"   TO   RECE44-FLG-ONLINE3-COMMENT
+                 END-IF
                END-IF
       *
                IF  SRY-SRYCD(IDX2)(1:3)     =   "058"
@@ -6377,7 +6395,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            MOVE    SPACE           TO  WRK-SRYSURYOW
       *
       *    数字表示用編集（半角）
-           MOVE    RECE45-SRYSURYO(IDX4)  TO  WRK-SURYO
+      ***  MOVE    RECE45-SRYSURYO(IDX4)  TO  WRK-SURYO
+           MOVE    WRK-SRYSURYO           TO  WRK-SURYO
            MOVE    WRK-SURYO-S1           TO  WRK-SURYO-Z1
       *
            MOVE    ZERO            TO  FLG-SP

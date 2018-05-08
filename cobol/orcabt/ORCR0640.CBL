@@ -763,6 +763,7 @@
       *  04.08.48    NACL-ÌçÏÆ    18/03/01  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.49    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.50    NACL-ÌçÏÆ    18/04/04  ÆñÉÂÉéÃ´¼ÔÈÖ¹æÄÉ²ÃÂÐ±þ
+      *  04.08.51    NACL-ÌçÏÆ    18/05/02  »ÄÎÌÇÑ´þ¥³¥á¥ó¥È¤Îµ­ºÜÆâÍÆ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -8642,12 +8643,18 @@
       *
                     MOVE    SPACE      TO  RECE65-NAME(IDX4)
                     MOVE    SPACE      TO  RECE65-INPUTCOMENT(IDX4)
-                    STRING  TNS-NAME          DELIMITED  BY  " "
-      ***                   "  "              DELIMITED  BY  SIZE
-                            "¡¡"              DELIMITED  BY  SIZE
+      ***           STRING  TNS-NAME          DELIMITED  BY  " "
+      ***                   "¡¡"              DELIMITED  BY  SIZE
+      ***                   WRK-SRYSURYOW     DELIMITED  BY  " "
+      ***                   RECE65-TANINAME(IDX4)
+      ***                                     DELIMITED  BY  " "
+      ***                   INTO              RECE65-NAME(IDX4)
+      ***           END-STRING
+                    STRING  "¡Ê»ÈÍÑÎÌ¡¡"      DELIMITED  BY  SIZE
                             WRK-SRYSURYOW     DELIMITED  BY  " "
                             RECE65-TANINAME(IDX4)
                                               DELIMITED  BY  " "
+                            "¡¡»ÄÎÌÇÑ´þ¡Ë"    DELIMITED  BY  SIZE
                             INTO              RECE65-NAME(IDX4)
                     END-STRING
                     MOVE  RECE65-NAME(IDX4)
@@ -9902,7 +9909,8 @@
            MOVE    SPACE           TO  WRK-SRYSURYOW
       *
       *    ¿ô»úÉ½¼¨ÍÑÊÔ½¸¡ÊÈ¾³Ñ¡Ë
-           MOVE    RECE65-SRYSURYO(IDX4)  TO  WRK-SURYO
+      ***  MOVE    RECE65-SRYSURYO(IDX4)  TO  WRK-SURYO
+           MOVE    WRK-SRYSURYO           TO  WRK-SURYO
            MOVE    WRK-SURYO-S1           TO  WRK-SURYO-Z1
       *
            MOVE    ZERO            TO  FLG-SP
@@ -19107,6 +19115,9 @@
            MOVE    ZERO                    TO   WRK-KZI058-TANIMOJISU
            MOVE    SPACE                   TO   WRK-KZI058-TANINAME
       *
+           MOVE    ZERO                    TO   WRK-SRYSURYO
+           MOVE    ZERO                    TO   WRK-SRYSURYO2
+      *
            PERFORM
                   UNTIL     (IDX2      >   IDX5)    OR
                             (WRK-ORCSTEN-SRYCD(IDX2)  =   SPACE)
@@ -19164,6 +19175,8 @@
                   PERFORM    900-TENSU-TBL-SEC
                   IF  WRK-ORCSTEN-SRYCD(IDX2)  =  CONS-ZANHAIKI
                     IF  RECE65-SRYSURYO(IDX4)  NOT = ZERO
+                      COMPUTE  WRK-SRYSURYO  =  WRK-SRYSURYO2
+                                             -  RECE65-SRYSURYO(IDX4)
                       MOVE   WRK-TANICD     TO  RECE65-TANICD(IDX4)
                       MOVE   WRK-TANIMOJISU TO  RECE65-TANIMOJISU(IDX4)
                       MOVE   WRK-TANINAME   TO  RECE65-TANINAME(IDX4)
@@ -19172,6 +19185,8 @@
                       MOVE   "1"            TO  RECE65-RECEPTFLG(IDX4)
                     END-IF
                   ELSE
+                      COMPUTE WRK-SRYSURYO2  =  WRK-ORCSTEN-SURYO(IDX2)
+                                             +  0.99999
                       IF   TNS-TANICD  NOT = SPACE AND "000"
                        MOVE TNS-TANICD      TO  RECE65-TANICD(IDX4)
                                                 WRK-TANICD
@@ -19251,12 +19266,18 @@
       *
                        MOVE    SPACE      TO  RECE65-NAME(IDX4)
                        MOVE    SPACE      TO  RECE65-INPUTCOMENT(IDX4)
-                       STRING  TNS-NAME          DELIMITED  BY  " "
-      ***                      "  "              DELIMITED  BY  SIZE
-                               "¡¡"              DELIMITED  BY  SIZE
+      ***              STRING  TNS-NAME          DELIMITED  BY  " "
+      ***                      "¡¡"              DELIMITED  BY  SIZE
+      ***                      WRK-SRYSURYOW     DELIMITED  BY  " "
+      ***                      RECE65-TANINAME(IDX4)
+      ***                                        DELIMITED  BY  " "
+      ***                      INTO              RECE65-NAME(IDX4)
+      ***              END-STRING
+                       STRING  "¡Ê»ÈÍÑÎÌ¡¡"      DELIMITED  BY  SIZE
                                WRK-SRYSURYOW     DELIMITED  BY  " "
                                RECE65-TANINAME(IDX4)
                                                  DELIMITED  BY  " "
+                               "¡¡»ÄÎÌÇÑ´þ¡Ë"    DELIMITED  BY  SIZE
                                INTO              RECE65-NAME(IDX4)
                        END-STRING
                        MOVE  RECE65-NAME(IDX4)

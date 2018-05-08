@@ -790,6 +790,8 @@
       *  04.08.55    NACL-門脇    18/03/27  平成３０年４月改正対応
       *  04.08.56    NACL-藤原    18/03/28  ３８医併、３９医療の追加
       *  04.08.57    NACL-門脇    18/04/04  難病負担者番号追加対応
+      *  04.08.58    NACL-門脇    18/05/02  残量廃棄コメントの記載内容修正
+      *  04.08.59    NACL-門脇    18/05/07  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -12548,12 +12550,18 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *
                     MOVE    SPACE      TO  RECE05-NAME(IDX4)
                     MOVE    SPACE      TO  RECE05-INPUTCOMENT(IDX4)
-                    STRING  TNS-NAME          DELIMITED  BY  " "
-      ***                   "  "              DELIMITED  BY  SIZE
-                            "　"              DELIMITED  BY  SIZE
+      ***           STRING  TNS-NAME          DELIMITED  BY  " "
+      ***                   "　"              DELIMITED  BY  SIZE
+      ***                   WRK-SRYSURYOW     DELIMITED  BY  " "
+      ***                   RECE05-TANINAME(IDX4)
+      ***                                     DELIMITED  BY  " "
+      ***                   INTO              RECE05-NAME(IDX4)
+      ***           END-STRING
+                    STRING  "（使用量　"      DELIMITED  BY  SIZE
                             WRK-SRYSURYOW     DELIMITED  BY  " "
                             RECE05-TANINAME(IDX4)
                                               DELIMITED  BY  " "
+                            "　残量廃棄）"    DELIMITED  BY  SIZE
                             INTO              RECE05-NAME(IDX4)
                     END-STRING
                     MOVE  RECE05-NAME(IDX4)
@@ -12656,6 +12664,16 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                         MOVE     1    TO  FLG-ZAIRIHA-COM
                       END-IF
                     END-PERFORM
+               END-IF
+      *
+               IF  ( SRY-SRYKBN = "12" OR "13" OR
+                                  "14" OR "80"      )
+               AND ((SRY-SRYCD(IDX2)(1:1)  =  "8"  ) OR
+                    (SRY-SRYCD(IDX2)(1:3)  =  "008"))
+                 IF (RECE05-NAME(IDX4)(1:20) = "管理料等算定開始年月")
+                 OR (RECE05-NAME(IDX4)(1:18) = "管理料算定開始年月"  )
+                   MOVE   "1"   TO   RECE04-FLG-ONLINE3-COMMENT
+                 END-IF
                END-IF
       *
                IF  SRY-SRYCD(IDX2)(1:3)     =   "058"
@@ -14535,7 +14553,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            MOVE    SPACE           TO  WRK-SRYSURYOW
       *
       *    数字表示用編集（半角）
-           MOVE    RECE05-SRYSURYO(IDX4)  TO  WRK-SURYO
+      ***  MOVE    RECE05-SRYSURYO(IDX4)  TO  WRK-SURYO
+           MOVE    WRK-SRYSURYO           TO  WRK-SURYO
            MOVE    WRK-SURYO-S1           TO  WRK-SURYO-Z1
       *
            MOVE    ZERO            TO  FLG-SP
