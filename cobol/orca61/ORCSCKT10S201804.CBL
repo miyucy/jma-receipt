@@ -151,6 +151,7 @@
       *H30.4
            03  FLG-NINPU-IN         PIC 9(01).
            03  FLG-SYUKSN           PIC 9(01).
+           03  FLG-SYUARI           PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -185,6 +186,8 @@
            03  IDX-SN2                 PIC 9(04).
       *
            03  IDX-SYU                 PIC 9(04).
+      *H30.5
+           03  IDX-SYUKSN              PIC 9(04).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -3292,8 +3295,10 @@
            MOVE    ZERO                TO  SPA-NINPUKBN-IN
            MOVE    ZERO                TO  IDX-SYU
       *
-      *???
+      *H30.5
+           MOVE    ZERO                TO  FLG-SYUARI
            MOVE    ZERO                TO  FLG-SYUKSN
+           MOVE    ZERO                TO  IDX-SYUKSN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
@@ -3316,13 +3321,13 @@
                              AND (IDX-SYU                >   ZERO )
                                MOVE    1           TO  SPA-NINPUKBN-IN
                            ELSE
-      *???
-                             IF    FLG-SYUKSN      =   ZERO
-      *
                                MOVE    "0187"      TO  SPA-ERRCD
                                MOVE    "1"         TO  SPA-COM-CUR
                                                                 (IDX)
-                            END-IF
+      *                        ≤√ªªø«Œ≈ºÔ Ã
+                               IF      FLG-SYUKSN      =   1
+                                   MOVE    IDX         TO  IDX-SYUKSN
+                               END-IF
                            END-IF
                    END-SEARCH
       *            ºÍµªŒ¡
@@ -3360,13 +3365,17 @@
                    WHEN    CONS-NNCHIHKT2
                        MOVE    IDX                 TO  IDX-SYU
                END-EVALUATE
-             END-IF
       *
-      *      ≤√ªª§Œ§ﬂ§œOK§»§π§Î
-             IF     SPA-GMN-INPUTCD(IDX)   =   ".114"
-                                           OR  ".124"
-                                           OR  ".134"
-                 MOVE    1                 TO  FLG-SYUKSN
+      *H30.5
+               IF      IDX-SYU         >   ZERO
+                   MOVE    1               TO  FLG-SYUARI
+               END-IF
+      *        ≤√ªªø«Œ≈ºÔ Ã
+               IF     SPA-GMN-INPUTCD(IDX)   =   ".114"
+                                             OR  ".124"
+                                             OR  ".134"
+                   MOVE    1                 TO  FLG-SYUKSN
+               END-IF
              END-IF
       *
              IF     SPA-COM-ZAIEND (IDX)   =   "1"
@@ -3374,6 +3383,17 @@
                  MOVE    ZERO              TO  FLG-SYUKSN
              END-IF
            END-PERFORM
+      *
+      *H30.5
+           IF      SPA-ERRCD       NOT =   SPACE
+      *        ≤√ªª§Œ§ﬂ§ŒæÏπÁ°¢OK
+               IF     (FLG-SYUARI          =   ZERO )
+                 AND  (IDX-SYUKSN      NOT =   ZERO )
+                   MOVE    SPACE           TO  SPA-ERRCD
+                   MOVE    SPACE           TO  SPA-COM-CUR
+                                                 (IDX-SYUKSN)
+               END-IF
+           END-IF
            .
        7001-NINPU-CHK-EXT.
            EXIT.
