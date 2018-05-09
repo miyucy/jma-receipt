@@ -4420,7 +4420,6 @@
                END-EVALUATE
            END-IF
       *
-      *H30.5 削除
       *    測定薬剤名コメント自動発生
            IF     (WRK-COM-INPUTCD (IDX-Z + 1) =   SPACE )  OR
                   (IDX-S                       >    ZERO  AND
