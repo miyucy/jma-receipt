@@ -60,6 +60,7 @@
       * 04.08.00     NACL-多々納  14/12/XX  平成２７年１月改正対応
       * 04.08.00     NACL-多々納  16/08/XX  持参薬対応
       * 04.08.00     NACL-多々納  16/11/XX  投薬投与量チェック区分対応
+      * 04.08.00     NACL-多々納  18/05/XX  Ｈ３０年０４月改正対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -190,6 +191,8 @@
            03  FLG-HENKOU          PIC 9(01).
       *
            03  FLG-SIP            PIC 9(01).
+      *H30.4
+           03  FLG-NINPUKBN-IN     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -592,6 +595,10 @@
        01  MAX-GMN                 PIC 9(04)   VALUE   20.
       *画面ページ数（処理最大行÷画面最大行）
        01  MAX-PAGE                PIC 9(04)   VALUE   20.
+      *
+      *H30.4
+      *    時間外加算テーブル(H30.4分）（妊婦加算含）
+           COPY     "CMTIMEKSN2018.INC".
       *
       *    画面ＳＰＡ領域ワーク
        01  WRK-SCR-REC.
@@ -1481,6 +1488,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                ELSE
                    MOVE    SYS-1008-JIKANTOKU-NYU-FLG
                                            TO  SPA-JIKANTOKU-NYU
+      *H30.4
+      *            H30.4から産婦人科特例対応
+                   IF     (SPA-SRYYMD          <   "20180401" )
+                       IF      SPA-JIKANTOKU-NYU   =   "2"
+                           MOVE    "1"             TO  SPA-JIKANTOKU-NYU
+                       END-IF
+                       IF      SPA-JIKANTOKU-NYU   =   "3"
+                           MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
+                       END-IF
+                   END-IF
                END-IF
       *        数量ゼロ入力
                IF      SYS-1008-SURYOZERO-FLG  =   SPACE
@@ -4163,6 +4180,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *!!
       *    内分泌負担試験編集
            MOVE    ZERO                TO  FLG-NAIFUTAN
+      *H30.4
+      *    妊婦判定
+           MOVE    ZERO                TO  FLG-NINPUKBN-IN
+      *
            PERFORM VARYING     IDX     FROM    1   BY   1
                    UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE )  AND
@@ -4173,6 +4194,23 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                       (SPA-COM-HOUKNSKBN(IDX)  =   08    )
                    MOVE    1               TO  FLG-NAIFUTAN
                END-IF
+      *H30.4
+      *        妊婦判定
+               IF     (SPA-COM-SRYKBN (IDX)    =   "11"
+                                               OR  "12"
+                                               OR  "13" )
+                  AND (SPA-COM-INPUTCD (IDX)(1:1)  =   "1")
+      *            妊婦加算判定
+                   SET     TBL-NPIDX18         TO  1
+                   SEARCH  TBL-NINPUKSN18-OCC  VARYING   TBL-NPIDX18
+                       AT   END
+                           CONTINUE
+                       WHEN   (TBL-NP18-SRYCD (TBL-NPIDX18)
+                                           =   SPA-COM-INPUTCD (IDX))
+                       MOVE    1               TO  FLG-NINPUKBN-IN
+                   END-SEARCH
+               END-IF
+      *
            END-PERFORM
            IF      FLG-NAIFUTAN        =   1
                INITIALIZE                  ORCSSANFUKAAREA
@@ -4391,6 +4429,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *            妥結率以下の設定
                    IF     (SPA-SRYYMD          >=  "20150101")
                        MOVE    SPA-DAKT50-KBN      TO  SPA-WORK(1:1)
+                   END-IF
+      *H30.4
+      *            妊婦の設定
+                   IF     (SPA-SRYYMD          >=  "20180401")
+                       MOVE    FLG-NINPUKBN-IN     TO  SPA-WORK(2:1)
                    END-IF
                    CALL    "ORCSC10"       USING
                                            MCPAREA

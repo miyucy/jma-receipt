@@ -784,14 +784,22 @@
       *        ÅÅÏÃºÆ¿Ç¤Î²Ã»»È¯À¸ÍÑ
                IF      LNK-ORCSC-PG        =   "KT01"
                    MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+                   MOVE    SPA-NINPUKBN-IN     TO  WRK-SPA-NINPUKBN-IN
                    INITIALIZE                  SPA-K02SET-AREA
+      *H30.4
+      *            Ç¥ÉØ¤ÎÀßÄê
+                   MOVE    WRK-SPA-NINPUKBN-IN TO  SPA-NINPUKBN-IN
                END-IF
       *        ²ñ·×¾È²ñ¤ÏSPA-WORK¤ËÊÔ½¸
                IF     (LNK-ORCSC-PG        =   "J04" )
                 AND   (SPA-SRYYMD          >=  "20150101")
-                  MOVE    SPA-WORK(1:1)        TO  WRK-SPA-DAKT50-KBN
-                  INITIALIZE                   SPA-K01KYOUTU
-                  MOVE    WRK-SPA-DAKT50-KBN   TO  SPA-DAKT50-KBN
+                   MOVE    SPA-WORK(1:1)       TO  WRK-SPA-DAKT50-KBN
+                   MOVE    SPA-WORK(2:1)       TO  WRK-SPA-NINPUKBN-IN
+                   INITIALIZE                  SPA-K01KYOUTU
+                   MOVE    WRK-SPA-DAKT50-KBN  TO  SPA-DAKT50-KBN
+      *H30.4
+      *            Ç¥ÉØ¤ÎÀßÄê
+                   MOVE    WRK-SPA-NINPUKBN-IN TO  SPA-NINPUKBN-IN
                END-IF
            END-IF
       *
@@ -1783,7 +1791,7 @@
                IF     (WRK-JIKANKBN        =   5
                                            OR  6
                                            OR  7  )  AND
-                      (SPA-NENREI-YY       >=  6  )
+                      (LNK-ORCSC-NENREI-YY >=  6  )
       *
                  AND  (SPA-NINPUKBN-ARI    =   ZERO )
                    CONTINUE
@@ -1853,7 +1861,7 @@
       *H30.4
       *    Ç¥ÉØ²Ã»»¤Ï´µ¼ÔÅÐÏ¿¤«¤é
            IF     (SPA-NINPUKBN-ARI    =   1   )
-              AND (SPA-NENREI-YY       >=  6   )
+              AND (LNK-ORCSC-NENREI-YY >=  6   )
               MOVE    1                TO  SPA-NINPUKBN-IN
            END-IF
       *
@@ -1872,13 +1880,13 @@
       *    Ìë´Ö¡¦ÁáÄ«
            IF      WRK-JIKANKBN        =   8
       *        £¶ºÐÌ¤Ëþ¤Ï¾®»ù²ÊÆÃÎãÌë´Ö¤Ø
-               IF     (SPA-NENREI-YY       <   6  )
+               IF     (LNK-ORCSC-NENREI-YY <   6  )
                   AND (SPA-JIKANTOKU-NYU   =   "1"
                                            OR  "2"  )
                    MOVE    5               TO  WRK-JIKANKBN
                END-IF
       *        Ç¥ÉØ¤Ï¾®»ù²ÊÆÃÎãÌë´Ö¤Ø
-               IF     (SPA-NENREI-YY       >=  6  )
+               IF     (LNK-ORCSC-NENREI-YY >=  6  )
                   AND (SPA-JIKANTOKU-NYU   =   "1"
                                            OR  "3"  )
                   AND (SPA-NINPUKBN-ARI    =   1  )
@@ -1886,7 +1894,7 @@
                END-IF
            ELSE
       *        £¶ºÐ°Ê¾å¤ÇÌë´Ö¡¦ÁáÄ«»»Äê²Ä
-               IF     (SPA-NENREI-YY       >=  6  )
+               IF     (LNK-ORCSC-NENREI-YY >=  6  )
                 AND   (SPA-YAKANKBN        =   1  )
                 AND   (SPA-HOSPSBT         =   2   )
                    MOVE    1                   TO  FLG-CHKT
@@ -1899,7 +1907,7 @@
                END-IF
       *
       *        £¶ºÐÌ¤Ëþ
-               IF     (SPA-NENREI-YY       <   6  )
+               IF     (LNK-ORCSC-NENREI-YY <   6  )
                 AND   (SPA-YAKANKBN        =   1  )
                 AND   (SPA-HOSPSBT         =   2  )
                 AND   (SPA-JIKANTOKU-NYU   =   "3" )
@@ -1939,7 +1947,7 @@
                IF     (WRK-JIKANKBN        =   5
                                            OR  6
                                            OR  7  )  AND
-                      (SPA-NENREI-YY       >=  6  )
+                      (LNK-ORCSC-NENREI-YY >=  6  )
       *
                  AND  (SPA-NINPUKBN-ARI    =   ZERO )
                    CONTINUE
@@ -1964,7 +1972,7 @@
       *H30.4
       *    Ç¥ÉØ²Ã»»¤Ï´µ¼ÔÅÐÏ¿¤«¤é
            IF     (SPA-NINPUKBN-ARI    =   1   )
-              AND (SPA-NENREI-YY       >=  6   )
+              AND (LNK-ORCSC-NENREI-YY >=  6   )
               MOVE    1                TO  SPA-NINPUKBN-IN
            END-IF
            .
@@ -4412,7 +4420,6 @@
                END-EVALUATE
            END-IF
       *
-      *H30.5 ºï½ü
       *    Â¬ÄêÌôºÞÌ¾¥³¥á¥ó¥È¼«Æ°È¯À¸
            IF     (WRK-COM-INPUTCD (IDX-Z + 1) =   SPACE )  OR
                   (IDX-S                       >    ZERO  AND
@@ -5628,7 +5635,7 @@
                    END-IF
                    IF      WRK-NP-KBN      NOT =   SPACE
       *                £¶ºÐÌ¤Ëþ¥¨¥é¡¼
-                       IF     (SPA-NENREI-YY       <   6     )
+                       IF     (LNK-ORCSC-NENREI-YY <   6     )
                         AND   (WRK-ERRCD           =   SPACE )
                            MOVE    "0182"      TO  WRK-ERRCD
                            MOVE    "1"         TO  WRK-COM-CUR(IDX-N)

@@ -150,6 +150,8 @@
            03  FLG-SYONIKKR-ARI     PIC 9(01).
       *H30.4
            03  FLG-NINPU-IN         PIC 9(01).
+           03  FLG-SYUKSN           PIC 9(01).
+           03  FLG-SYUARI           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -182,6 +184,10 @@
            03  IDX-N2                  PIC 9(02).
            03  IDX-SN                  PIC 9(04).
            03  IDX-SN2                 PIC 9(04).
+      *
+           03  IDX-SYU                 PIC 9(04).
+      *H30.5
+           03  IDX-SYUKSN              PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -502,6 +508,15 @@
                05  TBLR-KBN2            PIC X(01).
       *        ¿ÇÎÅ¥³¡¼¥É
                05  TBLR-SRYCD           PIC X(09).
+      *
+      *H30.4
+      *    ÃÏ°èÊñ³ç¿ÇÎÅÎÁ
+       01  CONS-CHIKIHKT2          PIC X(09)  VALUE   "113015810".
+       01  CONS-CHIKIHKT1          PIC X(09)  VALUE   "113024810".
+      *    Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅÎÁ
+       01  CONS-NNCHIHKT2          PIC X(09)  VALUE   "113018410".
+       01  CONS-NNCHIHKT1          PIC X(09)  VALUE   "113025710".
+      *
       *
       *    ÊÝ¸±ÊÌ»»ÄêÍúÎò¥Æ¡¼¥Ö¥ë
            COPY   "CMSANTEITBL.INC".
@@ -3211,6 +3226,10 @@
       *****************************************************************
        700-SANTEI-CHK-SEC              SECTION.
       *
+      *H30.4
+      *    Ç¥ÉØ²Ã»»È½Äê
+           PERFORM 7001-NINPU-CHK-SEC
+      *
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ¥Á¥§¥Ã¥¯
            PERFORM 5019-SYONIKA-CHK-SEC
       *
@@ -3266,6 +3285,119 @@
            .
        700-SANTEI-CHK-EXT.
            EXIT.
+      *
+      *H30.4
+      *****************************************************************
+      *     Ç¥ÉØ²Ã»»È½Äê¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       7001-NINPU-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  SPA-NINPUKBN-IN
+           MOVE    ZERO                TO  IDX-SYU
+      *
+      *H30.5
+           MOVE    ZERO                TO  FLG-SYUARI
+           MOVE    ZERO                TO  FLG-SYUKSN
+           MOVE    ZERO                TO  IDX-SYUKSN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
+                              (SPA-COM-INPUTCD(IDX) =   SPACE  AND
+                               SPA-GMN-INPUTCD(IDX) =   SPACE )
+                          OR  (SPA-ERRCD        NOT =   SPACE )
+             IF     (SPA-COM-HKNCOMBI (IDX)    NOT =   "9999" )
+      *          ¼£¸³
+                 OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
+               IF      SPA-COM-INPUTCD (IDX)(1:1) =   "1"
+      *            Ç¥ÉØ²Ã»»È½Äê
+                   SET     TBL-NPIDX18         TO  1
+                   SEARCH  TBL-NINPUKSN18-OCC  VARYING   TBL-NPIDX18
+                       AT   END
+                           CONTINUE
+                       WHEN   (TBL-NP18-SRYCD (TBL-NPIDX18)
+                                           =   SPA-COM-INPUTCD (IDX))
+                           IF    (SPA-COM-SRYKBN (IDX)   =   "11"
+                                                         OR  "12"
+                                                         OR  "13" )
+                             AND (IDX-SYU                >   ZERO )
+                               MOVE    1           TO  SPA-NINPUKBN-IN
+                           ELSE
+                               MOVE    "0187"      TO  SPA-ERRCD
+                               MOVE    "1"         TO  SPA-COM-CUR
+                                                                (IDX)
+      *                        ²Ã»»¿ÇÎÅ¼ïÊÌ
+                               IF      FLG-SYUKSN      =   1
+                                   MOVE    IDX         TO  IDX-SYUKSN
+                               END-IF
+                           END-IF
+                   END-SEARCH
+      *            ¼êµ»ÎÁ
+                   IF     (SPA-COM-DATAKBN(IDX)    =   "1" )
+                       SET     TBL-IDX             TO  1
+                       SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+                           AT  END
+                               CONTINUE
+                           WHEN   SPA-COM-INPUTCD (IDX)
+                                               =   TBL-SRYCD (TBL-IDX)
+                               MOVE    IDX                 TO  IDX-SYU
+                       END-SEARCH
+                       IF      IDX-SYU         =   ZERO
+      *                Ï«ºÒ¥³¡¼¥ÉÈ½Äê
+                       SET     TBL-RSI              TO  1
+                       SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
+                       AT  END
+                               CONTINUE
+                        WHEN   SPA-COM-INPUTCD (IDX)
+                                              =   TBLR-SRYCD (TBL-RSI)
+                               MOVE    IDX                 TO  IDX-SYU
+                       END-SEARCH
+      *
+                       END-IF
+                   END-IF
+               END-IF
+      *        Ç§ÃÎ¾É
+               EVALUATE    SPA-COM-INPUTCD (IDX)
+      *            ÃÏ°èÊñ³ç¿ÇÎÅÎÁ
+                   WHEN    CONS-CHIKIHKT1
+                   WHEN    CONS-CHIKIHKT2
+                       MOVE    IDX                 TO  IDX-SYU
+      *            Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅÎÁ
+                   WHEN    CONS-NNCHIHKT1
+                   WHEN    CONS-NNCHIHKT2
+                       MOVE    IDX                 TO  IDX-SYU
+               END-EVALUATE
+      *
+      *H30.5
+               IF      IDX-SYU         >   ZERO
+                   MOVE    1               TO  FLG-SYUARI
+               END-IF
+      *        ²Ã»»¿ÇÎÅ¼ïÊÌ
+               IF     SPA-GMN-INPUTCD(IDX)   =   ".114"
+                                             OR  ".124"
+                                             OR  ".134"
+                   MOVE    1                 TO  FLG-SYUKSN
+               END-IF
+             END-IF
+      *
+             IF     SPA-COM-ZAIEND (IDX)   =   "1"
+                 MOVE    ZERO              TO  IDX-SYU
+                 MOVE    ZERO              TO  FLG-SYUKSN
+             END-IF
+           END-PERFORM
+      *
+      *H30.5
+           IF      SPA-ERRCD       NOT =   SPACE
+      *        ²Ã»»¤Î¤ß¤Î¾ì¹ç¡¢OK
+               IF     (FLG-SYUARI          =   ZERO )
+                 AND  (IDX-SYUKSN      NOT =   ZERO )
+                   MOVE    SPACE           TO  SPA-ERRCD
+                   MOVE    SPACE           TO  SPA-COM-CUR
+                                                 (IDX-SYUKSN)
+               END-IF
+           END-IF
+           .
+       7001-NINPU-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¥Á¥§¥Ã¥¯½èÍý
