@@ -2609,22 +2609,7 @@
       *    転帰区分
            MOVE    WRK-TENKI           TO  PTBYO-TENKIKBN
       *    疑いフラグ
-           EVALUATE    PTBYO-UTAGAIFLG ALSO    WRK-UTAGAIFLG
-               WHEN    ANY             ALSO    SPACE
-                   MOVE    SPACE           TO  PTBYO-UTAGAIFLG
-               WHEN    ANY             ALSO    "3"
-               WHEN    "1"             ALSO    "2"
-               WHEN    "2"             ALSO    "1"
-               WHEN    "3"             ALSO    "1"
-               WHEN    "3"             ALSO    "2"
-                   MOVE    "3"             TO  PTBYO-UTAGAIFLG
-               WHEN    SPACE           ALSO    "2"
-               WHEN    "2"             ALSO    "2"
-                   MOVE    "2"             TO  PTBYO-UTAGAIFLG
-               WHEN    SPACE           ALSO    "1"
-               WHEN    "1"             ALSO    "1"
-                   MOVE    "1"             TO  PTBYO-UTAGAIFLG
-           END-EVALUATE
+           MOVE    WRK-UTAGAIFLG       TO  PTBYO-UTAGAIFLG
       *
       *    病名編集処理
            MOVE    2                   TO  FLG-KOUSIN
@@ -2675,7 +2660,7 @@
                                            PTBYO-KHNBUICD-G
            MOVE    ZERO                TO  PTBYO-BYOMEICDSU
       *
-      *    疾患コードがエラー又は未コード化傷病名コード以外のとき
+      *    病名コードがエラー又は未コード化傷病名コード以外のとき
            IF      FLG-BYOMEI-CHK      NOT =   1   AND 5 AND 6
                MOVE    ZERO                TO  IDZ
                PERFORM VARYING IDY FROM    1   BY  1
