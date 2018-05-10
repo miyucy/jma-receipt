@@ -247,7 +247,6 @@
                        MOVE    ZERO            TO  WRK-MCNT1
                        MOVE    1               TO  FLG-HI
                    WHEN    OTHER
-                       DISPLAY "WRK-ACCT-MCNT=" WRK-ACCT-MCNT
       *                回数
                        IF      (FLG-AST        =   1   )  AND
                                (FLG-KAI        =   ZERO)
@@ -257,7 +256,6 @@
                                                       (WRK-ACCT-MCNT:1)
                        END-IF
       *                日数・回数の数値チェック
-                       DISPLAY "WRK-MCNT1=" WRK-MCNT1
                        IF      (FLG-AST        =   1   )  AND
                                (FLG-KAI        =   1   )
                            ADD     1               TO  WRK-MCNT1
