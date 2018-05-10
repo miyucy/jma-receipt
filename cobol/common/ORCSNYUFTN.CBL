@@ -189,6 +189,8 @@
       *                                     ÉéÃ´¶â·×»»ÂÐ±þ
       *  04.08.10    NACL-ÌçÏÆ    18/03/01  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.11    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.12    NACL-ÌçÏÆ    18/05/10  Æþ±¡²ñ·×¾È²ñ¤ÎÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *                                     ¡Ê£¹£¹£¹¡Ë¥Á¥§¥Ã¥¯ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -485,6 +487,8 @@
            03  FLG-SENTEI-SET              PIC 9(01).
            03  FLG-NYUKHN                  PIC 9(01).
            03  FLG-KAIKEI-SAKUSEI          PIC 9(01).
+           03  FLG-KAIKEI-SAKUSEI1         PIC 9(01).
+           03  FLG-KAIKEI-SAKUSEI2         PIC 9(01).
            03  FLG-SENTEICDCHG             PIC 9(01).
            03  FLG-KYUFUGAI                PIC 9(01).
            03  FLG-SANTEI                  PIC 9(01).
@@ -505,6 +509,7 @@
            03  FLG-SYUARI2                 PIC 9(01).
            03  FLG-KOHARI2                 PIC 9(01).
            03  FLG-DAISANARI2              PIC 9(01).
+           03  FLG-HKNCOMBINUM999          PIC 9(01).
       *
        01  CNT-AREA.
            03  CNT-KENSU                   PIC 9(03).
@@ -890,14 +895,25 @@
       *
            PERFORM       NYUIN-HANBETU-SEC.
       *
-           IF    FLG-KAIKEI-SAKUSEI    =    ZERO
-                 MOVE   13       TO    LNK-S02-RC
-                 GO   TO   MAIN-EXT
-           ELSE
-             IF  WRK-KENSU-ERR  =  1
-                 MOVE   30       TO    LNK-S02-RC
-                 GO   TO   MAIN-EXT
+           IF   (FLG-KAIKEI-SAKUSEI    =    1)
+           OR   (FLG-HKNCOMBINUM999    =    1)
+           OR   (WRK-KENSU-ERR         =    1)
+             IF    LNK-S02-RC   =   ZERO
+               IF  FLG-KAIKEI-SAKUSEI  =    1
+                 MOVE   13   TO   LNK-S02-RC
+               END-IF
              END-IF
+             IF    LNK-S02-RC   =   ZERO
+               IF  FLG-HKNCOMBINUM999  =    1
+                 MOVE   37   TO   LNK-S02-RC
+               END-IF
+             END-IF
+             IF    LNK-S02-RC   =   ZERO
+               IF  WRK-KENSU-ERR       =    1
+                 MOVE   30   TO   LNK-S02-RC
+               END-IF
+             END-IF
+             GO    TO   MAIN-EXT
            END-IF.
       *
            PERFORM       SYUNOU-SET-SEC.
@@ -1577,11 +1593,15 @@
       ******************************************************************
        NYUINKAIKEI-SYORI-SEC         SECTION.
       *
+           MOVE       ZERO      TO     FLG-KAIKEI-SAKUSEI.
+           MOVE       ZERO      TO     FLG-KAIKEI-SAKUSEI1.
+           MOVE       ZERO      TO     FLG-KAIKEI-SAKUSEI2.
+           MOVE       ZERO      TO     FLG-HKNCOMBINUM999.
+      *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL    (IDX            >     2)
                                 OR     (WRK-SKYYM(IDX) =  SPACE)
       *
-              MOVE       ZERO               TO      FLG-KAIKEI-SAKUSEI
               INITIALIZE                            NYUINACCT-REC
               MOVE    LNK-S02-HOSPNUM       TO      NACCT-HOSPNUM
               MOVE    LNK-S02-NYUGAIKBN     TO      NACCT-NYUGAIKBN
@@ -1602,7 +1622,12 @@
                   PERFORM  NYUINACCT-READ-SEC
                   PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
-                    MOVE   1                TO   FLG-KAIKEI-SAKUSEI
+                    EVALUATE  IDX
+                      WHEN     1
+                         MOVE    1    TO    FLG-KAIKEI-SAKUSEI1
+                      WHEN     2
+                         MOVE    1    TO    FLG-KAIKEI-SAKUSEI2
+                    END-EVALUATE
       *
                     IF     NACCT-ZAISKBKBN    =    "1"  OR  "5"
                                                         OR  "6"
@@ -1705,6 +1730,13 @@
       *
            END-PERFORM.
       *
+           IF   ((WRK-SKYYM(1)        NOT = SPACE) AND
+                 (FLG-KAIKEI-SAKUSEI1     = ZERO ))
+           OR   ((WRK-SKYYM(2)        NOT = SPACE) AND
+                 (FLG-KAIKEI-SAKUSEI2     = ZERO ))
+                 MOVE   1         TO  FLG-KAIKEI-SAKUSEI
+           END-IF.
+      *
        NYUINKAIKEI-SYORI-EXT.
            EXIT.
       *
@@ -1733,7 +1765,7 @@
              END-IF
       *
            END-PERFORM.
-      **
+      *
            PERFORM    VARYING   IDY   FROM   1   BY   1
                        UNTIL    IDY    >    31
       *
@@ -1744,6 +1776,16 @@
                IF     NACCT-ZAISKBKBN    =    "5"
                     MOVE   NACCT-DAY(IDY)  TO   WRK-DAY5X(IDX IDY)
                END-IF 
+             END-IF
+      *
+           END-PERFORM.
+      *
+           PERFORM    VARYING   IDY   FROM   WRK-HI-ST(IDX)   BY   1
+                       UNTIL    IDY     >    WRK-HI-ED(IDX)
+      *
+             IF       NACCT-ZAISKBKBN    =    "5"
+             AND      NACCT-DAY(IDY)     =    999
+                    MOVE   1               TO   FLG-HKNCOMBINUM999
              END-IF
       *
            END-PERFORM.
