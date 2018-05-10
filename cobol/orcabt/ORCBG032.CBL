@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.08.01    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *  04.08.02    NACL-藤原    18/05/10  施設入所中の処理の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -119,6 +120,7 @@
       *
       *    集計領域
        01  SUM-AREA.
+           03  SUM-CNT-PTNUM           PIC 9(08).
            03  SUM-OCC-G                   OCCURS  2.
                05  SUM-OCC                 OCCURS  3.
                    07  SUM-PTBYOMEI    PIC 9(08).
@@ -216,6 +218,8 @@
                                    PIC X(03).
                        09  TOUKEI01-KOHIDHC
                                    PIC 9(10).
+               03  TOUKEI01-SYOKBN
+                                   PIC X(01).
       *診療回数テーブル
            03  RECE61-DAY-AREA.
                05  RECE61-DAY             PIC  9(03)
@@ -1138,8 +1142,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *        診療会計編集処理
                PERFORM 20012-NYUIN-SRYACCT-HENSYU-SEC
       *
-               IF      TBL-PT-HDIST-DAY-MAX
-                                           =   ZERO
+               IF    ( TBL-PT-HDIST-DAY-MAX
+                                           =   ZERO )
+               AND   ( TBL-PTKOHINF-MAX    =   ZERO )
                    MOVE    1               TO  ST-IDX
                    MOVE    SPACE           TO  WRK-RECEIPT-KBN
       *            基本ファイル出力処理
@@ -2960,6 +2965,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
       *
       *    件数
+           MOVE    ZERO                TO  SUM-CNT-PTNUM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       1000
                    OR      WRK-RECE631-SRYYMD (IDX) =   SPACE
@@ -2970,6 +2976,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                ADD     1               TO  SUM-PTBYOMEI (1 3)
                                            SUM-PTBYOMEI (2 3)
                                            CNT-IN
+                                           SUM-CNT-PTNUM
                IF      WRK-PARA-NYUGAIKBN  =   "2"
                    ADD     1               TO  SUM-PTBYOMEI (1 1)
                                                SUM-PTBYOMEI (2 1)
@@ -2989,6 +2996,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF
            END-PERFORM
+      *
+           DISPLAY "CNT=" SUM-CNT-PTNUM
            .
        20022-BYOMEI-HENSYU-EXT.
            EXIT.
