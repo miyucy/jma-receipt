@@ -18,6 +18,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/05/01  急性フラグの追加
+      *                                     傷病名コードを２１に変更
       *****************************************************************
       ******************************************************************
       *    ＡＰＩ患者病名情報             (xml2)
@@ -40,11 +42,12 @@
       *            保険区分（１：医保以外）
                    07   DISEASEQ-INSURANCE-CLASS
                                                PIC X(1).
-                   07  DISEASEQ-SPICOD1        PIC X(50).
+                   07  DISEASEQ-SPICOD1        PIC X(155).
                    07  DISEASEQ-SPINAME1       PIC X(80).
-                   07  DISEASEQ-SNDSPITBL         OCCURS  6.
-                       09   DISEASEQ-SPICOD2   PIC X(7).
-                       09   DISEASEQ-SPINAME2  PIC X(20).
+                   07  DISEASEQ-SNDSPITBL.
+                       09  DISEASEQ-SNDSPITBL-OCC  OCCURS  21.
+                           11   DISEASEQ-SPICOD2   PIC X(7).
+                           11   DISEASEQ-SPINAME2  PIC X(20).
       *            補足コメント
                    07   DISEASEQ-HOSOKU-COMMENT
                                                PIC X(40).
@@ -58,6 +61,8 @@
                    07   DISEASEQ-SYUBYOFLG     PIC X(2).
       *            疑いフラグ
                    07   DISEASEQ-UTAGAIFLG     PIC X(1).
+      *            急性フラグ
+                   07   DISEASEQ-KYUSEIFLG     PIC X(1).
       *            疾患開始日
                    07   DISEASEQ-STARTDATE     PIC X(10).
       *            疾患終了日
