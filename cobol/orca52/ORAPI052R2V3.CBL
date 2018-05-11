@@ -144,6 +144,9 @@
       *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
+      *    一時ディレクトリ作成作成
+           COPY    "CPORCSTEMPDIR.INC".
+      *
            COPY    "MONBLOB".
       *
       *    ＵＩＤ取得用エリア
@@ -791,6 +794,9 @@
            MOVE    MONBLOB-ID          TO  SHELLTBL-ARG17
                                            WRK-MONBLOB-ID
       *
+           MOVE    "medicalpoints_master_make"
+                                       TO  SHELLTBL-ARG18
+      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -844,17 +850,17 @@
                    GO  TO  2003-SYORI-02-EXT
                END-IF
       *
-               IF      JOB-UPDCNT      >   ZERO
-                   MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
-                   MOVE    WRK-UPDCNT-X    TO  LSTRES-OUTPUT-COUNT
-               ELSE
-                   IF      JOB-ENDYMD      =   SPACE
-                       MOVE    "E70"           TO  WRK-ERRCD
-                       STRING  "処理中です【"  DELIMITED  BY  SIZE
-                               JOB-SHELLMSG    DELIMITED  BY  SPACE
-                               "】"            DELIMITED  BY  SIZE
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "E70"           TO  WRK-ERRCD
+                   STRING  "処理中です【"  DELIMITED  BY  SIZE
+                           JOB-SHELLMSG    DELIMITED  BY  SPACE
+                           "】"            DELIMITED  BY  SIZE
                                            INTO  WRK-ERRMSG
-                       END-STRING
+                   END-STRING
+               ELSE
+                   IF      JOB-UPDCNT      >   ZERO
+                       MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
+                       MOVE    WRK-UPDCNT-X    TO  LSTRES-OUTPUT-COUNT
                    ELSE
                        IF    ( JOB-ERRCD   =   SPACE                )
                        OR    ( JOB-YOBI    =

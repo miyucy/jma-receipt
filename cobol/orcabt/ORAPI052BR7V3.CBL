@@ -130,14 +130,6 @@
            03  WRK-RECEERR         PIC X(200).
            03  WRK-ERRMSG          PIC X(300).
       *
-           03  WRK-CNT             PIC 9(10).
-           03  WRK-CNT-X           REDEFINES   WRK-CNT
-                                   PIC X(10).
-      *
-           03  WRK-PARAM.
-               05  WRK-PARAM-ORCA-UID  PIC X(36).
-               05  WRK-PARAM-KARTE-UID PIC X(36).
-      *
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
            03  WRK-SYMD.
@@ -335,9 +327,6 @@
            COPY    "ORCA-BLOB".
       *
            COPY    "CPORCSAPIFILE.INC".
-      *
-      *    PUSH
-           COPY    "CPPUSHBATCH01.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -1329,9 +1318,6 @@
                MOVE    "処理対象のデータがありませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-      *
-      *        ＰＵＳＨ通知処理
-               PERFORM 3001-PUSH-SEC
            ELSE
                INITIALIZE                 ORCSAPIFILEAREA
                MOVE    SGETTEMP-TEMPDIR
@@ -1349,8 +1335,7 @@
                CALL    "ORCSAPIFILE"   USING   ORCSAPIFILEAREA
       *
                IF      SAPIFILE-RC     =   0
-      *            ＰＵＳＨ通知処理
-                   PERFORM 3001-PUSH-SEC
+                   CONTINUE
                ELSE
                    STRING   "ｘｍｌファイル作成エラー RC="
                                            DELIMITED   BY  SIZE
@@ -1374,46 +1359,6 @@
       *
            .
        300-END-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＰＵＳＨ通知処理
-      *****************************************************************
-       3001-PUSH-SEC        SECTION.
-      *
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           PERFORM 900-CALL-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN
-                                   =   ZERO  )
-           AND   ( JOB-PARAM   NOT =   SPACE )
-               INITIALIZE                  PUSHBA01-REC
-               MOVE    JOB-PARAM       TO  WRK-PARAM
-               MOVE    WRK-PARAM-KARTE-UID
-                                       TO  PUSHBA01API-KARTE-UID
-               MOVE    WRK-PARAM-ORCA-UID
-                                       TO  PUSHBA01API-ORCA-UID
-               MOVE    "000"           TO  PUSHBA01API-RESULT
-               MOVE    "patient_medical_all_make"
-                                       TO  PUSHBA01-EVENT
-               MOVE    WRK-PARA-BASE-YMD
-                                       TO  WRK-SYMD
-               PERFORM 801-DAYHEN01-SEC
-               MOVE    WRK-HEN-DATE    TO  PUSHBA01-PERFORM-DATE
-               MOVE    CNT-OUT         TO  WRK-CNT
-               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
-      *??
-               display "push=" PUSHBA01-REC "#"
-               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
-               MOVE    "PUSHEVENT"     TO  MCP-FUNC
-               MOVE    "push_batch01"  TO  MCP-TABLE
-               MOVE    "push_batch01"  TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           END-IF
-           .
-       3001-PUSH-EXT.
            EXIT.
       *
       *****************************************************************

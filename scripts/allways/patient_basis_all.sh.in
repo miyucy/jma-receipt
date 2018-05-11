@@ -21,6 +21,7 @@ fi
 #        ${18} 終了日
 #        ${19} 基準日
 #        ${20} MONBLOB-ID
+#        ${21} EVENT
 #-------------------------------------------#
 
 cleanup(){
@@ -49,13 +50,13 @@ echo $#
 
 RENNUM=$(expr $RENNUM + 1) 
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORAPI052BR4V3 -parameter "$1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19}"
-if  [ -e ${ERR_FILE_FULL} ]; then
-     exit
-else
+
+FILENM1="patient_basis_all.xml"
+if  [ -e "${MCP_TEMPDIR}/${FILENM1}" ]; then
     cd ${MCP_TEMPDIR}/
     FILENM="patient_basis_all.zip"
     echo "filenm=[" $FILENM "]"
-    zip -r ${FILENM} patient_basis_all.xml
+    zip -r ${FILENM} ${FILENM1}
     RC=$?
     echo "--- zip end   ---[" $RC  "]" 
     if  [ $RC -ne '0' ]; then
@@ -69,7 +70,11 @@ else
          exit
      fi
 fi
-    
+
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPUSH -parameter "${1},${2},${3},$rennum,${5},${6},${7},${8},${9},${10},${11},${12},${13},${14},${15},${21},${16},${17},${18},${22},${23},${24},${25},${26},${27},${28}"
+if  [ -e ${ERR_FILE_FULL} ]; then
+     exit
+fi
+
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE${12}${13},${14}"
 exit 
-

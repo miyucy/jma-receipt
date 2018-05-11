@@ -261,6 +261,9 @@
                        MOVE    JOB-UPDCNT2 TO  WRK-CNT
                        MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
                    WHEN    "medicalpoints_master_make"
+                   WHEN    "disease_master_make"
+                   WHEN    "stock1"
+                   WHEN    "patient_medical_all_make"
                        MOVE    WRK-PARA-DATA (1)
                                            TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
@@ -269,6 +272,49 @@
                        MOVE    JOB-UPDCNT  TO  WRK-CNT
                        MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
                    WHEN    "temp_medical_add"
+                       MOVE    JOB-UPDCNT  TO  WRK-CNT
+                       MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
+                   WHEN    "patient_basis_all_make"
+                       MOVE    WRK-PARA-DATA (1)
+                                           TO  PUSHBA01-REQUEST-MODE
+                       MOVE    WRK-PARA-DATA (2)
+                                           TO  WRK-SYMD
+                       PERFORM 801-DAYHEN01-SEC
+                       MOVE    WRK-HEN-DATE
+                                           TO  PUSHBA01-START-DATE
+                       MOVE    WRK-PARA-DATA (3)
+                                           TO  WRK-SYMD
+                       PERFORM 801-DAYHEN01-SEC
+                       MOVE    WRK-HEN-DATE
+                                           TO  PUSHBA01-END-DATE
+                       MOVE    JOB-UPDCNT  TO  WRK-CNT
+                       MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
+                   WHEN    "patient_disease_all_make"
+                       MOVE    WRK-PARA-DATA (1)
+                                           TO  WRK-SYMD (1:6)
+                       MOVE    "01"        TO  WRK-SYMD (7:2)
+                       PERFORM 801-DAYHEN01-SEC
+                       MOVE    WRK-HEN-DATE (1:7)
+                                           TO  PUSHBA01-PERFORM-MONTH
+                       MOVE    JOB-UPDCNT  TO  WRK-CNT
+                       MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
+                   WHEN    "address_master_make"
+                       MOVE    JOB-UPDCNT  TO  WRK-CNT
+                       MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
+                   WHEN    "receipt_print"
+                       IF      WRK-PARA-DATA (1)
+                                           =   "2"
+                           MOVE    "9999-12"   TO
+                                               PUSHBA01-PERFORM-MONTH
+                       ELSE
+                           MOVE    WRK-PARA-DATA (2)
+                                               TO  WRK-SYMD (1:6)
+                           MOVE    "01"        TO  WRK-SYMD (7:2)
+                           PERFORM 801-DAYHEN01-SEC
+                           MOVE    WRK-HEN-DATE (1:7)
+                                               TO
+                                               PUSHBA01-PERFORM-MONTH
+                       END-IF
                        MOVE    JOB-UPDCNT  TO  WRK-CNT
                        MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
                END-EVALUATE

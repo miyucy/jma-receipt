@@ -425,7 +425,7 @@
                    MOVE   LSTREQ-ORCA-UID      TO  LSTRES-ORCA-UID
                END-IF
                MOVE    WRK-MONBLOB-ID          TO  LSTRES-DATA-ID (1)
-           ELSE
+          ELSE
                MOVE   LSTREQ-ORCA-UID  TO  LSTRES-ORCA-UID
            END-IF
       *
@@ -611,6 +611,10 @@
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
       *
+      **     INITIALIZE                  STEMPDIR-AREA
+      **     CALL    "ORCSTEMPDIR"       USING
+      **                                 STEMPDIR-AREA
+      *
       *    一時ディレクトリのルートディレクトリ取得
            ACCEPT  WRK-TEMPDIR-ROOT
                                FROM    ENVIRONMENT "MCP_TEMPDIR_ROOT"
@@ -795,6 +799,9 @@
            MOVE    MONBLOB-ID          TO  SHELLTBL-ARG17
                                            WRK-MONBLOB-ID
       *
+           MOVE    "disease_master_make"
+                                       TO  SHELLTBL-ARG18
+      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -848,17 +855,17 @@
                    GO  TO  2003-SYORI-02-EXT
                END-IF
       *
-               IF      JOB-UPDCNT      >   ZERO
-                   MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
-                   MOVE    WRK-UPDCNT-X    TO  LSTRES-OUTPUT-COUNT
-               ELSE
-                   IF      JOB-ENDYMD      =   SPACE
-                       MOVE    "E70"           TO  WRK-ERRCD
-                       STRING  "処理中です【"  DELIMITED  BY  SIZE
-                               JOB-SHELLMSG    DELIMITED  BY  SPACE
-                               "】"            DELIMITED  BY  SIZE
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "E70"           TO  WRK-ERRCD
+                   STRING  "処理中です【"  DELIMITED  BY  SIZE
+                           JOB-SHELLMSG    DELIMITED  BY  SPACE
+                           "】"            DELIMITED  BY  SIZE
                                            INTO  WRK-ERRMSG
-                       END-STRING
+                   END-STRING
+               ELSE
+                   IF      JOB-UPDCNT      >   ZERO
+                       MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
+                       MOVE    WRK-UPDCNT-X    TO  LSTRES-OUTPUT-COUNT
                    ELSE
                        IF    ( JOB-ERRCD   =   SPACE                )
                        OR    ( JOB-YOBI    =

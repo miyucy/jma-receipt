@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
       *  サブシステム名    : API連携用モジュール
-      *  コンポーネント名  : 在庫管理データ返却  (xml2)
+      *  コンポーネント名  : 在庫管理情報返却  (xml2)
       *  管理者            :
       *  作成日付    作業者        記述
       *  17/01/XX    NACL−多々納　新規作成
@@ -94,12 +94,11 @@
            03  WRK-UPDCNT-X.
                05  WRK-UPDCNT          PIC 9(10).
       *
-           03  WRK-MONBLOB-ID          PIC X(37).
-      *
            03  WRK-PARAM.
                05  WRK-PARAM-ORCA-UID  PIC X(36).
                05  WRK-PARAM-KARTE-UID PIC X(36).
-           03  WRK-CONTAIN-TESTPATIENT PIC X(01).
+      *
+           03  WRK-MONBLOB-ID          PIC X(37).
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".
@@ -107,6 +106,7 @@
        01  WRK-XML-AREA.
            03  WRK-BASE-DATE           PIC X(10).
            03  WRK-BASE-YMD            PIC X(08).
+           03  WRK-CONTAIN-TESTPATIENT PIC X(01).
       *
        01  WRK-CONS-AREA.
       *    システム管理ＤＢ（３００３）のキー値  
@@ -811,6 +811,8 @@
            MOVE    MONBLOB-ID          TO  SHELLTBL-ARG19
                                            WRK-MONBLOB-ID
       *
+           MOVE    "stock1"            TO  SHELLTBL-ARG20
+      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -864,20 +866,17 @@
                    GO  TO  2003-SYORI-02-EXT
                END-IF
       *
-      *??
-               DISPLAY "JOB-UPDCNT=" JOB-UPDCNT
-      *??
-               IF      JOB-UPDCNT      >   ZERO
-                   MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
-                   MOVE    WRK-UPDCNT-X    TO  STOCKRES-OUTPUT-COUNT
-               ELSE
-                   IF      JOB-ENDYMD      =   SPACE
-                       MOVE    "E70"           TO  WRK-ERRCD
-                       STRING  "処理中です【"  DELIMITED  BY  SIZE
-                               JOB-SHELLMSG    DELIMITED  BY  SPACE
-                               "】"            DELIMITED  BY  SIZE
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "E70"           TO  WRK-ERRCD
+                   STRING  "処理中です【"  DELIMITED  BY  SIZE
+                           JOB-SHELLMSG    DELIMITED  BY  SPACE
+                           "】"            DELIMITED  BY  SIZE
                                            INTO  WRK-ERRMSG
-                       END-STRING
+                   END-STRING
+               ELSE
+                   IF      JOB-UPDCNT      >   ZERO
+                       MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
+                       MOVE    WRK-UPDCNT-X    TO  STOCKRES-OUTPUT-COUNT
                    ELSE
                        IF    ( JOB-ERRCD   =   SPACE                )
                        OR    ( JOB-YOBI    =
