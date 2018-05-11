@@ -28,13 +28,13 @@ path	list1		{
 	DBSELECT	{
 		DECLARE monbatch_log_list1_csr CURSOR FOR
 		SELECT id, pgid, rc, message,
-			to_char(starttime, 'YYYY/MM/DD HH24:MI:SS') AS starttime,
-			to_char(endtime, 'YYYY/MM/DD HH24:MI:SS') AS endtime,
+			to_char(starttime at time zone 'JST', 'YYYY/MM/DD HH24:MI:SS') AS starttime,
+			to_char(endtime at time zone 'JST', 'YYYY/MM/DD HH24:MI:SS') AS endtime,
 			tenant,	name, comment, extra, exwindow, exwidget,
 			exevent, exterm, exuser, exhost, exec_record
 		FROM monbatch_log
 		WHERE tenant = :tenant
-		AND to_char(starttime, 'YYYYMMDD') = :starttime 
+		AND to_char(starttime at time zone 'JST', 'YYYYMMDD') = :starttime 
                 ORDER BY starttime DESC
 		;
 
