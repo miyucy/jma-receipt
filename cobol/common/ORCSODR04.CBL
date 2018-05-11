@@ -1570,6 +1570,10 @@
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
            .
        900-PTNYUINRRK-KEY4-SEL-EXT.
            EXIT.
