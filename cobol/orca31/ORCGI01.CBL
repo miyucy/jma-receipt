@@ -3283,10 +3283,6 @@
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
-               MOVE    PTNYUINRRK-RRKNUM
-                                   TO  SPA-NAI-I01-PTRRKNUM
-               MOVE    PTNYUINRRK-RRKEDANUM
-                                   TO  SPA-NAI-I01-PTRRKEDANUM
            ELSE
                MOVE    1           TO  FLG-PTNYUINRRK
            END-IF
@@ -3315,6 +3311,11 @@
       *
       *    入力領域初期化
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
+      *
+           MOVE    PTNYUINRRK-RRKNUM
+                                   TO  SPA-NAI-I01-PTRRKNUM
+           MOVE    PTNYUINRRK-RRKEDANUM
+                                   TO  SPA-NAI-I01-PTRRKEDANUM
       *
            MOVE    ZERO            TO  SPA-NAI-I01-NYURRK-FLG
       *
@@ -3714,6 +3715,11 @@
       *
            MOVE    1               TO  SPA-NAI-I01-NYURRK-FLG
       *
+           MOVE    PTNYUINRRK-RRKNUM
+                                   TO  SPA-NAI-I01-PTRRKNUM
+           MOVE    PTNYUINRRK-RRKEDANUM
+                                   TO  SPA-NAI-I01-PTRRKEDANUM
+      *
       *    同日再入院フラグ
            PERFORM 800-ORCSDNTCHK-SEC
            MOVE    SDNTCHK-DJKBN   TO  SPA-NAI-I01-DJKBN
@@ -4044,6 +4050,13 @@
                MOVE    1           TO  SPA-GMN-I01-NYUREKILST-SEL
                                        SPA-GMN-I01-SELNUM
            END-IF
+      *
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
+            AND  ( SPA-NAI-I01-MAEIDOYMD   =   SPACE )
+               MOVE    ZERO        TO  SPA-NAI-I01-PTRRKNUM
+                                       SPA-NAI-I01-PTRRKEDANUM
+           END-IF
+      D    DISPLAY "SPA-NAI-I01-PTRRKNUM=" SPA-NAI-I01-PTRRKNUM
       *
            MOVE    SPA-GMN-I01-PTNUM   TO  SPA-LAST-PTNUM
            MOVE    SPA-NAI-I01-PTID    TO  SPA-LAST-PTID
@@ -5062,6 +5075,7 @@
       D    DISPLAY "FLG-PTNYUINRRK         =" FLG-PTNYUINRRK
       D    DISPLAY "SPA-GMN-I01-SYORIKBN-CD=" SPA-GMN-I01-SYORIKBN-CD
       D    DISPLAY "SPA-NAI-I01-MAEIDOYMD  =" SPA-NAI-I01-MAEIDOYMD
+      D    DISPLAY "SPA-NAI-I01-PTRRKNUM   =" SPA-NAI-I01-PTRRKNUM
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO  )
             OR  (( SPA-GMN-I01-SYORIKBN-CD =   "01" )
              AND ( SPA-NAI-I01-MAEIDOYMD   =   SPACE ))
@@ -8613,6 +8627,8 @@
            IF    ( SPA-GMN-I01-SYORIKBN-CD     =   "01" )
                MOVE    SPACE       TO  SPA-GMN-I01-MAEIDOYMD
                                        SPA-NAI-I01-MAEIDOYMD
+               MOVE    ZERO        TO  SPA-NAI-I01-PTRRKNUM
+                                       SPA-NAI-I01-PTRRKEDANUM
            END-IF
       *
            .
@@ -9761,7 +9777,7 @@
                                            TO  SPA-NAI-I01-IDOYMD
            END-IF
       *
-           DISPLAY "##SPA-GMN-I01-SYORIKBN-CD =" SPA-GMN-I01-SYORIKBN-CD
+      D    DISPLAY "##SPA-GMN-I01-SYORIKBN-CD =" SPA-GMN-I01-SYORIKBN-CD
       *
       *    入院会計テーブルを編集する（入院時・転室時）
       *     IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01"
@@ -11109,10 +11125,10 @@
                                    TO  PTNYUINRRK-NYUCALKBN
       *
       *    入院加算
-           DISPLAY "UPDKBN=" WRK-UPDKBN
-                   " " PTNYUINRRK-KSNSRYCD (1)
-                   " " PTNYUINRRK-KSNSRYCD (2)
-                   " " PTNYUINRRK-KSNSRYCD (3)
+      D     DISPLAY "UPDKBN=" WRK-UPDKBN
+      D             " " PTNYUINRRK-KSNSRYCD (1)
+      D             " " PTNYUINRRK-KSNSRYCD (2)
+      D             " " PTNYUINRRK-KSNSRYCD (3)
            IF    ( SPA-GMN-I01-SYORIKBN-CD     =   "01" OR "08" )
                MOVE    ZERO        TO  IDXK
                PERFORM VARYING IDX0    FROM   1   BY  1
@@ -12190,7 +12206,7 @@
                                          TO  LNK-IRYOKNS-SANTEIYM
            CALL     "ORCSIRYOKNS"   USING   ORCSIRYOKNS-AREA
                                             SPA-AREA
-           DISPLAY   "LNK-IRYOKNS-RC = " LNK-IRYOKNS-RC
+      D    DISPLAY   "LNK-IRYOKNS-RC = " LNK-IRYOKNS-RC
            IF       LNK-IRYOKNS-RC     =    ZERO
                MOVE   LNK-IRYOKNS-SRYCD(1)
                                         TO LNK-SCNYUACCT-NYUKHN-SRYCD(1)
