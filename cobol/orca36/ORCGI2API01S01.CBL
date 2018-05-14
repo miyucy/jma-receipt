@@ -1266,7 +1266,6 @@
            IF    ( SPA-ERRCD       =   SPACE )
       *
                COMPUTE WRK-RANGE-OFFSET =  WRK-RANGE-FROM - 1
-               COMPUTE WRK-RANGE-LIMIT  =  CONST-LIMIT +   1
       *
                MOVE    WRK-RANGE-FROM  TO  WRK-NUMZ
                MOVE    FUNCTION TRIM (WRK-NUMZ)
@@ -1397,6 +1396,8 @@
       *    保険情報編集処理
       *****************************************************************
        200311-HOKEN-EDIT-SEC           SECTION.
+      *
+           MOVE    WRK-HKNCOMBINUM TO  HSFINDRES-HKNCOMBI (IDXL)
       *
            INITIALIZE                  ORCSAPIHKNAREA
            MOVE    PTSRH-PTID      TO  SPA-PTID
@@ -1756,6 +1757,7 @@
        800-ORCGI2SUB03-SEC              SECTION.
       *
            INITIALIZE                      I2SUB03-AREA
+           MOVE    "API"               TO  I2SUB03-FROM
            MOVE    REQ-BASEYMD         TO  I2SUB03-BASEYMD
            CALL    "ORCGI2SUB03"   USING   I2SUB03-AREA
                                            SPA-AREA

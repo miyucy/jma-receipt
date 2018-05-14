@@ -42,10 +42,13 @@
               05  HSPTINFMREQ-KAIGOKBN          PIC X(1).
               05  HSPTINFMREQ-DR                PIC X(5)    OCCURS  3.
               05  HSPTINFMREQ-HKNINF-AREA.
+                07  HSPTINFMREQ-HKNCOMBI-TEMPSET
+                                                PIC X(1).
                 07  HSPTINFMREQ-HKNCOMBI        PIC X(4).
-                07  HSPTINFMREQ-HKNNUM          PIC X(3).
-                07  HSPTINFMREQ-HKNJANUM        PIC X(8).
-                07  HSPTINFMREQ-HKNJANAME       PIC X(20).
+                07  HSPTINFMREQ-HKNINF-REQUIRED.
+                    09  HSPTINFMREQ-HKNNUM      PIC X(3).
+                    09  HSPTINFMREQ-HKNJANUM    PIC X(8).
+                    09  HSPTINFMREQ-HKNJANAME   PIC X(20).
                 07  HSPTINFMREQ-HKIGO           PIC X(80).
                 07  HSPTINFMREQ-HNUM            PIC X(80).
                 07  HSPTINFMREQ-KEIZOKUKBN      PIC X(1).
@@ -56,10 +59,11 @@
                 07  HSPTINFMREQ-HTEKEDYMD       PIC X(10).
                 07  HSPTINFMREQ-KOHINF-AREA.
                     09  HSPTINFMREQ-KOHINF-OCC  OCCURS  4.
-                      11  HSPTINFMREQ-KOHNUM    PIC X(3).
-                      11  HSPTINFMREQ-KOHNAME   PIC X(20).
-                      11  HSPTINFMREQ-FTNJANUM  PIC X(8).
-                      11  HSPTINFMREQ-JKYSNUM   PIC X(20).
+                      11  HSPTINFMREQ-KOHINF-REQUIRED.
+                          13  HSPTINFMREQ-KOHNUM   PIC X(3).
+                          13  HSPTINFMREQ-KOHNAME  PIC X(20).
+                          13  HSPTINFMREQ-FTNJANUM PIC X(8).
+                          13  HSPTINFMREQ-JKYSNUM  PIC X(20).
                       11  HSPTINFMREQ-KTEKSTYMD PIC X(10).
                       11  HSPTINFMREQ-KTEKEDYMD PIC X(10).
               05  HSPTINFMREQ-AUTOSET           PIC X(1).

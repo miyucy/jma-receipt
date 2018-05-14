@@ -244,6 +244,16 @@
            MOVE    "4"                 TO  I2SUB03-JOTAIL (4)
            MOVE    "当日在院"          TO  I2SUB03-JOTAIMEIL (4)
       *
+           IF    ( I2SUB03-FROM        =   "API" )
+      *
+               COMPUTE I2SUB03-JOTAILST-MAX
+                   =   I2SUB03-JOTAILST-MAX    +   1
+      *
+               MOVE    "5"             TO  I2SUB03-JOTAIL (5)
+               MOVE    "仮保険組合せ登録"
+                                       TO  I2SUB03-JOTAIMEIL (5)
+           END-IF
+      *
            .
        2001-JOTAILST-EXT.
            EXIT.

@@ -472,6 +472,14 @@
                07  NCLAIMID-SAME-AFTERMES
                                 PIC X(100)
                                     VALUE  "食事継続区分".
+             05  NCLAIMID-TEMPSET-G.
+               07  NCLAIMID-TEMPSET
+                                PIC X(20)  VALUE  "XXXXXXX".
+               07  NCLAIMID-TEMPSETJMA
+                                PIC X(05)  VALUE  "00060".
+               07  NCLAIMID-TEMPSETMES
+                                PIC X(100)
+                                    VALUE  "保険組合せ仮番号設定区分".
              05  NCLAIMID-UNCHKECK-G.
                07  NCLAIMID-UNCHKECK
                                 PIC X(20)   VALUE  "XXXXXXX".
@@ -480,8 +488,8 @@
                07  NCLAIMID-UNCHKECKMES
                                 PIC X(100)  VALUE  "不明".
            03  NCLAIMID-ITEM-R          REDEFINES   NCLAIMID-ITEM-VAL.
-             05  NCLAIMID-ITEM-OCC      OCCURS  60.
+             05  NCLAIMID-ITEM-OCC      OCCURS  61.
                07  NCLAIMID-ITEM        PIC X(20).
                07  NCLAIMID-ITEMJMA     PIC X(05).
                07  NCLAIMID-ITEMMES     PIC X(100).
-           03  NCLAIMID-ITEM-MAX        PIC 9(03)   VALUE   60.
+           03  NCLAIMID-ITEM-MAX        PIC 9(03)   VALUE   61.

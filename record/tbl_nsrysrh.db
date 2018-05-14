@@ -103,3 +103,22 @@ path	key3 	{
 	};
 };
 
+path	key4 	{
+  DBSELECT	{
+    DECLARE tbl_nsrysrh_key4_csr CURSOR FOR
+    SELECT a.*
+    FROM tbl_nsrysrh a, tbl_nrrksrh b
+    WHERE   a.HOSPNUM   =  :HOSPNUM
+      AND   a.PTID      =  :PTID
+      AND   a.SRYYM     =  substr(b.SRYYMD , 1, 6)
+      AND   a.SRYCD     =  :SRYCD
+      AND   b.HOSPNUM   =  a.HOSPNUM
+      AND   b.PTID      =  a.PTID
+      AND   b.ZAINUM    =  a.ZAINUM
+      AND   b.RRKNUM    =  :SELRRKNUM
+      AND   b.SRYYMD   <=  :SELSRYYMD
+        ORDER BY  b.SRYYMD DESC
+        ;
+  };
+};
+

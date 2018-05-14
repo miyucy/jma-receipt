@@ -16,6 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        01  I2SUB03-AREA.
+           03  I2SUB03-FROM                                PIC X(16).
            03  I2SUB03-BASEYMD                             PIC X(08).
            03  I2SUB03-ITEM-LIST-AREA.
                05  I2SUB03-SRYKALST-G.

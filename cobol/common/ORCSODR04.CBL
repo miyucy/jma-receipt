@@ -355,6 +355,11 @@
            IF    ( ERRCD-ORDER  =   SPACE )
             AND  ( ERRCD-ITEM   =   SPACE )
       *
+               IF    ( FLG-END  =   ZERO )
+                  PERFORM 2101-ORCSODRNACCT-CALL-SEC
+               END-IF
+      *
+      *        入院履歴の更新は会計の更新後に行う
                IF    ( FLG-END =   ZERO )
                    EVALUATE    TRUE
                    WHEN  ( SODR-ORDERID        =   NORDERID-SAGAKUID )
@@ -366,10 +371,6 @@
                     AND  ( ITEM-SAME-AFTER-G   NOT =   SPACE )
                        PERFORM 2101-PTNYUINRRK-UPDATE-SEC
                    END-EVALUATE
-               END-IF
-      *
-               IF    ( FLG-END  =   ZERO )
-                  PERFORM 2101-ORCSODRNACCT-CALL-SEC
                END-IF
       *
                IF    ( FLG-END  =   ZERO )
@@ -915,21 +916,26 @@
       *****************************************************************
        20021-NISSU-CHK-SEC             SECTION.
       *
-           DISPLAY "TRRK-TAIINYMD=" TRRK-TAIINYMD
+      D    DISPLAY "TRRK-TAIINYMD=" TRRK-TAIINYMD
            IF    ( ITEM-DAY-G (IDXA)   =   ZERO )
                 MOVE   SODR-SRYYMD     TO  WRK-SRYYMD
-                MOVE   WRK-SRYDD       TO  IDXF
-                IF  (  ITEM-SAME-AFTER (IDXA)   =   "1" )
-                   PERFORM VARYING WRK-SRYDD    FROM    IDXF   BY  1
-                           UNTIL ( WRK-SRYDD    >       WRK-EOMDD )
-                       IF    ( WRK-SRYYMD  >=      TRRK-NYUINYMD )
-                        AND  ( WRK-SRYYMD  <=      TRRK-TAIINYMD )
+                MOVE    1              TO  ITEM-DAY (IDXA WRK-SRYDD)
+           END-IF
+      *
+           IF  (  ITEM-SAME-AFTER (IDXA)   =   "1" )
+                MOVE   SODR-SRYYMD     TO  WRK-SRYYMD
+                PERFORM VARYING WRK-SRYDD  FROM    WRK-EOMDD   BY  -1
+                        UNTIL ( WRK-SRYDD  <       1 )
+                    IF    ( WRK-SRYYMD  >=      TRRK-NYUINYMD )
+                     AND  ( WRK-SRYYMD  <=      TRRK-TAIINYMD )
+                        IF    ( ITEM-DAY (IDXA WRK-SRYDD)
+                                           =   1 )
+                           MOVE    1   TO  WRK-SRYDD
+                        ELSE
                            MOVE    1   TO  ITEM-DAY (IDXA WRK-SRYDD)
-                       END-IF
-                   END-PERFORM
-                ELSE
-                    MOVE    1          TO  ITEM-DAY (IDXA WRK-SRYDD)
-                END-IF
+                        END-IF
+                    END-IF
+                END-PERFORM
            END-IF
       *
       D    DISPLAY "ITEM-DAY [         1         2         3 ]" IDXA

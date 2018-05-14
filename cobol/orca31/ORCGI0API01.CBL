@@ -124,6 +124,7 @@
                                        OCCURS   3.
            03  API-SHOKAIYMD           PIC X(08).
            03  API-KAIGOKBN            PIC X(01).
+           03  API-TEMPSET             PIC X(01).
            03  API-HKNCOMBI            PIC X(04).
            03  API-AUTOSET             PIC X(01).
            03  API-KHNCD               PIC X(09).
@@ -610,11 +611,16 @@
       *
            MOVE    HSPTINFMREQ-KAIGOKBN TO API-KAIGOKBN
       *
-           IF    ( HSPTINFMREQ-HKNCOMBI    NOT =   SPACE )
-               MOVE    HSPTINFMREQ-HKNCOMBI
+           MOVE    HSPTINFMREQ-HKNCOMBI-TEMPSET
+                                       TO  API-TEMPSET
+           IF    ( HSPTINFMREQ-HKNCOMBI-TEMPSET
+                                       =   ZERO OR SPACE )
+               IF    ( HSPTINFMREQ-HKNCOMBI    NOT =   SPACE )
+                   MOVE    HSPTINFMREQ-HKNCOMBI
                                        TO  API-HKNCOMBI
-           ELSE
-               PERFORM 10011-HOKEN-CHECK-SEC
+               ELSE
+                   PERFORM 10011-HOKEN-CHECK-SEC
+               END-IF
            END-IF
       *
            MOVE    HSPTINFMREQ-AUTOSET TO  API-AUTOSET
@@ -737,7 +743,6 @@
            ELSE
                PERFORM 10011-HOKEN-CHECK-SEC
            END-IF
-      *
       *
            MOVE    HSPTINFMREQ-AUTOSET TO  API-AUTOSET
       *
@@ -1139,6 +1144,12 @@
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
+               IF    ( API-TEMPSET       NOT =   SPACE )
+                   PERFORM 2300-TEMPSET-SET-SEC
+               END-IF
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
@@ -1656,6 +1667,19 @@
       *
            .
        2300-NYUINKA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ仮設定区分設定処理
+      *****************************************************************
+       2300-TEMPSET-SET-SEC           SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-TEMPSETJMA TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           MOVE    API-TEMPSET         TO  LNK-ODRITEM-ITEM (IDX-ITM)
+      *
+           .
+       2300-TEMPSET-SET-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ設定処理
