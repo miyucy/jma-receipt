@@ -20060,7 +20060,8 @@
       *
                IF    ( SPA-NAI-I01-MAEIDOYMD   NOT =   SPACE )
                    MOVE    WIDGET-INSENSITIVE
-                                   TO  I01-NYUINYMD-STT
+                                   TO  I01-B07-STT
+                                       I01-NYUINYMD-STT
                END-IF
       *
       *    Âà±¡ÅÐÏ¿
