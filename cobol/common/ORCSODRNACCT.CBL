@@ -6279,7 +6279,7 @@
                    ELSE
                        MOVE   1                TO   START-IDX
                    END-IF
-                   DISPLAY "START-IDX = " START-IDX
+      *             DISPLAY "START-IDX = " START-IDX
       *            ·îËöÆü¤ò»»Äê
                    INITIALIZE                STS-AREA-DAY
                    INITIALIZE                LNK-DAY7-AREA
@@ -6291,7 +6291,7 @@
       *            ¼¼ÎÁº¹³Û¤Î¥»¥Ã¥È
                    PERFORM  VARYING IDX  FROM  START-IDX   BY 1
                                 UNTIL   IDX  >    WRK-GETSUMATSU-D
-                       DISPLAY "IDX = " IDX
+      *                 DISPLAY "IDX = " IDX
                        IF   SODRNACCT-ORDERID(3:2)   =   "01"
                             MOVE    LNK-PTNYUINRRK-RM-SAGAKU
                                              TO  WRK-ROOMSAGAKU
