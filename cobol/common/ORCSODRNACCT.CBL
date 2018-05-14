@@ -2580,6 +2580,15 @@
            ELSE
                   MOVE   0      TO  LNK-SCNYUACCT-SHOKUJIKBN
            END-IF
+           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+               MOVE    "1"      TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+               MOVE   PTNYUINRRK-SKJKBN-ASA
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+               MOVE   PTNYUINRRK-SKJKBN-HIRU
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+               MOVE   PTNYUINRRK-SKJKBN-YU
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+           END-IF
       *    食堂加算
            PERFORM     4801-BTUSEL-SEC
            IF   FLG-SYSKANRI           =    ZERO
@@ -2855,16 +2864,6 @@
                  END-EVALUATE
                  PERFORM 910-DBCLOSECURSOR-SEC
                 END-PERFORM
-               ELSE
-                 IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
-                    MOVE    "1"        TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-                    MOVE   PTNYUINRRK-SKJKBN-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-                    MOVE   PTNYUINRRK-SKJKBN-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-                    MOVE   PTNYUINRRK-SKJKBN-YU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-                 END-IF
                END-IF
       *
       *       （異動翌月分）
@@ -2944,16 +2943,6 @@
                    END-EVALUATE
                    PERFORM 910-DBCLOSECURSOR-SEC
                 END-PERFORM
-               ELSE
-                 IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
-                    MOVE    "1"        TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-                    MOVE   PTNYUINRRK-SKJKBN-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-                    MOVE   PTNYUINRRK-SKJKBN-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-                    MOVE   PTNYUINRRK-SKJKBN-YU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-                 END-IF
                END-IF
            ELSE
       *       （異動月分）
@@ -5158,6 +5147,15 @@
            ELSE
                   MOVE   1      TO  LNK-SCNYUACCT-SHOKUJIKBN
            END-IF
+           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+               MOVE    "1"      TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+               MOVE   PTNYUINRRK-SKJKBN-ASA
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+               MOVE   PTNYUINRRK-SKJKBN-HIRU
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+               MOVE   PTNYUINRRK-SKJKBN-YU
+                                TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+           END-IF
       *    食堂加算
            PERFORM     4801-BTUSEL-SEC
            IF   FLG-SYSKANRI           =    ZERO
@@ -5422,16 +5420,6 @@
                  END-EVALUATE
                  PERFORM 910-DBCLOSECURSOR-SEC
               END-PERFORM
-            ELSE
-              IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
-                 MOVE    "1"           TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-                 MOVE   PTNYUINRRK-SKJKBN-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-                 MOVE   PTNYUINRRK-SKJKBN-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-                 MOVE   PTNYUINRRK-SKJKBN-YU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-              END-IF
             END-IF
            END-IF
       *   （異動翌月分）
@@ -5511,16 +5499,6 @@
                    END-EVALUATE
                    PERFORM 910-DBCLOSECURSOR-SEC
               END-PERFORM
-            ELSE
-              IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
-                 MOVE    "1"           TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-                 MOVE   PTNYUINRRK-SKJKBN-ASA
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-                 MOVE   PTNYUINRRK-SKJKBN-HIRU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-                 MOVE   PTNYUINRRK-SKJKBN-YU
-                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
-              END-IF
             END-IF
            END-IF
       *   （異動月分）
