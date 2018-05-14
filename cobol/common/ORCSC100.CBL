@@ -65,6 +65,8 @@
            03  FLG-AUTOERR             PIC 9(01).
       *TEST 
            03  FLG-INNAI               PIC 9(01).
+      *TEST
+           03  FLG-COMMNT-ARI          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -545,6 +547,21 @@
               AND (ORCSC100-INIT       =   ZERO )
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
+      *
+      *TEST
+      *H30.5
+      *    選択式コメント一覧チェック
+           IF     (ORCSC100-INIT       =   ZERO )
+             AND  (SPA-SRYYMD          >=  "20180401")
+               PERFORM 51020-SELCOM-CHEK-SEC
+               IF     (SPA-SELCOM-FLG      =   1  )
+                   GO      TO      5101-TBLSAIHEN-EXT
+               END-IF
+           END-IF
+      *TEST
+      *TEST
+      *TEST
+      *
       *H27.4
       *    後発品変更可・不可処方毎処理
            PERFORM 51019-INGIKSN-HEN-SEC
@@ -1423,6 +1440,56 @@
            .
        510191-INGIKSN-HENSYORI-EXT.
            EXIT.
+      *TEST
+      *TEST
+      *H30.5
+      *****************************************************************
+      *    選択式コメント一覧チェック処理
+      *****************************************************************
+       51020-SELCOM-CHEK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  SPA-SELCOM-FLG
+           MOVE    ZERO                TO  SPA-SELCOM-IDX
+      *
+           MOVE    ZERO                TO  FLG-COMMNT-ARI
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE    )
+                          OR ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE ))
+                          OR ( SPA-SELCOM-FLG          =   1     )
+      *
+               IF      (SPA-COM-INPUTCD(IDX)(1:1)  =   "1"  )
+                  AND  (SPA-COM-SYOMEIKANREN (IDX) NOT =   SPACE)
+      *            選択コメント対象
+                   MOVE    IDX                 TO  SPA-SELCOM-IDX
+      *            今回入力以外
+                   IF     (SPA-COM-AUTOFLG (IDX)   =   "1")
+                       MOVE    ZERO            TO  SPA-SELCOM-IDX
+                   END-IF
+               END-IF
+      *
+               IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "8" )
+                   OR  (SPA-COM-INPUTCD (IDX)(1:3) =   "008")
+                   MOVE    1                   TO  FLG-COMMNT-ARI
+               END-IF
+      *
+               IF      SPA-COM-ZAIEND (IDX)        =   "1"
+                   IF      (SPA-SELCOM-IDX     NOT =   ZERO )
+                       AND (FLG-COMMNT-ARI         =   ZERO )
+                       MOVE    1                   TO  SPA-SELCOM-FLG
+                   ELSE
+                       MOVE    ZERO                TO  FLG-COMMNT-ARI
+                       MOVE    ZERO                TO  SPA-SELCOM-IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       51020-SELCOM-CHEK-EXT.
+           EXIT.
+      *TEST
+      *TEST
+      *TEST
       *!!!
       *****************************************************************
       *    剤ごとの処理

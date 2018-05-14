@@ -2354,6 +2354,30 @@
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *TEST
+      *H30.5
+               WHEN    "1106"
+                   STRING  "剤内に選択式コメントの必要な"
+                           "診療はありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *TEST
+      *H30.5
+               WHEN    "0248"
+                   STRING   "外用薬の総量が桁数オーバーします。"
+                            "数量と回数を確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K275"
+                   STRING  "警告！"
+                           "既にコンタクトレンズ検査料の算定が"
+                           "あります。"
+                           "初診の算定はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
@@ -2761,6 +2785,17 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+      *!!!!!!!!!!!!!!!!!!!!
+      *TEST
+      *H30.5
+               WHEN    "K179"
+                   STRING  "警告！！"
+                           "妊婦期間を過ぎているようです。"
+                           "妊婦設定を解除して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *!!!!!!!!!!!!!!!!!!!!
       *!
                WHEN    "1050"
                    STRING  "労災・自賠責・公害、包括分入力の"

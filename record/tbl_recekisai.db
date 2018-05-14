@@ -1,0 +1,49 @@
+tbl_recekisai {
+	C_GROUP			varchar(9);
+	STYM			varchar(6);
+	EDYM			varchar(6);
+	KISAINUM		number(2,0);
+	RENNUM			number(2,0);
+	C_CD			varchar(9);
+	SYORIKBN		number(1,0);
+	CREYMD			varchar(8);
+	UPYMD			varchar(8);
+	UPHMS			varchar(6);
+#-----> 主キー更新用項目
+	UPC_GROUP			varchar(9),virtual;
+	UPSTYM			varchar(6),virtual;
+	UPEDYM			varchar(6),virtual;
+	UPKISAINUM		number(2,0),virtual;
+	UPRENNUM			number(2,0),virtual;
+};
+primary	{
+	C_GROUP,STYM,EDYM,KISAINUM,RENNUM;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_recekisai_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekisai
+ 			WHERE   C_GROUP   = :C_GROUP
+ 			AND     STYM     <= :STYM
+			AND     EDYM     >= :EDYM
+			AND     KISAINUM  = :KISAINUM
+			AND     RENNUM    = :RENNUM
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_recekisai_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekisai
+ 			WHERE   C_GROUP   = :C_GROUP
+ 			AND     STYM     <= :STYM
+			AND     EDYM     >= :EDYM
+			AND     SYORIKBN  IN (1, 2)
+			ORDER   BY	KISAINUM, RENNUM
+		;
+	};
+};

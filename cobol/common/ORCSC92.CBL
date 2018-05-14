@@ -4252,6 +4252,16 @@
                MOVE    "2"             TO  SPA-COM-MASTER-CLASS
                                                              (IDX-T)
            END-IF
+      *TEST
+      *H30.5
+      *    商品名等関連コード（診療コードのコメントグループ番号）
+           IF     (TNS-SRYCD (1:1)     =   "1"   )
+              AND (SPA-SRYYMD          >=  "20180401" )
+               MOVE    TNS-SYOMEIKANREN    TO  SPA-COM-SYOMEIKANREN
+                                                             (IDX-T)
+           END-IF
+      *??
+      *TEST
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
