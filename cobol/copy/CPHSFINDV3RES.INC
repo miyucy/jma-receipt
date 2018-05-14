@@ -45,6 +45,7 @@
                  05  HSFINDRES-ADD1            PIC X(100).
                  05  HSFINDRES-ADD2            PIC X(100).
                  05  HSFINDRES-HKNCOMBI-G.
+                     07  HSFINDRES-HKNCOMBI              PIC X(04).
                      07  HSFINDRES-HKNNUM                PIC X(03).
                      07  HSFINDRES-HKNJANUM              PIC X(08).
                      07  HSFINDRES-HKNNAME               PIC X(20).

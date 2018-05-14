@@ -1306,3 +1306,28 @@ path	key74		{
 		;
 	};
 };
+
+path	key75		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key75_csr CURSOR FOR
+    SELECT a.*
+    FROM tbl_ptnyuinrrk a
+      WHERE a.HOSPNUM    =   :HOSPNUM 
+       AND  a.PTID       =   :PTID
+       AND  a.RRKNUM     =   :RRKNUM
+       AND  a.RRKEDANUM  =   1
+       AND  a.NYUINYMD   =   :NYUINYMD
+       AND  a.JTIKBN NOT IN ('5','6')
+       AND  EXISTS (
+      SELECT *
+      FROM tbl_ptnyuinrrk b
+      WHERE b.HOSPNUM    = a.HOSPNUM
+       AND  b.PTID       = a.PTID
+       AND  b.RRKNUM     < a.RRKNUM
+       AND  b.RRKEDANUM  = 1
+       AND  b.TAIINYMD   =   :TAIINYMD
+       AND  b.JTIKBN NOT IN ('5','6')
+    )
+		;
+	};
+};

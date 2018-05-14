@@ -163,7 +163,7 @@
                 04  I06-SKJTIME-ITEM           PIC X(10)   OCCURS  5.
                 04  I06-SKJTIME-ITEM-STATE     PIC S9(9)   BINARY.
               03  I06-NISSU-G.
-                04  I06-NISSU                  PIC X(50).
+                04  I06-NISSU                  PIC X(100).
                 04  I06-NISSU-STATE            PIC S9(9)   BINARY.
               03  I06-CMB-BUNBENKBN.
                 04  I06-BUNBENKBN                 PIC X(20).

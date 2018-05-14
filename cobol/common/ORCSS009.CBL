@@ -324,7 +324,7 @@
       *
                IF    ( LNK-NYUINDAY-DOUJITSU-KBN(IDX1) = "1" )
                    INITIALIZE              WRK-HKNCOMBINUM-G
-                   MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)
+                   MOVE    LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1)
                                        TO  WRK-HKNCOMBINUM
                    PERFORM 20011-TCOMBI-HEN-SEC
                END-IF

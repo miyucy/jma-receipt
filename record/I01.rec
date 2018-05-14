@@ -78,15 +78,6 @@ I01 {
         item varchar(23)[99];
       state int;
     };
-    CMB_SKJKBN {
-      SKJKBN {
-        textdata varchar(24);
-        state int;
-      };
-      count int;
-        item varchar(24)[10];
-      state int;
-    };
     CMB_TIMEKBN {
       TIMEKBN {
         textdata varchar(12);
@@ -318,6 +309,54 @@ I01 {
       };
       count int;
         item varchar(20)[5];
+      state int;
+    };
+    CMB_SKJKBN {
+      SKJKBN {
+        textdata varchar(24);
+        state int;
+      };
+      count int;
+      item varchar(24)[10];
+      state int;
+    };
+    LBL_SKJKBN_ASA {
+        textdata varchar(2);
+    };
+    CMB_SKJKBN_ASA {
+      SKJKBN_ASA {
+        textdata varchar(24);
+        state int;
+      };
+      visible bool;
+      count int;
+      item varchar(24)[10];
+      state int;
+    };
+    LBL_SKJKBN_HIRU {
+        textdata varchar(2);
+    };
+    CMB_SKJKBN_HIRU {
+      SKJKBN_HIRU {
+        textdata varchar(24);
+        state int;
+      };
+      visible bool;
+      count int;
+      item varchar(24)[10];
+      state int;
+    };
+    LBL_SKJKBN_YU {
+        textdata varchar(2);
+    };
+    CMB_SKJKBN_YU {
+      SKJKBN_YU {
+        textdata varchar(24);
+        state int;
+      };
+      visible bool;
+      count int;
+      item varchar(24)[10];
       state int;
     };
     LBLINFO {

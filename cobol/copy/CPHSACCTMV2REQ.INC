@@ -36,6 +36,7 @@
                    07  HSACCTMREQ-SKJ-OCC    OCCURS  3.
                        09  HSACCTMREQ-SKJTIME    PIC X(2).
                        09  HSACCTMREQ-SKJTYPE    PIC X(1).
-                       09  HSACCTMREQ-NISSU      PIC X(50).
+                       09  HSACCTMREQ-NISSU      PIC X(100).
+                       09  HSACCTMREQ-SAME-AFTER PIC X(1).
                05  HSACCTMREQ-GAIHAKUKBN        PIC X(2).
                05  HSACCTMREQ-SAGAKU            PIC X(7).
