@@ -1930,6 +1930,7 @@
       *****************************************************************
        4801-TENROOM-EDIT-SEC         SECTION.
       *
+           DISPLAY "4801-TENROOM-EDIT-SEC"
            MOVE      SPACE        TO    WRK-DOU-TENNYUYMD
            MOVE      SPACE        TO    IPN-NYUKAIKEI-SAKUSEI-FLG
       *
@@ -2580,13 +2581,13 @@
            ELSE
                   MOVE   0      TO  LNK-SCNYUACCT-SHOKUJIKBN
            END-IF
-           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+           IF     LNK-PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
                MOVE    "1"      TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-               MOVE   PTNYUINRRK-SKJKBN-ASA
+               MOVE   LNK-PTNYUINRRK-SKJKBN-ASA
                                 TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-               MOVE   PTNYUINRRK-SKJKBN-HIRU
+               MOVE   LNK-PTNYUINRRK-SKJKBN-HIRU
                                 TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-               MOVE   PTNYUINRRK-SKJKBN-YU
+               MOVE   LNK-PTNYUINRRK-SKJKBN-YU
                                 TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
            END-IF
       *    ¿©Æ²²Ã»»
@@ -3635,13 +3636,13 @@
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE   WRK-TAIHI-SHOKUJI
                                 TO  LNK-SCNYUACCT-SHOKUJIKBN
-           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+           IF     LNK-PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
                MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
-               MOVE   PTNYUINRRK-SKJKBN-ASA
+               MOVE   LNK-PTNYUINRRK-SKJKBN-ASA
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
-               MOVE   PTNYUINRRK-SKJKBN-HIRU
+               MOVE   LNK-PTNYUINRRK-SKJKBN-HIRU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
-               MOVE   PTNYUINRRK-SKJKBN-YU
+               MOVE   LNK-PTNYUINRRK-SKJKBN-YU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
            END-IF
       *    ¿©Æ²²Ã»»
