@@ -42,10 +42,6 @@
                        09  SNINF01-CREATEKBN-NAME
                                                    PIC X(40).
                    07  SNINF01-NYUINYMD            PIC X(10).
-                   07  SNINF01-TIMEKBN-IN-G.
-                       09  SNINF01-TIMEKBN-IN-LBL  PIC X(20).
-                       09  SNINF01-TIMEKBN-IN-DATA PIC X(02).
-                       09  SNINF01-TIMEKBN-IN-NAME PIC X(20).
                    07  SNINF01-IDOYMD              PIC X(10).
                    07  SNINF01-TAIINYMD            PIC X(10).
                    07  SNINF01-TAIINCD-G.
@@ -100,28 +96,10 @@
                       09   SNINF01-NYUINRYO-LBL     PIC X(20).
                       09   SNINF01-NYUINRYO-DATA    PIC X(09).
                       09   SNINF01-NYUINRYO-NAME    PIC X(100).
-                  07  SNINF01-KSNSRYCD-G.
-                      09   SNINF01-KSNSRYCD-MAX     PIC 9(03).
-                      09   SNINF01-KSNSRYCD-OCC     OCCURS 3.
-                           11   SNINF01-KSNSRYCD-LBL
-                                                    PIC X(20).
-                           11   SNINF01-KSNSRYCD-DATA
-                                                    PIC X(09).
-                           11   SNINF01-KSNSRYCD-NAME
-                                                    PIC X(100).
                   07  SNINF01-IDONYUINRYO-G.
                       09   SNINF01-IDONYUINRYO-LBL    PIC X(20).
                       09   SNINF01-IDONYUINRYO-DATA   PIC X(09).
                       09   SNINF01-IDONYUINRYO-NAME   PIC X(100).
-                  07  SNINF01-IDOKSNSRYCD-G.
-                      09   SNINF01-IDOKSNSRYCD-MAX  PIC 9(03).
-                      09   SNINF01-IDOKSNSRYCD-OCC  OCCURS 3.
-                           11   SNINF01-IDOKSNSRYCD-LBL
-                                                    PIC X(20).
-                           11   SNINF01-IDOKSNSRYCD-DATA
-                                                    PIC X(09).
-                           11   SNINF01-IDOKSNSRYCD-NAME
-                                                    PIC X(100).
                   07  SNINF01-NACCTKBN-G.
                       09   SNINF01-NACCTKBN-LBL     PIC X(20).
                       09   SNINF01-NACCTKBN-DATA    PIC X(01).
@@ -142,7 +120,3 @@
                       09   SNINF01-DISPKBN-LBL      PIC X(20).
                       09   SNINF01-DISPKBN-DATA     PIC X(01).
                       09   SNINF01-DISPKBN-NAME     PIC X(20).
-                  07  SNINF01-SKJKBN-G.
-                      09   SNINF01-SKJKBN-LBL       PIC X(20).
-                      09   SNINF01-SKJKBN-DATA      PIC X(01).
-                      09   SNINF01-SKJKBN-NAME      PIC X(30).

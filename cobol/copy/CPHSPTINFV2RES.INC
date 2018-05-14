@@ -47,14 +47,6 @@
                            11  HSPTINFRES-CREATEKBN-NAME
                                                        PIC X(40).
                        09  HSPTINFRES-NYUINYMD         PIC X(10).
-                       09  HSPTINFRES-TIMEKBN-IN-G.
-                           11  HSPTINFRES-TIMEKBN-IN-LBL
-                                                       PIC X(20).
-                           11  HSPTINFRES-TIMEKBN-IN-DATA
-                                                       PIC X(01).
-                           11  HSPTINFRES-TIMEKBN-IN-NAME
-                                                       PIC X(20).
-                       09  HSPTINFRES-IDOYMD           PIC X(10).
                        09  HSPTINFRES-TAIINYMD         PIC X(10).
                        09  HSPTINFRES-TAIINCD-G.
                            11  HSPTINFRES-TAIINCD-LBL  PIC X(10).
@@ -108,28 +100,6 @@
                           11   HSPTINFRES-NYUINRYO-LBL     PIC X(20).
                           11   HSPTINFRES-NYUINRYO-DATA    PIC X(09).
                           11   HSPTINFRES-NYUINRYO-NAME    PIC X(100).
-                      09  HSPTINFRES-KSNSRYCD-G.
-                          11   HSPTINFRES-KSNSRYCD-OCC     OCCURS 3.
-                               13   HSPTINFRES-KSNSRYCD-LBL
-                                                           PIC X(20).
-                               13   HSPTINFRES-KSNSRYCD-DATA
-                                                           PIC X(09).
-                               13   HSPTINFRES-KSNSRYCD-NAME
-                                                           PIC X(100).
-                      09  HSPTINFRES-IDONYUINRYO-G.
-                          11   HSPTINFRES-IDONYUINRYO-LBL  PIC X(20).
-                          11   HSPTINFRES-IDONYUINRYO-DATA
-                                                           PIC X(09).
-                          11   HSPTINFRES-IDONYUINRYO-NAME
-                                                           PIC X(100).
-                      09  HSPTINFRES-IDOKSNSRYCD-G.
-                          11   HSPTINFRES-IDOKSNSRYCD-OCC OCCURS 3.
-                               13   HSPTINFRES-IDOKSNSRYCD-LBL
-                                                           PIC X(20).
-                               13   HSPTINFRES-IDOKSNSRYCD-DATA
-                                                           PIC X(09).
-                               13   HSPTINFRES-IDOKSNSRYCD-NAME
-                                                           PIC X(100).
                       09  HSPTINFRES-NACCTKBN-G.
                           11   HSPTINFRES-NACCTKBN-LBL     PIC X(20).
                           11   HSPTINFRES-NACCTKBN-DATA    PIC X(01).
@@ -146,11 +116,3 @@
                           11   HSPTINFRES-TEIKIKBN-LBL     PIC X(20).
                           11   HSPTINFRES-TEIKIKBN-DATA    PIC X(01).
                           11   HSPTINFRES-TEIKIKBN-NAME    PIC X(20).
-                      09  HSPTINFRES-DISPKBN-G.
-                          11   HSPTINFRES-DISPKBN-LBL      PIC X(20).
-                          11   HSPTINFRES-DISPKBN-DATA     PIC X(01).
-                          11   HSPTINFRES-DISPKBN-NAME     PIC X(20).
-                      09  HSPTINFRES-SKJKBN-G.
-                          11   HSPTINFRES-SKJKBN-LBL       PIC X(20).
-                          11   HSPTINFRES-SKJKBN-DATA      PIC X(01).
-                          11   HSPTINFRES-SKJKBN-NAME      PIC X(30).

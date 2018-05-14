@@ -114,8 +114,7 @@
                05  API-SKJ-OCC         OCCURS 3.
                    07  API-SKJTIME     PIC X(02).
                    07  API-SKJTYPE     PIC X(01).
-                   07  API-NISSU       PIC X(100).
-                   07  API-SAME-AFTER  PIC X(1).
+                   07  API-NISSU       PIC X(50).
            03  API-ERR-MAX             PIC 9(03).
            03  API-ERR-OCC             OCCURS  10.
                05  API-ERRCD           PIC X(04).
@@ -407,8 +406,6 @@
                                            TO  API-SKJTYPE (IDX2)
                MOVE    HSACCTMREQ-NISSU  (IDX2)
                                            TO  API-NISSU (IDX2)
-               MOVE    HSACCTMREQ-SAME-AFTER (IDX2)
-                                           TO  API-SAME-AFTER (IDX2)
            END-PERFORM
       *
            .
@@ -857,8 +854,6 @@
       *
                PERFORM 2300-NISSU-SET-SEC
       *
-               PERFORM 2300-SAME-AFTER-SET-SEC
-      *
            END-PERFORM
       *
            MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
@@ -943,25 +938,11 @@
       *****************************************************************
       *    一括入力設定処理
       *****************************************************************
-       2300-NISSU-SET-SEC              SECTION.
+       2300-NISSU-SET-SEC           SECTION.
       *
            PERFORM 2300-ODRITEM-COMMON-SET-SEC
            MOVE    NCLAIMID-NISSUJMA   TO  LNK-ODRITEM-ITEMID (IDX-ITM)
            MOVE    API-NISSU (IDX2)    TO  LNK-ODRITEM-MEMO (IDX-ITM)
-      *
-           .
-       2300-NISSU-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    食事継続区分設定処理
-      *****************************************************************
-       2300-SAME-AFTER-SET-SEC         SECTION.
-      *
-           PERFORM 2300-ODRITEM-COMMON-SET-SEC
-           MOVE    NCLAIMID-SAME-AFTERJMA
-                                       TO  LNK-ODRITEM-ITEMID (IDX-ITM)
-           MOVE    API-SAME-AFTER (IDX2)
-                                       TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
            .
        2300-NISSU-SET-EXT.
@@ -1464,9 +1445,9 @@
       *
            INITIALIZE                      XML-APIREQ
       * XML情報取り出し
-           MOVE    "xml_hsacctmodv2req"    TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           MOVE    I4API02-BODY            TO  APIREQ-OBJECT
+           MOVE    "xml_hsacctmodv2req"   TO  MCP-TABLE
+           MOVE    "key"                TO  MCP-PATHNAME
+           MOVE    I4API02-BODY         TO  APIREQ-OBJECT
            MOVE    ZERO                    TO  APIREQ-MODE
            PERFORM 910-XMLOPEN-SEC
            IF    ( MCP-RC              =   ZERO  OR  1 )
@@ -1487,11 +1468,9 @@
                MOVE   "8097"               TO  WRK-ERRCD
            END-IF
       *
-           MOVE    "xml_hsacctmodv2req"    TO  MCP-TABLE
+           MOVE    "xml_hsacctmodv2req"   TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-XMLCLOSE-SEC
-      *
-           MOVE    LOW-VALUE               TO  I4API02-BODY
       *
            .
        900-XML-READ-EXT.
@@ -1543,8 +1522,12 @@
       *****************************************************************
        9001-XML-WRITE-SEC             SECTION.
       *
-           INITIALIZE                          XML-APIREQ
-           MOVE    "xml_hsacctmodv2res"    TO  MCP-TABLE
+           IF    ( I4API02-BODY    NOT =   LOW-VALUE )
+               DISPLAY "hsacctmodv2 object is not low_value"
+           END-IF
+      *
+           INITIALIZE                      XML-APIREQ
+           MOVE    "xml_hsacctmodv2res"   TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    1                       TO  APIREQ-MODE
            PERFORM 910-XMLOPEN-SEC

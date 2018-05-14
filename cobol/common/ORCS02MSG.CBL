@@ -187,11 +187,6 @@
                        "がありません"      DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
-           WHEN    37
-               STRING  "保険組合せが存在しません"
-                                           DELIMITED   BY  SIZE
-               INTO    WRK-MSG (1)
-               END-STRING
            WHEN    101
                STRING  "包括入院期間に算定できない入院料加算"
                                            DELIMITED   BY  SIZE

@@ -5777,7 +5777,6 @@
                IF    ( NACCT-DAY (IDX25)   >   ZERO )
                    MOVE    NACCT-DAY (IDX25)
                                    TO  WRK-HKNCOMBINUM
-           DISPLAY "WRK-HKNCOMBINUM=" WRK-HKNCOMBINUM
                    PERFORM 200211-TCOMBI-HEN-SEC
                END-IF
            END-PERFORM
@@ -5885,10 +5884,6 @@
       *
                MOVE    TCOMBI-HKNCOMBI (IDX27) TO  WRK-HKNCOMBINUM
                PERFORM 900-HKNCOMBI-KEY-SEL-SEC
-               IF    ( FLG-HKNCOMBI    NOT =   ZERO )
-                   MOVE    WRK-HKNCOMBINUM
-                                   TO  COMB-HKNCOMBINUM
-               END-IF
       *
                IF    ( ORCHCM34-HOKEN      =   SPACE )
                    CONTINUE
@@ -5905,15 +5900,13 @@
                    END-IF
                END-IF
       *
-               DISPLAY "FLG-TARGET="   FLG-TARGET
                IF    ( FLG-TARGET      =   1 )
       *
                    INITIALIZE                  HCM34S01-AREA
                    MOVE    NACCT-HOSPNUM        TO  HCM34S01-HOSPNUM
                    MOVE    NACCT-PTID          TO  HCM34S01-PTID
                    MOVE    NACCT-SRYYM         TO  HCM34S01-SANTEIYM
-                   MOVE    COMB-HKNCOMBINUM
-                                               TO  HCM34S01-HKNCOMBI
+                   MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
                    MOVE    COMB-HKNNUM         TO  HCM34S01-HKNNUM
                    MOVE    ORCHCM34-SRYKAKBN   TO  HCM34S01-SRYKAKBN
                    MOVE    ORCHCM34-SRYKA      TO  HCM34S01-SRYKA

@@ -14,8 +14,7 @@ xml_hsacctmodv2req {
 		Meal_Information	{
 			Meal_Time		varchar(2);
 			Meal_Type		varchar(1);
-			Meal_Dates		varchar(100);
-			Meal_SameAfter	varchar(1);
+			Meal_Dates		varchar(50);
 		}[3];
 		Patient_Status	varchar(2);
 		Room_Charge     varchar(7);

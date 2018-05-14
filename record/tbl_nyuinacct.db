@@ -342,7 +342,7 @@ path	key17 	{
 			AND     PTID        =   :PTID
 			AND     SRYYM       =   :SRYYM
 			AND     ZAISKBKBN   =   :ZAISKBKBN
-			ORDER  BY   SRYKA,SRYCDTOTAL	
+			ORDER  BY   SRYKA
 		;
 	};
 };

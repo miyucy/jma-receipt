@@ -54,11 +54,9 @@
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX1                    PIC 9(05).
-           03  IDX2                    PIC 9(05).
            03  IDXA                    PIC 9(05).
            03  IDXB                    PIC 9(05).
            03  IDXK                    PIC 9(05).
-           03  IDXZ                    PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -105,11 +103,6 @@
            03  WRK-NYUINRYO-G.
                05  WRK-NYUINRYO-CD     PIC X(09).
                05  WRK-NYUINRYO-NAME   PIC X(100).
-           03  WRK-KSNSRYCD-G.
-               05  WRK-KSNSRYCD-MAX        PIC 9(03).
-               05  WRK-KSNSRYCD-OCC        OCCURS 3.
-                   07  WRK-KSNSRYCD        PIC X(09).
-                   07  WRK-KSNSRYCD-NAME   PIC X(100).
       *
        01  KEY-AREA.
            03  KEY-RRKNUM              PIC 9(03).
@@ -160,9 +153,6 @@
        01  SNRRK-AREA.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //SNRRK-//.
-      *
-      *    入院料加算算定可否チェック
-           COPY    "CPORCSI01.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -374,6 +364,7 @@
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-1005-REC
       *
+      *
            INITIALIZE                  SI02-AREA
            MOVE    PTNYUINRRK-REC  TO  SNRRK-AREA
            MOVE    "1"             TO  SI02-REQID
@@ -394,21 +385,6 @@
            MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SYMD
            PERFORM 800-DATE-SEC
            MOVE    WRK-DATE    TO  SNINF01-NYUINYMD (IDXA)
-      *
-           MOVE    "入院日の食事開始時間"
-                               TO  SNINF01-TIMEKBN-IN-LBL(IDXA)
-           MOVE    PTNYUINRRK-TIMEKBN-IN
-                               TO  SNINF01-TIMEKBN-IN-DATA(IDXA)
-           EVALUATE    PTNYUINRRK-TIMEKBN-IN
-           WHEN    "0"
-               MOVE    "食事なし"  TO  SNINF01-TIMEKBN-IN-NAME(IDXA)
-           WHEN    "1"
-               MOVE    "朝食から"  TO  SNINF01-TIMEKBN-IN-NAME(IDXA)
-           WHEN    "2"
-               MOVE    "昼食から"  TO  SNINF01-TIMEKBN-IN-NAME(IDXA)
-           WHEN    "3"
-               MOVE    "夕食から"  TO  SNINF01-TIMEKBN-IN-NAME(IDXA)
-           END-EVALUATE
       *
            IF    ( PTNYUINRRK-RRKEDANUM    NOT =   1 )
                MOVE    PTNYUINRRK-TENNYUYMD
@@ -563,6 +539,8 @@
                                TO  SNINF01-SENTEIKBN-NAME(IDXA)
            END-EVALUATE
       *
+      *    MOVE    "入院料"    TO  SNINF01-NYUINRYO-LBL (IDXA)
+      *
            MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-SRYYMD
            PERFORM 200111-NYUINRYO-EDIT-SEC
            IF    ( WRK-NYUINRYO-CD NOT =   SPACE )
@@ -572,19 +550,6 @@
                                TO  SNINF01-NYUINRYO-DATA(IDXA)
                MOVE    WRK-NYUINRYO-NAME
                                TO  SNINF01-NYUINRYO-NAME(IDXA)
-      *
-               MOVE    WRK-KSNSRYCD-MAX
-                               TO  SNINF01-KSNSRYCD-MAX (IDXA)
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   WRK-KSNSRYCD-MAX )
-                   MOVE    "入院日の入院加算"
-                               TO  SNINF01-KSNSRYCD-LBL (IDXA IDX0)
-                   MOVE    WRK-KSNSRYCD (IDX0)
-                               TO  SNINF01-KSNSRYCD-DATA (IDXA IDX0)
-                   MOVE    WRK-KSNSRYCD-NAME (IDX0)
-                               TO  SNINF01-KSNSRYCD-NAME (IDXA IDX0)
-               END-PERFORM
-      *
            END-IF
       *
            IF    ( PTNYUINRRK-RRKEDANUM    NOT =   1 )
@@ -603,18 +568,6 @@
                                TO  SNINF01-IDONYUINRYO-DATA(IDXA)
                    MOVE    WRK-NYUINRYO-NAME
                                TO  SNINF01-IDONYUINRYO-NAME(IDXA)
-      *
-                   MOVE    WRK-KSNSRYCD-MAX
-                               TO  SNINF01-IDOKSNSRYCD-MAX (IDXA)
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   WRK-KSNSRYCD-MAX )
-                       MOVE    "前回異動日の入院加算"
-                               TO  SNINF01-IDOKSNSRYCD-LBL (IDXA IDX0)
-                       MOVE    WRK-KSNSRYCD (IDX0)
-                               TO  SNINF01-IDOKSNSRYCD-DATA (IDXA IDX0)
-                       MOVE    WRK-KSNSRYCD-NAME (IDX0)
-                               TO  SNINF01-IDOKSNSRYCD-NAME (IDXA IDX0)
-                   END-PERFORM
               END-IF
            END-IF
       *
@@ -696,22 +649,6 @@
                                    TO  SNINF01-DISPKBN-NAME(IDXA)
            END-EVALUATE
       *
-           MOVE    "食事の種類"    TO  SNINF01-SKJKBN-LBL (IDXA)
-           MOVE    PTNYUINRRK-SKJKBN
-                                   TO  SNINF01-SKJKBN-DATA (IDXA)
-           EVALUATE    PTNYUINRRK-SKJKBN
-           WHEN    "0"
-               MOVE    "食事なし"  TO  SNINF01-SKJKBN-NAME (IDXA)
-           WHEN    "1"
-               MOVE    "食事あり"  TO  SNINF01-SKJKBN-NAME (IDXA)
-           WHEN    "2"
-               MOVE    "食事あり（特別食）"
-                                   TO  SNINF01-SKJKBN-NAME (IDXA)
-           WHEN    "A"
-               MOVE    "変更なし（転科転棟転室時）"
-                                   TO  SNINF01-SKJKBN-NAME (IDXA)
-           END-EVALUATE
-      *
           .
        20011-NYUINRRK-EXT.
            EXIT.
@@ -789,16 +726,7 @@
       *
            MOVE    ZERO                    TO  FLG-SENTEI
       *
-           INITIALIZE                      SI01-AREA
-           MOVE    PTNYUINRRK-PTID     TO  SI01-PTID
-           MOVE    WRK-SRYYMD          TO  SI01-SRYYMD
-           MOVE    PTNYUINRRK-NYUINYMD TO  SI01-NYUINYMD
-           MOVE    PTNYUINRRK-BTUNUM   TO  SI01-BTUNUM
-           CALL    "ORCSI01"           USING
-                                       SI01-AREA
-                                       SPA-AREA
            INITIALIZE                      WRK-NYUINRYO-G
-           INITIALIZE                      WRK-KSNSRYCD-G
       *
            PERFORM 900-NYUINACCT-KEY7-SEL-SEC
       *
@@ -812,13 +740,6 @@
                    ELSE
                        PERFORM 2001111-NYUINRYO-EDIT-SEC
                    END-IF
-               END-IF
-      *
-               IF    ( NACCT-ZAISKBKBN     =   "6" )
-                AND  ( NACCT-DAY (WRK-SRYYMD-DD)
-                                           >   ZERO )
-                AND  ( WRK-KSNSRYCD-MAX    <   3 )
-                   PERFORM 2001111-KSNSRYCD-EDIT-SEC
                END-IF
       *
                PERFORM 900-NYUINACCT-KEY7-FET-SEC
@@ -859,7 +780,6 @@
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   5 )
-                        OR   ( WRK-NYUINRYO-CD NOT =   SPACE )
       *
                    IF    ( NSRY-SRYCD (IDX0)   NOT =   SPACE )
                        MOVE    NSRY-SRYCD (IDX0)
@@ -886,55 +806,6 @@
       *
           .
        2001111-NYUINRYO-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院料編集処理
-      *****************************************************************
-       2001111-KSNSRYCD-EDIT-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  IDXZ
-      *
-           PERFORM 900-NYUINACT-KEY2-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-NYUINACT    NOT =   ZERO )
-                    OR   ( IDXZ    >   ZERO )
-      *
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   5 )
-                        OR   ( IDXZ    >   ZERO )
-      *
-                   IF    ( NSRY-SRYCD (IDX0)   NOT =   SPACE )
-                       PERFORM VARYING IDX2    FROM    1   BY  1
-                               UNTIL ( IDX2    >   SI01-KSNLST-MAX )
-                                OR   ( IDXZ    >   ZERO )
-                           IF    ( SI01-KSNLST-SRYCD(IDX2)
-                                               =   NSRY-SRYCD (IDX0))
-                               MOVE    IDX2    TO  IDXZ
-                           END-IF
-                       END-PERFORM
-                   END-IF
-      *
-               END-PERFORM
-      *
-               PERFORM 900-NYUINACT-KEY2-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_nyuinact"          TO  MCP-TABLE
-           MOVE    "key2"                  TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           IF    ( IDXZ    >   ZERO )
-               COMPUTE WRK-KSNSRYCD-MAX
-                   =   WRK-KSNSRYCD-MAX    +   1
-               MOVE    SI01-KSNLST-SRYCD(IDXZ)
-                               TO  WRK-KSNSRYCD (WRK-KSNSRYCD-MAX)
-               MOVE    SI01-KSNLST-NAME (IDXZ)
-                               TO  WRK-KSNSRYCD-NAME (WRK-KSNSRYCD-MAX)
-           END-IF
-      *
-          .
-       2001111-KSNSRYCD-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    入院歴情報編集処理（歴作成分）

@@ -76,31 +76,6 @@
                    13  SPA-GMN-I01-SKJKBN-CD       PIC X(01).
                    13  SPA-GMN-I01-SKJKBNFL        PIC X(01).
                    13  SPA-GMN-I01-SKJKBN-NM       PIC X(22).
-      *          食事区分（朝、昼、夕）
-                 11  SPA-GMN-I01-TSKJKBN-G.
-                   13  SPA-GMN-I01-TSKJKBN-ASA.
-                      15  SPA-GMN-I01-TSKJKBN-ASA-CD  PIC X(01).
-                      15  SPA-GMN-I01-TSKJKBN-ASAFL   PIC X(01).
-                      15  SPA-GMN-I01-TSKJKBN-ASA-NM  PIC X(22).
-                   13  SPA-GMN-I01-TSKJKBN-HIRU.
-                      15  SPA-GMN-I01-TSKJKBN-HIRU-CD  PIC X(01).
-                      15  SPA-GMN-I01-TSKJKBN-HIRUFL   PIC X(01).
-                      15  SPA-GMN-I01-TSKJKBN-HIRU-NM  PIC X(22).
-                   13  SPA-GMN-I01-TSKJKBN-YU.
-                      15  SPA-GMN-I01-TSKJKBN-YU-CD    PIC X(01).
-                      15  SPA-GMN-I01-TSKJKBN-YUFL     PIC X(01).
-                      15  SPA-GMN-I01-TSKJKBN-YU-NM    PIC X(22).
-                 11  SPA-GMN-I01-TSKJKBN-R REDEFINES
-                                           SPA-GMN-I01-TSKJKBN-G.
-                   13  SPA-GMN-I01-TSKJKBN             OCCURS 3.
-                      15  SPA-GMN-I01-TSKJKBN-CD       PIC X(01).
-                      15  SPA-GMN-I01-TSKJKBNFL        PIC X(01).
-                      15  SPA-GMN-I01-TSKJKBN-NM       PIC X(22).
-      *          次月作成時の食事
-                 11  SPA-GMN-I01-SKJ-CREATE.
-                   13  SPA-GMN-I01-SKJ-CREATE-CD   PIC X(01).
-                   13  SPA-GMN-I01-SKJ-CREATEFL    PIC X(01).
-                   13  SPA-GMN-I01-SKJ-CREATE-NM   PIC X(22).
       *          食事時間区分
                  11  SPA-GMN-I01-TIMEKBN.
                    13  SPA-GMN-I01-TIMEKBN-CD      PIC X(01).
@@ -256,18 +231,6 @@
                  11  SPA-NAI-I01-PTRRKNUM          PIC 9(03).
       *          入力データ入院履歴枝番号
                  11  SPA-NAI-I01-PTRRKEDANUM       PIC 9(03).
-      *          前回食事区分
-                 11  SPA-NAI-I01-MAESKJKBN         PIC X(01).
-                 11  SPA-NAI-I01-TMAESKJKBN-G.
-                     13  SPA-NAI-I01-TMAESKJKBN-ASA     PIC X(01).
-                     13  SPA-NAI-I01-TMAESKJKBN-HIRU    PIC X(01).
-                     13  SPA-NAI-I01-TMAESKJKBN-YU      PIC X(01).
-                 11  SPA-NAI-I01-TMAESKJKBN-R
-                                     REDEFINES SPA-NAI-I01-TMAESKJKBN-G.
-                     13  SPA-NAI-I01-TMAESKJKBN-OCC     OCCURS 3.
-                         15  SPA-NAI-I01-TMAESKJKBN     PIC X(01).
-      *          食事区分初期設定
-                 11  SPA-NAI-I01-SKJKBN-DEF        PIC X(01).
       *        入力領域内部領域
                09  SPA-NAI-I01-INPUT-AREA.
       *          入院歴表示フラグ（1...歴作成データ表示中/0：その他）
@@ -393,20 +356,6 @@
                        15  SPA-GMN-I01-SKJKBNL     PIC X(01).
                        15  SPA-GMN-I01-SKJKBNFLL   PIC X(01).
                        15  SPA-GMN-I01-SKJKBNMEIL  PIC X(22).
-      *          食事区分コンボ（朝昼夕）
-                 11  SPA-GMN-I01-CMB-TSKJKBN.
-                   13  SPA-GMN-I01-TSKJKBN-CNT      PIC 9(5).
-                   13  SPA-GMN-I01-TSKJKBN-ITM      OCCURS  10.
-                       15  SPA-GMN-I01-TSKJKBNL     PIC X(01).
-                       15  SPA-GMN-I01-TSKJKBNFLL   PIC X(01).
-                       15  SPA-GMN-I01-TSKJKBNMEIL  PIC X(22).
-      *          次月作成時の食事
-                 11  SPA-GMN-I01-CMB-SKJ-CREATE.
-                   13  SPA-GMN-I01-SKJ-CREATE-CNT      PIC 9(5).
-                   13  SPA-GMN-I01-SKJ-CREATE-ITM      OCCURS  5.
-                       15  SPA-GMN-I01-SKJ-CREATEL     PIC X(01).
-                       15  SPA-GMN-I01-SKJ-CREATEFLL   PIC X(01).
-                       15  SPA-GMN-I01-SKJ-CREATEMEIL  PIC X(22).
       *          食事区分コンボ
                  11  SPA-GMN-I01-CMB-TIMEKBN.
                    13  SPA-GMN-I01-TIMEKBN-CNT     PIC 9(5).

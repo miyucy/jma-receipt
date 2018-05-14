@@ -1474,10 +1474,6 @@
                                        PTNYUINRRK-UPYMD
            MOVE    SODR-UPHMS      TO  PTNYUINRRK-UPHMS
       *
-           MOVE    ITEM-KSNCD (1)  TO  PTNYUINRRK-KSNSRYCD(1)
-           MOVE    ITEM-KSNCD (2)  TO  PTNYUINRRK-KSNSRYCD(2)
-           MOVE    ITEM-KSNCD (3)  TO  PTNYUINRRK-KSNSRYCD(3)
-      *
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME

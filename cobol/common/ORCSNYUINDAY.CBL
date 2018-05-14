@@ -1406,17 +1406,6 @@
                                MOVE    "key17"      TO  MCP-PATHNAME
                                PERFORM 910-NYUINACCT-READ-SEC
                                IF   FLG-NYUINACCT    =   ZERO
-                               DISPLAY NACCT-SRYYM   ","
-                                       NACCT-DAY (1) ","
-                                       NACCT-DAY (2) ","
-                                       NACCT-DAY (3) ","
-                                       NACCT-DAY (4) ","
-                                       NACCT-DAY (5) ","
-                                       NACCT-DAY (6) ","
-                                       NACCT-DAY (7) ","
-                                       NACCT-DAY (8) ","
-                                       NACCT-DAY (9) ","
-                                       NACCT-DAY (10)
                                      MOVE   NACCT-DAY (WRK-DOUJITSU-DD)
                                                  TO  
                                         LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI

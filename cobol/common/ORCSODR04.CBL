@@ -58,7 +58,6 @@
            03  CNT-SKJTIME             PIC 9(05).
            03  CNT-SKJTYPE             PIC 9(05).
            03  CNT-NISSU               PIC 9(05).
-           03  CNT-SAME-AFTER          PIC 9(05).
       *
       *    添字領域
        01  IDX-AREA.
@@ -68,7 +67,6 @@
            03  IDX3                    PIC 9(05).
            03  IDX4                    PIC 9(05).
            03  IDXA                    PIC 9(05).
-           03  IDXF                    PIC 9(05).
            03  IDX-ODR                 PIC 9(05).
            03  IDX-DAY                 PIC 9(05).
       *
@@ -78,9 +76,6 @@
            03  WRK-ZOGENPTN            PIC X(01).
            03  WRK-ZOGEN               PIC S9(05).
            03  WRK-KEISANYMD           PIC X(08).
-           03  WRK-EOMYMD.
-               05  WRK-EOMYM           PIC X(06).
-               05  WRK-EOMDD           PIC 9(02).
            03  WRK-COMBI-HKNCOMBI      PIC 9(04).
            03  WRK-SYS-KANRICD         PIC X(04).
            03  WRK-SYS-KBNCD           PIC X(08).
@@ -104,13 +99,10 @@
                05  ITEM-SKJ-OCC        OCCURS 3.
                    07  ITEM-SKJTIME    PIC X(02).
                    07  ITEM-SKJTYPE    PIC X(01).
-                   07  ITEM-NISSU      PIC X(100).
+                   07  ITEM-NISSU      PIC X(50).
                    07  ITEM-DAY-G.
                        09  ITEM-DAY    PIC 9(01)
                                        OCCURS  31.
-           03  ITEM-SAME-AFTER-G.
-               05  ITEM-SAME-AFTER     PIC X(01)
-                                       OCCURS 3.
       *
        01  ERRCD-AREA.
            03  ERRCD-ITEM-G.
@@ -278,12 +270,10 @@
                PERFORM 1001-NACCT-SEC
            END-IF
       *
-           MOVE    SODR-SRYYMD         TO  WRK-SYMD
-           PERFORM 800-EOMYMD-SEC
-           MOVE    WRK-SYMD            TO  WRK-EOMYMD
-      *
-           PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
-           MOVE    PTNYUINRRK-RRKNUM   TO  ITEM-RRKNUM
+           IF    ( SODR-ORDERID        =   NORDERID-SAGAKUID )
+               PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
+               MOVE    PTNYUINRRK-RRKNUM   TO  ITEM-RRKNUM
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -356,16 +346,11 @@
             AND  ( ERRCD-ITEM   =   SPACE )
       *
                IF    ( FLG-END =   ZERO )
-                   EVALUATE    TRUE
-                   WHEN  ( SODR-ORDERID        =   NORDERID-SAGAKUID )
+                   IF    ( SODR-ORDERID        =   NORDERID-SAGAKUID )
                     AND  ( TRRK-RRKNUM         =   ITEM-RRKNUM )
                     AND  ( ITEM-ENDYMD         =   SPACE )
                        PERFORM 2101-PTNYUINRRK-UPDATE-SEC
-                   WHEN  ( SODR-ORDERID        =   NORDERID-FOODID )
-                    AND  ( TRRK-RRKNUM         =   ITEM-RRKNUM )
-                    AND  ( ITEM-SAME-AFTER-G   NOT =   SPACE )
-                       PERFORM 2101-PTNYUINRRK-UPDATE-SEC
-                   END-EVALUATE
+                   END-IF
                END-IF
       *
                IF    ( FLG-END  =   ZERO )
@@ -421,8 +406,6 @@
                        PERFORM 20011-SKJTYPE-CHK-SEC
                    WHEN    NCLAIMID-NISSUJMA
                        PERFORM 20012-NISSU-CHK-SEC
-                   WHEN    NCLAIMID-SAME-AFTERJMA
-                       PERFORM 20011-SAME-AFTER-CHK-SEC
                    END-EVALUATE
                WHEN    NORDERID-CRENACCTID
                    CONTINUE
@@ -648,7 +631,7 @@
                                        TO  ORCSNDAYCHG-INPUTCD
                MOVE    SODR-SRYYMD     TO  ORCSNDAYCHG-SRYYMD
                MOVE    "1"             TO  ORCSNDAYCHG-KBN
-               MOVE    100             TO  ORCSNDAYCHG-KETA
+               MOVE    50              TO  ORCSNDAYCHG-KETA
                MOVE    TRRK-NYUINYMD   TO  ORCSNDAYCHG-NYUINYMD
                MOVE    TRRK-TAIINYMD   TO  ORCSNDAYCHG-TAIINYMD
                CALL    "ORCSNDAYCHG"       USING
@@ -696,23 +679,6 @@
       *
            .
        20011-ENDYMD-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    食事継続区分処理
-      *****************************************************************
-       20011-SAME-AFTER-CHK-SEC        SECTION.
-      *
-           COMPUTE CNT-SAME-AFTER  =   CNT-SAME-AFTER  +   1
-      *
-           IF    ( CNT-SAME-AFTER <=  3 )
-               IF    ( TRRK-RRKNUM =   ITEM-RRKNUM )
-                AND  ( LNK-ODRITEM-ITEM (IDX-ODR)  =   "1" )
-                   MOVE    "1"     TO  ITEM-SAME-AFTER (CNT-SAME-AFTER)
-               END-IF
-           END-IF
-      *
-           .
-       20011-SAME-AFTER-CHK-EXT.
            EXIT.
       *****************************************************************
       *    室料差額チェック処理
@@ -792,11 +758,6 @@
                    IF    ( ERRCD-ORDER     =   SPACE )
       *                日数チェック処理
                        PERFORM 20021-NISSU-CHK-SEC
-                   END-IF
-      *
-                   IF    ( ERRCD-ORDER     =   SPACE )
-      *                食事継続区分チェック
-                       PERFORM 20021-SAME-AFTER-CHK-SEC
                    END-IF
                END-IF
       *
@@ -915,55 +876,13 @@
       *****************************************************************
        20021-NISSU-CHK-SEC             SECTION.
       *
-           DISPLAY "TRRK-TAIINYMD=" TRRK-TAIINYMD
            IF    ( ITEM-DAY-G (IDXA)   =   ZERO )
-                MOVE   SODR-SRYYMD     TO  WRK-SRYYMD
+                MOVE    SODR-SRYYMD    TO  WRK-SRYYMD
                 MOVE    1              TO  ITEM-DAY (IDXA WRK-SRYDD)
            END-IF
       *
-           IF  (  ITEM-SAME-AFTER (IDXA)   =   "1" )
-                MOVE   SODR-SRYYMD     TO  WRK-SRYYMD
-                PERFORM VARYING WRK-SRYDD  FROM    WRK-EOMDD   BY  -1
-                        UNTIL ( WRK-SRYDD  <       1 )
-                    IF    ( WRK-SRYYMD  >=      TRRK-NYUINYMD )
-                     AND  ( WRK-SRYYMD  <=      TRRK-TAIINYMD )
-                        IF    ( ITEM-DAY (IDXA WRK-SRYDD)
-                                           =   1 )
-                           MOVE    1   TO  WRK-SRYDD
-                        ELSE
-                           MOVE    1   TO  ITEM-DAY (IDXA WRK-SRYDD)
-                        END-IF
-                    END-IF
-                END-PERFORM
-           END-IF
-      *
-      D    DISPLAY "ITEM-DAY [         1         2         3 ]" IDXA
-      D    DISPLAY "ITEM-DAY [1234567890123456789012345678901]" IDXA
-      D    DISPLAY "ITEM-DAY [" ITEM-DAY-G (IDXA) "]" IDXA
-      *
            .
        20021-NISSU-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    食事継続区分チェック処理
-      *****************************************************************
-       20021-SAME-AFTER-CHK-SEC        SECTION.
-      *
-           IF    ( ITEM-SAME-AFTER (IDXA)  =   "1" )
-               IF    ( SODR-SRYYMD (1:6)   <   WRK-NACCTYM )
-                   MOVE    SODR-SRYYMD (1:6)   TO  WRK-SYMD
-                   MOVE    "01"                TO  WRK-SYMD(7:2)
-                   MOVE    "2"                 TO  WRK-ZOGENPTN
-                   MOVE    5                   TO  WRK-ZOGEN
-                   PERFORM 800-CALENDAR-SEC
-                   IF    ( WRK-KEISANYMD (1:6) <   WRK-NACCTYM )
-                       MOVE    "0199"  TO  ERRCD-ORDER
-                   END-IF
-               END-IF
-           END-IF
-      *
-           .
-       20021-SAME-AFTER-CHK-EXT.
            EXIT.
       *****************************************************************
       *    関連チェック処理
@@ -1146,10 +1065,7 @@
                                        OR  NCLAIMID-HKNCOMBIJMA
                                        OR  NCLAIMID-SKJTIMEJMA
                                        OR  NCLAIMID-SKJTYPEJMA
-                                       OR  NCLAIMID-NISSUJMA
-                                       OR  NCLAIMID-SAME-AFTERJMA
-                                       OR  NCLAIMID-SAGAKUJMA
-                                       OR  NCLAIMID-ENDYMDJMA )
+                                       OR  NCLAIMID-NISSUJMA  )
                CONTINUE
            ELSE
                MOVE    3               TO  ODRITEM-STATUS
@@ -1186,25 +1102,24 @@
        21011-ODRITEM-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    入院履歴更新処理
+      *    入院履歴追加処理
       *****************************************************************
        2101-PTNYUINRRK-UPDATE-SEC      SECTION.
       *
            PERFORM 900-PTNYUINRRK-KEY4-SEL-SEC
            IF    ( FLG-PTNYUINRRK  =   ZERO )
       *
-               EVALUATE    TRUE
-               WHEN  ( SODR-ORDERID        =   NORDERID-SAGAKUID )
-                   PERFORM 21011-PTNYUINRRK-UPDATE-SEC
-               WHEN  ( SODR-ORDERID        =   NORDERID-FOODID )
-                   PERFORM 21012-PTNYUINRRK-UPDATE-SEC
-               END-EVALUATE
-      *
+               IF    ( ITEM-SAGAKUCD   =   "00" )
+                   MOVE    SPACE   TO  PTNYUINRRK-RM-SAGAKU
+               ELSE
+                   MOVE    ITEM-SAGAKUCD
+                                   TO  PTNYUINRRK-RM-SAGAKU
+               END-IF
                MOVE    SODR-OPID   TO  PTNYUINRRK-OPID
                MOVE    SODR-UPYMD  TO  PTNYUINRRK-UPYMD
                MOVE    SODR-UPHMS  TO  PTNYUINRRK-UPHMS
       *
-               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+               MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-DBUPDATE-SEC
@@ -1230,58 +1145,6 @@
       *
            .
        2101-PTNYUINRRK-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院履歴更新処理（室料差額）
-      *****************************************************************
-       21011-PTNYUINRRK-UPDATE-SEC      SECTION.
-      *
-           IF    ( ITEM-SAGAKUCD   =   "00" )
-               MOVE    SPACE   TO  PTNYUINRRK-RM-SAGAKU
-           ELSE
-               MOVE    ITEM-SAGAKUCD
-                               TO  PTNYUINRRK-RM-SAGAKU
-           END-IF
-      *
-           .
-       21011-PTNYUINRRK-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院履歴追加処理（食事区分）
-      *****************************************************************
-       21012-PTNYUINRRK-UPDATE-SEC      SECTION.
-      *
-           IF    ( PTNYUINRRK-SKJKBN =   "B" OR "C" )
-               CONTINUE
-           ELSE
-               MOVE    "0"     TO  PTNYUINRRK-SKJKBN-ASA
-                                   PTNYUINRRK-SKJKBN-HIRU
-                                   PTNYUINRRK-SKJKBN-YU
-           END-IF
-      *
-           MOVE    "C"         TO  PTNYUINRRK-SKJKBN
-      *
-           PERFORM VARYING IDXA    FROM    1   BY  1
-                   UNTIL ( IDXA    >   3 )
-      *
-               IF    ( ITEM-SKJTIME (IDXA)     NOT =   SPACE )
-                AND  ( ITEM-SAME-AFTER (IDXA)  NOT =   SPACE )
-                   EVALUATE    ITEM-SKJTIME (IDXA)
-                   WHEN    "01"
-                       MOVE    ITEM-SKJTYPE (IDXA)
-                                   TO  PTNYUINRRK-SKJKBN-ASA
-                   WHEN    "02"
-                       MOVE    ITEM-SKJTYPE (IDXA)
-                                   TO  PTNYUINRRK-SKJKBN-HIRU
-                   WHEN    "03"
-                       MOVE    ITEM-SKJTYPE (IDXA)
-                                   TO  PTNYUINRRK-SKJKBN-YU
-                   END-EVALUATE
-               END-IF
-           END-PERFORM
-      *
-           .
-       21012-PTNYUINRRK-UPDATE-EXT.
            EXIT.
       *****************************************************************
       *    入院会計作成サブ呼出
@@ -1448,8 +1311,6 @@
                                    TO  SODRNACCT-SKJTIME
            MOVE    ITEM-DAY-G (IDXA)
                                    TO  SODRNACCT-DAY-G
-           MOVE    ITEM-SAME-AFTER (IDXA)
-                                   TO  SODRNACCT-SAME-AFTER
            MOVE    TRRK-REC        TO  LNK-PTNYUINRRK-REC
       *
            CALL    "ORCSODRNACCT"      USING
@@ -1517,22 +1378,6 @@
        800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
-      *    月末日取得処理
-      *****************************************************************
-       800-EOMYMD-SEC                  SECTION.
-      *
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY1-AREA
-           MOVE    "71"                TO   LNK-DAY7-IRAI
-           MOVE    WRK-SYMD (1 : 6)    TO   LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                       LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI     TO  WRK-SYMD
-      *
-           .
-       800-EOMYMD-EXT.
-            EXIT.
-      *****************************************************************
       *    入院履歴検索処理(KEY3)
       *****************************************************************
        900-PTNYUINRRK-KEY3-SEL-SEC    SECTION.
@@ -1574,10 +1419,6 @@
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNYUINRRK-KEY4-SEL-EXT.

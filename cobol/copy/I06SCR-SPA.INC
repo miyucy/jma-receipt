@@ -119,7 +119,7 @@
                        09  SPA-GMN-SKJTIME         PIC X(02).
                        09  SPA-GMN-SKJTIMEFL       PIC X(01).
                        09  SPA-GMN-SKJTIMEMEI      PIC X(08).
-                   07  SPA-GMN-NISSU               PIC X(100).
+                   07  SPA-GMN-NISSU               PIC X(50).
                05  SPA-GMN-ALLIDOLIST-INPUT-AREA.
                    07  SPA-GMN-SELNUM              PIC S9(4).
                    07  SPA-GMN-SELUKEYMD           PIC X(10).
@@ -280,7 +280,7 @@
                            11  SPA-GMN-NACCTKBNMEIL    PIC X(28).
                    07  SPA-GMN-KSNCDLST-G.
                        09  SPA-GMN-KSNCD-MAX        PIC 9(05).
-                       09  SPA-GMN-KSNCDLST-OCC         OCCURS  20.
+                       09  SPA-GMN-KSNCDLST-OCC         OCCURS  5.
                            11  SPA-GMN-KSNCDLST.
                                13  SPA-GMN-KSNCDL       PIC X(02).
                                13  SPA-GMN-KSNCDFLL     PIC X(01).

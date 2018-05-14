@@ -456,7 +456,7 @@
                07  NCLAIMID-AUTOSETMES
                                 PIC X(100)
                                     VALUE  "入院料初期値設定区分".
-             05  NCLAIMID-FORCE-UPDATE-G.
+             05  NCLAIMID-AUTOSET-G.
                07  NCLAIMID-FORCE-UPDATE
                                 PIC X(20)  VALUE  "XXXXXXX".
                07  NCLAIMID-FORCE-UPDATEJMA
@@ -464,23 +464,7 @@
                07  NCLAIMID-FORCE-UPDATEMES
                                 PIC X(100)
                                     VALUE  "強制更新".
-             05  NCLAIMID-SAME-AFTER-G.
-               07  NCLAIMID-SAME-AFTER
-                                PIC X(20)  VALUE  "XXXXXXX".
-               07  NCLAIMID-SAME-AFTERJMA
-                                PIC X(05)  VALUE  "00059".
-               07  NCLAIMID-SAME-AFTERMES
-                                PIC X(100)
-                                    VALUE  "食事継続区分".
-             05  NCLAIMID-TEMPSET-G.
-               07  NCLAIMID-TEMPSET
-                                PIC X(20)  VALUE  "XXXXXXX".
-               07  NCLAIMID-TEMPSETJMA
-                                PIC X(05)  VALUE  "00060".
-               07  NCLAIMID-TEMPSETMES
-                                PIC X(100)
-                                    VALUE  "保険組合せ仮番号設定区分".
-             05  NCLAIMID-UNCHKECK-G.
+             05  NCLAIMID-FORCE-UPDATE-G.
                07  NCLAIMID-UNCHKECK
                                 PIC X(20)   VALUE  "XXXXXXX".
                07  NCLAIMID-UNCHKECKJMA
@@ -488,8 +472,8 @@
                07  NCLAIMID-UNCHKECKMES
                                 PIC X(100)  VALUE  "不明".
            03  NCLAIMID-ITEM-R          REDEFINES   NCLAIMID-ITEM-VAL.
-             05  NCLAIMID-ITEM-OCC      OCCURS  61.
+             05  NCLAIMID-ITEM-OCC      OCCURS  59.
                07  NCLAIMID-ITEM        PIC X(20).
                07  NCLAIMID-ITEMJMA     PIC X(05).
                07  NCLAIMID-ITEMMES     PIC X(100).
-           03  NCLAIMID-ITEM-MAX        PIC 9(03)   VALUE   61.
+           03  NCLAIMID-ITEM-MAX        PIC 9(03)   VALUE   59.

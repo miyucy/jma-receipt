@@ -41,8 +41,6 @@
            03  SODRNACCT-DAY-G.
                05  SODRNACCT-DAY       PIC 9(1)
                                        OCCURS  31.
-      *    ¿©»ö·ÑÂ³¶èÊ¬
-           03  SODRNACCT-SAME-AFTER    PIC X(1).
       *
       *    ¿ÇÎÅ²Ê¡ÊÅ¾²ÊÎò¡Ë
            03  SODRNACCT-SRYKA-G.
