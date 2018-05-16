@@ -6301,7 +6301,7 @@
       *        ≤√ªªø«Œ≈ºÔ Ã
                IF     SPA-GMN-INPUTCD(IDX) =   ".114"
                                            OR  ".124"
-                                           OR  ".134"
+                                           OR  ".133"
                    MOVE    1                 TO  FLG-SYUKSN
                END-IF
       *
