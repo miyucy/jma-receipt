@@ -991,6 +991,21 @@
            ELSE
                MOVE    "0008"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-MAX)
+      *H30.5
+      *        »ØÆ³ÎÁ¤Ï·Ù¹ð
+               IF      WRK-COM-SRYKBN (IDX-MAX)    =   "13"
+                   IF     (WRK-COM-KZMFLG (IDX-MAX) =   SPACE )
+                      AND (LNK-ORCSC-KEI-IDX        =   ZERO  )
+                       MOVE    IDX-MAX         TO  LNK-ORCSC-KEI-IDX
+                       MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                          (IDX-MAX)
+                       MOVE    "K088"              TO  WRK-ERRCD
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERRCD
+                       MOVE    SPACE               TO  WRK-COM-CUR
+                                                          (IDX-MAX)
+                   END-IF
+               END-IF
            END-IF
            .
        10012-KAISU-CHK-EXT.
