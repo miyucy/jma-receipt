@@ -2354,6 +2354,14 @@
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H30.5
+               WHEN    "K088"
+                   STRING  "警告！"
+                           "回数は１回のみです。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *H30.5
       *
            END-EVALUATE
            .
