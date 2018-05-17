@@ -57,6 +57,8 @@
       *  04.08.08    NACL-Æ£¸¶    17/03/02  Ì¤¥³¡¼¥É²½ÆÃÄê´ïºà¥³¡¼¥ÉÇÑ»ßÂÐ±þ
       *  04.08.09    NACL-ÌçÏÆ    17/08/28  Ê¿À®£²£¹Ç¯£±£°·î²þÀµ
       *                                     ¡ÊÆþ±¡»þÀ¸³èÎÅÍÜ¤Î¸«Ä¾¤·¡Ë
+      *  04.08.10    NACL-Æ£¸¶    18/05/17  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¥«¥¿¥«¥Ê¡Ê»áÌ¾¡Ë¡¢´µ¼Ô¾õÂÖ¤ÎÄÉ²Ã
       *
       *  05.00.01    NACL-Æ£¸¶    17/07/04  £È£Á£Ï£Ò£ÉÂÐ±þ
       *  05.00.02    NACL-°ËÆ£    17/12/22  ¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÂÐ±þ
@@ -1660,8 +1662,16 @@
       *    °å³ØÅª½èÃÖ£³
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    ÆÃÄê¼ÀÉÂ£³
-           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC         
+      *    Í½È÷
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ´µ¼Ô¾õÂÖ 
+           IF      RECE82-NINPUFLG >   ZERO
+               MOVE    "001"           TO  WRK-DATA
+           END-IF
+           MOVE    60                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END
+           PERFORM 5004-MOJI-HENSYU-SEC
       *
            MOVE    1                   TO  FLG-TOTALKIN
            PERFORM 5001-FILE-WRITE-SEC
