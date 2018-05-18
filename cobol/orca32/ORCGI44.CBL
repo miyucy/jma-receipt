@@ -32,6 +32,7 @@
       *  02.00.01    NACL-小豆沢  06.03.06  主科設定対応追加
       *  02.00.02    NACL-多々納  06/06/19  MONFUNC対応他
       *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
+      *  04.08.00    NACL-多々納  18/05/18  施設基準チェック修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -112,6 +113,14 @@
       *
            03  FLG-ZENKAKU         PIC 9(01).
            03  FLG-HANKAKU         PIC 9(01).
+      *
+      *    施設基準チェック
+           03  FLG-SST1                PIC 9(01).
+           03  FLG-SST2                PIC 9(01).
+           03  FLG-SST3                PIC 9(01).
+           03  FLG-SSA1                PIC 9(01).
+           03  FLG-SSA2                PIC 9(01).
+           03  FLG-SSA3                PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -262,7 +271,7 @@
                05  WRK-MEISYO      PIC X(60).
       *    施設規準テーブル
        01  WRK-TBL-SSTKIJUN-AREA.
-           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  3500.
+           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  9999.
                05  WRK-TBL-SSTKIJUN       PIC 9(01).
       *
       *    行位置編集
@@ -1077,6 +1086,18 @@
       *****************************************************************
        3101119-SSTKIJUNCD-CHK-SEC      SECTION.
       *
+           MOVE    ZERO                TO  FLG-SST
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   10  )   OR
+                              (FLG-SST     =   1   )
+               IF      TNS-SSTKIJUNCD (IDX)    NOT =   ZERO
+                   MOVE    1               TO  FLG-SST
+               END-IF
+           END-PERFORM
+           IF      FLG-SST             =   ZERO
+               GO      TO      3101119-SSTKIJUNCD-CHK-EXT
+           END-IF
+      *
            INITIALIZE                  WRK-TBL-SSTKIJUN-AREA
       *    施設基準情報検索
            MOVE    SPACE               TO  SYS-1006-REC.
@@ -1098,7 +1119,7 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL   (FLG-SYSKANRI   =   1    )
-                   OR      (IDX            >=  3500 )
+     ********      OR      (IDX            >=  3500 )
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
                EVALUATE     SYS-1006-KBNCD
                    WHEN     "1"
@@ -1107,13 +1128,22 @@
                         MOVE    500        TO  IDX
                    WHEN     "7"
                         MOVE    3000       TO  IDX
+      *H28.4
+                   WHEN    "8"
+                       MOVE    3500        TO  IDX
+      *H26.4
+                   WHEN    "17"
+                       MOVE    8000        TO  IDX
                END-EVALUATE
+      *H24.4
                PERFORM VARYING IDY         FROM    1   BY  1
-                       UNTIL   IDY         >       500
+                       UNTIL  (IDY         >       500 )
+                           OR (IDX         >=      9999)
                    ADD     1               TO  IDX
                    MOVE    SYS-1006-SSTKIJUN  (IDY)
                                            TO  WRK-TBL-SSTKIJUN (IDX)
                END-PERFORM
+      *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-KANRIMST-READ-SEC
@@ -1121,6 +1151,14 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+      *H30.5
+      *Ｈ２６年４月から
+           IF      SPA-SRYYMD          >=  "20140401"
+               PERFORM 20021-SSTKIJUN-CHK02-SEC
+           ELSE
+      *
+      *    １〜１０までのいずれかの設定有
            MOVE    ZERO                TO  FLG-SST
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   10  )   OR
@@ -1133,13 +1171,68 @@
                        MOVE    1               TO  FLG-SST
                    END-IF
                END-IF
-           END-PERFORM.
+           END-PERFORM
            IF      FLG-SST             =   ZERO
                MOVE    "0024"          TO  SPA-ERRCD
+           END-IF
+      *
            END-IF
            .
       *
        3101119-SSTKIJUNCD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    施設基準適合分チェック２処理
+      *****************************************************************
+       20021-SSTKIJUN-CHK02-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SST1
+           MOVE    ZERO                TO  FLG-SST2
+           MOVE    ZERO                TO  FLG-SST3
+           MOVE    ZERO                TO  FLG-SSA1
+           MOVE    ZERO                TO  FLG-SSA2
+           MOVE    ZERO                TO  FLG-SSA3
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   10  )
+               IF      TNS-SSTKIJUNCD (IDX)    =   ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    TNS-SSTKIJUNCD (IDX)    TO  IDY
+                   EVALUATE    IDX
+                       WHEN    1   THRU    6
+                           MOVE    1               TO  FLG-SSA1
+      *                    施設基準あり
+                           IF      WRK-TBL-SSTKIJUN (IDY)  =   1
+                               MOVE    1               TO  FLG-SST1
+                           END-IF
+                       WHEN    7   THRU    9
+                           MOVE    1               TO  FLG-SSA2
+      *                    施設基準あり
+                           IF      WRK-TBL-SSTKIJUN (IDY)  =   1
+                               MOVE    1               TO  FLG-SST2
+                           END-IF
+                       WHEN    10
+                           MOVE    1               TO  FLG-SSA3
+      *                    施設基準あり
+                           IF      WRK-TBL-SSTKIJUN (IDY)  =   1
+                               MOVE    1               TO  FLG-SST3
+                           END-IF
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+           IF    ((FLG-SSA1            =   1  )  AND
+                  (FLG-SST1            =   ZERO))
+             OR  ((FLG-SSA2            =   1  )  AND
+                  (FLG-SST2            =   ZERO))
+             OR  ((FLG-SSA3            =   1  )  AND
+                  (FLG-SST3            =   ZERO))
+               MOVE    "0024"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       20021-SSTKIJUN-CHK02-EXT.
            EXIT.
       *
       *****************************************************************

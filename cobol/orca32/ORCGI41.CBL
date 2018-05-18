@@ -114,6 +114,7 @@
       *  05.00.00    NACL-小豆沢  18/04/16  療養病棟入院料２（経過措置）
       *                                     の判定追加
       *  05.00.00    NACL-小豆沢  18/04/18  食事個別指示対応
+      *  04.08.00    NACL-多々納  18/05/18  施設基準チェック廃止
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6028,14 +6029,18 @@ grpsys                                     SPA-AREA
                    END-IF
                END-IF
            END-PERFORM.
-           IF     (FLG-SST-CHK         =   1    )  AND
-                  (FLG-SST             =   ZERO )
-               MOVE    1                   TO  SPA-GMN-CUR-41
-               MOVE    "0030"              TO  SPA-ERRCD
-               GO      TO      420-ZAIHENKOU-EXT
-           END-IF.
       *
-           MOVE    "0104"              TO  SPA-IIDCD.
+      *H30.5
+      *    施設基準チェック廃止
+      *    IF     (FLG-SST-CHK         =   1    )  AND
+      *           (FLG-SST             =   ZERO )
+      *        MOVE    1                   TO  SPA-GMN-CUR-41
+      *        MOVE    "0030"              TO  SPA-ERRCD
+      *        GO      TO      420-ZAIHENKOU-EXT
+      **** END-IF.
+      *
+           MOVE    "0104"              TO  SPA-IIDCD
+           .
       *
        420-ZAIHENKOU-EXT.
            EXIT.
