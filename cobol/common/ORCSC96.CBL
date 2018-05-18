@@ -2361,6 +2361,21 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "1088"
+                   STRING  "自費金額が７桁以上となります。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1089"
+                   STRING  "自費金額の合計が７桁以上となります。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1090"
+                   STRING  "点数合計が７桁以上となります。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *H30.5
       *TEST
       *H30.5

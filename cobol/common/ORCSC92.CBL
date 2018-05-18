@@ -286,8 +286,14 @@
                    07  WRK-NEN15-YY        PIC 9(04).
                    07  WRK-NEN15-MM        PIC 9(02).
                05  WRK-NEN15-DD            PIC 9(02).
-      *H24.4
       *
+           03  WRK-TEN-7                   PIC 9(07).
+      *H24.4
+      *    最低薬価
+           03  WRK-CHKTEN               PIC 9(09)V9(4).
+      *
+           03  WRK-PSY-MEI              PIC X(02).
+      *H24.4
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
            03  WRK-INPUT-TBL.
@@ -349,11 +355,6 @@
                05  WRK-SRYCDCHG        PIC X(09)   OCCURS  5.
            03  WRK-NAIYOU              PIC X(54).
            03  WRK-PATH                PIC X(64).
-      *H24.4
-      *    最低薬価
-           03  WRK-CHKTEN               PIC 9(09)V9(4).
-      *
-           03  WRK-PSY-MEI              PIC X(02).
       *
       *    施設規準テーブル
        01  WRK-TBL-SSTKIJUN-AREA.
@@ -3866,6 +3867,14 @@
       *    基礎点数
            MOVE    TNS-TEN             TO  SPA-COM-TEN      (IDX-T)
            MOVE    TNS-TEN             TO  SPA-COM-KISOTEN  (IDX-T)
+      *
+      *H30.5   自費の金額は７桁までとする
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:3)    =   "095"
+                                                   OR  "096" )
+               MOVE    TNS-TEN             TO  WRK-TEN-7
+               MOVE    WRK-TEN-7           TO  SPA-COM-TEN      (IDX-T)
+               MOVE    WRK-TEN-7           TO  SPA-COM-KISOTEN  (IDX-T)
+           END-IF
       *
       *H28.4
       *    薬剤　除算金額（１０で除す）

@@ -52,6 +52,7 @@
       *  04.08.00    NACL-Â¿¡¹Ç¼  17/03/XX  £È£²£¹Ç¯£´·î²þÀµÂÐ±þÂ¾
       *  04.08.00    NACL-Â¿¡¹Ç¼  17/05/XX  HAORIÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  17/03/XX  £È£³£°Ç¯£´·î²þÀµÂÐ±þÂ¾
+      *  04.08.00    NACL-Â¿¡¹Ç¼  17/05/21  ¼«Èñ¶â³Û·å¿ô¥Á¥§¥Ã¥¯ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -181,6 +182,8 @@
       *
            03  IDHC                    PIC 9(04).
       *
+           03  IDG                     PIC 9(04).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(04).
@@ -268,6 +271,10 @@
       *H29.8
            03  WRK-GRPCNT              PIC 9(03).
            03  FLG-CHK01               PIC 9(01).
+      *
+      *H30.5
+           03  WRK-JIHI-TOTAL          PIC 9(08).
+           03  WRK-JIHI-TOTAL-TAX      PIC 9(08).
       *
       *    ¼ýÇ¼½¸·×ÅÀ¿ôÆâÍÆ
        01  TBL-K02SCR-AREA.
@@ -4248,6 +4255,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        ¾ÃÈñÀÇ¤Ê¤·
                WHEN    "950"
+      *H30.5   ·å¿ô¥Á¥§¥Ã¥¯
+               IF     (SPA-COM-KEI (IDX) + SYU-JIHI-TAXNASI
+                                             (WRK-TENTTLKBN))
+                                         >   9999999
+                   MOVE    "1089"        TO  SPA-ERRCD
+                   MOVE    "1"           TO  SPA-COM-CUR (IDX)
+               END-IF
+      *
                EVALUATE    WRK-TENTTLKBN
                    WHEN    1
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-1
@@ -4274,6 +4289,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "960"
       *H26.10      ÄÉ²Ã
                WHEN    "961"
+      *
+      *H30.5   ·å¿ô¥Á¥§¥Ã¥¯
+               IF     (SPA-COM-KEI (IDX) + SYU-JIHI-TAXARI
+                                             (WRK-TENTTLKBN))
+                                         >   9999999
+                   MOVE    "1089"        TO  SPA-ERRCD
+                   MOVE    "1"           TO  SPA-COM-CUR(IDX)
+               END-IF
       *
                EVALUATE    WRK-TENTTLKBN
                    WHEN    1
@@ -4342,6 +4365,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-COM-INPUTCD(IDX)(1:3)   =   "059")
                MOVE    "80"                        TO  WRK-SRYKBN
            END-IF
+      *!!!
+      *H30.5
+      *    ·å¿ô¥Á¥§¥Ã¥¯
+           PERFORM 450113-TGMONE-CHK-SEC
+      *
       *
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        ¾ÃÈñÀÇ¤Ê¤·
@@ -4356,6 +4384,115 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
            .
        45011-TGMONEY-SET-EXT.
+           EXIT.
+      *
+      *H30.5
+      *****************************************************************
+      *    ÊÝ¸±Å¬ÍÑ³°¤Î·å¿ô¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       450113-TGMONE-CHK-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  IDG
+           EVALUATE    WRK-SRYKBN
+      *        ¿ÇÎÅ
+               WHEN    "11"
+               WHEN    "12"
+                   MOVE    1                   TO  IDG
+      *        »ØÆ³
+               WHEN    "13"
+                   MOVE    2                   TO  IDG
+      *        ºßÂð
+               WHEN    "14"
+                   MOVE    3                   TO  IDG
+      *        ÅêÌô
+               WHEN    "21"   THRU  "27"
+                   MOVE    4                   TO  IDG
+      *        Ãí¼Í
+               WHEN    "31"
+               WHEN    "32"
+               WHEN    "33"
+                   MOVE    5                   TO  IDG
+      *        ½èÃÖ
+               WHEN    "40"
+                   MOVE    6                   TO  IDG
+      *        ¼ê½Ñ
+               WHEN    "50"
+                   MOVE    7                   TO  IDG
+      *        Ëã¿ì
+               WHEN    "54"
+                   MOVE    8                   TO  IDG
+      *        ¸¡ºº
+               WHEN    "60"
+                   MOVE    9                   TO  IDG
+      *        £ØÀþ
+               WHEN    "70"
+                   MOVE    10                  TO  IDG
+      *        ÉÂÍý¿ÇÃÇ
+               WHEN    "64"
+                   MOVE    14                  TO  IDG
+      *        ¤½¤ÎÂ¾
+               WHEN    "80"
+                   EVALUATE    WRK-TNSSRYSYUKBN
+      *            ¥ê¥Ï¥Ó¥ê
+                   WHEN    "800"
+                       MOVE    11                  TO  IDG
+      *            ½èÊý¤»¤óÎÁ
+                   WHEN    "820"
+                       MOVE    04                  TO  IDG
+      *            Àº¿À²Ê
+                   WHEN    "830"
+                       MOVE    12                  TO  IDG
+      *            Êü¼ÍÀþ¼£ÎÅ
+                   WHEN    "840"
+                       MOVE    13                  TO  IDG
+      *            Æþ±¡ÎÁ
+                   WHEN    "890"
+                       MOVE    15                  TO  IDG
+      *            ÎÅÍÜÃ´Åö¼êÅö¤Æ
+                   WHEN    "850"
+                       MOVE    16                  TO  IDG
+      *            ¤½¤ÎÂ¾
+                   WHEN    OTHER
+                       MOVE    11                  TO  IDG
+                   END-EVALUATE
+      *        Àº¿À²Ê
+               WHEN    "83"
+                   MOVE    12                  TO  IDG
+      *        Êü¼ÍÀþ¼£ÎÅ
+               WHEN    "84"
+                   MOVE    13                  TO  IDG
+      *        Æþ±¡ÎÁ
+               WHEN    "89"
+                   MOVE    15                  TO  IDG
+      *        ÎÅÍÜÃ´Åö¼êÅö¤Æ
+               WHEN    "85"
+                   MOVE    16                  TO  IDG
+      *        ¤½¤ÎÂ¾
+               WHEN    OTHER
+                   MOVE    11                  TO  IDG
+           END-EVALUATE
+      *
+      *
+           EVALUATE    SPA-COM-SRYSYUKBN (IDX)
+      *        ¾ÃÈñÀÇ¤Ê¤·
+               WHEN    "950"
+                   IF     (SPA-GMN-KEI (IDX)   +   SYU-TGMONEY (IDG))
+                                               >   9999999
+                       MOVE    "1089"        TO  SPA-ERRCD
+                       MOVE    "1"           TO  SPA-COM-CUR(IDX)
+                   END-IF
+      *        ¾ÃÈñÀÇ¤¢¤ê
+               WHEN    "960"
+               WHEN    "961"
+                   IF     (SPA-GMN-KEI (IDX)   +   SYU-TGMONEY-TAX
+                                                                (IDG))
+                                               >   9999999
+                       MOVE    "1089"        TO  SPA-ERRCD
+                       MOVE    "1"           TO  SPA-COM-CUR(IDX)
+                   END-IF
+           END-EVALUATE
+           .
+       450113-TGMONE-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4892,6 +5029,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                ELSE
                    MOVE    SUM-SYU-HKNTEN (IDX) TO  SYU-HKNTEN(IDX)
               END-IF
+      *!!!
+      *H30.5
+      *       ¹ç·×·å¿ô£··å¥ª¡¼¥Ð¡¼¥Á¥§¥Ã¥¯
+              IF     (SYU-HKNTEN(IDX) +   SYU-HKNTEN(17))
+                                       >   9999999
+                  MOVE    "1090"           TO  SPA-ERRCD
+              END-IF
+              IF     (SYU-TGMONEY(IDX) +   SYU-TGMONEY(17))
+                                       >   9999999
+                  MOVE    "1089"           TO  SPA-ERRCD
+              END-IF
+              IF     (SYU-TGMONEY-TAX(IDX) +   SYU-TGMONEY-TAX(17))
+                                       >   9999999
+                  MOVE    "1089"           TO  SPA-ERRCD
+              END-IF
+      *
       *       ÊÝ¸±ÅÀ¿ô
               ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(17)
       *       ¶â³Û
@@ -4903,6 +5056,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            END-PERFORM
       *
+      *!!!
+      *H30.5
+      *    ÊÝ¸±³°¤Î¹ç·×·å¿ô£··å¥ª¡¼¥Ð¡¼¥Á¥§¥Ã¥¯
+           MOVE    ZERO                TO  WRK-JIHI-TOTAL
+           MOVE    ZERO                TO  WRK-JIHI-TOTAL-TAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   10  )
+                          OR  (SPA-ERRCD   NOT =   SPACE )
+      *        ¾ÃÈñÀÇ¤Ê¤·
+               IF     (SYU-JIHI-TAXNASI (IDX)  +  WRK-JIHI-TOTAL)
+                                           >   9999999
+                   MOVE    "1089"          TO  SPA-ERRCD
+               END-IF
+               ADD     SYU-JIHI-TAXNASI (IDX)  TO  WRK-JIHI-TOTAL
+      *        ¾ÃÈñÀÇ¤¢¤ê
+               IF     (SYU-JIHI-TAXARI  (IDX)  +  WRK-JIHI-TOTAL-TAX)
+                                           >   9999999
+                   MOVE    "1089"          TO  SPA-ERRCD
+               END-IF
+               ADD     SYU-JIHI-TAXARI (IDX)  TO  WRK-JIHI-TOTAL-TAX
+           END-PERFORM
            .
        4506-TOTALKEI-EXT.
            EXIT.

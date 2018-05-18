@@ -1273,6 +1273,14 @@
                    MOVE    "0012"              TO  SPA-ERRCD
                    MOVE    14                  TO  SPA-GMN-CUR
                END-IF
+      *
+           ELSE
+      *H30.5
+      *    ¼«Èñ¶â³Û¤Ï£··å¤Þ¤Ç
+               IF      SPA-GMN-TEN         >   9999999
+                   MOVE    "0016"              TO  SPA-ERRCD
+                   MOVE    14                  TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
       *
@@ -3190,6 +3198,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0015"
                    STRING  "ÌôºÞ¶èÊ¬¤Ï¶â³Û¥¼¥í¤Ç¤ÏÅÐÏ¿¤Ç¤­¤Þ¤»¤ó¡£"
+                                                   DELIMITED BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0016"
+                   STRING  "¼«Èñ¤Î¶â³Û¤Ï£··å¤Þ¤ÇÅÐÏ¿¤Ç¤­¤Þ¤¹¡£"
                                                    DELIMITED BY  SIZE
                                                    INTO    SPA-ERRMSG
                    END-STRING
