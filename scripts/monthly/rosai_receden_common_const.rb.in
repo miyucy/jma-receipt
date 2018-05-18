@@ -61,7 +61,9 @@ class Receden_common_const
            ["診療科３組み合わせ名称人体の部位等","SRYKA3_BUI"             ,N, 3,false,false],
            ["診療科３組み合わせ名称性別等"      ,"SRYKA3_SEX"             ,N, 3,false,false],
            ["診療科３組み合わせ名称医学的処置"  ,"SRYKA3_SHOCHI"          ,N, 3,false,false],
-           ["診療科３組み合わせ名称特定疾病"    ,"SRYKA3_TOKSIPPEI"       ,N, 3,false,false]
+           ["診療科３組み合わせ名称特定疾病"    ,"SRYKA3_TOKSIPPEI"       ,N, 3,false,false],
+           ["予備"                              ,"KANANAME"               ,K,80,false,false],
+           ["患者の状態"                        ,"STATES"                 ,N,60,false,false]
 
 
 
