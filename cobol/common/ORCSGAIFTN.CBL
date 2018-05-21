@@ -41,6 +41,7 @@
       *  04.08.01    NACL-門脇    16/02/12  第三者行為対応
       *  04.08.02    NACL-門脇    17/07/14  和歌山県地方公費対応
       *  04.08.03    NACL-門脇    18/04/26  現物給付メッセージフラグクリア
+      *  04.08.04    NACL-門脇    18/05/15  同一会計分のデータ編集修正
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -398,120 +399,16 @@ grpsys     COPY    "COMMON-SPA".
            END-PERFORM.
       *
       *    負担金計算
-      *
            MOVE     LNK-S01-KOUREI-ZAITAKU-KBN
                                            TO  WRK-ZAITAKU-KBN.
       *
-           MOVE       SPACE     TO    LNK-S01-GENBUTU-MSG-FLG.
-      *
-           PERFORM    VARYING   IDX    FROM   1   BY   1
-                              UNTIL  (IDX                 >    15 )
-                                OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
-                                OR   (LNK-S01-RC      NOT =  ZERO )
-      *
-                ADD      1                    TO  CNT-KENSU
-      *
-                MOVE     WRK-ZAITAKU-KBN      TO
-                                      LNK-S01-KOUREI-ZAITAKU-KBN
-      *
-                MOVE     LNK-ORCS01-REC       TO  WRK-ORCS01-REC
-                MOVE     IDX                  TO  WRK-S01-IDX
-                MOVE     ZERO                 TO  WRK-S01-IDX2
-                MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
-      *
-                MOVE     SPACE                TO  WRK-SYUNOU-REC-T
-                INITIALIZE                        WRK-SYUNOU-REC-T
-      *
-                MOVE     ZERO      TO     IDZ
-                IF       IDX   >   1
-                   IF   SYU-SRYKA  =  "00"
-                     PERFORM    VARYING   IDY    FROM   1   BY   1
-                                 UNTIL    IDY    >    IDX - 1
-      *
-                         IF   WRK-S01-TTLARIFLG(IDY)  =    "1"
-                           IF   LNK-SYU-SRYKA(IDY)       =  "00"
-                               ADD   1      TO  IDZ
-                               MOVE  LNK-SYUNOU-REC(IDY)
-                                            TO  WRK-SYUNOU-REC(IDZ)
-                           END-IF
-                         ELSE
-      *                    当該収納が合計レコードで、
-      *                    合計レコードをもたないレコードを読む込む場合
-                           IF   LNK-SYU-SRYKA(IDY)   NOT =  "00"
-                               ADD   1      TO  IDZ
-                               MOVE  LNK-SYUNOU-REC(IDY)
-                                            TO  WRK-SYUNOU-REC(IDZ)
-                           END-IF
-                         END-IF
-      *
-                     END-PERFORM
-                   ELSE
-                     PERFORM    VARYING   IDY    FROM   1   BY   1
-                                 UNTIL    IDY    >    IDX - 1
-      *
-                       IF  WRK-S01-TTLARIFLG(IDX)  =    "1"
-                           IF     LNK-SYU-SRYKA(IDY)   NOT =  "00"
-                               ADD   1      TO  IDZ
-                               MOVE  LNK-SYUNOU-REC(IDY)
-                                            TO  WRK-SYUNOU-REC(IDZ)
-                           END-IF
-                       ELSE
-                         IF   WRK-S01-TTLARIFLG(IDY)  =    "1"
-                           IF     WRK-S01-KAGRPFLG       =   "0"
-      *                      ＜複数科まとめ集計する場合＞
-      *                      当該収納が合計レコードをもたないレコードで、
-      *                      合計レコードをもつレコードを読む込む場合
-                             IF   LNK-SYU-SRYKA(IDY)       =  "00"
-                               ADD   1      TO  IDZ
-                               MOVE  LNK-SYUNOU-REC(IDY)
-                                            TO  WRK-SYUNOU-REC(IDZ)
-                             END-IF
-                           ELSE
-                             IF   LNK-SYU-SRYKA(IDY)   NOT =  "00"
-                               ADD   1      TO  IDZ
-                               MOVE  LNK-SYUNOU-REC(IDY)
-                                            TO  WRK-SYUNOU-REC(IDZ)
-                             END-IF
-                           END-IF
-                         ELSE
-                           IF     LNK-SYU-SRYKA(IDY)   NOT =  "00"
-                               ADD   1      TO  IDZ
-                               MOVE  LNK-SYUNOU-REC(IDY)
-                                            TO  WRK-SYUNOU-REC(IDZ)
-                           END-IF
-                         END-IF
-                       END-IF
-      *
-                     END-PERFORM
-                   END-IF
-                END-IF
-      *
-      *         複数科まとめ集計しない場合、合計レコードは処理しない
-                IF     WRK-S01-KAGRPFLG          =   "1"
-                AND    SYU-SRYKA                 =  "00"
-                    CONTINUE
-                ELSE
-                    CALL     "ORCS01"     USING    MCPAREA
-                                                   WRK-ORCS01-REC
-                                                   SYUNOU-REC
-                                                   WRK-SYUNOU-REC-T
-                                                   SPA-AREA
-                END-IF
-      *
-                MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
-                MOVE     WRK-ORCS01-REC       TO  LNK-ORCS01-REC
-      *
-                IF     LNK-S01-TOKUSYU-SAI-KBN  NOT =  SPACE
-                     MOVE      1       TO     FLG-TOKUSYU-SAI
-                END-IF
-      *
-           END-PERFORM.
+           PERFORM     100-SANTEI-SEC.
       *
       *    特殊計算（再計算）
-           IF       CNT-KENSU        >    1
-              IF    FLG-TOKUSYU-SAI  =    1
-                 PERFORM     100-TOKUSYU-SANTEI-SEC
-              END-IF
+           IF  (CNT-KENSU        >    1)
+           AND (FLG-TOKUSYU-SAI  =    1)
+             MOVE   "1"   TO   LNK-S01-RETRY-FLG
+             PERFORM   100-SANTEI-SEC
            END-IF.
       *
       *    収納の項目再編集の為の差額算出
@@ -1410,18 +1307,22 @@ grpsys     COPY    "COMMON-SPA".
            STOP RUN.
       *
       ******************************************************************
-      *    特殊計算（再計算）
+      *    算定
       ******************************************************************
-       100-TOKUSYU-SANTEI-SEC                     SECTION.
+       100-SANTEI-SEC                     SECTION.
       *
            MOVE       SPACE     TO    LNK-S01-GENBUTU-MSG-FLG
+           MOVE       ZERO      TO    CNT-KENSU
+           MOVE       ZERO      TO    FLG-TOKUSYU-SAI
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX                 >    15 )
                                 OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                                 OR   (LNK-S01-RC      NOT =  ZERO )
       *
-                PERFORM  1001-TOKUSYU-SANTEI-HENSYU-SEC
+                PERFORM  1001-SANTEI-IDX-HENSYU-SEC
+      *
+                ADD      1                    TO  CNT-KENSU
       *
                 MOVE     WRK-ZAITAKU-KBN      TO
                                       LNK-S01-KOUREI-ZAITAKU-KBN
@@ -1517,17 +1418,21 @@ grpsys     COPY    "COMMON-SPA".
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     WRK-ORCS01-REC       TO  LNK-ORCS01-REC
       *
+                IF     LNK-S01-TOKUSYU-SAI-KBN  NOT =  SPACE
+                     MOVE      1       TO     FLG-TOKUSYU-SAI
+                END-IF
+      *
            END-PERFORM
       *
            .
       *
-       100-TOKUSYU-SANTEI-EXT.
+       100-SANTEI-EXT.
            EXIT.
       *
       ******************************************************************
-      *    特殊計算（再計算）チェック用ＩＤＸ編集
+      *    チェック用ＩＤＸ編集
       ******************************************************************
-       1001-TOKUSYU-SANTEI-HENSYU-SEC                     SECTION.
+       1001-SANTEI-IDX-HENSYU-SEC             SECTION.
       *
            MOVE     ZERO      TO     IDZ2
       *
@@ -1575,6 +1480,6 @@ grpsys     COPY    "COMMON-SPA".
       *
            .
       *
-       1001-TOKUSYU-SANTEI-HENSYU-EXT.
+       1001-SANTEI-IDX-HENSYU-EXT.
            EXIT.
       *
