@@ -32,6 +32,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  15/03/XX  £È£²£·Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  17/07/XX  ¿´¿ÈÎÅË¡£²£°Ì¤Ëþ²Ã»»Åùºï½üÂÐ±þ
+      *  04.08.00    NACL-Â¿¡¹Ç¼  17/05/21  ¼«Èñ¶â³Û·å¿ô¥Á¥§¥Ã¥¯ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -234,6 +235,8 @@
            03  IDX-ERR                 PIC 9(04).
       *!!!
            03  IDW2-H                  PIC 9(04).
+      *
+           03  IDG                     PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -3732,6 +3735,14 @@
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        ¾ÃÈñÀÇ¤Ê¤·
                WHEN    "950"
+      *H30.5   ·å¿ô¥Á¥§¥Ã¥¯
+               IF     (SPA-COM-KEI (IDX) + SYU-JIHI-TAXNASI
+                                             (WRK-TENTTLKBN))
+                                         >   9999999
+                   MOVE    "1089"        TO  SPA-ERRCD
+                   MOVE    "1"           TO  SPA-COM-CUR (IDX)
+               END-IF
+      *
                EVALUATE    WRK-TENTTLKBN
                    WHEN    1
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-1
@@ -3756,6 +3767,17 @@
                END-EVALUATE
       *        ¾ÃÈñÀÇ¤¢¤ê
                WHEN    "960"
+      *H26.10      ÄÉ²Ã
+               WHEN    "961"
+      *
+      *H30.5   ·å¿ô¥Á¥§¥Ã¥¯
+               IF     (SPA-COM-KEI (IDX) + SYU-JIHI-TAXARI
+                                             (WRK-TENTTLKBN))
+                                         >   9999999
+                   MOVE    "1089"        TO  SPA-ERRCD
+                   MOVE    "1"           TO  SPA-COM-CUR(IDX)
+               END-IF
+      *
                EVALUATE    WRK-TENTTLKBN
                    WHEN    1
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-1-TAX
@@ -3823,6 +3845,10 @@
                   (SPA-COM-INPUTCD(IDX)(1:3)   =   "059")
                MOVE    "80"                        TO  WRK-SRYKBN
            END-IF
+      *!!!
+      *H30.5
+      *    ·å¿ô¥Á¥§¥Ã¥¯
+           PERFORM 450113-TGMONE-CHK-SEC
       *
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        ¾ÃÈñÀÇ¤Ê¤·
@@ -3835,6 +3861,116 @@
            .
        45011-TGMONEY-SET-EXT.
            EXIT.
+      *
+      *H30.5
+      *****************************************************************
+      *    ÊÝ¸±Å¬ÍÑ³°¤Î·å¿ô¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       450113-TGMONE-CHK-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  IDG
+           EVALUATE    WRK-SRYKBN
+      *        ¿ÇÎÅ
+               WHEN    "11"
+               WHEN    "12"
+                   MOVE    1                   TO  IDG
+      *        »ØÆ³
+               WHEN    "13"
+                   MOVE    2                   TO  IDG
+      *        ºßÂð
+               WHEN    "14"
+                   MOVE    3                   TO  IDG
+      *        ÅêÌô
+               WHEN    "21"   THRU  "27"
+                   MOVE    4                   TO  IDG
+      *        Ãí¼Í
+               WHEN    "31"
+               WHEN    "32"
+               WHEN    "33"
+                   MOVE    5                   TO  IDG
+      *        ½èÃÖ
+               WHEN    "40"
+                   MOVE    6                   TO  IDG
+      *        ¼ê½Ñ
+               WHEN    "50"
+                   MOVE    7                   TO  IDG
+      *        Ëã¿ì
+               WHEN    "54"
+                   MOVE    8                   TO  IDG
+      *        ¸¡ºº
+               WHEN    "60"
+                   MOVE    9                   TO  IDG
+      *        £ØÀþ
+               WHEN    "70"
+                   MOVE    10                  TO  IDG
+      *        ÉÂÍý¿ÇÃÇ
+               WHEN    "64"
+                   MOVE    14                  TO  IDG
+      *        ¤½¤ÎÂ¾
+               WHEN    "80"
+                   EVALUATE    WRK-TNSSRYSYUKBN
+      *            ¥ê¥Ï¥Ó¥ê
+                   WHEN    "800"
+                       MOVE    11                  TO  IDG
+      *            ½èÊý¤»¤óÎÁ
+                   WHEN    "820"
+                       MOVE    04                  TO  IDG
+      *            Àº¿À²Ê
+                   WHEN    "830"
+                       MOVE    12                  TO  IDG
+      *            Êü¼ÍÀþ¼£ÎÅ
+                   WHEN    "840"
+                       MOVE    13                  TO  IDG
+      *            Æþ±¡ÎÁ
+                   WHEN    "890"
+                       MOVE    15                  TO  IDG
+      *            ÎÅÍÜÃ´Åö¼êÅö¤Æ
+                   WHEN    "850"
+                       MOVE    16                  TO  IDG
+      *            ¤½¤ÎÂ¾
+                   WHEN    OTHER
+                       MOVE    11                  TO  IDG
+                   END-EVALUATE
+      *        Àº¿À²Ê
+               WHEN    "83"
+                   MOVE    12                  TO  IDG
+      *        Êü¼ÍÀþ¼£ÎÅ
+               WHEN    "84"
+                   MOVE    13                  TO  IDG
+      *        Æþ±¡ÎÁ
+               WHEN    "89"
+                   MOVE    15                  TO  IDG
+      *        ÎÅÍÜÃ´Åö¼êÅö¤Æ
+               WHEN    "85"
+                   MOVE    16                  TO  IDG
+      *        ¤½¤ÎÂ¾
+               WHEN    OTHER
+                   MOVE    11                  TO  IDG
+           END-EVALUATE
+      *
+      *
+           EVALUATE    SPA-COM-SRYSYUKBN (IDX)
+      *        ¾ÃÈñÀÇ¤Ê¤·
+               WHEN    "950"
+                   IF     (SPA-GMN-KEI (IDX)   +   SYU-TGMONEY (IDG))
+                                               >   9999999
+                       MOVE    "1089"        TO  SPA-ERRCD
+                       MOVE    "1"           TO  SPA-COM-CUR(IDX)
+                   END-IF
+      *        ¾ÃÈñÀÇ¤¢¤ê
+               WHEN    "960"
+               WHEN    "961"
+                   IF     (SPA-GMN-KEI (IDX)   +   SYU-TGMONEY-TAX
+                                                                (IDG))
+                                               >   9999999
+                       MOVE    "1089"        TO  SPA-ERRCD
+                       MOVE    "1"           TO  SPA-COM-CUR(IDX)
+                   END-IF
+           END-EVALUATE
+           .
+       450113-TGMONE-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ÊÝ¸±Å¬ÍÑ³°¤Î½¸·×½èÍý(¾ÃÈñÀÇ¤Ê¤·)
