@@ -3424,7 +3424,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO                   41012-TSYEDYMD-EXT
            END-IF
       *
-           IF  SPA-GMN24-TSYSTYMD       <  SPA-GMN24-TSYEDYMD
+      *H30.5  同日対応
+           IF  SPA-GMN24-TSYSTYMD       <=  SPA-GMN24-TSYEDYMD
                CONTINUE
            ELSE
                MOVE    "2404"              TO  SPA-ERRCD
@@ -3734,7 +3735,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO                   41012-TNKEDYMD-EXT
            END-IF
       *
-           IF      SPA-GMN24-TNKSTYMD  <  SPA-GMN24-TNKEDYMD
+      *H30.5  同日対応
+           IF      SPA-GMN24-TNKSTYMD  <=  SPA-GMN24-TNKEDYMD
                CONTINUE
            ELSE
                MOVE    "2409"              TO  SPA-ERRCD
