@@ -32,6 +32,7 @@
       * 04.07.00     NACL-多々納  14/03/XX  前期高齢者２割対応
       * 04.07.00     NACL-多々納  14/11/XX  保険確認日付対応
       * 04.08.00     NACL-多々納  15/10/XX  補助区分名称サブ対応
+      * 05.00.00     NACL-多々納  17/10/XX  保険組合せ番号対象対応
       *****************************************************************
       *
       *
@@ -125,6 +126,8 @@
            03  WRK-Z9                  PIC 9.ZZ.
            03  WRK-FTNRATEMEI          PIC X(04).
            03  WRK-ZZ9                 PIC ZZZZZ9.
+      *
+           03  WRK-SYSYMD              PIC X(08).
       *
       *    公費並替え用ワーク
        01  WRK-KOHNUM-AREA.
@@ -287,6 +290,14 @@
       *
       *    保険組合せ編集処理
            PERFORM 100-HKNCOMBI-HENSYU-SEC
+      *
+      *
+      *H29.9
+           IF      ORCSAPIHKN-KBN      =   "3"
+      *        保険組合せ番号のみ対応
+               PERFORM 250-HKNCOMBI-SELECT-SEC
+               GO      TO  000-PROC-EXT
+           END-IF
       *
       *    保険組合せ決定
            PERFORM 200-HKNCOMBI-SET-SEC
@@ -562,12 +573,20 @@
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    ORCSAPIHKN-SRYKA    TO  JYURRK-SRYKA
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    "1"                 TO  JYURRK-NYUGAIKBN
+           ELSE
+               MOVE    "2"                 TO  JYURRK-NYUGAIKBN
+           END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+      *!!  入外区分を反映するなら key7
+      **** MOVE    "key7"              TO  MCP-PATHNAME
            MOVE    "key30"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+      ***      MOVE    "key7"              TO  MCP-PATHNAME
                MOVE    "key30"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-READ-SEC
            ELSE
@@ -578,6 +597,7 @@
                MOVE    JYURRK-HKNCOMBINUM      TO  WRK-HKNCOMBINUM
            END-IF
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+      ***  MOVE    "key7"              TO  MCP-PATHNAME
            MOVE    "key30"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -1309,6 +1329,7 @@
                                                             (IDXH IDY)
       *
       *            負担率・負担額編集
+                   MOVE    SPA-SYSYMD      TO  WRK-SYSYMD
                    PERFORM 400-KOHFTN-HENSYU-SEC
       *
                    MOVE    IDK-MAX             TO  IDH
@@ -1328,8 +1349,10 @@
            MOVE    TBL-PTKOH-KOHNUM (IDH)  TO  HKN-HKNNUM
       *    支払区分
            MOVE    TBL-PTKOH-PAYKBN (IDH)  TO  HKN-PAYKBN
-           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
-           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+           MOVE    WRK-SYSYMD          TO  HKN-TEKSTYMD
+           MOVE    WRK-SYSYMD          TO  HKN-TEKEDYMD
+      *    MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
+      *    MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
@@ -1441,6 +1464,7 @@
                    MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KOH-TEKEDYMD
                                                                (IDX IDY)
       *            負担率・負担額編集
+                   MOVE    SPA-SYSYMD      TO  WRK-SYSYMD
                    PERFORM 400-KOHFTN-HENSYU-SEC
       *            公費の名称
                    MOVE    HKN-TANSEIDONAME
@@ -1452,6 +1476,224 @@
            END-PERFORM
            .
        299-PTKOHINF-OUTHEN-EXT.
+           EXIT.
+      *
+      *H29.9
+      *****************************************************************
+      *    保険組合せ番号編集処理
+      *****************************************************************
+       250-HKNCOMBI-SELECT-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-COMBIOK
+           MOVE    1                   TO  IDXH
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   IDX-MAX )
+                          OR  (FLG-COMBIOK =   1   )
+               IF      TBL-COMB-HKNCOMBINUM (IDX)
+                                           =   ORCSAPIHKN-IN-HKNCOMBI
+                   MOVE    ORCSAPIHKN-IN-HKNCOMBI
+                                           TO  ORCSAPIHKN-OT-HKNCOMBI
+                   PERFORM 2901-HKNCOMBI-HEN-SEC
+                   MOVE    1               TO  FLG-COMBIOK
+               END-IF
+           END-PERFORM
+           IF      FLG-COMBIOK         =   1
+               GO      TO      250-HKNCOMBI-SELECT-EXT
+           END-IF
+      *
+      *    保険組合せ当月なし
+           MOVE    SPACE               TO  HKNCOMBI-REC
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+           MOVE    SPA-PTID            TO  COMB-PTID
+           MOVE    ORCSAPIHKN-IN-HKNCOMBI
+                                       TO  COMB-HKNCOMBINUM
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-HKNCOMBI        =   1
+      *        対象なし
+               MOVE    4                   TO  ORCSAPIHKN-ERRCD
+               GO      TO      250-HKNCOMBI-SELECT-EXT
+           END-IF
+      *
+           MOVE    ORCSAPIHKN-IN-HKNCOMBI
+                                       TO  ORCSAPIHKN-OT-HKNCOMBI
+      *
+           IF      COMB-DELKBN         =   "1"
+      *        削除分
+               MOVE    8                   TO  ORCSAPIHKN-ERRCD
+           ELSE
+      *        期間外
+               MOVE    ZERO                TO  FLG-CHK-OK
+               EVALUATE    ORCSAPIHKN-KBN2
+                   WHEN    "1"
+                       MOVE    1                   TO  FLG-CHK-OK
+                   WHEN    "2"
+      *                年月で有効であること
+                       IF     (COMB-TEKSTYMD(1:6)
+                                               <=  SPA-SYSYMD(1:6)) AND
+                              (COMB-TEKEDYMD(1:6)
+                                               >=  SPA-SYSYMD(1:6))
+                           MOVE    1               TO  FLG-CHK-OK
+                       END-IF
+                   WHEN    OTHER
+      *                当日有効であること
+                       IF     (COMB-TEKSTYMD   <=  SPA-SYSYMD )  AND
+                              (COMB-TEKEDYMD   >=  SPA-SYSYMD )
+                           MOVE    1               TO  FLG-CHK-OK
+                       END-IF
+               END-EVALUATE
+      *        期間外
+               IF      FLG-CHK-OK          =   ZERO
+                   MOVE    7                   TO  ORCSAPIHKN-ERRCD
+               END-IF
+           END-IF
+      *
+      *    編集
+           MOVE    COMB-HKNCOMBINUM    TO  ORCSAPIHKN-THKNCOMBI
+                                                             (IDXH)
+           MOVE    COMB-HKNNUM         TO  ORCSAPIHKN-HKNNUM (IDXH)
+      *    保険ＩＤ
+           MOVE    COMB-HKNID          TO  ORCSAPIHKN-NAI-HKNID (IDXH)
+      *    主保険−短縮制度名
+           MOVE    COMB-SYU-TANSEIDONAME
+                                       TO  ORCSAPIHKN-HKNNUM-NAME
+                                                                 (IDXH)
+      *    本人家族区分
+           MOVE    COMB-HONKZKKBN      TO  ORCSAPIHKN-HONKZKKBN(IDXH)
+      *    補助区分
+           MOVE    COMB-HOJOKBN        TO  ORCSAPIHKN-HOJOKBN (IDXH)
+      *
+           INITIALIZE                  ORAPI012SUB1AREA
+           MOVE    COMB-HKNNUM         TO  API012SUB1-HKNNUM
+           MOVE    COMB-HOJOKBN        TO  API012SUB1-HOJOKBN
+           MOVE    COMB-TEKSTYMD       TO  API012SUB1-SYSYMD
+           CALL    "ORAPI012SUB1"          USING
+                                           ORAPI012SUB1AREA
+                                           SPA-AREA
+           MOVE    API012SUB1-HOJOKBN-NAME
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME(IDXH)
+      *
+      *    継続区分
+           MOVE    COMB-CONTKBN        TO  ORCSAPIHKN-CONTKBN (IDXH)
+      *
+      *    保険組合せ負担割合
+           MOVE    COMB-GAI-KFTNRATE   TO  ORCSAPIHKN-COMB-RATEG(IDXH)
+           MOVE    COMB-NYU-KFTNRATE   TO  ORCSAPIHKN-COMB-RATEN(IDXH)
+      *    有効期間
+           MOVE    COMB-TEKSTYMD       TO  WRK-SYMD
+           PERFORM 800-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  ORCSAPIHKN-COMB-TEKSTYMD
+                                                             (IDXH)
+           MOVE    COMB-TEKEDYMD       TO  WRK-SYMD
+           PERFORM 800-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  ORCSAPIHKN-COMB-TEKEDYMD
+                                                             (IDXH)
+      *
+           MOVE    COMB-TEKSTYMD       TO  ORCSAPIHKN-COMBN-TEKSTYMD
+                                                                (IDXH)
+           MOVE    COMB-TEKEDYMD       TO  ORCSAPIHKN-COMBN-TEKEDYMD
+                                                                (IDXH)
+      *    非表示区分
+           MOVE    COMB-HYOJIKBN       TO  ORCSAPIHKN-HYOJIKBN (IDXH)
+      *
+      *    保険情報
+           IF      COMB-HKNID      NOT =   ZERO
+               PERFORM 901-PTHKNINF-READ-SEC
+               MOVE    PTHKN-HKNJANUM      TO  ORCSAPIHKN-HKNJANUM(IDXH)
+               MOVE    PTHKN-KIGO          TO  ORCSAPIHKN-KIGO (IDXH)
+               MOVE    PTHKN-NUM           TO  ORCSAPIHKN-NUM  (IDXH)
+               MOVE    PTHKN-HIHKNJANAME   TO  ORCSAPIHKN-HIHKNJANAME
+                                                                (IDXH)
+      *        保険有効期間
+               MOVE    PTHKN-TEKSTYMD      TO  WRK-SYMD
+               PERFORM 800-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  ORCSAPIHKN-TEKSTYMD(IDXH)
+               MOVE    PTHKN-TEKEDYMD      TO  WRK-SYMD
+               PERFORM 800-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  ORCSAPIHKN-TEKEDYMD(IDXH)
+      *
+               MOVE    PTHKN-TEKSTYMD      TO  ORCSAPIHKN-NAI-TEKSTYMD
+                                                               (IDXH)
+               MOVE    PTHKN-TEKEDYMD      TO  ORCSAPIHKN-NAI-TEKEDYMD
+                                                               (IDXH)
+      *        資格取得日
+               IF      PTHKN-SKKGETYMD     NOT =   SPACE
+                   MOVE    PTHKN-SKKGETYMD     TO  WRK-SYMD
+                   PERFORM 800-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-SKKGETYMD
+                                                                (IDXH)
+               END-IF
+               MOVE    PTHKN-SKKGETYMD     TO  ORCSAPIHKN-NAI-SKKGETYMD
+                                                                (IDXH)
+      *        確認日付
+               IF      PTHKN-KAKUNINYMD    NOT =   SPACE
+                   MOVE    PTHKN-KAKUNINYMD    TO  WRK-SYMD
+                   PERFORM 800-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KAKUNINYMD
+                                                                (IDXH)
+               END-IF
+               MOVE    PTHKN-KAKUNINYMD    TO  ORCSAPIHKN-NAI-KAKUNINYMD
+                                                                (IDXH)
+           END-IF
+      *    労災・自賠責区分
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
+               PERFORM 29013-PTRSIINF-HEN-SEC
+           END-IF
+      *    公費情報
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL      (IDY     >   4   )
+                           OR (COMB-KOHHKNNUM (IDY)   =   SPACE)
+      *        公費の種類
+               MOVE    COMB-KOHHKNNUM (IDY)
+                                       TO  ORCSAPIHKN-KOHNUM
+                                                            (IDXH IDY)
+      *        公費の種類名称
+               MOVE    COMB-KOH-TANSEIDONAME(IDY)
+                                       TO  ORCSAPIHKN-KOHNUM-NAME
+                                                            (IDXH IDY)
+               MOVE    COMB-KOHID (IDY)
+                                       TO  ORCSAPIHKN-NAI-KOHID
+                                                            (IDXH IDY)
+      *        負担者番号、受給者番号
+               PERFORM 901-PTKOHINF-READ-SEC
+               MOVE    PTKOH-FTNJANUM  TO  ORCSAPIHKN-FTNJANUM
+                                                            (IDXH IDY)
+               MOVE    PTKOH-JKYSNUM   TO  ORCSAPIHKN-JKYSNUM
+                                                            (IDXH IDY)
+      *        有効開始日
+               MOVE    PTKOH-TEKSTYMD  TO  WRK-SYMD
+               PERFORM 800-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KOH-TEKSTYMD
+                                                            (IDXH IDY)
+      *        有効終了日
+               MOVE    PTKOH-TEKEDYMD  TO  WRK-SYMD
+               PERFORM 800-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KOH-TEKEDYMD
+                                                            (IDXH IDY)
+      *        負担率・負担額編集
+               MOVE    1               TO  IDH
+               MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC(IDH)
+               MOVE    PTKOH-TEKSTYMD  TO  WRK-SYSYMD
+               PERFORM 400-KOHFTN-HENSYU-SEC
+           END-PERFORM
+           .
+       250-HKNCOMBI-SELECT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1591,6 +1833,79 @@
       *
            .
        920-PTKOHINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者保険情報検索
+      *****************************************************************
+       901-PTHKNINF-READ-SEC         SECTION.
+      *
+           INITIALIZE                  PTHKNINF-REC
+           MOVE    COMB-HOSPNUM        TO  PTHKN-HOSPNUM
+           MOVE    COMB-PTID           TO  PTHKN-PTID
+           MOVE    COMB-HKNID          TO  PTHKN-HKNID
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-PTHKNINF
+                   MOVE    MCPDATA-REC         TO  PTHKNINF-REC
+               ELSE
+                   MOVE    1                   TO  FLG-PTHKNINF
+                   INITIALIZE                  PTHKNINF-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTHKNINF
+               INITIALIZE                  PTHKNINF-REC
+           END-IF
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       901-PTHKNINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者公費情報検索
+      *****************************************************************
+       901-PTKOHINF-READ-SEC         SECTION.
+      *
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    COMB-HOSPNUM        TO  PTKOH-HOSPNUM
+           MOVE    COMB-PTID           TO  PTKOH-PTID
+           MOVE    COMB-KOHID (IDY)    TO  PTKOH-KOHID
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-PTKOHINF
+                   MOVE    MCPDATA-REC         TO  PTKOHINF-REC
+               ELSE
+                   MOVE    1                   TO  FLG-PTKOHINF
+                   INITIALIZE                  PTKOHINF-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTKOHINF
+               INITIALIZE                  PTKOHINF-REC
+           END-IF
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       901-PTHKNINF-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
