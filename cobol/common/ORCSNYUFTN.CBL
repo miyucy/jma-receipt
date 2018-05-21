@@ -191,6 +191,7 @@
       *  04.08.11    NACL-門脇    18/03/27  平成３０年４月改正対応
       *  04.08.12    NACL-門脇    18/05/10  入院会計照会の保険組み合わせ
       *                                     （９９９）チェック対応
+      *  04.08.13    NACL-門脇    18/05/15  同一会計分のデータ編集修正
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -598,6 +599,7 @@
            03  IDY                         PIC 9(02).
            03  IDY2                        PIC 9(02).
            03  IDZ                         PIC 9(02).
+           03  IDZ2                        PIC 9(02).
            03  IDX1                        PIC 9(02).
            03  IDX2                        PIC 9(02).
            03  IDX3                        PIC 9(03).
@@ -961,115 +963,14 @@
              END-PERFORM
            END-PERFORM.
       *
-      *
-           PERFORM    VARYING   IDX    FROM   1   BY   1
-                              UNTIL  (IDX            >    10)
-                                OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
-                                OR   (LNK-S02-RC        NOT =  ZERO )
-      *
-                ADD      1                    TO  CNT-KENSU
-      *
-                MOVE     WRK-HANBETU-SENINFLG2(IDX)                     
-                                              TO  LNK-S02-SENINFLG      
-      *
-                MOVE     WRK-JIBAI-SYUTEN(IDX)
-                                              TO  LNK-S02-SYUTEN
-                MOVE     WRK-JIBAI-SINDAN(IDX)
-                                              TO  LNK-S02-SINDAN
-                MOVE     WRK-JIBAI-MEISAI(IDX)
-                                              TO  LNK-S02-MEISAI
-                MOVE     WRK-JIBAI-RYOYO(IDX) TO  LNK-S02-RYOYO
-                MOVE     WRK-JIBAI-KYUKYU(IDX)
-                                              TO  LNK-S02-KYUKYU
-      *
-                MOVE     WRK-SYOSIN(IDX)      TO  LNK-S02-SYOSINFLG
-                MOVE     WRK-SYOSIN-DAY-TBL(IDX)
-                                        TO  LNK-S02-SYOSINFLG-DAY-TBL
-      *
-                MOVE     WRK-JIBAI-SONOTA(IDX)
-                                              TO  LNK-S02-SONOTA
-      *
-                MOVE     WRK-NYUINDAY-TBL(IDX)
-                                              TO  LNK-S02-NYUINDAY-TBL
-                MOVE     WRK-NYUINDAY-TANKI-TBL(IDX)
-                                        TO  LNK-S02-NYUINDAY-TANKI-TBL
-                MOVE     WRK-NYUSANTEI-TBL(IDX)
-                                              TO  LNK-S02-NYUSANTEI-TBL
-      *
-                MOVE     WRK-KOREI-TANYUINFLG(IDX)
-                                              TO  LNK-S02-KOREI-TANYUIN
-      *
-                IF       LNK-SYU-SRYYMD(IDX)(1:6)  =   WRK-SKYYM(1)
-                  MOVE   WRK-DAISANYUSENFLG(1)
-                                              TO  LNK-S02-DAISANYUSENFLG
-                END-IF
-                IF       LNK-SYU-SRYYMD(IDX)(1:6)  =   WRK-SKYYM(2)
-                  MOVE   WRK-DAISANYUSENFLG(2)
-                                              TO  LNK-S02-DAISANYUSENFLG
-                END-IF
-      *
-                MOVE     WRK-DOJITU-TBL(IDX)  TO  LNK-S02-DOJITU
-      *
-                MOVE     WRK-SKJHKN-TBL(IDX)  TO  LNK-S02-SKJHKN
-      *
-                MOVE     WRK-DAYTEN-TABLE     TO  LNK-S02-DAYTEN
-                MOVE     IDX                  TO  LNK-S02-IDX
-      *
-                MOVE     LNK-ORCS02-REC       TO  WRK-ORCS02-REC
-                MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
-                MOVE     LNK-SYUDAY-REC(IDX)  TO  SYUDAY-REC           
-      *
-                IF       IDX   >   1
-                   PERFORM    VARYING   IDY    FROM   1   BY   1
-                                 UNTIL  IDY    >    IDX - 1
-      *
-                      MOVE  LNK-SYUNOU-REC(IDY) TO WRK-SYUNOU-REC(IDY)  
-                      MOVE  LNK-SYUDAY-REC(IDY) TO WRK-SYUDAY-REC(IDY) 
-      *
-                   END-PERFORM
-                END-IF
-      *
-                CALL     "ORCS02"     USING    MCPAREA
-                                               WRK-ORCS02-REC
-                                               SYUNOU-REC
-                                               WRK-SYUNOU-REC-T
-                                               SYUDAY-REC              
-                                               WRK-SYUDAY-REC-T        
-                                               SPA-AREA
-      *
-                EVALUATE    WRK-S02-SYORI-KBN
-                   WHEN    " "
-                   WHEN    "1"
-                   WHEN    "8"
-                      MOVE     "1"            TO  SYU-CREATEKBN
-                                                  SDAY-CREATEKBN
-                   WHEN    "2"
-                   WHEN    "9"
-      *               MOVE     "2"            TO  SYU-DENPJTIKBN
-                      IF       WRK-S02-TEIKI-KBN    =   "X"
-                          MOVE     "3"        TO  SYU-CREATEKBN
-                                                  SDAY-CREATEKBN
-                      ELSE
-                          MOVE     "2"        TO  SYU-CREATEKBN
-                                                  SDAY-CREATEKBN
-                      END-IF
-                END-EVALUATE
-      *
-                MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
-                MOVE     SYUDAY-REC           TO  LNK-SYUDAY-REC(IDX)  
-                MOVE     WRK-ORCS02-REC       TO  LNK-ORCS02-REC 
-      *
-                IF       LNK-S02-TOKUSYU-SAI-KBN    =    "1"
-                     MOVE      1              TO  FLG-TOKUSYU
-                END-IF
-      *
-           END-PERFORM.
+      *    負担金計算
+           PERFORM     SANTEI-SEC.
       *
       *    特殊計算（再計算）
-           IF       CNT-KENSU        >    1
-              IF    FLG-TOKUSYU      =    1
-                   PERFORM     TOKUSYU-SANTEI-SEC
-              END-IF
+           IF  (CNT-KENSU        >    1)
+           AND (FLG-TOKUSYU      =    1)
+             MOVE   "1"   TO   LNK-S02-RETRY-FLG
+             PERFORM   SANTEI-SEC
            END-IF.
       *
       *    入院料と異なる保険組み合わせでの食事算定チェック
@@ -1254,14 +1155,21 @@
            EXIT.
       *
       ******************************************************************
-      *    特殊計算（再計算）
+      *    算定
       ******************************************************************
-       TOKUSYU-SANTEI-SEC                     SECTION.
+       SANTEI-SEC                     SECTION.
+      *
+           MOVE       ZERO      TO    CNT-KENSU
+           MOVE       ZERO      TO    FLG-TOKUSYU
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX            >    10)
                                 OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                                 OR   (LNK-S02-RC        NOT =  ZERO )
+      *
+                PERFORM  SANTEI-IDX-HENSYU-SEC
+      *
+                ADD      1                    TO  CNT-KENSU
       *
                 MOVE     WRK-HANBETU-SENINFLG2(IDX)                     
                                               TO  LNK-S02-SENINFLG      
@@ -1308,6 +1216,7 @@
       *
                 MOVE     WRK-DAYTEN-TABLE     TO  LNK-S02-DAYTEN
                 MOVE     IDX                  TO  LNK-S02-IDX
+                MOVE     IDZ2                 TO  LNK-S02-IDX2
       *
                 MOVE     LNK-ORCS02-REC       TO  WRK-ORCS02-REC
                 MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
@@ -1359,9 +1268,34 @@
                 MOVE     SYUDAY-REC           TO  LNK-SYUDAY-REC(IDX)  
                 MOVE     WRK-ORCS02-REC       TO  LNK-ORCS02-REC 
       *
-           END-PERFORM.
+                IF       LNK-S02-TOKUSYU-SAI-KBN  NOT =  SPACE
+                     MOVE      1              TO  FLG-TOKUSYU
+                END-IF
       *
-       TOKUSYU-SANTEI-EXT.
+           END-PERFORM
+      *
+           .
+      *
+       SANTEI-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    チェック用ＩＤＸ編集
+      ******************************************************************
+       SANTEI-IDX-HENSYU-SEC             SECTION.
+      *
+           MOVE     ZERO      TO     IDZ2
+      *
+           IF       IDX   >   1
+             PERFORM   VARYING   IDY   FROM   1   BY   1
+                        UNTIL    IDY     >    IDX - 1
+               ADD   1        TO     IDZ2
+             END-PERFORM
+           END-IF
+      *
+           .
+      *
+       SANTEI-IDX-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
