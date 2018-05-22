@@ -2856,6 +2856,8 @@
            03  CONS-NYUSEN-COMMENT   PIC X(09)  VALUE  "113024510".
       *    通算実施回数（　　回）
            03  CONS-NYUSEN2-COMMENT  PIC X(09)  VALUE  "840000086".
+      *    乳腺炎重症化予防ケア・指導料（初回）
+           03  CONS-NYUSEN3-COMMENT  PIC X(09)  VALUE  "113024410".
       *
       *    遠隔モニタリング加算（在宅酸素療法指導管理料（その他））
            03  CONS-ZAIMONI-COMMENT  PIC X(09)  VALUE  "114045470".
@@ -14045,10 +14047,16 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    MOVE   "3"   TO    RECE04-FLG-SINPESUR-COMMENT
                 END-IF
               END-IF
+      *       乳腺炎重症化予防ケア・指導料（初回）
       *       乳腺炎重症化予防ケア・指導料（２回目から４回目まで）
-              IF   SRY-SRYCD(IDX2)    =     CONS-NYUSEN-COMMENT
+              IF   SRY-SRYCD(IDX2)    =     CONS-NYUSEN3-COMMENT
               AND  FLG-NYUSEN-COM     =     ZERO
                    MOVE   "1"   TO    RECE04-FLG-NYUSEN-COMMENT
+              END-IF
+              IF   SRY-SRYCD(IDX2)    =     CONS-NYUSEN-COMMENT
+              AND  FLG-NYUSEN-COM     =     ZERO
+                   MOVE   "2"   TO    RECE04-FLG-NYUSEN-COMMENT
+                   MOVE   "1"   TO    RECE02-NYUSENFLG
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-NYUSEN2-COMMENT
                    MOVE  SPACE  TO    RECE04-FLG-NYUSEN-COMMENT
@@ -14815,8 +14823,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                      OR CONS-KIATU2-COMMENT
                  MOVE   35            TO  WRK-SETCOM-JIDO
            END-IF
+      *    乳腺炎重症化予防ケア・指導料（初回）
       *    乳腺炎重症化予防ケア・指導料（２回目から４回目まで）
            IF    RECE05-SRYCD(IDX4)   = CONS-NYUSEN-COMMENT
+                                     OR CONS-NYUSEN3-COMMENT
                  MOVE   37            TO  WRK-SETCOM-JIDO
            END-IF
       *    オンライン診療料
