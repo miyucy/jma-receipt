@@ -5857,17 +5857,21 @@ grpsys       PERFORM  900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    ÆýÁ£±ê½Å¾É²½Í½ËÉ¥±¥¢¡¦»ØÆ³ÎÁ¡Ê½é²ó¡Ë¤¬¤¢¤ë¤«È½Äê
       *    ÆýÁ£±ê½Å¾É²½Í½ËÉ¥±¥¢¡¦»ØÆ³ÎÁ¡Ê£²²óÌÜ¤«¤é£´²óÌÜ¤Þ¤Ç¡Ë¤¬¤¢¤ë¤«È½Äê
       *****************************************************************
        2001-NYUSEN-HANTEI-SEC          SECTION.
       *
-           IF     RECE44-FLG-NYUSEN-COMMENT   =    "1"
+           IF   ((RECE44-FLG-NYUSEN-COMMENT   =    "1"  ) AND
+                 (RECE41-NYUSENFLG            =    SPACE))
+           OR   ( RECE44-FLG-NYUSEN-COMMENT   =    "2"   )
              MOVE   CONS-NYUSEN   TO   WRK-CHECK-SRYCD
              PERFORM       20011-ZAIKYO-CHECK-SEC
       *
              MOVE       ZERO                TO  WRK-ZAIKYO-KAISU
              IF   WRK-ZAIKYO-YMD   NOT =  SPACE
-                MOVE    1                   TO  WRK-ZAIKYO-KAISU
+               MOVE      1                  TO  WRK-ZAIKYO-KAISU
+               IF   RECE44-FLG-NYUSEN-COMMENT  =  "2"
                 INITIALIZE                      SANTEI-REC
                 MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
                 MOVE    RECE41-PTID         TO  SANTEI-PTID
@@ -5914,6 +5918,7 @@ grpsys       PERFORM  900-DBSELECT-SEC
                 MOVE    "tbl_santei"        TO  MCP-TABLE
                 MOVE    "key3"              TO  MCP-PATHNAME
                 PERFORM 900-CLOSE-SEC
+               END-IF
              END-IF
       *
              IF   WRK-ZAIKYO-KAISU  NOT =  ZERO
