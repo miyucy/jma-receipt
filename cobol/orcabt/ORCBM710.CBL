@@ -36,6 +36,10 @@
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-藤原    15/08/24  レセ電データ作成時の請求区分
       *                                     更新対応
+      *  04.08.03    NACL-藤原    18/05/17  平成３０年４月改正対応
+      *                                     カタカナ（氏名）、患者状態の追加
+      *
+      *  05.00.01    NACL-藤原    17/12/19  ＨＡＯＲＩ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -886,6 +890,29 @@
                    END-STRING
                ELSE
                    DISPLAY "ERROR WRK-KETA1=0!!"
+               END-IF
+      *
+               MOVE    SPACE            TO  WRK-REC
+               MOVE    ZERO             TO  WRK-MOJISU
+                                            WRK-NAGASA
+               INSPECT RECEDEN-RECEDATA   TALLYING    WRK-MOJISU
+                                           FOR ALL "," 
+               IF      WRK-MOJISU          =   35
+                   PERFORM VARYING IDX FROM    2500 BY  -1
+                           UNTIL   IDX <       1
+                       IF      RECEDEN-RECEDATA (IDX:1)
+                                               =   WRK-KAIGYO
+                           COMPUTE WRK-NAGASA  =   IDX     -   1
+                           MOVE    1               TO  IDX
+                       END-IF    
+                   END-PERFORM   
+                   STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                           DELIMITED  BY  SIZE
+                             ",,"          DELIMITED  BY  SIZE
+                             WRK-KAIGYO    DELIMITED  BY  SIZE
+                             INTO          WRK-REC
+                   END-STRING
+                   MOVE    WRK-REC         TO  RECEDEN-RECEDATA
                END-IF
            END-IF
       *
