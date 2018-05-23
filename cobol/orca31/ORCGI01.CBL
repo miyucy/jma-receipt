@@ -1124,6 +1124,9 @@
       *    施設基準取得
            COPY "CPORCSS014.INC".
       *
+      *    同日再入院判定パラメタ
+           COPY  "CPORCSDOUNYUIN.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -15029,6 +15032,7 @@
       *****************************************************************
        4801-TENROOM-EDIT-SEC         SECTION.
       *
+      *     DISPLAY "=========4801-TENROOM-EDIT-SEC==============="
            MOVE      SPACE        TO    WRK-DOU-TENNYUYMD
            MOVE      SPACE        TO    IPN-NYUKAIKEI-SAKUSEI-FLG
       *
@@ -15068,10 +15072,20 @@
                    MOVE    PTNYUINRRK-RRKNUM   TO  LNK-AKYUSEI-RRKNUM
                    CALL    "ORCSAKYUSEI"    USING  ORCSAKYUSEI-AREA
                                                    SPA-AREA
-                   DISPLAY  "LNK-AKYUSEI-RC = " LNK-AKYUSEI-RC
+      *             DISPLAY  "LNK-AKYUSEI-RC = " LNK-AKYUSEI-RC
                END-IF
            END-IF
       *
+      *    同日再入院日での転科／転棟／転室処理か判定するサブを呼び出し
+           INITIALIZE                   ORCSDOUNYUIN-AREA
+           MOVE    PTNYUINRRK-HOSPNUM   TO  LNK-DOUNYUIN-HOSPNUM
+           MOVE    PTNYUINRRK-PTID      TO  LNK-DOUNYUIN-PTID
+           MOVE    PTNYUINRRK-RRKNUM    TO  LNK-DOUNYUIN-RRKNUM
+           MOVE    PTNYUINRRK-TENNYUYMD TO  LNK-DOUNYUIN-SAINYUINYMD
+           CALL    "ORCSDOUNYUIN"    USING  ORCSDOUNYUIN-AREA
+                                            SPA-AREA
+      *     DISPLAY  "LNK-DOUNYUIN-RC = " LNK-DOUNYUIN-RC
+      *     DISPLAY  "LNK-DOUNYUIN-SANTEIYMD = " LNK-DOUNYUIN-SANTEIYMD
       *
            IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
@@ -15658,6 +15672,15 @@
                            TO   LNK-SCNYUACCT-STSRYYMD
            MOVE    SPA-NAI-I01-IDOYMD
                            TO   LNK-SCNYUACCT-EDSRYYMD
+      *
+      *    同日再入院分の開始日変更
+           IF     (LNK-DOUNYUIN-RC = 1)    AND
+                  (LNK-DOUNYUIN-SANTEIYMD  NOT =  SPACE)
+               MOVE   LNK-DOUNYUIN-SANTEIYMD
+                           TO   LNK-SCNYUACCT-STSRYYMD
+                                LNK-SCNYUACCT-EDSRYYMD
+           END-IF
+      *
            PERFORM   VARYING   IDX6   FROM   1   BY   1
                UNTIL (SYOKIKSN-OT-KGNSRYCD(IDX6)  =  SPACE) OR
                      (IDX6   >     7)
@@ -15716,6 +15739,12 @@
            MOVE   "1"                   TO  LNK-TOKNYUIN2-IDOKBN
            MOVE   PTNYUINRRK-NYUINYMD   TO  LNK-TOKNYUIN2-NYUINYMD
            MOVE   SPA-NAI-I01-IDOYMD    TO  LNK-TOKNYUIN2-SANTEIYMD
+      *    同日再入院分の開始日変更
+           IF     (LNK-DOUNYUIN-RC = 1)    AND
+                  (LNK-DOUNYUIN-SANTEIYMD  NOT =  SPACE)
+               MOVE   LNK-DOUNYUIN-SANTEIYMD
+                                        TO   LNK-TOKNYUIN2-SANTEIYMD
+           END-IF
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD
            MOVE   STUSAN-NISSU08        TO  LNK-TOKNYUIN2-NISSU08
            MOVE   PTNYUINRRK-SHONUM     TO  LNK-TOKNYUIN2-SHONUM
