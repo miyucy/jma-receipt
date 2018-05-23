@@ -60,6 +60,7 @@
       * 04.08.00     NACL-多々納  16/06/XX  Ｈ２８年１０月改正対応
       *  04.08.00    NACL-多々納  17/07/XX  心身療法２０未満加算対応追加
       * 04.08.00     NACL-多々納  18/04/XX  Ｈ３０年４月改正対応
+      * 04.08.00     NACL-多々納  18/05/23  精神児童加算施設基準判定修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -528,6 +529,9 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
       *
       *    システム管理マスタ（施設基準）
            COPY    "CPSK1006.INC".
@@ -3037,8 +3041,10 @@
       *****************************************************************
       *     精神通院の施設基準の判定チェック処理
       *****************************************************************
-       10011321-GAIRI-SEISINCHK-SEC            SECTION.
+       10011321-GAIRI-SEISINCHK-SEC    SECTION.
       *
+      *H30.5
+      *  「180047270　児童思春期加算（１６歳未満）」の施設基準
       *    施設基準情報検索
            MOVE    SPACE               TO  SYS-1006-REC
            MOVE    "1006"              TO  SYS-1006-KANRICD
@@ -3047,33 +3053,43 @@
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
-           MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-KANRIMST-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    SYS-1006-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1006-REC
            ELSE
                INITIALIZE                  SYS-1006-REC
            END-IF
       *
       *    対象施設基準(3039)（児童・思春期精神科入院管理料）
-      *H25.3　まで     (3146)（〃（栄養管理経過措置））追加
-      *****IF    ((SYS-1006-SSTKIJUN (039)  =   1  )  OR 
-      *********   (SYS-1006-SSTKIJUN (146)  =   1  )) AND
+      *                (3491)（児童・思春期精神科専門管理加算）
            IF     (SYS-1006-SSTKIJUN (039)  =   1  )
+               OR (SYS-1006-SSTKIJUN (491)  =   1  )
+               MOVE    1                   TO  FLG-NENREI
+               GO      TO      10011321-GAIRI-SEISINCHK-EXT
+           END-IF
+      *
+      *    施設基準情報検索
+           MOVE    SPACE               TO  SYS-1006-REC
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    "1"                 TO  SYS-1006-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
+      *    システム管理検索
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
+           MOVE    SYS-1006-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1006-REC
+           ELSE
+               INITIALIZE                  SYS-1006-REC
+           END-IF
+      *
+      *    対象施設基準(0003)（特定機能病院）
+           IF     (SYS-1006-SSTKIJUN (003)  =   1  )
                MOVE    1                   TO  FLG-NENREI
            END-IF
+      *
            .
        10011321-GAIRI-SEISINCHK-EXT.
            EXIT.
@@ -5046,7 +5062,6 @@
                END-IF
            END-IF
       *
-      *TEST
       *H27.7 から
       *    抗不安・抗精神薬３種類以上ありの逓減チェック処理
            IF     (SPA-SRYYMD          >=  "20160701")
@@ -5158,8 +5173,6 @@
                    MOVE    10                      TO  IDX-80
                END-IF
            END-PERFORM
-      *TEST
-           DISPLAY "30021-PSY-CHEKE-SEC FLG-CHK-PSY:" FLG-CHK-PSY
       *
       *    減点コード
            IF      FLG-CHK-PSY         =   ZERO
@@ -5218,6 +5231,36 @@
       *
            .
        920-SANTEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ　キー読み込み処理
+      *****************************************************************
+       900-SYSKANRI-KEY-SEC         SECTION.
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-SYSKANRI-KEY-EXT.
            EXIT.
       *
       *****************************************************************
