@@ -11282,6 +11282,10 @@
                                        LNK-SYUNOU-REC-T
                                        LNK-SYUDAY-REC-T
            IF    ( LNK-S02-RC      NOT =   ZERO )
+            AND  ( LNK-S02-RC      NOT =   37 )
+      *
+      *        RC=37（保険組合せなし）はデータチェック本体で編集するので、
+      *        無視する。
       *
                PERFORM 900-DBCOMMIT-SEC
                PERFORM 900-DBSTART-SEC

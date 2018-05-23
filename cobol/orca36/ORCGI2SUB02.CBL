@@ -539,6 +539,22 @@
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
                END-STRING
+           WHEN        "5"
+               STRING  " AND (HOSPNUM,PTID,RRKNUM) IN"
+                                               DELIMITED BY SIZE
+                       "(SELECT HOSPNUM,PTID,RRKNUM FROM tbl_nrrksrh"
+                                               DELIMITED BY SIZE
+                       " WHERE  (HOSPNUM,PTID,ZAINUM) IN "
+                                               DELIMITED BY SIZE
+                       "(SELECT HOSPNUM,PTID,ZAINUM FROM tbl_nsrysrh"
+                                               DELIMITED BY SIZE
+                       " WHERE  SRYCD = '099999914' "
+                                               DELIMITED BY SIZE
+                       " AND HKNCOMBINUM = '0999' ))"
+                                               DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
            END-EVALUATE
       *
       *    ¾õÂÖ

@@ -741,6 +741,10 @@
       *
                MOVE    TCOMBI-HKNCOMBI (IDX3)  TO  WRK-COMB-HKNCOMBINUM
                PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+               IF    ( FLG-HKNCOMBI            NOT =   ZERO )
+                   MOVE    WRK-COMB-HKNCOMBINUM
+                                               TO  COMB-HKNCOMBINUM
+               END-IF
                INITIALIZE                  PTRSIINF-REC
                IF    ( COMB-HKNNUM         =   "971"  OR  "973" )
                    PERFORM 900-PTRSIINF-KEY-SEL-SEC

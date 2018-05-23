@@ -16,6 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        01  I2SUB03-AREA.
+           03  I2SUB03-FROM                                PIC X(16).
            03  I2SUB03-BASEYMD                             PIC X(08).
            03  I2SUB03-ITEM-LIST-AREA.
                05  I2SUB03-SRYKALST-G.
@@ -35,7 +36,7 @@
                    07  I2SUB03-JOTAILST                    OCCURS  5.
                        09  I2SUB03-JOTAIL                  PIC X(01).
                        09  I2SUB03-JOTAIFLL                PIC X(01).
-                       09  I2SUB03-JOTAIMEIL               PIC X(10).
+                       09  I2SUB03-JOTAIMEIL               PIC X(20).
                05  I2SUB03-SEIKYUJOTAILST-G.
                    07  I2SUB03-SEIKYUJOTAILST-MAX          PIC 9(05).
                    07  I2SUB03-SEIKYUJOTAILST              OCCURS  2.

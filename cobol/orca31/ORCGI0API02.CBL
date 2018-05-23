@@ -292,7 +292,8 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  XML-BDRES
+           INITIALIZE                  XML-BDREQ
+                                       XML-BDRES
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -1252,11 +1253,13 @@
       *
            END-PERFORM
       *
-           MOVE    "リクエスト番号"
+           IF    ( BDREQ-REQNUM    NOT =   SPACE )
+               MOVE    "リクエスト番号"
                                TO  BDRES-REQNUM-LBL
       *
-           MOVE    BDREQ-REQNUM
+               MOVE    BDREQ-REQNUM
                                TO  BDRES-REQNUM-DATA
+           END-IF
       *
            EVALUATE    BDREQ-REQNUM
            WHEN    "01"
@@ -1264,13 +1267,6 @@
            WHEN    "02"
                MOVE    "登録"  TO  BDRES-REQNUM-NAME
            END-EVALUATE
-      *
-           MOVE    BDRES-REQNUM-LBL
-                               TO  BDRES-REQNUM-LBL
-           MOVE    BDRES-REQNUM-DATA
-                               TO  BDRES-REQNUM-DATA
-           MOVE    BDRES-REQNUM-NAME
-                               TO  BDRES-REQNUM-NAME
       *
            PERFORM 9001-XML-WRITE-SEC
       *

@@ -342,7 +342,7 @@ path	key17 	{
 			AND     PTID        =   :PTID
 			AND     SRYYM       =   :SRYYM
 			AND     ZAISKBKBN   =   :ZAISKBKBN
-			ORDER  BY   SRYKA
+			ORDER  BY   SRYKA,SRYCDTOTAL	
 		;
 	};
 };
@@ -1173,3 +1173,50 @@ path	key62 	{
 	};
 };
 
+path	key63	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key63_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       >   :SRYYM
+                        AND   ZAISKBKBN   =   '4'
+                        AND   SRYCDTOTAL  =   99999918
+			ORDER  BY  SRYYM
+		;
+	};
+};
+
+path	key64	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key64_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       >   :SRYYM
+                        AND   ZAISKBKBN   =   '4'
+                        AND   SRYCDTOTAL  =   99999919
+			ORDER  BY  SRYYM
+		;
+	};
+};
+
+path	key65	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key65_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       >   :SRYYM
+                        AND   ZAISKBKBN   =   '4'
+                        AND   SRYCDTOTAL  =   99999920
+			ORDER  BY  SRYYM
+		;
+	};
+};

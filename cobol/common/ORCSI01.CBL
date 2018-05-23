@@ -274,6 +274,7 @@
                    END-IF
       *
                    IF   ( CNT-KSN      <   CONST-GMN-KSN-MAX )
+                    AND ( SI01-SNTNYUINCD  NOT =   SPACE )
                        EVALUATE    TRUE
                        WHEN  ( SI01-SRYYMD     >=  CONST-H300401 )
                            PERFORM 2001-H30-KSN-CHK-SEC

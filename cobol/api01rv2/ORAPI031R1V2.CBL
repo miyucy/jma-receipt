@@ -405,6 +405,13 @@
                MOVE    SNINF01-NYUINYMD (IDXA)
                                    TO  HSPTINFRES-NYUINYMD (IDXA)
       *
+               MOVE    SNINF01-TIMEKBN-IN-LBL (IDXA)
+                                   TO  HSPTINFRES-TIMEKBN-IN-LBL  (IDXA)
+               MOVE    SNINF01-TIMEKBN-IN-DATA (IDXA)
+                                   TO  HSPTINFRES-TIMEKBN-IN-DATA (IDXA)
+               MOVE    SNINF01-TIMEKBN-IN-NAME (IDXA)
+                                   TO  HSPTINFRES-TIMEKBN-IN-NAME (IDXA)
+      *
                MOVE    SNINF01-TAIINYMD (IDXA)
                                    TO  HSPTINFRES-TAIINYMD (IDXA)
       *
@@ -500,6 +507,27 @@
                                    TO HSPTINFRES-NYUINRYO-DATA (IDXA)
                MOVE    SNINF01-NYUINRYO-NAME (IDXA)
                                    TO HSPTINFRES-NYUINRYO-NAME (IDXA)
+               IF    ( SNINF01-TOKSNTCD-DATA (IDXA)    NOT =   SPACE )
+                   MOVE    SNINF01-TOKSNTCD-DATA (IDXA)
+                                   TO HSPTINFRES-NYUINRYO-DATA (IDXA)
+                   MOVE    SNINF01-TOKSNTCD-NAME (IDXA)
+                                   TO HSPTINFRES-NYUINRYO-NAME (IDXA)
+               END-IF
+               MOVE    SNINF01-TOKSNTKBN-LBL (IDXA)
+                                   TO HSPTINFRES-TOKSNTKBN-LBL (IDXA)
+               MOVE    SNINF01-TOKSNTKBN-DATA (IDXA)
+                                   TO HSPTINFRES-TOKSNTKBN-DATA (IDXA)
+               MOVE    SNINF01-TOKSNTKBN-NAME (IDXA)
+                                   TO  HSPTINFRES-TOKSNTKBN-NAME (IDXA)
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   3 )
+                   MOVE    SNINF01-KSNSRYCD-LBL (IDXA IDX1)
+                               TO HSPTINFRES-KSNSRYCD-LBL (IDXA IDX1)
+                   MOVE    SNINF01-KSNSRYCD-DATA (IDXA IDX1)
+                               TO HSPTINFRES-KSNSRYCD-DATA (IDXA IDX1)
+                   MOVE    SNINF01-KSNSRYCD-NAME (IDXA IDX1)
+                               TO HSPTINFRES-KSNSRYCD-NAME (IDXA IDX1)
+               END-PERFORM
                MOVE    SNINF01-NACCTKBN-LBL (IDXA)
                                    TO HSPTINFRES-NACCTKBN-LBL (IDXA)
                MOVE    SNINF01-NACCTKBN-DATA (IDXA)
@@ -524,6 +552,29 @@
                                    TO HSPTINFRES-TEIKIKBN-DATA (IDXA)
                MOVE    SNINF01-TEIKIKBN-NAME (IDXA)
                                    TO HSPTINFRES-TEIKIKBN-NAME (IDXA)
+               MOVE   SNINF01-DISPKBN-LBL (IDXA)
+                                   TO HSPTINFRES-DISPKBN-LBL (IDXA)
+               MOVE   SNINF01-DISPKBN-DATA (IDXA)
+                                   TO HSPTINFRES-DISPKBN-DATA (IDXA)
+               MOVE   SNINF01-DISPKBN-NAME (IDXA)
+                                   TO HSPTINFRES-DISPKBN-NAME (IDXA)
+               MOVE   SNINF01-SKJKBN-LBL (IDXA)
+                                   TO HSPTINFRES-SKJKBN-LBL (IDXA)
+               MOVE   SNINF01-SKJKBN-DATA (IDXA)
+                                   TO HSPTINFRES-SKJKBN-DATA (IDXA)
+               MOVE   SNINF01-SKJKBN-NAME (IDXA)
+                                   TO HSPTINFRES-SKJKBN-NAME (IDXA)
+               IF    ( SNINF01-SKJKBN-DATA (IDXA)  =   "B" OR "C" )
+                   PERFORM VARYING IDXB   FROM 1   BY  1
+                           UNTIL ( IDXB   >   3 )
+                       MOVE    SNINF01-TSKJKBN-LBL (IDXA IDXB)
+                               TO  HSPTINFRES-TSKJKBN-LBL (IDXA IDXB)
+                       MOVE    SNINF01-TSKJKBN-DATA (IDXA IDXB)
+                               TO  HSPTINFRES-TSKJKBN-DATA (IDXA IDXB)
+                       MOVE    SNINF01-TSKJKBN-NAME (IDXA IDXB)
+                               TO  HSPTINFRES-TSKJKBN-NAME (IDXA IDXB)
+                   END-PERFORM
+               END-IF
       *
            END-PERFORM
       *

@@ -113,6 +113,7 @@
       *                                     平成３０年３月まで
       *  05.00.00    NACL-小豆沢  18/04/16  療養病棟入院料２（経過措置）
       *                                     の判定追加
+      *  05.00.00    NACL-小豆沢  18/04/18  食事個別指示対応
       *  04.08.00    NACL-多々納  18/05/18  施設基準チェック廃止
       *****************************************************************
       *
@@ -4460,6 +4461,12 @@ grpsys                                     SPA-AREA
                END-IF
            END-IF
       *
+           IF      SPA-NAI-NUM-41      =   ZERO
+               MOVE    1                   TO  SPA-GMN-CUR-41
+               MOVE    "0013"              TO  SPA-ERRCD
+               GO      TO      41012-DAY-CHK-EXT
+           END-IF
+      *
       *    一括入力とする
            MOVE    I41-KOMENTO         TO  SPA-GMN-KOMENTO-41
       *
@@ -5035,6 +5042,12 @@ grpsys                                     SPA-AREA
       *****************************************************************
        41017-KOMENTO-CHK-SEC              SECTION.
       *
+           IF      SPA-NAI-NUM-41      =   ZERO
+               MOVE    1                   TO  SPA-GMN-CUR-41
+               MOVE    "0013"              TO  SPA-ERRCD
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF
+      *
            MOVE    I41-KOMENTO         TO  SPA-GMN-KOMENTO-41.
            MOVE    03                  TO  SPA-GMN-CUR-41.
       *
@@ -5042,6 +5055,7 @@ grpsys                                     SPA-AREA
                MOVE    03                  TO  SPA-GMN-CUR-41
                GO      TO      41017-KOMENTO-CHK-EXT
            END-IF
+      *
       *    食事判定
            MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
            IF     (SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO)
@@ -6038,7 +6052,8 @@ grpsys                                     SPA-AREA
       *        GO      TO      420-ZAIHENKOU-EXT
       **** END-IF.
       *
-           MOVE    "0104"              TO  SPA-IIDCD.
+           MOVE    "0104"              TO  SPA-IIDCD
+           .
       *
        420-ZAIHENKOU-EXT.
            EXIT.
@@ -7122,6 +7137,15 @@ grpsys                                     SPA-AREA
                MOVE   SPA-TAIHI-SHOKUJI-YORU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
            END-IF
+           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+               MOVE   PTNYUINRRK-SKJKBN-ASA
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+               MOVE   PTNYUINRRK-SKJKBN-HIRU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+               MOVE   PTNYUINRRK-SKJKBN-YU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+           END-IF
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI        =    ZERO
@@ -7485,6 +7509,15 @@ grpsys                                     SPA-AREA
                MOVE   SPA-TAIHI-SHOKUJI-HIRU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
                MOVE   SPA-TAIHI-SHOKUJI-YORU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
+           END-IF
+           IF     PTNYUINRRK-SKJKBN    =   "B"  OR  "C"
+               MOVE    "1"             TO  LNK-SCNYUACCT-SHOKUJI-SETKBN
+               MOVE   PTNYUINRRK-SKJKBN-ASA
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-ASA
+               MOVE   PTNYUINRRK-SKJKBN-HIRU
+                                       TO  LNK-SCNYUACCT-SHOKUJIKBN-HIRU
+               MOVE   PTNYUINRRK-SKJKBN-YU
                                        TO  LNK-SCNYUACCT-SHOKUJIKBN-YORU
            END-IF
       *    食堂加算
@@ -8512,6 +8545,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC.
+      *
+      *     入院行為照会用テーブル作成サブ呼び出し
+            INITIALIZE                  SS010-AREA
+            MOVE    SPA-GMN-PTID        TO  SS010-PTID
+            MOVE    WRK-SRYYM-N         TO  SS010-SRYYM
+            CALL    "ORCSS010"      USING   SS010-AREA
+                                            SPA-AREA
+            IF    ( SS010-RC        NOT =   ZERO )
+                MOVE    "0052"          TO  SPA-ERRCD
+            END-IF
+      *
+            .
       *
        490111-NYUINACCT-UPD3-EXT.
            EXIT.

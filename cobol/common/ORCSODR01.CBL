@@ -130,6 +130,7 @@
            03  ITEM-SHONUM             PIC 9(03).
            03  ITEM-DOUJITSUKBN        PIC X(01).
            03  ITEM-NYUINKA            PIC X(02).
+           03  ITEM-TEMPSET            PIC X(01).
            03  ITEM-HKNCOMBI           PIC 9(04).
            03  ITEM-KAIGOKBN           PIC X(01).
            03  ITEM-NACCTKBN           PIC X(01).
@@ -405,6 +406,7 @@
            MOVE    "2"             TO  ITEM-NACCTKBN
            MOVE    "1"             TO  ITEM-TEIKIKBN
            MOVE    "1"             TO  ITEM-DISPKBN
+           MOVE    "0"             TO  ITEM-TEMPSET
            MOVE    "0"             TO  ITEM-AUTOSET
       *
            PERFORM VARYING IDX-ODR    FROM    1   BY  1
@@ -435,6 +437,8 @@
                    PERFORM 20011-TOKHIGAITOKBN-CHK-SEC
                WHEN    NCLAIMID-NYUINKAJMA
                    PERFORM 20011-NYUINKA-CHK-SEC
+               WHEN    NCLAIMID-TEMPSETJMA
+                   PERFORM 20011-TEMPSET-CHK-SEC
                WHEN    NCLAIMID-HKNCOMBIJMA
                    PERFORM 20011-HKNCOMBI-CHK-SEC
                WHEN    NCLAIMID-NACCTKBNJMA
@@ -881,9 +885,47 @@
        20011-NYUINKA-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    保険組合せ仮設定区分チェック処理
+      *****************************************************************
+       20011-TEMPSET-CHK-SEC         SECTION.
+      *
+           IF    ( LNK-ODRITEM-ITEM (IDX-ODR)
+                                     NOT =   SPACE )
+               IF    ( LNK-ODRITEM-ITEM (IDX-ODR)
+                                         =   "0" OR "1" )
+                   MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
+                                       TO  ITEM-TEMPSET
+               ELSE
+                   MOVE    "E"         TO  ITEM-TEMPSET
+                   MOVE    "0200"      TO  ERRCD-ERRCD
+                   PERFORM 2100-ITEM-ERR-SET-SEC
+               END-IF
+           END-IF
+      *
+           .
+       20011-TEMPSET-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    保険組合せチェック処理
       *****************************************************************
-       20011-HKNCOMBI-CHK-SEC           SECTION.
+       20011-HKNCOMBI-CHK-SEC          SECTION.
+      *
+           EVALUATE    ITEM-TEMPSET
+           WHEN    "1"
+               MOVE    999             TO  ITEM-HKNCOMBI
+           WHEN    "E"
+               CONTINUE
+           WHEN    OTHER
+               PERFORM 200111-HKNCOMBI-CHK-SEC
+           END-EVALUATE
+      *
+           .
+       20011-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せチェック処理
+      *****************************************************************
+       200111-HKNCOMBI-CHK-SEC         SECTION.
       *
            COMPUTE CNT-HKNCOMBI  =   CNT-HKNCOMBI  +   1
       *
@@ -915,7 +957,7 @@
            END-IF
       *
            .
-       20011-HKNCOMBI-CHK-EXT.
+       200111-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院会計区分チェック処理
@@ -1668,6 +1710,10 @@
                                    TO  PTNYUINRRK-KAIGOKBN
            END-IF
       *
+           MOVE    ITEM-KSNCD (1)  TO  PTNYUINRRK-KSNSRYCD(1)
+           MOVE    ITEM-KSNCD (2)  TO  PTNYUINRRK-KSNSRYCD(2)
+           MOVE    ITEM-KSNCD (3)  TO  PTNYUINRRK-KSNSRYCD(3)
+      *
            MOVE    1               TO  PTNYUINRRK-MAXEDANUM
       *
            MOVE    SODR-OPID       TO  PTNYUINRRK-OPID
@@ -1992,6 +2038,7 @@
                                        OR  NCLAIMID-BUNBENKBNJMA
                                        OR  NCLAIMID-RIYOUKBNJMA
                                        OR  NCLAIMID-AUTOSETJMA
+                                       OR  NCLAIMID-TEMPSETJMA
                                         )
                CONTINUE
            ELSE
