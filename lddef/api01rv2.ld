@@ -41,6 +41,7 @@ bindapi	"subjectiveslstv2"	"OpenCOBOL"	"ORAPI025R1V2";
 bindapi	"system01dailyv2"	"OpenCOBOL"	"ORAPI101R2V2";
 bindapi	"hsconfroomchargev2"	"OpenCOBOL"	"ORAPI031RC3V2";
 bindapi	"pusheventgetv2"	"OpenCOBOL"	"ORAPI000R3V2";
+bindapi	"apiversiongetv2"	"OpenCOBOL"	"ORAPI000R4V2";
 
 multiplex_group	api01rv2;
 
@@ -85,6 +86,7 @@ data	{
 		system01dailyv2;
         hsconfroomchargev2;
         pusheventgetv2;
+        apiversiongetv2;
 	};
 };
 db "xml2" {
@@ -167,6 +169,8 @@ db "xml2" {
  xml_hsconfroomchargev2res;
  xml_pusheventgetv2req;
  xml_pusheventgetv2err;
+ xml_apiversiongetv2req;
+ xml_apiversiongetv2res;
 };
 
 #include "orcadb.inc"

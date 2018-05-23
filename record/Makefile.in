@@ -555,6 +555,7 @@ RECORD_files = \
         addressmasterlstv3.rec \
 	XG04.rec \
 	tempmedicaladdv3.rec \
+	apiversiongetv2.rec \
 
 
 DEF_files = \
@@ -1077,6 +1078,8 @@ DB_files = \
 	tbl_file_mis.db \
 	xml_temp_medical_addv3req.db \
 	xml_temp_medical_addv3res.db \
+    xml_apiversiongetv2req.db \
+    xml_apiversiongetv2res.db \
 
 
 shell.db: shell.db.in
