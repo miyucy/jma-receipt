@@ -1024,8 +1024,6 @@
                MOVE    SPA-SYSYMD      TO  REQ-BASEYMD
            ELSE
       *
-               MOVE    1               TO  FLG-REQUESTED
-      *
                MOVE    HSFINDREQ-BASEYMD
                                        TO  WRK-DATE
                PERFORM 800-SYMD-SEC

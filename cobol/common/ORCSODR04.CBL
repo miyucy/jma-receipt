@@ -707,8 +707,15 @@
       *
            IF    ( CNT-SAME-AFTER <=  3 )
                IF    ( TRRK-RRKNUM =   ITEM-RRKNUM )
-                AND  ( LNK-ODRITEM-ITEM (IDX-ODR)  =   "1" )
-                   MOVE    "1"     TO  ITEM-SAME-AFTER (CNT-SAME-AFTER)
+                   IF    ( LNK-ODRITEM-ITEM (IDX-ODR)
+                                   =   SPACE  OR "0" OR "1" )
+                       IF    ( LNK-ODRITEM-ITEM (IDX-ODR)  =   "1" )
+                         MOVE  "1" TO  ITEM-SAME-AFTER (CNT-SAME-AFTER)
+                       END-IF
+                   ELSE
+                       MOVE    "0201"  TO  ERRCD-ERRCD
+                       PERFORM 2100-ITEM-ERR-SET-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -955,7 +962,7 @@
                    MOVE    SODR-SRYYMD (1:6)   TO  WRK-SYMD
                    MOVE    "01"                TO  WRK-SYMD(7:2)
                    MOVE    "2"                 TO  WRK-ZOGENPTN
-                   MOVE    5                   TO  WRK-ZOGEN
+                   MOVE    11                  TO  WRK-ZOGEN
                    PERFORM 800-CALENDAR-SEC
                    IF    ( WRK-KEISANYMD (1:6) <   WRK-NACCTYM )
                        MOVE    "0199"  TO  ERRCD-ORDER
@@ -1405,7 +1412,9 @@
                                    TO  WRK-ORDERID
                    END-EVALUATE
       *
-                   PERFORM 210111-ORCSODRNACCT-CALL-SEC
+                   IF    ( WRK-ORDERID NOT =   SPACE )
+                       PERFORM 210111-ORCSODRNACCT-CALL-SEC
+                   END-IF
       *
                END-PERFORM
       *

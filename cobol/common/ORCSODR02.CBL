@@ -1261,8 +1261,8 @@
                END-IF
            ELSE
                EVALUATE LNK-S02-RC
-               WHEN    13
-                   MOVE    "0061"      TO  ERRCD-ORDER
+               WHEN    37
+                   MOVE    "7037"      TO  ERRCD-ORDER
                WHEN    OTHER
                    MOVE    "0061"      TO  ERRCD-ORDER
                END-EVALUATE

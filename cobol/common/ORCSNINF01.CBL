@@ -105,11 +105,17 @@
            03  WRK-NYUINRYO-G.
                05  WRK-NYUINRYO-CD     PIC X(09).
                05  WRK-NYUINRYO-NAME   PIC X(100).
+           03  WRK-TOKTEI-G.
+               05  WRK-TOKTEI-CD       PIC X(09).
+               05  WRK-TOKTEI-NAME     PIC X(100).
            03  WRK-KSNSRYCD-G.
                05  WRK-KSNSRYCD-MAX        PIC 9(03).
                05  WRK-KSNSRYCD-OCC        OCCURS 3.
                    07  WRK-KSNSRYCD        PIC X(09).
                    07  WRK-KSNSRYCD-NAME   PIC X(100).
+           03  WRK-SKJKBN-G.
+               05  WRK-SKJKBN              PIC X(01).
+               05  WRK-SKJKBN-NAME         PIC X(30).
       *
        01  KEY-AREA.
            03  KEY-RRKNUM              PIC 9(03).
@@ -118,6 +124,7 @@
       *
       *
        01  CONST-AREA.
+           03  CONST-H180401           PIC X(08)   VALUE "20060401".
            03  CONST-H211001           PIC X(08)   VALUE "20091001".
            03  CONST-RRK-MAX           PIC 9(03)   VALUE 100.
       *
@@ -127,6 +134,10 @@
        01  TRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING   //PTNYUINRRK-//
                                        BY          //TRRK-//.
+      *
+       01  BRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"  REPLACING   //PTNYUINRRK-//
+                                       BY          //BRRK-//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -182,6 +193,10 @@
            COPY    "CPSK5113.INC".
       *    退院事由
            COPY    "CPSK5013.INC".
+      *    特定入院料等（病棟）
+           COPY    "CPSK5110.INC".
+      *    特定入院料等（病室）
+           COPY    "CPSK5111.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -328,7 +343,6 @@
            END-PERFORM
       *
            MOVE    IDXA                TO  SNINF01-NYUINRRK-INF-MAX
-           DISPLAY "SNINF01-NYUINRRK-INF-MAX=" SNINF01-NYUINRRK-INF-MAX
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key59"             TO  MCP-PATHNAME
@@ -343,6 +357,11 @@
        20011-NYUINRRK-EDIT-SEC                SECTION.
       *
            COMPUTE IDXA    =   IDXA    +   1
+      *
+           MOVE    PTNYUINRRK-REC      TO  BRRK-REC
+           IF    ( PTNYUINRRK-RRKEDANUM    >  1 )
+               PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
+           END-IF
       *
            INITIALIZE                      SYSKANRI-REC
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
@@ -587,6 +606,8 @@
       *
            END-IF
       *
+           PERFORM 200111-TOKSNT-EDIT-SEC
+      *
            IF    ( PTNYUINRRK-RRKEDANUM    NOT =   1 )
             OR   ( SNINF01-IN-KJNYMD       NOT =   SPACE )
                IF    ( PTNYUINRRK-RRKEDANUM    NOT =   1 )
@@ -699,18 +720,41 @@
            MOVE    "食事の種類"    TO  SNINF01-SKJKBN-LBL (IDXA)
            MOVE    PTNYUINRRK-SKJKBN
                                    TO  SNINF01-SKJKBN-DATA (IDXA)
-           EVALUATE    PTNYUINRRK-SKJKBN
-           WHEN    "0"
-               MOVE    "食事なし"  TO  SNINF01-SKJKBN-NAME (IDXA)
-           WHEN    "1"
-               MOVE    "食事あり"  TO  SNINF01-SKJKBN-NAME (IDXA)
-           WHEN    "2"
-               MOVE    "食事あり（特別食）"
-                                   TO  SNINF01-SKJKBN-NAME (IDXA)
-           WHEN    "A"
-               MOVE    "変更なし（転科転棟転室時）"
-                                   TO  SNINF01-SKJKBN-NAME (IDXA)
-           END-EVALUATE
+           MOVE    PTNYUINRRK-SKJKBN
+                                   TO  WRK-SKJKBN
+           PERFORM 20011-SKJKBN-SEC
+           MOVE    WRK-SKJKBN-NAME TO  SNINF01-SKJKBN-NAME (IDXA)
+      *
+           IF    ( PTNYUINRRK-SKJKBN   =   "B" OR "C" )
+      *
+               MOVE    "食事の種類（朝）"
+                                   TO  SNINF01-TSKJKBN-LBL (IDXA 1)
+               MOVE    PTNYUINRRK-SKJKBN-ASA
+                                   TO  SNINF01-TSKJKBN-DATA(IDXA 1)
+               MOVE    PTNYUINRRK-SKJKBN-ASA
+                                   TO  WRK-SKJKBN
+               PERFORM 20011-SKJKBN-SEC
+               MOVE    WRK-SKJKBN-NAME TO SNINF01-TSKJKBN-NAME(IDXA 1)
+      *
+               MOVE    "食事の種類（昼）"
+                                   TO  SNINF01-TSKJKBN-LBL (IDXA 2)
+               MOVE    PTNYUINRRK-SKJKBN-HIRU
+                                   TO  SNINF01-TSKJKBN-DATA(IDXA 2)
+               MOVE    PTNYUINRRK-SKJKBN-HIRU
+                                   TO  WRK-SKJKBN
+               PERFORM 20011-SKJKBN-SEC
+               MOVE    WRK-SKJKBN-NAME TO SNINF01-TSKJKBN-NAME(IDXA 2)
+      *
+               MOVE    "食事の種類（夕）"
+                                   TO  SNINF01-TSKJKBN-LBL (IDXA 3)
+               MOVE    PTNYUINRRK-SKJKBN-YU
+                                   TO  SNINF01-TSKJKBN-DATA(IDXA 3)
+               MOVE    PTNYUINRRK-SKJKBN-YU
+                                   TO  WRK-SKJKBN
+               PERFORM 20011-SKJKBN-SEC
+               MOVE    WRK-SKJKBN-NAME TO SNINF01-TSKJKBN-NAME(IDXA 3)
+      *
+           END-IF
       *
           .
        20011-NYUINRRK-EXT.
@@ -888,6 +932,79 @@
        2001111-NYUINRYO-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    特定入院料算定要件非該当編集処理
+      *****************************************************************
+       200111-TOKSNT-EDIT-SEC              SECTION.
+      *
+           MOVE    "算定要件非該当区分"
+                               TO  SNINF01-TOKSNTKBN-LBL(IDXA)
+           IF    ( BRRK-TOKU-SANTEIYOUKENKBN
+                               =   "1" )
+               MOVE    "1"     TO  SNINF01-TOKSNTKBN-DATA(IDXA)
+               MOVE    "算定要件に該当しない患者"
+                               TO  SNINF01-TOKSNTKBN-NAME(IDXA)
+      *
+               MOVE    SPACE   TO  WRK-TOKTEI-G
+               EVALUATE    BRRK-TOKUTEI-KBN
+               WHEN    "2"
+                   EVALUATE    BRRK-TOKUTEI-NYUIN
+                   WHEN    "10"
+                       IF    ( BRRK-NYUINYMD    >= CONST-H180401 )
+                           MOVE    "190121010"     TO  WRK-TOKTEI-CD
+                       END-IF
+                   WHEN    "11"
+                       IF    ( BRRK-NYUINYMD    >= CONST-H180401 )
+                           MOVE    "190121110"     TO  WRK-TOKTEI-CD
+                       END-IF
+                   WHEN    "12"
+                       IF    ( BRRK-NYUINYMD    >= CONST-H180401 )
+                           MOVE    "190121210"     TO  WRK-TOKTEI-CD
+                       END-IF
+                   END-EVALUATE
+                   IF    ( WRK-TOKTEI-CD   =   SPACE )
+                       INITIALIZE              SYSKANRI-REC
+                       MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+                       MOVE    "5110"          TO  SYS-KANRICD
+                       MOVE    BRRK-TOKUTEI-NYUIN
+                                               TO  SYS-KBNCD
+                       MOVE    BRRK-NYUINYMD
+                                               TO  SYS-STYUKYMD
+                                                   SYS-EDYUKYMD
+                       PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                       MOVE    SYSKANRI-REC    TO  SYS-5110-REC
+                       MOVE    SYS-5110-SRYCD  TO  WRK-TOKTEI-CD
+                   END-IF
+               WHEN    "3"
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+                   MOVE    "5111"              TO  SYS-KANRICD
+                   MOVE    BRRK-TOKUTEI-NYUIN
+                                               TO  SYS-KBNCD
+                   MOVE    BRRK-NYUINYMD TO  SYS-STYUKYMD
+                                                   SYS-EDYUKYMD
+                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                   MOVE    SYSKANRI-REC        TO  SYS-5111-REC
+                   MOVE    SYS-5111-SRYCD      TO  WRK-TOKTEI-CD
+               END-EVALUATE
+               IF    ( WRK-TOKTEI-CD           NOT =   SPACE )
+                   MOVE    "算定要件非該当特定入院料"
+                                         TO  SNINF01-TOKSNTCD-LBL(IDXA)
+                   MOVE    WRK-TOKTEI-CD TO  SNINF01-TOKSNTCD-DATA(IDXA)
+                   MOVE    BRRK-NYUINYMD TO  WRK-KJNYMD
+                   MOVE    WRK-TOKTEI-CD TO  KEY-SRYCD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   MOVE    TNS-NAME      TO  SNINF01-TOKSNTCD-NAME(IDXA)
+               END-IF
+           ELSE
+               MOVE    "0"     TO  SNINF01-TOKSNTKBN-DATA(IDXA)
+               MOVE    "算定要件に該当する患者"
+                               TO  SNINF01-TOKSNTKBN-NAME(IDXA)
+           END-IF
+      *
+          .
+       200111-TOKSNT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    入院料編集処理
       *****************************************************************
        2001111-KSNSRYCD-EDIT-SEC           SECTION.
@@ -980,6 +1097,38 @@
       *
           .
        20012-NYUINRRK-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事区分編集処理
+      *****************************************************************
+       20011-SKJKBN-SEC                SECTION.
+      *
+           MOVE    SPACE           TO  WRK-SKJKBN-NAME
+      *
+           EVALUATE    WRK-SKJKBN
+           WHEN    "0"
+               MOVE    "食事なし"  TO  WRK-SKJKBN-NAME
+           WHEN    "1"
+               MOVE    "食事あり"  TO  WRK-SKJKBN-NAME
+           WHEN    "2"
+               MOVE    "食事あり（特別食）"
+                                   TO  WRK-SKJKBN-NAME
+           WHEN    "3"
+               MOVE    "食事あり（流動食）"
+                                   TO  WRK-SKJKBN-NAME
+           WHEN    "A"
+               MOVE    "変更なし"
+                                   TO  WRK-SKJKBN-NAME
+           WHEN    "B"
+               MOVE    "変更なし（個別指示）"
+                                   TO  WRK-SKJKBN-NAME
+           WHEN    "C"
+               MOVE    "個別指示"
+                                   TO  WRK-SKJKBN-NAME
+           END-EVALUATE
+      *
+          .
+       20011-SKJKBN-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -1158,6 +1307,29 @@
       *
            .
        900-PTNYUINRRK-KEY30-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院履歴検索処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    1                   TO  BRRK-RRKEDANUM
+           MOVE    BRRK-REC            TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  BRRK-REC
+           ELSE
+               INITIALIZE                  BRRK-REC
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTNYUINRRK-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    入院履歴検索処理

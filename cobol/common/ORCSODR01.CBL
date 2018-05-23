@@ -406,6 +406,7 @@
            MOVE    "2"             TO  ITEM-NACCTKBN
            MOVE    "1"             TO  ITEM-TEIKIKBN
            MOVE    "1"             TO  ITEM-DISPKBN
+           MOVE    "0"             TO  ITEM-TEMPSET
            MOVE    "0"             TO  ITEM-AUTOSET
       *
            PERFORM VARYING IDX-ODR    FROM    1   BY  1
@@ -895,6 +896,7 @@
                    MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
                                        TO  ITEM-TEMPSET
                ELSE
+                   MOVE    "E"         TO  ITEM-TEMPSET
                    MOVE    "0200"      TO  ERRCD-ERRCD
                    PERFORM 2100-ITEM-ERR-SET-SEC
                END-IF
@@ -908,11 +910,14 @@
       *****************************************************************
        20011-HKNCOMBI-CHK-SEC          SECTION.
       *
-           IF    ( ITEM-TEMPSET        =   "1" )
+           EVALUATE    ITEM-TEMPSET
+           WHEN    "1"
                MOVE    999             TO  ITEM-HKNCOMBI
-           ELSE
+           WHEN    "E"
+               CONTINUE
+           WHEN    OTHER
                PERFORM 200111-HKNCOMBI-CHK-SEC
-           END-IF
+           END-EVALUATE
       *
            .
        20011-HKNCOMBI-CHK-EXT.

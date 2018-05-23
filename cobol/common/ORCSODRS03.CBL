@@ -57,6 +57,9 @@
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-IDX             PIC 9(05).
                05  WRK-CMB-ITM             PIC X(200).
+           03  WRK-ERRCD.
+               05  WRK-ERRCD9              PIC 9(04).
+           03  WRK-ERRMSG                  PIC X(80).
       *
       *    エラーコード
            COPY    "CPNCLAIMERRCD.INC".
@@ -68,6 +71,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+       COPY    "CPORCS02MSG.INC".
+       COPY    "COMMON-SPA".
       *
       *****************************************************************
       *    連絡　領域
@@ -104,6 +110,7 @@
       *
            INITIALIZE                  IDX-AREA
                                        WRK-AREA
+                                       SPA-AREA
       *
            .
        100-INIT-EXT.
@@ -114,19 +121,35 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           MOVE    SODRS03-ERRCD       TO  WRK-CMB-CD
-           PERFORM 2001-GET-ERRMSG-SEC
-           IF    ( WRK-CMB-ITM (1:4)   IS  NUMERIC )
-            AND  ( WRK-CMB-ITM (5: )   =   SPACE )
-               MOVE    WRK-CMB-ITM TO  WRK-CMB-CD
+           IF    ( SODRS03-ERRCD(1:1)  =   "7" )
+               MOVE    "7001"          TO  WRK-CMB-CD
                PERFORM 2001-GET-ERRMSG-SEC
-               MOVE    WRK-CMB-ITM TO  SODRS03-ERRMSG
-               IF    ( WRK-CMB-IDX NOT =   ZERO )
-                   MOVE    NCLAIMERRCDL (WRK-CMB-IDX)
-                                   TO  SODRS03-ERRCD
-               END-IF
+               INITIALIZE                  S02MSG-AREA
+               MOVE    SODRS03-ERRCD   TO  WRK-ERRCD
+               COMPUTE S02MSG-S02-RC = WRK-ERRCD9  -   7000
+               CALL    "ORCS02MSG"     USING
+                                       S02MSG-AREA
+                                       SPA-AREA
+               MOVE    "7001"          TO  SODRS03-ERRCD
+               STRING  WRK-CMB-ITM     DELIMITED   BY  SPACE
+                       S02MSG-MSG (1)  DELIMITED   BY  SPACE
+               INTO    SODRS03-ERRMSG
+               END-STRING
            ELSE
-               MOVE    WRK-CMB-ITM TO  SODRS03-ERRMSG
+               MOVE    SODRS03-ERRCD   TO  WRK-CMB-CD
+               PERFORM 2001-GET-ERRMSG-SEC
+               IF    ( WRK-CMB-ITM (1:4)   IS  NUMERIC )
+                AND  ( WRK-CMB-ITM (5: )   =   SPACE )
+                   MOVE    WRK-CMB-ITM TO  WRK-CMB-CD
+                   PERFORM 2001-GET-ERRMSG-SEC
+                   MOVE    WRK-CMB-ITM TO  SODRS03-ERRMSG
+                   IF    ( WRK-CMB-IDX NOT =   ZERO )
+                       MOVE    NCLAIMERRCDL (WRK-CMB-IDX)
+                                   TO  SODRS03-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    WRK-CMB-ITM TO  SODRS03-ERRMSG
+               END-IF
            END-IF
       *
            .

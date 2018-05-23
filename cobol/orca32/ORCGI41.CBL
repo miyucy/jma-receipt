@@ -4461,6 +4461,12 @@ grpsys                                     SPA-AREA
                END-IF
            END-IF
       *
+           IF      SPA-NAI-NUM-41      =   ZERO
+               MOVE    1                   TO  SPA-GMN-CUR-41
+               MOVE    "0013"              TO  SPA-ERRCD
+               GO      TO      41012-DAY-CHK-EXT
+           END-IF
+      *
       *    一括入力とする
            MOVE    I41-KOMENTO         TO  SPA-GMN-KOMENTO-41
       *
@@ -5036,6 +5042,12 @@ grpsys                                     SPA-AREA
       *****************************************************************
        41017-KOMENTO-CHK-SEC              SECTION.
       *
+           IF      SPA-NAI-NUM-41      =   ZERO
+               MOVE    1                   TO  SPA-GMN-CUR-41
+               MOVE    "0013"              TO  SPA-ERRCD
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF
+      *
            MOVE    I41-KOMENTO         TO  SPA-GMN-KOMENTO-41.
            MOVE    03                  TO  SPA-GMN-CUR-41.
       *
@@ -5043,6 +5055,7 @@ grpsys                                     SPA-AREA
                MOVE    03                  TO  SPA-GMN-CUR-41
                GO      TO      41017-KOMENTO-CHK-EXT
            END-IF
+      *
       *    食事判定
            MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
            IF     (SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO)
@@ -8532,6 +8545,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC.
+      *
+      *     入院行為照会用テーブル作成サブ呼び出し
+            INITIALIZE                  SS010-AREA
+            MOVE    SPA-GMN-PTID        TO  SS010-PTID
+            MOVE    WRK-SRYYM-N         TO  SS010-SRYYM
+            CALL    "ORCSS010"      USING   SS010-AREA
+                                            SPA-AREA
+            IF    ( SS010-RC        NOT =   ZERO )
+                MOVE    "0052"          TO  SPA-ERRCD
+            END-IF
+      *
+            .
       *
        490111-NYUINACCT-UPD3-EXT.
            EXIT.

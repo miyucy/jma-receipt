@@ -292,7 +292,13 @@
                    =   STUSAN-NISSU03      +   WRK-NISSU2
                MOVE    SDNTCHK-STYMD       TO  WRK-STYMD
                MOVE    STUSAN-KJNYMD       TO  WRK-EDYMD
-               PERFORM 2120-NYUINKIKAN-SEL-SEC
+               IF    ( STUSAN-TOKUTEI-SRYCD (1)    =   "999999999" )
+                   MOVE    ZERO            TO  WRK-ACCT-NISSU
+                                               WRK-ACCT-TOK-NISSU1
+                                               WRK-ACCT-TOK-NISSU2
+               ELSE
+                   PERFORM 2120-NYUINKIKAN-SEL-SEC
+               END-IF
                COMPUTE STUSAN-NISSU04
                    =   STUSAN-NISSU04 +    WRK-ACCT-NISSU
                COMPUTE STUSAN-NISSU05
@@ -495,7 +501,13 @@
                    =   STUSAN-NISSU03  +   WRK-NISSU2
                MOVE    SDNTCHK-STYMD       TO  WRK-STYMD
                MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
-               PERFORM 2120-NYUINKIKAN-SEL-SEC
+               IF    ( STUSAN-TOKUTEI-SRYCD (1)    =   "999999999" )
+                   MOVE    ZERO            TO  WRK-ACCT-NISSU
+                                               WRK-ACCT-TOK-NISSU1
+                                               WRK-ACCT-TOK-NISSU2
+               ELSE
+                   PERFORM 2120-NYUINKIKAN-SEL-SEC
+               END-IF
                COMPUTE STUSAN-NISSU04
                    =   STUSAN-NISSU04 +    WRK-ACCT-NISSU
                COMPUTE STUSAN-NISSU05

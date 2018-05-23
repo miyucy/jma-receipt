@@ -28,7 +28,6 @@ xml_hsfoodv2res {
 				Data			varchar(1);
 				Name			varchar(20);
 			};
-			Last_Update_Date	varchar(10);
 			Discharge_Date		varchar(10);
 			Discharge_Type{
 				Label			varchar(10);
@@ -92,17 +91,12 @@ xml_hsfoodv2res {
 				Data			varchar(09);
 				Name			varchar(100);
 			};
+            Hospital_Charge_NotApplicable{
+				Label			varchar(30);
+				Data			varchar(01);
+				Name			varchar(30);
+            };
             Additional_Hospital_Charge{
-				Label			varchar(20);
-				Data			varchar(09);
-				Name			varchar(100);
-            }[3];
-			Last_Hospital_Charge	{
-				Label			varchar(20);
-				Data			varchar(09);
-				Name			varchar(100);
-			};
-            Last_Additional_Hospital_Charge{
 				Label			varchar(20);
 				Data			varchar(09);
 				Name			varchar(100);
@@ -133,6 +127,21 @@ xml_hsfoodv2res {
 				Name			varchar(20);
 			};
 			Meal_Type{
+				Label			varchar(20);
+				Data			varchar(1);
+				Name			varchar(30);
+			};
+			Morning_Meal{
+				Label			varchar(20);
+				Data			varchar(1);
+				Name			varchar(30);
+			};
+			Lunch_Meal{
+				Label			varchar(20);
+				Data			varchar(1);
+				Name			varchar(30);
+			};
+			Evening_Meal{
 				Label			varchar(20);
 				Data			varchar(1);
 				Name			varchar(30);

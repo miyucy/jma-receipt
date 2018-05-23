@@ -74,7 +74,6 @@
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-PTCONF                  PIC 9(01).
            03  FLG-IDOKAIKEI-CANCEL        PIC 9(01).
-           03  FLG-SHOKUJI                 PIC 9(01).
            03  FLG-NYUINACCT-CHK           PIC 9(01).
            03  FLG-NYUINACCT-MAE-CHK       PIC 9(01).
       *
@@ -611,8 +610,6 @@
                WHEN    "0304"
                WHEN    "0305"
                WHEN    "0307"
-      *
-                   MOVE    1           TO      FLG-SHOKUJI
       *
                    IF   SODRNACCT-STARTYMD(1:6)  >= "201604"
                        PERFORM   4801-SHOKUJI-201604-SEC
@@ -8019,16 +8016,23 @@
                MOVE    NACCT-SRYYM TO  WRK-EDYMD
            END-IF
       *
-           IF    ( FLG-SHOKUJI     =   1 )
-               MOVE    SODRNACCT-STARTYMD (1:6)
-                                   TO  WRK-EDYMD
-           END-IF
-           IF    SODRNACCT-ORDERID  =  "9901"
+           EVALUATE    TRUE
+           WHEN      ( SODRNACCT-ORDERID(1:2)  =  "03" )
+      *
+               MOVE    SODRNACCT-STARTYMD  TO  WRK-STYMD
+      *
+               IF    ( SODRNACCT-SAME-AFTER    =   "1" )
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-STYMD       TO  WRK-EDYMD
+               END-IF
+           WHEN      ( SODRNACCT-ORDERID(1:2)  =  "02" OR "06" )
+           WHEN      ( SODRNACCT-ORDERID       =  "9901" )
                MOVE    SODRNACCT-STARTYMD
                                    TO  WRK-STYMD
                MOVE    SODRNACCT-STARTYMD (1:6)
                                    TO  WRK-EDYMD
-           END-IF
+           END-EVALUATE
       *
            IF    ( WRK-EDYMD       =   SPACE )
                DISPLAY "SELECT FAILED [NYUINACCT] PTID:"
@@ -8038,6 +8042,9 @@
                MOVE    "abort"         TO  MCP-PATHNAME
                PERFORM 910-DB-SEL-FETCH-SEC
            END-IF
+      *
+      D    DISPLAY "ORCSS010 " SODRNACCT-ORDERID " "
+      D             WRK-STYMD "-" WRK-EDYMD
       *
            PERFORM UNTIL ( WRK-STYMD (1:6) >   WRK-EDYMD (1:6))
                     OR   ( FLG-END     NOT =   ZERO )

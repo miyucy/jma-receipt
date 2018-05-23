@@ -100,6 +100,14 @@
                       09   SNINF01-NYUINRYO-LBL     PIC X(20).
                       09   SNINF01-NYUINRYO-DATA    PIC X(09).
                       09   SNINF01-NYUINRYO-NAME    PIC X(100).
+                  07  SNINF01-TOKSNTKBN-G.
+                      09   SNINF01-TOKSNTKBN-LBL     PIC X(30).
+                      09   SNINF01-TOKSNTKBN-DATA    PIC X(1).
+                      09   SNINF01-TOKSNTKBN-NAME    PIC X(30).
+                  07  SNINF01-TOKSNTCD-G.
+                      09   SNINF01-TOKSNTCD-LBL      PIC X(30).
+                      09   SNINF01-TOKSNTCD-DATA     PIC X(9).
+                      09   SNINF01-TOKSNTCD-NAME     PIC X(100).
                   07  SNINF01-KSNSRYCD-G.
                       09   SNINF01-KSNSRYCD-MAX     PIC 9(03).
                       09   SNINF01-KSNSRYCD-OCC     OCCURS 3.
@@ -146,3 +154,8 @@
                       09   SNINF01-SKJKBN-LBL       PIC X(20).
                       09   SNINF01-SKJKBN-DATA      PIC X(01).
                       09   SNINF01-SKJKBN-NAME      PIC X(30).
+                  07  SNINF01-TSKJKBN-G.
+                      09   SNINF01-TSKJKBN-OCC         OCCURS 3.
+                           11   SNINF01-TSKJKBN-LBL    PIC X(20).
+                           11   SNINF01-TSKJKBN-DATA   PIC X(01).
+                           11   SNINF01-TSKJKBN-NAME   PIC X(30).
