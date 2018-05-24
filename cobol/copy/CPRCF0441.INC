@@ -288,6 +288,7 @@
                05  RECE441-FLG-BOKOHO-COMMENT   PIC  X(01).
       *дл╠║║╕╨ъбПю╨©юнек║║йё╡ё╟╨пл╓кЧ║к╡ц╩╩
                05  RECE441-FLG-TUINZAI-COMMENT  PIC  X(01).
+               05  RECE441-FLG-TUINZAI2-COMMENT PIC  X(01).
       *╟мб╦╬и╫╦цднек║
                05  RECE441-FLG-IZONSYO-COMMENT  PIC  X(01).
       *╨ъбП╢╣╪тк╛лДлТ╨ч╢имЩ╩ьфЁна

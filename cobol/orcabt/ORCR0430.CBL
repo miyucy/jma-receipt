@@ -8633,7 +8633,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001-TUINZAI-HANTEI-SEC          SECTION.
       *
-           IF     RECE44-FLG-TUINZAI-COMMENT   =    "1"
+           IF  ((RECE41-SRYYM                >=  "201604") AND
+                (RECE44-FLG-TUINZAI-COMMENT   =  "1"     ) AND
+                (RECE44-FLG-TUINZAI2-COMMENT  =  "1"     ))
+           OR  ((RECE41-SRYYM                <=  "201603") AND
+                (RECE44-FLG-TUINZAI-COMMENT   =  "1"     ))
              MOVE    ZERO                TO  FLG-TUINZAI-COMMENT
              MOVE    SPACE               TO  WRK-TUINZAI-YMD
              INITIALIZE                      SANTEI-REC
