@@ -13330,39 +13330,39 @@
       *      DISPLAY  "PTNYUINRRK-NYUINYMD = "
       *                PTNYUINRRK-NYUINYMD
       *     会計作成用の年月算出（入院年月＋１月）
-            IF      FLG-SAI-SAKUSEI     =   1
-                MOVE    PTNYUINRRK-NYUINYMD(1:6)  TO  WRK-SAI-SRYYM
-                MOVE    WRK-SAI-I01-TOKNYUIN-CD   TO
-                                         SPA-GMN-I01-TOKNYUIN-CD
-            ELSE
-                MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)  TO  WRK-SAI-SRYYM
-            END-IF
-            IF      WRK-SAI-SRYMR        =  12
-                COMPUTE   WRK-SAI-SRYYR =   WRK-SAI-SRYYR + 1
-                MOVE      1             TO  WRK-SAI-SRYMR
-            ELSE
-                COMPUTE   WRK-SAI-SRYMR =   WRK-SAI-SRYMR + 1
-            END-IF
+      **      IF      FLG-SAI-SAKUSEI     =   1
+      **          MOVE    PTNYUINRRK-NYUINYMD(1:6)  TO  WRK-SAI-SRYYM
+      **          MOVE    WRK-SAI-I01-TOKNYUIN-CD   TO
+      **                                   SPA-GMN-I01-TOKNYUIN-CD
+      **      ELSE
+      **          MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)  TO  WRK-SAI-SRYYM
+      **      END-IF
+      **      IF      WRK-SAI-SRYMR        =  12
+      **          COMPUTE   WRK-SAI-SRYYR =   WRK-SAI-SRYYR + 1
+      **          MOVE      1             TO  WRK-SAI-SRYMR
+      **      ELSE
+      **          COMPUTE   WRK-SAI-SRYMR =   WRK-SAI-SRYMR + 1
+      **      END-IF
       *      DISPLAY "WRK-SAI-SRYYM = " WRK-SAI-SRYYM
-            MOVE    WRK-SAI-SRYYM    TO  WRK-SANTEISTYMD(1:6)
-            MOVE    "01"             TO  WRK-SANTEISTYMD(7:2)
-            MOVE    WRK-SANTEISTYMD  TO  SPA-NAI-I01-IDOYMD
-            MOVE    WRK-SANTEISTYMD  TO  PTNYUINRRK-TENNYUYMD
-            MOVE    WRK-SANTEISTYMD  TO  SPA-NAI-I01-NYUINYMD
-            MOVE    1                TO  FLG-SAI-SAKUSEI2
-            PERFORM 4801-TENROOM-EDIT-SEC
-            IF    (IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1")  AND
-                  (WRK-SAI-SRYYM(1:6)   =    IPN-SANTEISTYMD(1:6))
-                MOVE    SPA-GMN-I01-TOKNYUIN-CD
-                                          TO   WRK-SAI-I01-TOKNYUIN-CD
-                MOVE    SPACE             TO   SPA-GMN-I01-TOKNYUIN-CD
-                MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
-                MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
-                MOVE    IPN-SANTEISTYMD   TO   PTNYUINRRK-TENNYUYMD
-                MOVE    WRK-SANTEISTYMD   TO   SPA-NAI-I01-NYUINYMD
-                MOVE    1                 TO   FLG-SAI-SAKUSEI2
-                PERFORM   4801-TENROOM-EDIT-SEC
-            END-IF
+      **      MOVE    WRK-SAI-SRYYM    TO  WRK-SANTEISTYMD(1:6)
+      **      MOVE    "01"             TO  WRK-SANTEISTYMD(7:2)
+      **      MOVE    WRK-SANTEISTYMD  TO  SPA-NAI-I01-IDOYMD
+      **      MOVE    WRK-SANTEISTYMD  TO  PTNYUINRRK-TENNYUYMD
+      **      MOVE    WRK-SANTEISTYMD  TO  SPA-NAI-I01-NYUINYMD
+      **      MOVE    1                TO  FLG-SAI-SAKUSEI2
+      **      PERFORM 4801-TENROOM-EDIT-SEC
+      **      IF    (IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1")  AND
+      **            (WRK-SAI-SRYYM(1:6)   =    IPN-SANTEISTYMD(1:6))
+      **          MOVE    SPA-GMN-I01-TOKNYUIN-CD
+      **                                    TO   WRK-SAI-I01-TOKNYUIN-CD
+      **          MOVE    SPACE             TO   SPA-GMN-I01-TOKNYUIN-CD
+      **          MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
+      **          MOVE    IPN-SANTEISTYMD   TO   SPA-NAI-I01-IDOYMD
+      **          MOVE    IPN-SANTEISTYMD   TO   PTNYUINRRK-TENNYUYMD
+      **          MOVE    WRK-SANTEISTYMD   TO   SPA-NAI-I01-NYUINYMD
+      **          MOVE    1                 TO   FLG-SAI-SAKUSEI2
+      **          PERFORM   4801-TENROOM-EDIT-SEC
+      **      END-IF
       *
            .
        4801-NYUKAIKEI-EDIT-EXT.
@@ -15086,6 +15086,13 @@
                                             SPA-AREA
       *     DISPLAY  "LNK-DOUNYUIN-RC = " LNK-DOUNYUIN-RC
       *     DISPLAY  "LNK-DOUNYUIN-SANTEIYMD = " LNK-DOUNYUIN-SANTEIYMD
+      *
+      *    同日再入院分の開始日変更
+           IF     (LNK-DOUNYUIN-RC = 1)    AND
+                  (LNK-DOUNYUIN-SANTEIYMD  NOT =  SPACE)
+               MOVE   LNK-DOUNYUIN-SANTEIYMD
+                           TO   SYOKIKSN-IN-SANTEISTYMD
+           END-IF
       *
            IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
