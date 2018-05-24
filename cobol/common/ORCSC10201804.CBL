@@ -792,7 +792,6 @@
                END-IF
       *        会計照会はSPA-WORKに編集
                IF     (LNK-ORCSC-PG        =   "J04" )
-                AND   (SPA-SRYYMD          >=  "20150101")
                    MOVE    SPA-WORK(1:1)       TO  WRK-SPA-DAKT50-KBN
                    MOVE    SPA-WORK(2:1)       TO  WRK-SPA-NINPUKBN-IN
                    INITIALIZE                  SPA-K01KYOUTU
@@ -800,6 +799,10 @@
       *H30.4
       *            妊婦の設定
                    MOVE    WRK-SPA-NINPUKBN-IN TO  SPA-NINPUKBN-IN
+               END-IF
+      *        セット編集
+               IF     (LNK-ORCSC-PG        =   "K05" )
+                   INITIALIZE                  SPA-K01KYOUTU
                END-IF
            END-IF
       *
