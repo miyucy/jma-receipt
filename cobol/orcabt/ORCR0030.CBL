@@ -2831,7 +2831,11 @@
            03  CONS-BOKOHO2-COMMENT  PIC X(09)  VALUE  "840000085".
       *
       *    ƒÃ±°°¶∫ﬂ¬¿∫ø¿Œ≈À°° £≤£∞∫–Ã§À˛°À≤√ªª
-      ***  03  CONS-TUINZAI-COMMENT  PIC X(09)  VALUE  "180020570".
+           03  CONS-TUINZAI-COMMENT  PIC X(09)  VALUE  "180020570".
+      *    ª˘∆∏ª◊Ω’¥¸¿∫ø¿≤ ¿ÏÃÁ¥…Õ˝≤√ªª° £±£∂∫–Ã§À˛°À
+           03  CONS-TUINZAI2-COMMENT PIC X(09)  VALUE  "180047270".
+      *    ª˘∆∏ª◊Ω’¥¸¿∫ø¿≤ ¿ÏÃÁ¥…Õ˝≤√ªª° £≤£∞∫–Ã§À˛°À
+           03  CONS-TUINZAI3-COMMENT PIC X(09)  VALUE  "180047370".
       *
       *    ∞Õ¬∏æ…Ω∏√ƒŒ≈À°
            03  CONS-IZONSYO-COMMENT  PIC X(09)  VALUE  "180047910".
@@ -13888,6 +13892,13 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                   ELSE
                         MOVE   "1"    TO    RECE04-FLG-TUINZAI-COMMENT
                   END-IF
+                END-IF
+              END-IF
+              IF   RECE02-SRYYM      >=    "201604"
+                IF   SRY-SRYCD(IDX2)  =     CONS-TUINZAI-COMMENT
+                                      OR    CONS-TUINZAI2-COMMENT
+                                      OR    CONS-TUINZAI3-COMMENT
+                        MOVE   "1"    TO    RECE04-FLG-TUINZAI2-COMMENT
                 END-IF
               END-IF
       *       ∞Õ¬∏æ…Ω∏√ƒŒ≈À°

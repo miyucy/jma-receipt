@@ -10457,7 +10457,11 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  SANTEI-HOSPNUM
       *****************************************************************
        2001-TUINZAI-HANTEI-SEC          SECTION.
       *
-           IF     RECE04-FLG-TUINZAI-COMMENT   =    "1"
+           IF  ((RECE02-SRYYM                >=  "201604") AND
+                (RECE04-FLG-TUINZAI-COMMENT   =  "1"     ) AND
+                (RECE04-FLG-TUINZAI2-COMMENT  =  "1"     ))
+           OR  ((RECE02-SRYYM                <=  "201603") AND
+                (RECE04-FLG-TUINZAI-COMMENT   =  "1"     ))
              MOVE    ZERO                TO  FLG-TUINZAI-COMMENT
              MOVE    SPACE               TO  WRK-TUINZAI-YMD
              INITIALIZE                      SANTEI-REC
