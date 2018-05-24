@@ -251,6 +251,8 @@
            03  RECE120-FLG-BOKOHO-COMMENT  PIC  X(01).
       *дл╠║║╕╨ъбПю╨©юнек║║йё╡ё╟╨пл╓кЧ║к╡ц╩╩
            03  RECE120-FLG-TUINZAI-COMMENT PIC  X(01).
+           03  RECE120-FLG-TUINZAI2-COMMENT
+                                           PIC  X(01).
       *╟мб╦╬и╫╦цднек║
            03  RECE120-FLG-IZONSYO-COMMENT PIC  X(01).
       *╨ъбП╢╣╪тк╛лДлТ╨ч╢имЩ╩ьфЁна
