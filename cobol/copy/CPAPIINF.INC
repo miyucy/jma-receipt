@@ -776,7 +776,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "√Ê≈”•«°º•ø∞Ï≥Á≈–œø".
+           "∆˛±°√Ê≈”•«°º•ø∞Ï≥Á≈–œø".
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
            05  FILLER                  PIC  X(16)      VALUE
