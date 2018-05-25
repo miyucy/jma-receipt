@@ -111,7 +111,7 @@ xml_medicalav3res3 {
 			Ad_Medical_Class_Group		varchar(02);
 			Ad_Medical_Class		varchar(03);
 			Ad_Medical_Class_Name		varchar(40);
-			Ad_Medical_Poin_Info 		varchar(08);
+			Ad_Medical_Point_Info 		varchar(08);
 #-----  »»ÄêÆü
 			Ad_Medical_Calendar	        varchar(31);
 			Ad_Medical_Inclusion_Class		varchar(05);
