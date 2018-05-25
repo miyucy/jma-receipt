@@ -2087,7 +2087,11 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-ERRMSG           TO  XCERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
       *
-           MOVE    "XC01"                TO  SPA-MOTOPG
+           IF    ( SPA-XC01-HYOUJI      =   2 )
+               MOVE    "XC02"           TO  SPA-MOTOPG
+           ELSE
+               MOVE    "XC01"            TO  SPA-MOTOPG
+           END-IF
            MOVE    "XCERR"               TO  SPA-SAKIPG
       *
            MOVE    "NEW"                 TO  MCP-PUTTYPE
