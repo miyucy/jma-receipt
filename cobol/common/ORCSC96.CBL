@@ -2362,17 +2362,20 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1088"
-                   STRING  "自費金額が７桁以上となります。"
+                   STRING  "保険外金額が７桁を超えます。"
+                           "桁数オーバーとなります。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1089"
-                   STRING  "自費金額の合計が７桁以上となります。"
+                   STRING  "保険外金額の合計が７桁を超えます。"
+                           "桁数オーバーとなります。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1090"
-                   STRING  "点数合計が７桁以上となります。"
+                   STRING  "点数合計が７桁を超えます。"
+                           "桁数オーバーとなります。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

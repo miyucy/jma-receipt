@@ -5831,7 +5831,6 @@
       *H28.4
            OR    ((FLG-GEN30-PSY       =   1 )  AND
                   (WRK-ZAICNT-2        >=  7 ))
-      *????
       *H29.3
       *    処方料手入力
            OR   ((FLG-250IN            =   2  )  AND
@@ -5846,11 +5845,10 @@
       *
       *           薬剤料逓減あり
                   IF    ( WRK-ZAICNT          >=  7 )
-      *????
       *H29.3
       *    処方料手入力
                    OR   ( FLG-250IN            =   2  )
-      *????
+      *
       *            全内服薬
                        COMPUTE WRK-SANTEN-9    =   WRK-KEIKEI
                                            *   90

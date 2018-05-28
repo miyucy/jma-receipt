@@ -72,6 +72,7 @@
       *  04.08.00    NACL-多々納  16/12/08  病名レセ非表示対応
       *  04.08.00    NACL-多々納  16/12/XX  指導料等自動算定対応
       *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
+      *  04.08.00    NACL-多々納  18/04/XX  複数科展開ドクター対応
       *****************************************************************
       *
       *
@@ -2993,7 +2994,6 @@
                    IF      PTCONF-CDATA(1:1)   =   "1"
                        MOVE    1               TO  SPA-NINPUKBN-ARI
                    END-IF
-      *
                END-EVALUATE
                MOVE    "tbl_ptconf"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -4938,7 +4938,13 @@
       *        保険組合
                MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
       *        複数診療科
-               IF      WRK-KEY-SRYKA       NOT =   JYURRK-SRYKA
+               IF    ( WRK-KEY-SRYKA       NOT =   JYURRK-SRYKA )
+      *H30.5
+      *        ドクター不意一致も対象
+                  OR ((WRK-KEY-SRYKA           =   JYURRK-SRYKA) AND
+                      (JYURRK-DRCD         NOT =   ZERO        ) AND
+                      (WRK-KEY-DRCD        NOT =   JYURRK-DRCD ))
+      *
                    MOVE    SPACE               TO  WKSRY-INPUTCD(1)
                    MOVE    "$"                 TO  WKSRY-INPUTCD(1)(1:1)
                    MOVE    JYURRK-SRYKA        TO  WKSRY-INPUTCD(1)(2:2)

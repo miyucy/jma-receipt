@@ -310,6 +310,9 @@
       *            £Ã£Ó£Ö¶èÊ¬
                    07  SPA-NAI-CSVKBN                 PIC X(01).
                    07  SPA-NAI-CSVKBN2                PIC X(01).
+      *!!!
+      *        ·å¿ô¥ª¡¼¥Ð¡¼¥¨¥é¡¼
+               05  SPA-OVER-ERR                    PIC 9(01).
       *
       *    £Ã£Ì£Á£É£Í²èÌÌ
            03  SPA-K03X-AREA.

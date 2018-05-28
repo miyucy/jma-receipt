@@ -173,6 +173,9 @@
            03  FLG-INFEC-DLT           PIC 9(01).
       *    クライアント印刷有
       **** 03  FLG-CLIENT-OK           PIC 9(01).
+      *!!!!
+      *H30.5
+           03  FLG-ERRCHK              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -248,8 +251,10 @@
                05  WRK-KIZAITEN            PIC  9(07).
                05  WRK-JIHIMONEY           PIC  9(08).
       *
-           03  WRK-SEIKYU              PIC S9(07).
-           03  WRK-SEIGOK              PIC S9(07).
+      *!!  03  WRK-SEIKYU              PIC S9(07).
+      *!!  03  WRK-SEIGOK              PIC S9(07).
+           03  WRK-SEIKYU              PIC S9(08).
+           03  WRK-SEIGOK              PIC S9(08).
       *
            03  WRK-DENPNUM         PIC 9(07).
            03  WRK-MEIBAN          PIC 9(03).
@@ -748,36 +753,6 @@
            INITIALIZE                  SYUNOU-REC
            MOVE    ZERO                TO  SPA-IDX-KOUI
            INITIALIZE                  SPA-SYUNOU-AREA
-      *
-      ***  MOVE    SPA-TERMID          TO  FILE-TERMID
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
-      *    OPEN    INPUT               PARA-FILE
-      *    PERFORM 980-PARA-READ-SEC
-      *
-      *****INITIALIZE                      PARA-KEY
-      *    MOVE    SPA-TERMID          TO  PARA-TERMID
-      *    START   PARA-FILE
-      *        KEY IS    >=   PARA-KEY
-      *        INVALID
-      *            MOVE    1               TO  FLG-PARA
-      *        NOT INVALID
-      *            PERFORM 990-PARA-NEXT-SEC
-      *****END-START
-      *    PERFORM
-      *        UNTIL   FLG-PARA        NOT =   ZERO 
-      *        IF      PARA-FILEMEI        =   "SYUNOU"
-      *            ADD     1                   TO  SPA-SYUNOU-MAX
-      *            MOVE    PARA-DATA-REC       TO  SPA-SYUNOU-REC
-      *                                                (SPA-SYUNOU-MAX)
-      *        END-IF
-      *        診療行為カウント
-      *        IF      PARA-FILEMEI        =   "WKSRYACT"
-      *            ADD     1                   TO  SPA-IDX-KOUI
-      *        END-IF
-      *
-      *        PERFORM 980-PARA-READ-SEC
-      *    END-PERFORM
-      *****CLOSE                        PARA-FILE
       *
       *
            MOVE    SPACE               TO  PARA-REC
@@ -1953,7 +1928,10 @@
       *        合計入金額算処理
       *        PERFORM 3103-NYUKIN-KEI-SEC
       ***  END-IF
-      *
+      *!!!!
+      *H30.5
+           INITIALIZE  WRK-SYUNOU-REC
+      *!!!!
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
                MOVE    SPA-SYUNOU-REC (IDX)    TO  SYUNOU-REC
@@ -1982,7 +1960,57 @@
       *        今回入金額
                MOVE    SYU-NYUKIN-TOTAL    TO  SPA-TEI-NYUKIN-TOTAL
                                                               (IDX)
+      *!!!!
+      *H30.5
+      *        桁オーバーチェック
+               IF     (SYU-SRYKA           =   ZERO )
+                   OR (SYU-HKNCOMBINUM     =   ZERO
+                                           OR  SPACE )
+                   CONTINUE
+               ELSE
+      *            自費合計
+                   IF     (WRK-SYU-JIHI-TOTAL  +   SYU-JIHI-TOTAL)
+                                               >   9999999
+                       MOVE    1                   TO  SPA-OVER-ERR
+                   END-IF
+                   IF     (WRK-SYU-JIHI-TOTAL-TAX
+                                           +   SYU-JIHI-TOTAL-TAX)
+                                               >   9999999
+                       MOVE    1                   TO  SPA-OVER-ERR
+                   END-IF
+      *            保険外合計
+                   IF     (WRK-SYU-TGMONEY (17)    +   SYU-TGMONEY(17))
+                                               >   9999999
+                       MOVE    1                   TO  SPA-OVER-ERR
+                   END-IF
+                   IF     (WRK-SYU-TGMONEY-TAX(17)
+                                           +   SYU-TGMONEY-TAX(17))
+                                               >   9999999
+                       MOVE    1                   TO  SPA-OVER-ERR
+                   END-IF
+      *            調整金合計
+                   IF     (WRK-SYU-CHOSEI      +   SYU-CHOSEI)
+                                               >   9999999
+                       MOVE    1                   TO  SPA-OVER-ERR
+                   END-IF
+      *            請求金額
+                   IF     (WRK-SYU-SKYMONEY    +   SYU-SKYMONEY)
+                                               >   9999999
+                       MOVE    1                   TO  SPA-OVER-ERR
+                   END-IF
+      *
+                   ADD     SYU-JIHI-TOTAL      TO  WRK-SYU-JIHI-TOTAL
+                   ADD     SYU-JIHI-TOTAL-TAX  TO
+                                               WRK-SYU-JIHI-TOTAL-TAX
+                   ADD     SYU-CHOSEI          TO  WRK-SYU-CHOSEI
+                   ADD     SYU-SKYMONEY        TO  WRK-SYU-SKYMONEY
+               END-IF
+      *H30.5
            END-PERFORM
+      *
+      *H30.5
+           INITIALIZE  WRK-SYUNOU-REC
+      *!!!!
       *
            .
        3108-SYUNOU-SYOKI-EXT.
@@ -2182,6 +2210,7 @@
                ADD    WRK-SYU-JIHI-TAXARI (IDS1)
                                            TO  SYU-JIHI-TAXARI(IDS1)
            END-PERFORM
+      *
            ADD     WRK-SYU-JIHI-TOTAL       TO  SYU-JIHI-TOTAL
            ADD     WRK-SYU-JIHI-TOTAL-TAX   TO  SYU-JIHI-TOTAL-TAX
            ADD     WRK-SYU-JIHI-TAX         TO  SYU-JIHI-TAX
@@ -3897,6 +3926,9 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41001-HKNCOMBI-CHG-SEC
            END-IF
+      *!!!!
+      *H30.5
+           MOVE    1                   TO  FLG-ERRCHK
            .
       *
        4100-HKNCOMBI-EXT.
@@ -3945,6 +3977,9 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41001-SRYKA-CHG-SEC
            END-IF
+      *!!!!
+      *H30.5
+           MOVE    1                   TO  FLG-ERRCHK
            .
        4100-SRYKA-EXT.
            EXIT.
@@ -4990,6 +5025,13 @@
                    COMPUTE WRK-SEIKYU      =   SPA-GMN-CHOSEI1
                                            +   SPA-GMN-CHOSEI2
                                            +   SPA-NAI-SEIKYU
+      *!!!!
+      *            ７桁数チェック
+                   IF      WRK-SEIKYU          >   9999999
+                       MOVE    "0035"                  TO  SPA-ERRCD
+                       MOVE    06                      TO  SPA-GMN-CUR
+                   END-IF
+      *
                    IF     (WRK-SEIKYU          <   ZERO )
       *H29.7  請求額がなくてもマイナスはエラー
       *****           AND (SPA-NAI-SEIKYU      >   ZERO )
@@ -5461,6 +5503,9 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4801-FUKU-HKNCOMBI-CHG-SEC
            END-IF
+      *!!!!
+      *H30.5
+           MOVE    1                   TO  FLG-ERRCHK
            .
        480-FUKU-HKNCOMBI-EXT.
            EXIT.
@@ -5558,6 +5603,9 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4901-FUKU-SRYKA-CHG-SEC
            END-IF
+      *!!!!
+      *H30.5
+           MOVE    1                   TO  FLG-ERRCHK
            .
        490-FUKU-SRYKA-EXT.
            EXIT.
@@ -5818,6 +5866,11 @@
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD      NOT =   SPACE
+               GO      TO      450-TOROKU-EXT
+           END-IF
+      *!!!!
+      *
+           IF      SPA-OVER-ERR        =   1
                GO      TO      450-TOROKU-EXT
            END-IF
       *
@@ -7803,7 +7856,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
+      *!!!
+      *    合計桁数オーバー
+           IF     (SPA-OVER-ERR        =   1    )
+             AND  (FLG-ERRCHK          =   ZERO )
+               MOVE    "0036"          TO  SPA-ERRCD
+               MOVE    91              TO  SPA-GMN-CUR
+           END-IF
+      *
            PERFORM 500-GMNHEN-SEC
+      * 
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
@@ -7961,6 +8023,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0033"
                    MOVE    "調整金は入力できません。"
                                        TO  SPA-ERRMSG
+      *!!!!
+               WHEN    "0035"
+                   STRING  "今回請求額が７桁オーバーとなります。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0036"
+                   STRING  "収納の合計で７桁オーバーとなる項目"
+                           "があります。分けて登録して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "1030"
                    STRING  "処方せんプログラムがありません。"
