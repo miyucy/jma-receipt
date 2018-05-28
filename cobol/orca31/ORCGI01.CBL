@@ -1555,6 +1555,13 @@
                IF    ( WRK-KEISANYMD   >   SPA-SYSYMD )
                    MOVE    1       TO  FLG-ALT-OK
                END-IF
+      *
+               IF    ( FLG-ALT-OK  =   1 )
+                   PERFORM 900-PTNYUINRRK-KEY75-SEL-SEC
+                   IF    ( FLG-PTNYUINRRK  =   ZERO )
+                       MOVE    ZERO    TO  FLG-ALT-OK
+                   END-IF
+               END-IF
            END-IF
       *
            IF    ( FLG-ALT-OK      =   ZERO )
@@ -22125,6 +22132,41 @@
            .
       *
        900-PTNYUINRRK-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼ÔÆþ±¡ÍúÎò¾ðÊó¸¡º÷½èÍý
+      *****************************************************************
+       900-PTNYUINRRK-KEY75-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO   FLG-PTNYUINRRK
+           INITIALIZE  PTNYUINRRK-REC
+      *
+           MOVE    SPA-HOSPNUM     TO   PTNYUINRRK-HOSPNUM
+           MOVE    SPA-NAI-I01-PTID
+                                   TO  PTNYUINRRK-PTID
+           MOVE    SPA-NAI-I01-PTRRKNUM
+                                   TO  PTNYUINRRK-RRKNUM
+           MOVE    SPA-NAI-I01-NYUINYMD
+                                   TO  PTNYUINRRK-NYUINYMD
+                                       PTNYUINRRK-TAIINYMD
+           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+      *
+           MOVE    "tbl_ptnyuinrrk"   TO  MCP-TABLE
+           MOVE    "key75"            TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1           TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key75"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-PTNYUINRRK-KEY75-SEL-EXT.
            EXIT.
       *****************************************************************
       *    Ê¬ÊÚ´ÉÍý¸¡º÷½èÍý
