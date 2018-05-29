@@ -1,7 +1,7 @@
 kanri_cd    : "5007"
 name        : "入院指示せん設定情報"
 class_cd    : "*"
-item_max    : 3
+item_max    : 10
 item_list   :
 - item_no   : 1
   item      : "SIJISENKBN"
