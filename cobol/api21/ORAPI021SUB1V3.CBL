@@ -30,7 +30,8 @@
       *  04.08.00    NACL-多々納  15/11/XX  セット登録対応他
       *  04.08.00    NACL-多々納  17/05/XX  包括検査数、単位コード対応
       *                                     フィルム分画数等対応
-      *  05.00.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
+      *  05.01.00    NACL-多々納  19/09/XX  改行コードエラー
+      *  05.00.00    NACL-多々納  17/11/XX  入院対応追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -120,6 +121,39 @@
            03  WRK-GYOUMUID            PIC X(04).
       *
            03  WRK-JIDO-KBN            PIC X(01).
+      *
+      *H29.12
+      *    入院日指定
+      *    03  TBL-NYUINDAY-AREA.
+      *        05  TBL-NYUINDAY-OCC        OCCURS   31.
+      *            07  TBL-NYUINDAY        PIC 9(01).
+           03  WRK-NISUU-AREA.
+               05  WRK-NISUU-TBL           OCCURS   31.
+                   07  WRK-DAY             PIC 9(02).
+                   07  WRK-SEL             PIC X(01).
+           03  IDN1                    PIC 9(04).
+           03  IDN2                    PIC 9(04).
+           03  IDN3                    PIC 9(04).
+           03  IDN4                    PIC 9(04).
+           03  FLG-DAY                 PIC 9(01).
+           03  WRK-H-DAY               PIC 9(02).
+           03  WRK-H-SEL               PIC X(01).
+           03  WRK-KAISU-H             PIC X(04).
+      *    末日
+           03  WRK-MATU                PIC 9(02).
+      *    診療日付
+           03  WRK-SRYYMD.
+               05  WRK-SRYYY           PIC 9(04).
+               05  WRK-SRYMM           PIC 9(02).
+               05  WRK-SRYDD           PIC 9(02).
+      *
+           03  WRK-Z95                 PIC ZZZZ9.
+           03  WRK-INPUTCD-G.
+               05  WRK-INPUTCD         PIC X(54)
+                                           OCCURS   5.
+      *
+      *    入力コード項目桁数
+       01  CONS-INPUT              PIC 9(02)   VALUE   54.
       *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
@@ -514,6 +548,17 @@
                END-IF
            END-PERFORM
       *
+      *H29.12
+      *    入院の算定日
+           IF      SPA-NYUGAIKBN       =   "1"
+               PERFORM 2900-NYUIN-DAYHEN-SEC
+               IF      WRK-ERRCD       NOT =   SPACE
+                   MOVE    ZERO                TO  IDZ
+                   MOVE    SPACE               TO  WRK-SRYCD
+                   PERFORM 200210-ERRCD-HENSYU-SEC
+               END-IF
+           END-IF
+      *
            .
        200211-ZAI-HENSYU-EXT.
            EXIT.
@@ -696,9 +741,8 @@
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
                                        =   "0084"  ) OR
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
-                                       =   "001"   )
-      *H30.4
-              OR  (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
+                                       =   "001"   ) OR
+                  (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:7)
                                        =   "0992081"))  AND
                   (ORAPISUB01-ATAI-G  (IDY IDZ)
                                    NOT =   SPACE )
@@ -844,16 +888,17 @@
                    ELSE
                        MOVE    "012"               TO  WRK-ERRCD
                    END-IF
-               ELSE
+      *H29.7   数量空白は数量=1で返却するので、フィルム枚数が反映できない為　廃止。
+      ****     ELSE
       *            Ｘ線撮影は１でも数量入力有
-                   IF     (WRK-SRYCD(1:1)      =   "1"  )  AND
-                          (TNS-KZMCOMPSIKIBETU NOT =   ZERO ) AND
-                          (TNS-SRYSYUKBN       =   "721"
-                                               OR  "720"    )
+      *            IF     (WRK-SRYCD(1:1)      =   "1"  )  AND
+      *                   (TNS-KZMCOMPSIKIBETU NOT =   ZERO ) AND
+      *                   (TNS-SRYSYUKBN       =   "721"
+      *                                        OR  "720"    )
       *                数量入力あり
-                       MOVE    "S"             TO  TBL-WKSRY-AUTOKBN
-                                                     (TBL-MAX IDX-S)
-                   END-IF
+      *                MOVE    "S"             TO  TBL-WKSRY-AUTOKBN
+      *                                              (TBL-MAX IDX-S)
+      ****         END-IF
                END-IF
            END-IF
            .
@@ -1139,6 +1184,10 @@
                    MOVE    "自動算定対象です。削除しました。"
                                                TO  ORAPISUB01-IN-ERRMSG
                                                                (IDX-E)
+               WHEN    "014"
+                   MOVE    "入院算定日区分は０、１で設定して下さい。"
+                                               TO  ORAPISUB01-IN-ERRMSG
+                                                               (IDX-E)
            END-EVALUATE
       *
            .
@@ -1243,6 +1292,155 @@
            .
        2002121-WKSRYACT-HEN-EXT.
            EXIT.
+      *
+      *H29.12
+      *****************************************************************
+      *    入院の算定日変換処理
+      *****************************************************************
+       2900-NYUIN-DAYHEN-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRCD
+      *    算定区分チェック
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   31
+               EVALUATE    ORAPISUB01-MDC-DAY (IDY IDN1)
+               WHEN    SPACE
+               WHEN    ZERO
+                   MOVE    "0"             TO  ORAPISUB01-MDC-DAY
+                                                           (IDY IDN1)
+               WHEN    "1"
+                   CONTINUE
+               WHEN    OTHER
+                   MOVE    "014"           TO  WRK-ERRCD
+               END-EVALUATE
+           END-PERFORM
+           IF      WRK-ERRCD       NOT =   SPACE
+               GO  TO  2900-NYUIN-DAYHEN-EXT
+           END-IF
+      *
+      *    指定なしは診療日の算定とする
+           IF      ORAPISUB01-MDC-DAY-G (IDY)  =   ZERO
+               MOVE    SPA-SRYYMD      TO  WRK-SRYYMD
+               MOVE    ZERO            TO  ORAPISUB01-MDC-DAY-G
+                                                         (IDY)
+               MOVE    "1"             TO  ORAPISUB01-MDC-DAY
+                                                   (IDY WRK-SRYDD)
+           END-IF
+      *
+           INITIALIZE                      WRK-NISUU-AREA
+           MOVE    ZERO                TO  WRK-H-DAY
+           MOVE    SPACE               TO  WRK-H-SEL
+           MOVE    ZERO                TO  IDN1
+           MOVE    ZERO                TO  IDN2
+           MOVE    ZERO                TO  IDN3
+           MOVE    ZERO                TO  IDN4
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   32
+               IF     (IDN1                =   32  )  OR
+      *日は別で       (IDN1                >   WRK-MATU)  OR
+                      (ORAPISUB01-MDC-DAY(IDY IDN1)
+                                           =   "0"    )
+                   IF      WRK-H-DAY       NOT =   ZERO
+                       IF      WRK-H-SEL   NOT =   SPACE
+                           ADD     1               TO  IDN2
+                           MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
+                           MOVE    WRK-H-SEL       TO  WRK-SEL(IDN2 - 1)
+                       END-IF
+                       MOVE    ZERO            TO  WRK-H-DAY
+                       MOVE    SPACE           TO  WRK-H-SEL
+                   END-IF
+               ELSE
+                   IF      WRK-H-DAY           =   ZERO
+                       MOVE    IDN1            TO  WRK-H-DAY
+                       ADD     1               TO  IDN2
+                       MOVE    WRK-H-DAY       TO  WRK-DAY(IDN2)
+                   ELSE
+                       IF      WRK-H-DAY       =  (IDN1  -  1 )
+                           MOVE    "-"             TO  WRK-H-SEL
+                       END-IF
+                       MOVE    IDN1            TO  WRK-H-DAY
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   31
+               IF     (WRK-SEL (IDN1)      =   SPACE )  AND
+                      (IDN1                <   31    )
+                   IF      WRK-DAY (IDN1 + 1 )     NOT =   ZERO
+                       MOVE    ","          TO  WRK-SEL (IDN1)
+                   END-IF
+               ELSE
+                   IF     (IDN1                    =   31    )  OR
+                          (WRK-DAY (IDN1 + 1 )     =   ZERO  )
+                       MOVE    SPACE        TO  WRK-SEL (IDN1)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           INITIALIZE                      WRK-INPUTCD-G
+      *    回数変換
+           MOVE    SPACE               TO  WRK-KAISU-H
+           MOVE    WRK-KAISU           TO  WRK-Z95
+           MOVE    ZERO                TO  IDN4
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL      (IDN1    >   5    )
+               IF      WRK-Z95(IDN1:1) NOT =   SPACE
+                   ADD     1               TO  IDN4
+                   MOVE    WRK-Z95(IDN1:1) TO  WRK-KAISU-H
+                                                     (IDN4:1)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    1                   TO  IDN2
+           MOVE    1                   TO  IDN3
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL      (IDN1    >   31  )  OR
+                              (IDN2            >=  5  )  OR
+                              (WRK-DAY (IDN1)  =   ZERO )
+               IF      IDN3                >   CONS-INPUT
+                   ADD     1               TO  IDN2
+                   MOVE    1               TO  IDN3
+               END-IF
+      *        '-' の次判定
+               IF     (WRK-SEL (IDN1)      =   "-" )
+                  AND ((IDN3   +   3 )     >=  CONS-INPUT  )
+                   ADD     1               TO  IDN2
+                   MOVE    1               TO  IDN3
+               END-IF
+               IF      WRK-INPUTCD (IDN2)  =   SPACE
+                   STRING  "*"             DELIMITED  BY  SIZE
+                           WRK-KAISU-H     DELIMITED  BY  SPACE
+                           "/"             DELIMITED  BY  SIZE
+                           INTO            WRK-INPUTCD (IDN2)
+                   END-STRING
+                   ADD     2               TO  IDN3
+                   ADD     IDN4            TO  IDN3
+               END-IF
+               IF      WRK-SEL (IDN1)      =   SPACE
+                   MOVE    ","             TO  WRK-SEL (IDN1)
+               END-IF
+               MOVE    WRK-NISUU-TBL(IDN1) TO  WRK-INPUTCD(IDN2)
+                                                       (IDN3:3)
+               ADD     3                   TO  IDN3
+           END-PERFORM
+      *
+           PERFORM VARYING    IDN2     FROM    1   BY  1
+                   UNTIL     (IDN2     >   5  )
+                         OR  (WRK-INPUTCD(IDN2)    =   SPACE)
+               ADD     1               TO  IDX-S
+               IF      IDX-S           >   5
+                   ADD     1               TO  TBL-MAX
+                   MOVE    1               TO  IDX-S
+               END-IF
+               MOVE    WRK-INPUTCD (IDN2)  TO  TBL-WKSRY-INPUTCD
+                                                   (TBL-MAX IDX-S)
+           END-PERFORM
+           .
+       2900-NYUIN-DAYHEN-EXT.
+           EXIT.
+      *H29.12
+      *
       *****************************************************************
       *    半角を全角へ変換処理
       *****************************************************************

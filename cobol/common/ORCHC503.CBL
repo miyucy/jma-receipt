@@ -454,6 +454,12 @@
       *        APIÁ÷¿®¤Ê¤·
                MOVE    "0"             TO  PARA-API-DATA
            END-IF
+      *
+      *    HAORIÂÐ±þ
+           IF      SPA-API-FLG     NOT =   ZERO
+               MOVE    "1"             TO  PARA-API-DATA
+           END-IF
+      *
       *    £Á£Ð£É¥«¥¹¥¿¥à£É£Ä
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
            MOVE    30                  TO  WRK-PARA-MAX

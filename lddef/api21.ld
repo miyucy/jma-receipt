@@ -14,6 +14,10 @@ bindapi	"medicalmodv35"	"OpenCOBOL"	"ORAPI021S5V3";
 bindapi	"medicalmodv36"	"OpenCOBOL"	"ORAPI021S6V3";
 bindapi	"tmedicalmodv2"	"OpenCOBOL"	"ORAPI021S2V2";
 bindapi	"medicalmodv37"	"OpenCOBOL"	"ORAPI021S7V3";
+bindapi	"medicalmodav31"	"OpenCOBOL"	"ORAPI021NS1V3";
+bindapi	"medicalmodav32"	"OpenCOBOL"	"ORAPI021NS2V3";
+bindapi	"medicalmodav33"	"OpenCOBOL"	"ORAPI021NS3V3";
+bindapi	"medicalmodav34"	"OpenCOBOL"	"ORAPI021NS4V3";
 
 multiplex_group	api21;
 
@@ -32,6 +36,10 @@ data	{
 		medicalmodv36;
 		tmedicalmodv2;
 		medicalmodv37;
+		medicalmodav31;
+		medicalmodav32;
+		medicalmodav33;
+		medicalmodav34;
 	};
 };
 db "xml" {
@@ -65,6 +73,17 @@ db "xml2" {
  xml_tmedicalmodv2res;
  xml_medicalv3req7;
  xml_medicalv3res7;
+ xml_medicalav3req1;
+ xml_medicalav3res1;
+ xml_medicalav3req2;
+ xml_medicalav3res2;
+ xml_medicalav3req3;
+ xml_medicalav3res3;
+ xml_medicalav3req4;
+ xml_medicalav3res4;
+ fm_prescription_h;
+ fm_order_injection;
+ fm_order_direction;
 };
 
 #include "orcadb.inc"

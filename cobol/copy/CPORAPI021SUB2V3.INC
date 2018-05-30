@@ -42,6 +42,12 @@
                     09  ORAPISUB2-MDC-CLASS-NAME        PIC X(40).
       *             ²ó¿ô
                     09  ORAPISUB2-MDC-CLASS-NUMBER      PIC X(03).
+      *H29.11 Æþ±¡ÍÑ
+      *            »»ÄêÆü
+                    09  ORAPISUB02-MDC-DAY-G.
+                       11  ORAPISUB02-MDC-DAY      PIC X(01)
+                                                   OCCURS   31.
+      *
       *             ºÞÅÀ¿ô
                     09  ORAPISUB2-MDC-POINT             PIC X(08).
       *             ºÞ¶â³Û
