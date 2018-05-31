@@ -497,6 +497,7 @@
       *                                     負担金計算対応
       *  04.08.26    NACL-門脇    18/04/04  難病負担者番号追加対応
       *  04.08.27    NACL-門脇    18/05/15  ７０歳未満現物給付計算修正
+      *  04.08.28    NACL-門脇    18/05/31  計算金額桁数チェック
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2821,6 +2822,10 @@
                  PERFORM  400-SEIKYU-HASUU-CHK-SEC
                END-IF
              END-IF
+           END-IF.
+      *
+           IF  LNK-S01-SKYCHKFLG  NOT = SPACE
+                 MOVE     12     TO     LNK-S01-RC
            END-IF.
       *****+++++++++++++++++++
       *
