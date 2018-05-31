@@ -8023,15 +8023,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0033"
                    MOVE    "調整金は入力できません。"
                                        TO  SPA-ERRMSG
-      *!!!!
+      *H30.6
                WHEN    "0035"
-                   STRING  "今回請求額が７桁オーバーとなります。"
+                   STRING  "今回請求額が７桁を超えます。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0036"
-                   STRING  "収納の合計で７桁オーバーとなる項目"
-                           "があります。分けて登録して下さい。"
+                   STRING  "収納合計で７桁を超える項目があります。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

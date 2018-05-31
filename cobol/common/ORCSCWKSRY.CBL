@@ -5130,15 +5130,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                ADD     SYU-JIHI-TAXARI (IDX)  TO  WRK-SUM-JIHI-TOTAL-TAX
            END-PERFORM
       *
-           IF      SPA-ERRCD           =   SPACE
+      *    IF      SPA-ERRCD           =   SPACE
       *        自費＋保険外の合計チェック
-               IF     (WRK-SUM-TGMONEY     +   WRK-SUM-TGMONEY-TAX
-                                           +   WRK-SUM-JIHI-TOTAL
-                                           +   WRK-SUM-JIHI-TOTAL-TAX)
-                                           >   9999999
-                   MOVE    "1089"          TO  SPA-ERRCD
-               END-IF
-           END-IF
+      *        IF     (WRK-SUM-TGMONEY     +   WRK-SUM-TGMONEY-TAX
+      *                                    +   WRK-SUM-JIHI-TOTAL
+      *                                    +   WRK-SUM-JIHI-TOTAL-TAX)
+      *                                    >   9999999
+      *            MOVE    "1089"          TO  SPA-ERRCD
+      **       END-IF
+      *    END-IF
            .
        45069-TOTALOVER-CHK-EXT.
            EXIT.

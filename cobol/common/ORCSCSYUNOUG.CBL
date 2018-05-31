@@ -597,6 +597,13 @@
                                        LNK-ORCS01-REC
                                        LNK-SYUNOU2-AREA
                                        SPA-AREA
+      *    計算金額桁数チェックフラグ
+           IF      LNK-S01-SKYCHKFLG   =   "1"
+               MOVE    11              TO  ORCSCSYU-ERRCD
+           END-IF
+           IF      LNK-S01-SKYCHKFLG   =   "2"
+               MOVE    12              TO  ORCSCSYU-ERRCD
+           END-IF
       *
            MOVE    LNK-SYUNOU2-AREA    TO  LNK-SYUNOU-AREA
            MOVE    LNK-SYUNOU2-MAX     TO  ORCSCSYU-SYUNOU-MAX
