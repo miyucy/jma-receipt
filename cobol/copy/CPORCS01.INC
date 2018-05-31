@@ -79,6 +79,8 @@
            03  LNK-S01-GENBUTU-MSG-FLG     PIC  X(01).
       *リトライフラグ
            03  LNK-S01-RETRY-FLG           PIC  X(01).
+      *請求金額等桁数チェックフラグ
+           03  LNK-S01-SKYCHKFLG           PIC  X(01).
       *
            03  LNK-S01-SINKOUI.
       *診療行為内容 
@@ -129,5 +131,5 @@
              04  LNK-S01-TTLARIFLG         PIC  X(01).
       *
       *復帰コード
-           03  LNK-S01-RC                  PIC  S9(9)   BINARY.
+           03  LNK-S01-RC                  PIC S9(09)   BINARY.
       *

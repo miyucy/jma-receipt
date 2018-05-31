@@ -730,6 +730,11 @@
            03  WK-CYOKI-HIKAKU2        PIC 9(08).
            03  WK-CYOKI-HIKAKU3        PIC 9(08).
            03  WK-CYOKI-HIKAKU9        PIC 9(08).
+           03  WK-SKYCHK-KEISAN        PIC 9(10).
+           03  WK-SKYCHK-KEISAN2       PIC 9(10).
+           03  WK-SKYCHK-KEISAN7       PIC 9(10).
+           03  WK-SKYCHK-KEISAN8       PIC 9(10).
+           03  WK-SKYCHK-KEISAN9       PIC 9(10).
            03  WK-S1                   PIC 9(03).
            03  WK-S2                   PIC 9(03).
            03  WK-S3                   PIC 9V99999.
@@ -828,6 +833,10 @@
            03  WK-HASU1001-KBN6        PIC X(1).
       *    ¿¡µ·≥€∂‚≥€√ºøÙ∂Ë ¨°°°°°°°°°°°°° ∏∫Ã»Ãµ§∑°¶º´»Ò ¨°À
            03  WK-HASU1001-KBN6J       PIC X(1).
+      *    ¿¡µ·≥€∂‚≥€√ºøÙ∂Ë ¨°ß£◊£À°°° ∏∫Ã»Ãµ§∑°¶ ›∏± ¨°À
+           03  WK-HASU1001-KBN-WK      PIC X(1).
+      *    ¿¡µ·≥€∂‚≥€√ºøÙ∂Ë ¨°°°°°°°°° ∏∫Ã»Ãµ§∑°¶º´»Ò ¨°À
+           03  WK-HASU1001-KBN-WKJ     PIC X(1).
       *
            03  WK-HASU-KBN             PIC X(1).
       *
@@ -2224,6 +2233,12 @@
       *
            MOVE      LNK-SYU-SKYMONEY   TO  WK-GENTAI-SKYMONEY.
       *
+           MOVE      LNK-SYU-SKYMONEY   TO  WK-SKYCHK-KEISAN7.
+           COMPUTE   WK-SKYCHK-KEISAN8   =  LNK-SYU-TGMONEY(17)
+                                         +  LNK-SYU-TGMONEY-TAX(17)
+                                         +  LNK-SYU-JIHI-TOTAL
+                                         +  LNK-SYU-JIHI-TOTAL-TAX.
+      *
            IF    LNK-SYU-SRYYMD(1:6)       >=   "200704"
              COMPUTE    LNK-SYU-JIHI-TAX =
                        (LNK-SYU-JIHI-TOTAL-TAX  * WK-S1 / WK-S2)
@@ -2386,6 +2401,12 @@
                                             LNK-SYU-RSISDO-MONEY     +  
                                             LNK-SYU-RSIETC-MONEY        
       *
+                 COMPUTE    WK-SKYCHK-KEISAN7 =   WK-SKYCHK-KEISAN7  +
+                                            LNK-SYU-RSISHOSHIN-MONEY +
+                                            LNK-SYU-RSISAISHIN-MONEY +
+                                            LNK-SYU-RSISDO-MONEY     +
+                                            LNK-SYU-RSIETC-MONEY
+      *
                  COMPUTE    LNK-SYU-RSI-TOTAL =                         
                                             LNK-SYU-RSISHOSHIN-MONEY +  
                                             LNK-SYU-RSISAISHIN-MONEY +  
@@ -2458,6 +2479,12 @@
                  END-IF
       *
                  COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY  +
+                                            LNK-SYU-RSISHOSHIN-MONEY +
+                                            LNK-SYU-RSISAISHIN-MONEY +
+                                            LNK-SYU-RSISDO-MONEY     +
+                                            LNK-SYU-RSIETC-MONEY
+      *
+                 COMPUTE    WK-SKYCHK-KEISAN7 =   WK-SKYCHK-KEISAN7  +
                                             LNK-SYU-RSISHOSHIN-MONEY +
                                             LNK-SYU-RSISAISHIN-MONEY +
                                             LNK-SYU-RSISDO-MONEY     +
@@ -2615,6 +2642,12 @@
                          LNK-SYU-RSISAISHIN-MONEY +
                          LNK-SYU-RSISDO-MONEY     +
                          LNK-SYU-RSIETC-MONEY
+                COMPUTE  WK-SKYCHK-KEISAN7        =
+                         WK-SKYCHK-KEISAN7        +
+                         LNK-SYU-RSISHOSHIN-MONEY +
+                         LNK-SYU-RSISAISHIN-MONEY +
+                         LNK-SYU-RSISDO-MONEY     +
+                         LNK-SYU-RSIETC-MONEY
                 COMPUTE  LNK-SYU-RSI-TOTAL        =
                          LNK-SYU-RSISHOSHIN-MONEY +
                          LNK-SYU-RSISAISHIN-MONEY +
@@ -2721,6 +2754,75 @@
            OR    ( LNK-SYU-KOH1HKNNUM  =   "970"          )
               MOVE     "1"     TO     LNK-SYU-HKNTEKKBN
            END-IF.
+      *
+      *****+++++++++++++++++++
+      *
+      *    ¿¡µ·∂‚≥€≈˘∑ÂøÙ•¡•ß•√•Ø
+           IF    LNK-SYU-SRYYMD(1:6)  >=  "201204"
+      *      ºÁ ›∏±ÀÙ§œ∏¯»Ò§Œ…È√¥≥‰πÁ∑◊ªª≥€
+             IF  (LNK-SYU-SYUHKNNUM   =  "971" OR "973" OR "975")
+             OR  (LNK-SYU-KOH1HKNNUM  =  "970"                  )
+      *        <RSIJIBAI-SKYMONEY>
+               IF   LNK-SYU-KOH1HKNNUM  =  "970"
+      *          # ªÕºŒ∏ﬁ∆˛
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN9 +  5
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+               ELSE
+                 MOVE  WK-SKYCHK-KEISAN9  TO  WK-SKYCHK-KEISAN
+               END-IF
+               COMPUTE    WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN
+                                            + WK-SKYCHK-KEISAN8
+                                            + LNK-SYU-RSISHOSHIN-MONEY
+                                            + LNK-SYU-RSISAISHIN-MONEY
+                                            + LNK-SYU-RSISDO-MONEY
+                                            + LNK-SYU-RSIETC-MONEY
+               IF   WK-SKYCHK-KEISAN  >  9999999
+                 MOVE      "1"          TO   LNK-S01-SKYCHKFLG
+               END-IF
+             ELSE
+      *        <COMPFTN>
+      *        # ªÕºŒ∏ﬁ∆˛
+               COMPUTE    WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN9 +  5
+               COMPUTE    WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+               COMPUTE    WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+               IF   WK-SKYCHK-KEISAN  >  9999999
+                 MOVE      "1"          TO   LNK-S01-SKYCHKFLG
+               END-IF
+             END-IF
+      *
+      *      ¥µº‘¿¡µ·≥€
+             IF  (LNK-SYU-SYUHKNNUM   =  "971" OR "973" OR "975")
+             OR  (LNK-SYU-KOH1HKNNUM  =  "970"                  )
+               IF   LNK-SYU-SYUHKNNUM   =  "971"
+                 MOVE  WK-HASU1001-KBN3   TO  WK-HASU1001-KBN-WK
+                 MOVE  WK-HASU1001-KBN3J  TO  WK-HASU1001-KBN-WKJ
+                 PERFORM  400-SEIKYU-HASUU-CHK-SEC
+               END-IF
+               IF   LNK-SYU-SYUHKNNUM   =  "973"
+                 MOVE  WK-HASU1001-KBN4   TO  WK-HASU1001-KBN-WK
+                 MOVE  WK-HASU1001-KBN4J  TO  WK-HASU1001-KBN-WKJ
+                 PERFORM  400-SEIKYU-HASUU-CHK-SEC
+               END-IF
+               IF   LNK-SYU-SYUHKNNUM   =  "975"
+                 MOVE  "4"                TO  WK-HASU1001-KBN-WK
+                 MOVE  WK-HASU1001-KBN5J  TO  WK-HASU1001-KBN-WKJ
+                 PERFORM  400-SEIKYU-HASUU-CHK-SEC
+               END-IF
+               IF   LNK-SYU-KOH1HKNNUM  =  "970"
+                 MOVE  WK-HASU1001-KBN6   TO  WK-HASU1001-KBN-WK
+                 MOVE  WK-HASU1001-KBN6J  TO  WK-HASU1001-KBN-WKJ
+                 PERFORM  400-SEIKYU-HASUU-CHK-SEC
+               END-IF
+             ELSE
+               IF   FLG-GENMEN  =  ZERO
+                 MOVE  WK-HASU1001-KBN2   TO  WK-HASU1001-KBN-WK
+                 MOVE  WK-HASU1001-KBN2J  TO  WK-HASU1001-KBN-WKJ
+                 PERFORM  400-SEIKYU-HASUU-CHK-SEC
+               END-IF
+             END-IF
+           END-IF.
+      *****+++++++++++++++++++
       *
        MAIN-EXT.
            EXIT PROGRAM
@@ -2930,13 +3032,119 @@
       *
            MOVE     1                     TO   FLG-GENMEN
       *
+           IF    LNK-SYU-SRYYMD(1:6)  >=  "201204"
+             PERFORM  3001-GENMEN-CHK-SEC
+           END-IF
+      *
            .
       *
        3001-GENMEN-KEISAN2-EXT.
            EXIT.
       *
       ******************************************************************
-      *        ¿¡µ·≥€√ºøÙ∑◊ªªΩËÕ˝° ∏∫Ã»Ãµ§∑°À                                      *
+      *        ∏∫Ã»∑◊ªªΩËÕ˝°ß•¡•ß•√•Ø                                  *
+      ******************************************************************
+       3001-GENMEN-CHK-SEC          SECTION.
+      *
+           COMPUTE   WK-SKYCHK-KEISAN   =   WK-SKYCHK-KEISAN7
+                                        +   WK-SKYCHK-KEISAN8
+           MOVE      ZERO               TO  WK-SKYCHK-KEISAN2
+      *
+           EVALUATE  WK-1001-GENTAIKBN
+             WHEN      "2"
+               MOVE  WK-SKYCHK-KEISAN7  TO  WK-SKYCHK-KEISAN
+               MOVE  WK-SKYCHK-KEISAN8  TO  WK-SKYCHK-KEISAN2
+             WHEN      "3"
+               MOVE  WK-SKYCHK-KEISAN8  TO  WK-SKYCHK-KEISAN
+               MOVE  WK-SKYCHK-KEISAN7  TO  WK-SKYCHK-KEISAN2
+           END-EVALUATE
+      *
+           EVALUATE  SYS-1027-TEIRITU
+             WHEN  "1"
+               MOVE      ZERO    TO   WK-RATE
+               COMPUTE   WK-RATE = (100 - SYS-1027-DISCOUNT-RATE)
+                                 /  100
+               COMPUTE   WK-SKYCHK-KEISAN = WK-SKYCHK-KEISAN
+                                          * WK-RATE
+             WHEN  "2"
+               IF   SYS-1027-DISCOUNT-RATE  >=  WK-SKYCHK-KEISAN
+                 MOVE    ZERO    TO   WK-SKYCHK-KEISAN
+               ELSE
+                 COMPUTE WK-SKYCHK-KEISAN = WK-SKYCHK-KEISAN
+                                          - SYS-1027-DISCOUNT-RATE
+               END-IF
+           END-EVALUATE
+      *
+           IF    WK-1001-GENTAIKBN  =  "2" OR "3"
+             IF  (WK-HASU1001-KBN    =  WK-HASU1001-KBN2)
+             AND (WK-HASU1001-KBN2J  =  "0"             )
+               COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN
+                                          + WK-SKYCHK-KEISAN2
+             END-IF
+           END-IF
+      *
+           EVALUATE  WK-HASU1001-KBN
+             WHEN  "1"
+               COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  +  5
+               COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+               COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+             WHEN  "2"
+               COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+               COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+             WHEN  "3"
+               COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  +  9
+               COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+               COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+             WHEN  "4"
+               CONTINUE
+           END-EVALUATE
+      *
+           IF    WK-1001-GENTAIKBN  =  "2" OR "3"
+             IF  (WK-HASU1001-KBN    =  WK-HASU1001-KBN2)
+             AND (WK-HASU1001-KBN2J  =  "0"             )
+               CONTINUE
+             ELSE
+               EVALUATE  WK-1001-GENTAIKBN
+                 WHEN      "2"
+                   IF   WK-HASU1001-KBN2J = "0"
+                     MOVE  WK-HASU1001-KBN2   TO  WK-HASU-KBN
+                   ELSE
+                     MOVE  WK-HASU1001-KBN2J  TO  WK-HASU-KBN
+                   END-IF
+                 WHEN      "3"
+                   MOVE    WK-HASU1001-KBN2   TO  WK-HASU-KBN
+               END-EVALUATE
+               EVALUATE   WK-HASU-KBN
+                 WHEN  "1"
+                   COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 +  5
+                   COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 / 10
+                   COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 * 10
+                 WHEN  "2"
+                   COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 / 10
+                   COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 * 10
+                 WHEN  "3"
+                   COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 +  9
+                   COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 / 10
+                   COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 * 10
+                 WHEN  "4"
+                   CONTINUE
+               END-EVALUATE
+               COMPUTE      WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN
+                                              + WK-SKYCHK-KEISAN2
+             END-IF
+           END-IF
+      *
+           IF   WK-SKYCHK-KEISAN  >  9999999
+             MOVE      "2"          TO   LNK-S01-SKYCHKFLG
+           END-IF
+      *
+           .
+      *
+       3001-GENMEN-CHK-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        ¿¡µ·≥€√ºøÙ∑◊ªªΩËÕ˝° ∏∫Ã»Ãµ§∑°À
       ******************************************************************
        400-SEIKYU-HASUU-KEISAN-SEC          SECTION.
       *
@@ -3215,6 +3423,75 @@
            .
       *
        400-SEIKYU-HASUU-DAISAN-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        ¿¡µ·≥€√ºøÙ∑◊ªªΩËÕ˝°ß•¡•ß•√•Ø
+      ******************************************************************
+       400-SEIKYU-HASUU-CHK-SEC          SECTION.
+      *
+           IF  WK-HASU1001-KBN-WKJ  =  "0"
+             COMPUTE      WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN7
+                                            + WK-SKYCHK-KEISAN8
+             EVALUATE   WK-HASU1001-KBN-WK
+               WHEN  "1"
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  +  5
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+               WHEN  "2"
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+               WHEN  "3"
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  +  9
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+               WHEN  "4"
+                 CONTINUE
+             END-EVALUATE
+             IF   WK-SKYCHK-KEISAN  >  9999999
+               MOVE      "2"          TO   LNK-S01-SKYCHKFLG
+             END-IF
+           ELSE
+             EVALUATE   WK-HASU1001-KBN-WK
+               WHEN  "1"
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN7 +  5
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+               WHEN  "2"
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN7 / 10
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+               WHEN  "3"
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN7 +  9
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  / 10
+                 COMPUTE  WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN  * 10
+               WHEN  "4"
+                 MOVE  WK-SKYCHK-KEISAN7  TO  WK-SKYCHK-KEISAN
+             END-EVALUATE
+             EVALUATE   WK-HASU1001-KBN-WKJ
+               WHEN  "1"
+                 COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN8 +  5
+                 COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 / 10
+                 COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 * 10
+               WHEN  "2"
+                 COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN8 / 10
+                 COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 * 10
+               WHEN  "3"
+                 COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN8 +  9
+                 COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 / 10
+                 COMPUTE  WK-SKYCHK-KEISAN2 = WK-SKYCHK-KEISAN2 * 10
+               WHEN  "4"
+                 MOVE  WK-SKYCHK-KEISAN8  TO  WK-SKYCHK-KEISAN2
+             END-EVALUATE
+             COMPUTE      WK-SKYCHK-KEISAN  = WK-SKYCHK-KEISAN
+                                            + WK-SKYCHK-KEISAN2
+             IF   WK-SKYCHK-KEISAN  >  9999999
+               MOVE      "2"          TO   LNK-S01-SKYCHKFLG
+             END-IF
+           END-IF
+      *
+           .
+      *
+       400-SEIKYU-HASUU-CHK-EXT.
            EXIT.
       *
       ******************************************************************
@@ -23523,6 +23800,7 @@
            MOVE     ZERO     TO    FLG-GENBUTU-TAISYODATA.
            MOVE     ZERO     TO    WK-KUMAMOTO-SYUCOMPFTN.
            MOVE     ZERO     TO    WK-WAKAYAMA-SYUCOMPFTN.
+           MOVE     ZERO     TO    WK-SKYCHK-KEISAN9.
            IF    ((COMB-KOH1-HKNKOHSBTKBN    =   "3")    AND
                   (COMB-KOH1HKNNUM           =   "027")) OR 
                  ((COMB-KOH2-HKNKOHSBTKBN    =   "3")    AND
@@ -24025,6 +24303,11 @@
                                         WK-ZENGAKU   *  WK-FUTANWARI
                               COMPUTE   LNK-SYU-SYUCOMPFTN-ENTANI  =
                                         WK-ZENGAKU   *  WK-FUTANWARI
+                              COMPUTE   WK-SKYCHK-KEISAN9 =
+                                        WK-ZENGAKU   *  WK-FUTANWARI
+                              COMPUTE   WK-SKYCHK-KEISAN9 =
+                                        WK-SKYCHK-KEISAN9 +
+                                        WK-SKYMONEY-ZEI
                               IF (FLG-GENBUTU70          NOT =   ZERO)
                               OR (FLG-TOKU75-CYO             =    3  )
                               OR (FLG-CYOKI-ARI              =    2  )
@@ -24236,6 +24519,11 @@
                                         WK-ZENGAKU   *  WK-FUTANWARI
                               COMPUTE   LNK-SYU-SYUCOMPFTN-ENTANI  =
                                         WK-ZENGAKU   *  WK-FUTANWARI
+                              COMPUTE   WK-SKYCHK-KEISAN9 =
+                                        WK-ZENGAKU   *  WK-FUTANWARI
+                              COMPUTE   WK-SKYCHK-KEISAN9 =
+                                        WK-SKYCHK-KEISAN9 +
+                                        WK-SKYMONEY-ZEI
                               IF (FLG-GENBUTU70          NOT =   ZERO)
                               OR (FLG-TOKU75-CYO             =    3  )
                               OR (FLG-CYOKI-ARI              =    2  )
@@ -24584,6 +24872,7 @@
                PERFORM   DB-CLOSE-SEC
       *
                MOVE      WK-ZENGAKU    TO    LNK-SYU-RSIJIBAI-SKYMONEY
+                                             WK-SKYCHK-KEISAN9
       *
                COMPUTE   WK-FUTANWARI  =
                          HKN-HON-GAIKFTNRATE  /  100
@@ -24624,6 +24913,7 @@
                                        +   WK-ZENGAKU-YAK
       *
                MOVE      WK-ZENGAKU    TO  LNK-SYU-RSIJIBAI-SKYMONEY
+                                           WK-SKYCHK-KEISAN9
       *
                COMPUTE   WK-FUTANWARI  =
                          HKN-HON-GAIKFTNRATE  /  100
@@ -25600,6 +25890,48 @@
              IF MAX-KIN-KOHI2-D       =  ZERO
                MOVE     1    TO   FLG-MARUTOARI2
                COMPUTE WK-ZENGAKU  =   WK-ZENGAKU  +  WK-RUI-ZENGAKU
+             END-IF
+           END-IF.
+      *
+           IF   COMB-KOH-GAIJGNKBN(KOH-IDX)  =  "1"
+             IF   WK-GAIKFTNRATE  NOT =  ZERO
+                 COMPUTE  WK-FUTANWARI      =  WK-GAIKFTNRATE
+                                            /  100
+                 COMPUTE  WK-SKYCHK-KEISAN  =  WK-ZENGAKU
+                                            *  WK-FUTANWARI
+                 IF  WK-SKYCHK-KEISAN9 < WK-SKYCHK-KEISAN
+                   MOVE  WK-SKYCHK-KEISAN  TO  WK-SKYCHK-KEISAN9
+                 END-IF
+             ELSE
+               IF  (COMB-KOHHKNNUM(KOH-IDX) = "972" OR "974")
+               AND (FLG-ZENKI-TOKUREI       =  1            )
+                 COMPUTE  WK-SKYCHK-KEISAN  =  WK-ZENGAKU
+                                            *  0.2
+                 IF  WK-SKYCHK-KEISAN9 < WK-SKYCHK-KEISAN
+                   MOVE  WK-SKYCHK-KEISAN  TO  WK-SKYCHK-KEISAN9
+                 END-IF
+               END-IF
+             END-IF
+           ELSE
+             IF   WK-GAIKFTNRATE  NOT =  ZERO
+                 COMPUTE  WK-FUTANWARI      =  WK-GAIKFTNRATE
+                                            /  100
+                 COMPUTE  WK-SKYCHK-KEISAN  =  WK-ZENGAKU
+                                            *  WK-FUTANWARI
+                 IF  WK-SKYCHK-KEISAN9 < WK-SKYCHK-KEISAN
+                   MOVE  WK-SKYCHK-KEISAN  TO  WK-SKYCHK-KEISAN9
+                 END-IF
+             ELSE
+               IF  (COMB-KOHHKNNUM(KOH-IDX) = "019")
+               AND (WK-GAIKFTNRATE019   NOT = ZERO )
+                 COMPUTE  WK-FUTANWARI      =  WK-GAIKFTNRATE019
+                                            /  100
+                 COMPUTE  WK-SKYCHK-KEISAN  =  WK-ZENGAKU
+                                            *  WK-FUTANWARI
+                 IF  WK-SKYCHK-KEISAN9 < WK-SKYCHK-KEISAN
+                   MOVE  WK-SKYCHK-KEISAN  TO  WK-SKYCHK-KEISAN9
+                 END-IF
+               END-IF
              END-IF
            END-IF.
       *
