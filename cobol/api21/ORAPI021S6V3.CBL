@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.00    NACL-多々納  18/06/XX  入院対応追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -62,6 +63,8 @@
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-PTHKNINF            PIC 9(01).
            03  FLG-PTKOHINF            PIC 9(01).
+           03  FLG-SRYACCT             PIC 9(01).
+           03  FLG-SRYCT               PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
            03  FLG-DAYERR              PIC 9(01).
@@ -97,6 +100,9 @@
            03  IDK                      PIC 9(04).
       *
            03  IDX-TBL-MAX              PIC 9(04).
+      *H30.6
+           03  IDD                      PIC 9(02).
+           03  IDXC                     PIC 9(04).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -168,6 +174,13 @@
            03  WRK-Z3                  PIC ZZ9.
       *
            03  WRK-HZN-ERRCD           PIC X(04).
+      *H30.6
+      *    入院調剤料対応
+           03  WRK-CHK-YMD.
+               05  WRK-CHK-YM          PIC X(06).
+               05  WRK-CHK-DD          PIC 9(02).
+           03  WRK-SRYKBN              PIC X(02).
+           03  FLG-HKNARI              PIC 9(01).
       *
       *    保険組合せ
        01  TBL-HKNCOMBI-AREA.
@@ -207,6 +220,14 @@
                        11  TBL-COMB-FTNJANUM         PIC  X(08).
                        11  TBL-COMB-JKYSNUM          PIC  X(20).
                        11  TBL-COMB-KOHID            PIC  9(10).
+      *
+      *H30.6
+      *    入院調剤料対応
+       01  TBL-JYURRK-CHOZAI-AREA.
+           03  TBL-JYURRK-OCC          OCCURS    150.
+               05  TBL-SRYYMD          PIC X(08).
+               05  TBL-HKNCOMBI        PIC X(04).
+      *H30.6
       *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
@@ -251,6 +272,9 @@
                05  WRK-PARA-SRYYM          PIC X(06).
       *        診療科
                05  WRK-PARA-SRYKA          PIC X(02).
+      *H30.6
+      *        入外区分
+               05  WRK-PARA-NYUGAIKBN      PIC X(01).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -382,6 +406,14 @@
       *    収納
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
+      *
+      *    診療会計
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
+      *    診療行為
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
@@ -992,7 +1024,16 @@
            MOVE    MDCREQ-KARTE-UID      TO  MDCRES-KARTE-UID
            MOVE    MDCREQ-ORCA-UID       TO  MDCRES-ORCA-UID
       *    外来とする
-           MOVE    "2"                   TO  SPA-NYUGAIKBN
+      **** MOVE    "2"                   TO  SPA-NYUGAIKBN
+      *H30.6
+      *    入外区分
+           IF      MDCREQ-OUTPATIENT-CLASS =   "I"
+      *        入院
+               MOVE    "1"                 TO  SPA-NYUGAIKBN
+           ELSE
+      *        外来
+               MOVE    "2"                 TO  SPA-NYUGAIKBN
+           END-IF
       *
       ***  MOVE    MDCREQ-CONT-MODE      TO  MDCRES-CONT-MODE
       *
@@ -1356,6 +1397,7 @@
       *
            MOVE    WRK-PERFORM-YM      TO  WRK-PARA-SRYYM
            MOVE    WRK-SRYKA           TO  WRK-PARA-SRYKA
+           MOVE    SPA-NYUGAIKBN       TO  WRK-PARA-NYUGAIKBN
       *
            MOVE    WRK-APIV3DATA-REC   TO  APIPARA-DATA-REC
       *
@@ -1381,6 +1423,7 @@
       ****************************************************************
        20013-JYURRK-SYORI-SEC           SECTION.
       *
+           INITIALIZE                  TBL-JYURRK-CHOZAI-AREA
       *
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
@@ -1423,6 +1466,11 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key67"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *H30.6
+      *    入院調剤料のみの保険組合せ判定
+           IF      SPA-NYUGAIKBN       =   "1"
+               PERFORM 200132-NYUCHOZAI-SEC
+           END-IF
       *
       *    対象なし
            IF      IDX-J               =   ZERO
@@ -1598,6 +1646,10 @@
       *
            ADD     1                   TO  IDX-J
       *
+      *H30.6
+           MOVE    JYURRK-SRYYMD       TO  TBL-SRYYMD (IDX-J)
+           MOVE    JYURRK-HKNCOMBINUM  TO  TBL-HKNCOMBI (IDX-J)
+      *
       *    診療日付
            MOVE    JYURRK-SRYYMD       TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
@@ -1608,6 +1660,25 @@
                                                              (IDX-J)
       *    連番
            MOVE    JYURRK-RENNUM   TO  MDCRES-MED-RENNUM  (IDX-J)
+      *
+      *    伝票番号
+           IF      SPA-NYUGAIKBN       =   "2"
+               MOVE    JYURRK-DENPNUM      TO  MDCRES-INVOICD-NUMBER
+                                                             (IDX-J)
+           END-IF
+      *
+      *H30.6
+      *    保険組合せ編集
+           MOVE    JYURRK-SRYYMD   TO  WRK-CHK-YMD
+           PERFORM 2001321-HKNCOMBI-MEDHEN-SEC
+           .
+       200132-JYURRK-HEN-EXT.
+           EXIT.
+      ****************************************************************
+      *    保険組合わせ編集処理
+      **************************************************************
+       2001321-HKNCOMBI-MEDHEN-SEC           SECTION.
+      *
       *    保険組合せ負担割合
            IF      SPA-NYUGAIKBN       =   "2"
                MOVE    TBL-COMB-GAI-KFTNRATE (IDX-H)
@@ -1663,8 +1734,8 @@
                                                              (IDX-J)
            ELSE
       *        期間外
-               IF      (JYURRK-SRYYMD      >=  TBL-COMB-TEKSTYMD(IDX-H))
-                  AND  (JYURRK-SRYYMD      <=  TBL-COMB-TEKEDYMD(IDX-H))
+               IF      (WRK-CHK-YMD        >=  TBL-COMB-TEKSTYMD(IDX-H))
+                  AND  (WRK-CHK-YMD        <=  TBL-COMB-TEKEDYMD(IDX-H))
                    CONTINUE
                ELSE
                    MOVE    "2"         TO  MDCRES-MED-COMBINATION-MODE
@@ -1673,17 +1744,22 @@
            END-IF
       *    非表示区分
            IF      MDCRES-MED-COMBINATION-MODE (IDX-J) =   SPACE
-               IF      TBL-COMB-HYOJIKBN (IDX-H)   =   "3"
+               IF      SPA-NYUGAIKBN       =   "2"
       *            外来非表示
-                   MOVE    "3"         TO  MDCRES-MED-COMBINATION-MODE
+                   IF      TBL-COMB-HYOJIKBN (IDX-H)   =   "3"
+                       MOVE    "3"     TO  MDCRES-MED-COMBINATION-MODE
                                                              (IDX-J)
+                   END-IF
+               ELSE
+      *            入院非表示
+                   IF      TBL-COMB-HYOJIKBN (IDX-H)   =   "2"
+                       MOVE    "3"     TO  MDCRES-MED-COMBINATION-MODE
+                                                             (IDX-J)
+                   END-IF
                END-IF
            END-IF
-      *    伝票番号
-           MOVE    JYURRK-DENPNUM      TO  MDCRES-INVOICD-NUMBER
-                                                             (IDX-J)
            .
-       200132-JYURRK-HEN-EXT.
+       2001321-HKNCOMBI-MEDHEN-EXT.
            EXIT.
       ****************************************************************
       *    保険組合わせ編集処理
@@ -1943,6 +2019,142 @@
        2004111-AGECHK-EXT.
            EXIT.
       *
+      *H30.6
+      *****************************************************************
+      *    入院調剤料のみの保険組合せ判定処理
+      *****************************************************************
+       200132-NYUCHOZAI-SEC     SECTION.
+      *
+      *    入院調剤料
+           MOVE    "24"                TO  WRK-SRYKBN
+           IF      IDX-J               <   150
+               PERFORM 200132-CHOZAI-SYORI-SEC
+           END-IF
+      *    麻毒加算
+           MOVE    "26"                TO  WRK-SRYKBN
+           IF      IDX-J               <   150
+               PERFORM 200132-CHOZAI-SYORI-SEC
+           END-IF
+           .
+       200132-NYUCHOZAI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院調剤料編集処理
+      *****************************************************************
+       200132-CHOZAI-SYORI-SEC           SECTION.
+      *
+      *    診療年月の診療会計マスタ読み込み
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    WRK-SRYKA           TO  ACCT-SRYKA
+           MOVE    WRK-PERFORM-YM      TO  ACCT-SRYYM
+           MOVE    WRK-SRYKBN          TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM
+               UNTIL       (FLG-SRYACCT    =   1  )
+                      OR   (IDX-J          >=  150 )
+      *        包括保険は対象外
+               IF     (ACCT-HKNCOMBI       =   "9999" )
+                   CONTINUE
+               ELSE
+                   MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
+                   PERFORM 200131-HKNCOMBI-CHK-SEC
+                   IF      FLG-OK          =   1
+                       PERFORM 2001321-CHOZAI-HENSYU-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACCT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       200132-CHOZAI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象入院調剤料編集処理
+      *****************************************************************
+       2001321-CHOZAI-HENSYU-SEC     SECTION.
+      *
+      *    算定日チェック
+           MOVE    ACCT-SRYYM          TO  WRK-CHK-YM
+           MOVE    ZERO                TO  WRK-CHK-DD
+      *    入院調剤料算定日
+           PERFORM VARYING     IDD     FROM    1   BY  1
+                   UNTIL       IDD     >   31
+               IF      ACCT-DAY (1 IDD)    NOT =   ZERO
+                   MOVE    IDD             TO  WRK-CHK-DD
+                   PERFORM 2001321-CHOZAI-SYORI-SEC
+               END-IF
+           END-PERFORM
+           .
+       2001321-CHOZAI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象入院調剤料編集処理
+      *****************************************************************
+       2001321-CHOZAI-SYORI-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNARI
+           PERFORM VARYING     IDXC    FROM    1   BY  1
+                   UNTIL      (IDXC    >   150 )
+                         OR   (FLG-HKNARI  =   1   )
+                         OR   (TBL-SRYYMD (IDXC)   =   SPACE )
+              IF     (WRK-CHK-YMD      =   TBL-SRYYMD (IDXC))
+               AND   (WRK-HKNCOMBI     =   TBL-HKNCOMBI(IDXC))
+                   MOVE    1               TO  FLG-HKNARI
+              END-IF
+           END-PERFORM
+           IF      FLG-HKNARI          =   1
+               GO  TO  2001321-CHOZAI-SYORI-EXT
+           END-IF
+      *
+           ADD     1                   TO  IDX-J
+           IF      IDX-J               >   150
+               GO  TO  2001321-CHOZAI-SYORI-EXT
+           END-IF
+      *    テーブル編集
+           MOVE    WRK-CHK-YMD         TO  TBL-SRYYMD (IDX-J)
+           MOVE    WRK-HKNCOMBI        TO  TBL-HKNCOMBI(IDX-J)
+      *
+      *    入院調剤料のみ対応
+           MOVE    "ONLY"              TO  MDCRES-CHOZAI-ONLY(IDX-J)
+      *    算定日付
+           MOVE    WRK-CHK-YMD         TO  WRK-SYMD
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  MDCRES-PERFORM-DATE (IDX-J)
+      *    保険組合せ番号
+           MOVE    WRK-HKNCOMBI
+                                   TO  MDCRES-MED-COMBINATION-NUMBER
+                                                             (IDX-J)
+      *    保険組合せ編集
+           PERFORM 2001321-HKNCOMBI-MEDHEN-SEC
+      *
+           .
+       2001321-CHOZAI-SYORI-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *    会計照会初期設定処理
       *****************************************************************
@@ -2033,6 +2245,8 @@
            IF      WRK-ERRCD           =   SPACE
                IF     (WRK-PARA-SRYYM      =   WRK-PERFORM-YM)
                  AND  (WRK-PARA-SRYKA      =   WRK-SRYKA    )
+      *H30.6
+                 AND  (WRK-PARA-NYUGAIKBN  =   SPA-NYUGAIKBN)
                    CONTINUE
                ELSE
                    MOVE    "24"            TO  WRK-ERRCD
@@ -2121,7 +2335,10 @@
            MOVE    MDCREQ-START-DAY    TO  MDCRES-START-DAY
            MOVE    MDCREQ-END-DAY      TO  MDCRES-END-DAY
       *    収納一括更新あり
-           MOVE    MDCREQ-INCOME-CHANGE    TO  MDCRES-INCOME-CHANGE
+           IF     (SPA-NYUGAIKBN       =   "2"     )
+               MOVE    MDCREQ-INCOME-CHANGE    TO  MDCRES-INCOME-CHANGE
+           END-IF
+      *
       *    保険組合せ情報取得など
       *??? PERFORM 20014-HKNCOMBI-HEN-SEC
       *
@@ -2213,11 +2430,13 @@
                END-IF
            END-IF
       *    収納更新区分
-           IF      MDCREQ-INCOME-CHANGE    =   "Yes"
-                                           OR  "No"
+           IF     (SPA-NYUGAIKBN       =   "2"     )
+             IF      MDCREQ-INCOME-CHANGE    =   "Yes"
+                                             OR  "No"
                CONTINUE
-           ELSE
+             ELSE
                MOVE    "29"                TO  WRK-ERRCD
+             END-IF
            END-IF
            .
        200212-INPUT-CHK01-EXT.
@@ -2972,8 +3191,10 @@
                MOVE    "対象の受診履歴がありません"
                                                TO  WRK-ERRMSG
            WHEN    "24"
-               MOVE    "前回と診療年月・診療科が違います"
-                                               TO  WRK-ERRMSG
+               STRING  "前回と診療年月・診療科・入外区分が違います"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
            WHEN    "25"
                MOVE    "変更前の保険組合せ番号が違います"
                                                TO  WRK-ERRMSG
@@ -3358,6 +3579,24 @@
       *
            .
        970-JYURRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   診療会計読み込み
+      *****************************************************************
+       930-SRYACCT-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               MOVE    ZERO            TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       930-SRYACCT-READ-EXT.
            EXIT.
       *****************************************************************
       *    パラメタ情報読み込み

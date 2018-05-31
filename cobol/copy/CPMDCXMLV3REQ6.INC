@@ -44,6 +44,9 @@
               05  MDCREQ-PERFORM-YM        PIC X(07).
       *       診療科
               05  MDCREQ-APPOINT-DEP-CODE  PIC X(02).
+      *H30.6
+      *       入外区分（１：入院）
+              05  MDCREQ-OUTPATIENT-CLASS  PIC X(1).
       *
       *       一括変更内容（リクエスト＝０２）
               05  MDCREQ-CHENGE-INFO.

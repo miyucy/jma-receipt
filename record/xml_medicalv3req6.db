@@ -12,6 +12,8 @@ xml_medicalv3req6 {
 		Perform_Date		varchar(7);
 #---    診療科
 		Department_Code		varchar(2);
+#---    入外区分
+		InOut			varchar(1);
 		Change_Information  {
 #---    前保険組合せ番号
 			Bf_Insurance_Combination_Number	varchar(04);
