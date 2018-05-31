@@ -1,7 +1,7 @@
 kanri_cd    : "5008"
 name        : "夜間看護体制特定日（減算対象日）"
 class_cd    : "*"
-item_max    : 12
+item_max    : 13
 item_list   :
 - item_no   : 1
   item      : "YAKANGENYMD1"
