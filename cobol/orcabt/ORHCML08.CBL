@@ -726,7 +726,7 @@
                 WHEN    2
                     MOVE    "key10m1"   TO  WRK-PATH 
                 WHEN    3
-                    MOVE    "key10k1"   TO  WRK-PATH
+                    MOVE    "key10kbn1" TO  WRK-PATH
                 WHEN    4
                     MOVE    "key10i1"   TO  WRK-PATH
             END-EVALUATE       

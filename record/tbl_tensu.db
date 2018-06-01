@@ -1711,4 +1711,37 @@ path	last_update2	{
 		;
 	};
 };
-
+path	key10kbn 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key10kbn_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   SRYCD      >=  :SRYCD
+			AND   SRYCD      <=  :UPSRYCD
+			AND   SRYKBN     >=  :STSRYKBN
+			AND   SRYKBN     <=  :EDSRYKBN
+			ORDER  BY  SRYKBN,CDKBN_KBN,CDKBN_SYO,CDKBN_BU,CDKBN_KBNNUM,CDKBN_KBNNUM_EDA,CDKBN_KOUBAN,KOUHYOJYUNNUM,SRYCD
+		;
+	};
+};
+path	key10kbn1 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key10kbn1_csr CURSOR FOR
+		SELECT distinct a.*
+		FROM tbl_tensu a,tbl_inputcd b
+			WHERE a.HOSPNUM	 =   :HOSPNUM
+			AND   a.HOSPNUM	 =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   a.SRYKBN     >=  :STSRYKBN
+			AND   a.SRYKBN     <=  :EDSRYKBN
+			AND   b.SRYCD    >=  :SRYCD
+                        AND   b.SRYCD    <=  :UPSRYCD
+			ORDER  BY  SRYKBN,CDKBN_KBN,CDKBN_SYO,CDKBN_BU,CDKBN_KBNNUM,CDKBN_KBNNUM_EDA,CDKBN_KOUBAN,KOUHYOJYUNNUM,SRYCD
+		;
+	};
+};
