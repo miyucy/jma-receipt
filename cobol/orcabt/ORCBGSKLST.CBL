@@ -553,6 +553,10 @@
                INITIALIZE                  SYS-0031-REC
            END-IF
       *
+           IF      SYS-0031-SSTKIJUN   =   SPACE
+               MOVE    "施設基準なし"      TO  SYS-0031-SSTKIJUN
+           END-IF
+      *
            STRING  WRK-KBNCD           DELIMITED   BY  SPACE
                    "："                DELIMITED   BY  SIZE
                    SYS-0031-SSTKIJUN   DELIMITED   BY  SPACE
