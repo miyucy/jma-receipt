@@ -246,6 +246,7 @@
       *  04.08.22    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
       *                                     での食事算定対応
       *  04.08.23    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *  04.08.24    NACL-門脇    18/06/04  診療区分別点数欄の集計修正
       *
       *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
       *  05.00.02    NACL-伊藤    17/12/20  診療情報システム対応
@@ -2822,6 +2823,12 @@
                (RECE62-KOHNUM(2)  =  "012"                  ) AND
                (RECE62-KOHNUM(3)  =  "012"                  ))
                     MOVE       2       TO    FLG-JIRITU-HENSYU
+           END-IF
+           IF ((RECE62-HKNNUM     =  SPACE                  ) AND
+               (RECE62-KOHNUM(1)  =  "021" OR "015" OR "016") AND
+               (RECE62-KOHNUM(2)  =  "012"                  ) AND
+               (RECE62-KOHNUM(3)  =  "012"                  ))
+                    MOVE       3       TO    FLG-JIRITU-HENSYU
            END-IF
       *
       *    県単用項目ファイル読込処理
@@ -5972,7 +5979,7 @@
                MOVE    2                  TO  IDX2
            END-IF      
       *
-           IF    FLG-JIRITU-HENSYU   =  2
+           IF    FLG-JIRITU-HENSYU   =  2 OR 3
                MOVE    3                  TO  IDX3
            END-IF
       *
@@ -5991,6 +5998,11 @@
                      MOVE    WRK-SUM-TENSU       TO  WRK-TENSUZ
                    WHEN      2
                      COMPUTE WRK-SUM-TENSU = RECE62-TENSU(IDX IDX1)
+                                           + RECE62-TENSU(IDX IDX3)
+                     MOVE    WRK-SUM-TENSU       TO  WRK-TENSUZ
+                   WHEN      3
+                     COMPUTE WRK-SUM-TENSU = RECE62-TENSU(IDX IDX1)
+                                           + RECE62-TENSU(IDX IDX2)
                                            + RECE62-TENSU(IDX IDX3)
                      MOVE    WRK-SUM-TENSU       TO  WRK-TENSUZ
                  END-EVALUATE
@@ -6052,6 +6064,11 @@
                      MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
                    WHEN      2
                      COMPUTE WRK-SUM-TENSU = RECE62-NYUKHNKEI(IDX IDX1)
+                                           + RECE62-NYUKHNKEI(IDX IDX3)
+                     MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
+                   WHEN      3
+                     COMPUTE WRK-SUM-TENSU = RECE62-NYUKHNKEI(IDX IDX1)
+                                           + RECE62-NYUKHNKEI(IDX IDX2)
                                            + RECE62-NYUKHNKEI(IDX IDX3)
                      MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
                  END-EVALUATE
@@ -6117,6 +6134,12 @@
                                  RECE62-NYUKHNKEI(IDX IDX1) +
                                  RECE62-NYUKHNKEI(IDX IDX3)
                          ADD   WRK-SUM-TENSU     TO  SUM-NYUKHNKEI (1)
+                       WHEN      3
+                         COMPUTE WRK-SUM-TENSU              =
+                                 RECE62-NYUKHNKEI(IDX IDX1) +
+                                 RECE62-NYUKHNKEI(IDX IDX2) +
+                                 RECE62-NYUKHNKEI(IDX IDX3)
+                         ADD   WRK-SUM-TENSU     TO  SUM-NYUKHNKEI (1)
                      END-EVALUATE
                    ELSE
                      ADD     RECE62-NYUKHNKEI(IDX IDX1)
@@ -6177,6 +6200,12 @@
                  MOVE    WRK-TENSU       TO  HC06-NYUTENSU  (5)
                WHEN      2
                  COMPUTE WRK-SUM-TENSU =  RECE62-NYUKHNKEI2 (IDX1)
+                                       +  RECE62-NYUKHNKEI2 (IDX3)
+                 MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
+                 MOVE    WRK-TENSU       TO  HC06-NYUTENSU  (5)
+               WHEN      3
+                 COMPUTE WRK-SUM-TENSU =  RECE62-NYUKHNKEI2 (IDX1)
+                                       +  RECE62-NYUKHNKEI2 (IDX2)
                                        +  RECE62-NYUKHNKEI2 (IDX3)
                  MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
                  MOVE    WRK-TENSU       TO  HC06-NYUTENSU  (5)
@@ -6292,6 +6321,12 @@
                                  RECE62-NYUTOKKEI(IDX IDX1) +
                                  RECE62-NYUTOKKEI(IDX IDX3)
                          MOVE  WRK-SUM-TENSU          TO  WRK-TENSUZ
+                       WHEN      3
+                         COMPUTE WRK-SUM-TENSU              =
+                                 RECE62-NYUTOKKEI(IDX IDX1) +
+                                 RECE62-NYUTOKKEI(IDX IDX2) +
+                                 RECE62-NYUTOKKEI(IDX IDX3)
+                         MOVE  WRK-SUM-TENSU          TO  WRK-TENSUZ
                      END-EVALUATE
                    ELSE
                      MOVE  RECE62-NYUTOKKEI(IDX IDX1) TO  WRK-TENSUZ
@@ -6356,6 +6391,12 @@
                                  RECE62-NYUTOKKEI(IDX IDX1) +
                                  RECE62-NYUTOKKEI(IDX IDX3)
                          ADD  WRK-SUM-TENSU      TO  SUM-NYUKHNKEI (1)
+                       WHEN      3
+                         COMPUTE WRK-SUM-TENSU              =
+                                 RECE62-NYUTOKKEI(IDX IDX1) +
+                                 RECE62-NYUTOKKEI(IDX IDX2) +
+                                 RECE62-NYUTOKKEI(IDX IDX3)
+                         ADD  WRK-SUM-TENSU      TO  SUM-NYUKHNKEI (1)
                      END-EVALUATE
                    ELSE
                      ADD     RECE62-NYUTOKKEI(IDX IDX1)
@@ -6418,6 +6459,12 @@
                  MOVE    WRK-TENSU        TO  HC06-NYUTENSU (10)
                WHEN      2
                  COMPUTE WRK-SUM-TENSU =  RECE62-NYUTOKKEI2 (IDX1)
+                                       +  RECE62-NYUTOKKEI2 (IDX3)
+                 MOVE    WRK-SUM-TENSU    TO  WRK-TENSUZ
+                 MOVE    WRK-TENSU        TO  HC06-NYUTENSU (10)
+               WHEN      3
+                 COMPUTE WRK-SUM-TENSU =  RECE62-NYUTOKKEI2 (IDX1)
+                                       +  RECE62-NYUTOKKEI2 (IDX2)
                                        +  RECE62-NYUTOKKEI2 (IDX3)
                  MOVE    WRK-SUM-TENSU    TO  WRK-TENSUZ
                  MOVE    WRK-TENSU        TO  HC06-NYUTENSU (10)

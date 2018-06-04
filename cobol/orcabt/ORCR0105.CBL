@@ -235,6 +235,7 @@
       *  04.08.16    NACL-門脇    17/07/03  （災１）等の記載を括弧なしで
       *                                     記載するよう変更
       *  04.08.17    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *  04.08.18    NACL-門脇    18/06/04  診療区分別点数欄の集計修正
       *
       *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
       *  05.00.02    NACL-伊藤    17/12/20  診療情報システム対応
@@ -2741,6 +2742,12 @@
                (RECE02-KOHNUM(2)  =  "012"                  ) AND
                (RECE02-KOHNUM(3)  =  "012"                  ))
                     MOVE       2       TO    FLG-JIRITU-HENSYU
+           END-IF
+           IF ((RECE02-HKNNUM     =  SPACE                  ) AND
+               (RECE02-KOHNUM(1)  =  "021" OR "015" OR "016") AND
+               (RECE02-KOHNUM(2)  =  "012"                  ) AND
+               (RECE02-KOHNUM(3)  =  "012"                  ))
+                    MOVE       3       TO    FLG-JIRITU-HENSYU
            END-IF
       *
       *    県単用項目ファイル読込処理
@@ -5339,7 +5346,7 @@
                MOVE    2                  TO  IDX2
            END-IF      
       *
-           IF    FLG-JIRITU-HENSYU   =  2
+           IF    FLG-JIRITU-HENSYU   =  2 OR 3
                MOVE    3                  TO  IDX3
            END-IF
       *            
@@ -5383,6 +5390,11 @@
                        MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
                      WHEN      2
                        COMPUTE WRK-SUM-TENSU = RECE02-TENSU(IDX IDX1)
+                                             + RECE02-TENSU(IDX IDX3)
+                       MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
+                     WHEN      3
+                       COMPUTE WRK-SUM-TENSU = RECE02-TENSU(IDX IDX1)
+                                             + RECE02-TENSU(IDX IDX2)
                                              + RECE02-TENSU(IDX IDX3)
                        MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
                    END-EVALUATE
