@@ -117,7 +117,7 @@ xml_medication_masterlst {
 		Specific_Device_Classification_2	varchar(1);
 		Upper_limit_Score			varchar(7);
 		Total_Destination_Out			varchar(3);
-		otal_Destination_In			varchar(3);
+		Total_Destination_In			varchar(3);
 		Code_Table_use_Category_Category	varchar(1);
 		Code_Table_use_Category_Chapter		varchar(1);
 		Code_Table_use_Category_Part		varchar(2);
