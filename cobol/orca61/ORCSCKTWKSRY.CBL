@@ -326,8 +326,15 @@
            03  IDXZ                        PIC 9(04).
            03  WRK-ZKS-GRP             PIC X(02).
            03  WRK-ZKS-KBN             PIC X(01).
+      *H30.5
+      *    保険外の合計金額７桁オーバーチェック
+           03  WRK-SUM-HKNTEN             PIC 9(08).
+           03  WRK-SUM-TGMONEY            PIC 9(08).
+           03  WRK-SUM-TGMONEY-TAX        PIC 9(08).
+           03  WRK-SUM-JIHI-TOTAL         PIC 9(08).
+           03  WRK-SUM-JIHI-TOTAL-TAX     PIC 9(08).
+      *!!!
       *
-      *TEST
       *    収納集計点数内容
        01  TBL-K02SCR-AREA.
            03  TBL-K02SCR-OCC          OCCURS   400.
@@ -338,7 +345,7 @@
            03  SUM-SYU-SKY-NAIYOU.
                05  SUM-SYU-SKY-TBL             OCCURS   17.
       *    保険点数
-                   09  SUM-SYU-HKNTEN          PIC  S9(07).
+                   09  SUM-SYU-HKNTEN          PIC  S9(08).
       *
        01  TBL-KAISUU-AREA.
            03  TBL-KAISUU-OCCU         OCCURS   10.
@@ -4493,6 +4500,30 @@
                ELSE
                    MOVE    SUM-SYU-HKNTEN (IDX) TO  SYU-HKNTEN(IDX)
               END-IF
+      *!!!
+      *H30.5
+      *       桁オーバーチェック
+              IF     (SUM-SYU-HKNTEN(IDX)  +   SUM-SYU-HKNTEN(17))
+                                           >   9999999
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1090"           TO  SPA-ERRCD
+                  END-IF
+              END-IF
+              ADD     SUM-SYU-HKNTEN(IDX)  TO  SUM-SYU-HKNTEN(17)
+              IF     (SYU-TGMONEY(IDX) +   SYU-TGMONEY(17))
+                                       >   9999999
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1089"           TO  SPA-ERRCD
+                  END-IF
+              END-IF
+              IF     (SYU-TGMONEY-TAX(IDX) +   SYU-TGMONEY-TAX(17))
+                                       >   9999999
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1089"           TO  SPA-ERRCD
+                  END-IF
+              END-IF
+      *H30.5
+      *
       *       保険点数
               ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(17)
       *       金額
@@ -4503,10 +4534,60 @@
               ADD     SYU-TGMONEY-TAX(IDX) TO  SYU-TGMONEY-TAX(17)
       *
            END-PERFORM
+      *!!!
+      *H30.5
+      *    自費合計桁数７桁オーバーチェック
+           PERFORM 45069-TOTALOVER-CHK-SEC
       *
            .
        4506-TOTALKEI-EXT.
            EXIT.
+      *****************************************************************
+      *    自費合計桁数７桁オーバーチェック処理
+      *****************************************************************
+       45069-TOTALOVER-CHK-SEC         SECTION.
+      *
+      *!!!
+      *H30.5
+      *    合計桁数７桁オーバーチェック
+           IF     (SYU-HKNTEN(17)      +   WRK-SUM-HKNTEN )
+                                       >   9999999
+               MOVE    "1089"              TO  SPA-ERRCD
+           END-IF
+           IF     (SYU-TGMONEY(17)     +   WRK-SUM-TGMONEY )
+                                       >   9999999
+               MOVE    "1089"              TO  SPA-ERRCD
+           END-IF
+           IF     (SYU-TGMONEY-TAX(17) +   WRK-SUM-TGMONEY-TAX )
+                                       >   9999999
+               MOVE    "1089"              TO  SPA-ERRCD
+           END-IF
+      *
+           ADD     SYU-HKNTEN(17)      TO  WRK-SUM-HKNTEN
+           ADD     SYU-TGMONEY(17)     TO  WRK-SUM-TGMONEY
+           ADD     SYU-TGMONEY-TAX(17) TO  WRK-SUM-TGMONEY-TAX
+      *!!!
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   10  )
+      *        消費税なし
+               IF     (SYU-JIHI-TAXNASI (IDX)  +  WRK-SUM-JIHI-TOTAL)
+                                           >   9999999
+                   MOVE    "1089"          TO  SPA-ERRCD
+               END-IF
+      *        消費税あり
+               IF     (SYU-JIHI-TAXARI  (IDX)
+                                           +  WRK-SUM-JIHI-TOTAL-TAX)
+                                           >   9999999
+                   MOVE    "1089"          TO  SPA-ERRCD
+               END-IF
+               ADD     SYU-JIHI-TAXNASI(IDX)  TO  WRK-SUM-JIHI-TOTAL
+               ADD     SYU-JIHI-TAXARI (IDX)  TO  WRK-SUM-JIHI-TOTAL-TAX
+           END-PERFORM
+      *
+           .
+       45069-TOTALOVER-CHK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    自動作成の診療行為作成処理
       *****************************************************************

@@ -291,7 +291,7 @@
            03  SUM-SYU-SKY-NAIYOU.
                05  SUM-SYU-SKY-TBL             OCCURS   17.
       *    保険点数
-                   09  SUM-SYU-HKNTEN          PIC  S9(07).
+                   09  SUM-SYU-HKNTEN          PIC  S9(08).
       *
       *画面最大行
       *01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
@@ -5054,17 +5054,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               END-IF
       *!!!
       *H30.5
-              IF     (SYU-HKNTEN(IDX) +   SYU-HKNTEN(17))
+      *       桁オーバーチェック
+              IF     (SUM-SYU-HKNTEN(IDX)  +   SUM-SYU-HKNTEN(17))
                                        >   9999999
-                  MOVE    "1090"           TO  SPA-ERRCD
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1090"           TO  SPA-ERRCD
+                  END-IF
               END-IF
+              ADD     SUM-SYU-HKNTEN(IDX)  TO  SUM-SYU-HKNTEN(17)
               IF     (SYU-TGMONEY(IDX) +   SYU-TGMONEY(17))
                                        >   9999999
-                  MOVE    "1089"           TO  SPA-ERRCD
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1089"           TO  SPA-ERRCD
+                  END-IF
               END-IF
               IF     (SYU-TGMONEY-TAX(IDX) +   SYU-TGMONEY-TAX(17))
                                        >   9999999
-                  MOVE    "1089"           TO  SPA-ERRCD
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1089"           TO  SPA-ERRCD
+                  END-IF
               END-IF
       *H30.5
       *!!!
@@ -5130,18 +5138,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                ADD     SYU-JIHI-TAXARI (IDX)  TO  WRK-SUM-JIHI-TOTAL-TAX
            END-PERFORM
       *
-      *    IF      SPA-ERRCD           =   SPACE
-      *        自費＋保険外の合計チェック
-      *        IF     (WRK-SUM-TGMONEY     +   WRK-SUM-TGMONEY-TAX
-      *                                    +   WRK-SUM-JIHI-TOTAL
-      *                                    +   WRK-SUM-JIHI-TOTAL-TAX)
-      *                                    >   9999999
-      *            MOVE    "1089"          TO  SPA-ERRCD
-      **       END-IF
-      *    END-IF
            .
        45069-TOTALOVER-CHK-EXT.
            EXIT.
+      *
       *****************************************************************
       *    自動作成の診療行為作成処理
       *****************************************************************
