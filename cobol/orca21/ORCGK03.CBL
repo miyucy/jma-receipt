@@ -174,7 +174,7 @@
       *    クライアント印刷有
       **** 03  FLG-CLIENT-OK           PIC 9(01).
       *!!!!
-      *H30.5
+      *H30.6
            03  FLG-ERRCHK              PIC 9(01).
       *
       *    添字領域
@@ -251,6 +251,7 @@
                05  WRK-KIZAITEN            PIC  9(07).
                05  WRK-JIHIMONEY           PIC  9(08).
       *
+      *H30.6
       *!!  03  WRK-SEIKYU              PIC S9(07).
       *!!  03  WRK-SEIGOK              PIC S9(07).
            03  WRK-SEIKYU              PIC S9(08).
@@ -1929,9 +1930,9 @@
       *        PERFORM 3103-NYUKIN-KEI-SEC
       ***  END-IF
       *!!!!
-      *H30.5
+      *H30.6
            INITIALIZE  WRK-SYUNOU-REC
-      *!!!!
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
                MOVE    SPA-SYUNOU-REC (IDX)    TO  SYUNOU-REC
@@ -1960,8 +1961,8 @@
       *        今回入金額
                MOVE    SYU-NYUKIN-TOTAL    TO  SPA-TEI-NYUKIN-TOTAL
                                                               (IDX)
-      *!!!!
-      *H30.5
+      *
+      *H30.6
       *        桁オーバーチェック
                IF     (SYU-SRYKA           =   ZERO )
                    OR (SYU-HKNCOMBINUM     =   ZERO
@@ -2005,12 +2006,11 @@
                    ADD     SYU-CHOSEI          TO  WRK-SYU-CHOSEI
                    ADD     SYU-SKYMONEY        TO  WRK-SYU-SKYMONEY
                END-IF
-      *H30.5
+      *H30.6
            END-PERFORM
       *
-      *H30.5
+      *H30.6
            INITIALIZE  WRK-SYUNOU-REC
-      *!!!!
       *
            .
        3108-SYUNOU-SYOKI-EXT.
@@ -3926,8 +3926,8 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41001-HKNCOMBI-CHG-SEC
            END-IF
-      *!!!!
-      *H30.5
+      *
+      *H30.6
            MOVE    1                   TO  FLG-ERRCHK
            .
       *
@@ -3978,7 +3978,7 @@
                PERFORM 41001-SRYKA-CHG-SEC
            END-IF
       *!!!!
-      *H30.5
+      *H30.6
            MOVE    1                   TO  FLG-ERRCHK
            .
        4100-SRYKA-EXT.
@@ -5025,7 +5025,7 @@
                    COMPUTE WRK-SEIKYU      =   SPA-GMN-CHOSEI1
                                            +   SPA-GMN-CHOSEI2
                                            +   SPA-NAI-SEIKYU
-      *!!!!
+      *H30.6
       *            ７桁数チェック
                    IF      WRK-SEIKYU          >   9999999
                        MOVE    "0035"                  TO  SPA-ERRCD
@@ -5504,7 +5504,7 @@
                PERFORM 4801-FUKU-HKNCOMBI-CHG-SEC
            END-IF
       *!!!!
-      *H30.5
+      *H30.6
            MOVE    1                   TO  FLG-ERRCHK
            .
        480-FUKU-HKNCOMBI-EXT.
@@ -5604,7 +5604,7 @@
                PERFORM 4901-FUKU-SRYKA-CHG-SEC
            END-IF
       *!!!!
-      *H30.5
+      *H30.6
            MOVE    1                   TO  FLG-ERRCHK
            .
        490-FUKU-SRYKA-EXT.
@@ -5869,7 +5869,7 @@
                GO      TO      450-TOROKU-EXT
            END-IF
       *!!!!
-      *
+      *H30.6
            IF      SPA-OVER-ERR        =   1
                GO      TO      450-TOROKU-EXT
            END-IF
@@ -7856,7 +7856,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
-      *!!!
+      *H30.6
       *    合計桁数オーバー
            IF     (SPA-OVER-ERR        =   1    )
              AND  (FLG-ERRCHK          =   ZERO )

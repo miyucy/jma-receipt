@@ -51,8 +51,8 @@
       *  04.08.00    NACL-多々納  17/02/XX  在宅実績加算２削除対応
       *  04.08.00    NACL-多々納  17/03/XX  Ｈ２９年４月改正対応他
       *  04.08.00    NACL-多々納  17/05/XX  HAORI対応
-      *  04.08.00    NACL-多々納  17/03/XX  Ｈ３０年４月改正対応他
-      *  04.08.00    NACL-多々納  17/05/21  自費金額桁数チェック対応
+      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応他
+      *  04.08.00    NACL-多々納  18/06/XX  自費金額桁数チェック対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -272,14 +272,13 @@
            03  WRK-GRPCNT              PIC 9(03).
            03  FLG-CHK01               PIC 9(01).
       *
-      *H30.5
+      *H30.6
       *    保険外の合計金額７桁オーバーチェック
            03  WRK-SUM-HKNTEN             PIC 9(08).
            03  WRK-SUM-TGMONEY            PIC 9(08).
            03  WRK-SUM-TGMONEY-TAX        PIC 9(08).
            03  WRK-SUM-JIHI-TOTAL         PIC 9(08).
            03  WRK-SUM-JIHI-TOTAL-TAX     PIC 9(08).
-      *!!!
       *
       *    収納集計点数内容
        01  TBL-K02SCR-AREA.
@@ -2291,8 +2290,8 @@
            END-IF
       *
       *    処方料・処方せん料は対象外とする
-           IF      LNK-WKSRY-SRYSYUKBN (IDX)  =   "250"  OR
-                                                  "820"
+           IF      LNK-WKSRY-SRYSYUKBN (IDX)  =   "250"
+                                              OR  "820"
                EVALUATE    LNK-WKSRY-SRYCD(IDX IDY)
       *            長期投与加算（処方せん）
                    WHEN    "120003270"
@@ -4371,7 +4370,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "80"                        TO  WRK-SRYKBN
            END-IF
       *!!!
-      *H30.5
+      *H30.6
       *    テーブル位置決定
            PERFORM 450110-SRYKBN-TBL-SEC
       *
@@ -4382,14 +4381,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        消費税なし
                WHEN    "950"
-      *H30.5
+      *H30.6
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (IDG)
       ************ PERFORM 450111-TGMONEY-SEC
       *        消費税あり
                WHEN    "960"
       *H26.10      追加
                WHEN    "961"
-      *H30.5
+      *H30.6
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
                                                                (IDG)
       *************PERFORM 450111-TGMONEY-TAX-SEC
@@ -4398,7 +4397,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        45011-TGMONEY-SET-EXT.
            EXIT.
       *
-      *H30.5
+      *H30.6
       *****************************************************************
       *    保険適用外の桁数チェック処理
       *****************************************************************
@@ -4515,7 +4514,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        450110-SRYKBN-TBL-EXT.
            EXIT.
       *
-      *H30.5　不使用
+      *H30.6から　不使用
       *****************************************************************
       *    保険適用外の集計処理(消費税なし)
       *****************************************************************
@@ -4605,7 +4604,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        450111-TGMONEY-EXT.
            EXIT.
       *
-      *H30.5　不使用
+      *H30.6から　不使用
       *****************************************************************
       *    保険適用外の集計処理(消費税あり)
       *****************************************************************
@@ -5053,7 +5052,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SUM-SYU-HKNTEN (IDX) TO  SYU-HKNTEN(IDX)
               END-IF
       *!!!
-      *H30.5
+      *H30.6
       *       桁オーバーチェック
               IF     (SUM-SYU-HKNTEN(IDX)  +   SUM-SYU-HKNTEN(17))
                                        >   9999999
@@ -5074,8 +5073,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE    "1089"           TO  SPA-ERRCD
                   END-IF
               END-IF
-      *H30.5
-      *!!!
+      *H30.6
       *
       *       保険点数
               ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(17)
@@ -5087,22 +5085,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               ADD     SYU-TGMONEY-TAX(IDX) TO  SYU-TGMONEY-TAX(17)
       *
            END-PERFORM
-      *!!!
-      *H30.5
+      *
+      *H30.6
       *    自費合計桁数７桁オーバーチェック
            PERFORM 45069-TOTALOVER-CHK-SEC
-      *!!!
       *
            .
        4506-TOTALKEI-EXT.
            EXIT.
+      *
+      *H30.6
       *****************************************************************
       *    自費合計桁数７桁オーバーチェック処理
       *****************************************************************
        45069-TOTALOVER-CHK-SEC         SECTION.
       *
-      *!!!
-      *H30.5
       *    合計桁数７桁オーバーチェック
            IF     (SYU-HKNTEN(17)      +   WRK-SUM-HKNTEN )
                                        >   9999999
@@ -5120,7 +5117,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ADD     SYU-HKNTEN(17)      TO  WRK-SUM-HKNTEN
            ADD     SYU-TGMONEY(17)     TO  WRK-SUM-TGMONEY
            ADD     SYU-TGMONEY-TAX(17) TO  WRK-SUM-TGMONEY-TAX
-      *!!!
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   10  )
       *        消費税なし
@@ -5137,7 +5134,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                ADD     SYU-JIHI-TAXNASI(IDX)  TO  WRK-SUM-JIHI-TOTAL
                ADD     SYU-JIHI-TAXARI (IDX)  TO  WRK-SUM-JIHI-TOTAL-TAX
            END-PERFORM
-      *
            .
        45069-TOTALOVER-CHK-EXT.
            EXIT.

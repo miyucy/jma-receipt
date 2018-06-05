@@ -2361,6 +2361,7 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H30.6
                WHEN    "1088"
                    STRING  "保険外金額が７桁を超えます。"
                            "桁数オーバーとなります。"
@@ -2379,8 +2380,7 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H30.5
-      *TEST
+      *
       *H30.5
                WHEN    "1106"
                    STRING  "剤内に選択式コメントの必要な"
