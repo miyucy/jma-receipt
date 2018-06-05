@@ -2721,19 +2721,23 @@
            MOVE     ZERO       TO    FLG-JIRITU-HENSYU
            IF ((RECE02-HKNNUM     =  SPACE                  ) AND
                (RECE02-KOHNUM(1)  =  "021" OR "015" OR "016") AND
-               (RECE02-KOHNUM(2)  =  "012"                  ))
+               (RECE02-KOHNUM(2)  =  "012"                  ) AND
+               (RECE02-KOHNUM(3)  =  SPACE                  ) AND
+               (RECE02-KOHNUM(4)  =  SPACE                  ))
                     MOVE       1       TO    FLG-JIRITU-HENSYU
            END-IF
            IF ((RECE02-HKNNUM     =  SPACE                  ) AND
                (RECE02-KOHNUM(1)  =  "010"                  ) AND
                (RECE02-KOHNUM(2)  =  "012"                  ) AND
-               (RECE02-KOHNUM(3)  =  "012"                  ))
+               (RECE02-KOHNUM(3)  =  "012"                  ) AND
+               (RECE02-KOHNUM(4)  =  SPACE                  ))
                     MOVE       2       TO    FLG-JIRITU-HENSYU
            END-IF
            IF ((RECE02-HKNNUM     =  SPACE                  ) AND
                (RECE02-KOHNUM(1)  =  "021" OR "015" OR "016") AND
                (RECE02-KOHNUM(2)  =  "012"                  ) AND
-               (RECE02-KOHNUM(3)  =  "012"                  ))
+               (RECE02-KOHNUM(3)  =  "012"                  ) AND
+               (RECE02-KOHNUM(4)  =  SPACE                  ))
                     MOVE       3       TO    FLG-JIRITU-HENSYU
            END-IF
       *
