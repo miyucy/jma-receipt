@@ -242,9 +242,9 @@
            03  WRK-YUSENYMD                PIC X(08).
            03  WRK-FUTANWARI               PIC 9V99.
            03  WRK-TAIHI-DAY               PIC 9(02).
-           03  WK-SKYCHK-KEISAN            PIC 9(10).
-           03  WK-SKYCHK-KEISAN2           PIC 9(10).
-           03  WK-SKYCHK-KEISAN3           PIC 9(10).
+           03  WRK-SKYCHK-KEISAN           PIC 9(10).
+           03  WRK-SKYCHK-KEISAN2          PIC 9(10).
+           03  WRK-SKYCHK-KEISAN3          PIC 9(10).
            03  WRK-S1                      PIC 9(03).
            03  WRK-S2                      PIC 9(03).
            03  WRK-S3                      PIC 9V99999.
@@ -393,6 +393,12 @@
        01  WRK-KANGOGEN-TABLE.
            02  WRK-KANGOGEN-TBL            OCCURS 10.
               03 WRK-KANGOGEN-SRYCD        PIC X(09)  OCCURS  31.
+      *
+      *    ÀÁµáÅÀ¿ô¥Á¥§¥Ã¥¯ÍÑ
+       01  WRK-SKYTEN-TABLE.
+           02  WRK-SKYTEN-TBL              OCCURS 16.
+              03 WRK-SKYTEN                PIC 9(10).
+              03 WRK-SKYTEN-GEN            PIC 9(10).
       *
        01  WRK-SKYYM-TABLE.
            02  WRK-SKYYM-TBL     OCCURS    2.
@@ -3367,11 +3373,6 @@ grpsys                              SPA-AREA
       *
            END-IF
       *
-      **     PERFORM   VARYING   IDZ   FROM  1   BY   1
-      **               UNTIL     IDZ   >     16
-      **               ADD    SYU-HKNTEN (IDZ)  TO  SYU-HKNTEN (17)
-      **     END-PERFORM
-      *
       *    Æþ±¡ÊÝ¸±Å¬ÍÑ³°
            ADD    NYUIN-TGMONEY        TO  SYU-TGMONEY(15)
            ADD    NYUIN-TGMONEY-TAX    TO  SYU-TGMONEY-TAX(15)
@@ -6049,6 +6050,8 @@ grpsys                               SPA-AREA
            INITIALIZE                      HKNTEKGAI-TABLE
            MOVE    SPACE               TO  JIHI-TABLE
            INITIALIZE                      JIHI-TABLE
+           MOVE    SPACE               TO  WRK-SKYTEN-TABLE
+           INITIALIZE                      WRK-SKYTEN-TABLE
       *
            INITIALIZE                      WRK-ROSAI-AREA
       *
@@ -6110,13 +6113,16 @@ grpsys                            SPA-AREA
            END-EVALUATE
       *
       *    ÊÝ¸±ÅÀ¿ô½¸·×
-           MOVE     ZERO    TO   WK-SKYCHK-KEISAN
+           MOVE     ZERO    TO   WRK-SKYCHK-KEISAN
            PERFORM  VARYING  IDZ  FROM  1  BY  1
                      UNTIL   IDZ    >  16
              ADD    SYU-HKNTEN(IDZ)   TO  SYU-HKNTEN(17)
-                                          WK-SKYCHK-KEISAN
+                                          WRK-SKYCHK-KEISAN
            END-PERFORM
-           IF   WK-SKYCHK-KEISAN  >  9999999
+           IF   WRK-SKYCHK-KEISAN  >  9999999
+             MOVE   1       TO   FLG-SKYCHK-KEISAN
+           END-IF
+           IF   WRK-SKYTEN(07)     >  9999999
              MOVE   1       TO   FLG-SKYCHK-KEISAN
            END-IF
       *
@@ -6667,6 +6673,8 @@ grpsys                                        SPA-AREA
       *            ¼ê½Ñ
                    WHEN    "50"
                     COMPUTE SYU-HKNTEN (07)   =  SYU-HKNTEN (07)  +
+                           (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    COMPUTE WRK-SKYTEN (07)   =  WRK-SKYTEN (07)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
                     PERFORM  VARYING  SYU-IDX  FROM  1  BY  1          
                                UNTIL    SYU-IDX   >    31              
@@ -8484,56 +8492,50 @@ grpsys                                    SPA-AREA
       **************************************************************
        HKNTEKGAI-SET-SEC          SECTION.
       *
-      *  ÊÝ¸±Å¬ÍÑ³°
-           PERFORM     VARYING   IDZ    FROM   1    BY    1
-                         UNTIL   IDZ    >      16
-                  ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
-                  ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
-                  ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(17)
-                  ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(17)
-           END-PERFORM
-      *
-      *  Æþ±¡ÊÝ¸±Å¬ÍÑ³°
-      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(15)
-      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(15)
-      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(17)
-      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(17)
-      *
-      *  ¼«Èñ£±¤«¤é£±£°
-           PERFORM     VARYING   IDZ    FROM    1    BY    1
-                         UNTIL   IDZ    >       10
-                  MOVE TBL-JIHI-TAXNASI(IDZ) TO SYU-JIHI-TAXNASI(IDZ)
-                  MOVE TBL-JIHI-TAXARI(IDZ)  TO SYU-JIHI-TAXARI(IDZ)
-                  ADD  TBL-JIHI-TAXNASI(IDZ) TO SYU-JIHI-TOTAL
-                  ADD  TBL-JIHI-TAXARI(IDZ)  TO SYU-JIHI-TOTAL-TAX
-           END-PERFORM
-      *
       *    ·×»»¶â³Û·å¿ô¥Á¥§¥Ã¥¯
-           MOVE     ZERO     TO   WK-SKYCHK-KEISAN2
-           MOVE     ZERO     TO   WK-SKYCHK-KEISAN3
+           MOVE   ZERO                  TO  WRK-SKYCHK-KEISAN2
+           MOVE   ZERO                  TO  WRK-SKYCHK-KEISAN3
+           ADD    SYU-TGMONEY(15)       TO  WRK-SKYCHK-KEISAN2
+           ADD    SYU-TGMONEY-TAX(15)   TO  WRK-SKYCHK-KEISAN3
            PERFORM  VARYING  IDZ  FROM  1  BY  1
                      UNTIL   IDZ    >  16
-             ADD  TBL-TGMONEY(IDZ)      TO  WK-SKYCHK-KEISAN2
-             ADD  TBL-TGMONEY-TAX(IDZ)  TO  WK-SKYCHK-KEISAN3
+             ADD  TBL-TGMONEY(IDZ)      TO  WRK-SKYCHK-KEISAN2
+             ADD  TBL-TGMONEY-TAX(IDZ)  TO  WRK-SKYCHK-KEISAN3
            END-PERFORM
-           ADD    NYUIN-TGMONEY         TO  WK-SKYCHK-KEISAN2
-           ADD    NYUIN-TGMONEY-TAX     TO  WK-SKYCHK-KEISAN3
-           IF   WK-SKYCHK-KEISAN2  >  9999999
-           OR   WK-SKYCHK-KEISAN3  >  9999999
+           IF   WRK-SKYCHK-KEISAN2  >  9999999
+           OR   WRK-SKYCHK-KEISAN3  >  9999999
              MOVE      1     TO   FLG-SKYCHK-KEISAN2
            END-IF
       *
-           MOVE     ZERO     TO   WK-SKYCHK-KEISAN2
-           MOVE     ZERO     TO   WK-SKYCHK-KEISAN3
+           MOVE   ZERO                  TO  WRK-SKYCHK-KEISAN2
+           MOVE   ZERO                  TO  WRK-SKYCHK-KEISAN3
            PERFORM  VARYING  IDZ  FROM  1  BY  1
                      UNTIL   IDZ    >  10
-             ADD    TBL-JIHI-TAXNASI(IDZ)  TO  WK-SKYCHK-KEISAN2
-             ADD    TBL-JIHI-TAXARI(IDZ)   TO  WK-SKYCHK-KEISAN3
+             ADD  TBL-JIHI-TAXNASI(IDZ) TO  WRK-SKYCHK-KEISAN2
+             ADD  TBL-JIHI-TAXARI(IDZ)  TO  WRK-SKYCHK-KEISAN3
            END-PERFORM
-           IF   WK-SKYCHK-KEISAN2  >  9999999
-           OR   WK-SKYCHK-KEISAN3  >  9999999
+           IF   WRK-SKYCHK-KEISAN2  >  9999999
+           OR   WRK-SKYCHK-KEISAN3  >  9999999
              MOVE      1     TO   FLG-SKYCHK-KEISAN2
            END-IF
+      *
+      *    ÊÝ¸±Å¬ÍÑ³°
+           PERFORM  VARYING  IDZ  FROM  1  BY  1
+                     UNTIL   IDZ    >  16
+             ADD   TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
+             ADD   TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
+             ADD   TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(17)
+             ADD   TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(17)
+           END-PERFORM
+      *
+      *    ¼«Èñ£±¤«¤é£±£°
+           PERFORM  VARYING  IDZ  FROM  1  BY  1
+                     UNTIL   IDZ    >  10
+             MOVE  TBL-JIHI-TAXNASI(IDZ) TO  SYU-JIHI-TAXNASI(IDZ)
+             MOVE  TBL-JIHI-TAXARI(IDZ)  TO  SYU-JIHI-TAXARI(IDZ)
+             ADD   TBL-JIHI-TAXNASI(IDZ) TO  SYU-JIHI-TOTAL
+             ADD   TBL-JIHI-TAXARI(IDZ)  TO  SYU-JIHI-TOTAL-TAX
+           END-PERFORM
       *
            .
        HKNTEKGAI-SET-EXT.

@@ -87,6 +87,7 @@
       *                                     での食事算定対応
       *  04.08.10    NACL-門脇    18/05/10  入院会計照会の保険組み合わせ
       *                                     （９９９）チェック対応
+      *  04.08.11    NACL-門脇    18/05/31  計算金額桁数チェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1426,6 +1427,18 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                           TO  ERR-ERRMSG
                     WHEN       37
                       MOVE "保険組合せが存在しません"
+                                          TO  ERR-ERRMSG
+                    WHEN       38
+                      MOVE "請求点数の合計が７桁を超えます"
+                                          TO  ERR-ERRMSG
+                    WHEN       39
+                      MOVE "保険外金額の合計が７桁を超えます"
+                                          TO  ERR-ERRMSG
+                    WHEN       40
+                      MOVE "負担割合計算額が７桁を超えます"
+                                          TO  ERR-ERRMSG
+                    WHEN       41
+                      MOVE "今回請求金額が７桁を超えます"
                                           TO  ERR-ERRMSG
       *
                     WHEN      101
