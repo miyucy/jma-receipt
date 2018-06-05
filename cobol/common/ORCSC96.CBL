@@ -2380,8 +2380,7 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H30.5
-X      *
+      *
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
