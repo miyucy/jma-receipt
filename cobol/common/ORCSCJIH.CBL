@@ -375,6 +375,13 @@
       *
                    MOVE    "2"                 TO  WRK-COM-KEIFLG(IDX-Z)
                END-IF
+      *H30.5
+      *        ¶â³Û¤Ï£··å¤Þ¤Ç
+               IF      WRK-COM-KEI (IDX-Z) >   9999999
+                   MOVE    "1088"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               END-IF
+      *
                MOVE    LNK-ORCSC-KAISU     TO  WRK-COM-KAISU(IDX-Z)
                MOVE    LNK-ORCSC-KAISU     TO  WRK-GMN-KAISU(IDX-Z)
            END-PERFORM

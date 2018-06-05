@@ -51,7 +51,8 @@
       *  04.08.00    NACL-多々納  17/02/XX  在宅実績加算２削除対応
       *  04.08.00    NACL-多々納  17/03/XX  Ｈ２９年４月改正対応他
       *  04.08.00    NACL-多々納  17/07/XX  心身療法２０未満加算区分追加
-      *  04.08.00    NACL-多々納  17/03/XX  Ｈ３０年４月改正対応他
+      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応他
+      *  04.08.00    NACL-多々納  18/06/XX  自費金額桁数チェック対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -179,6 +180,8 @@
       *
            03  IDHC                    PIC 9(04).
       *
+           03  IDG                     PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(04).
@@ -267,6 +270,14 @@
            03  WRK-GRPCNT              PIC 9(03).
            03  FLG-CHK01               PIC 9(01).
       *
+      *H30.6
+      *    保険外の合計金額７桁オーバーチェック
+           03  WRK-SUM-HKNTEN             PIC 9(08).
+           03  WRK-SUM-TGMONEY            PIC 9(08).
+           03  WRK-SUM-TGMONEY-TAX        PIC 9(08).
+           03  WRK-SUM-JIHI-TOTAL         PIC 9(08).
+           03  WRK-SUM-JIHI-TOTAL-TAX     PIC 9(08).
+      *
       *    収納集計点数内容
        01  TBL-K02SCR-AREA.
            03  TBL-K02SCR-OCC          OCCURS   400.
@@ -277,7 +288,7 @@
            03  SUM-SYU-SKY-NAIYOU.
                05  SUM-SYU-SKY-TBL             OCCURS   17.
       *    保険点数
-                   09  SUM-SYU-HKNTEN          PIC  S9(07).
+                   09  SUM-SYU-HKNTEN          PIC  S9(08).
       *
       *画面最大行
       *01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
@@ -2735,18 +2746,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                   (IDY)
                                END-IF
                            END-IF
-      ******************** IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
-      *                                                      OR  "84" )
-      *                       OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
-      *                                                      OR  "0084")
-      *                        MOVE    SPA-GMN-MEISYO (IDX)
-      *                                           TO  WKSRY-INPUTCOMENT
-      *                                                           (IDY)
-      *                    ELSE
-      *                        MOVE    SPA-GMN-MEISYO-G (IDX)
-      *                                           TO  WKSRY-INPUTCOMENT
-      *                                                           (IDY)
-      ******************** END-IF
                        ELSE
                            IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
                                                              OR  "84")
@@ -4208,6 +4207,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        消費税なし
                WHEN    "950"
+      *H30.5   桁数チェック
+               IF     (SPA-COM-KEI (IDX) + SYU-JIHI-TAXNASI
+                                             (WRK-TENTTLKBN))
+                                         >   9999999
+                   MOVE    "1089"        TO  SPA-ERRCD
+                   MOVE    "1"           TO  SPA-COM-CUR (IDX)
+               END-IF
+      *
                EVALUATE    WRK-TENTTLKBN
                    WHEN    1
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-1
@@ -4234,6 +4241,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "960"
       *H26.10      追加
                WHEN    "961"
+      *
+      *H30.5   桁数チェック
+               IF     (SPA-COM-KEI (IDX) + SYU-JIHI-TAXARI
+                                             (WRK-TENTTLKBN))
+                                         >   9999999
+                   MOVE    "1089"        TO  SPA-ERRCD
+                   MOVE    "1"           TO  SPA-COM-CUR(IDX)
+               END-IF
       *
                EVALUATE    WRK-TENTTLKBN
                    WHEN    1
@@ -4302,22 +4317,151 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-COM-INPUTCD(IDX)(1:3)   =   "059")
                MOVE    "80"                        TO  WRK-SRYKBN
            END-IF
+      *!!!
+      *H30.6
+      *    テーブル位置決定
+           PERFORM 450110-SRYKBN-TBL-SEC
+      *
+      *    桁数チェック
+           PERFORM 450113-TGMONE-CHK-SEC
       *
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        消費税なし
                WHEN    "950"
-                   PERFORM 450111-TGMONEY-SEC
+      *H30.6
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (IDG)
+      ************ PERFORM 450111-TGMONEY-SEC
       *        消費税あり
                WHEN    "960"
       *H26.10      追加
                WHEN    "961"
-      *
-                   PERFORM 450111-TGMONEY-TAX-SEC
+      *H30.6
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
+                                                               (IDG)
+      *************PERFORM 450111-TGMONEY-TAX-SEC
            END-EVALUATE
            .
        45011-TGMONEY-SET-EXT.
            EXIT.
       *
+      *H30.6
+      *****************************************************************
+      *    保険適用外の桁数チェック処理
+      *****************************************************************
+       450113-TGMONE-CHK-SEC               SECTION.
+      *
+           EVALUATE    SPA-COM-SRYSYUKBN (IDX)
+      *        消費税なし
+               WHEN    "950"
+                   IF     (SPA-GMN-KEI (IDX)   +   SYU-TGMONEY (IDG))
+                                               >   9999999
+                       MOVE    "1089"        TO  SPA-ERRCD
+                       MOVE    "1"           TO  SPA-COM-CUR(IDX)
+                   END-IF
+      *        消費税あり
+               WHEN    "960"
+               WHEN    "961"
+                   IF     (SPA-GMN-KEI (IDX)   +   SYU-TGMONEY-TAX
+                                                                (IDG))
+                                               >   9999999
+                       MOVE    "1089"        TO  SPA-ERRCD
+                       MOVE    "1"           TO  SPA-COM-CUR(IDX)
+                   END-IF
+           END-EVALUATE
+           .
+       450113-TGMONE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療区分から集計位置決定処理
+      *****************************************************************
+       450110-SRYKBN-TBL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  IDG
+           EVALUATE    WRK-SRYKBN
+      *        診療
+               WHEN    "11"
+               WHEN    "12"
+                   MOVE    1                   TO  IDG
+      *        指導
+               WHEN    "13"
+                   MOVE    2                   TO  IDG
+      *        在宅
+               WHEN    "14"
+                   MOVE    3                   TO  IDG
+      *        投薬
+               WHEN    "21"   THRU  "27"
+                   MOVE    4                   TO  IDG
+      *        注射
+               WHEN    "31"
+               WHEN    "32"
+               WHEN    "33"
+                   MOVE    5                   TO  IDG
+      *        処置
+               WHEN    "40"
+                   MOVE    6                   TO  IDG
+      *        手術
+               WHEN    "50"
+                   MOVE    7                   TO  IDG
+      *        麻酔
+               WHEN    "54"
+                   MOVE    8                   TO  IDG
+      *        検査
+               WHEN    "60"
+                   MOVE    9                   TO  IDG
+      *        Ｘ線
+               WHEN    "70"
+                   MOVE    10                  TO  IDG
+      *        病理診断
+               WHEN    "64"
+                   MOVE    14                  TO  IDG
+      *        その他
+               WHEN    "80"
+                   EVALUATE    WRK-TNSSRYSYUKBN
+      *            リハビリ
+                   WHEN    "800"
+                       MOVE    11                  TO  IDG
+      *            処方せん料
+                   WHEN    "820"
+                       MOVE    04                  TO  IDG
+      *            精神科
+                   WHEN    "830"
+                       MOVE    12                  TO  IDG
+      *            放射線治療
+                   WHEN    "840"
+                       MOVE    13                  TO  IDG
+      *            入院料
+                   WHEN    "890"
+                       MOVE    15                  TO  IDG
+      *            療養担当手当て
+                   WHEN    "850"
+                       MOVE    16                  TO  IDG
+      *            その他
+                   WHEN    OTHER
+                       MOVE    11                  TO  IDG
+                   END-EVALUATE
+      *        精神科
+               WHEN    "83"
+                   MOVE    12                  TO  IDG
+      *        放射線治療
+               WHEN    "84"
+                   MOVE    13                  TO  IDG
+      *        入院料
+               WHEN    "89"
+                   MOVE    15                  TO  IDG
+      *        療養担当手当て
+               WHEN    "85"
+                   MOVE    16                  TO  IDG
+      *        その他
+               WHEN    OTHER
+                   MOVE    11                  TO  IDG
+           END-EVALUATE
+      *
+           .
+       450110-SRYKBN-TBL-EXT.
+           EXIT.
+      *
+      *H30.6から　不使用
       *****************************************************************
       *    保険適用外の集計処理(消費税なし)
       *****************************************************************
@@ -4406,6 +4550,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        450111-TGMONEY-EXT.
            EXIT.
       *
+      *H30.6から　不使用
       *****************************************************************
       *    保険適用外の集計処理(消費税あり)
       *****************************************************************
@@ -4852,6 +4997,29 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                ELSE
                    MOVE    SUM-SYU-HKNTEN (IDX) TO  SYU-HKNTEN(IDX)
               END-IF
+      *!!!
+      *H30.6
+      *       桁オーバーチェック
+              IF     (SUM-SYU-HKNTEN(IDX)  +   SUM-SYU-HKNTEN(17))
+                                       >   9999999
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1090"           TO  SPA-ERRCD
+                  END-IF
+              END-IF
+              ADD     SUM-SYU-HKNTEN(IDX)  TO  SUM-SYU-HKNTEN(17)
+              IF     (SYU-TGMONEY(IDX) +   SYU-TGMONEY(17))
+                                       >   9999999
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1089"           TO  SPA-ERRCD
+                  END-IF
+              END-IF
+              IF     (SYU-TGMONEY-TAX(IDX) +   SYU-TGMONEY-TAX(17))
+                                       >   9999999
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1089"           TO  SPA-ERRCD
+                  END-IF
+              END-IF
+      *
       *       保険点数
               ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(17)
       *       金額
@@ -4863,8 +5031,55 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            END-PERFORM
       *
+      *H30.6
+      *    自費合計桁数７桁オーバーチェック
+           PERFORM 45069-TOTALOVER-CHK-SEC
+      *
            .
        4506-TOTALKEI-EXT.
+           EXIT.
+      *H30.6
+      *****************************************************************
+      *    自費合計桁数７桁オーバーチェック処理
+      *****************************************************************
+       45069-TOTALOVER-CHK-SEC         SECTION.
+      *
+      *    合計桁数７桁オーバーチェック
+           IF     (SYU-HKNTEN(17)      +   WRK-SUM-HKNTEN )
+                                       >   9999999
+               MOVE    "1089"              TO  SPA-ERRCD
+           END-IF
+           IF     (SYU-TGMONEY(17)     +   WRK-SUM-TGMONEY )
+                                       >   9999999
+               MOVE    "1089"              TO  SPA-ERRCD
+           END-IF
+           IF     (SYU-TGMONEY-TAX(17) +   WRK-SUM-TGMONEY-TAX )
+                                       >   9999999
+               MOVE    "1089"              TO  SPA-ERRCD
+           END-IF
+      *
+           ADD     SYU-HKNTEN(17)      TO  WRK-SUM-HKNTEN
+           ADD     SYU-TGMONEY(17)     TO  WRK-SUM-TGMONEY
+           ADD     SYU-TGMONEY-TAX(17) TO  WRK-SUM-TGMONEY-TAX
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   10  )
+      *        消費税なし
+               IF     (SYU-JIHI-TAXNASI (IDX)  +  WRK-SUM-JIHI-TOTAL)
+                                           >   9999999
+                   MOVE    "1089"          TO  SPA-ERRCD
+               END-IF
+      *        消費税あり
+               IF     (SYU-JIHI-TAXARI  (IDX)
+                                           +  WRK-SUM-JIHI-TOTAL-TAX)
+                                           >   9999999
+                   MOVE    "1089"          TO  SPA-ERRCD
+               END-IF
+               ADD     SYU-JIHI-TAXNASI(IDX)  TO  WRK-SUM-JIHI-TOTAL
+               ADD     SYU-JIHI-TAXARI (IDX)  TO  WRK-SUM-JIHI-TOTAL-TAX
+           END-PERFORM
+           .
+       45069-TOTALOVER-CHK-EXT.
            EXIT.
       *****************************************************************
       *    自動作成の診療行為作成処理

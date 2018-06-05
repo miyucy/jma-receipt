@@ -4231,6 +4231,7 @@
       *    ¹¹¿·½èÍý
            PERFORM 4501-KOUSIN-SYORI-SEC
            IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    99              TO  SPA-GMN-CUR
                GO      TO     450-TOROKU-EXT
            END-IF
       *
@@ -4916,6 +4917,19 @@
                                        LNK-SYUNOU2-AREA
                                        PARA-WKSRYACT-AREA
            MOVE    ORCSCSYU-SYUNOU-MAX TO  LNK-SYUNOU2-MAX
+      *H30.6
+      *    ¶â³Û·å¤¢¤Õ¤ì
+           IF      ORCSCSYU-ERRCD      =   11
+      *        ÀÁµá³Û
+               MOVE    "0011"          TO  SPA-ERRCD
+           END-IF
+           IF      ORCSCSYU-ERRCD      =   12
+      *        ÀÁµá³Û
+               MOVE    "0012"          TO  SPA-ERRCD
+           END-IF
+      *H30.6
+      *    ¼ýÇ¼ÀÁµá¶â³Û¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 45017-SYUNOU-GOKCHK-SEC
       *
       *    ¸½ÊªµëÉÕ¥á¥Ã¥»¡¼¥¸¥Õ¥é¥°
            MOVE    LNK-S01-GENBUTU-MSG-FLG     TO  SPA-FTNHEN-KBN
@@ -5191,6 +5205,33 @@
       *
            .
        45015-SYUNOU-GOUKEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ýÇ¼ÀÁµá¶â³Û¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       45017-SYUNOU-GOKCHK-SEC        SECTION.
+      *
+          MOVE    SPACE               TO  SYUNOU-REC
+          INITIALIZE                  SYUNOU-REC
+          PERFORM VARYING     IDS1    FROM    1   BY  1
+                   UNTIL       IDS1    >   LNK-SYUNOU2-MAX
+               IF      LNK-SYU2-SRYKA (IDS1)   =   ZERO
+                   CONTINUE
+               ELSE
+      *            ÀÁµá¶â³Û¤Î·å¤¢¤Õ¤ì¥Á¥§¥Ã¥¯
+                   IF     (LNK-SYU2-SKYMONEY(IDS1)
+                                       +   SYU-SKYMONEY)
+                                       >   9999999
+                       MOVE    "0012"         TO  SPA-ERRCD
+                   END-IF
+                   ADD    LNK-SYU2-SKYMONEY(IDS1)
+                                               TO  SYU-SKYMONEY
+               END-IF
+           END-PERFORM
+      *
+           .
+       45017-SYUNOU-GOKCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7598,6 +7639,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "B12"             TO  MCP-WIDGET
                WHEN    13
                    MOVE    "USERPG"          TO  MCP-WIDGET
+               WHEN    99
+                   MOVE    "B01"             TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -7652,6 +7695,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0007"
                    MOVE    "£Õ¡¦£Ð¤¬¤¢¤ê¤Þ¤»¤ó¡£"
                                        TO  SPA-ERRMSG
+      *!
+      *H30.6
+               WHEN    "0011"
+                   STRING  "ÉéÃ´³ä¹ç·×»»³Û¤¬£··å¤òÄ¶¤¨¤Þ¤¹¡£"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0012"
+                   STRING  "º£²óÀÁµá¶â³Û¤¬£··å¤òÄ¶¤¨¤Þ¤¹¡£"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *!
                WHEN    "1000"
                    MOVE    "£¶£°£°¹Ô°Ê¾å¤Ë¤Ê¤ê¤Þ¤¹¡£"
