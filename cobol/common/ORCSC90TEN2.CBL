@@ -34,6 +34,7 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/03/XX  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/03/XX  Ê¿À®£²£´Ç¯£´·î²þÀµÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/08/28  ÌôºÞÎÁ¸ºÅÀÂÐ±þ
+      *  04.08.00    NACL-Â¿¡¹Ç¼  18/06/XX  ·å¿ô¥ª¡¼¥Ð¡¼ÂÐ±þ
       *****************************************************************
       *
       *
@@ -78,32 +79,32 @@
                05  WRK-SURYO-S1    PIC 9(05).
                05  WRK-SURYO-S2    PIC 9(05).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V9(8).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
-           03  WRK-SYOKEIS3        PIC 9(08)V9(8).
-           03  WRK-SYOKEI          PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V9(6).
-           03  WRK-TENSUKEI-9      PIC 9(08).
+           03  WRK-SYOKEIS         PIC 9(09)V9(8).
+           03  WRK-SYOKEIS2        PIC 9(09)V9(8).
+           03  WRK-SYOKEIS3        PIC 9(09)V9(8).
+           03  WRK-SYOKEI          PIC 9(09).
+           03  WRK-TENSUKEIS       PIC 9(09)V9(6).
+           03  WRK-TENSUKEI-9      PIC 9(09).
       *    ÌôºÞ
-           03  WRK-ZAIKEI          PIC 9(08)V9(8).
+           03  WRK-ZAIKEI          PIC 9(09)V9(8).
       *    ´ïºà
-           03  WRK-KIZKEI          PIC 9(08)V9(5).
-           03  WRK-KIZKEI-3        PIC 9(08)V9(5).
+           03  WRK-KIZKEI          PIC 9(09)V9(5).
+           03  WRK-KIZKEI-3        PIC 9(09)V9(5).
       *    ¥³¥Ð¥ë¥È
-           03  WRK-KIZKEI-4        PIC 9(08)V9(5).
+           03  WRK-KIZKEI-4        PIC 9(09)V9(5).
       *    ¥Õ¥£¥ë¥à
-           03  WRK-FIRKEI          PIC 9(08)V9(5).
-           03  WRK-NYU-FIRKEI      PIC 9(08)V9(5).
-           03  WRK-NYU-FIRTEN      PIC 9(08)V9(5).
-           03  WRK-FIRTEN-G        PIC 9(08).
-           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-FIRKEI          PIC 9(09)V9(5).
+           03  WRK-NYU-FIRKEI      PIC 9(09)V9(5).
+           03  WRK-NYU-FIRTEN      PIC 9(09)V9(5).
+           03  WRK-FIRTEN-G        PIC 9(09).
+           03  WRK-FIRTEN          PIC 9(09).
       *    ÃâÁÇ
-           03  WRK-CHISOKEI        PIC 9(08)V9(5).
+           03  WRK-CHISOKEI        PIC 9(09)V9(5).
            03  WRK-CHITEN          PIC 9(08).
       *    »ÀÁÇ
-           03  WRK-SANSOKIN        PIC 9(08)V9(5).
-           03  WRK-SANSOKIN-SUM    PIC 9(08)V9(5).
-           03  WRK-SANSOGOK        PIC 9(08).
+           03  WRK-SANSOKIN        PIC 9(09)V9(5).
+           03  WRK-SANSOKIN-SUM    PIC 9(09)V9(5).
+           03  WRK-SANSOGOK        PIC 9(09).
            03  WRK-SANTEN          PIC 9(08).
       *
       *    ÌôºÞÅÀ¿ô

@@ -2361,8 +2361,27 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H30.6
+               WHEN    "1088"
+                   STRING  "保険外金額が７桁を超えます。"
+                           "桁数オーバーとなります。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1089"
+                   STRING  "保険外金額の合計が７桁を超えます。"
+                           "桁数オーバーとなります。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1090"
+                   STRING  "点数合計が７桁を超えます。"
+                           "桁数オーバーとなります。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *H30.5
-      *
+X      *
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

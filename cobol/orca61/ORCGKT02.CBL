@@ -4137,13 +4137,8 @@
       *        収納計算処理
                PERFORM 45012-SYUNOU-SYORI-SEC
       *
-      *        パラメタ追加
-      ***      MOVE    SPA-TERMID          TO  FILE-TERMID2
-      *        MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      ****     OPEN    OUTPUT              PARA-FILE
       *        診療行為更新
                PERFORM 45011-WKSRYACT-OUT-SEC
-      *****    CLOSE                       PARA-FILE
       *
       *        外来更新処理
                INITIALIZE                  ORCSCGAIRAIAREA
@@ -4165,14 +4160,20 @@
                MOVE    SYUNOU-REC          TO  ORCSCGAIRAI-SYUNOU-REC
                                                                (1)
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+               IF      SPA-ERRCD           =   SPACE
+      *
                CALL    "ORCSCGAIRAI"       USING
                                            SPA-AREA
                                            ORCSCGAIRAIAREA
       *
+               END-IF
            END-PERFORM
       *H26.11
       *    外用回数エラー、戻るへ
            IF      SPA-ERRCD           =   "0052"
+                                       OR  "0011"
+                                       OR  "0012"
                MOVE    91                  TO  SPA-GMN-CUR
            END-IF
       *
@@ -4526,6 +4527,16 @@
                                        LNK-SYUNOU2-AREA
                                        PARA-WKSRYACT-AREA
            MOVE    ORCSCSYU-SYUNOU-MAX TO  LNK-SYUNOU2-MAX
+      *H30.6
+      *    金額桁あふれ
+           IF      ORCSCSYU-ERRCD      =   11
+      *        請求額
+               MOVE    "0011"          TO  SPA-ERRCD
+           END-IF
+           IF      ORCSCSYU-ERRCD      =   12
+      *        請求額
+               MOVE    "0012"          TO  SPA-ERRCD
+           END-IF
       *
       *    現物給付メッセージフラグ
            MOVE    LNK-S01-GENBUTU-MSG-FLG     TO  SPA-FTNHEN-KBN
@@ -6278,6 +6289,18 @@
                    STRING  "受診履歴の伝票番号がゼロです。"
                            "訂正できません。"
                                        DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *!
+      *H30.6
+               WHEN    "0011"
+                   STRING  "負担割合計算額が７桁を超えます。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0012"
+                   STRING  "今回請求金額が７桁を超えます。"
+                                       DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!

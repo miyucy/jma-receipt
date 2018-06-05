@@ -32,6 +32,7 @@
       *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
       *  04.07.00    NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
       *  04.08.00    NACL-多々納  17/07/XX  心身療法２０未満加算等削除対応
+      *  04.08.00    NACL-多々納  17/05/21  自費金額桁数チェック対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -235,6 +236,8 @@
       *!!!
            03  IDW2-H                  PIC 9(04).
       *
+           03  IDG                     PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(04).
@@ -323,8 +326,15 @@
            03  IDXZ                        PIC 9(04).
            03  WRK-ZKS-GRP             PIC X(02).
            03  WRK-ZKS-KBN             PIC X(01).
+      *H30.5
+      *    保険外の合計金額７桁オーバーチェック
+           03  WRK-SUM-HKNTEN             PIC 9(08).
+           03  WRK-SUM-TGMONEY            PIC 9(08).
+           03  WRK-SUM-TGMONEY-TAX        PIC 9(08).
+           03  WRK-SUM-JIHI-TOTAL         PIC 9(08).
+           03  WRK-SUM-JIHI-TOTAL-TAX     PIC 9(08).
+      *!!!
       *
-      *TEST
       *    収納集計点数内容
        01  TBL-K02SCR-AREA.
            03  TBL-K02SCR-OCC          OCCURS   400.
@@ -335,7 +345,7 @@
            03  SUM-SYU-SKY-NAIYOU.
                05  SUM-SYU-SKY-TBL             OCCURS   17.
       *    保険点数
-                   09  SUM-SYU-HKNTEN          PIC  S9(07).
+                   09  SUM-SYU-HKNTEN          PIC  S9(08).
       *
        01  TBL-KAISUU-AREA.
            03  TBL-KAISUU-OCCU         OCCURS   10.
@@ -3732,6 +3742,14 @@
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        消費税なし
                WHEN    "950"
+      *H30.5   桁数チェック
+               IF     (SPA-COM-KEI (IDX) + SYU-JIHI-TAXNASI
+                                             (WRK-TENTTLKBN))
+                                         >   9999999
+                   MOVE    "1089"        TO  SPA-ERRCD
+                   MOVE    "1"           TO  SPA-COM-CUR (IDX)
+               END-IF
+      *
                EVALUATE    WRK-TENTTLKBN
                    WHEN    1
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-1
@@ -3756,6 +3774,17 @@
                END-EVALUATE
       *        消費税あり
                WHEN    "960"
+      *H26.10      追加
+               WHEN    "961"
+      *
+      *H30.5   桁数チェック
+               IF     (SPA-COM-KEI (IDX) + SYU-JIHI-TAXARI
+                                             (WRK-TENTTLKBN))
+                                         >   9999999
+                   MOVE    "1089"        TO  SPA-ERRCD
+                   MOVE    "1"           TO  SPA-COM-CUR(IDX)
+               END-IF
+      *
                EVALUATE    WRK-TENTTLKBN
                    WHEN    1
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-1-TAX
@@ -3823,6 +3852,10 @@
                   (SPA-COM-INPUTCD(IDX)(1:3)   =   "059")
                MOVE    "80"                        TO  WRK-SRYKBN
            END-IF
+      *!!!
+      *H30.5
+      *    桁数チェック
+           PERFORM 450113-TGMONE-CHK-SEC
       *
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        消費税なし
@@ -3835,6 +3868,116 @@
            .
        45011-TGMONEY-SET-EXT.
            EXIT.
+      *
+      *H30.5
+      *****************************************************************
+      *    保険適用外の桁数チェック処理
+      *****************************************************************
+       450113-TGMONE-CHK-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  IDG
+           EVALUATE    WRK-SRYKBN
+      *        診療
+               WHEN    "11"
+               WHEN    "12"
+                   MOVE    1                   TO  IDG
+      *        指導
+               WHEN    "13"
+                   MOVE    2                   TO  IDG
+      *        在宅
+               WHEN    "14"
+                   MOVE    3                   TO  IDG
+      *        投薬
+               WHEN    "21"   THRU  "27"
+                   MOVE    4                   TO  IDG
+      *        注射
+               WHEN    "31"
+               WHEN    "32"
+               WHEN    "33"
+                   MOVE    5                   TO  IDG
+      *        処置
+               WHEN    "40"
+                   MOVE    6                   TO  IDG
+      *        手術
+               WHEN    "50"
+                   MOVE    7                   TO  IDG
+      *        麻酔
+               WHEN    "54"
+                   MOVE    8                   TO  IDG
+      *        検査
+               WHEN    "60"
+                   MOVE    9                   TO  IDG
+      *        Ｘ線
+               WHEN    "70"
+                   MOVE    10                  TO  IDG
+      *        病理診断
+               WHEN    "64"
+                   MOVE    14                  TO  IDG
+      *        その他
+               WHEN    "80"
+                   EVALUATE    WRK-TNSSRYSYUKBN
+      *            リハビリ
+                   WHEN    "800"
+                       MOVE    11                  TO  IDG
+      *            処方せん料
+                   WHEN    "820"
+                       MOVE    04                  TO  IDG
+      *            精神科
+                   WHEN    "830"
+                       MOVE    12                  TO  IDG
+      *            放射線治療
+                   WHEN    "840"
+                       MOVE    13                  TO  IDG
+      *            入院料
+                   WHEN    "890"
+                       MOVE    15                  TO  IDG
+      *            療養担当手当て
+                   WHEN    "850"
+                       MOVE    16                  TO  IDG
+      *            その他
+                   WHEN    OTHER
+                       MOVE    11                  TO  IDG
+                   END-EVALUATE
+      *        精神科
+               WHEN    "83"
+                   MOVE    12                  TO  IDG
+      *        放射線治療
+               WHEN    "84"
+                   MOVE    13                  TO  IDG
+      *        入院料
+               WHEN    "89"
+                   MOVE    15                  TO  IDG
+      *        療養担当手当て
+               WHEN    "85"
+                   MOVE    16                  TO  IDG
+      *        その他
+               WHEN    OTHER
+                   MOVE    11                  TO  IDG
+           END-EVALUATE
+      *
+      *
+           EVALUATE    SPA-COM-SRYSYUKBN (IDX)
+      *        消費税なし
+               WHEN    "950"
+                   IF     (SPA-GMN-KEI (IDX)   +   SYU-TGMONEY (IDG))
+                                               >   9999999
+                       MOVE    "1089"        TO  SPA-ERRCD
+                       MOVE    "1"           TO  SPA-COM-CUR(IDX)
+                   END-IF
+      *        消費税あり
+               WHEN    "960"
+               WHEN    "961"
+                   IF     (SPA-GMN-KEI (IDX)   +   SYU-TGMONEY-TAX
+                                                                (IDG))
+                                               >   9999999
+                       MOVE    "1089"        TO  SPA-ERRCD
+                       MOVE    "1"           TO  SPA-COM-CUR(IDX)
+                   END-IF
+           END-EVALUATE
+           .
+       450113-TGMONE-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    保険適用外の集計処理(消費税なし)
@@ -4357,6 +4500,30 @@
                ELSE
                    MOVE    SUM-SYU-HKNTEN (IDX) TO  SYU-HKNTEN(IDX)
               END-IF
+      *!!!
+      *H30.5
+      *       桁オーバーチェック
+              IF     (SUM-SYU-HKNTEN(IDX)  +   SUM-SYU-HKNTEN(17))
+                                           >   9999999
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1090"           TO  SPA-ERRCD
+                  END-IF
+              END-IF
+              ADD     SUM-SYU-HKNTEN(IDX)  TO  SUM-SYU-HKNTEN(17)
+              IF     (SYU-TGMONEY(IDX) +   SYU-TGMONEY(17))
+                                       >   9999999
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1089"           TO  SPA-ERRCD
+                  END-IF
+              END-IF
+              IF     (SYU-TGMONEY-TAX(IDX) +   SYU-TGMONEY-TAX(17))
+                                       >   9999999
+                  IF      SPA-ERRCD        =   SPACE
+                      MOVE    "1089"           TO  SPA-ERRCD
+                  END-IF
+              END-IF
+      *H30.5
+      *
       *       保険点数
               ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(17)
       *       金額
@@ -4367,10 +4534,60 @@
               ADD     SYU-TGMONEY-TAX(IDX) TO  SYU-TGMONEY-TAX(17)
       *
            END-PERFORM
+      *!!!
+      *H30.5
+      *    自費合計桁数７桁オーバーチェック
+           PERFORM 45069-TOTALOVER-CHK-SEC
       *
            .
        4506-TOTALKEI-EXT.
            EXIT.
+      *****************************************************************
+      *    自費合計桁数７桁オーバーチェック処理
+      *****************************************************************
+       45069-TOTALOVER-CHK-SEC         SECTION.
+      *
+      *!!!
+      *H30.5
+      *    合計桁数７桁オーバーチェック
+           IF     (SYU-HKNTEN(17)      +   WRK-SUM-HKNTEN )
+                                       >   9999999
+               MOVE    "1089"              TO  SPA-ERRCD
+           END-IF
+           IF     (SYU-TGMONEY(17)     +   WRK-SUM-TGMONEY )
+                                       >   9999999
+               MOVE    "1089"              TO  SPA-ERRCD
+           END-IF
+           IF     (SYU-TGMONEY-TAX(17) +   WRK-SUM-TGMONEY-TAX )
+                                       >   9999999
+               MOVE    "1089"              TO  SPA-ERRCD
+           END-IF
+      *
+           ADD     SYU-HKNTEN(17)      TO  WRK-SUM-HKNTEN
+           ADD     SYU-TGMONEY(17)     TO  WRK-SUM-TGMONEY
+           ADD     SYU-TGMONEY-TAX(17) TO  WRK-SUM-TGMONEY-TAX
+      *!!!
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   10  )
+      *        消費税なし
+               IF     (SYU-JIHI-TAXNASI (IDX)  +  WRK-SUM-JIHI-TOTAL)
+                                           >   9999999
+                   MOVE    "1089"          TO  SPA-ERRCD
+               END-IF
+      *        消費税あり
+               IF     (SYU-JIHI-TAXARI  (IDX)
+                                           +  WRK-SUM-JIHI-TOTAL-TAX)
+                                           >   9999999
+                   MOVE    "1089"          TO  SPA-ERRCD
+               END-IF
+               ADD     SYU-JIHI-TAXNASI(IDX)  TO  WRK-SUM-JIHI-TOTAL
+               ADD     SYU-JIHI-TAXARI (IDX)  TO  WRK-SUM-JIHI-TOTAL-TAX
+           END-PERFORM
+      *
+           .
+       45069-TOTALOVER-CHK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    自動作成の診療行為作成処理
       *****************************************************************
@@ -4617,8 +4834,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
