@@ -41,6 +41,7 @@
       *  04.08.00    NACL-Â¿¡¹Ç¼  16/04/XX  ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÊñ³ç³°ÂÐ±þÂ¾
       *                                     ¾ã³²¼Ô»ÜÀßÅùÆþ±¡´ðËÜÎÁÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  18/01/24  ¿ÇÎÅ¶èÊ¬Êñ³çÂÐ¾Ý²þÀµÂÐ±þÂ¾
+      *  04.08.00    NACL-Â¿¡¹Ç¼  18/06/XX  Êñ³ç¿ÇÎÅ¥Æ¡¼¥Ö¥ë´ü´ÖÂÐ±þÂ¾
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -334,8 +335,12 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                IF     (IDX             >   ZERO )
                  AND  (HKTSRYCD-KANRICD
                                            =   SPA-GMN-TKBNCD (IDX))
-                   MOVE    HKTSRYCD-YUKOEDYMD  TO  SPA-NAIB-YUKOEDYMD
+                   IF      HKTSRYCD-YUKOEDYMD  >   SPA-NAIB-YUKOEDYMD
                                                              (IDX)
+                       MOVE    HKTSRYCD-YUKOEDYMD
+                                               TO  SPA-NAIB-YUKOEDYMD
+                                                             (IDX)
+                   END-IF
                ELSE
                    ADD    1                TO  IDX
                    MOVE    HKTSRYCD-KANRICD    TO  SPA-GMN-TKBNCD
@@ -345,6 +350,12 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    HKTSRYCD-YUKOEDYMD  TO  SPA-NAIB-YUKOEDYMD
                                                              (IDX)
                    PERFORM 3101-KBNCDMEI-HEN-SEC
+      *H30.6
+      *            ºÇÂç½ªÎ»ÆüÀßÄê
+                   IF      HKTSRYCD-YUKOEDYMD  <   "99999999"
+                       PERFORM 3102-HKTSYRCD-END-SEC
+                   END-IF
+      *
                    MOVE    IDX                 TO  SPA-KBNCD-MAX
                END-IF
                MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
@@ -551,6 +562,48 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        3101-KBNCDMEI-HEN-EXT.
            EXIT.
       *
+      *H30.6
+      *****************************************************************
+      *    Êñ³ç»»Äê½ªÎ»ÆüÊÔ½¸½èÍý
+      *****************************************************************
+       3102-HKTSYRCD-END-SEC              SECTION.
+      *
+      *    ºÇ½ª½ªÎ»ÆüÀßÄê
+           MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 900-HKTSRYCD-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-HKTSRYCD
+           END-IF
+           PERFORM UNTIL   (FLG-HKTSRYCD   =   1  )
+      *
+               IF      HKTSRYCD-YUKOEDYMD  >   SPA-NAIB-YUKOEDYMD
+                                                             (IDX)
+                   MOVE    HKTSRYCD-YUKOEDYMD  TO  SPA-NAIB-YUKOEDYMD
+                                                             (IDX)
+               END-IF
+               IF      HKTSRYCD-YUKOEDYMD      =   "99999999"
+                   MOVE    1                   TO  FLG-HKTSRYCD
+               ELSE
+                   MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+                   MOVE    "key3"              TO  MCP-PATHNAME
+                   PERFORM 900-HKTSRYCD-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    ZERO                TO  FLG-HKTSRYCD
+           .
+       3102-HKTSYRCD-END-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    Êñ³ç»»Äê½é´üÉ½¼¨ÊÔ½¸½èÍý
       *****************************************************************
@@ -592,7 +645,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            PERFORM  VARYING    IDX     FROM    1   BY  1
-               UNTIL          (IDX     >     100   )  OR
+               UNTIL          (IDX     >       99    )  OR
                               (FLG-SYSKANRI    =   1 )
                MOVE    MCPDATA-REC         TO  SYS-1014-REC
                ADD     1                   TO  SPA-GMN-TBL-MAX
@@ -635,7 +688,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-IF
            END-IF
       *
-           . 
+           .
        320-KANRICD-HENSYU-EXT.
            EXIT.
       *
@@ -859,6 +912,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *            Êñ³ç¤Ê¤·
                    PERFORM 200211-KBNCD-999-SEC
            END-EVALUATE
+      *
+           IF      SPA-GMN-TBL-MAX     >   ZERO
+               GO  TO   200212-INIT-GMN-EXT
+           END-IF
+      *
       *    Êñ³ç¥Ç¡¼¥¿¤ÎÍ­¸ú´ü´Ö
            MOVE    SPA-HKT-YUKOSTYMD   TO  SPA-NAI-STYUKYMD
            MOVE    SPA-HKT-YUKOEDYMD   TO  SPA-NAI-EDYUKYMD
@@ -1723,7 +1781,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            MOVE    ZERO               TO  SPA-NAI-STYUKYMD
       *
-           IF      SPA-GMN-STYUKYMD   =   SPACE
+           IF     (SPA-GMN-STYUKYMD   =   SPACE )
+              AND (SPA-GMN-TBL-MAX    =   ZERO  )
                IF      WRK-MCP-WIDGET     =   "STYUKYMD"
                    MOVE    SPA-HKT-YUKOSTYMD  TO  SPA-GMN-STYUKYMD
                END-IF
@@ -1739,6 +1798,17 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    3                   TO  SPA-GMN-CUR
            END-IF
       *
+      *H30.6
+      *    ¿·µ¬¤Î»þ½é´üÀßÄê
+           IF     (SPA-ERRCD           =   SPACE  )
+              AND (SPA-GMN-SELNUM      =   ZERO   )
+              AND (SPA-GMN-STYUKYMD    NOT =   SPACE)
+               IF      SPA-GMN-SANTEIHOU-G     =   SPACE
+                   MOVE    1                   TO  SPA-GMN-SYORI
+                   MOVE    4                   TO  SPA-GMN-CUR
+                   PERFORM 200212-INIT-GMN-SEC
+               END-IF
+           END-IF
            .
         41021-STYUKYMD-CHK-EXT.
            EXIT.
@@ -2502,6 +2572,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  W32-TSTYUKYMD (IDX)
                MOVE    SPA-GMN-TEDYUKYMD (IDX)
                                            TO  W32-TEDYUKYMD (IDX)
+      *H30.6
+               IF     (SPA-GMN-SELNUM      >   ZERO )
+                  AND (SPA-GMN-SELNUM      =   IDX  )
+                   MOVE    "T"             TO  W32-KIKAN-SELECT(IDX)
+               ELSE
+                   MOVE    "F"             TO  W32-KIKAN-SELECT(IDX)
+               END-IF
            END-PERFORM
            MOVE    SPA-GMN-TBL-MAX         TO  W32-KIKAN-COUNT
            MOVE    SPA-GMN-SELNUM          TO  W32-SELNUM

@@ -143,7 +143,7 @@ path	key6 	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE	tbl_etensu_2_jma
+		UPDATE tbl_etensu_2_jma
 				SET
 				H_GROUP      = :H_GROUP,
 				SRYCD      = :SRYCD,
@@ -155,6 +155,78 @@ path	upd1	{
 			AND	SRYCD      =  :UPSRYCD
 			AND	YUKOSTYMD	=	:UPYUKOSTYMD
 			AND	YUKOEDYMD	=	:UPYUKOEDYMD
+		;
+	};
+};
+
+path	key22 	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_key22_csr CURSOR FOR
+		SELECT  *
+		FROM tbl_etensu_2_jma
+		WHERE 	H_GROUP      = :H_GROUP
+		AND	YUKOEDYMD  >=  :YUKOSTYMD
+			ORDER   BY SRYCD,
+				   YUKOSTYMD
+		;
+	};
+};
+
+path	key32	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_key32_csr CURSOR FOR
+		SELECT DISTINCT a.*,b.CDKBN_KBN,b.CDKBN_KBNNUM
+		FROM tbl_etensu_2_jma a,tbl_tensu b
+		WHERE 	a.H_GROUP      = :H_GROUP
+		AND	a.YUKOEDYMD  >=  :YUKOSTYMD
+		AND     a.SRYCD       =  b.SRYCD 
+		AND     b.HOSPNUM     =  :HOSPNUM 
+		AND   ( b.SRYKBN    >=  :SRYKBN    AND
+			b.SRYKBN    <=  :SRYKBN2 )
+			ORDER   BY  b.CDKBN_KBN,
+                                    b.CDKBN_KBNNUM,
+                                    a.SRYCD,
+				    a.YUKOSTYMD
+		;
+	};
+};
+
+path	key42	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_key42_csr CURSOR FOR
+		SELECT DISTINCT a.*,b.CDKBN_KBN,b.CDKBN_KBNNUM
+		FROM tbl_etensu_2_jma a,tbl_tensu b
+		WHERE 	a.H_GROUP      = :H_GROUP
+		AND	a.YUKOEDYMD  >=  :YUKOSTYMD
+		AND     a.SRYCD       =  b.SRYCD 
+		AND     b.HOSPNUM     =  :HOSPNUM 
+		AND  (( b.SRYKBN    >=  :SRYKBN    AND
+			b.SRYKBN    <=  :SRYKBN2 )
+		OR    ( b.SRYSYUKBN  >= :SRYSYUKBN  AND
+		        b.SRYSYUKBN  <= :SRYSYUKBN2))
+			ORDER   BY  b.CDKBN_KBN,
+                                    b.CDKBN_KBNNUM,
+                                    a.SRYCD,
+				    a.YUKOSTYMD
+		;
+	};
+};
+
+path	key52	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_key52_csr CURSOR FOR
+		SELECT DISTINCT a.*,b.CDKBN_KBN,b.CDKBN_KBNNUM
+		FROM tbl_etensu_2_jma a,tbl_tensu b
+		WHERE 	a.H_GROUP      = :H_GROUP
+		AND	a.YUKOEDYMD  >=  :YUKOSTYMD
+		AND     a.SRYCD       =  b.SRYCD 
+		AND     b.HOSPNUM     =  :HOSPNUM 
+		AND   ( b.SRYSYUKBN   = :SRYSYUKBN  OR
+		        b.SRYSYUKBN   = :SRYSYUKBN2)
+			ORDER   BY  b.CDKBN_KBN,
+                                    b.CDKBN_KBNNUM,
+                                    a.SRYCD,
+				    a.YUKOSTYMD
 		;
 	};
 };
