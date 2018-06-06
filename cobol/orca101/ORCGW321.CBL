@@ -332,17 +332,21 @@
       *
            MOVE    SPACE               TO  HKTSRYCD-REC
            INITIALIZE                      HKTSRYCD-REC
+     **    MOVE    SPA-NAI-STYUKYMD    TO  HKTSRYCD-YUKOSTYMD
+     ***   MOVE    SPA-NAI-EDYUKYMD    TO  HKTSRYCD-YUKOEDYMD
+      *H30.4
+      *    履歴開始日で有効
            MOVE    SPA-NAI-STYUKYMD    TO  HKTSRYCD-YUKOSTYMD
-           MOVE    SPA-NAI-EDYUKYMD    TO  HKTSRYCD-YUKOEDYMD
+           MOVE    SPA-NAI-STYUKYMD    TO  HKTSRYCD-YUKOEDYMD
            MOVE    SPA-GMN-KBNCD       TO  HKTSRYCD-KANRICD
       *
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
-               MOVE    "key7"              TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-HKTSRYCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-HKTSRYCD
@@ -354,11 +358,11 @@
                PERFORM 3101-ETENSU1-CHEK-SEC
       *
                MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
-               MOVE    "key7"              TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-HKTSRYCD-READ-SEC
            END-PERFORM
            MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *H28.6
@@ -748,8 +752,13 @@
                IF      TNS-YUKOEDYMD       >   WRK-TNS-EDYMD
                    MOVE    TNS-YUKOEDYMD       TO  WRK-TNS-EDYMD
                END-IF
-               IF     (SPA-W321-YUKOSTYMD   <= TNS-YUKOSTYMD)
-                 AND  (SPA-W321-YUKOEDYMD   >= TNS-YUKOEDYMD)
+      ***      IF     (SPA-W321-YUKOSTYMD   <= TNS-YUKOSTYMD)
+      ***        AND  (SPA-W321-YUKOEDYMD   >= TNS-YUKOEDYMD)
+      *H30.4
+               IF     (SPA-W321-YUKOSTYMD   >  TNS-YUKOEDYMD)
+                 OR   (SPA-W321-YUKOEDYMD   <  TNS-YUKOSTYMD)
+                   CONTINUE
+               ELSE
                    MOVE    TNS-NAME            TO  WRK-TNS-NAME
       *            電子点数表期間内
                    IF     (TNS-YUKOSTYMD       <=  ETENSU2-YUKOSTYMD)
@@ -761,13 +770,13 @@
       *
                IF      FLG-TENSU           =   ZERO
                    MOVE    "tbl_tensu"         TO  MCP-TABLE
-                   MOVE    "key24"              TO  MCP-PATHNAME
+                   MOVE    "key24"             TO  MCP-PATHNAME
                    PERFORM 900-TENSU-READ-SEC
                END-IF
            END-PERFORM
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key24"              TO  MCP-PATHNAME
+           MOVE    "key24"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *?
       *    IF      WRK-TNS-NAME        =   SPACE
@@ -803,7 +812,6 @@
       *
                MOVE    ETNSJMA-SRYCD       TO  WRK-SRYCD
                MOVE    ETENSU2-JMA-REC     TO  ETENSU2-REC
-      *TEST
                IF     (ETENSU2-YUKOSTYMD   >   SPA-W321-YUKOEDYMD)
                   OR  (ETENSU2-YUKOEDYMD   <   SPA-W321-YUKOSTYMD)
                    CONTINUE
