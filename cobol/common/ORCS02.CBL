@@ -2360,9 +2360,7 @@
                   COMPUTE      LNK-SYU-RSIJIBAI-SKYMONEY      =
                                LNK-SYU-RSIJIBAI-SKYMONEY      +
                                LNK-SYU-RMSAGAKU               +
-      *****                    LNK-SYU-SKYMONEY-SKJ-KEI       +
                                LNK-SYU-SKYMONEY-SKJ-JIHI-KEI  +
-      *****                    LNK-SYU-SKYMONEY-LIFE-KEI      +
                                LNK-SYU-SKYMONEY-LIFE-JIHI-KEI +
                                LNK-SYU-TGMONEY(17)            +
                                LNK-SYU-TGMONEY-TAX(17)        +
@@ -2422,9 +2420,7 @@
                   COMPUTE      LNK-SYU-RSIJIBAI-SKYMONEY      =
                                LNK-SYU-RSIJIBAI-SKYMONEY      +
                                LNK-SYU-RMSAGAKU               +
-      *****                    LNK-SYU-SKYMONEY-SKJ-KEI       +
                                LNK-SYU-SKYMONEY-SKJ-JIHI-KEI  +
-      *****                    LNK-SYU-SKYMONEY-LIFE-KEI      +
                                LNK-SYU-SKYMONEY-LIFE-JIHI-KEI +
                                LNK-SYU-TGMONEY(17)            +
                                LNK-SYU-TGMONEY-TAX(17)        +
@@ -24181,6 +24177,10 @@
                    MOVE  LNK-SKJKEEP-KBN(NYULIFE-IDX)
                                   TO  WK-SKJKEEP-KBN(NYULIFE-IDX)
                  END-PERFORM
+               ELSE
+                 IF    LNK-SKJKEEP-RC  =   5
+                   MOVE     42    TO  LNK-S02-RC
+                 END-IF
                END-IF
              END-IF
            ELSE

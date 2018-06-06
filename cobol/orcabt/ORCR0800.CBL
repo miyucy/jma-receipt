@@ -1440,6 +1440,11 @@ grpsys         PERFORM 900-DBSELECT-SEC
                     WHEN       41
                       MOVE "今回請求金額が７桁を超えます"
                                           TO  ERR-ERRMSG
+                    WHEN       42
+                      MOVE "【精神病床】食事負担据え置き対象コードの"
+                                          TO  ERR-ERRMSG(1:40)
+                      MOVE "診療行為入力確認"
+                                          TO  ERR-ERRMSG(41:16)
       *
                     WHEN      101
                       MOVE "包括入院期間に算定できない入院料加算有"
