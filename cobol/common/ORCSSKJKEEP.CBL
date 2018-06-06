@@ -39,6 +39,8 @@
       *              NACL-小豆沢  17/11/29  低所得者の食事負担据え置き
       *                                     区分のクリアを平成２９年９月
       *                                     までとするよう対処
+      *              NACL-小豆沢  18/06/06  精神病床長期入院のシステム
+      *                                     予約コード入力回数チェック追加
       *****************************************************************
       *
       *
@@ -132,7 +134,7 @@
            03  WRK-SHONUM                  PIC 9(03).
       *
       *    システム予約コードの入力日と該当する入院履歴番号
-           03  WRK-SYSYYK-TBL              OCCURS  20.
+           03  WRK-SYSYYK-TBL              OCCURS  21.
                05  WRK-SYSYYK-SRYYMD.
                   07  WRK-SYSYYK-SRYYM     PIC X(06).
                   07  WRK-SYSYYK-SRYDD     PIC X(02).
@@ -281,15 +283,16 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-      **     PERFORM    VARYING IDX   FROM   1   BY  1
-      **                UNTIL IDX   >   31
-      **       DISPLAY "IDX = " IDX " LNK-SKJKEEP-KBN = "
-      **                 LNK-SKJKEEP-KBN(IDX)
-      **     END-PERFORM
-      **     DISPLAY "LNK-SKJKEEP-SEI-NYUINYMD = "
-      **              LNK-SKJKEEP-SEI-NYUINYMD
-      **     DISPLAY "LNK-SKJKEEP-SEI-COMMENT-KBN = "
-      **              LNK-SKJKEEP-SEI-COMMENT-KBN
+           DISPLAY "LNK-SKJKEEP-RC = " LNK-SKJKEEP-RC
+           PERFORM    VARYING IDX   FROM   1   BY  1
+                      UNTIL IDX   >   31
+             DISPLAY "IDX = " IDX " LNK-SKJKEEP-KBN = "
+                       LNK-SKJKEEP-KBN(IDX)
+           END-PERFORM
+           DISPLAY "LNK-SKJKEEP-SEI-NYUINYMD = "
+                    LNK-SKJKEEP-SEI-NYUINYMD
+           DISPLAY "LNK-SKJKEEP-SEI-COMMENT-KBN = "
+                    LNK-SKJKEEP-SEI-COMMENT-KBN
       *
            .
        000-PROC-EXT.
@@ -415,6 +418,9 @@
       *    精神病床の食事負担据え置きをシステム予約コード入力から判定
            IF    FLG-SEISIN-CHK     =     1
                PERFORM    210-SEISIN-CHK2-SEC
+               IF     LNK-SKJKEEP-RC      =    5
+                   GO  TO  200-MAIN-EXT
+               END-IF
            END-IF
       *
       *    難病等の入院判定（診療行為で難病等に関わる診療が有る場合も対象）
@@ -818,7 +824,7 @@
                      MOVE    "key57"              TO  MCP-PATHNAME
                      PERFORM   910-SRYACCT-READ-SEC
                      PERFORM   UNTIL   (FLG-SRYACCT    =   1)  OR
-                                       (IDX-YYK        =  20)
+                                       (IDX-YYK        =  21)
                         IF   ACCT-NYUGAIKBN   =     "1"
                             PERFORM    VARYING  IDX-ACCT  FROM  1  BY  1
                               UNTIL    IDX-ACCT   >  31
@@ -854,6 +860,30 @@
       *     DISPLAY  "WRK-SYSYYK-SRYYMD(1) = " WRK-SYSYYK-SRYYMD(1)
       *     DISPLAY  "WRK-SYSYYK-SRYYMD(2) = " WRK-SYSYYK-SRYYMD(2)
       *     DISPLAY  "WRK-SYSYYK-SRYYMD(3) = " WRK-SYSYYK-SRYYMD(3)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(4) = " WRK-SYSYYK-SRYYMD(4)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(5) = " WRK-SYSYYK-SRYYMD(5)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(6) = " WRK-SYSYYK-SRYYMD(6)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(7) = " WRK-SYSYYK-SRYYMD(7)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(8) = " WRK-SYSYYK-SRYYMD(8)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(9) = " WRK-SYSYYK-SRYYMD(9)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(10) = " WRK-SYSYYK-SRYYMD(10)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(11) = " WRK-SYSYYK-SRYYMD(11)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(12) = " WRK-SYSYYK-SRYYMD(12)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(13) = " WRK-SYSYYK-SRYYMD(13)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(14) = " WRK-SYSYYK-SRYYMD(14)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(15) = " WRK-SYSYYK-SRYYMD(15)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(16) = " WRK-SYSYYK-SRYYMD(16)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(17) = " WRK-SYSYYK-SRYYMD(17)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(18) = " WRK-SYSYYK-SRYYMD(18)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(19) = " WRK-SYSYYK-SRYYMD(19)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(20) = " WRK-SYSYYK-SRYYMD(20)
+      *     DISPLAY  "WRK-SYSYYK-SRYYMD(21) = " WRK-SYSYYK-SRYYMD(21)
+      *
+      *    システム予約コード入力が２０回を超えていないことをチェック
+           IF     WRK-SYSYYK-SRYYMD(21)   NOT =   SPACE
+               MOVE    5                  TO  LNK-SKJKEEP-RC
+               GO  TO  210-SEISIN-CHK2-EXT
+           END-IF
       *
            PERFORM    VARYING    IDX    FROM  1   BY  1
              UNTIL    (IDX    >   20)   OR
