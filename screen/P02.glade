@@ -12628,14 +12628,14 @@
             <name>P028_NNCHIKBN</name>
             <x>596</x>
             <y>450</y>
-            <width>206</width>
+            <width>220</width>
             <height>24</height>
             <visible>True</visible>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <border_width>0</border_width>
-            <label>認知症地域包括診療料算定</label>
+            <label>認知症地域包括診療加算算定</label>
             <relief>GTK_RELIEF_NORMAL</relief>
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
