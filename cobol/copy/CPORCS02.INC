@@ -44,10 +44,11 @@
       *                                     負担金計算対応
       * 04.08.03     NACL-門脇    18/05/15  リトライフラグ追加
       *                                     チェック用ＩＤＸ追加
+      * 04.08.04     NACL-門脇    18/05/31  計算金額桁数チェックフラグ追加
       ************************************************************
       *01  LNK-ORCS02-REC.
       *医療機関ＩＤ
-           03  LNK-S02-HOSPNUM             PIC 9(2).
+           03  LNK-S02-HOSPNUM             PIC  9(02).
       *入外区分
            03  LNK-S02-NYUGAIKBN           PIC  X(01).
       *患者ＩＤ
@@ -78,6 +79,8 @@
            03  LNK-S02-SYSYMD              PIC  X(08).
       *リトライフラグ
            03  LNK-S02-RETRY-FLG           PIC  X(01).
+      *計算金額桁数チェックフラグ
+           03  LNK-S02-SKYCHKFLG           PIC  X(01).
       *
       *初診料算定フラグ（地方公費用）
            03  LNK-S02-SYOSINFLG           PIC  X(01).
@@ -174,5 +177,5 @@
            03  LNK-S02-IDX2                     PIC  9(02).
       *
       *復帰コード
-           03  LNK-S02-RC                  PIC  S9(9)   BINARY.
+           03  LNK-S02-RC                       PIC S9(09)   BINARY.
       *

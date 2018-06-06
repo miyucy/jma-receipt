@@ -192,6 +192,7 @@
       *  04.08.12    NACL-門脇    18/05/10  入院会計照会の保険組み合わせ
       *                                     （９９９）チェック対応
       *  04.08.13    NACL-門脇    18/05/15  同一会計分のデータ編集修正
+      *  04.08.14    NACL-門脇    18/05/31  計算金額桁数チェック
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -241,6 +242,9 @@
            03  WRK-YUSENYMD                PIC X(08).
            03  WRK-FUTANWARI               PIC 9V99.
            03  WRK-TAIHI-DAY               PIC 9(02).
+           03  WRK-SKYCHK-KEISAN           PIC 9(10).
+           03  WRK-SKYCHK-KEISAN2          PIC 9(10).
+           03  WRK-SKYCHK-KEISAN3          PIC 9(10).
            03  WRK-S1                      PIC 9(03).
            03  WRK-S2                      PIC 9(03).
            03  WRK-S3                      PIC 9V99999.
@@ -390,6 +394,12 @@
            02  WRK-KANGOGEN-TBL            OCCURS 10.
               03 WRK-KANGOGEN-SRYCD        PIC X(09)  OCCURS  31.
       *
+      *    請求点数チェック用
+       01  WRK-SKYTEN-TABLE.
+           02  WRK-SKYTEN-TBL              OCCURS 16.
+              03 WRK-SKYTEN                PIC 9(10).
+              03 WRK-SKYTEN-GEN            PIC 9(10).
+      *
        01  WRK-SKYYM-TABLE.
            02  WRK-SKYYM-TBL     OCCURS    2.
               03   WRK-SKYYM               PIC X(06).
@@ -511,6 +521,8 @@
            03  FLG-KOHARI2                 PIC 9(01).
            03  FLG-DAISANARI2              PIC 9(01).
            03  FLG-HKNCOMBINUM999          PIC 9(01).
+           03  FLG-SKYCHK-KEISAN           PIC 9(01).
+           03  FLG-SKYCHK-KEISAN2          PIC 9(01).
       *
        01  CNT-AREA.
            03  CNT-KENSU                   PIC 9(03).
@@ -579,19 +591,19 @@
       * 保険適用外金額退避用テーブル
        01  HKNTEKGAI-TABLE.
            03  HKNTEKGAI-TBL               OCCURS 16.
-               05  TBL-TGMONEY             PIC 9(08).
-               05  TBL-TGMONEY-TAX         PIC 9(08).
+               05  TBL-TGMONEY             PIC 9(10).
+               05  TBL-TGMONEY-TAX         PIC 9(10).
       *
       * 入院保険適用外金額退避用領域
        01  HKNTEKGAI-NYUIN.
-           03  NYUIN-TGMONEY               PIC 9(08)V9(1).
-           03  NYUIN-TGMONEY-TAX           PIC 9(08)V9(1).
+           03  NYUIN-TGMONEY               PIC 9(10).
+           03  NYUIN-TGMONEY-TAX           PIC 9(10).
       *
       * 自費退避用テーブル
        01  JIHI-TABLE.
            03  JIHI-TBL                    OCCURS 10.
-               05  TBL-JIHI-TAXNASI        PIC 9(08).
-               05  TBL-JIHI-TAXARI         PIC 9(08).
+               05  TBL-JIHI-TAXNASI        PIC 9(10).
+               05  TBL-JIHI-TAXARI         PIC 9(10).
       *
       *    添え字領域
        01  IDX-AREA.
@@ -942,11 +954,28 @@
            END-PERFORM.
       *
       *    診療会計から収納エリアへのセット
+           MOVE     ZERO       TO   FLG-SKYCHK-KEISAN.
+           MOVE     ZERO       TO   FLG-SKYCHK-KEISAN2.
            PERFORM    VARYING   IDX    FROM   1   BY   1
                       UNTIL  (IDX            >    10)
                         OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                       PERFORM       SINRYO-KAIKEI-SET-SEC
            END-PERFORM.
+      *
+           IF   (FLG-SKYCHK-KEISAN     =    1)
+           OR   (FLG-SKYCHK-KEISAN2    =    1)
+             IF    LNK-S02-RC   =   ZERO
+               IF  FLG-SKYCHK-KEISAN   =    1
+                 MOVE   38   TO   LNK-S02-RC
+               END-IF
+             END-IF
+             IF    LNK-S02-RC   =   ZERO
+               IF  FLG-SKYCHK-KEISAN2  =    1
+                 MOVE   39   TO   LNK-S02-RC
+               END-IF
+             END-IF
+             GO    TO   MAIN-EXT
+           END-IF.
       *
       *    日別点数編集
            PERFORM    VARYING   IDX    FROM   1   BY   1
@@ -979,8 +1008,6 @@
       *    不要な収納を除外する
            PERFORM     TAISYOGAI-DATA-HENSYU-SEC.
       *
-      *    入院料算定保険組み合わせ以外の保険組み合わせで
-      *    入院料加算があるかチェック
            IF    LNK-S02-RC   =   ZERO
              MOVE     ZERO     TO    WRK-MSGCD
              PERFORM   VARYING   IDX    FROM   1   BY   1
@@ -3345,11 +3372,6 @@ grpsys                              SPA-AREA
                                        -   WRK-JOKUSOU-GENTEN
       *
            END-IF
-      *
-      **     PERFORM   VARYING   IDZ   FROM  1   BY   1
-      **               UNTIL     IDZ   >     16
-      **               ADD    SYU-HKNTEN (IDZ)  TO  SYU-HKNTEN (17)
-      **     END-PERFORM
       *
       *    入院保険適用外
            ADD    NYUIN-TGMONEY        TO  SYU-TGMONEY(15)
@@ -6028,6 +6050,8 @@ grpsys                               SPA-AREA
            INITIALIZE                      HKNTEKGAI-TABLE
            MOVE    SPACE               TO  JIHI-TABLE
            INITIALIZE                      JIHI-TABLE
+           MOVE    SPACE               TO  WRK-SKYTEN-TABLE
+           INITIALIZE                      WRK-SKYTEN-TABLE
       *
            INITIALIZE                      WRK-ROSAI-AREA
       *
@@ -6089,10 +6113,19 @@ grpsys                            SPA-AREA
            END-EVALUATE
       *
       *    保険点数集計
-           PERFORM     VARYING   IDZ    FROM   1    BY    1
-                         UNTIL   IDZ    >      16
-                  ADD    SYU-HKNTEN(IDZ)      TO  SYU-HKNTEN(17)
+           MOVE     ZERO    TO   WRK-SKYCHK-KEISAN
+           PERFORM  VARYING  IDZ  FROM  1  BY  1
+                     UNTIL   IDZ    >  16
+             ADD    SYU-HKNTEN(IDZ)   TO  SYU-HKNTEN(17)
+                                          WRK-SKYCHK-KEISAN
            END-PERFORM
+           IF   WRK-SKYCHK-KEISAN  >  9999999
+             MOVE   1       TO   FLG-SKYCHK-KEISAN
+           END-IF
+           IF   WRK-SKYTEN(07)     >  9999999
+             MOVE   1       TO   FLG-SKYCHK-KEISAN
+           END-IF
+      *
       *    保険適用外退避テーブルと自費退避用テーブルから
       *    収納テーブルへのセット
            PERFORM   HKNTEKGAI-SET-SEC
@@ -6640,6 +6673,8 @@ grpsys                                        SPA-AREA
       *            手術
                    WHEN    "50"
                     COMPUTE SYU-HKNTEN (07)   =  SYU-HKNTEN (07)  +
+                           (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    COMPUTE WRK-SKYTEN (07)   =  WRK-SKYTEN (07)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
                     PERFORM  VARYING  SYU-IDX  FROM  1  BY  1          
                                UNTIL    SYU-IDX   >    31              
@@ -8457,29 +8492,51 @@ grpsys                                    SPA-AREA
       **************************************************************
        HKNTEKGAI-SET-SEC          SECTION.
       *
-      *  保険適用外
-           PERFORM     VARYING   IDZ    FROM   1    BY    1
-                         UNTIL   IDZ    >      16
-                  ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
-                  ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
-                  ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(17)
-                  ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(17)
+      *    計算金額桁数チェック
+           MOVE   ZERO                  TO  WRK-SKYCHK-KEISAN2
+           MOVE   ZERO                  TO  WRK-SKYCHK-KEISAN3
+           ADD    SYU-TGMONEY(15)       TO  WRK-SKYCHK-KEISAN2
+           ADD    SYU-TGMONEY-TAX(15)   TO  WRK-SKYCHK-KEISAN3
+           PERFORM  VARYING  IDZ  FROM  1  BY  1
+                     UNTIL   IDZ    >  16
+             ADD  TBL-TGMONEY(IDZ)      TO  WRK-SKYCHK-KEISAN2
+             ADD  TBL-TGMONEY-TAX(IDZ)  TO  WRK-SKYCHK-KEISAN3
+           END-PERFORM
+           IF   WRK-SKYCHK-KEISAN2  >  9999999
+           OR   WRK-SKYCHK-KEISAN3  >  9999999
+             MOVE      1     TO   FLG-SKYCHK-KEISAN2
+           END-IF
+      *
+           MOVE   ZERO                  TO  WRK-SKYCHK-KEISAN2
+           MOVE   ZERO                  TO  WRK-SKYCHK-KEISAN3
+           PERFORM  VARYING  IDZ  FROM  1  BY  1
+                     UNTIL   IDZ    >  10
+             ADD  TBL-JIHI-TAXNASI(IDZ) TO  WRK-SKYCHK-KEISAN2
+             ADD  TBL-JIHI-TAXARI(IDZ)  TO  WRK-SKYCHK-KEISAN3
+           END-PERFORM
+           IF   WRK-SKYCHK-KEISAN2  >  9999999
+           OR   WRK-SKYCHK-KEISAN3  >  9999999
+             MOVE      1     TO   FLG-SKYCHK-KEISAN2
+           END-IF
+      *
+      *    保険適用外
+           PERFORM  VARYING  IDZ  FROM  1  BY  1
+                     UNTIL   IDZ    >  16
+             ADD   TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
+             ADD   TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
+             ADD   TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(17)
+             ADD   TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(17)
            END-PERFORM
       *
-      *  入院保険適用外
-      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(15)
-      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(15)
-      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(17)
-      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(17)
-      *
-      *  自費１から１０
-           PERFORM     VARYING   IDZ    FROM    1    BY    1
-                         UNTIL   IDZ    >       10
-                  MOVE TBL-JIHI-TAXNASI(IDZ) TO SYU-JIHI-TAXNASI(IDZ)
-                  MOVE TBL-JIHI-TAXARI(IDZ)  TO SYU-JIHI-TAXARI(IDZ)
-                  ADD  TBL-JIHI-TAXNASI(IDZ) TO SYU-JIHI-TOTAL
-                  ADD  TBL-JIHI-TAXARI(IDZ)  TO SYU-JIHI-TOTAL-TAX
+      *    自費１から１０
+           PERFORM  VARYING  IDZ  FROM  1  BY  1
+                     UNTIL   IDZ    >  10
+             MOVE  TBL-JIHI-TAXNASI(IDZ) TO  SYU-JIHI-TAXNASI(IDZ)
+             MOVE  TBL-JIHI-TAXARI(IDZ)  TO  SYU-JIHI-TAXARI(IDZ)
+             ADD   TBL-JIHI-TAXNASI(IDZ) TO  SYU-JIHI-TOTAL
+             ADD   TBL-JIHI-TAXARI(IDZ)  TO  SYU-JIHI-TOTAL-TAX
            END-PERFORM
+      *
            .
        HKNTEKGAI-SET-EXT.
            EXIT.
