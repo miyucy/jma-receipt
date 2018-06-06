@@ -41,7 +41,7 @@
       *  04.08.00    NACL-多々納  16/04/XX  地域包括ケア病棟包括外対応他
       *                                     障害者施設等入院基本料対応
       *  04.08.00    NACL-多々納  18/01/24  診療区分包括対象改正対応他
-      *  04.08.00    NACL-多々納  18/04/XX  包括診療テーブル期間対応他
+      *  04.08.00    NACL-多々納  18/06/XX  包括診療テーブル期間対応他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -350,7 +350,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    HKTSRYCD-YUKOEDYMD  TO  SPA-NAIB-YUKOEDYMD
                                                              (IDX)
                    PERFORM 3101-KBNCDMEI-HEN-SEC
-      *H30.4
+      *H30.6
       *            最大終了日設定
                    IF      HKTSRYCD-YUKOEDYMD  <   "99999999"
                        PERFORM 3102-HKTSYRCD-END-SEC
@@ -562,7 +562,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        3101-KBNCDMEI-HEN-EXT.
            EXIT.
       *
-      *H30.4
+      *H30.6
       *****************************************************************
       *    包括算定終了日編集処理
       *****************************************************************
@@ -1798,7 +1798,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    3                   TO  SPA-GMN-CUR
            END-IF
       *
-      *H30.4
+      *H30.6
       *    新規の時初期設定
            IF     (SPA-ERRCD           =   SPACE  )
               AND (SPA-GMN-SELNUM      =   ZERO   )
@@ -2572,7 +2572,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  W32-TSTYUKYMD (IDX)
                MOVE    SPA-GMN-TEDYUKYMD (IDX)
                                            TO  W32-TEDYUKYMD (IDX)
-      *H30.4
+      *H30.6
                IF     (SPA-GMN-SELNUM      >   ZERO )
                   AND (SPA-GMN-SELNUM      =   IDX  )
                    MOVE    "T"             TO  W32-KIKAN-SELECT(IDX)
