@@ -936,69 +936,77 @@
       *****************************************************************
        200111-TOKSNT-EDIT-SEC              SECTION.
       *
-           MOVE    "»»ÄêÍ×·ïÈó³ºÅö¶èÊ¬"
-                               TO  SNINF01-TOKSNTKBN-LBL(IDXA)
-           IF    ( BRRK-TOKU-SANTEIYOUKENKBN
-                               =   "1" )
-               MOVE    "1"     TO  SNINF01-TOKSNTKBN-DATA(IDXA)
-               MOVE    "»»ÄêÍ×·ï¤Ë³ºÅö¤·¤Ê¤¤´µ¼Ô"
-                               TO  SNINF01-TOKSNTKBN-NAME(IDXA)
-      *
-               MOVE    SPACE   TO  WRK-TOKTEI-G
-               EVALUATE    BRRK-TOKUTEI-KBN
-               WHEN    "2"
-                   EVALUATE    BRRK-TOKUTEI-NYUIN
-                   WHEN    "10"
-                       IF    ( BRRK-NYUINYMD    >= CONST-H180401 )
-                           MOVE    "190121010"     TO  WRK-TOKTEI-CD
-                       END-IF
-                   WHEN    "11"
-                       IF    ( BRRK-NYUINYMD    >= CONST-H180401 )
-                           MOVE    "190121110"     TO  WRK-TOKTEI-CD
-                       END-IF
-                   WHEN    "12"
-                       IF    ( BRRK-NYUINYMD    >= CONST-H180401 )
-                           MOVE    "190121210"     TO  WRK-TOKTEI-CD
-                       END-IF
-                   END-EVALUATE
-                   IF    ( WRK-TOKTEI-CD   =   SPACE )
-                       INITIALIZE              SYSKANRI-REC
-                       MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-                       MOVE    "5110"          TO  SYS-KANRICD
-                       MOVE    BRRK-TOKUTEI-NYUIN
-                                               TO  SYS-KBNCD
-                       MOVE    BRRK-NYUINYMD
-                                               TO  SYS-STYUKYMD
-                                                   SYS-EDYUKYMD
-                       PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-                       MOVE    SYSKANRI-REC    TO  SYS-5110-REC
-                       MOVE    SYS-5110-SRYCD  TO  WRK-TOKTEI-CD
+           MOVE    SPACE   TO  WRK-TOKTEI-G
+           EVALUATE    BRRK-TOKUTEI-KBN
+           WHEN    "2"
+               EVALUATE    BRRK-TOKUTEI-NYUIN
+               WHEN    "10"
+                   IF    ( BRRK-NYUINYMD    >= CONST-H180401 )
+                       MOVE    "190121010"     TO  WRK-TOKTEI-CD
                    END-IF
-               WHEN    "3"
-                   INITIALIZE                  SYSKANRI-REC
-                   MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-                   MOVE    "5111"              TO  SYS-KANRICD
-                   MOVE    BRRK-TOKUTEI-NYUIN
-                                               TO  SYS-KBNCD
-                   MOVE    BRRK-NYUINYMD TO  SYS-STYUKYMD
-                                                   SYS-EDYUKYMD
-                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-                   MOVE    SYSKANRI-REC        TO  SYS-5111-REC
-                   MOVE    SYS-5111-SRYCD      TO  WRK-TOKTEI-CD
+               WHEN    "11"
+                   IF    ( BRRK-NYUINYMD    >= CONST-H180401 )
+                       MOVE    "190121110"     TO  WRK-TOKTEI-CD
+                   END-IF
+               WHEN    "12"
+                   IF    ( BRRK-NYUINYMD    >= CONST-H180401 )
+                       MOVE    "190121210"     TO  WRK-TOKTEI-CD
+                   END-IF
                END-EVALUATE
-               IF    ( WRK-TOKTEI-CD           NOT =   SPACE )
-                   MOVE    "»»ÄêÍ×·ïÈó³ºÅöÆÃÄêÆþ±¡ÎÁ"
-                                         TO  SNINF01-TOKSNTCD-LBL(IDXA)
-                   MOVE    WRK-TOKTEI-CD TO  SNINF01-TOKSNTCD-DATA(IDXA)
-                   MOVE    BRRK-NYUINYMD TO  WRK-KJNYMD
-                   MOVE    WRK-TOKTEI-CD TO  KEY-SRYCD
-                   PERFORM 900-TENSU-KEY-SEL-SEC
-                   MOVE    TNS-NAME      TO  SNINF01-TOKSNTCD-NAME(IDXA)
+               IF    ( WRK-TOKTEI-CD   =   SPACE )
+                   INITIALIZE              SYSKANRI-REC
+                   MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+                   MOVE    "5110"          TO  SYS-KANRICD
+                   MOVE    BRRK-TOKUTEI-NYUIN
+                                           TO  SYS-KBNCD
+                   MOVE    BRRK-NYUINYMD
+                                           TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                   MOVE    SYSKANRI-REC    TO  SYS-5110-REC
+                   MOVE    SYS-5110-SRYCD  TO  WRK-TOKTEI-CD
                END-IF
-           ELSE
-               MOVE    "0"     TO  SNINF01-TOKSNTKBN-DATA(IDXA)
-               MOVE    "»»ÄêÍ×·ï¤Ë³ºÅö¤¹¤ë´µ¼Ô"
-                               TO  SNINF01-TOKSNTKBN-NAME(IDXA)
+           WHEN    "3"
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+               MOVE    "5111"              TO  SYS-KANRICD
+               MOVE    BRRK-TOKUTEI-NYUIN
+                                           TO  SYS-KBNCD
+               MOVE    BRRK-NYUINYMD TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC        TO  SYS-5111-REC
+               MOVE    SYS-5111-SRYCD      TO  WRK-TOKTEI-CD
+           END-EVALUATE
+      *
+           IF    ( WRK-TOKTEI-CD           NOT =   SPACE )
+               MOVE    BRRK-NYUINYMD TO  WRK-KJNYMD
+               MOVE    WRK-TOKTEI-CD TO  KEY-SRYCD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( TNS-CDKBN-KBN  =   "A" )
+                AND  ( TNS-CDKBN-KBNNUM  >= 300 )
+                AND  ( TNS-CDKBN-KBNNUM  <= 399 )
+                   MOVE    "»»ÄêÍ×·ïÈó³ºÅöÆÃÄêÆþ±¡ÎÁ"
+                                       TO  SNINF01-TOKSNTCD-LBL(IDXA)
+                   IF    ( BRRK-TOKU-SANTEIYOUKENKBN
+                                           =   "1" )
+                       MOVE    "1"     TO  SNINF01-TOKSNTKBN-DATA(IDXA)
+                       MOVE    "»»ÄêÍ×·ï¤Ë³ºÅö¤·¤Ê¤¤´µ¼Ô"
+                                       TO  SNINF01-TOKSNTKBN-NAME(IDXA)
+      *
+                       MOVE    "»»ÄêÍ×·ïÈó³ºÅöÆÃÄêÆþ±¡ÎÁ"
+                                       TO  SNINF01-TOKSNTCD-LBL(IDXA)
+                       MOVE    WRK-TOKTEI-CD
+                                       TO  SNINF01-TOKSNTCD-DATA(IDXA)
+                       MOVE    TNS-NAME
+                                       TO  SNINF01-TOKSNTCD-NAME(IDXA)
+      *
+                   ELSE
+                       MOVE    "0"     TO  SNINF01-TOKSNTKBN-DATA(IDXA)
+                       MOVE    "»»ÄêÍ×·ï¤Ë³ºÅö¤¹¤ë´µ¼Ô"
+                                       TO  SNINF01-TOKSNTKBN-NAME(IDXA)
+                   END-IF
+               END-IF
            END-IF
       *
           .
