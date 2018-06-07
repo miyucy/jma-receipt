@@ -1347,3 +1347,18 @@ path	key76		{
 	};
 };
 
+path	upd5		{ 	
+	DBUPDATE	{
+		UPDATE	tbl_ptnyuinrrk
+			SET DOUJITSUKBN    =   :DOUJITSUKBN,
+				UPYMD	       =   :UPYMD,
+				UPHMS	       =   :UPHMS
+			WHERE   HOSPNUM	   =   :HOSPNUM
+			AND	PTID	   =   :PTID
+			AND   RRKNUM   <>  :RRKNUM
+			AND	NYUINYMD   =   :TAIINYMD
+            AND JTIKBN NOT IN ('5','6')
+		;
+	};
+};
+

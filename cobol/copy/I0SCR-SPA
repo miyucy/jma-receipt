@@ -729,6 +729,7 @@
       *          轉情ゥ
                  11  SPA-NAI-I03-TAIINYMD          PIC X(08).
                  11  SPA-NAI-I03-TAIINYMD-MAE      PIC X(09).
+                 11  SPA-NAI-I03-TAIINYMD-MOT      PIC X(08).
                  11  SPA-NAI-I03-TAIINYMD-ERRCD    PIC X(04).
       *
       *        脰昍戊件示犯□正恄啗
