@@ -283,16 +283,16 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           DISPLAY "LNK-SKJKEEP-RC = " LNK-SKJKEEP-RC
-           PERFORM    VARYING IDX   FROM   1   BY  1
-                      UNTIL IDX   >   31
-             DISPLAY "IDX = " IDX " LNK-SKJKEEP-KBN = "
-                       LNK-SKJKEEP-KBN(IDX)
-           END-PERFORM
-           DISPLAY "LNK-SKJKEEP-SEI-NYUINYMD = "
-                    LNK-SKJKEEP-SEI-NYUINYMD
-           DISPLAY "LNK-SKJKEEP-SEI-COMMENT-KBN = "
-                    LNK-SKJKEEP-SEI-COMMENT-KBN
+      *     DISPLAY "LNK-SKJKEEP-RC = " LNK-SKJKEEP-RC
+      *     PERFORM    VARYING IDX   FROM   1   BY  1
+      *                UNTIL IDX   >   31
+      *       DISPLAY "IDX = " IDX " LNK-SKJKEEP-KBN = "
+      *                 LNK-SKJKEEP-KBN(IDX)
+      *     END-PERFORM
+      *     DISPLAY "LNK-SKJKEEP-SEI-NYUINYMD = "
+      *              LNK-SKJKEEP-SEI-NYUINYMD
+      *     DISPLAY "LNK-SKJKEEP-SEI-COMMENT-KBN = "
+      *              LNK-SKJKEEP-SEI-COMMENT-KBN
       *
            .
        000-PROC-EXT.
@@ -824,10 +824,11 @@
                      MOVE    "key57"              TO  MCP-PATHNAME
                      PERFORM   910-SRYACCT-READ-SEC
                      PERFORM   UNTIL   (FLG-SRYACCT    =   1)  OR
-                                       (IDX-YYK        =  21)
+                                       (IDX-YYK        >=  21)
                         IF   ACCT-NYUGAIKBN   =     "1"
                             PERFORM    VARYING  IDX-ACCT  FROM  1  BY  1
-                              UNTIL    IDX-ACCT   >  31
+                              UNTIL   (IDX-ACCT   >    31)   OR
+                                      (IDX-YYK    >=   21)
                                 IF   ACCT-DAY(1 IDX-ACCT)  NOT =  ZERO
                                    ADD    1       TO  IDX-YYK
                                    MOVE   ACCT-SRYYM
