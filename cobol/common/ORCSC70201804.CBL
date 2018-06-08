@@ -4403,7 +4403,7 @@
       *****************************************************************
        10053-TIMEKSNKBNSET-SEC         SECTION.
       *
-      *TEST
+      *!!!
       *H30.6
       *    H30.4¤«¤é¤Î»þ´Ö³°¥Æ¡¼¥Ö¥ë¤ÇÈ½Äê
            SET     TBL-TIDX18          TO  1
@@ -4428,26 +4428,22 @@
                                            TO  FLG-JIKASAN
                END-SEARCH
            END-IF
+      *!!!
       *
-      *TEST
-      *TEST
-           GO   TO  10053-TIMEKSNKBNSET-EXT
-      *TEST
-      *TEST
       *
-      *    ¿Ç»¡ÎÁ¸¡º÷
-           SET     TBL-TIDX            TO  1
-           SEARCH  TBL-TIMEKSN-OCC     VARYING   TBL-TIDX
-               AT  END
-                   MOVE    ZERO            TO  FLG-JIKASAN
-                WHEN   WRK-COM-INPUTCD (IDX-Z)
-                                           =   TBL-TM-SRYCD
-                                                      (TBL-TIDX)
+      *****¿Ç»¡ÎÁ¸¡º÷
+      *    SET     TBL-TIDX            TO  1
+      *    SEARCH  TBL-TIMEKSN-OCC     VARYING   TBL-TIDX
+      *        AT  END
+      *            MOVE    ZERO            TO  FLG-JIKASAN
+      *         WHEN   WRK-COM-INPUTCD (IDX-Z)
+      *                                    =   TBL-TM-SRYCD
+      *                                               (TBL-TIDX)
       **********   MOVE    TBL-TM-TIMKBN (TBL-TIDX)
       **********                           TO  FLG-JIKASAN
-                   MOVE    TBL-TM-KBN2 (TBL-TIDX)
-                                           TO  FLG-JIKASAN
-           END-SEARCH
+      *            MOVE    TBL-TM-KBN2 (TBL-TIDX)
+      *                                    TO  FLG-JIKASAN
+      *****END-SEARCH
       *
            .
        10053-TIMEKSNKBNSET-EXT.
