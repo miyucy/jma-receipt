@@ -345,7 +345,7 @@
       *          撮恔犒喊戊件示
                  11  SPA-GMN-I01-CMB-SAGAKU.
                    13  SPA-GMN-I01-SAGAKU-CNT      PIC 9(5).
-                   13  SPA-GMN-I01-SAGAKU-ITM      OCCURS  99.
+                   13  SPA-GMN-I01-SAGAKU-ITM      OCCURS  30.
                        15  SPA-GMN-I01-SAGAKUL     PIC X(02).
                        15  SPA-GMN-I01-SAGAKUFLL   PIC X(01).
                        15  SPA-GMN-I01-SAGAKUMEIL  PIC X(20).
@@ -678,6 +678,7 @@
       *          轉情ゥ
                  11  SPA-NAI-I03-TAIINYMD          PIC X(08).
                  11  SPA-NAI-I03-TAIINYMD-MAE      PIC X(09).
+                 11  SPA-NAI-I03-TAIINYMD-MOT      PIC X(08).
                  11  SPA-NAI-I03-TAIINYMD-ERRCD    PIC X(04).
       *
       *        脰昍戊件示犯□正恄啗

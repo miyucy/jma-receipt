@@ -226,6 +226,8 @@
            MOVE    SPACE           TO  SPA-ERRCD.
            MOVE    ZERO            TO  FLG-END.
       *
+           PERFORM 800-MCNDATE-SEC
+      *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
@@ -760,6 +762,8 @@
            MOVE    WRK-SYMD        TO  SPA-NAI-I03-NYUINYMD
       *
       *    Âà±¡Æü
+           MOVE    PTNYUINRRK-TAIINYMD
+                                   TO  SPA-NAI-I03-TAIINYMD-MOT
            MOVE    PTNYUINRRK-TAIINYMD
                                    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
@@ -1318,6 +1322,8 @@
                GO  TO  4801-PTNYUINRRK-UPD-EXT
            END-IF
       *
+           MOVE    PTNYUINRRK-REC      TO  WKPTNYUINRRK-REC
+      *
            EVALUATE WRK-UPDKBN
            WHEN    "INS"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿ÄÉ²Ã
@@ -1325,23 +1331,54 @@
                MOVE    "key"           TO  MCP-PATHNAME
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 910-DBINSERT-SEC
+      *
+      *
            WHEN    "UPD"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿¹¹¿·
                MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 910-DBUPDATE-SEC
+      *
+               MOVE    SPA-NAI-I03-TAIINYMD-MOT
+                                           TO  PTNYUINRRK-TAIINYMD
+               MOVE    SPACE               TO  PTNYUINRRK-DOUJITSUKBN
+               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "upd5"              TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+      *
+               MOVE    SPA-NAI-I03-TAIINYMD
+                                           TO  PTNYUINRRK-TAIINYMD
+               MOVE    "2"                 TO  PTNYUINRRK-DOUJITSUKBN
+               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "upd5"              TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+      *
            WHEN    "DEL"
       *        Æþ±¡ÍúÎò¥Þ¥¹¥¿ºï½ü
                MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
                MOVE    "del1"          TO  MCP-PATHNAME
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                PERFORM 910-DBDELETE-SEC
+      *
+               MOVE    SPA-NAI-I03-TAIINYMD-MOT
+                                           TO  PTNYUINRRK-TAIINYMD
+               MOVE    SPACE               TO  PTNYUINRRK-DOUJITSUKBN
+               MOVE    SMCNDATE-YMD        TO  PTNYUINRRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTNYUINRRK-UPHMS
+               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "upd5"              TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+      *
            END-EVALUATE
       *
-           IF    ( MCP-RC      NOT =   ZERO )
+           MOVE    WKPTNYUINRRK-REC    TO  PTNYUINRRK-REC
+      *
+           IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "2002"      TO  SPA-ERRCD
-               GO  TO  4801-PTNYUINRRK-UPD-EXT
            END-IF
       *
            .
@@ -1430,12 +1467,10 @@
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *
-               PERFORM 800-MCNDATE-SEC
                MOVE    WRK-CREYMD      TO  PTNYUINRRK-CREYMD
                MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-UPYMD
                MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
            ELSE
-               PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-CREYMD
                                            PTNYUINRRK-UPYMD
                MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
@@ -1554,12 +1589,10 @@
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *
-               PERFORM 800-MCNDATE-SEC
                MOVE    WRK-CREYMD      TO  PTTAINFUKA-CREYMD
                MOVE    SMCNDATE-YMD    TO  PTTAINFUKA-UPYMD
                MOVE    SMCNDATE-HMS    TO  PTTAINFUKA-UPHMS
            ELSE
-               PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD    TO  PTTAINFUKA-CREYMD
                                            PTTAINFUKA-UPYMD
                MOVE    SMCNDATE-HMS    TO  PTTAINFUKA-UPHMS
@@ -2513,7 +2546,6 @@
       *
       *
            MOVE    SPACE                TO  I0ID1
-           INITIALIZE                       I0ID1
            MOVE    SPA-I0IDCD           TO  I0ID1-ID1CODE
            MOVE    WRK-I0IDMSG          TO  I0ID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
