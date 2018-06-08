@@ -2515,10 +2515,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                  OR "190201770"
                                  OR "190201870"
-      *（対応保留分）
+      *
                                  OR "190205570"
                                  OR "190205670"
                                  OR "190205770"
+      *
+                                 OR "190205970"
+                                 OR "190206070"
                    CONTINUE
                  ELSE
                    ADD    1          TO  IDX14

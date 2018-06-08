@@ -296,10 +296,6 @@
       *-- ø¿Æ£≥£∞«Ø£¥∑Ó∞ πﬂ§À¬–ΩË§Úƒ…≤√§∑§ø≤√ªª------------------------
       *    ÍÛ·Ï¬–∫ˆ≤√ªª£≤° Œ≈Õ‹…¬≈Ô°À
            03  CONS-201804-KSN1            PIC X(09) VALUE "190201670".
-      *    ≤∏Óœ¢∑»≤√ªª£±° Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡°À
-           03  CONS-201804-KSN2            PIC X(09) VALUE "190205970".
-      *    ≤∏Óœ¢∑»≤√ªª£≤° Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡°À
-           03  CONS-201804-KSN3            PIC X(09) VALUE "190206070".
       *    ÍÛ·Ï¬–∫ˆ≤√ªª£≤° Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°¥À‹Œ¡°À
            03  CONS-201804-KSN4            PIC X(09) VALUE "190206170".
       *    ÃÎ¥÷¥«∏Ó≤√ªª
@@ -490,8 +486,6 @@
            03  WRK-201604-KSN11            PIC 9(03) OCCURS 31.
       *-- ø¿Æ£≥£∞«Ø£¥∑Ó∞ πﬂ§Àø∑¿ﬂ§µ§Ï§ø≤√ªª§Œ¬‡»ÚŒŒ∞Ë--------------
            03  WRK-201804-KSN1             PIC 9(03) OCCURS 31.
-           03  WRK-201804-KSN2             PIC 9(03) OCCURS 31.
-           03  WRK-201804-KSN3             PIC 9(03) OCCURS 31.
            03  WRK-201804-KSN4             PIC 9(03) OCCURS 31.
            03  WRK-201804-KSN5             PIC 9(03) OCCURS 31.
       *----------------------------------------------------------------
@@ -3909,8 +3903,6 @@
                                                   OR CONS-201604-KSN10
                                                   OR CONS-201604-KSN11)
                          OR (NACCT-SRYCDTOTAL(6:9) = CONS-201804-KSN1
-                                                  OR CONS-201804-KSN2
-                                                  OR CONS-201804-KSN3
                                                   OR CONS-201804-KSN4
                                                   OR CONS-201804-KSN5
                                                   OR CONS-201804-KSN6)
@@ -4052,12 +4044,6 @@
                              WHEN  CONS-201804-KSN1
                                   MOVE   NACCT-DAY(IDX1)
                                         TO  WRK-201804-KSN1(IDX1)
-                             WHEN  CONS-201804-KSN2
-                                  MOVE   NACCT-DAY(IDX1)
-                                        TO  WRK-201804-KSN2(IDX1)
-                             WHEN  CONS-201804-KSN3
-                                  MOVE   NACCT-DAY(IDX1)
-                                        TO  WRK-201804-KSN3(IDX1)
                              WHEN  CONS-201804-KSN4
                                   MOVE   NACCT-DAY(IDX1)
                                         TO  WRK-201804-KSN4(IDX1)
@@ -4215,8 +4201,6 @@
                                               OR CONS-201604-KSN10
                                               OR CONS-201604-KSN11)
                             OR (SRY-SRYCD(1)  =  CONS-201804-KSN1
-                                              OR CONS-201804-KSN2
-                                              OR CONS-201804-KSN3
                                               OR CONS-201804-KSN4
                                               OR CONS-201804-KSN5
                                               OR CONS-201804-KSN6)
@@ -4284,8 +4268,6 @@
                                         OR  CONS-201604-KSN11)
                      OR (  ACCT-SRYCDTOTAL(6:9)  =
                                             CONS-201804-KSN1
-                                        OR  CONS-201804-KSN2
-                                        OR  CONS-201804-KSN3
                                         OR  CONS-201804-KSN4
                                         OR  CONS-201804-KSN5
                                         OR  CONS-201804-KSN6)
@@ -4431,12 +4413,6 @@
                                 WHEN  CONS-201804-KSN1
                                       MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-201804-KSN1(IDX1)
-                                WHEN  CONS-201804-KSN2
-                                      MOVE   ACCT-DAY(1 IDX1)
-                                        TO  WRK-201804-KSN2(IDX1)
-                                WHEN  CONS-201804-KSN3
-                                      MOVE   ACCT-DAY(1 IDX1)
-                                        TO  WRK-201804-KSN3(IDX1)
                                 WHEN  CONS-201804-KSN4
                                       MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-201804-KSN4(IDX1)
@@ -4914,22 +4890,6 @@
                IF         WRK-201604-KSN10(IDX1)      NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-201604-KSN10    TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX1 WRK-MEISAISU)
-                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
-                                           (IDX1 WRK-MEISAISU)
-               END-IF
-      *        ≤∏Óœ¢∑»≤√ªª£±° Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡°À(9039-8)
-               IF         WRK-201804-KSN2(IDX1)     NOT =   ZERO
-                   ADD      1                  TO  WRK-MEISAISU
-                   MOVE   CONS-201804-KSN2     TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX1 WRK-MEISAISU)
-                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
-                                           (IDX1 WRK-MEISAISU)
-               END-IF
-      *        ≤∏Óœ¢∑»≤√ªª£≤° Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡°À(9039-8)
-               IF         WRK-201804-KSN3(IDX1)     NOT =   ZERO
-                   ADD      1                  TO  WRK-MEISAISU
-                   MOVE   CONS-201804-KSN3     TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
                    MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
@@ -7227,10 +7187,13 @@
       *
                                  OR "190201770"
                                  OR "190201870"
-      *° ¬–±˛ ›Œ± ¨°À
+      *
                                  OR "190205570"
                                  OR "190205670"
                                  OR "190205770"
+      *
+                                 OR "190205970"
+                                 OR "190206070"
                    CONTINUE
                  ELSE
                    ADD     1        TO  IDX1
