@@ -2382,14 +2382,8 @@
                    END-STRING
       *
                WHEN    "0702"
-                   STRING  "£Í£Ò£É»£±ÆÎÁ¤È¾®»ùÄÃÄË²¼£Í£Ò£É»£±Æ²Ã»»"
+                   STRING  "£Í£Ò£É»£±ÆÎÁ¤È¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»"
                            "¤¬°ã¤¤¤Þ¤¹¡£"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0703"
-                   STRING  "£Í£Ò£É»£±Æ²ó¿ô¤È¾®»ùÄÃÄË²¼£Í£Ò£É»£±Æ²Ã»»"
-                           "²ó¿ô¤¬°ã¤¤¤Þ¤¹¡£"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
