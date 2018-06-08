@@ -170,6 +170,9 @@
                    07  WRK-FMTNUM-910          PIC 9(10).
            03  WRK-MOTOPG                      PIC X(08).
       *
+           03  WRK-SHELLTBL-ARG-X.
+               05  WRK-SHELLTBL-ARG-9          PIC 9(10).
+      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
@@ -1126,6 +1129,7 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
+      
       *    入力パラメータ
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   WRK-CONS-SCR-MAX )
@@ -1406,6 +1410,12 @@
                                                    DELIMITED BY SPACE
               INTO    WRK-ERRMSG
               END-STRING
+      *       ＨＡＯＲＩのとき位置情報設定
+              IF      SPA-L01-JOB-PARAM
+                                       NOT =   SPACE
+                  MOVE    IDXA             TO  SPA-L01-PARAHYOJI-1
+                  MOVE    IDXB             TO  SPA-L01-PARAHYOJI-2
+              END-IF
            END-IF
       *
            .
@@ -1568,6 +1578,7 @@
                                                    DELIMITED BY SPACE
                            INTO    WRK-ERRMSG
                            END-STRING
+      *                    ＨＡＯＲＩのとき位置情報設定
                            IF      SPA-L01-JOB-PARAM
                                            NOT =   SPACE
                                MOVE    IDXA    TO  SPA-L01-PARAHYOJI-1
@@ -2321,6 +2332,8 @@
                                            SHELLTBL-ARG16
            MOVE    SPA-L01-PUSHBA01-EVENT
                                        TO  SHELLTBL-ARG17
+           MOVE    SPA-L01-JOB-JOBID   TO  WRK-SHELLTBL-ARG-9
+           MOVE    WRK-SHELLTBL-ARG-X  TO  SHELLTBL-ARG18
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC

@@ -22,6 +22,7 @@
       *****************************************************************
       *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  05.00.01    NACL-Æ£¸¶    17/12/28  £È£Á£Ï£Ò£ÉÂÐ±þ
       *****************************************************************
        01  SPA-G01KYOUTU.
            03  SPA-G01-SEL                 PIC  9(05).
@@ -41,4 +42,16 @@
            03  SPA-GID1-AREA. 
                05  SPA-GID1-FLG            PIC  X(02).
                05  SPA-G99-FLG             PIC  X(02).
+      *
+           03  SPA-G01-JOB-PARAM.
+               05  SPA-G01-JOB-ORCA-UID    PIC X(36).
+               05  SPA-G01-JOB-KARTE-UID   PIC X(36).
+      *
+           03  SPA-G01-MONBLOB-PRINT-ID    PIC X(37).
+      *
+           03  SPA-G01-PUSHBA01-EVENT      PIC X(50).
+      *
+      *    ¥¨¥é¡¼¹àÌÜÌ¾¾Î¤Î°ÌÃÖ
+           03  SPA-G01-PARAHYOJI-1         PIC 9(03).
+           03  SPA-G01-PARAHYOJI-2         PIC 9(03).
       *

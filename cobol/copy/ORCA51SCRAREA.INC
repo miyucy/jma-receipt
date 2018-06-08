@@ -55,3 +55,5 @@
                                        //APILST-// BY //APILST08-//.
            COPY    "CPAPILSTV2.INC"    REPLACING
                                        //APILST-// BY //APILST09-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //APILST10-//.

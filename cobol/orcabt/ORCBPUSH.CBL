@@ -73,6 +73,10 @@
            03  WRK-CNT-X   REDEFINES   WRK-CNT
                                        PIC X(10).
       *
+           03  WRK-NUM-X               PIC X(10).
+           03  WRK-NUM     REDEFINES   WRK-NUM-X
+                                       PIC 9(10).
+      *
            03  WRK-RECEERR             PIC X(200).
       *
       *    日付変換用
@@ -225,6 +229,11 @@
            EVALUATE    WRK-PARA-EVENT
                WHEN    "temp_medical_add"
                    MOVE    2               TO  JOB-JOBID
+               WHEN    "statistics_form(Daily)"
+               WHEN    "statistics_form(Monthly)"
+                   MOVE    WRK-PARA-DATA (1)
+                                           TO  WRK-NUM-X
+                   MOVE    WRK-NUM         TO  JOB-JOBID
                WHEN    OTHER
                    MOVE    1               TO  JOB-JOBID
            END-EVALUATE
@@ -266,6 +275,8 @@
                        MOVE    JOB-UPDCNT  TO  WRK-CNT
                        MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
                    WHEN    "temp_medical_add"
+                   WHEN    "statistics_form(Daily)"
+                   WHEN    "statistics_form(Monthly)"
                        MOVE    JOB-UPDCNT  TO  WRK-CNT
                        MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
                    WHEN    "patient_basis_all_make"
