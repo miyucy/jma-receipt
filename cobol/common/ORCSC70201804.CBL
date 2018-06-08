@@ -56,6 +56,8 @@
       * 04.07.00     NACL-Â¿¡¹Ç¼  12/10/XX  »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»¥Á¥§¥Ã¥¯ÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  18/03/XX  ÆýÍÄ»ù²Ã»»ÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  18/03/XX  £È£³£°¡¥£´²þÀµÂÐ±þ
+      * 04.08.00     NACL-Â¿¡¹Ç¼  18/06/09  ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»ÂÐ±þ
+      *                                     Ç¥ÉØ»þ´Ö³°¤Ê¤É»þ´Ö³°ÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
       *
@@ -334,6 +336,18 @@
            03  WRK-SURYO-HR            REDEFINES   WRK-SURYO-H.
                05  WRK-SURYOH-S1       PIC 9(07).
                05  WRK-SURYOH-S2       PIC 9(05).
+      *
+      *H30.6
+           03  WRK-MRI-KSNCHK-AREA.
+               05  WRK-MRI-SRYCD           PIC X(09).
+               05  WRK-MRIKSN-SRYCD        PIC X(09).
+               05  WRK-MRI-GRP             PIC X(01).
+               05  WRK-MRI-KBN1            PIC X(01).
+               05  WRK-MRI-KBN2            PIC X(01).
+               03  WRK-MRI-SGRP            PIC X(01).
+               03  FLG-MRIKSN              PIC 9(01).
+      *
+      *
       *    Æþ±¡Æü
        01  WRK-NYUINDAY-AREA.
            03  WRK-XSEN-DAY            PIC 9(02).
@@ -649,12 +663,50 @@
       *        ÆýÍÄ»ù
                05  TBL-NEN-SRYCD2      PIC X(09).
       *
+      *H30.6
+      *MRI  ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»
+       01  TBL-MRI-SYOUNIKSN-AREA.
+      *£Í£Ò£É»£±Æ¡Ê£±¡¥£µ¥Æ¥¹¥é°Ê¾å£³¥Æ¥¹¥éÌ¤Ëþ¤Îµ¡´ï¡Ë
+           03  FILLER              PIC X(13)  VALUE   "1   170020110".
+      *    ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¡Ê£±¡¥£µ°Ê¾å£³¥Æ¥¹¥éÌ¤Ëþ¡Ë
+           03  FILLER              PIC X(13)  VALUE   "1 1 170036570".
+      *    ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¡Ê£±¡¥£µ°Ê¾å£³¥Æ¥¹¥éÌ¤Ëþ¡¦£²²óÌÜ°Ê¹ß¡Ë
+           03  FILLER              PIC X(13)  VALUE   "1 2 170036830".
+      *£Í£Ò£É»£±Æ¡Ê£³¥Æ¥¹¥é°Ê¾å¤Îµ¡´ï¡Ë¡Ê¤½¤ÎÂ¾¡Ë
+           03  FILLER              PIC X(13)  VALUE   "2   170033510".
+      *    ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¡Ê£³¥Æ¥¹¥é°Ê¾å¡¦¤½¤ÎÂ¾¡Ë
+           03  FILLER              PIC X(13)  VALUE   "2 1 170036470".
+      *    ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¡Ê£³¥Æ¥¹¥é°Ê¾å¡¦¤½¤ÎÂ¾¡¦£²²óÌÜ°Ê¹ß¡Ë
+           03  FILLER              PIC X(13)  VALUE   "2 2 170036730".
+      *£Í£Ò£É»£±Æ¡Ê£³¥Æ¥¹¥é°Ê¾å¤Îµ¡´ï¡Ë¡Ê¶¦Æ±ÍøÍÑ»ÜÀß¡Ë
+           03  FILLER              PIC X(13)  VALUE   "3   170035010".
+      *    ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¡Ê£³¥Æ¥¹¥é°Ê¾å¡¦¶¦Æ±ÍøÍÑ»ÜÀß¡Ë
+           03  FILLER              PIC X(13)  VALUE   "3 1 170036370".
+      *    ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¡Ê£³¥Æ¥¹¥é°Ê¾å¡¦¶¦Æ±ÍøÍÑ¡¦£²²óÌÜ°Ê¹ß¡Ë
+           03  FILLER              PIC X(13)  VALUE   "3 2 170036630".
+      *
+       01  TBL-MRI-SYOUNIKSN-R   REDEFINES  TBL-MRI-SYOUNIKSN-AREA.
+           03  TBL-MRI-SYOUNIKSN-OCC    OCCURS   9   INDEXED  TBL-MIDX.
+      *        »£±Æ¶èÊ¬
+               05  TBL-MRI-GRP         PIC X(01).
+               05  TBL-MRI-YOBI        PIC X(01).
+      *        ¥Ç¡¼¥¿¶èÊ¬¡Ê1:£±²óÌÜ¡¢2:£²²óÌÜ°Ê¹ß¡Ë
+               05  TBL-MRI-KBN1        PIC X(01).
+               05  TBL-MRI-YOBI2       PIC X(01).
+      *        ¥³¡¼¥É
+               05  TBL-MRI-SRYCD       PIC X(09).
+      *
+      *
       *    »ÀÁÇ¥³¡¼¥É¥Æ¡¼¥Ö¥ë
            COPY     "CMSANSOTBL.INC".
+      *
+      *H30.6
+      *    »þ´Ö³°¥³¡¼¥É¥Æ¡¼¥Ö¥ë
+           COPY     "CMTIMEKSN2018.INC".
       *H28.4
       *    »þ´Ö³°¥³¡¼¥É¥Æ¡¼¥Ö¥ë
       *****COPY     "CMTIMEKSN2016.INC".
-      *
+      *H30.6¡¡Ì¤»ÈÍÑ
       *****************************************************************
       *    »þ´Ö³°²Ã»»¥Æ¡¼¥Ö¥ë¡Ê¶ÛµÞ»þ´Ö³°¤ÎÈ½Äê¡Ë¡Ê¸¡ºº¤ÈÆ±¤¸¡Ë
       *****************************************************************
@@ -1403,15 +1455,130 @@
            END-IF
            IF     (FLG-SINDAN          =   3     )  AND
                   (LNK-ORCSC-PG        =   "K02" )  AND
-      ****        (LNK-ORCSC-SYORIFLG  =   ZERO  )  AND
                   (WRK-HEN-SRYCD   NOT =   SPACE )
       *        £Ã£Ô¡¥£Í£Ò£É¤Î¼êµ»ÎÁÊÑ¹¹¥Á¥§¥Ã¥¯
                PERFORM 10012-SYUGI-CHK-SEC
+           END-IF
+      *H30.6
+      *    ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¤Î¥Á¥§¥Ã¥¯
+           IF     (FLG-SINDAN          =   3     )  AND
+                  (FLG-CTMRI           =   2     )  AND
+                  (LNK-ORCSC-PG        =   "K02" )
+               PERFORM 10013-MRIKSN-CHK-SEC
            END-IF
       *
            .
        1002-JIDO-KASAN-EXT.
            EXIT.
+      *
+      *H30.6
+      *****************************************************************
+      *    ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¤Î¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       10013-MRIKSN-CHK-SEC            SECTION.
+      *
+           MOVE    WRK-COM-INPUTCD(IDX-SAT)    TO  WRK-MRI-SRYCD
+           PERFORM 100131-MRI-SEARCH-SEC
+      *
+           IF      WRK-MRI-GRP         =   SPACE
+               GO      TO      10013-MRIKSN-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-MRI-GRP         TO  WRK-MRI-SGRP
+      *    ÂÐ¾Ý²Ã»»¤Î¼èÆÀ
+           IF      WRK-COM-TEIGEN-FLG (IDX-SAT)  =   1
+               MOVE    "2"                 TO  WRK-MRI-KBN1
+           ELSE
+               MOVE    "1"                 TO  WRK-MRI-KBN1
+           END-IF
+           SET     TBL-MIDX            TO  1
+           SEARCH  TBL-MRI-SYOUNIKSN-OCC   VARYING   TBL-MIDX
+                   AT   END
+                   MOVE    SPACE               TO  WRK-MRIKSN-SRYCD
+               WHEN    (TBL-MRI-GRP(TBL-MIDX)      =   WRK-MRI-GRP )
+                   AND (TBL-MRI-KBN1(TBL-MIDX)     =   WRK-MRI-KBN1)
+                   MOVE    TBL-MRI-SRYCD(TBL-MIDX)
+                                               TO   WRK-MRIKSN-SRYCD
+           END-SEARCH
+      *
+           MOVE    ZERO                TO  FLG-ARI
+           MOVE    ZERO                TO  FLG-MRIKSN
+      *
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL      (IDX1    >   SPA-MAX-LINE  )
+                          OR ((WRK-COM-INPUTCD(IDX1)   =   SPACE ) AND
+                              (WRK-GMN-INPUTCD(IDX1)   =   SPACE ))
+                          OR  (WRK-ERRCD   NOT =   SPACE )
+               IF     (WRK-COM-INPUTCD(IDX1)(1:1)  =   "1" )  AND
+                      (WRK-COM-DATAKBN(IDX1)       =   "2" )
+                   MOVE    WRK-COM-INPUTCD(IDX1)  TO  WRK-MRI-SRYCD
+                   PERFORM 100131-MRI-SEARCH-SEC
+      *            ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¡¡¤¢¤ê
+                   IF      WRK-MRI-GRP     NOT =   SPACE
+      *                »£±ÆÎÁ¤È°ã¤¦²Ã»»
+                       IF      (WRK-MRI-GRP    NOT =   WRK-MRI-SGRP)
+                           MOVE    "0702"              TO  WRK-ERRCD
+                       END-IF
+                       IF      (WRK-MRI-GRP        =   WRK-MRI-SGRP)
+                          AND  (WRK-MRI-KBN1   NOT =   SPACE       )
+                           MOVE    1                   TO  FLG-MRIKSN
+      *                    £²²óÌÜ°Ê¾å¤ÎÄþ¸º¤¢¤ê
+                           IF      WRK-COM-TEIGEN-FLG (IDX-SAT)  =   1
+                               IF      WRK-MRI-KBN1       =   "1"
+      *                            £±²óÌÜ¤ò£²²óÌÜ°Ê¹ß¤Ø
+                                   MOVE    1       TO  FLG-ARI
+                               END-IF
+                           ELSE
+      *                    £±²óÌÜ
+                               IF      WRK-MRI-KBN1       =   "2"
+      *                            £²²óÌÜ°Ê¹ß¤ò£±²óÌÜ¤Ø
+                                   MOVE    1       TO  FLG-ARI
+                               END-IF
+                           END-IF
+                       END-IF
+      *                ²Ã»»ÊÑ¹¹¤¢¤ê
+                       IF      FLG-ARI                 =   1
+                           MOVE    IDX1                TO  IDX-T
+                           MOVE    WRK-MRIKSN-SRYCD    TO  WRK-SRYCD
+                           PERFORM 1002-JIDOUSET-SEC
+                           IF      FLG-ADD             =   1
+                               MOVE    SPACE       TO  WRK-COM-AUTOKBN
+                                                               (IDX-S)
+                           END-IF
+                       END-IF
+      *
+                       IF      WRK-ERRCD           NOT =   SPACE
+                           MOVE    "1"                 TO  WRK-COM-CUR
+                                                                (IDX1)
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       10013-MRIKSN-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¤Î¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       100131-MRI-SEARCH-SEC            SECTION.
+      *
+           SET     TBL-MIDX            TO  1
+           SEARCH  TBL-MRI-SYOUNIKSN-OCC   VARYING   TBL-MIDX
+                   AT   END
+                   MOVE    SPACE               TO  WRK-MRI-GRP
+                   MOVE    SPACE               TO  WRK-MRI-KBN1
+               WHEN    WRK-MRI-SRYCD   =   TBL-MRI-SRYCD(TBL-MIDX)
+                   MOVE    TBL-MRI-GRP(TBL-MIDX)
+                                               TO  WRK-MRI-GRP
+                   MOVE    TBL-MRI-KBN1(TBL-MIDX)
+                                               TO  WRK-MRI-KBN1
+           END-SEARCH
+           .
+       100131-MRI-SEARCH-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    £Ã£Ô¡¥£Í£Ò£É¤Î»»ÄêÍÑ¥³¡¼¥ÉÊÑ´¹½èÍý
@@ -3523,7 +3690,7 @@
                       (WRK-COM-SANFLG     (IDX)    =   1    )
                CONTINUE
              ELSE
-      *      ¡ó¸º»»
+      *        ¡ó¸º»»
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   6   )  AND
                       (WRK-COM-SANFLG     (IDX)    =   ZERO  OR  2 )
@@ -3536,21 +3703,29 @@
       ***          MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
       *            ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
       ***          MOVE    ZERO                TO  WRK-TENSUKEI
+                 END-IF
                END-IF
+           END-PERFORM
+      *
+      *H30.6
+           PERFORM VARYING     IDX     FROM    IDX-SYU  BY  1
+                   UNTIL      (IDX         >=  HZN-IDX     )   OR
+                              (WRK-GMN-INPUTCD (IDX)   =   SPACE )
       *        ¡ó²Ã»»¡Ê¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»¡ËÄÌÂ§ÂÐ¾Ý³°
                IF     (WRK-COM-INPUTCD(IDX)    =   "170036170")
                  AND  (WRK-COM-TENSIKIBETU(IDX)    =   5   )
                  AND  (WRK-COM-SANFLG     (IDX)    =   ZERO)
                    MOVE    ZERO                TO  WRK-TENSUKEI-V
-                   COMPUTE WRK-TENSUKEI-V      =   WRK-COM-KISOTEN
-                                                               (IDX-SYU)
-                                               *   WRK-COM-KISOTEN(IDX)
-                                               /   100.00
+      *            CT.MRI¤Î£²²óÌÜÄþ¸º¤òÈ¿±Ç¤·¤¿ÅÀ¿ô¤Ç²Ã»»
+                   COMPUTE WRK-TENSUKEI-V      =  (WRK-COM-KISOTEN
+                                                             (IDX-SYU)
+                                               -   WRK-TENSUKEI-GV )
+                                               *  (WRK-COM-KISOTEN(IDX)
+                                               /   100.00  )
                    ADD     WRK-TENSUKEI-V      TO  WRK-TENGAIEI-KV
                    MOVE    9                   TO  WRK-COM-SANFLG(IDX)
                    MOVE    IDX                 TO  IDX-GAI
                END-IF
-             END-IF
            END-PERFORM
       *
       *    ¸º³Û¤òÈ¿±Ç¤¹¤ë
@@ -4150,7 +4325,7 @@
                            PERFORM 10053-TIMEKSNKBNSET-SEC
                        END-IF
                    END-IF
-      *           ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤Î»þ´Ö³°²Ã»»
+      *            ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤Î»þ´Ö³°²Ã»»
                    IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "13" )
                        IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  )
                        AND    (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
@@ -4226,7 +4401,39 @@
       *****************************************************************
       *    »þ´Ö³°²Ã»»¥³¡¼¥É¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       10053-TIMEKSNKBNSET-SEC                SECTION.
+       10053-TIMEKSNKBNSET-SEC         SECTION.
+      *
+      *TEST
+      *H30.6
+      *    H30.4¤«¤é¤Î»þ´Ö³°¥Æ¡¼¥Ö¥ë¤ÇÈ½Äê
+           SET     TBL-TIDX18          TO  1
+           SEARCH  TBL-TIMEKSN18-OCC   VARYING   TBL-TIDX18
+               AT  END
+                   MOVE    ZERO            TO  FLG-JIKASAN
+                WHEN   WRK-COM-INPUTCD (IDX-Z)
+                                           =   TBL-TM18-SRYCD
+                                                      (TBL-TIDX18)
+                   MOVE    TBL-TM18-TIMKBN(TBL-TIDX18)
+                                           TO  FLG-JIKASAN
+           END-SEARCH
+           IF      FLG-JIKASAN         =   ZERO
+               SET     TBL-NPIDX18             TO  1
+               SEARCH  TBL-NINPUKSN18-OCC      VARYING   TBL-NPIDX18
+                   AT  END
+                       MOVE    ZERO            TO  FLG-JIKASAN
+                   WHEN   WRK-COM-INPUTCD (IDX-Z)
+                                           =   TBL-NP18-SRYCD
+                                                      (TBL-NPIDX18)
+                       MOVE    TBL-NP18-TIMKBN(TBL-NPIDX18)
+                                           TO  FLG-JIKASAN
+               END-SEARCH
+           END-IF
+      *
+      *TEST
+      *TEST
+           GO   TO  10053-TIMEKSNKBNSET-EXT
+      *TEST
+      *TEST
       *
       *    ¿Ç»¡ÎÁ¸¡º÷
            SET     TBL-TIDX            TO  1
