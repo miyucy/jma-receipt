@@ -317,6 +317,7 @@
       *  04.08.21    NACL-門脇    18/03/27  平成３０年４月改正対応
       *  04.08.22    NACL-門脇    18/05/02  残量廃棄コメントの記載内容修正
       *  04.08.23    NACL-門脇    18/05/07  平成３０年４月改正対応
+      *  04.08.24    NACL-門脇    18/06/11  逓減点数集計に関する修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -682,8 +683,8 @@
       *    手技点・薬剤等点数用領域
        01  TBL-TENSUG-JI.
            03  TBL-TENSU-JI                            OCCURS   50.
-               05  TBL-SYUTEN-JI                       PIC 9(09).
-               05  TBL-YKZTEN-JI                       PIC 9(09).
+               05  TBL-SYUTEN-JI                       PIC  9(09).
+               05  TBL-YKZTEN-JI                       PIC S9(09).
       *
        01  TBL-ZAITAKU-KAISU-XXX.
            03  TBL-ZAITAKU-KAISU-XXX2                  OCCURS   6.
