@@ -764,6 +764,7 @@
       *  04.08.49    NACL-門脇    18/03/27  平成３０年４月改正対応
       *  04.08.50    NACL-門脇    18/04/04  難病負担者番号追加対応
       *  04.08.51    NACL-門脇    18/05/02  残量廃棄コメントの記載内容修正
+      *  04.08.52    NACL-門脇    18/06/11  逓減点数集計に関する修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -11084,7 +11085,7 @@
                        END-IF
                        IF    BUN-IDX6       =   6
                            COMPUTE   RECE62-SYUTANTEN(4)  =
-                                     RECE62-SYUTANTEN(4)  +
+                                     RECE62-SYUTANTEN(4)  -
                                     (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                      ELSE
@@ -11867,7 +11868,7 @@
                                      RECE62-SYUTANTEN(2)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                            COMPUTE   RECE62-SYUTANTEN(21)  =
-                                     RECE62-SYUTANTEN(21)  +
+                                     RECE62-SYUTANTEN(21)  -
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          END-IF
                    END-IF

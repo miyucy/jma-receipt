@@ -792,6 +792,7 @@
       *  04.08.57    NACL-門脇    18/04/04  難病負担者番号追加対応
       *  04.08.58    NACL-門脇    18/05/02  残量廃棄コメントの記載内容修正
       *  04.08.59    NACL-門脇    18/05/07  平成３０年４月改正対応
+      *  04.08.60    NACL-門脇    18/06/11  逓減点数集計に関する修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -16734,7 +16735,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        END-IF
                        IF    BUN-IDX6       =   6
                            COMPUTE   RECE02-SYUTANTEN(14)  =
-                                     RECE02-SYUTANTEN(14)  +
+                                     RECE02-SYUTANTEN(14)  -
                                     (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                      ELSE
@@ -16876,7 +16877,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    END-IF
                    IF    BUN-IDX6       =   6
                        COMPUTE   RECE02-SYUTANTEN(16)  =
-                                 RECE02-SYUTANTEN(16)  +
+                                 RECE02-SYUTANTEN(16)  -
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                  ELSE
@@ -16949,7 +16950,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        END-IF
                        IF    BUN-IDX6       =   6
                            COMPUTE   RECE02-SYUTANTEN(17)  =
-                                     RECE02-SYUTANTEN(17)  +
+                                     RECE02-SYUTANTEN(17)  -
                                     (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                      ELSE
@@ -17742,7 +17743,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                      RECE02-SYUTANTEN(7)  +
                            (WRK-TNS-TEN(IDX3)   *   ACCT-ZAIKAISU)
                            COMPUTE   RECE02-SYUTANTEN(34)  =
-                                     RECE02-SYUTANTEN(34)  +
+                                     RECE02-SYUTANTEN(34)  -
                            (WRK-TNS-TEN(IDX3)   *   ACCT-ZAIKAISU)
                          END-IF
                        END-IF

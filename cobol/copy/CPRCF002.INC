@@ -161,6 +161,7 @@
       *  04.08.08    NACL-門脇    17/03/27  請求金額０円レセプト作成対応
       *  04.08.09    NACL-門脇    18/04/06  平成３０年４月改正対応
       *  04.08.10    NACL-門脇    18/05/22  平成３０年４月改正対応
+      *  04.08.11    NACL-門脇    18/06/11  逓減点数集計のサイン対応
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -431,7 +432,7 @@
                05  RECE02-TENSUINF-AREA.
                    07  RECE02-TENSUINF    OCCURS  5.
       *明細点数
-                       09  RECE02-TENSU   PIC  9(08).
+                       09  RECE02-TENSU   PIC S9(08).
       *
       *実日数情報
            03  RECE02-JNISSUINF-AREA.
@@ -443,7 +444,7 @@
            03  RECE02-TOTALTENINF-AREA.
                05  RECE02-TOTALTENINF     OCCURS  5.
       *合計点数
-                   07  RECE02-TOTALTEN    PIC  9(08).
+                   07  RECE02-TOTALTEN    PIC S9(08).
       *
       *負担金額情報
            03  RECE02-FTNMONEYINF-AREA.
@@ -627,7 +628,7 @@
            03  RECE02-HENTOTALTENINF-AREA.
                05  RECE02-HENTOTALTENINF  OCCURS  5.
       *合計点数（ぶん点・公費分離区分編集用）
-                   09  RECE02-HENTOTALTEN PIC  9(08).
+                   09  RECE02-HENTOTALTEN PIC S9(08).
       *印刷順
            03  RECE02-PRTSEQ              PIC  9(03).
       *
@@ -816,7 +817,7 @@
       *（９：第三者行為の請求点なし　（患者登録で第三者行為の登録なし））
            03  RECE02-DAISAN-GAITO              PIC 9(01).
       *第三者行為請求点数合計
-           03  RECE02-DAISAN-TOTALTEN           PIC 9(08).
+           03  RECE02-DAISAN-TOTALTEN           PIC S9(08).
       *第三者行為一部負担金相当額合計
            03  RECE02-DAISAN-FTNMONEY           PIC 9(09).
       *第三者行為レセプト現物給付該当フラグ
@@ -891,7 +892,7 @@
       *
       *生保まとめ用（主保険単独分診区別点数）
            03  RECE02-SYUTANTEN-AREA.
-               05  RECE02-SYUTANTEN             PIC 9(08)  OCCURS 50.
+               05  RECE02-SYUTANTEN             PIC S9(08)  OCCURS 50.
            03  RECE02-SYUTANARIFLG              PIC 9(01).
       *
       *湿布薬制限枚数解除及び院外湿布薬７０枚超理由コメント情報
