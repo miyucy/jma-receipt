@@ -72,7 +72,7 @@
       *  04.08.00    NACL-多々納  16/12/08  病名レセ非表示対応
       *  04.08.00    NACL-多々納  16/12/XX  指導料等自動算定対応
       *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
-      *  04.08.00    NACL-多々納  18/04/XX  複数科展開ドクター対応
+      *  04.08.00    NACL-多々納  18/06/XX  複数科展開ドクター対応
       *****************************************************************
       *
       *
@@ -4939,7 +4939,7 @@
                MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
       *        複数診療科
                IF    ( WRK-KEY-SRYKA       NOT =   JYURRK-SRYKA )
-      *H30.5
+      *H30.6
       *        ドクター不意一致も対象
                   OR ((WRK-KEY-SRYKA           =   JYURRK-SRYKA) AND
                       (JYURRK-DRCD         NOT =   ZERO        ) AND
