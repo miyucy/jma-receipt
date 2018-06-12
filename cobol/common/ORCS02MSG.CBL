@@ -187,6 +187,33 @@
                        "がありません"      DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
+           WHEN    38
+               STRING  "請求点数の合計が上限を超えます"
+                                           DELIMITED   BY  SIZE
+               INTO    WRK-MSG (1)
+               END-STRING
+           WHEN    39
+               STRING  "保険外金額の合計が上限を超えます"
+                                           DELIMITED   BY  SIZE
+               INTO    WRK-MSG (1)
+               END-STRING
+           WHEN    40
+               STRING  "負担割合計算額が上限を超えます"
+                                           DELIMITED   BY  SIZE
+               INTO    WRK-MSG (1)
+               END-STRING
+           WHEN    41
+               STRING  "今回請求金額が上限を超えます"
+                                           DELIMITED   BY  SIZE
+               INTO    WRK-MSG (1)
+               END-STRING
+           WHEN    42
+               STRING  "【精神病床】食事負担据え置き対象コードの"
+                                           DELIMITED   BY  SIZE
+                       "診療行為入力を確認してください"
+                                           DELIMITED   BY  SIZE
+               INTO    WRK-MSG (1)
+               END-STRING
            WHEN    101
                STRING  "包括入院期間に算定できない入院料加算"
                                            DELIMITED   BY  SIZE

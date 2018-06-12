@@ -43,6 +43,6 @@ xml_incomev3req01 {
     Ad_Money2            varchar(10);
     Ic_Money             varchar(10);
     Ic_Code              varchar(02);
-    Force_Flg            varchar(05);
+    Force_Ic             varchar(05);
   };
 };

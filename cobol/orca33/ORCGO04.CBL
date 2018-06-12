@@ -146,6 +146,7 @@
            03  WRK-KINGAKUX                        PIC X(10).
            03  WRK-KINGAKU9                        PIC S9(10).
            03  WRK-KINGAKUZ                        PIC ----------.
+           03  WRK-GMN-CUR                         PIC 9(3).
       *
        01  WRK-ROW.
            03  WRK-SMEILIST1-ROW                   PIC S9(9)   BINARY.
@@ -164,6 +165,7 @@
                05   SHR-1005-SRYKANAME3            PIC X(04).
       *
        01  CONST-AREA.
+           03  CONST-KINGAKU-MAX       PIC 9(10) VALUE 9999999.
            03  CONST-H180401           PIC X(08)   VALUE "20060401".
            03  CONST-SMEILIST-MAX      PIC 9(03)   VALUE   99.
            03  CONST-SKYLIST-MAX       PIC 9(03)   VALUE   50.
@@ -2711,6 +2713,14 @@
       *****************************************************************
        4101-CHOSEI2IN-CHK-SEC          SECTION.
       *
+           MOVE    ZERO                TO  WRK-GMN-CUR
+           EVALUATE    TRUE
+           WHEN  ( SPA-GMN-O04-CHOSEI1IN   NOT =   ZERO )
+               MOVE    3               TO  WRK-GMN-CUR
+           WHEN  ( SPA-GMN-O04-CHOSEI2IN   NOT =   ZERO )
+               MOVE    11              TO  WRK-GMN-CUR
+           END-EVALUATE
+      *
            IF    ( SPA-GMN-O04-SYORIKBN    =   CONST-PROC-RRKSYU )
                COMPUTE SPA-GMN-O04-SKYMONEYIN
                    =   SPA-NAI-O04-SKYMONEY
@@ -2720,6 +2730,11 @@
                COMPUTE SPA-GMN-O04-SKYMONEYIN
                    =   SPA-GMN-O04-CHOSEI1IN
                    +   SPA-GMN-O04-CHOSEI2IN
+           END-IF
+      *
+           IF    ( SPA-GMN-O04-SKYMONEYIN  >   CONST-KINGAKU-MAX )
+                   MOVE    "0023"      TO  SPA-ERRCD
+                   MOVE    WRK-GMN-CUR TO  SPA-GMN-O04-CUR
            END-IF
       *
            .
@@ -2764,6 +2779,13 @@
                END-IF
            END-IF
       *
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-NYUKIN  >   CONST-KINGAKU-MAX )
+                   MOVE    2           TO  SPA-GMN-O04-CUR
+                   MOVE    "0025"      TO  SPA-ERRCD
+               END-IF
+           END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( WRK-NYUKIN  <  ZERO )
@@ -2819,6 +2841,13 @@
                IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    2           TO  SPA-GMN-O04-CUR
                    MOVE    "0018"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-NYUKIN  >   CONST-KINGAKU-MAX )
+                   MOVE    2           TO  SPA-GMN-O04-CUR
+                   MOVE    "0025"      TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3606,6 +3635,14 @@
       *************************************************************
        4901-RRKSYU-CHK-SEC             SECTION.
       *
+           MOVE    ZERO                TO  WRK-GMN-CUR
+           EVALUATE    TRUE
+           WHEN  ( SPA-GMN-O04-CHOSEI1IN   NOT =   ZERO )
+               MOVE    3               TO  WRK-GMN-CUR
+           WHEN  ( SPA-GMN-O04-CHOSEI2IN   NOT =   ZERO )
+               MOVE    11              TO  WRK-GMN-CUR
+           END-EVALUATE
+      *
            IF    ( SPA-GMN-O04-SELNUM      =   ZERO )
                MOVE    8               TO  SPA-GMN-O04-CUR
                MOVE    "0006"          TO  SPA-ERRCD
@@ -3621,11 +3658,11 @@
       *
                    IF    ( WRK-SKYMONEY    <   ZERO )
                        MOVE    "0015"  TO  SPA-ERRCD
-                       IF    ( SPA-GMN-O04-CHOSEI2IN
-                                   NOT =   ZERO )
-                           MOVE    11  TO  SPA-GMN-O04-CUR
-                       ELSE
-                           MOVE    3   TO  SPA-GMN-O04-CUR
+                       MOVE    WRK-GMN-CUR TO  SPA-GMN-O04-CUR
+                   END-IF
+                   IF    ( SPA-ERRCD       =   SPACE )
+                       IF    ( WRK-SKYMONEY    >   CONST-KINGAKU-MAX )
+                           MOVE    "0024"  TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
@@ -4369,8 +4406,17 @@
                MOVE    "調整金２入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0021"
-               MOVE    "入金額が入力エラー"
+               MOVE    "入金額入力エラー"
                                        TO  SPA-ERRMSG
+           WHEN    "0023"
+                MOVE    "今回請求金額が上限を超えます"
+                                        TO  SPA-ERRMSG
+           WHEN    "0024"
+                MOVE    "請求金額が上限を超えます"
+                                        TO  SPA-ERRMSG
+           WHEN    "0025"
+                MOVE    "入金額が上限を超えます"
+                                        TO  SPA-ERRMSG
            WHEN    "1001"
            WHEN    "1002"
                MOVE    "収納の更新処理でエラーになりました"

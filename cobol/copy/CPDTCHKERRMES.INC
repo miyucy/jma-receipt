@@ -994,6 +994,36 @@
            05 PIC  X(30)   VALUE   "の算定がありません            ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990538".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。請".
+           05 PIC  X(30)   VALUE   "求点数の合計が上限を超えます  ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "990539".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。保".
+           05 PIC  X(30)   VALUE   "険外金額の合計が上限を超えます".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "990540".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。負".
+           05 PIC  X(30)   VALUE   "担割合計算額が上限を超えます  ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "990541".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。今".
+           05 PIC  X(30)   VALUE   "回請求金額が上限を超えます    ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "990542".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。【".
+           05 PIC  X(30)   VALUE   "精神病床】食事負担据え置き対象".
+           05 PIC  X(30)   VALUE   "コードの診療行為入力を確認して".
+           05 PIC  X(30)   VALUE   "ください                      ".
+      *
            05 PIC  X(06)   VALUE   "990601".
            05 PIC  X(30)   VALUE   "患者負担額が計算できません。包".
            05 PIC  X(30)   VALUE   "括入院期間に算定できない入院料".
@@ -1001,7 +1031,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  156.
+           05 ERRMES-OCC   OCCURS  161.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(120).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   156.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   161.

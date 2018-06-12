@@ -324,12 +324,14 @@
            03  WRK-KINGAKUZ                        PIC ----------.
            03  WRK-SKYPRT                          PIC X(01).
            03  WRK-SRYPRT                          PIC X(01).
+           03  WRK-GMN-CUR                         PIC 9(3).
       *
        01  WRK-ROW.
            03  WRK-SMEILIST1-ROW                   PIC S9(9)   BINARY.
       *
        01  CONST-AREA.
-           03  CONST-SMEILIST-MAX         PIC 9(03)   VALUE   99.
+           03  CONST-KINGAKU-MAX       PIC 9(10)   VALUE 9999999.
+           03  CONST-SMEILIST-MAX      PIC 9(03)   VALUE   99.
            03  CONST-JIHI-MAX          PIC 9(03)   VALUE  10.
            03  CONST-PROC-NO-G.
                05  CONST-PROC-NYUKIN   PIC X(02)   VALUE   "05".
@@ -2474,6 +2476,38 @@
                +   SPA-GMN-CHOSEI1IN
                +   SPA-GMN-CHOSEI2IN
       *
+           MOVE    ZERO                TO  WRK-GMN-CUR
+           EVALUATE    TRUE
+           WHEN  ( SPA-GMN-CHOSEI1IN   NOT =   ZERO )
+               MOVE    8               TO  WRK-GMN-CUR
+           WHEN  ( SPA-GMN-CHOSEI2IN   NOT =   ZERO )
+               MOVE    9               TO  WRK-GMN-CUR
+           END-EVALUATE
+      *
+           IF    ( SPA-GMN-SKYMONEYIN  >   CONST-KINGAKU-MAX )
+                   MOVE    "0020"      TO  SPA-ERRCD
+                   MOVE    WRK-GMN-CUR TO  SPA-GMN-CUR
+           END-IF
+      *
+           IF    ( SPA-ERRCD        =  SPACE )
+               MOVE    ZERO            TO  WRK-SKYMONEY
+               IF    ( SPA-S01-SYORINO =   CONST-PROC-RRKSYU )
+                   COMPUTE WRK-SKYMONEY
+                       =   SPA-GMN-SKYMONEY
+                       -   SPA-NAI-SKYMONEY-MOTO
+                       +   SPA-GMN-SKYMONEYIN
+               ELSE
+                   COMPUTE WRK-SKYMONEY
+                       =   SPA-GMN-SKYMONEY
+                       +   SPA-GMN-SKYMONEYIN
+               END-IF
+      *
+               IF    ( WRK-SKYMONEY  > CONST-KINGAKU-MAX )
+                       MOVE    "0021"      TO  SPA-ERRCD
+                       MOVE    WRK-GMN-CUR TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            .
        4101-CHOSEI2IN-CHK-EXT.
            EXIT.
@@ -2507,6 +2541,13 @@
                IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    2       TO  SPA-GMN-CUR
                    MOVE    "0008"  TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-NYUKIN  >  CONST-KINGAKU-MAX )
+                   MOVE    2       TO  SPA-GMN-CUR
+                   MOVE    "0022"  TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -2554,7 +2595,14 @@
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    2           TO  SPA-GMN-CUR
-                   MOVE    "0014"      TO  SPA-ERRCD
+                   MOVE    "0008"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-NYUKIN  >   CONST-KINGAKU-MAX )
+                   MOVE    10      TO  SPA-GMN-CUR
+                   MOVE    "0022"  TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3733,6 +3781,15 @@
                                        TO  SPA-ERRMSG
            WHEN    "0019"
                MOVE    "入金額入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0020"
+               MOVE    "今回請求金額が上限を超えます"
+                                       TO  SPA-ERRMSG
+           WHEN    "0021"
+               MOVE    "請求金額が上限を超えます"
+                                       TO  SPA-ERRMSG
+           WHEN    "0022"
+               MOVE    "入金額が上限を超えます"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
            WHEN    "1002"

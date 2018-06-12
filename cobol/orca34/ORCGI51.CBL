@@ -204,10 +204,11 @@
            03  WRK-CHOSEITTL               PIC  S9(08).
            03  WRK-CHOSEI                  PIC  S9(08).
            03  WRK-IDX                     PIC  9(05).
-           03  WRK-SEIKYU                  PIC S9(08).
+           03  WRK-SEIKYU                  PIC S9(10).
            03  WRK-TAIINYMD                PIC  X(08).
            03  WRK-ERRCD.
                05  WRK-ERRCD-NUM           PIC  9(04).
+           03  WRK-GMN-CUR                 PIC  9(10).
       *
        01  WRK-ROW-AREA.
            03  WRK-HKNCOMBILST-ROW         PIC S9(9)   BINARY.
@@ -216,6 +217,7 @@
            03  CONST-H180401       PIC X(08)   VALUE "20060401".
            03  CONST-JIHI-MAX      PIC 9(05)   VALUE 10.
            03  CONST-DENPNUM       PIC 9(07)   VALUE 9999001.
+           03  CONST-KINGAKU-MAX   PIC 9(10)   VALUE 9999999.
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -1674,6 +1676,14 @@
       *****************************************************************
        41001-CHOSEI-SEIKYU-CHK-SEC     SECTION.
       *
+           MOVE    ZERO            TO  WRK-GMN-CUR
+           IF    ( SPA-NAI-I51-CHOSEI (IDX7 2)
+                               NOT =   ZERO )
+               MOVE    103     TO  WRK-GMN-CUR
+           ELSE
+               MOVE    102     TO  WRK-GMN-CUR
+           END-IF
+      *
            MOVE    ZERO                        TO  WRK-SEIKYU
       *
            COMPUTE WRK-SEIKYU
@@ -1681,11 +1691,13 @@
       *
            IF     (WRK-SEIKYU          <   ZERO )
                MOVE    "0009"      TO  SPA-ERRCD
-               IF    ( SPA-NAI-I51-CHOSEI (IDX7 2)
-                                   NOT =   ZERO )
-                   MOVE    103     TO  SPA-GMN-I51-CUR
-               ELSE
-                   MOVE    102     TO  SPA-GMN-I51-CUR
+               MOVE    WRK-GMN-CUR TO  SPA-GMN-I51-CUR
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-SEIKYU  >   CONST-KINGAKU-MAX )
+                   MOVE    "0010"      TO  SPA-ERRCD
+                   MOVE    WRK-GMN-CUR TO  SPA-GMN-I51-CUR
                END-IF
            END-IF
       *
@@ -3915,6 +3927,13 @@
                MOVE
                    "調整金を再入力して下さい"
                                        TO  I5ERR-ERRMSG(33:)
+           WHEN    "0010"
+               STRING  "今回請求額が上限を超えます。"
+                                       DELIMITED  BY  SIZE
+                       "調整金を再入力して下さい"
+                                       DELIMITED  BY  SIZE
+               INTO  I5ERR-ERRMSG
+               END-STRING
            WHEN    "1001"
                MOVE    "患者番号を入力してください"
                                        TO  I5ERR-ERRMSG

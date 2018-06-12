@@ -235,10 +235,10 @@
                                15  SPA-NAI-I51-SEIKYU-OCC
                                                          OCCURS    15.
                                    17  SPA-NAI-I51-SEIKYU-PLUS
-                                                            PIC S9(07).
-                                   17  SPA-NAI-I51-SEIKYU    PIC S9(07).
+                                                            PIC S9(10).
+                                   17  SPA-NAI-I51-SEIKYU    PIC S9(10).
                                    17  SPA-NAI-I51-SEIKYU-KON
-                                                             PIC S9(07).
+                                                             PIC S9(10).
       *
                        11  SPA-NAI-I51-HKNCOMBILST.
                            13  SPA-NAI-I51-HKNCOMBILST-ITM   OCCURS  15.
