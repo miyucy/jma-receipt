@@ -618,7 +618,7 @@
            MOVE    SPA-X01-CHKKBN      TO  CHK-CHKKBN
            MOVE    SPA-X01-SRYCD       TO  CHK-SRYCD
            MOVE    SPA-NAI-STKIJUNYMD  TO  CHK-YUKOSTYMD
-           MOVE    SPA-NAI-EDKIJUNYMD  TO  CHK-YUKOEDYMD
+           MOVE    SPA-NAI-STKIJUNYMD  TO  CHK-YUKOEDYMD
            MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
       *
            MOVE    CHK-REC             TO  MCPDATA-REC
@@ -3306,7 +3306,7 @@
            MOVE    WRK-SRYCD           TO  CHK-SRYCD
       *    基準日で有効あり
            MOVE    SPA-NAI-STKIJUNYMD  TO  CHK-YUKOSTYMD
-           MOVE    SPA-NAI-EDKIJUNYMD  TO  CHK-YUKOEDYMD
+           MOVE    SPA-NAI-STKIJUNYMD  TO  CHK-YUKOEDYMD
            MOVE    "2"                 TO  CHK-CDKBN
            MOVE    SPA-X01-SRYCD       TO  CHK-CD
       *
