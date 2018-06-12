@@ -188,7 +188,7 @@
            03  WRK-ZOGENPTN                PIC X(01).
            03  WRK-ZOGEN                   PIC S9(05).
            03  WRK-KEISANYMD               PIC X(08).
-           03  WRK-SEIKYU                  PIC S9(08).
+           03  WRK-SEIKYU                  PIC S9(10).
            03  WRK-CMB-CD              PIC X(10).
            03  WRK-CMB-G.
                05  WRK-CMB-IDX             PIC 9(03).
@@ -237,6 +237,7 @@
            03  WRK-CHOSEITTL               PIC  S9(08).
            03  WRK-CHOSEI                  PIC  S9(08).
            03  WRK-BASE-MONEY              PIC  S9(08).
+           03  WRK-GMN-CUR                 PIC  9(03).
       *!!
       *I041用
            03  IDX-D                    PIC 9(04).
@@ -293,6 +294,7 @@
                            11  CONST-SKYPRTOUT PIC X(01).
                            11  CONST-SRYPRTOUT PIC X(01).
            03  CONST-PRTDEF-MAX                PIC 9(05)   VALUE   11.
+           03  CONST-KINGAKU-MAX               PIC 9(10) VALUE 9999999.
       *
        01  WRK-ROW-AREA.
            03  WRK-HKNCOMBILST-ROW         PIC S9(9)   BINARY.
@@ -3514,6 +3516,14 @@
       *****************************************************************
        41001-CHOSEI-SEIKYU-CHK-SEC     SECTION.
       *
+           MOVE    ZERO                TO  WRK-GMN-CUR
+           IF    ( SPA-NAI-I04-CHOSEI (IDX7 2)
+                               NOT =   ZERO )
+               MOVE    103     TO  WRK-GMN-CUR
+           ELSE
+               MOVE    102     TO  WRK-GMN-CUR
+           END-IF
+      *
            MOVE    ZERO                        TO  WRK-SEIKYU
            IF    ( SPA-I01-I04-PROCKBN =   "2" )
             AND  ( SPA-I0-SYUNOU-UPDFLG (IDX7)  =   ZERO )
@@ -3532,11 +3542,13 @@
       *
            IF     (WRK-SEIKYU          <   ZERO )
                MOVE    "0004"      TO  SPA-ERRCD
-               IF    ( SPA-NAI-I04-CHOSEI (IDX7 2)
-                                   NOT =   ZERO )
-                   MOVE    103     TO  SPA-GMN-I04-CUR
-               ELSE
-                   MOVE    102     TO  SPA-GMN-I04-CUR
+               MOVE    WRK-GMN-CUR TO  SPA-GMN-I04-CUR
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF     (WRK-SEIKYU          >   CONST-KINGAKU-MAX )
+                   MOVE    "0014"      TO  SPA-ERRCD
+                   MOVE    WRK-GMN-CUR TO  SPA-GMN-I04-CUR
                END-IF
            END-IF
       *
@@ -6610,10 +6622,10 @@
       *
                    COMPUTE IDX-MAX =   IDX-MAX +   1
       *
-                   DISPLAY "PTID[" ORCHCN03-PTID (IDX-M) "]"
-                           "DENPNUM["  ORCHCN03-DENPNUM (IDX-M) "]"
-                           "ORCHCN03S02-SKYPRT[" ORCHCN03S02-SKYPRT "]"
-                           "ORCHCN03S02-SRYPRT[" ORCHCN03S02-SRYPRT "]"
+      D            DISPLAY "PTID[" ORCHCN03-PTID (IDX-M) "]"
+      D                    "DENPNUM["  ORCHCN03-DENPNUM (IDX-M) "]"
+      D                    "ORCHCN03S02-SKYPRT[" ORCHCN03S02-SKYPRT "]"
+      D                    "ORCHCN03S02-SRYPRT[" ORCHCN03S02-SRYPRT "]"
                    MOVE    ORCHCN03S02-SKYPRT
                                    TO  TSYUGRP-SKYPRT
                                                   (IDX-MAX)
@@ -6867,7 +6879,7 @@
                                        TO  SPA-ERRMSG
            WHEN    "0004"
                MOVE
-                   "今回請求額がゼロ以下になります。"
+                   "今回請求額が０円以下になります。"
                                        TO  SPA-ERRMSG(1:)
                MOVE
                    "調整金を再入力して下さい"
@@ -6895,6 +6907,13 @@
                        "院外処方せんは発行しません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
+               END-STRING
+           WHEN    "0014"
+               STRING  "今回入院請求額が上限を超えます。"
+                                       DELIMITED  BY  SIZE
+                       "調整金を再入力して下さい"
+                                       DELIMITED  BY  SIZE
+               INTO  SPA-ERRMSG
                END-STRING
            WHEN    "1001"
                MOVE    "定期請求処理中のため登録はできません"

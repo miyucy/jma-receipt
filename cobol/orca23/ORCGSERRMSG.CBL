@@ -352,6 +352,15 @@
            WHEN    "3022"
                MOVE    "マイナスの入金額を入力してください。"
                                        TO  SPA-ERRMSG
+           WHEN    "3023"
+               MOVE    "今回請求金額が上限を超えます。"
+                                       TO  SPA-ERRMSG
+           WHEN    "3024"
+               MOVE    "請求金額が上限を超えます。"
+                                       TO  SPA-ERRMSG
+           WHEN    "3025"
+               MOVE    "入金額が上限を超えます。"
+                                       TO  SPA-ERRMSG
            WHEN    "1001"  THRU    "1007"
            WHEN    "4000"  THRU    "4011"
            WHEN    "4900"  THRU    "4911"

@@ -863,9 +863,9 @@
       *                    ∞Ï…Ù…È√¥∂‚∑◊
                            13  SPA-GMN-I04-ICHIFTN       PIC 9(07).
       *                    ∫£≤Û¿¡µ·≥€
-                           13  SPA-GMN-I04-SEIKYU        PIC S9(07).
+                           13  SPA-GMN-I04-SEIKYU        PIC S9(10).
       *                    ∫£≤Û∆˛∂‚≥€
-                           13  SPA-GMN-I04-NYUKIN        PIC S9(07).
+                           13  SPA-GMN-I04-NYUKIN        PIC S9(10).
                            13  SPA-GMN-I04-NYUKIN-X      PIC X(10).
       *                    πÁ∑◊¿¡µ·≥€
                            13  SPA-GMN-I04-SEIGOK        PIC S9(07).
@@ -1032,13 +1032,13 @@
                            13  SPA-NAI-I04-SEIKYU-TBL.
                                15  SPA-NAI-I04-SEIKYU-OCC
                                                          OCCURS    23.
-                                   17  SPA-NAI-I04-SEIKYU    PIC S9(07).
+                                   17  SPA-NAI-I04-SEIKYU    PIC S9(10).
                                    17  SPA-NAI-I04-SEIKYU-PLUS
-                                                            PIC S9(07).
+                                                             PIC S9(10).
                                    17  SPA-NAI-I04-SEIKYU-KON
-                                                             PIC S9(07).
+                                                             PIC S9(10).
                                    17  SPA-NAI-I04-SEIKYU-MOT
-                                                             PIC S9(07).
+                                                             PIC S9(10).
       *                    ƒ¥¿∞∂‚
                            13  SPA-NAI-I04-CHOSEI-TBL.
                              14    SPA-NAI-I04-CHOSEI-OCC1
@@ -1053,7 +1053,7 @@
                            13  SPA-NAI-I04-NYUKIN-TBL.
                                15  SPA-NAI-I04-NYUKIN-OCC
                                                          OCCURS    23.
-                                   17  SPA-NAI-I04-NYUKIN    PIC S9(07).
+                                   17  SPA-NAI-I04-NYUKIN    PIC S9(10).
                                    17  SPA-NAI-I04-NYUKIN-X  PIC X(10).
       *
                    09  SPA-NAI-I04-HKNCOMBILST.

@@ -111,6 +111,7 @@
       *
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
+           03  CONST-KINGAKU-MAX           PIC S9(10)  VALUE 9999999.
            03  CONST-DENPEDANUM-MAX        PIC 9(03)   VALUE 99.
            03  CONST-LIMIT                 PIC 9(05)   VALUE 99999.
            03  CONST-RES-MAX               PIC 9(05)   VALUE 500.
@@ -562,6 +563,13 @@
                IF    ( WRK-KINGAKU <  ZERO )
                    MOVE    "3016"  TO SPA-ERRCD
                END-IF
+      *
+               IF    ( SPA-ERRCD       =   SPACE )
+                   IF    ( WRK-KINGAKU >  CONST-KINGAKU-MAX )
+                       MOVE    "3024"  TO SPA-ERRCD
+                   END-IF
+               END-IF
+      *
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -571,6 +579,12 @@
                    +   SPA-API-NYUKIN
                IF    ( WRK-KINGAKU <  ZERO )
                    MOVE    "3014"  TO SPA-ERRCD
+               END-IF
+      *
+               IF    ( SPA-ERRCD       =   SPACE )
+                   IF    ( WRK-KINGAKU >  CONST-KINGAKU-MAX )
+                       MOVE    "3025"  TO SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
       *
@@ -941,7 +955,8 @@
                MOVE    "0116"         TO  SPA-ERRCD
            END-IF
       *
-           IF    ( SMEI-SYURRKNUM  NOT =   ZERO )
+           INITIALIZE                     SYURRK-REC
+           IF    ( SMEI-SYURRKNUM NOT =   ZERO )
                PERFORM 900-SYURRK-KEY-SEL-SEC
                IF    ( FLG-SYURRK  =   ZERO )
                    MOVE    SYURRK-REC  TO  TSYURRK-REC
@@ -1141,6 +1156,7 @@
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF  ( SNUM-RC       NOT =   ZERO  )
+                OR ( SNUM-SEISUU       >   7     )
                 OR ( SNUM-SYOKBN   NOT =   SPACE )
                    MOVE    "3017"      TO  SPA-ERRCD
                ELSE
@@ -1165,6 +1181,7 @@
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF  ( SNUM-RC       NOT =   ZERO  )
+                OR ( SNUM-SEISUU       >   7     )
                 OR ( SNUM-SYOKBN   NOT =   SPACE )
                    MOVE    "3018"      TO  SPA-ERRCD
                ELSE
@@ -1196,6 +1213,7 @@
                EVALUATE    TRUE
                WHEN  ( SNUM-RC       NOT =   ZERO  )
                   OR ( SNUM-MINKBN   NOT =   SPACE )
+                  OR ( SNUM-SEISUU       >   7     )
                   OR ( SNUM-SYOKBN   NOT =   SPACE )
                    MOVE    "3019"      TO  SPA-ERRCD
                WHEN  ( SNUM-OUTNUM     =   ZERO )
@@ -1204,7 +1222,8 @@
                    MOVE    "3007"      TO  SPA-ERRCD
                WHEN    OTHER
                    MOVE    SNUM-OUTNUM TO  SPA-API-NYUKIN
-                   IF    ( INCOMEREQ01-REQMODE =   CONST-REQMODE-NYUKIN)
+                   IF    ( INCOMEREQ01-REQMODE = CONST-REQMODE-NYUKIN)
+                    OR   ( INCOMEREQ01-REQMODE = CONST-REQMODE-M-NYUKIN)
                        COMPUTE WRK-NYUKIN
                            =   TSYU-NYUKIN-TOTAL
                            +   SNUM-OUTNUM
@@ -1213,7 +1232,13 @@
                                MOVE    "0107"  TO  SPA-ERRCD
                            END-IF
                        END-IF
+                       IF    ( SPA-ERRCD       =   SPACE )
+                           IF    ( WRK-NYUKIN  >   CONST-KINGAKU-MAX )
+                               MOVE    "3025"  TO  SPA-ERRCD
+                           END-IF
+                       END-IF
                    END-IF
+      *
                END-EVALUATE
            END-EVALUATE
       *
@@ -1240,6 +1265,7 @@
                EVALUATE    TRUE
                WHEN  ( SNUM-RC       NOT =   ZERO  )
                 OR   ( SNUM-MINKBN   NOT =   SPACE )
+                OR   ( SNUM-SEISUU       >   7     )
                 OR   ( SNUM-SYOKBN   NOT =   SPACE )
                    MOVE    "0109"      TO  SPA-ERRCD
                WHEN  ( SNUM-OUTNUM       =   ZERO )
@@ -1274,6 +1300,7 @@
                                            ORCSNUMAREA
                EVALUATE    TRUE
                WHEN  ( SNUM-RC       NOT =   ZERO  )
+                OR   ( SNUM-SEISUU       >   7     )
                 OR   ( SNUM-SYOKBN   NOT =   SPACE )
                    MOVE    "3019"      TO  SPA-ERRCD
                WHEN  ( SNUM-OUTNUM =   ZERO )
