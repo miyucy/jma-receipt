@@ -560,6 +560,7 @@
            03  WRK-GMN-MODE        PIC X(01).
            03  WRK-GMN-SORTKBN     PIC X(01).
            03  WRK-GMN-PTID        PIC 9(10).
+           03  WRK-GMN-CUR         PIC 9(3).
       *
        01  WRK-ROW.
            05  WRK-SYULIST-ROW     PIC S9(9)   BINARY.
@@ -613,6 +614,7 @@
            COPY    "CPSHELLTBL.INC".
       *
        01  CONST-AREA.
+           03  CONST-KINGAKU-MAX               PIC 9(10) VALUE 9999999.
            03  CONST-PROC-G.
                05  CONST-PROC-NYUKIN          PIC X(02) VALUE "05".
                05  CONST-PROC-RRKSYU          PIC X(02) VALUE "08".
@@ -4202,6 +4204,39 @@
                +   SPA-GMN-CHOSEI1IN
                +   SPA-GMN-CHOSEI2IN
       *
+           MOVE    ZERO                TO  WRK-GMN-CUR
+           EVALUATE    TRUE
+           WHEN  ( SPA-GMN-CHOSEI1IN   NOT =   ZERO )
+               MOVE    8               TO  WRK-GMN-CUR
+           WHEN  ( SPA-GMN-CHOSEI2IN   NOT =   ZERO )
+               MOVE    9               TO  WRK-GMN-CUR
+           END-EVALUATE
+      *
+           IF    ( SPA-GMN-SKYMONEYIN  >   CONST-KINGAKU-MAX )
+                   MOVE    "3023"      TO  SPA-ERRCD
+                   MOVE    WRK-GMN-CUR TO  SPA-GMN-CUR
+           END-IF
+      *
+           IF    ( SPA-ERRCD        =  SPACE )
+               MOVE    SPA-GMN-TBL-SEL TO  IDXL
+               MOVE    ZERO            TO  WRK-SKYMONEY
+               IF    ( SPA-NAI-SYORINO =   CONST-PROC-RRKSYU )
+                   COMPUTE WRK-SKYMONEY
+                       =   SPA-GMN-TSEIKYU(IDXL)
+                       -   SPA-NAI-SKYMONEY-MOTO
+                       +   SPA-GMN-SKYMONEYIN
+               ELSE
+                   COMPUTE WRK-SKYMONEY
+                       =   SPA-GMN-TSEIKYU(IDXL)
+                       +   SPA-GMN-SKYMONEYIN
+               END-IF
+      *
+               IF    ( WRK-SKYMONEY  > CONST-KINGAKU-MAX )
+                       MOVE    "3024"      TO  SPA-ERRCD
+                       MOVE    WRK-GMN-CUR TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            .
        4101-CHOSEI2IN-CHK-EXT.
            EXIT.
@@ -4237,6 +4272,13 @@
                IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    10      TO  SPA-GMN-CUR
                    MOVE    "3008"  TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-NYUKIN  >   CONST-KINGAKU-MAX )
+                   MOVE    10      TO  SPA-GMN-CUR
+                   MOVE    "3025"  TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -4286,7 +4328,14 @@
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    10          TO  SPA-GMN-CUR
-                   MOVE    "3014"      TO  SPA-ERRCD
+                   MOVE    "3008"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-NYUKIN  >   CONST-KINGAKU-MAX )
+                   MOVE    10      TO  SPA-GMN-CUR
+                   MOVE    "3025"  TO  SPA-ERRCD
                END-IF
            END-IF
       *
