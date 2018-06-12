@@ -215,7 +215,7 @@
            WHEN    42
                STRING  "【精神病床】食事負担据え置き対象コードの"
                                            DELIMITED   BY  SIZE
-                       "診療行為入力を確認してください"
+                       "診療入力を確認"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
