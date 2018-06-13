@@ -190,6 +190,7 @@
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(100).
+           03  WRK-ERRMSG              PIC X(500).
       *
       *   日本語数字
        01  TBL-SUJI-AREA.
@@ -381,6 +382,31 @@
                                        IDX-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
+      *
+      *    日付チェック
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    ORCHCN03-SYSYMD     TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF   SGDAY-RC              NOT =   ZERO
+               MOVE   SPACE            TO  WRK-ERRMSG
+               STRING "ORCHCN03-SYSYMD ERR " DELIMITED   BY  SIZE
+                  ORCHCN03-SYSYMD            DELIMITED   BY  SIZE
+                  INTO   WRK-ERRMSG
+               END-STRING
+               CALL    "coblog"    USING   WRK-ERRMSG
+               GO  TO   000-PROC-EXT
+           END-IF
+      *    カウントのチェック
+           IF      ORCHCN03-CNT  >   3000
+               MOVE   SPACE            TO  WRK-ERRMSG
+               STRING "ORCHCN03-CNT ERR " DELIMITED   BY  SIZE
+                  ORCHCN03-CNT            DELIMITED   BY  SIZE
+                  INTO   WRK-ERRMSG
+               END-STRING
+               CALL    "coblog"    USING   WRK-ERRMSG
+               GO  TO   000-PROC-EXT
+           END-IF
       *
       *    初期処理
            PERFORM 100-INIT-SEC
