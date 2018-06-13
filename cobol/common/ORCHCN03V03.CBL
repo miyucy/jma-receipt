@@ -37,6 +37,7 @@
       *  04.03.00    NACL-太田    08/09/17  改正対応
       *  04.04.00    NACL-森脇    09/01/14  プログラムオプション対応
       *  05.00.00    NACL-森脇    17/07/27  API出力
+      *  05.00.00    NACL-小豆沢  18/06/13  パラメタのチェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -217,6 +218,7 @@
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(100).
+           03  WRK-ERRMSG              PIC X(500).
       *
       *   日本語数字
        01  TBL-SUJI-AREA.
@@ -418,6 +420,31 @@
                                        IDX-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
+      *
+      *    日付チェック
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    ORCHCN03-SYSYMD     TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF   SGDAY-RC              NOT =   ZERO
+               MOVE   SPACE            TO  WRK-ERRMSG
+               STRING "ORCHCN03-SYSYMD ERR " DELIMITED   BY  SIZE
+                  ORCHCN03-SYSYMD            DELIMITED   BY  SIZE
+                  INTO   WRK-ERRMSG
+               END-STRING
+               CALL    "coblog"    USING   WRK-ERRMSG
+               GO  TO   000-PROC-EXT
+           END-IF
+      *    カウントのチェック
+           IF      ORCHCN03-CNT  >   3000
+               MOVE   SPACE            TO  WRK-ERRMSG
+               STRING "ORCHCN03-CNT ERR " DELIMITED   BY  SIZE
+                  ORCHCN03-CNT            DELIMITED   BY  SIZE
+                  INTO   WRK-ERRMSG
+               END-STRING
+               CALL    "coblog"    USING   WRK-ERRMSG
+               GO  TO   000-PROC-EXT
+           END-IF
       *
       *    初期処理
            PERFORM 100-INIT-SEC
