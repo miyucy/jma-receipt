@@ -795,29 +795,6 @@
                        END-IF
                    END-IF 
       *
-                   IF      WRK-PROCESSING-ERRCD    =   SPACE
-                       IF      LSTREQ-PARM-VALUE (IDX IDY)
-                                               =   SPACE
-      *                    必須以外もあるのでエラーなし
-                           CONTINUE
-                       ELSE
-                           INITIALIZE                  ORCSKANACHKAREA
-                           MOVE    "1"             TO  KANACHK-SYORI 
-                           MOVE    LSTREQ-PARM-VALUE (IDX IDY)
-                                                   TO  KANACHK-MAE-INPUT
-                           CALL    "ORCSKANACHK"   USING
-                                                   ORCSKANACHKAREA
-                           IF    ( KANACHK-RC      =   ZERO )
-                           AND   ( KANACHK-RC2     =   ZERO )
-                           AND   ( KANACHK-SYUBETU =   1    )
-                               CONTINUE
-                           ELSE
-                               MOVE    "E26"       TO
-                                                   WRK-PROCESSING-ERRCD
-                           END-IF
-                       END-IF
-                   END-IF
-      *
                    IF      WRK-PROCESSING-ERRCD
                                        NOT =   SPACE
                        MOVE    IDY         TO  WRK-ERR-PARAMETER-IDX
