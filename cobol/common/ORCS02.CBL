@@ -457,6 +457,8 @@
       *  04.08.25    NACL-ÌçÏÆ    18/04/04  ÆñÉÂÉéÃ´¼ÔÈÖ¹æÄÉ²ÃÂÐ±þ
       *  04.08.26    NACL-ÌçÏÆ    18/05/15  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ·×»»½¤Àµ
       *  04.08.27    NACL-ÌçÏÆ    18/05/31  ·×»»¶â³Û·å¿ô¥Á¥§¥Ã¥¯
+      *  04.08.28    NACL-ÌçÏÆ    18/06/14  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°¤Ë´Ø¤ï¤ë
+      *                                     Æþ±¡¿©»öÉéÃ´·×»»½¤Àµ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -844,6 +846,7 @@
                05  WK-TAIHI-MAX-KIN-KOHI3-M   PIC 9(08).
                05  WK-TAIHI-MAX-KIN-KOHI4-M   PIC 9(08).
                05  WK-TAIHI-KARI-COMPFTN      PIC 9(08).
+               05  WK-TAIHI-HANTEIFLG         PIC 9(01)  OCCURS   4.
       *
       *****Ï«ºÒ¡¦¼«ÇåÀÕ
       *    ¼«ÇåÀÕ¡Ê²Ã»»Î¨¡Ë
@@ -29258,6 +29261,7 @@
              OR  LNK-S02-KOUREI-NYUIN-KBN  =  "1"
                MOVE    "1"       TO  FLG-SYOUKAN(KOH-IDX)
              END-IF
+             MOVE       1        TO  WK-TAIHI-HANTEIFLG(KOH-IDX)
            ELSE
              IF  (WK-1001-PREFNUM               = 11               )
              AND (COMB-KOHHKNNUM(KOH-IDX) = "683" OR "783" OR "673"
@@ -31969,8 +31973,11 @@
              WHEN   "4"
                MOVE  WK-SHOKUJI-FTN TO LNK-SYU-SKJ-FTN(KOH-IDX)
                                        LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
-               IF   FLG-NYUSKJJYOGAK         NOT = ZERO
-               AND  LNK-SYU-KOH-COMPFTN(KOH-IDX) = ZERO
+               IF ((WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE) AND
+                   (LNK-SYU-KOH-COMPFTN(KOH-IDX)     = ZERO ) AND
+                   (FLG-NYUSKJJYOGAK             NOT = ZERO ))
+               OR ((WK-2010-SKJKEIKBN(KOH-IDX)       = SPACE) AND
+                   (FLG-NYUSKJJYOGAK             NOT = ZERO ))
                  EVALUATE  FLG-NYUSKJJYOGAK
                    WHEN     1
                      IF   LNK-SYU-SKJ-FTN(KOH-IDX)  NOT = ZERO
@@ -32004,8 +32011,14 @@
              WHEN   "3"
                MOVE   WK-SHOKUJI-FTN TO  LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
              WHEN   "5"
-               IF   FLG-NYUSKJJYOGAK             =  2
-               AND  LNK-SYU-KOH-COMPFTN(KOH-IDX) = ZERO
+               IF  (WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE)
+               AND (LNK-SYU-KOH-COMPFTN(KOH-IDX) NOT = ZERO )
+                 MOVE  WK-SHOKUJI-FTN
+                                TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                     LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                 MOVE  "1"      TO   WK-NYUSKJRYYKBN
+                 MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+               ELSE
                  MOVE  WK-SHOKUJI-NISSUS
                                      TO  LNK-SYU-SKJ-NISSU(KOH-IDX)
                  MOVE  WK-SHOKUJI-RYOYOHIS
@@ -32014,16 +32027,16 @@
                                      TO  LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  WK-SHOKUJI-FTNL
                                      TO  LNK-SYU-SKJ-FTN(KOH-IDX)
-               ELSE
-                 MOVE  WK-SHOKUJI-FTN
-                                     TO  LNK-SYU-SKJ-FTN(KOH-IDX)
-                                         LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
-                 MOVE  "1"           TO  WK-NYUSKJRYYKBN
-                 MOVE  SPACE         TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
                END-IF
              WHEN   "7"
-               IF   FLG-NYUSKJJYOGAK             =  1
-               AND  LNK-SYU-KOH-COMPFTN(KOH-IDX) = ZERO
+               IF  (WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE)
+               AND (LNK-SYU-KOH-COMPFTN(KOH-IDX) NOT = ZERO )
+                 MOVE  WK-SHOKUJI-FTN
+                                TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                     LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                 MOVE  "1"      TO   WK-NYUSKJRYYKBN
+                 MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+               ELSE
                  MOVE  WK-SHOKUJI-NISSUS
                                      TO  LNK-SYU-SKJ-NISSU(KOH-IDX)
                  MOVE  WK-SHOKUJI-RYOYOHIS
@@ -32035,16 +32048,16 @@
                  COMPUTE  LNK-SYU-SKJ-FTN(KOH-IDX) =
                           LNK-SYU-SKJ-FTN(KOH-IDX) +
                           (WK-SHOKUJI-FTNS  /  2)
-               ELSE
-                 MOVE  WK-SHOKUJI-FTN
-                                     TO  LNK-SYU-SKJ-FTN(KOH-IDX)
-                                         LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
-                 MOVE  "1"           TO  WK-NYUSKJRYYKBN
-                 MOVE  SPACE         TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
                END-IF
              WHEN   "8"
-               IF   FLG-NYUSKJJYOGAK             =  1
-               AND  LNK-SYU-KOH-COMPFTN(KOH-IDX) = ZERO
+               IF  (WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE)
+               AND (LNK-SYU-KOH-COMPFTN(KOH-IDX) NOT = ZERO )
+                 MOVE  WK-SHOKUJI-FTN
+                                TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                     LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                 MOVE  "1"      TO   WK-NYUSKJRYYKBN
+                 MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+               ELSE
                  MOVE  WK-SHOKUJI-NISSU
                                      TO  LNK-SYU-SKJ-NISSU(KOH-IDX)
                  COMPUTE  LNK-SYU-SKJ-RYOYOHI(KOH-IDX)  =
@@ -32058,16 +32071,16 @@
                  COMPUTE  LNK-SYU-SKJ-FTN(KOH-IDX) =
                           LNK-SYU-SKJ-FTN(KOH-IDX) +
                           (LNK-SYU-SKJ-FTN-RECE(KOH-IDX)  /  2)
-               ELSE
-                 MOVE  WK-SHOKUJI-FTN
-                                     TO  LNK-SYU-SKJ-FTN(KOH-IDX)
-                                         LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
-                 MOVE  "1"           TO  WK-NYUSKJRYYKBN
-                 MOVE  SPACE         TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
                END-IF
              WHEN   "9"
-               IF   FLG-NYUSKJJYOGAK             =  2
-               AND  LNK-SYU-KOH-COMPFTN(KOH-IDX) = ZERO
+               IF  (WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE)
+               AND (LNK-SYU-KOH-COMPFTN(KOH-IDX) NOT = ZERO )
+                 MOVE  WK-SHOKUJI-FTN
+                                TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                     LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                 MOVE  "1"      TO   WK-NYUSKJRYYKBN
+                 MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+               ELSE
                  MOVE  WK-SHOKUJI-NISSU
                                      TO  LNK-SYU-SKJ-NISSU(KOH-IDX)
                  COMPUTE  LNK-SYU-SKJ-RYOYOHI(KOH-IDX)  =
@@ -32078,12 +32091,6 @@
                           WK-SHOKUJI-FTNL2
                  MOVE  WK-SHOKUJI-FTNL2
                                      TO  LNK-SYU-SKJ-FTN(KOH-IDX)
-               ELSE
-                 MOVE  WK-SHOKUJI-FTN
-                                     TO  LNK-SYU-SKJ-FTN(KOH-IDX)
-                                         LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
-                 MOVE  "1"           TO  WK-NYUSKJRYYKBN
-                 MOVE  SPACE         TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
                END-IF
            END-EVALUATE
       *
@@ -33823,11 +33830,26 @@
                  MOVE  WK-SHOKUJI-FTN
                                 TO   LNK-SYU-SKJ-FTN(KOH-IDX)
                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
-                 IF   FLG-NYUSKJJYOGAK  =  1
-                   IF   LNK-SYU-SKJ-FTN(KOH-IDX)  NOT = ZERO
-                     COMPUTE LNK-SYU-SKJ-FTN(KOH-IDX) =
-                             LNK-SYU-SKJ-FTN(KOH-IDX) /  2
-                   END-IF
+                 IF ((WK-2010-IRYOKEIKBN-N(KOH-IDX)    = "3" OR "4") AND
+                     (WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE     ) AND
+                     (WK-TAIHI-HANTEIFLG(KOH-IDX)      = ZERO      ) AND
+                     (FLG-NYUSKJJYOGAK             NOT = ZERO      ))
+                 OR ((WK-2010-IRYOKEIKBN-N(KOH-IDX)    = "3" OR "4") AND
+                     (WK-2010-SKJKEIKBN(KOH-IDX)       = SPACE     ) AND
+                     (FLG-NYUSKJJYOGAK             NOT = ZERO      ))
+                 OR ((WK-2010-IRYOKEIKBN-N(KOH-IDX)    = SPACE     ) AND
+                     (FLG-NYUSKJJYOGAK             NOT = ZERO      ))
+                   EVALUATE  FLG-NYUSKJJYOGAK
+                     WHEN     1
+                       IF   LNK-SYU-SKJ-FTN(KOH-IDX)  NOT = ZERO
+                         COMPUTE LNK-SYU-SKJ-FTN(KOH-IDX) =
+                                 LNK-SYU-SKJ-FTN(KOH-IDX) /  2
+                       END-IF
+                     WHEN     2
+                       IF   LNK-SYU-SKJ-FTN(KOH-IDX)  NOT = ZERO
+                         MOVE  ZERO  TO  LNK-SYU-SKJ-FTN(KOH-IDX)
+                       END-IF
+                   END-EVALUATE
                    IF   FLG-MIYAGI  NOT  =   ZERO
                      IF   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)  NOT = ZERO
                        COMPUTE LNK-SYU-SKJ-FTN-RECE(KOH-IDX) =
@@ -33881,6 +33903,15 @@
                  MOVE  WK-SHOKUJI-FTN
                                 TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
              WHEN   "5"
+               IF  (WK-2010-IRYOKEIKBN-N(KOH-IDX)    = "3" OR "4")
+               AND (WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE     )
+               AND (WK-TAIHI-HANTEIFLG(KOH-IDX)      =  1        )
+                 MOVE  WK-SHOKUJI-FTN
+                                TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                     LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                 MOVE  "1"      TO   WK-NYUSKJRYYKBN
+                 MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+               ELSE
                  MOVE  WK-SHOKUJI-NISSUS
                                 TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
                  MOVE  WK-SHOKUJI-RYOYOHIS
@@ -33889,7 +33920,17 @@
                                 TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  WK-SHOKUJI-FTNL
                                 TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+               END-IF
              WHEN   "7"
+               IF  (WK-2010-IRYOKEIKBN-N(KOH-IDX)    = "3" OR "4")
+               AND (WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE     )
+               AND (WK-TAIHI-HANTEIFLG(KOH-IDX)      =  1        )
+                 MOVE  WK-SHOKUJI-FTN
+                                TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                     LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                 MOVE  "1"      TO   WK-NYUSKJRYYKBN
+                 MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+               ELSE
                  MOVE  WK-SHOKUJI-NISSUS
                                 TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
                  MOVE  WK-SHOKUJI-RYOYOHIS
@@ -33901,7 +33942,17 @@
                  COMPUTE  LNK-SYU-SKJ-FTN(KOH-IDX) =
                           LNK-SYU-SKJ-FTN(KOH-IDX) +
                           (WK-SHOKUJI-FTNS  /  2)
+               END-IF
              WHEN   "8"
+               IF  (WK-2010-IRYOKEIKBN-N(KOH-IDX)    = "3" OR "4")
+               AND (WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE     )
+               AND (WK-TAIHI-HANTEIFLG(KOH-IDX)      =  1        )
+                 MOVE  WK-SHOKUJI-FTN
+                                TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                     LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                 MOVE  "1"      TO   WK-NYUSKJRYYKBN
+                 MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+               ELSE
                  MOVE  WK-SHOKUJI-NISSU
                                 TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
                  COMPUTE  LNK-SYU-SKJ-RYOYOHI(KOH-IDX)  =
@@ -33915,7 +33966,17 @@
                  COMPUTE  LNK-SYU-SKJ-FTN(KOH-IDX) =
                           LNK-SYU-SKJ-FTN(KOH-IDX) +
                           (LNK-SYU-SKJ-FTN-RECE(KOH-IDX)  /  2)
+               END-IF
              WHEN   "9"
+               IF  (WK-2010-IRYOKEIKBN-N(KOH-IDX)    = "3" OR "4")
+               AND (WK-2010-SKJKEIKBN(KOH-IDX)   NOT = SPACE     )
+               AND (WK-TAIHI-HANTEIFLG(KOH-IDX)      =  1        )
+                 MOVE  WK-SHOKUJI-FTN
+                                TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                     LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                 MOVE  "1"      TO   WK-NYUSKJRYYKBN
+                 MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+               ELSE
                  MOVE  WK-SHOKUJI-NISSU
                                 TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
                  COMPUTE  LNK-SYU-SKJ-RYOYOHI(KOH-IDX)  =
@@ -33926,6 +33987,7 @@
                           WK-SHOKUJI-FTNL2
                  MOVE  WK-SHOKUJI-FTNL2
                                 TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+               END-IF
            END-EVALUATE
       *
            .
