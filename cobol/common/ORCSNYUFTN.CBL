@@ -193,6 +193,9 @@
       *                                     ¡Ê£¹£¹£¹¡Ë¥Á¥§¥Ã¥¯ÂÐ±þ
       *  04.08.13    NACL-ÌçÏÆ    18/05/15  Æ±°ì²ñ·×Ê¬¤Î¥Ç¡¼¥¿ÊÔ½¸½¤Àµ
       *  04.08.14    NACL-ÌçÏÆ    18/05/31  ·×»»¶â³Û·å¿ô¥Á¥§¥Ã¥¯
+      *  04.08.15    NACL-¾®Æ¦Âô  18/06/14  ËýÀ­°Ý»ýÆ©ÀÏ´ÉÍý²Ã»»¡ÊÎÅÍÜ
+      *                                     ÉÂÅïÆþ±¡ÎÁ£±¡Ë¤Ë¤Ä¤¤¤ÆÆþ±¡ÎÁ
+      *                                     ¤È¤ÎÊÝ¸±¥Á¥§¥Ã¥¯ÂÐ¾Ý³°¤Ë¤¹¤ë
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -623,6 +626,7 @@
            03  IDX9                        PIC 9(02).
            03  IDX10                       PIC 9(02).
            03  IDX11                       PIC 9(02).
+           03  IDX12                       PIC 9(02).
            03  SYU-IDX                     PIC 9(02).
            03  NYUINACT-IDX                PIC 9(02).
            03  RMSAGAKU-IDX                PIC 9(02).
@@ -6996,6 +7000,32 @@ grpsys                                        SPA-AREA
            MOVE    "tbl_sryact"     TO      MCP-TABLE
            MOVE    "key9"           TO      MCP-PATHNAME
            PERFORM     CSR-CLOSE-SEC
+      *
+      *    ËýÀ­°Ý»ýÆ©ÀÏ´ÉÍý²Ã»»¡ÊÎÅÍÜÉÂÅïÆþ±¡ÎÁ£±¡Ë¤Ï¥Á¥§¥Ã¥¯ÂÐ¾Ý³°
+      *    ¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡¦¸ø³²¤ÇÆþ±¡ÎÁ»»Äê»þ¤Ë¸Â¤ë¡Ë
+           IF   (FLG-NYUINRYO-KASAN-OK  =  ZERO       )
+           AND  (SRY-SRYCD(1)           =  "190167970")
+             MOVE      1     TO    FLG-NYUINRYO-KASAN-OK
+             IF  SRY-SRYYM  =  WRK-SKYYM(1)
+               MOVE    1     TO    IDX12
+             ELSE
+               MOVE    2     TO    IDX12
+             END-IF
+             PERFORM  VARYING  IDX6  FROM  1  BY  1
+                       UNTIL  (IDX6                  >  31 )
+                         OR   (FLG-NYUINRYO-KASAN-OK = ZERO)
+               IF  (ACCT-DAY(1 IDX6)     NOT =  ZERO)
+               AND (WRK-DAY5(IDX12 IDX6) NOT =  ZERO)
+                 MOVE  WRK-DAY5(IDX12 IDX6)  TO  WRK-HKNCOMBINUM
+                 PERFORM  HKNCOMBI-KENSAKU-SEC
+                 IF  COMB-HKNNUM  =  "971" OR "973" OR "975"
+                   CONTINUE
+                 ELSE
+                   MOVE     ZERO   TO    FLG-NYUINRYO-KASAN-OK
+                 END-IF
+               END-IF
+             END-PERFORM
+           END-IF
       *
            .
        NYUINRYO-KASAN-CHECK-EXT.
