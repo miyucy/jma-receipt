@@ -564,7 +564,7 @@
       *
            END-PERFORM
       *
-           MOVE    "tbl_chk"       TO  MCP-TABLE
+           MOVE    "tbl_chk_user"  TO  MCP-TABLE
            MOVE    "key18"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
@@ -586,7 +586,7 @@
            MOVE    "00000000"      TO  CHK-YUKOSTYMD
            MOVE    "99999999"      TO  CHK-YUKOEDYMD
            MOVE    CHK-REC         TO  MCPDATA-REC
-           MOVE    "tbl_chk"       TO  MCP-TABLE
+           MOVE    "tbl_chk_user"  TO  MCP-TABLE
            MOVE    "ins1"          TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          =   ZERO )
@@ -640,7 +640,7 @@
       *
            END-PERFORM
       *
-           MOVE    "tbl_chk"       TO  MCP-TABLE
+           MOVE    "tbl_chk_user"  TO  MCP-TABLE
            MOVE    "key19"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
@@ -659,7 +659,7 @@
            MOVE    CHG-RJNSRYCD    TO  CHK-CD
            COMPUTE CHK-RENNUM      =   TCHK-RENNUM +   1
            MOVE    CHK-REC         TO  MCPDATA-REC
-           MOVE    "tbl_chk"       TO  MCP-TABLE
+           MOVE    "tbl_chk_user"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          =   ZERO )
@@ -1772,7 +1772,7 @@ grpsys                                 SPA-AREA
            MOVE    WRK-PARA-SRYYMD     TO  CHK-YUKOSTYMD
                                            CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_user"      TO  MCP-TABLE
            MOVE    "key18"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -1792,7 +1792,7 @@ grpsys                                 SPA-AREA
       *
            MOVE    ZERO                TO  FLG-CHKMST
       *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_user"      TO  MCP-TABLE
            MOVE    "key18"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -1816,7 +1816,7 @@ grpsys                                 SPA-AREA
            MOVE    CHG-RJNSRYCD        TO  TCHK-SRYCD
       *
            MOVE    TCHK-REC            TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_user"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -1826,7 +1826,7 @@ grpsys                                 SPA-AREA
                INITIALIZE              TCHK-REC
            END-IF
       *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_user"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
@@ -1846,7 +1846,7 @@ grpsys                                 SPA-AREA
                                            CHK-YUKOEDYMD
            MOVE    TNS-SRYCD   TO  CHK-CD
            MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_user"      TO  MCP-TABLE
            MOVE    "key19"             TO  MCP-PATHNAME
            PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -1870,7 +1870,7 @@ grpsys                                 SPA-AREA
            PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
                     OR   ( FLG-LOOPEND NOT =   ZERO )
       *
-               MOVE    "tbl_chk"           TO  MCP-TABLE
+               MOVE    "tbl_chk_user"      TO  MCP-TABLE
                MOVE    "key19"             TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
@@ -1904,7 +1904,7 @@ grpsys                                 SPA-AREA
            MOVE    CHG-RJNSRYCD        TO  TCHK-CD
       *
            MOVE    TCHK-REC            TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_user"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -1914,7 +1914,7 @@ grpsys                                 SPA-AREA
                INITIALIZE              TCHK-REC
            END-IF
       *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_user"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
@@ -1931,7 +1931,7 @@ grpsys                                 SPA-AREA
            MOVE    CHK-REC             TO  TCHK-REC
       *
            MOVE    TCHK-REC            TO  MCPDATA-REC
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_user"      TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -1941,7 +1941,7 @@ grpsys                                 SPA-AREA
                INITIALIZE              TCHK-REC
            END-IF
       *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "tbl_chk_user"      TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
