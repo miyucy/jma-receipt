@@ -14565,12 +14565,12 @@
                                           TO  FTN-KOHI1-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 1)
                                           TO  FTN-KOHI1-D3(IDX2)
-      ***                    IF    SYU-KOH1SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 1)
-      ***                                 TO  FTN-KOHI1-D(IDX2)
-      ***                                     FTN-KOHI1-D2(IDX2)
-      ***                                     FTN-KOHI1-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH1SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 1)
+                                          TO  FTN-KOHI1-D(IDX2)
+                                              FTN-KOHI1-D2(IDX2)
+                                              FTN-KOHI1-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH2HKNNUM)
                              IF  KOHI1-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 2)     =  1
@@ -14588,12 +14588,12 @@
                                           TO  FTN-KOHI1-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 2)
                                           TO  FTN-KOHI1-D3(IDX2)
-      ***                    IF    SYU-KOH2SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 2)
-      ***                                 TO  FTN-KOHI1-D(IDX2)
-      ***                                     FTN-KOHI1-D2(IDX2)
-      ***                                     FTN-KOHI1-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH2SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 2)
+                                          TO  FTN-KOHI1-D(IDX2)
+                                              FTN-KOHI1-D2(IDX2)
+                                              FTN-KOHI1-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH3HKNNUM)
                              IF  KOHI1-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 3)     =  1
@@ -14611,12 +14611,12 @@
                                           TO  FTN-KOHI1-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 3)
                                           TO  FTN-KOHI1-D3(IDX2)
-      ***                    IF    SYU-KOH3SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 3)
-      ***                                 TO  FTN-KOHI1-D(IDX2)
-      ***                                     FTN-KOHI1-D2(IDX2)
-      ***                                     FTN-KOHI1-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH3SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 3)
+                                          TO  FTN-KOHI1-D(IDX2)
+                                              FTN-KOHI1-D2(IDX2)
+                                              FTN-KOHI1-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH4HKNNUM)
                              IF  KOHI1-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 4)     =  1
@@ -14634,12 +14634,12 @@
                                           TO  FTN-KOHI1-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 4)
                                           TO  FTN-KOHI1-D3(IDX2)
-      ***                    IF    SYU-KOH4SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 4)
-      ***                                 TO  FTN-KOHI1-D(IDX2)
-      ***                                     FTN-KOHI1-D2(IDX2)
-      ***                                     FTN-KOHI1-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH4SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 4)
+                                          TO  FTN-KOHI1-D(IDX2)
+                                              FTN-KOHI1-D2(IDX2)
+                                              FTN-KOHI1-D3(IDX2)
+                             END-IF
                         END-EVALUATE
                      END-IF
                    END-PERFORM
@@ -15481,12 +15481,12 @@
                                            TO  FTN-KOHI2-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 1)
                                            TO  FTN-KOHI2-D3(IDX2)
-      ***                    IF    SYU-KOH1SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 1)
-      ***                                 TO  FTN-KOHI2-D(IDX2)
-      ***                                     FTN-KOHI2-D2(IDX2)
-      ***                                     FTN-KOHI2-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH1SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 1)
+                                           TO  FTN-KOHI2-D(IDX2)
+                                               FTN-KOHI2-D2(IDX2)
+                                               FTN-KOHI2-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH2HKNNUM)
                              IF  KOHI2-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 2)     =  1
@@ -15504,12 +15504,12 @@
                                            TO  FTN-KOHI2-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 2)
                                            TO  FTN-KOHI2-D3(IDX2)
-      ***                    IF    SYU-KOH2SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 2)
-      ***                                 TO  FTN-KOHI2-D(IDX2)
-      ***                                     FTN-KOHI2-D2(IDX2)
-      ***                                     FTN-KOHI2-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH2SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 2)
+                                           TO  FTN-KOHI2-D(IDX2)
+                                               FTN-KOHI2-D2(IDX2)
+                                               FTN-KOHI2-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH3HKNNUM)
                              IF  KOHI2-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 3)     =  1
@@ -15527,12 +15527,12 @@
                                            TO  FTN-KOHI2-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 3)
                                            TO  FTN-KOHI2-D3(IDX2)
-      ***                    IF    SYU-KOH3SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 3)
-      ***                                 TO  FTN-KOHI2-D(IDX2)
-      ***                                     FTN-KOHI2-D2(IDX2)
-      ***                                     FTN-KOHI2-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH3SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 3)
+                                           TO  FTN-KOHI2-D(IDX2)
+                                               FTN-KOHI2-D2(IDX2)
+                                               FTN-KOHI2-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH4HKNNUM)
                              IF  KOHI2-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 4)     =  1
@@ -15550,12 +15550,12 @@
                                            TO  FTN-KOHI2-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 4)
                                            TO  FTN-KOHI2-D3(IDX2)
-      ***                    IF    SYU-KOH4SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 4)
-      ***                                 TO  FTN-KOHI2-D(IDX2)
-      ***                                     FTN-KOHI2-D2(IDX2)
-      ***                                     FTN-KOHI2-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH4SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 4)
+                                           TO  FTN-KOHI2-D(IDX2)
+                                               FTN-KOHI2-D2(IDX2)
+                                               FTN-KOHI2-D3(IDX2)
+                             END-IF
                         END-EVALUATE
                      END-IF
                    END-PERFORM
@@ -16232,12 +16232,12 @@
                                            TO  FTN-KOHI3-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 1)
                                            TO  FTN-KOHI3-D3(IDX2)
-      ***                    IF    SYU-KOH1SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 1)
-      ***                                 TO  FTN-KOHI3-D(IDX2)
-      ***                                     FTN-KOHI3-D2(IDX2)
-      ***                                     FTN-KOHI3-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH1SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 1)
+                                           TO  FTN-KOHI3-D(IDX2)
+                                               FTN-KOHI3-D2(IDX2)
+                                               FTN-KOHI3-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH2HKNNUM)
                              IF  KOHI3-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 2)     =  1
@@ -16255,12 +16255,12 @@
                                            TO  FTN-KOHI3-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 2)
                                            TO  FTN-KOHI3-D3(IDX2)
-      ***                    IF    SYU-KOH2SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 2)
-      ***                                 TO  FTN-KOHI3-D(IDX2)
-      ***                                     FTN-KOHI3-D2(IDX2)
-      ***                                     FTN-KOHI3-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH2SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 2)
+                                           TO  FTN-KOHI3-D(IDX2)
+                                               FTN-KOHI3-D2(IDX2)
+                                               FTN-KOHI3-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH3HKNNUM)
                              IF  KOHI3-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 3)     =  1
@@ -16278,12 +16278,12 @@
                                            TO  FTN-KOHI3-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 3)
                                            TO  FTN-KOHI3-D3(IDX2)
-      ***                    IF    SYU-KOH3SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 3)
-      ***                                 TO  FTN-KOHI3-D(IDX2)
-      ***                                     FTN-KOHI3-D2(IDX2)
-      ***                                     FTN-KOHI3-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH3SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 3)
+                                           TO  FTN-KOHI3-D(IDX2)
+                                               FTN-KOHI3-D2(IDX2)
+                                               FTN-KOHI3-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH4HKNNUM)
                              IF  KOHI3-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 4)     =  1
@@ -16301,12 +16301,12 @@
                                            TO  FTN-KOHI3-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 4)
                                            TO  FTN-KOHI3-D3(IDX2)
-      ***                    IF    SYU-KOH4SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 4)
-      ***                                 TO  FTN-KOHI3-D(IDX2)
-      ***                                     FTN-KOHI3-D2(IDX2)
-      ***                                     FTN-KOHI3-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH4SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 4)
+                                           TO  FTN-KOHI3-D(IDX2)
+                                               FTN-KOHI3-D2(IDX2)
+                                               FTN-KOHI3-D3(IDX2)
+                             END-IF
                         END-EVALUATE
                      END-IF
                    END-PERFORM
@@ -16880,12 +16880,12 @@
                                            TO  FTN-KOHI4-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 1)
                                            TO  FTN-KOHI4-D3(IDX2)
-      ***                    IF    SYU-KOH1SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 1)
-      ***                                 TO  FTN-KOHI4-D(IDX2)
-      ***                                     FTN-KOHI4-D2(IDX2)
-      ***                                     FTN-KOHI4-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH1SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 1)
+                                           TO  FTN-KOHI4-D(IDX2)
+                                               FTN-KOHI4-D2(IDX2)
+                                               FTN-KOHI4-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH2HKNNUM)
                              IF  KOHI4-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 2)     =  1
@@ -16903,12 +16903,12 @@
                                            TO  FTN-KOHI4-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 2)
                                            TO  FTN-KOHI4-D3(IDX2)
-      ***                    IF    SYU-KOH2SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 2)
-      ***                                 TO  FTN-KOHI4-D(IDX2)
-      ***                                     FTN-KOHI4-D2(IDX2)
-      ***                                     FTN-KOHI4-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH2SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 2)
+                                           TO  FTN-KOHI4-D(IDX2)
+                                               FTN-KOHI4-D2(IDX2)
+                                               FTN-KOHI4-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH3HKNNUM)
                              IF  KOHI4-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 3)     =  1
@@ -16926,12 +16926,12 @@
                                            TO  FTN-KOHI4-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 3)
                                            TO  FTN-KOHI4-D3(IDX2)
-      ***                    IF    SYU-KOH3SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 3)
-      ***                                 TO  FTN-KOHI4-D(IDX2)
-      ***                                     FTN-KOHI4-D2(IDX2)
-      ***                                     FTN-KOHI4-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH3SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 3)
+                                           TO  FTN-KOHI4-D(IDX2)
+                                               FTN-KOHI4-D2(IDX2)
+                                               FTN-KOHI4-D3(IDX2)
+                             END-IF
                            WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH4HKNNUM)
                              IF  KOHI4-TBL(IDX2)            =  ZERO
                              AND SDAY-SANTEIFLG(IDX2 4)     =  1
@@ -16949,12 +16949,12 @@
                                            TO  FTN-KOHI4-D2(IDX2)
                              ADD   SDAY-COMPFTNWK(IDX2 4)
                                            TO  FTN-KOHI4-D3(IDX2)
-      ***                    IF    SYU-KOH4SKJ-FTNKBN  =  "2"
-      ***                        ADD  SDAY-SKJFTN(IDX2 4)
-      ***                                 TO  FTN-KOHI4-D(IDX2)
-      ***                                     FTN-KOHI4-D2(IDX2)
-      ***                                     FTN-KOHI4-D3(IDX2)
-      ***                    END-IF
+                             IF    SYU-KOH4SKJ-FTNKBN  =  "2"
+                                ADD  SDAY-SKJFTN(IDX2 4)
+                                           TO  FTN-KOHI4-D(IDX2)
+                                               FTN-KOHI4-D2(IDX2)
+                                               FTN-KOHI4-D3(IDX2)
+                             END-IF
                         END-EVALUATE
                      END-IF
                    END-PERFORM
@@ -30335,6 +30335,9 @@
       ****                         LNK-SDAY-SKJFTN(IDX2 KOH-IDX)
       ****           END-IF
       ****         END-IF
+                   IF    WK-NYUSKJRYYKBN  =  "2"
+                     MOVE  "1" TO  WK-NYUSKJRYYKBN
+                   END-IF
       *            º˝«ºπ‡Ã‹
                    ADD   LNK-SDAY-SKJFTN(IDX2 KOH-IDX)
                             TO   LNK-SYU-SKJ-FTN(KOH-IDX)
@@ -30463,9 +30466,6 @@
            MOVE     "1"             TO   LNK-SYU-DAYINFFLG.
       *
            MOVE  WK-NYUSKJRYYKBN    TO LNK-SYU-SKJ-FTNKBN(KOH-IDX).
-           IF    WK-NYUSKJRYYKBN    =    "2"
-             MOVE   "1"             TO LNK-SYU-SKJ-FTNKBN(KOH-IDX)
-           END-IF.
            MOVE  WK-SHOKUJI-NISSU   TO LNK-SYU-SKJ-NISSU(KOH-IDX).
            MOVE  WK-SHOKUJI-RYOYOHI TO LNK-SYU-SKJ-RYOYOHI(KOH-IDX).
            IF    WK-NYUSKJRYYKBN    =    "5" OR "7"
@@ -32077,6 +32077,9 @@
       ****                           TO  LNK-SYU-SKJ-FTN(KOH-IDX)
       ****       END-IF
       ****     END-IF
+               IF   LNK-SYU-SKJ-FTNKBN(KOH-IDX)  =  "2"
+                 MOVE     "1"        TO  LNK-SYU-SKJ-FTNKBN(KOH-IDX)
+               END-IF
              WHEN   "3"
                MOVE   WK-SHOKUJI-FTN TO  LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
              WHEN   "5"
@@ -32087,6 +32090,8 @@
                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  "1"      TO   WK-NYUSKJRYYKBN
                  MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                 MOVE  WK-NYUSKJRYYKBN
+                                TO   LNK-SYU-SKJ-FTNKBN(KOH-IDX)
                ELSE
                  MOVE  WK-SHOKUJI-NISSUS
                                      TO  LNK-SYU-SKJ-NISSU(KOH-IDX)
@@ -32105,6 +32110,8 @@
                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  "1"      TO   WK-NYUSKJRYYKBN
                  MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                 MOVE  WK-NYUSKJRYYKBN
+                                TO   LNK-SYU-SKJ-FTNKBN(KOH-IDX)
                ELSE
                  MOVE  WK-SHOKUJI-NISSUS
                                      TO  LNK-SYU-SKJ-NISSU(KOH-IDX)
@@ -32126,6 +32133,8 @@
                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  "1"      TO   WK-NYUSKJRYYKBN
                  MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                 MOVE  WK-NYUSKJRYYKBN
+                                TO   LNK-SYU-SKJ-FTNKBN(KOH-IDX)
                ELSE
                  MOVE  WK-SHOKUJI-NISSU
                                      TO  LNK-SYU-SKJ-NISSU(KOH-IDX)
@@ -32149,6 +32158,8 @@
                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  "1"      TO   WK-NYUSKJRYYKBN
                  MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                 MOVE  WK-NYUSKJRYYKBN
+                                TO   LNK-SYU-SKJ-FTNKBN(KOH-IDX)
                ELSE
                  MOVE  WK-SHOKUJI-NISSU
                                      TO  LNK-SYU-SKJ-NISSU(KOH-IDX)
@@ -33980,6 +33991,8 @@
                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  "1"      TO   WK-NYUSKJRYYKBN
                  MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                 MOVE  WK-NYUSKJRYYKBN
+                                TO   LNK-SYU-SKJ-FTNKBN(KOH-IDX)
                ELSE
                  MOVE  WK-SHOKUJI-NISSUS
                                 TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
@@ -33999,6 +34012,8 @@
                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  "1"      TO   WK-NYUSKJRYYKBN
                  MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                 MOVE  WK-NYUSKJRYYKBN
+                                TO   LNK-SYU-SKJ-FTNKBN(KOH-IDX)
                ELSE
                  MOVE  WK-SHOKUJI-NISSUS
                                 TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
@@ -34021,6 +34036,8 @@
                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  "1"      TO   WK-NYUSKJRYYKBN
                  MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                 MOVE  WK-NYUSKJRYYKBN
+                                TO   LNK-SYU-SKJ-FTNKBN(KOH-IDX)
                ELSE
                  MOVE  WK-SHOKUJI-NISSU
                                 TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
@@ -34045,6 +34062,8 @@
                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                  MOVE  "1"      TO   WK-NYUSKJRYYKBN
                  MOVE  SPACE    TO   WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                 MOVE  WK-NYUSKJRYYKBN
+                                TO   LNK-SYU-SKJ-FTNKBN(KOH-IDX)
                ELSE
                  MOVE  WK-SHOKUJI-NISSU
                                 TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
