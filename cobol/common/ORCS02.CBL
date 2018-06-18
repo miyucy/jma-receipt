@@ -30335,9 +30335,6 @@
       ****                         LNK-SDAY-SKJFTN(IDX2 KOH-IDX)
       ****           END-IF
       ****         END-IF
-                   IF    WK-NYUSKJRYYKBN  =  "2"
-                     MOVE  "1" TO  WK-NYUSKJRYYKBN
-                   END-IF
       *            º˝«ºπ‡Ã‹
                    ADD   LNK-SDAY-SKJFTN(IDX2 KOH-IDX)
                             TO   LNK-SYU-SKJ-FTN(KOH-IDX)
@@ -30466,6 +30463,9 @@
            MOVE     "1"             TO   LNK-SYU-DAYINFFLG.
       *
            MOVE  WK-NYUSKJRYYKBN    TO LNK-SYU-SKJ-FTNKBN(KOH-IDX).
+           IF    WK-NYUSKJRYYKBN    =    "2"
+             MOVE   "1"             TO LNK-SYU-SKJ-FTNKBN(KOH-IDX)
+           END-IF.
            MOVE  WK-SHOKUJI-NISSU   TO LNK-SYU-SKJ-NISSU(KOH-IDX).
            MOVE  WK-SHOKUJI-RYOYOHI TO LNK-SYU-SKJ-RYOYOHI(KOH-IDX).
            IF    WK-NYUSKJRYYKBN    =    "5" OR "7"
