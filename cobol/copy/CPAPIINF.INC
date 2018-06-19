@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      * 0500.201805
+      * 0500.201806
       ********************************************************************
        01  APIINF-AREA.
          03  APIINF-DATA.
@@ -298,7 +298,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "Æþ±¡´µ¼Ô´ðËÜ¾ðÊó¼èÆÀ".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201805".
+           "0500.201806".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -328,7 +328,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "¼ýÇ¼ÅÐÏ¿".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201806".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -379,6 +379,46 @@
            "¿ÇÎÅ¾ðÊó¼èÆÀ".
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
+           05  FILLER                  PIC  X(16)      VALUE
+           "api21".
+           05  FILLER                  PIC  X(32)      VALUE
+           "medicalmodav31".
+           05  FILLER                  PIC  X(64)      VALUE
+           "Æþ±¡¿ÇÎÅ¹Ô°Ù".
+           05  FILLER                  PIC  X(64)      VALUE
+           "Æþ±¡´µ¼Ô·èÄê".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201806".
+           05  FILLER                  PIC  X(16)      VALUE
+           "api21".
+           05  FILLER                  PIC  X(32)      VALUE
+           "medicalmodav32".
+           05  FILLER                  PIC  X(64)      VALUE
+           "Æþ±¡¿ÇÎÅ¹Ô°Ù".
+           05  FILLER                  PIC  X(64)      VALUE
+           "¿ÇÎÅÆâÍÆ´ðËÜ¥Á¥§¥Ã¥¯".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201806".
+           05  FILLER                  PIC  X(16)      VALUE
+           "api21".
+           05  FILLER                  PIC  X(32)      VALUE
+           "medicalmodav33".
+           05  FILLER                  PIC  X(64)      VALUE
+           "Æþ±¡¿ÇÎÅ¹Ô°Ù".
+           05  FILLER                  PIC  X(64)      VALUE
+           "¿ÇÎÅ³ÎÇ§¡¦ÀÁµá³ÎÇ§".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201806".
+           05  FILLER                  PIC  X(16)      VALUE
+           "api21".
+           05  FILLER                  PIC  X(32)      VALUE
+           "medicalmodav34".
+           05  FILLER                  PIC  X(64)      VALUE
+           "Æþ±¡¿ÇÎÅ¹Ô°Ù".
+           05  FILLER                  PIC  X(64)      VALUE
+           "¿ÇÎÅ¹Ô°Ùºï½ü".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201806".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -478,7 +518,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ÅÀ¿ô¥Þ¥¹¥¿°ì³ç¼èÆÀ".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201805".
+           "0500.201806".
            05  FILLER                  PIC  X(16)      VALUE
            "orca102".
            05  FILLER                  PIC  X(32)      VALUE
@@ -798,7 +838,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ÃæÅÓ¥Ç¡¼¥¿´ÉÍý".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201806".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -810,10 +850,10 @@
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
          03  APIINF-R REDEFINES APIINF-DATA.
-           05  APIINF-OCC              OCCURS 79.
+           05  APIINF-OCC              OCCURS 83.
              07  APIINF-LD             PIC  X(16).
              07  APIINF-ID             PIC  X(32).
              07  APIINF-HAORI-NAME     PIC  X(64).
              07  APIINF-NAME           PIC  X(64).
              07  APIINF-VERSION        PIC  X(16).
-         03  APIINF-MAX                PIC  9(05)      VALUE 79.
+         03  APIINF-MAX                PIC  9(05)      VALUE 83.
