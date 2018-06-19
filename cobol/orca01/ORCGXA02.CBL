@@ -875,8 +875,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
       *     処理確認
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 490-KAKUNIN-SEC
-               WHEN    "CLICKED"       ALSO    "B09"
-                   MOVE    "8888"          TO  SPA-ERRCD
            END-EVALUATE
       *
            .
@@ -2519,10 +2517,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
                    MOVE    WRK-XA02ERR         TO  SPA-ERRMSG
                WHEN    "9999"
                    MOVE    WRK-XA02ERR         TO  SPA-ERRMSG
-               WHEN    "8888"
-                   MOVE
-                   "　　開　　発　　中!!(しばらくお待ち下さい)"
-                                               TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  XAERR
