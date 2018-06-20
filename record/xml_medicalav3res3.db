@@ -125,14 +125,14 @@ xml_medicalav3res3 {
 #--- 印刷区分
 	Print_Information    {
 #---    処方せん
-	      Print_Invoice_Receipt_Class	varchar(1);
-	      Print_Invoice_Receipt_Name	varchar(20);
+	      Print_Prescription_H_Class	varchar(1);
+	      Print_Prescription_H_Name		varchar(20);
 #---    注射せん
-	      Print_Injection_Receipt_Class	varchar(1);
-	      Print_Injection_Receipt_Name 	varchar(20);
+	      Print_Order_Injection_Class	varchar(1);
+	      Print_Order_Injection_Name 	varchar(20);
 #---    指示せん
-	      Print_Instruct_Receipt_Class	varchar(1);
-	      Print_Instruct_Receipt_Name	varchar(20);
+	      Print_Order_Direction_Class	varchar(1);
+	      Print_Order_Direction_Name	varchar(20);
 #---    印刷ドクター
 		Print_Physician_Code		varchar(5);
 		Print_Physician_Code_Name	varchar(80);
