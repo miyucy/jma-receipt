@@ -57,6 +57,7 @@
       *  04.08.07    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
       *  04.08.08    NACL-門脇    18/03/01  平成３０年４月改正対応
       *  04.08.09    NACL-門脇    18/03/27  平成３０年４月改正対応
+      *  04.08.10    NACL-門脇    18/06/21  リハビリ開始日記載修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -304,6 +305,7 @@
            03  IDX33               PIC 9(02).
            03  IDX41               PIC 9(02).
            03  IDX42               PIC 9(02).
+           03  IDX43               PIC 9(02).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  DAY-IDX             PIC 9(04).
@@ -3295,6 +3297,18 @@
            MOVE     SPACE    TO     WRK-RIHASANTEI-YMD2
            MOVE     ZERO     TO     WRK-RIHASANTEI41-FLG
       *
+      *    リハ開始日
+      *
+      *    当月の先頭のリハビリ算定日
+           MOVE     ZERO           TO    RIHA-ST2
+           PERFORM  VARYING  RIHA-IDX  FROM   1  BY   1
+                     UNTIL   RIHA-IDX    >   31
+              IF    TBL-HASSYO-TAIHI-SANTEI(RIHA-IDX) NOT = ZERO
+                 MOVE   RIHA-IDX   TO    RIHA-ST2
+                 MOVE     31       TO    RIHA-IDX
+              END-IF
+           END-PERFORM
+      *
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    RECE82-HOSPNUM      TO  SANTEI-HOSPNUM
@@ -3415,15 +3429,6 @@
                  MOVE     31       TO    RIHA-IDX
               END-IF
            END-PERFORM
-      *    当月の先頭のリハビリ算定日
-           MOVE     ZERO           TO    RIHA-ST2
-           PERFORM  VARYING  RIHA-IDX  FROM   1  BY   1
-                     UNTIL   RIHA-IDX    >   31
-              IF    TBL-HASSYO-TAIHI-SANTEI(RIHA-IDX) NOT = ZERO
-                 MOVE   RIHA-IDX   TO    RIHA-ST2
-                 MOVE     31       TO    RIHA-IDX
-              END-IF
-           END-PERFORM
       *
       *    当月先頭のリハビリ開始日より前に当月のリハビリ算定日がなければ
       *    前月以前の直近のリハビリ開始日をクリアする
@@ -3527,8 +3532,12 @@
              MOVE  "key4"              TO  MCP-PATHNAME
              PERFORM  900-SANTEIPLUS-READ-SEC
              IF    FLG-SANTEIPLUS   =  ZERO
-               IF  (SANTEIPLUS-ENDYMD   NOT =  SPACE       )
-               AND (SANTEIPLUS-ENDYMD(1:6)  <  RECE82-SRYYM)
+               MOVE  SANTEIPLUS-ENDYMD(7:2)  TO  IDX43
+               IF  ((SANTEIPLUS-ENDYMD   NOT =  SPACE       ) AND
+                    (SANTEIPLUS-ENDYMD(1:6)  <  RECE82-SRYYM))
+               OR  ((SANTEIPLUS-ENDYMD   NOT =  SPACE       ) AND
+                    (SANTEIPLUS-ENDYMD(1:6)  =  RECE82-SRYYM) AND
+                    (IDX43                   <  RIHA-ST2    ))
                   MOVE     1           TO  FLG-SANTEIPLUS-HANTEI
                END-IF
              END-IF
