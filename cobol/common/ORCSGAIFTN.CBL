@@ -1320,8 +1320,6 @@ grpsys     COPY    "COMMON-SPA".
                                 OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                                 OR   (LNK-S01-RC      NOT =  ZERO )
       *
-                PERFORM  1001-SANTEI-IDX-HENSYU-SEC
-      *
                 ADD      1                    TO  CNT-KENSU
       *
                 MOVE     WRK-ZAITAKU-KBN      TO
@@ -1329,8 +1327,10 @@ grpsys     COPY    "COMMON-SPA".
       *
                 MOVE     LNK-ORCS01-REC       TO  WRK-ORCS01-REC
                 MOVE     IDX                  TO  WRK-S01-IDX
-                MOVE     IDZ2                 TO  WRK-S01-IDX2
                 MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
+      *
+                PERFORM  1001-SANTEI-IDX-HENSYU-SEC
+                MOVE     IDZ2                 TO  WRK-S01-IDX2
       *
                 MOVE     SPACE                TO  WRK-SYUNOU-REC-T
                 INITIALIZE                        WRK-SYUNOU-REC-T
@@ -1404,8 +1404,9 @@ grpsys     COPY    "COMMON-SPA".
                 END-IF
       *
       *         複数科まとめ集計しない場合、合計レコードは処理しない
-                IF     WRK-S01-KAGRPFLG          =   "1"
-                AND    SYU-SRYKA                 =  "00"
+                IF   ((WRK-S01-KAGRPFLG   =   "1"   ) AND
+                      (SYU-SRYKA          =   "00"  ))
+                OR   ( SYU-HKNCOMBINUM    =   "9999" )
                     CONTINUE
                 ELSE
                     CALL     "ORCS01"     USING    MCPAREA
