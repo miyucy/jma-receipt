@@ -162,6 +162,7 @@
            03  FLG-SRYACT-CHECK    PIC 9(01).
            03  FLG-GENMEN-ARI      PIC 9(01).
            03  FLG-GENMEN-NASI     PIC 9(01).
+           03  FLG-CHECK-METHOD    PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -2554,6 +2555,13 @@
       *****************************************************************
        2004114-FTNJGNCHK-HENSYU-SEC            SECTION.
       *
+           MOVE      ZERO     TO     FLG-CHECK-METHOD
+           IF  ((LNK-FTNJGNCHK-PREFNUM      =  42           ) AND
+                (LNK-FTNJGNCHK-KOHNUM(1:1) >= "1" AND <= "8") AND
+                (LNK-FTNJGNCHK-SRYYM       >= "200704"      ))
+             MOVE     1       TO     FLG-CHECK-METHOD
+           END-IF
+      *
            IF ((LNK-FTNJGNCHK-NYUGAIKBN = "2"       ) AND
                (WRK-IRYOKEIKBN-G        = "1" OR "2"))
            OR ((LNK-FTNJGNCHK-NYUGAIKBN = "1"       ) AND
@@ -2621,35 +2629,35 @@
                    IF   LNK-FTNJGNCHK-RC      = ZERO
                    AND  WRK-HKNMST-JGNGAK NOT = ZERO
                    AND  WRK-KOHFTN        NOT = 9999999999
-                     IF  (LNK-FTNJGNCHK-PREFNUM      =  42           )
-                     AND (LNK-FTNJGNCHK-KOHNUM(1:1) >= "1" AND <= "8")
-                     AND (LNK-FTNJGNCHK-SRYYM       >= "200704"      )
-                       IF  (WRK-KOHFTN9-H  =  WRK-KOHFTN-H)
-                       OR  (WRK-KOHFTN9-X  =  WRK-KOHFTN-X)
-                             MOVE   01         TO  LNK-FTNJGNCHK-RC
-                       END-IF
+                     IF   WRK-HKNMST-JGNGAK2  NOT =  ZERO
+                        IF     LNK-FTNJGNCHK-NYUGAIKBN  =  "1"
+                          IF   (WRK-KOHFTN9-H      = WRK-KOHFTN-H)
+                          AND  (WRK-HKNMST-JGNGAK2 > WRK-KOHFTN-X)
+                              MOVE   01   TO  LNK-FTNJGNCHK-RC
+                          END-IF
+                        ELSE
+                          IF   (WRK-KOHFTN9-H      = WRK-KOHFTN-H)
+                          AND  (WRK-HKNMST-JGNGAK2 > WRK-KOHFTN-H)
+                              MOVE   01   TO  LNK-FTNJGNCHK-RC
+                          END-IF
+                        END-IF
                      ELSE
-                       IF   LNK-FTNJGNCHK-SRYYM  >= "200804"
-                         IF   WRK-KOHFTN9-H  =  WRK-KOHFTN-H
-                           IF  WRK-HKNMST-JGNGAK2   =  ZERO
-                                 MOVE     01   TO  LNK-FTNJGNCHK-RC
-                           ELSE
-                             IF  LNK-FTNJGNCHK-NYUGAIKBN  =  "1"
-                               IF WRK-HKNMST-JGNGAK2 > WRK-KOHFTN-X
-                                 MOVE     01   TO  LNK-FTNJGNCHK-RC
-                               END-IF
-                             ELSE
-                               IF WRK-HKNMST-JGNGAK2 > WRK-KOHFTN-H
-                                 MOVE     01   TO  LNK-FTNJGNCHK-RC
-                               END-IF
-                             END-IF
-                           END-IF
-                         END-IF
-                       ELSE
-                         IF   WRK-HKNMST-JGNGAK  >  WRK-KOHFTN
-                             MOVE   01         TO  LNK-FTNJGNCHK-RC
-                         END-IF
-                       END-IF
+                        IF     FLG-CHECK-METHOD   =   1
+                          IF   (WRK-KOHFTN9-H  =  WRK-KOHFTN-H)
+                          OR   (WRK-KOHFTN9-X  =  WRK-KOHFTN-X)
+                              MOVE   01   TO  LNK-FTNJGNCHK-RC
+                          END-IF
+                        ELSE
+                          IF   LNK-FTNJGNCHK-SRYYM  >= "200804"
+                            IF  WRK-KOHFTN9-H  =  WRK-KOHFTN-H
+                              MOVE   01   TO  LNK-FTNJGNCHK-RC
+                            END-IF
+                          ELSE
+                            IF  WRK-HKNMST-JGNGAK  >  WRK-KOHFTN
+                              MOVE   01   TO  LNK-FTNJGNCHK-RC
+                            END-IF
+                          END-IF
+                        END-IF
                      END-IF
       *
                      IF    LNK-FTNJGNCHK-RC   NOT =   ZERO
