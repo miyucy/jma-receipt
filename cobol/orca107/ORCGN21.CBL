@@ -57,7 +57,7 @@
       * 04.07.01     NACL-森脇     14/04/02  画像表示方法変更
       * 04.08.01     NACL-森脇     14/08/07  画像イメージ作成機能追加
       * 04.08.02     NACL-森脇     16/09/27  GINBEE(API)対応
-      * 05.00.00     NACL-森脇     17/02/10  自費薬剤登録対応
+      * 05.00.00     NACL-森脇     17/03/06  自費薬剤登録対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -432,7 +432,12 @@
                    GO  TO  300-SCREEN-EXT
       *        画像選択画面処理
                WHEN    "N21FIL"
-                   PERFORM 430-GAZOCHK-HENSYU-SEC
+                   IF      SPA-N21FIL-PHOTO    =   "SIZEERR"
+                       MOVE    "0022"      TO  SPA-ERRCD
+                       MOVE    10          TO  SPA-GMN-CUR
+                   ELSE
+                       PERFORM 430-GAZOCHK-HENSYU-SEC
+                   END-IF
                    GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
@@ -1207,6 +1212,21 @@
                MOVE    "0014"      TO  SPA-ERRCD
                MOVE    10          TO  SPA-GMN-CUR
                MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+               GO  TO  430-GAZOCHK-HENSYU-EXT
+           END-IF
+      *
+      *    画像データサイズをチェック
+           INITIALIZE                  ORCSMIAREA
+           MOVE    "misizechk"     TO  ORCSMI-SRYCD
+           MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
+           MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
+           CALL    "ORCSMISAVE"        USING
+                                       ORCSMIAREA
+                                       SPA-AREA
+           IF      ORCSMI-RETCD    NOT =   ZERO
+               MOVE    "0022"          TO  SPA-ERRCD
+               MOVE    10              TO  SPA-GMN-CUR
+               MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *

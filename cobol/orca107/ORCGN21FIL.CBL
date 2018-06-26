@@ -213,9 +213,29 @@
       *
       *    画像パスチェック
            PERFORM 431-GAZO-PATH-CHK-SEC
+      *
       *    画像ファイル作成処理
            PERFORM 500-GAZO-OBJECT-SEC
       *
+      *    画像データサイズをチェック
+           INITIALIZE                  ORCSMIAREA
+           MOVE    "misizechk"     TO  ORCSMI-SRYCD
+           MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
+           MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
+           CALL    "ORCSMISAVE"        USING
+                                       ORCSMIAREA
+                                       SPA-AREA
+           IF      ORCSMI-RETCD    NOT =   ZERO
+               MOVE    LOW-VALUE       TO  COMMAND
+               STRING  "rm -r "            DELIMITED BY SIZE
+                       SPA-GMN-FOLDER      DELIMITED BY SIZE
+                                   INTO    COMMAND
+               END-STRING
+      *        コマンド実行
+               CALL    "system"            USING
+                                           COMMAND
+               MOVE    "SIZEERR"       TO  SPA-N21FIL-PHOTO
+           END-IF
            .
        210-GAZO-EXT.
            EXIT.
@@ -338,15 +358,6 @@
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        ORCA-BLOB
-                                       SPA-AREA
-      *
-      *    画像データを保存
-           INITIALIZE                  ORCSMIAREA
-           MOVE    "misizechk"     TO  ORCSMI-SRYCD
-           MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
-           MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
-           CALL    "ORCSMISAVE"        USING
-                                       ORCSMIAREA
                                        SPA-AREA
            .
        500-GAZO-OBJECT-EXT.
