@@ -2381,6 +2381,13 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
+               WHEN    "0702"
+                   STRING  "£Í£Ò£É»£±ÆÎÁ¤È¾®»ùÄÃÀÅ²¼£Í£Ò£É»£±Æ²Ã»»"
+                           "¤¬°ã¤¤¤Þ¤¹¡£"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
