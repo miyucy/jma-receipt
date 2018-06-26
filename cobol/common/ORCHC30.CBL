@@ -800,7 +800,10 @@
                MOVE    YAKUJYO-SRYCD   TO  ORCSMI-SRYCD
                MOVE    SGETTEMP-TEMPDIR
                                        TO  ORCSMI-TEMPDIR
-               MOVE    YAKUJYO-PHOTO   TO  ORCSMI-FILENAME
+               STRING  YAKUJYO-PHOTO       DELIMITED BY SPACE
+                       CNT-KENSU           DELIMITED BY SPACE
+                                   INTO    ORCSMI-FILENAME
+               END-STRING
                CALL    "ORCSMILOAD"        USING
                                            ORCSMIAREA
                                            SPA-AREA
@@ -810,6 +813,7 @@
                        WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
                        "/"                 DELIMITED BY SIZE
                        YAKUJYO-PHOTO       DELIMITED BY SPACE
+                       CNT-KENSU           DELIMITED BY SPACE
                                    INTO    FILE-IMAGE
                END-STRING
       *----(04.08.01)--ADD-END-----
