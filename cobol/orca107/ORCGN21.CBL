@@ -432,7 +432,12 @@
                    GO  TO  300-SCREEN-EXT
       *        画像選択画面処理
                WHEN    "N21FIL"
-                   PERFORM 430-GAZOCHK-HENSYU-SEC
+                   IF      SPA-N21FIL-PHOTO    =   "SIZEERR"
+                       MOVE    "0022"      TO  SPA-ERRCD
+                       MOVE    10          TO  SPA-GMN-CUR
+                   ELSE
+                       PERFORM 430-GAZOCHK-HENSYU-SEC
+                   END-IF
                    GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
@@ -1207,6 +1212,21 @@
                MOVE    "0014"      TO  SPA-ERRCD
                MOVE    10          TO  SPA-GMN-CUR
                MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+               GO  TO  430-GAZOCHK-HENSYU-EXT
+           END-IF
+      *
+      *    画像データサイズをチェック
+           INITIALIZE                  ORCSMIAREA
+           MOVE    "misizechk"     TO  ORCSMI-SRYCD
+           MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
+           MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
+           CALL    "ORCSMISAVE"        USING
+                                       ORCSMIAREA
+                                       SPA-AREA
+           IF      ORCSMI-RETCD    NOT =   ZERO
+               MOVE    "0022"          TO  SPA-ERRCD
+               MOVE    10              TO  SPA-GMN-CUR
+               MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
