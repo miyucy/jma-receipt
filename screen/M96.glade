@@ -780,9 +780,9 @@
       </widget>
       <widget>
         <class>GtkLabel</class>
-        <name>label1</name>
+        <name>label133</name>
         <x>740</x>
-        <y>632</y>
+        <y>616</y>
         <width>248</width>
         <height>20</height>
         <sensitive>True</sensitive>
@@ -792,7 +792,25 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>相互作用、症状措置、保険者マスタは</label>
+        <label>相互作用、症状措置、保険者、</label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>label134</name>
+        <x>740</x>
+        <y>636</y>
+        <width>248</width>
+        <height>20</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>特材品目算定マスタは</label>
         <justify>GTK_JUSTIFY_LEFT</justify>
         <wrap>False</wrap>
       </widget>
