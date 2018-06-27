@@ -540,6 +540,14 @@
            COMPUTE WRK-TANKA           =   WRK-COM-JIHIMONEY(IDX-Z)
                                        +   WRK-ZEIKIN
       *
+           IF      WRK-TANKA           >   9999999
+      *H30.5
+      *        ¶â³Û¤Ï£··å¤Þ¤Ç
+               MOVE    "1088"          TO  SPA-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               GO  TO    100211-JIHI-KEISAN-EXT
+           END-IF
+      *
            MOVE    WRK-TANKA           TO  WRK-COM-JIHIMONEY(IDX-Z)
            MOVE    WRK-TANKA           TO  WRK-COM-KEI      (IDX-Z)
            MOVE    WRK-TANKA           TO  WRK-GMN-KEI      (IDX-Z)
