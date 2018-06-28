@@ -27,7 +27,7 @@ MONTH_DIR=${LOCAL_TEMPDIR}/${MONTH}
 DATA_FILE=${MCP_TEMPDIR}/$3
 
 cleanup () {
-	[ -n "${LOCAL_DIR}" ] && rm -rf ${LOCAL_TEMPDIR}/*
+	[ -e "${LOCAL_TEMPDIR}" ] && rm -rf ${LOCAL_TEMPDIR}/*
     rm -f ${DATA_FILE}
 }
 
@@ -36,7 +36,7 @@ trap "cleanup" EXIT
 
 mkdir -p ${MONTH_DIR}
 
-while read LINE; do
+while read -r LINE; do
   name=$(echo ${LINE:0:42}| sed -e 's/[[:space:]]*$//')
   sn=${LINE:44:2}
   tmpfile=${LOCAL_TEMPDIR}/${name}.${sn}.tmp
