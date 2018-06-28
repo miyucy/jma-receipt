@@ -71,7 +71,7 @@
       *         05  TOKEI-ENDYMD        PIC X(08).
                05  TOKEI-TEN           PIC 9(07)V9(02).
                05  TOKEI-SRYKA         PIC X(02).
-           03  TOKEI-NAME              PIC X(40).
+           03  TOKEI-NAME              PIC X(200).
            03  TOKEI-TANI              PIC X(10).
            03  TOKEI-SRYSURYO          PIC 9(10)V9(05).
       *----(04.08.02)--ADD-START---
@@ -224,7 +224,7 @@
            03  WRK-NAI-AREA.
                05  WRK-NAI-TBL         OCCURS  25  TIMES.
                  07  WRK-NAI-SRYCD     PIC X(9).
-                 07  WRK-NAI-NAME      PIC X(40).
+                 07  WRK-NAI-NAME      PIC X(200).
                  07  WRK-NAI-KOME      PIC X(01).
                  07  WRK-NAI-TEN       PIC X(10).
                  07  WRK-NAI-TANI      PIC X(10).
@@ -1770,7 +1770,7 @@
                    UNTIL ( CNT-LINE    >   25 )
                MOVE    WRK-NAI-SRYCD(CNT-LINE)
                                        TO  HCMG006-CD(CNT-LINE)
-               MOVE    WRK-NAI-NAME(CNT-LINE)
+               MOVE    WRK-NAI-NAME(CNT-LINE)(1:40)
                                        TO  HCMG006-NAME(CNT-LINE)
                MOVE    WRK-NAI-TANI(CNT-LINE)
                                        TO  HCMG006-TANI(CNT-LINE)
@@ -1919,7 +1919,7 @@
       *    ÌôºÞÌ¾¾Î
            MOVE    WRK-NAI-NAME(CNT-LINE)
                                    TO  WRK-DATA
-           MOVE    40              TO  WRK-NAGASA
+           MOVE    200             TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    Ã±°Ì
