@@ -9,8 +9,6 @@ fi
 
 . $JMARECEIPT_ENV
 
-trap "cleanup" EXIT
-
 #-------------------------------------------#
 #    自賠責レセプトＰＤＦクライアント保存
 #
@@ -19,8 +17,9 @@ trap "cleanup" EXIT
 #        $3 データファイル
 #-------------------------------------------#
 
-LOG_FILE=/var/log/jma-receipt/$1$(basename ${0%.sh}).log
-LOCAL_TEMPDIR=$(mktemp -dp ${MCP_TEMPDIR})
+LOCAL_DIR=$(uuidgen)
+LOCAL_TEMPDIR=${MCP_TEMPDIR}/${LOCAL_DIR}
+mkdir -p ${LOCAL_TEMPDIR}
 MONTH=JIBAI_RECEIPT_$2
 ZIP_FILE=${MONTH}.zip
 JRP_FILE=${MONTH}-$(date +"%Y%m%d%H%M%S").jrp
@@ -28,13 +27,16 @@ MONTH_DIR=${LOCAL_TEMPDIR}/${MONTH}
 DATA_FILE=${MCP_TEMPDIR}/$3
 
 cleanup () {
-	rm -Rf ${LOCAL_TEMPDIR}
-  rm -Rf ${DATA_FILE}
+	[ -e "${LOCAL_TEMPDIR}" ] && rm -rf ${LOCAL_TEMPDIR}/*
+    rm -f ${DATA_FILE}
 }
+
+trap "cleanup" EXIT
+
 
 mkdir -p ${MONTH_DIR}
 
-while read LINE; do
+while read -r LINE; do
   name=$(echo ${LINE:0:42}| sed -e 's/[[:space:]]*$//')
   sn=${LINE:44:2}
   tmpfile=${LOCAL_TEMPDIR}/${name}.${sn}.tmp
@@ -54,7 +56,7 @@ while read LINE; do
   monpe ${layeroption} ${tmpfile}.red -e ${tmpfile}.pdf
 done < ${DATA_FILE}
 
-for f in $(ls ${LOCAL_TEMPDIR}/*.tmp.pdf | cut -b 1-$((${#tmpfile} - 7))) ; do
+for f in $(ls ${LOCAL_TEMPDIR}/*.tmp.pdf | cut -b 1-$((${#tmpfile} - 7)) | sort | uniq) ; do
   pdftk  $f*.tmp.pdf cat output ${MONTH_DIR}/$(basename $f).pdf
 done
 
