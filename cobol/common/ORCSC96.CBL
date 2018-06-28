@@ -1989,6 +1989,14 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+      *H30.7
+               WHEN    "K601"
+                   STRING  "警告！"
+                           "上記検査は重複算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "0603"
                    STRING  "時間外加算と初・再診料が違います。"
                            "正しい時間外加算を入力して下さい。"

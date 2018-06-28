@@ -63,6 +63,7 @@
       *  04.08.00    NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¸Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  16/07/XX  Ã¼¿ô½èÍýÂÐ±þÂ¾
       *  04.08.00    NACL-Â¿¡¹Ç¼  18/03/XX  £È£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.08.00    NACL-Â¿¡¹Ç¼  18/07/XX  D014¸¡ºº½ÅÊ£·Ù¹ðÂÐ±þ
       *****************************************************************
       *
       *
@@ -127,6 +128,8 @@
            03  FLG-SINSATU-ARI      PIC 9(01).
       *H30.4
            03  FLG-AKUSEIBYORI     PIC 9(01).
+      *H30.7
+           03  FLG-KEI             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -509,11 +512,11 @@
       *
        01  TBL-KENSA-JYU-AREA.
       *¤É¤ì¤«£²¤Ä
-      *    £È£Ä£Ì¥³¥ì¥¹¥Æ¥í¡¼¥ë
+      *    £È£Ä£Ì¥³¥ì¥¹¥Æ¥í¡¼¥ë(D007-3)
            03  FILLER          PIC X(14)  VALUE    "01 2 160023410".
-      *    Áí¥³¥ì¥¹¥Æ¥í¡¼¥ë
+      *    Áí¥³¥ì¥¹¥Æ¥í¡¼¥ë(D007-3)
            03  FILLER          PIC X(14)  VALUE    "01 2 160022410".
-      *    £Ì£Ä£Ì¥³¥ì¥¹¥Æ¥í¡¼¥ë
+      *    £Ì£Ä£Ì¥³¥ì¥¹¥Æ¥í¡¼¥ë(D007-4)
            03  FILLER          PIC X(14)  VALUE    "01 2 160167250".
       *¤É¤ì¤«£²¤Ä¡Ê£È£²£°¡¥£´¤«¤é £³¤Ä»»Äê²Ä¡Ë
       **** £Ô£É£Â£Ã
@@ -523,9 +526,9 @@
       *    Å´
       **** 03  FILLER          PIC X(14)  VALUE    "02 2 160022110".
       *¤É¤ì¤«£±¤Ä
-      *    £Ã£á
+      *    £Ã£á(D007-1)
            03  FILLER          PIC X(14)  VALUE    "03 1 160021510".
-      *    ¥¤¥ª¥ó²½¥«¥ë¥·¥¦¥à
+      *    ¥¤¥ª¥ó²½¥«¥ë¥·¥¦¥à(D007-7)
            03  FILLER          PIC X(14)  VALUE    "03 1 160021610".
       *¤É¤ì¤«£±¤Ä
       *!!!!ÃÁÇòÊ¬²è
@@ -534,11 +537,11 @@
       *!!! 03  FILLER          PIC X(14)  VALUE    "04 11160022350".
       *
       *¤É¤ì¤«£±¤Ä
-      *    £Ó£Ð¡Ý£Á
+      *    £Ó£Ð¡Ý£Á(D007-35)
            03  FILLER          PIC X(14)  VALUE    "05 1 160169350".
-      *    ¥·¥ê¥¢¥ë²½Åüº¿¹³¸¶£Ë£Ì¡Ý£¶
+      *    ¥·¥ê¥¢¥ë²½Åüº¿¹³¸¶£Ë£Ì¡Ý£¶(D007-30)
            03  FILLER          PIC X(14)  VALUE    "05 1 160168550".
-      *    ¥µ¡¼¥Õ¥¡¥¯¥¿¥ó¥È¥í¥×¥í¥Æ¥¤¥ó£Ä
+      *    ¥µ¡¼¥Õ¥¡¥¯¥¿¥ó¥È¥í¥×¥í¥Æ¥¤¥ó£Ä(D007-36)
            03  FILLER          PIC X(14)  VALUE    "05 1 160168450".
       *¤É¤ì¤«£²¤Ä
       *    ÃÁÇòÊ¬²èÂ¬Äê
@@ -550,8 +553,8 @@
       *
       *¤É¤ì¤«£²¤Ä
       *(D014)
-      *    ¥ê¥Þ¥È¥¤¥É°ø»Ò¡Ê£Ò£Æ¡ËÈ¾ÄêÎÌ(D014-2)
-           03  FILLER          PIC X(14)  VALUE    "07021160053110".
+      *    ¥ê¥Þ¥È¥¤¥É°ø»Ò¡Ê£Ò£Æ¡ËÈ¾ÄêÎÌ(D014-2)  ÇÑ»ß
+      **** 03  FILLER          PIC X(14)  VALUE    "07021160053110".
       *    ¥ê¥Þ¥È¥¤¥É°ø»Ò¡Ê£Ò£Æ¡ËÄêÎÌ(D014-2)
            03  FILLER          PIC X(14)  VALUE    "07021160195610".
       *    ¹³¥¬¥é¥¯¥È¡¼¥¹·çÂ»£É£ç£Ç¹³ÂÎ(D014-8)
@@ -560,18 +563,18 @@
            03  FILLER          PIC X(14)  VALUE    "07 21160195910".
       *    ¥Þ¥È¥ê¥Ã¥¯¥¹¥á¥¿¥×¥í¥Æ¥¤¥Ê¡¼¥¼£³¡Ê£Í£Í£Ð¡¼£³¡Ë(D014-7)
            03  FILLER          PIC X(14)  VALUE    "07 2 160173150".
-      *    £Ã£±£ñ·ë¹çÌÈ±ÖÊ£¹çÂÎ(D014-13)
+      *    £Ã£±£ñ·ë¹çÌÈ±ÖÊ£¹çÂÎ(D014-12)
            03  FILLER          PIC X(14)  VALUE    "07 2 160119210".
-      *    ¥â¥Î¥¯¥í¡¼¥Ê¥ë£Ò£Æ·ë¹çÌÈ±ÖÊ£¹çÂÎ(D014-18)
+      *    ¥â¥Î¥¯¥í¡¼¥Ê¥ë£Ò£Æ·ë¹çÌÈ±ÖÊ£¹çÂÎ(D014-20)
            03  FILLER          PIC X(14)  VALUE    "07 2 160143750".
-      *    £É£ç£Ç·¿¥ê¥¦¥Þ¥Á°ø»Ò(D014-20
+      *    £É£ç£Ç·¿¥ê¥¦¥Þ¥Á°ø»Ò(D014-22)
            03  FILLER          PIC X(14)  VALUE    "07 2 160151650".
-      *    £Ã£³£ä·ë¹çÌÈ±ÖÊ£¹çÂÎ(D014-22)
-           03  FILLER          PIC X(14)  VALUE    "07 2 160119310".
+      *****£Ã£³£ä·ë¹çÌÈ±ÖÊ£¹çÂÎ(D014-22)**************************
+      ***  03  FILLER          PIC X(14)  VALUE    "07 2 160119310".
       *£±¤Ä¡Ê£°£·¡Ë¤Î¸¡ºº¤Ï»»ÄêÉÔ²Ä
-      *    ¹³¥·¥È¥ë¥ê¥ó²½¥Ú¥¯¥Á¥É¹³ÂÎ(D014-22)
+      *    ¹³¥·¥È¥ë¥ê¥ó²½¥Ú¥¯¥Á¥É¹³ÂÎ(D014-23)
            03  FILLER          PIC X(14)  VALUE    "08 1 160181150".
-      *    ¹³¥·¥È¥ë¥ê¥ó²½¥Ú¥¯¥Á¥ÉÄêÎÌ(D014-22)
+      *    ¹³¥·¥È¥ë¥ê¥ó²½¥Ú¥¯¥Á¥ÉÄêÎÌ(D014-23)
            03  FILLER          PIC X(14)  VALUE    "08 1 160197410".
       *
       *¤É¤ì¤«£±¤Ä(D007)
@@ -594,33 +597,14 @@
            03  FILLER          PIC X(14)  VALUE    "10 1 160160250".
       *
        01  TBL-KENSA-JYU-AREA-R    REDEFINES   TBL-KENSA-JYU-AREA.
-           03  TBL-KENSA-JYU-OCC       OCCURS  29  INDEXED  JYU-IDX.
+           03  TBL-KENSA-JYU-OCC       OCCURS  27  INDEXED  JYU-IDX.
                05  TBL-JYU-KBN         PIC X(02).
                05  TBL-FILLER1         PIC X(01).
                05  TBL-JYU-KEN         PIC X(01).
                05  TBL-FILLER2         PIC X(01).
                05  TBL-JYU-SRYCD       PIC X(09).
-       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   29.
+       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   27.
       *
-      *    ½ÅÊ£»»ÄêÉÔ²Ä¥Æ¡¼¥Ö¥ë¡Ê£²¡Ë
-      *01  TBL-KENSA-JYU2-AREA.
-      *¤É¤ì¤«£²¤Ä¡Ê£È£±£¸¡¥£´¤«¤éÇÑ»ß¡Ë
-      *    £Ô£Ð
-      *    03  FILLER          PIC X(14)  VALUE    "01 2 160017410".
-      *    £Á¡¿£Ç
-      *    03  FILLER          PIC X(14)  VALUE    "01 2 160022350".
-      *    ¥¢¥ë¥Ö¥ß¥ó
-      *    03  FILLER          PIC X(14)  VALUE    "01 2 160018910".
-      *
-      *
-      *01  TBL-KENSA-JYU2-AREA-R    REDEFINES  TBL-KENSA-JYU2-AREA.
-      *    03  TBL-KENSA-JYU2-OCC      OCCURS  3   INDEXED  JYU2-IDX.
-      *        05  TBL2-JYU-KBN         PIC X(02).
-      *        05  TBL2-FILLER1         PIC X(01).
-      *        05  TBL2-JYU-KEN         PIC X(01).
-      *        05  TBL2-FILLER2         PIC X(01).
-      *        05  TBL2-JYU-SRYCD       PIC X(09).
-      *01  KEN-JYU2-MAX                 PIC 9(04)   VALUE   3.
       *
        01  WRK-JYUFUKU-CHK.
            03  WRK-JYU-CNT             PIC 9(02).
@@ -3383,6 +3367,9 @@
            MOVE    ZERO                TO  WRK-JYU-CNT
            MOVE    WRK-COM-NAME (IDX-Z)    TO  WRK-ERRMSG-1
            MOVE    SPACE               TO  WRK-ERRMSG-2
+      *H30.7
+           MOVE    ZERO                TO  FLG-KEI
+      *!!!!
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   KEN-JYU-MAX)  OR
                               (SPA-ERRCD   NOT =   SPACE  )
@@ -3425,7 +3412,7 @@
                                PERFORM 200111-ERRMSG-HEN-SEC
                            END-IF
       *H24.8
-      *                    ¤É¤ì¤«£±¤Ä¤Î½ÅÊ£ÂÐ¾Ý¤¢¤ê
+      *                    ¤É¤ì¤«£±¤Ä¤Î½ÅÊ£ÂÐ¾Ý¤¢¤ê(D014-2,D014-8)
                            IF      (WRK-JYU-KBN        =   "07" )
                              AND   (WRK-JYU-FLG        =   "1" )
                              AND   (WRK-JYU-FLG2       =   "1" )
@@ -3437,6 +3424,8 @@
                              AND   (WRK-JYU-FLG1       =   " " )
                              AND   (WRK-JYU-FLG12      =   " " )
                                MOVE    1               TO  WRK-JYU-KEN
+      *H30.7
+                               MOVE    1               TO  FLG-KEI
                            END-IF
                        END-IF
       *                Êñ³ç¡¦Æþ±¡¤Î»þ¤ÏºÞÆâ
@@ -3448,6 +3437,7 @@
                    END-PERFORM
                END-IF
            END-PERFORM
+      *
            IF      WRK-JYU-KEN         <=  WRK-JYU-CNT
                MOVE    "0601"              TO  SPA-ERRCD
                IF      WRK-JYU-KEN         =   2
@@ -3455,6 +3445,28 @@
                END-IF 
                MOVE    "1"                 TO  WRK-COM-CUR (WRK-JYU-IDX)
                MOVE    WRK-ERRMSG-1        TO  LNK-ORCSC-ERRMSG
+      *H30.7
+      *        ·Ù¹ðÂÐ¾Ý(D014-7,D014-8,D014-12,D014-20,DO14-22)
+               IF     (WRK-JYU-KEN         =   1  )
+                  AND (WRK-JYU-KEN         =   WRK-JYU-CNT)
+                  AND (FLG-KEI             =   1  )
+                   IF     (WRK-COM-KZMFLG(WRK-JYU-IDX)
+                                               =   SPACE) AND
+                          (LNK-ORCSC-KEI-IDX   =   ZERO )
+                       MOVE    "K601"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                          (WRK-JYU-IDX)
+                       MOVE    WRK-JYU-IDX     TO  LNK-ORCSC-KEI-IDX
+                   ELSE
+      *                ¥¨¥é¡¼²ò½ü
+                       MOVE    SPACE           TO  SPA-ERRCD
+                       MOVE    SPACE           TO  WRK-COM-CUR
+                                                          (WRK-JYU-IDX)
+                       MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                   END-IF
+               END-IF
+      *!!!!
+      *
            END-IF
       *
       **** IF      WRK-JYU-FLG     NOT =   SPACE
