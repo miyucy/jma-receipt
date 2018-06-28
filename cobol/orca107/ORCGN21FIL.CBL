@@ -226,14 +226,6 @@
                                        ORCSMIAREA
                                        SPA-AREA
            IF      ORCSMI-RETCD    NOT =   ZERO
-               MOVE    LOW-VALUE       TO  COMMAND
-               STRING  "rm -r "            DELIMITED BY SIZE
-                       SPA-GMN-FOLDER      DELIMITED BY SIZE
-                                   INTO    COMMAND
-               END-STRING
-      *        コマンド実行
-               CALL    "system"            USING
-                                           COMMAND
                MOVE    "SIZEERR"       TO  SPA-N21FIL-PHOTO
            END-IF
            .
