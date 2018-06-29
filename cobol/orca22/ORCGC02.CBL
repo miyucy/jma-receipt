@@ -348,6 +348,7 @@
       *                                     の修正
       *  05.00.02    NACL-藤原    18/01/05  登録時の補足コメント半角入力
       *                                     のチェック追加
+      *  05.00.03    NACL-藤原    18/06/21  診療科のチェックの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4107,6 +4108,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                    PERFORM 41023-HNYUGAIKBN-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "BANGO"
                    PERFORM 41011-BANGO-HEN-SEC
+               WHEN    "ACTIVATE"      ALSO    "BSRYKA"
+                   PERFORM 41019-BSRYKA-CHK-SEC
                WHEN    OTHER
                    PERFORM 400-INPUT-CHK-SEC
            END-EVALUATE
@@ -4188,11 +4191,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
       *
       *    移動処理時の入力チェック
            IF      SPA-NAI-C02-UPDOWN  =   1
-               IF      C02-BSRYKA      NOT =   SPA-GMN-C02-BSRYKA-G
-                   MOVE    "0087"              TO  SPA-ERRCD
-                   MOVE    2                   TO  SPA-GMN-C02-CUR
-                   GO  TO  400-INPUT-CHK-EXT
-               END-IF
+      ******** IF      C02-BSRYKA      NOT =   SPA-GMN-C02-BSRYKA-G
+      ********     MOVE    "0087"              TO  SPA-ERRCD
+      ********     MOVE    2                   TO  SPA-GMN-C02-CUR
+      ********     GO  TO  400-INPUT-CHK-EXT
+      ******** END-IF
                IF      C02-SRYYMD      NOT =   SPA-GMN-C02-SRYYMD
                    MOVE    "0087"              TO  SPA-ERRCD
                    MOVE    17                  TO  SPA-GMN-C02-CUR
@@ -4339,11 +4342,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
-           MOVE    SPA-GMN-C02-BSRYKA-G
-                                       TO  SPA-GMN-C02-BSRYKA-G-OLD
+      *****MOVE    SPA-GMN-C02-BSRYKA-G
+      *****                            TO  SPA-GMN-C02-BSRYKA-G-OLD
            MOVE    SPA-GMN-C02-SRYYMD  TO  SPA-GMN-C02-SRYYMD-OLD
       *
-           MOVE    C02-BSRYKA          TO  SPA-GMN-C02-BSRYKA-G
+      *****MOVE    C02-BSRYKA          TO  SPA-GMN-C02-BSRYKA-G
            MOVE    C02-SRYYMD          TO  SPA-GMN-C02-SRYYMD
       **** MOVE    C02-HOSOKU-COMMENT  TO  SPA-GMN-C02-HOSOKU-COMMENT
            MOVE    C02-CHARTBYOMEI     TO  SPA-GMN-C02-CHARTBYOMEI
@@ -4374,10 +4377,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
-           PERFORM 41019-BSRYKA-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
+      *****PERFORM 41019-BSRYKA-CHK-SEC
+      *****IF      SPA-ERRCD       NOT =   SPACE
+      *****    GO  TO  4102-KIHON-CHK-EXT
+      *****END-IF
            PERFORM 41018-CHARTBYOMEI-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  4102-KIHON-CHK-EXT
@@ -9474,11 +9477,21 @@ grpsys                                       SPA-AREA
       *****************************************************************
        41019-BSRYKA-CHK-SEC             SECTION.
       *
-           IF      SPA-GMN-C02-BSRYKA-G
-                                    NOT =   SPA-GMN-C02-BSRYKA-G-OLD
+           MOVE    31                  TO  SPA-GMN-C02-CUR
+      *
+           IF    ( SPA-NAI-C02-UPDOWN  =   1    )
+               IF      C02-BSRYKA      NOT =   SPA-GMN-C02-BSRYKA-G
+                   MOVE    "0087"              TO  SPA-ERRCD
+               END-IF
+               MOVE    2                   TO  SPA-GMN-C02-CUR
+               GO  TO  41019-BSRYKA-CHK-EXT
+           END-IF 
+      *
+           IF      C02-BSRYKA      NOT =   SPA-GMN-C02-BSRYKA-G
                MOVE   9                     TO  SPA-NAI-C02-UPDOWN
            END-IF  
       *
+           MOVE    C02-BSRYKA          TO  SPA-GMN-C02-BSRYKA-G
            MOVE    SPACE               TO  SPA-GMN-C02-BSRYKA-G (3:)
       *
            IF      SPA-GMN-C02-BSRYKA  =   SPACE
@@ -9498,9 +9511,9 @@ grpsys                                       SPA-AREA
                END-IF
            END-IF
       *
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    31                  TO  SPA-GMN-C02-CUR
-           END-IF    
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    2                   TO  SPA-GMN-C02-CUR
+           END-IF
            .
        41019-BSRYKA-CHK-EXT.
            EXIT.
@@ -10746,9 +10759,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
       *    入力チェック
+           MOVE    SPA-GMN-C02-BSRYKA-G   TO  C02-BSRYKA
+           PERFORM 41019-BSRYKA-CHK-SEC
+           IF      SPA-ERRCD           NOT =   SPACE
+               GO  TO  450-TOUROKU-EXT
+           END-IF
+      *
            MOVE    1                   TO  FLG-TOUROKU
            PERFORM 400-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE      )
+           IF    ( SPA-ERRCD       NOT =   SPACE )
            OR    ( SPA-CIDCD       NOT =   SPACE )
                GO  TO  450-TOUROKU-EXT
            END-IF
