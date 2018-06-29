@@ -198,6 +198,11 @@
       *  04.08.02    NACL-∆£∏∂    14/07/07  ∞Ïª˛•«•£•Ï•Ø•»•Í¬–±˛
       *  04.08.03    NACL-∆£∏∂    16/08/08  ∫“≥≤≥∫≈ˆ ¨° »Û∏∫Ã»¬–æ›§»∏∫Ã»¬–æ›°À
       *                                     •Ï•ª•◊•»§Œ ¨≥‰¬–±˛
+      *  04.08.04    NACL-∆£∏∂    18/06/14  ÀÃ≥§∆ª§Œ√œ ˝∏¯»Ò§Œµ≠∫‹ΩÁ¬–±˛
+      *                                     £π£∞§»£π£±§Œµ≠∫‹ΩÁ
+      *                                     ≈¨Õ—≥´ªœ∆¸°¢À° Ã»÷πÊ§ŒΩÁ§»§π§Î
+      *  04.08.05    NACL-∆£∏∂    18/06/11  Warning ¬–±˛
+      *
       *  05.00.01    NACL-∞À∆£    18/01/11  ø«Œ≈æ Û•∑•π•∆•‡¬–±˛
       *****************************************************************
       *
@@ -700,7 +705,9 @@
            COPY    "CPSK2002.INC".
       *     
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *    ∏¯»Òµ≠∫‹ΩÁ¿ﬂƒÍæ Û
            COPY    "CPSK2013.INC".
@@ -1018,24 +1025,24 @@
                    MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
                END-IF
       *
-               INITIALIZE                  SYS-200501-REC
-               MOVE    "2005"              TO  SYS-200501-KANRICD
-               MOVE    "01"                TO  SYS-200501-KBNCD
-               MOVE    WRK-PARA-SRYYM      TO  SYS-200501-STYUKYMD (1:6)
-               MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-               MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD 
-               MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-               MOVE    SYS-200501-REC      TO  MCPDATA-REC
+               INITIALIZE                  SYS-25-REC
+               MOVE    "2005"              TO  SYS-25-KANRICD
+               MOVE    "01"                TO  SYS-25-KBNCD
+               MOVE    WRK-PARA-SRYYM      TO  SYS-25-STYUKYMD (1:6)
+               MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+               MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD 
+               MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
+               MOVE    SYS-25-REC          TO  MCPDATA-REC
                PERFORM 910-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-200501-REC
+                   MOVE    MCPDATA-REC         TO  SYS-25-REC
                ELSE    
-                   MOVE    SPACE               TO  SYS-200501-REC
+                   MOVE    SPACE               TO  SYS-25-REC
                END-IF
-               IF      SYS-200501-DISASTER-RECEIPT
+               IF      SYS-25-DISASTER-RECEIPT
                                            =   SPACE
                    MOVE    ZERO                TO
-                                           SYS-200501-DISASTER-RECEIPT
+                                           SYS-25-DISASTER-RECEIPT
                END-IF
       *
       *        ∏¯»Òµ≠∫‹ΩÁ¿ﬂƒÍæ Û
@@ -2541,7 +2548,7 @@
            MOVE    SPACE               TO WRK-RECE61-RECEKA
       *
       *    ∫“≥≤≥∫≈ˆ§ŒÕ≠Ãµ°  ø¿Æ£≤£∏«Ø£±£∞∑Ó∞ πﬂ°À
-           IF    ( SYS-200501-DISASTER-RECEIPT
+           IF    ( SYS-25-DISASTER-RECEIPT
                                            =   "1"     )
            AND   ( WRK-RECE61-SRYYM        >=   201610 )
                IF    ( WRK-RECE61-RECEIPT-KBN (5:1)
@@ -3654,7 +3661,6 @@
       *****************************************************************
        200121-KOHID-HENSYU-SYS2013-SEC     SECTION.
       *
-      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       9
                COMPUTE IDX1    =   IDX     +   1
@@ -3671,11 +3677,17 @@
                            MOVE    WRK-KOHI        TO  WRK-KOHI-TBL(IDY)
                        ELSE
       *                    ∆¡≈Á∏©§Œ√œ ˝∏¯»Ò° À° Ã£¥£µ°¢£¥£∏°À
-                           IF    ( SYS-1001-PREFNUM    =   "36"    ) 
+                           IF  ( ( SYS-1001-PREFNUM    =   "36"    ) 
                            AND   ( WRK-KOHHKNNUM-O (IDX) (2:2)
                                                =   "45"    OR "48" )
                            AND   ( WRK-KOHHKNNUM-O (IDY) (2:2)
-                                               =   "45"    OR "48" )
+                                               =   "45"    OR "48" ) )
+      *                    ÀÃ≥§∆ª§Œ√œ ˝∏¯»Ò° À° Ã£π£∞°¢£π£±°À
+                           OR  ( ( SYS-1001-PREFNUM    =   "01"    ) 
+                           AND   ( WRK-KOHHKNNUM-O (IDX) (2:2)
+                                               =   "90"    OR "91" )
+                           AND   ( WRK-KOHHKNNUM-O (IDY) (2:2)
+                                               =   "90"    OR "91" ) )
                                IF      WRK-KOHTEKSTYMD-O (IDX)
                                                    <   WRK-KOHTEKSTYMD-O
                                                                 (IDY)
@@ -3691,9 +3703,10 @@
                                        MOVE    WRK-KOHI
                                                    TO  WRK-KOHI-TBL(IDY)
                                    ELSE
-                                       IF    ( WRK-KOHHKNNUM-O (IDX)
+                                       IF    ( WRK-KOHHKNNUM-O
+                                                          (IDX) (2:2)
                                                    >   WRK-KOHHKNNUM-O
-                                                                (IDY) )
+                                                           (IDY) (2:2) )
                                            MOVE    WRK-KOHI-TBL(IDX)
                                                    TO  WRK-KOHI
                                            MOVE    WRK-KOHI-TBL(IDY)
@@ -4704,7 +4717,7 @@
            INITIALIZE                      TABLE-PTKOHINF-AREA
       *
       *    £π£µ£π° ∫“≥≤≥∫≈ˆ°À°  ø¿Æ£≤£∏«Ø£±£∞∑Ó∞ πﬂ°À
-           IF    ( SYS-200501-DISASTER-RECEIPT
+           IF    ( SYS-25-DISASTER-RECEIPT
                                            =   "1"     )
            AND   ( WRK-SYUKA-SRYYM         >=   201610 )
                INITIALIZE                      PTKOHINF-REC
