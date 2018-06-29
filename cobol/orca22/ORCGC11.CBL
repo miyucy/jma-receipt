@@ -38,6 +38,8 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *
       *  04.01.01    NACL-Æ£¸¶    07/10/26  ¸øÌ³ºÒ³²ÂÐ±þ
+      *
+      *  04.08.01    NACL-Æ£¸¶    18/06/18  ¹¹¿·»þ¤ÎOPID ÀßÄê
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1911,6 +1913,7 @@ grpsys                                         SPA-AREA
       *
                MOVE    "DBUPDATE"          TO  MCP-FUNC
            END-IF
+           MOVE    SPA-OPID            TO  OPECOM-OPID
            MOVE    SPA-HOSPNUM         TO  OPECOM-HOSPNUM
            MOVE    OPECOM-REC          TO  MCPDATA-REC
            MOVE    "tbl_opecom"        TO  MCP-TABLE

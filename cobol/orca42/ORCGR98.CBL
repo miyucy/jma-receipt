@@ -74,6 +74,8 @@
       *                                     設定対応
       *
       *  04.06.01    NACL-藤原    12/09/27  生活保護期間重複対応
+      *
+      *  04.08.01    NACL-藤原    18/06/18  更新時のOPID 設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1630,6 +1632,8 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                                                    TO  MONTHLYNUM-UPYMD
                                    MOVE    SMCNDATE-HMS
                                                    TO  MONTHLYNUM-UPHMS
+                                   MOVE    SPA-OPID
+                                                   TO  MONTHLYNUM-OPID
                                    MOVE    "DBUPDATE"
                                                    TO  MCP-FUNC
                                    MOVE    MONTHLYNUM-REC
@@ -1667,6 +1671,8 @@ grpsys                         MOVE    SPA-HOSPNUM
                                                TO  MONTHLYNUM-UPYMD
                                MOVE    SMCNDATE-HMS
                                                TO  MONTHLYNUM-UPHMS
+                               MOVE    SPA-OPID
+                                               TO  MONTHLYNUM-OPID
                                MOVE    "DBINSERT"
                                                TO  MCP-FUNC   
                                MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
