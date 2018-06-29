@@ -74,6 +74,8 @@
       *                                     設定対応
       *
       *  04.06.01    NACL-藤原    12/09/27  生活保護期間重複対応
+      *
+      *  04.08.01    NACL-藤原    18/06/18  更新時のOPID 設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -325,7 +327,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA42SCRAREA.INC".
+           COPY    "R01.INC".
+           COPY    "R02.INC".
+           COPY    "R03.INC".
+           COPY    "R04.INC".
+           COPY    "R05.INC".
+           COPY    "R06.INC".
+           COPY    "R96.INC".
+           COPY    "R97.INC".
+           COPY    "R98.INC".
+           COPY    "R99.INC".
+           COPY    "RERR.INC".
+           COPY    "RID1.INC".
+           COPY    "RID2.INC".
+           COPY    "RID3.INC".
+           COPY    "RID4.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1630,6 +1646,8 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                                                    TO  MONTHLYNUM-UPYMD
                                    MOVE    SMCNDATE-HMS
                                                    TO  MONTHLYNUM-UPHMS
+                                   MOVE    SPA-OPID
+                                                   TO  MONTHLYNUM-OPID
                                    MOVE    "DBUPDATE"
                                                    TO  MCP-FUNC
                                    MOVE    MONTHLYNUM-REC
@@ -1667,6 +1685,8 @@ grpsys                         MOVE    SPA-HOSPNUM
                                                TO  MONTHLYNUM-UPYMD
                                MOVE    SMCNDATE-HMS
                                                TO  MONTHLYNUM-UPHMS
+                               MOVE    SPA-OPID
+                                               TO  MONTHLYNUM-OPID
                                MOVE    "DBINSERT"
                                                TO  MCP-FUNC   
                                MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
@@ -1782,7 +1802,6 @@ grpsys                         MOVE    SPA-HOSPNUM
       * 
            MOVE    SPACE               TO  R98
       *
-           INITIALIZE                      R98
            MOVE    SPA-GMN-SRYYMH      TO  R98-SRYYMH-VALUE
            MOVE    "blue"              TO  R98-SRYYMH-STYLE
                                            R98-HYOUJIKBN-STYLE
@@ -2027,7 +2046,6 @@ grpsys                         MOVE    SPA-HOSPNUM
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID1
-           INITIALIZE                       RID1
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            EVALUATE    SPA-RIDCD

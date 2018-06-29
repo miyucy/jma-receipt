@@ -38,6 +38,8 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *
       *  04.01.01    NACL-Æ£¸¶    07/10/26  ¸øÌ³ºÒ³²ÂÐ±þ
+      *
+      *  04.08.01    NACL-Æ£¸¶    18/06/18  ¹¹¿·»þ¤ÎOPID ÀßÄê
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -230,7 +232,23 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA22SCRAREA.INC".
+           COPY    "C02.INC".
+           COPY    "C03.INC".
+           COPY    "C04.INC".
+           COPY    "C05.INC".
+           COPY    "C06.INC".
+           COPY    "C09.INC".
+           COPY    "C10.INC".
+           COPY    "C11.INC".
+           COPY    "C12.INC".
+           COPY    "C99.INC".
+           COPY    "CERR.INC".
+           COPY    "CID1.INC".
+           COPY    "CID2.INC".
+           COPY    "CID3.INC".
+           COPY    "CID4.INC".
+           COPY    "CID5.INC".
+           COPY    "CID6.INC".
       *
        PROCEDURE                   DIVISION    USING
                                    MCPAREA
@@ -1911,6 +1929,7 @@ grpsys                                         SPA-AREA
       *
                MOVE    "DBUPDATE"          TO  MCP-FUNC
            END-IF
+           MOVE    SPA-OPID            TO  OPECOM-OPID
            MOVE    SPA-HOSPNUM         TO  OPECOM-HOSPNUM
            MOVE    OPECOM-REC          TO  MCPDATA-REC
            MOVE    "tbl_opecom"        TO  MCP-TABLE
@@ -2160,7 +2179,6 @@ grpsys                                          SPA-AREA
            END-IF
       *
            MOVE    SPACE                   TO  C11
-           INITIALIZE                          C11
            MOVE    SPA-GMN-C11-PTNUM       TO  C11-PTNUM
            MOVE    SPA-GMN-C11-SYSYMD      TO  C11-SYSYMD
            MOVE    SPA-GMN-C11-KANANAME    TO  C11-KANANAME
@@ -2453,7 +2471,6 @@ grpsys                                          SPA-AREA
            MOVE    SPACE           TO  SPA-CID1-FLG
       *
            MOVE    SPACE           TO  CID1
-           INITIALIZE                  CID1
            MOVE    SPA-CIDCD       TO  CID1-ID1CODE
            MOVE    WRK-CIDMSG      TO  CID1-ID1MSG
            EVALUATE    SPA-CIDCD
