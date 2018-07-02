@@ -502,6 +502,22 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label215</name>
+      <x>384</x>
+      <y>388</y>
+      <width>420</width>
+      <height>16</height>
+      <label>（オプションを有効にする場合は先頭の&amp;quot;#&amp;quot;を削除してください）</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>KBNCD_COMB</name>
       <x>360</x>

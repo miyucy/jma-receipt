@@ -35,3 +35,5 @@
                 04  W34-VPOS    PIC S9(9)   BINARY.
                 04  W34-OPTION.
                   05  W34-VALUE   PIC X(44000).
+              03  W34-LABEL215.
+                04  W34-LABEL215-STYLE   PIC X(20).
