@@ -912,6 +912,7 @@
                INITIALIZE                  SPA-NAI-INPUT-G
                MOVE    ZERO                TO  SPA-GMN-SELNUM
                MOVE    1                   TO  SPA-GMN-CUR
+ito   *        MOVE    "normal"            TO  W34-LABEL215-STYLE
            END-IF
       *
            .
@@ -1413,6 +1414,12 @@
                MOVE    WIDGET-INSENSITIVE  TO  W34-B07-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  W34-B07-STATE
+           END-IF
+      *
+           IF      W34-OPTION          =   SPACE
+               MOVE    "black"             TO  W34-LABEL215-STYLE
+           ELSE
+               MOVE    "red"               TO  W34-LABEL215-STYLE
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
