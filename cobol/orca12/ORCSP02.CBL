@@ -1544,7 +1544,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-GMN28-CAREJOTAI-LST (8)
            MOVE    "25 Í×²ð¸î£µ"
                                        TO  SPA-GMN28-CAREJOTAI-LST (9)
-           MOVE    9                   TO  SPA-GMN28-CAREJOTAI-MAX
+           MOVE    "31 »ö¶ÈÂÐ¾Ý¼Ô"
+                                       TO  SPA-GMN28-CAREJOTAI-LST (10)
+           MOVE    10                  TO  SPA-GMN28-CAREJOTAI-MAX
       *
            .
        1005-COMB-SET-EXT.
@@ -2257,7 +2259,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    IDX                 TO  PARA-EDANUM
                    MOVE    HKNCOMBI-REC        TO  PARA-DATA-REC
                    PERFORM 400-PARA-INSERT-SEC
-      *TEST
+      *
       *            ÈóÉ½¼¨¶èÊ¬ÊÝÂ¸
                    ADD    1                    TO  SPA-HYO-MAX
                    IF     SPA-HYO-MAX          <=  200
@@ -3879,13 +3881,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    WRK-TEIMSG          TO  P02-TEIMSG-VALUE
            MOVE    "blue"              TO  P02-TEIMSG-STYLE
+      *
       *H30.4
-      *TEST
            IF      SPA-GMN28-NINPUKBN  =   "1"
                MOVE    "¡ÊÇ¥ÉØ¡Ë"            TO  P02-TEIMSG3-VALUE
                MOVE    "blue"              TO  P02-TEIMSG3-STYLE
            END-IF
-      *TEST
+      *
       *
            IF      SPA-NAI-GRPHOSPNUM  =   ZERO
                MOVE    SPACE               TO  P02-TEIMSG2-VALUE
