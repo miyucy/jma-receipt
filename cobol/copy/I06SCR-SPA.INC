@@ -280,7 +280,7 @@
                            11  SPA-GMN-NACCTKBNMEIL    PIC X(28).
                    07  SPA-GMN-KSNCDLST-G.
                        09  SPA-GMN-KSNCD-MAX        PIC 9(05).
-                       09  SPA-GMN-KSNCDLST-OCC         OCCURS  5.
+                       09  SPA-GMN-KSNCDLST-OCC         OCCURS  6.
                            11  SPA-GMN-KSNCDLST.
                                13  SPA-GMN-KSNCDL       PIC X(02).
                                13  SPA-GMN-KSNCDFLL     PIC X(01).
