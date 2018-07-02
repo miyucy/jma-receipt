@@ -140,6 +140,7 @@
       *  04.08.08    NACL-門脇    18/03/01  平成３０年４月改正対応
       *  04.08.09    NACL-門脇    18/04/17  平成３０年４月改正対応
       *  04.08.10    NACL-門脇    18/06/21  リハビリ開始日記載修正
+      *  04.08.11    NACL-門脇    18/07/02  リハビリ開始日記載修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3498,11 +3499,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM  VARYING  RIHA-IDX  FROM  31  BY  -1
                      UNTIL   RIHA-IDX    <    1
               IF    TB-RIHASANTEI-DAY(RIHA-IDX)  NOT = ZERO
+                PERFORM  200111-RIHA-SANTEIPLUS2-SEC
                 MOVE      ZERO  TO  FLG-OK
                 PERFORM  VARYING  RIHA-IDX2  FROM  1  BY  1
                           UNTIL   RIHA-IDX2    >  31
                   IF  (TBL-HASSYO-TAIHI-SANTEI(RIHA-IDX2) NOT = ZERO)
                   AND (RIHA-IDX  <=  RIHA-IDX2                      )
+                  AND (IDX43     >=  RIHA-IDX2                      )
                     MOVE  ZERO  TO  TBL-HASSYO-TAIHI-SANTEI(RIHA-IDX2)
                     MOVE   1    TO  FLG-OK
                   END-IF
@@ -3582,6 +3585,46 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        200111-RIHA-SANTEIPLUS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリ・算定履歴付加判定
+      *    （リハ開始日の終了日と診療月をチェック）（履歴番号＝０のデータ）
+      *****************************************************************
+       200111-RIHA-SANTEIPLUS2-SEC          SECTION.
+      *
+           MOVE    99                  TO  IDX43
+      *
+           INITIALIZE                      SANTEIPLUS-REC
+           MOVE    RECE82-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    RECE82-PTID         TO  SANTEIPLUS-PTID
+           MOVE    RECE82-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEIPLUS-SRYCD
+           MOVE    ZERO                TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEIPLUS-SRYKA
+           MOVE    RECE82-HKNCOMBI     TO  SANTEIPLUS-HKNCOMBINUM
+           MOVE    RIHA-IDX            TO  SANTEIPLUS-DAYKEY
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC           =  ZERO
+             MOVE  "tbl_santeiplus"    TO  MCP-TABLE
+             MOVE  "key4"              TO  MCP-PATHNAME
+             PERFORM  900-SANTEIPLUS-READ-SEC
+             IF    FLG-SANTEIPLUS   =  ZERO
+               IF   (SANTEIPLUS-ENDYMD   NOT =  SPACE       )
+               AND  (SANTEIPLUS-ENDYMD(1:6)  =  RECE82-SRYYM)
+                 MOVE  SANTEIPLUS-ENDYMD(7:2)  TO  IDX43
+               END-IF
+             END-IF
+           END-IF
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       200111-RIHA-SANTEIPLUS2-EXT.
            EXIT.
       *
       *****************************************************************
