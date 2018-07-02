@@ -1308,6 +1308,13 @@
       *
                GO  TO      300-SCREEN-EXT
       *
+      *    オーダー画面
+           WHEN    "I06"
+               MOVE    SPA-I0-MOTOPG       TO  WRK-MOTOPG
+               PERFORM 310-SPASET-SEC
+               MOVE    WRK-MOTOPG          TO  SPA-I0-MOTOPG
+               GO  TO      300-SCREEN-EXT
+      *
       *    収納登録・入院会計照会・出産一時金画面
            WHEN    "S02"
            WHEN    "I41"
