@@ -46,5 +46,8 @@ W34 {
         textdata varchar(44000);
       };
     };
+    label215 {
+      style varchar(20);
+    };
   };
 };
