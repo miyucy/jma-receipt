@@ -912,7 +912,6 @@
                INITIALIZE                  SPA-NAI-INPUT-G
                MOVE    ZERO                TO  SPA-GMN-SELNUM
                MOVE    1                   TO  SPA-GMN-CUR
-ito   *        MOVE    "normal"            TO  W34-LABEL215-STYLE
            END-IF
       *
            .
