@@ -63,8 +63,11 @@
                05  SPA-GMN-TAIINYMD        PIC X(09).
       *入院期間設定
                05  SPA-NAI-NYUIN-KIKAN.
-                   07  SPA-NAI-NYUIN       PIC 9(01)
-                                           OCCURS   31.
+                   07  SPA-NAI-NYUIN-OCC   OCCURS   31.
+                       09  SPA-NAI-NYUIN       PIC 9(01).
+      *H30.7           自院歴期間
+                       09  SPA-NAI-NYUIN-JR    PIC 9(01).
+      *
       *患者の入金方法
                05  SPA-NYUKIN-HOHO         PIC   X(02).
                05  SPA-NYUKIN-JYOTAI       PIC   X(01).
