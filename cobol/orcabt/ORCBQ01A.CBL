@@ -363,6 +363,7 @@
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  SPA-TERMID
            MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
+           MOVE    WRK-PARA-SYSYMD     TO  SPA-SYSYMD
            MOVE    MCP-USER            TO  SPA-OPID
       *
            INITIALIZE              ORCSMCNDATEAREA
