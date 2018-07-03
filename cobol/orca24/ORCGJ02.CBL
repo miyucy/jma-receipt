@@ -6483,7 +6483,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            ELSE
       *        外来の時、入院期間中ならエラー
-               IF      SPA-NAI-NYUIN (IDX-D2)  =   1
+               IF     (SPA-NAI-NYUIN (IDX-D2)  =   1  )
       *H30.7      自院歴は対象
                   AND (SPA-NAI-NYUIN-JR(IDX-D2)    =   ZERO )
                    IF    ((WRK-HKNNUM          =   "971" ) AND
@@ -8241,6 +8241,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****INITIALIZE                  SPA-J02-AREA
            IF      SPA-GMN-NYUGAIKBN   =   "2"
                INITIALIZE                  SPA-GMN-NYUIN-AREA
+      *H30.7
+               PERFORM 410101-NYUINRRK-CHK-SEC
            ELSE
       *       入院期間
                PERFORM 410101-NYUINRRK-CHK-SEC
