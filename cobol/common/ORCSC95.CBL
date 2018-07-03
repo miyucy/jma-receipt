@@ -3065,13 +3065,17 @@
                    MOVE    "要介護４"      TO  WRK-KAIGOMEI
                WHEN    "25"
                    MOVE    "要介護５"      TO  WRK-KAIGOMEI
+      *H30.7
+               WHEN    "31"
+                   MOVE    "事業対象者"    TO  WRK-KAIGOMEI
                WHEN    OTHER
                    MOVE    PTCRNIN-CAREJOTAICD TO  WRK-KAIGOMEI
                END-EVALUATE
       *
       *        要介護状態
                IF       PTCRNIN-CAREJOTAICD    =   "01"
-      *            自立　は対象外
+                                               OR  "31"
+      *            自立・事業対象者　は対象外
                    CONTINUE
                ELSE
                    MOVE    1               TO  SPA-YOUKAIGO-ARI

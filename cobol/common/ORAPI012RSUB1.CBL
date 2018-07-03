@@ -379,6 +379,10 @@
                    MOVE    "Í×²ð¸î£´"  TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "25"
                    MOVE    "Í×²ð¸î£µ"  TO  API12SUB-NEED-CARE-STATE(IDX)
+      *H30.7
+               WHEN    "31"
+                   MOVE    "»ö¶ÈÂÐ¾Ý¼Ô"
+                                       TO  API12SUB-NEED-CARE-STATE(IDX)
            END-EVALUATE
            .
        200221-PTCARE-CARESTATE-EXT.
