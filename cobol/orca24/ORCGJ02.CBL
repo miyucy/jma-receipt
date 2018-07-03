@@ -4840,8 +4840,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            同日再入院日
                         MOVE    3          TO  SPA-NAI-NYUIN (IDX-D)
                    END-IF
+      *H30.7
+      *            自院歴分
+                   IF     (PTNYUINRRK-JTIKBN    =   "6")  
+                        MOVE    1          TO  SPA-NAI-NYUIN-JR(IDX-D)
+                   END-IF
                ELSE
                    MOVE    1           TO  SPA-NAI-NYUIN (IDX-D)
+      *H30.7
+      *            自院歴分
+                   IF     (PTNYUINRRK-JTIKBN    =   "6")  
+                        MOVE    1          TO  SPA-NAI-NYUIN-JR(IDX-D)
+                   END-IF
                END-IF
            END-PERFORM
            .
@@ -5787,7 +5797,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-GMN-NYUGAIKBN   =   "2"
       *************MOVE    "0004"              TO  SPA-ERRCD
       *            入院期間中判定
-                   IF      SPA-NAI-NYUIN (IDX) =   1
+                   IF     (SPA-NAI-NYUIN (IDX) =   1 )
+      *H30.7         自院歴は対象
+                      AND (SPA-NAI-NYUIN-JR(IDX)   =   ZERO )
                        IF    ((SPA-NAI-HKNNUM      =   "971" ) AND
                               (SPA-NAI-RSI-HKNKBN  =   "3"   ))
                          OR  ( SPA-NAI-HKNNUM(1:2) =   "98"  )
@@ -6467,7 +6479,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            ELSE
       *        外来の時、入院期間中ならエラー
-               IF      SPA-NAI-NYUIN (IDX-D2)  =   1
+               IF     (SPA-NAI-NYUIN (IDX-D2)  =   1  )
+      *H30.7      自院歴は対象
+                  AND (SPA-NAI-NYUIN-JR(IDX-D2)    =   ZERO )
                    IF    ((WRK-HKNNUM          =   "971" ) AND
                           (WRK-RSI-HKNKBN      =   "3"   ))
                      OR  ( WRK-HKNNUM(1:2)     =   "98"  )
@@ -8223,6 +8237,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****INITIALIZE                  SPA-J02-AREA
            IF      SPA-GMN-NYUGAIKBN   =   "2"
                INITIALIZE                  SPA-GMN-NYUIN-AREA
+      *H30.7
+               PERFORM 410101-NYUINRRK-CHK-SEC
            ELSE
       *       入院期間
                PERFORM 410101-NYUINRRK-CHK-SEC
