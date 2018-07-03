@@ -508,7 +508,7 @@
       <y>388</y>
       <width>420</width>
       <height>16</height>
-      <label>（オプションを有効にする場合は先頭の&amp;quot;#&amp;quot;を削除してください）</label>
+      <label>（オプションを有効にする場合は先頭の # を削除してください）</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
