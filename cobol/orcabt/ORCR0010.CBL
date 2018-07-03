@@ -2778,13 +2778,39 @@ grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
                        MOVE    WRK-KOHI-TBL(IDY) TO  WRK-KOHI-TBL(IDX)
                        MOVE    WRK-KOHI          TO  WRK-KOHI-TBL(IDY)
                    ELSE
-      *                ÀÃ≥§∆ª§Œ√œ ˝∏¯»Ò° £±£π£±°‹£≤£π£∞°À
+      *                ÀÃ≥§∆ª§Œ√œ ˝∏¯»Ò° £π£±°‹£π£∞°À
                        IF    ( SYS-1001-PREFNUM    =   "01"  ) 
-                       AND   ( WRK-KOHHKNNUM-O (IDX)
-                                                   =   "290" )
-                       AND   ( WRK-KOHHKNNUM-O (IDY)
-                                                   =   "191" )
-                           CONTINUE
+                       AND   ( WRK-KOHHBTNUM-O (IDX)
+                                                   =   "90"  OR  "91" )
+                       AND   ( WRK-KOHHBTNUM-O (IDY)
+                                                   =   "90"  OR  "91" )
+                           IF      WRK-KOHTEKSTYMD-O (IDX)
+                                               <   WRK-KOHTEKSTYMD-O
+                                                            (IDY)
+                               CONTINUE
+                           ELSE
+                               IF      WRK-KOHTEKSTYMD-O (IDX)
+                                               >   WRK-KOHTEKSTYMD-O
+                                                                (IDY)
+                                   MOVE    WRK-KOHI-TBL(IDX)
+                                                   TO  WRK-KOHI
+                                   MOVE    WRK-KOHI-TBL(IDY)
+                                                   TO  WRK-KOHI-TBL(IDX)
+                                   MOVE    WRK-KOHI
+                                                   TO  WRK-KOHI-TBL(IDY)
+                               ELSE
+                                   IF    ( WRK-KOHHBTNUM-O (IDX)
+                                                   >   WRK-KOHHBTNUM-O
+                                                                (IDY) )
+                                       MOVE    WRK-KOHI-TBL(IDX)
+                                                   TO  WRK-KOHI
+                                       MOVE    WRK-KOHI-TBL(IDY)
+                                                   TO  WRK-KOHI-TBL(IDX)
+                                       MOVE    WRK-KOHI
+                                                   TO  WRK-KOHI-TBL(IDY)
+                                   END-IF
+                               END-IF
+                           END-IF
                        ELSE
       *                    ∆¡≈Á∏©§Œ√œ ˝∏¯»Ò° À° Ã£¥£µ°¢£¥£∏°À
                            IF    ( SYS-1001-PREFNUM    =   "36"    ) 
@@ -3140,9 +3166,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
                                                =   "45"    OR "48" ) )
       *                    ÀÃ≥§∆ª§Œ√œ ˝∏¯»Ò° À° Ã£π£∞°¢£π£±°À
                            OR  ( ( SYS-1001-PREFNUM    =   "01"    ) 
-                           AND   ( WRK-KOHHKNNUM-O (IDX) (2:2)
+                           AND   ( WRK-KOHHBTNUM-O (IDX)
                                                =   "90"    OR "91" )
-                           AND   ( WRK-KOHHKNNUM-O (IDY) (2:2)
+                           AND   ( WRK-KOHHBTNUM-O (IDY)
                                                =   "90"    OR "91" ) )
                                IF      WRK-KOHTEKSTYMD-O (IDX)
                                                    <   WRK-KOHTEKSTYMD-O
@@ -3159,10 +3185,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
                                        MOVE    WRK-KOHI
                                                    TO  WRK-KOHI-TBL(IDY)
                                    ELSE
-                                       IF    ( WRK-KOHHKNNUM-O
-                                                          (IDX) (2:2)
-                                                   >   WRK-KOHHKNNUM-O
-                                                           (IDY) (2:2) )
+                                       IF    ( WRK-KOHHBTNUM-O (IDX)
+                                                   >   WRK-KOHHBTNUM-O
+                                                                 (IDY) )
                                            MOVE    WRK-KOHI-TBL(IDX)
                                                    TO  WRK-KOHI
                                            MOVE    WRK-KOHI-TBL(IDY)
