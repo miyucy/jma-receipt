@@ -2841,12 +2841,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-K98-SRYCD(IDX-K98)
                                            TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
-      *H30.6   選択式
-                   IF      SPA-SELCOM-FLG      =   1
-                       MOVE    "C"         TO  SPA-GMN-INPUTCD
-                                                     (SPA-GMN-IDX)
-                                                     (11:1)
-                   END-IF
       *!!!!!!!!
       *            挿入行へ移動
                    IF     SPA-GMN-INPUTCD (SPA-GMN-IDX + 1)
@@ -2862,12 +2856,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SPA-K98-SRYCD(IDX-K98)
                                                TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
-      *H30.6   選択式
-                       IF      SPA-SELCOM-FLG      =   1
-                           MOVE    "C"         TO  SPA-GMN-INPUTCD
-                                                     (SPA-GMN-IDX)
-                                                     (11:1)
-                       END-IF
       *!!!!!!!!
       *            挿入行へ移動
                        IF     SPA-GMN-INPUTCD (SPA-GMN-IDX + 1)
