@@ -1378,10 +1378,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "1"             TO  SHELLTBL-ARG17
            END-IF
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
+           MOVE    "1"                 TO  SHELLTBL-ARG23
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"
+           MOVE    "allways"
                                        TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA

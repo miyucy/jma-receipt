@@ -24,6 +24,7 @@ export LDDIRECTORY
 #       4:プレビュー管理編集フラグ（1:編集する/1以外:編集しない）
 #       5:帳票表題（クライアント印刷用）
 #       6:ダイアログ表示区分（1:ダイアログ表示　クライアント印刷用）
+#       7:PDF保持区分（1:保持）
 #----------------------------------------------------------------------#
 
 PRT_FILE_BASE=$1
@@ -49,6 +50,7 @@ patch_form_dir: "${PATCHFORMDIR}"
 mcp_temp_dir: "${MCP_TEMPDIR}"
 report_title: "${REPORT_TITLE}"
 show_dialog: "$6"
+keep_pdf: "$7"
 EOS
 
 echo "yaml"  

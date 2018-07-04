@@ -32,6 +32,7 @@ fi
 #        ${20} GYOUMU-CD
 #        ${21} 印刷データ(オリジナル)
 #        ${22} クライアント印刷ダイアログ表示
+#        ${23} PDF保持区分(1:保持)
 #-------------------------------------------#
 #
 ERR_FILE_BASE=${12}
@@ -48,7 +49,7 @@ PRT_FILE_FULL=${MCP_TEMPDIR}/${PRT_FILE_BASE}
             rm  ${ERR_FILE_FULL}
         fi
         
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPRT1 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${ERR_FILE_BASE},${13},${14},${15},${16},${17},${18},${19},${20},${PRT_FILE_BASE},${22}
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPRT1 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${ERR_FILE_BASE},${13},${14},${15},${16},${17},${18},${19},${20},${PRT_FILE_BASE},${22},${23}
         if  [ -e ${ERR_FILE_FULL} ]; then
             exit
         else
