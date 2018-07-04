@@ -157,6 +157,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-PARA-PRTFLG     PIC X(01).
            03  WRK-PARA-HOSPNUM    PIC X(02).
            03  WRK-PARA-SHOWDIALOG PIC X(01).
+           03  WRK-PARA-KEEP-PDF   PIC X(01).
       *
        01  CONST-AREA.
            03  CONST-PUSH-MAX              PIC 9(05)   VALUE 10.
@@ -293,6 +294,7 @@ grpsys     COPY    "COMMON-SPA".
                                                LNK-PRTKANRI-GYOUMU-CD
                                                WRK-NONE
                                                WRK-PARA-SHOWDIALOG
+                                               WRK-PARA-KEEP-PDF
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    LNK-PRTKANRI-SKYYMD TO  SPA-SYSYMD
@@ -665,9 +667,8 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                    MOVE    SPA-CLIENT-SHOWDIALOG
                                        TO  SHELLTBL-ARG6
                END-IF
-               MOVE    WRK-PARA-SHELLID
+               MOVE    WRK-PARA-KEEP-PDF
                                        TO  SHELLTBL-ARG7
-                        
                MOVE    SHELLTBL        TO  MCPDATA-REC
                IF    ( WRK-PARA-PRTFLG     =  "7" )
                    MOVE    "EXCOMMAND" TO  MCP-FUNC

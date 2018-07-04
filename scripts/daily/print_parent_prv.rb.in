@@ -52,6 +52,7 @@ class Jma_print
     @mcp_temp_dir = yaml["mcp_temp_dir"]
     @report_title = (yaml["report_title"].blank? ? "no_title" : yaml["report_title"])
     @show_dialog = (yaml["show_dialog"]  == "1" ? true : false)
+    @keep_pdf = (yaml["keep_pdf"]  == "1" ? true : false)
 
     @print_order = ""
     @print_data = Array.new
@@ -147,9 +148,6 @@ class Jma_print
     item[:offset_y] = "#{report_info[55, 5]}".strip unless "#{report_info[55, 5]}".strip.empty?
     item[:site_program] = true if "#{report_info[60, 1]}" == '2'
 
-    item[:print_order] = "#{report_info[61, 1]}".strip
-    item[:print_order] = "8" if "#{ENV['MCP_MIDDLEWARE_NAME']}" == "ginbee" and ["1", "2"].include?(item[:print_order])
-
     item[:out_dir] = format_dir("#{report_info[62, 165]}")
     item[:tbl_key] = "#{report_info[227, 8]}".strip
     item[:seq] = "#{report_info[235, 4]}".strip
@@ -160,6 +158,9 @@ class Jma_print
     item[:data_type] = "#{report_info[298,16]}".strip
     item[:data] = "#{report_info[314..-1]}".rstrip
 
+
+    item[:print_order] = "#{report_info[61, 1]}".strip
+    item[:print_order] = "8" if "#{ENV['MCP_MIDDLEWARE_NAME']}" == "ginbee" and ["1", "2"].include?(item[:print_order])
 
     item[:offset]= "-x #{item[:offset_x]} -y #{item[:offset_y]}"
 
@@ -276,8 +277,10 @@ class Jma_print
     end
 
     File.delete(out_file) if File.exist?(out_file)
-    pdf_files.each do |pdf_file|
-      File.delete(pdf_file) if File.exist?(pdf_file)
+    unless @keep_pdf == true
+      pdf_files.each do |pdf_file|
+        File.delete(pdf_file) if File.exist?(pdf_file)
+      end
     end
   end
 
