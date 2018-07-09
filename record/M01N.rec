@@ -101,6 +101,9 @@ M01N {
       visible bool;
       state int;
     };
+    HTML1 {
+      uri varchar(200);
+    };
     fr6 {
       visible bool;
     };

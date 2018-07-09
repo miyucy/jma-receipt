@@ -144,6 +144,12 @@
            03  WRK-JOBKANRI-MODE   PIC X(03). 
            03  WRK-JOBKANRI-RETURN PIC S9(03).
       *
+       01  CONST-AREA.
+           03  CONST-HTML-PANDA    PIC X(200) VALUE
+               "http://www.orca.med.or.jp/info/index.html".
+           03  CONST-HTML-GINBEE   PIC X(200) VALUE
+               "http://www.orca.med.or.jp/info/index.html".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1472,6 +1478,9 @@
                MOVE    "F"             TO  M01-G71-VISIBLE
                                            M01-G82-VISIBLE
                                            M01-FR6-VISIBLE
+               MOVE    CONST-HTML-GINBEE   TO  M01-HTML1
+           ELSE
+               MOVE    CONST-HTML-PANDA    TO  M01-HTML1
            END-IF
       *
       *

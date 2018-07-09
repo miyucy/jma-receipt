@@ -102,5 +102,7 @@
                 05  M01N-STATE-OCC   OCCURS     24.
                   06  M01N-VISIBLE-O      PIC X(01).
                   06  M01N-STATE-O        PIC S9(09) BINARY.
+              04  M01N-HTML1-G.
+                05  M01N-HTML1         PIC X(200).
               04  M01N-FR6-VISIBLE     PIC X(1).
               04  M01N-SELNUM  PIC 9(2).

@@ -84,5 +84,7 @@
                 05  M01-STATE-OCC   OCCURS 18.
                   06  M01-VISIBLE-O   PIC X(1).
                   06  M01-STATE-O     PIC S9(09) BINARY.
+              04  M01-HTML1-G.
+                05  M01-HTML1         PIC X(200).
               04  M01-FR6-VISIBLE     PIC X(1).
               04  M01-SELNUM  PIC 9(2).
