@@ -1,5 +1,5 @@
 kanri_cd    : "9701"
-name        : "ユーザプログラム起動"
+name        : "ユーザプログラム−患者登録（P02）"
 class_cd    : "*"
 item_max    : 6
 item_list   :
@@ -11,7 +11,7 @@ item_list   :
   length    : 30
 - item_no   : 2
   item      : "SHELL"
-  item_jp   : "シェル名"
+  item_jp   : "実行スクリプト"
   type      : "X"
   start     : 31
   length    : 100
@@ -23,7 +23,7 @@ item_list   :
   length    : 16
 - item_no   : 4
   item      : "EXECUTE-SW"
-  item_jp   : "実行可否"
+  item_jp   : "実行する"
   type      : "X"
   start     : 147
   length    : 1

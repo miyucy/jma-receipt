@@ -5,7 +5,7 @@ item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "SRYKBN-FLG"
-  item_jp   : "全科の表示順区分"
+  item_jp   : "全科の表示順"
   type      : "X"
   start     : 1
   length    : 1
@@ -23,7 +23,7 @@ item_list   :
   length    : 1
 - item_no   : 4
   item      : "PRVLAYOUT"
-  item_jp   : "レセプトブレビュー　レイアウト"
+  item_jp   : "レセプトレイアウト"
   type      : "X"
   start     : 4
   length    : 1

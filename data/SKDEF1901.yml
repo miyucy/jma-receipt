@@ -1,5 +1,5 @@
 kanri_cd    : "1901"
-name        : "医療機関編集情報−医療機関名称情報"
+name        : "医療機関編集情報"
 class_cd    : "*"
 item_max    : 5
 item_list   :

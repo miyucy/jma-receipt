@@ -1,5 +1,5 @@
 kanri_cd    : "1016"
-name        : "外来迅速検体検査算定情報"
+name        : "外来迅速検体検査設定情報"
 class_cd    : "*"
 item_max    : 56
 item_list   :

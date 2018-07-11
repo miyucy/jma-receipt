@@ -1,5 +1,5 @@
 kanri_cd    : "1031"
-name        : "出力先プリンタ名割り当て情報"
+name        : "出力先プリンタ割り当て情報"
 class_cd    : "*"
 item_max    : 21
 item_list   :
@@ -119,7 +119,7 @@ item_list   :
   length    : 16
 - item_no   : 20
   item      : "PRTNM20"
-  item_jp   : "帳票未設定"
+  item_jp   : "予備"
   type      : "X"
   start     : 305
   length    : 16

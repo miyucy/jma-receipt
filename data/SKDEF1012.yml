@@ -11,13 +11,13 @@ item_list   :
   length    : 40
 - item_no   : 2
   item      : "SRYNAIYODSP"
-  item_jp   : "診療内容表示名"
+  item_jp   : "診療内容表示用"
   type      : "X"
   start     : 41
   length    : 24
 - item_no   : 3
   item      : "SRYNAIYOHYOJI"
-  item_jp   : "診療内容初期表示区分"
+  item_jp   : "初期表示用"
   type      : "X"
   start     : 65
   length    : 1

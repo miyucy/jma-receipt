@@ -1,17 +1,17 @@
 kanri_cd    : "9102"
-name        : "ＥＦファイルデータ"
+name        : "ＥＦファイル作成"
 class_cd    : "*"
 item_max    : 7
 item_list   :
 - item_no   : 1
   item      : "EFOUT"
-  item_jp   : "ＥＦファイルデータ作成"
+  item_jp   : "ＥＦファイル用データ作成"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "FILE-DIR"
-  item_jp   : "ＥＦファイルデータファイルデイレクトリ"
+  item_jp   : "ＥＦファイル用デイレクトリ"
   type      : "X"
   start     : 2
   length    : 200
@@ -35,7 +35,7 @@ item_list   :
   length    : 9
 - item_no   : 6
   item      : "RECEIPT"
-  item_jp   : "公費のみのレセプト出力可否"
+  item_jp   : "公費のみのレセプト"
   type      : "X"
   start     : 221
   length    : 1

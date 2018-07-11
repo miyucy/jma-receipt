@@ -1,5 +1,5 @@
 kanri_cd    : "1018"
-name        : "状態（患者状態コメント）"
+name        : "患者状態コメント情報"
 class_cd    : "*"
 item_max    : 4
 item_list   :

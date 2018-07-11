@@ -5,49 +5,49 @@ item_max    : 9
 item_list   :
 - item_no   : 1
   item      : "SYUKA-KBN"
-  item_jp   : "主科設定フラグ"
+  item_jp   : "主科設定：主科対応の有無"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "SYUKA-NYUIN"
-  item_jp   : "主科設定情報（入院）"
+  item_jp   : "主科設定：主科設定情報（入院）"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "SYUKA-GAIRAI"
-  item_jp   : "主科設定情報（入院外）"
+  item_jp   : "主科設定：主科設定情報（入院外）"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "SYUKA-MODE"
-  item_jp   : "主科情報取得フラグ"
+  item_jp   : "主科設定：主科情報取得"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "SYUKA-SELECT"
-  item_jp   : "複数科同一選択"
+  item_jp   : "主科設定：主科の候補が複数になる場合の診療科コードの設定"
   type      : "X"
   start     : 5
   length    : 1
 - item_no   : 6
   item      : "SYUKA-SYAHO"
-  item_jp   : "主科社保設定フラグ"
+  item_jp   : "主科設定：主科社保設定"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 7
   item      : "SYUKA-KOKUHO"
-  item_jp   : "主科国保設定フラグ"
+  item_jp   : "主科設定：主科国保設定"
   type      : "X"
   start     : 7
   length    : 1
 - item_no   : 8
   item      : "SYUKA-KOUIKI"
-  item_jp   : "主科広域連合設定フラグ"
+  item_jp   : "主科設定：主科広域連合設定"
   type      : "X"
   start     : 8
   length    : 1

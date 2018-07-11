@@ -491,19 +491,19 @@ item_list   :
   length    : 1
 - item_no   : 82
   item      : "KANRIAUTHFLG"
-  item_jp   : "管理者権限フラグ"
+  item_jp   : "管理者権限"
   type      : "X"
   start     : 285
   length    : 1
 - item_no   : 83
   item      : "MAYAKULICENSE"
-  item_jp   : "麻薬ライセンス"
+  item_jp   : "麻薬施用者免許証番号"
   type      : "X"
   start     : 286
   length    : 40
 - item_no   : 84
   item      : "ORCA21FLG"
-  item_jp   : "診療行為初期表示フラグ"
+  item_jp   : "診療行為初期画面"
   type      : "X"
   start     : 326
   length    : 1
@@ -527,7 +527,7 @@ item_list   :
   length    : 1
 - item_no   : 88
   item      : "MEIPRTFLG"
-  item_jp   : "診療費明細書発行区分フラグ"
+  item_jp   : "診療費明細書発行フラグ"
   type      : "X"
   start     : 330
   length    : 1
@@ -539,7 +539,7 @@ item_list   :
   length    : 1
 - item_no   : 90
   item      : "CLIENT-SAVE"
-  item_jp   : "クライアント保存可否フラグ"
+  item_jp   : "クライアント保存可否"
   type      : "X"
   start     : 332
   length    : 1
@@ -653,19 +653,19 @@ item_list   :
   length    : 16
 - item_no   : 109
   item      : "USER-KANRI"
-  item_jp   : "ユーザーログイン権限フラグ"
+  item_jp   : "ログインユーザー管理権限"
   type      : "X"
   start     : 495
   length    : 1
 - item_no   : 110
   item      : "CLIENT-PRT"
-  item_jp   : "クライアント印刷可否フラグ"
+  item_jp   : "クライアント印刷"
   type      : "X"
   start     : 496
   length    : 1
 - item_no   : 111
   item      : "DIALOGFLG"
-  item_jp   : "ダイアログ表示フラグ"
+  item_jp   : "クライアント印刷時ダイアログ表示"
   type      : "X"
   start     : 497
   length    : 1

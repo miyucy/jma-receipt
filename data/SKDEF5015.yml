@@ -5,13 +5,13 @@ item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "ADLINPUTKBN"
-  item_jp   : "ＡＤＬ点数入力区分"
+  item_jp   : "ＡＤＬ点数入力"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "SETMEDKBN"
-  item_jp   : "医療区分引継ぎ区分"
+  item_jp   : "医療区分引継ぎ"
   type      : "X"
   start     : 2
   length    : 1

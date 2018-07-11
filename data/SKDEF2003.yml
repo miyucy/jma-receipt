@@ -1,5 +1,5 @@
 kanri_cd    : "2003"
-name        : "レセプト作成指示"
+name        : "レセプト作成指示（印刷順）情報"
 class_cd    : "*"
 item_max    : 14
 item_list   :
@@ -11,7 +11,7 @@ item_list   :
   length    : 40
 - item_no   : 2
   item      : "TEISYUTUSAKI"
-  item_jp   : "審査支払機関"
+  item_jp   : "提出先"
   type      : "X"
   start     : 41
   length    : 1

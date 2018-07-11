@@ -1,66 +1,66 @@
 kanri_cd    : "4001"
 name        : "汐阂板闻怠簇攫鼠"
 class_cd    : "*"
-item_max    : 24
+item_max    : 25
 item_list   :
 - item_no   : 1
   item      : "RSIIRYOKBN"
-  item_jp   : "汐阂回年板闻怠簇惰尸"
+  item_jp   : "汐阂回年板闻怠簇"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "RSIIRYOCDN"
-  item_jp   : "回年板闻怠簇コ〖ド"
+  item_jp   : "回年陕薄戎规∈链逞眶机∷"
   type      : "X"
   start     : 2
   length    : 80
 - item_no   : 3
   item      : "TENKBN"
-  item_jp   : "爬眶帽擦惰尸"
+  item_jp   : "爬眶帽擦"
   type      : "X"
   start     : 82
   length    : 1
 - item_no   : 4
   item      : "KSNRATE"
-  item_jp   : "极清勒裁换唯"
+  item_jp   : "徒洒"
   type      : "9"
   start     : 83
   length    : 2
   precision : 0
 - item_no   : 5
   item      : "TAXKBN"
-  item_jp   : "极清勒矢今瘟久锐狼"
+  item_jp   : "极清勒≥矢今瘟久锐狼"
   type      : "X"
   start     : 85
   length    : 1
 - item_no   : 6
   item      : "SKJKBN"
-  item_jp   : "极清勒咯祸闻蛙锐"
+  item_jp   : "极清勒≥汐阂洁凋≥咯祸闻蛙锐"
   type      : "X"
   start     : 86
   length    : 1
 - item_no   : 7
   item      : "TAXKBN-KZI"
-  item_jp   : "极清勒泼年达亨霹久锐狼"
+  item_jp   : "极清勒≥泼年达亨霹久锐狼"
   type      : "X"
   start     : 87
   length    : 1
 - item_no   : 8
   item      : "KOTEIKBN"
-  item_jp   : "极清勒盖年掠裁换霹艰胺"
+  item_jp   : "极清勒≥盖年掠裁换霹艰胺"
   type      : "X"
   start     : 88
   length    : 1
 - item_no   : 9
   item      : "RSIPRTKBN"
-  item_jp   : "汐阂】极清懒滇今淡很惰尸"
+  item_jp   : "懒滇今敷挝箭今≥壳弧瘟霹淡很"
   type      : "X"
   start     : 89
   length    : 1
 - item_no   : 10
   item      : "KSNRATE1"
-  item_jp   : "极清勒裁换唯∈３峰∷"
+  item_jp   : "极清勒≥汐阂洁凋≥裁换唯"
   type      : "9"
   start     : 90
   length    : 3
@@ -73,89 +73,89 @@ item_list   :
   length    : 1
 - item_no   : 12
   item      : "JIBAIKBN"
-  item_jp   : "极清勒惰尸"
+  item_jp   : "极清勒≥极清勒惰尸"
   type      : "X"
   start     : 94
   length    : 1
 - item_no   : 13
   item      : "SYUTENTANKA"
-  item_jp   : "极清勒∈夫瘦洁凋∷祷窖爬帽擦°嘲丸′"
+  item_jp   : "极清勒≥夫瘦洁凋≥祷窖爬帽擦°嘲丸′"
   type      : "9"
   start     : 95
   length    : 2
   precision : 0
 - item_no   : 14
   item      : "YKZTENTANKA"
-  item_jp   : "极清勒∈夫瘦洁凋∷挑恨霹爬帽擦°嘲丸′"
+  item_jp   : "极清勒≥夫瘦洁凋≥挑恨霹爬帽擦°嘲丸′"
   type      : "9"
   start     : 97
   length    : 2
   precision : 0
 - item_no   : 15
   item      : "KOMUKBN"
-  item_jp   : "给坛阂巢惰尸"
+  item_jp   : "给坛阂巢≥给坛阂巢惰尸"
   type      : "X"
   start     : 99
   length    : 1
 - item_no   : 16
   item      : "KOMUTENTANKA"
-  item_jp   : "给坛阂巢帽擦"
+  item_jp   : "给坛阂巢≥夫瘦洁凋≥帽擦"
   type      : "9"
   start     : 100
   length    : 2
   precision : 0
-- item_no   : 16
+- item_no   : 17
   item      : "JIBAI-SEIKYUKBN"
-  item_jp   : "极清勒懒滇惰尸"
+  item_jp   : "极清勒≥懒滇惰尸介袋肋年"
   type      : "X"
   start     : 102
   length    : 1
-- item_no   : 17
+- item_no   : 18
   item      : "KOMU-SEIKYUKBN"
-  item_jp   : "给坛阂巢懒滇惰尸"
+  item_jp   : "给坛阂巢≥懒滇惰尸介袋肋年"
   type      : "X"
   start     : 103
   length    : 1
-- item_no   : 18
+- item_no   : 19
   item      : "KYUGYO-PRTKBN"
-  item_jp   : "蒂度沮汤淡很惰尸"
+  item_jp   : "嘲丸レセ≥蒂度沮汤懒滇箕"
   type      : "X"
   start     : 104
   length    : 1
-- item_no   : 19
+- item_no   : 20
   item      : "KOMURSITANKAKBN"
-  item_jp   : "给坛阂巢汐阂洁凋爬眶帽擦惰尸"
+  item_jp   : "给坛阂巢≥汐阂洁凋≥帽擦惰尸"
   type      : "X"
   start     : 105
   length    : 1
-- item_no   : 20
+- item_no   : 21
   item      : "KOMURSITANKA"
-  item_jp   : "给坛阂巢汐阂洁凋爬眶帽擦"
+  item_jp   : "给坛阂巢≥汐阂洁凋≥帽擦"
   type      : "9"
   start     : 106
   length    : 4
   precision : 2
-- item_no   : 21
+- item_no   : 22
   item      : "SYUTENTANKA2"
-  item_jp   : "极清勒∈夫瘦洁凋∷祷窖爬帽擦°掐薄′"
+  item_jp   : "极清勒≥夫瘦洁凋≥祷窖爬帽擦°掐薄′"
   type      : "9"
   start     : 110
   length    : 2
   precision : 0
-- item_no   : 22
+- item_no   : 23
   item      : "YKZTENTANKA2"
-  item_jp   : "极清勒∈夫瘦洁凋∷挑恨霹爬帽擦°掐薄′"
+  item_jp   : "极清勒≥夫瘦洁凋≥挑恨霹爬帽擦°掐薄′"
   type      : "9"
   start     : 112
   length    : 2
   precision : 0
-- item_no   : 23
+- item_no   : 24
   item      : "DAISAN-GENBTKBN"
-  item_jp   : "妈话荚乖百附湿惦烧惰尸介袋肋年"
+  item_jp   : "妈话荚乖百≥附湿惦烧惰尸介袋肋年"
   type      : "X"
   start     : 114
   length    : 1
-- item_no   : 24
+- item_no   : 25
   item      : "DAISAN-GENBTKBN"
   item_jp   : "徒洒"
   type      : "X"

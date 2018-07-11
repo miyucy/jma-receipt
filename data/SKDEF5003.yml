@@ -1,17 +1,17 @@
 kanri_cd    : "5003"
-name        : "短期滞在手術等基本料３"
+name        : "短期滞在手術等基本料３情報"
 class_cd    : "*"
 item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "TANKICD"
-  item_jp   : "短期コード"
+  item_jp   : "短手３コード"
   type      : "X"
   start     : 1
   length    : 9
 - item_no   : 2
   item      : "TOKCD"
-  item_jp   : "コード"
+  item_jp   : "予備"
   type      : "X"
   start     : 10
   length    : 2

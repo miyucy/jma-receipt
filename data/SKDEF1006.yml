@@ -1,5 +1,5 @@
 kanri_cd    : "1006"
-name        : "施設基準情報コード"
+name        : "施設基準情報"
 class_cd    : "*"
 item_max    : 500
 item_list   :

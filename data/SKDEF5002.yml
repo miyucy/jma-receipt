@@ -1,5 +1,5 @@
 kanri_cd    : "5002"
-name        : "…¬ºº•ﬁ•π•ø"
+name        : "…¬ºº¥…Õ˝æ Û"
 class_cd    : "*"
 item_max    : 37
 item_list   :
@@ -53,146 +53,146 @@ item_list   :
   start     : 23
   length    : 2
 - item_no   : 9
-  item      : "SINSEIJI-CD"
-  item_jp   : "ø∑¿∏ª˘∆˛±°∞ÂŒ≈¥…Õ˝≤√ªª•≥°º•…"
+  item      : "KSNCD1"
+  item_jp   : "≤√ªª•≥°º•…£±"
   type      : "X"
   start     : 25
   length    : 9
 - item_no   : 10
-  item      : "SINSEIJI-KBN"
-  item_jp   : "ø∑¿∏ª˘∆˛±°∞ÂŒ≈¥…Õ˝≤√ªª∂Ë ¨"
+  item      : "KSNKBN1"
+  item_jp   : "≤√ªª∂Ë ¨£±"
   type      : "X"
   start     : 34
   length    : 1
 - item_no   : 11
-  item      : "SNR-RYOYO-CD1"
-  item_jp   : "ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤Œ≈Õ‹¥ƒ∂≠≤√ªª•≥°º•…£±"
+  item      : "KSNCD2"
+  item_jp   : "≤√ªª•≥°º•…£≤"
   type      : "X"
   start     : 35
   length    : 9
 - item_no   : 12
-  item      : "SNR-RYOYO-KBN1"
-  item_jp   : "ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤Œ≈Õ‹¥ƒ∂≠≤√ªª∂Ë ¨£±"
+  item      : "KSNKBN2"
+  item_jp   : "≤√ªª∂Ë ¨£≤"
   type      : "X"
   start     : 44
   length    : 1
 - item_no   : 13
-  item      : "SNR-RYOYO-CD2"
-  item_jp   : "ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤Œ≈Õ‹¥ƒ∂≠≤√ªª•≥°º•…£≤"
+  item      : "KSNCD3"
+  item_jp   : "≤√ªª•≥°º•…£≥"
   type      : "X"
   start     : 45
   length    : 9
 - item_no   : 14
-  item      : "SNR-RYOYO-KBN2"
-  item_jp   : "ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤Œ≈Õ‹¥ƒ∂≠≤√ªª∂Ë ¨£≤"
+  item      : "KSNKBN3"
+  item_jp   : "≤√ªª∂Ë ¨£≥"
   type      : "X"
   start     : 54
   length    : 1
 - item_no   : 15
-  item      : "HOSYASEN-CD"
-  item_jp   : " ¸ºÕ¿˛º£Œ≈…¬ºº¥…Õ˝≤√ªª•≥°º•…"
+  item      : "KSNCD4"
+  item_jp   : "≤√ªª•≥°º•…£¥"
   type      : "X"
   start     : 55
   length    : 9
 - item_no   : 16
-  item      : "HOSYASEN-KBN"
-  item_jp   : " ¸ºÕ¿˛º£Œ≈…¬ºº¥…Õ˝≤√ªª∂Ë ¨"
+  item      : "KSNKBN4"
+  item_jp   : "≤√ªª∂Ë ¨£¥"
   type      : "X"
   start     : 64
   length    : 1
 - item_no   : 17
-  item      : "RYOYO-CD"
-  item_jp   : "Œ≈Õ‹¥ƒ∂≠≤√ªª•≥°º•…"
+  item      : "KSNCD5"
+  item_jp   : "≤√ªª•≥°º•…£µ"
   type      : "X"
   start     : 65
   length    : 9
 - item_no   : 18
-  item      : "RYOYO-KBN"
-  item_jp   : "Œ≈Õ‹¥ƒ∂≠≤√ªª∂Ë ¨"
+  item      : "KSNKBN5"
+  item_jp   : "≤√ªª∂Ë ¨£µ"
   type      : "X"
   start     : 74
   length    : 1
 - item_no   : 19
-  item      : "BTU-RYOYO-CD1"
-  item_jp   : "Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª•≥°º•…£±"
+  item      : "KSNCD6"
+  item_jp   : "≤√ªª•≥°º•…£∂"
   type      : "X"
   start     : 75
   length    : 9
 - item_no   : 20
-  item      : "BTU-RYOYO-KBN1"
-  item_jp   : "Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª∂Ë ¨£±"
+  item      : "KSNKBN6"
+  item_jp   : "≤√ªª∂Ë ¨£∂"
   type      : "X"
   start     : 84
   length    : 1
 - item_no   : 21
-  item      : "BTU-RYOYO-CD2"
-  item_jp   : "Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª•≥°º•…£≤"
+  item      : "KSNCD7"
+  item_jp   : "≤√ªª•≥°º•…£∑"
   type      : "X"
   start     : 85
   length    : 9
 - item_no   : 22
-  item      : "BTU-RYOYO-KBN2"
-  item_jp   : "Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª∂Ë ¨£≤"
+  item      : "KSNKBN7"
+  item_jp   : "≤√ªª∂Ë ¨£∑"
   type      : "X"
   start     : 94
   length    : 1
 - item_no   : 23
-  item      : "BTU-RYOYO-CD3"
-  item_jp   : "Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª•≥°º•…£≥"
+  item      : "KSNCD8"
+  item_jp   : "≤√ªª•≥°º•…£∏"
   type      : "X"
   start     : 95
   length    : 9
 - item_no   : 24
-  item      : "BTU-RYOYO-KBN3"
-  item_jp   : "Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª∂Ë ¨£≥"
+  item      : "KSNKBN8"
+  item_jp   : "≤√ªª∂Ë ¨£∏"
   type      : "X"
   start     : 104
   length    : 1
 - item_no   : 25
-  item      : "JYUTOK1-CD"
-  item_jp   : "Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª•≥°º•…° ∏ƒºº°À"
+  item      : "KSNCD9"
+  item_jp   : "≤√ªª•≥°º•…£π"
   type      : "X"
   start     : 105
   length    : 9
 - item_no   : 26
-  item      : "JYUTOK1-KBN"
-  item_jp   : "Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª∂Ë ¨° ∏ƒºº°À"
+  item      : "KSNKBN9"
+  item_jp   : "≤√ªª∂Ë ¨£π"
   type      : "X"
   start     : 114
   length    : 1
 - item_no   : 27
-  item      : "JYUTOK2-CD"
-  item_jp   : "Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª•≥°º•…° £≤øÕ…Ù≤∞°À"
+  item      : "KSNCD10"
+  item_jp   : "≤√ªª•≥°º•…£±£∞"
   type      : "X"
   start     : 115
   length    : 9
 - item_no   : 28
-  item      : "JYUTOK2-KBN"
-  item_jp   : "Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª∂Ë ¨° £≤øÕ…Ù≤∞°À"
+  item      : "KSNKBN10"
+  item_jp   : "≤√ªª∂Ë ¨£±£∞"
   type      : "X"
   start     : 124
   length    : 1
 - item_no   : 29
-  item      : "MUKIN-CD"
-  item_jp   : "Ãµ∂›º£Œ≈ºº¥…Õ˝≤√ªª•≥°º•…"
+  item      : "KSNCD11"
+  item_jp   : "≤√ªª•≥°º•…£±£±"
   type      : "X"
   start     : 125
   length    : 9
 - item_no   : 30
-  item      : "MUKIN-KBN"
-  item_jp   : "Ãµ∂›º£Œ≈ºº¥…Õ˝≤√ªª∂Ë ¨"
+  item      : "KSNKBN11"
+  item_jp   : "≤√ªª∂Ë ¨£±£±"
   type      : "X"
   start     : 134
   length    : 1
 - item_no   : 31
-  item      : "BTU-RYOYO-H18-CD"
-  item_jp   : "Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª£±•≥°º•…"
+  item      : "KSNCD12"
+  item_jp   : "≤√ªª•≥°º•…£±£≤"
   type      : "X"
   start     : 135
   length    : 9
 - item_no   : 32
-  item      : "BTU-RYOYO-H18-KBN"
-  item_jp   : "Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª£±∂Ë ¨"
+  item      : "KSNKBN12"
+  item_jp   : "≤√ªª∂Ë ¨£±£≤"
   type      : "X"
   start     : 144
   length    : 1
@@ -216,13 +216,13 @@ item_list   :
   length    : 3
 - item_no   : 36
   item      : "TSRYCD"
-  item_jp   : "¬–æ›ø«Œ≈•≥°º•…"
+  item_jp   : "…¬æ≤µ°«Ω Ûπ° ∆√ƒÍ∆˛±°Œ¡°À"
   type      : "X"
   start     : 457
   length    : 9
 - item_no   : 37
   item      : "YOBI2"
-  item_jp   : "ÕΩ»˜£≤"
+  item_jp   : "ÕΩ»˜"
   type      : "X"
   start     : 466
   length    : 35

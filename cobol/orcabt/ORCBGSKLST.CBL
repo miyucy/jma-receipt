@@ -124,6 +124,7 @@
            03  WRK-SYSYMD              PIC X(08).
            03  WRK-KANRICD             PIC X(04).
            03  WRK-KBNCD               PIC 9(04).
+           03  WRK-CD                  PIC X(08).
            03  WRK-MEISAI              PIC X(600).
            03  WRK-HENMEISAI-G.
                05  WRK-HENMEISAI       PIC X(110)  OCCURS  7.
@@ -137,7 +138,7 @@
                05  WRK-HENSUUJI        PIC X(20).
       *
            03  WRK-PRTPRO-G.
-               05  WRK-PRTPRO          PIC X(20)  OCCURS  12.
+               05  WRK-PRTPRO          PIC X(20)  OCCURS  20.
       *
            03  WRK-Z03                 PIC ZZ9.
       *
@@ -201,6 +202,8 @@
            COPY    "CPSK1032.INC".
       *    帳票プログラム選択情報（入院）
            COPY    "CPSK1035.INC".
+      *    自費プログラム選択情報
+           COPY    "CPSK1013.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -442,6 +445,18 @@
                    WHEN    "1006"
       *                施設基準チェック
                        PERFORM 220-MAIN-SSTKJN-SEC
+                   WHEN    "1007"
+      *                自動算定・チェック機能制御情報
+                       PERFORM 220-MAIN-1007-SEC
+                   WHEN    "1008"
+      *                チェック機能制御はまとめるので対象外
+                       CONTINUE
+                   WHEN    "1010"
+      *                職員情報
+                       PERFORM 220-MAIN-1010-SEC
+                   WHEN    "1050"
+      *                職員情報はまとめるので対象外
+                       CONTINUE
                    WHEN    "1031"
       *                出力先プリンタチェック
                        PERFORM 220-MAIN-PRTPRO-SEC
@@ -450,12 +465,31 @@
                    WHEN    "1035"
       *                出力先プリンタはまとめるので対象外
                        CONTINUE
+                   WHEN    "1046"
+      *                自費チェック
+                       PERFORM 220-MAIN-1046-SEC
+                   WHEN    "1201"
+      *                点数算定基準チェック
+                       PERFORM 220-MAIN-1201-SEC
+                   WHEN    "1202"
+      *                点数算定基準はまとめるので対象外
+                       CONTINUE
                    WHEN    "1901"
       *                医療機関編集情報
                        PERFORM 220-MAIN-PRTADRS-SEC
                    WHEN    "1902"
                    WHEN    "1903"
       *                医療機関編集情報はまとめるので対象外
+                       CONTINUE
+                   WHEN    "2005"
+      *                医療機関編集情報
+                       IF    ( SYS-KBNCD       =   "*" )
+                           PERFORM 220-MAIN-2005-SEC
+                       ELSE
+                           CONTINUE
+                       END-IF
+                   WHEN    "2008"
+                   WHEN    "2009"
                        CONTINUE
                    WHEN    "5000"
       *                医療機関情報−入院基本
@@ -566,6 +600,105 @@
            WRITE   TOKEI-REC
            .
        230-SSTKJN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    自動算定・チェック機能制御情報チェック
+      *****************************************************************
+       220-MAIN-1007-SEC        SECTION.
+      *
+      *    システム管理定義取得サブチェック
+           PERFORM 220-MAIN-SUBCHK-SEC
+      *
+           MOVE     "1008"         TO  WRK-KANRICD
+           PERFORM 220-MAIN-SUBCHK2-SEC
+      *
+           .
+       220-MAIN-1007-EXT.
+           EXIT.
+      *****************************************************************
+      *    職員情報チェック
+      *****************************************************************
+       220-MAIN-1010-SEC        SECTION.
+      *
+      *    システム管理定義取得サブチェック
+           PERFORM 220-MAIN-SUBCHK-SEC
+      *
+           MOVE     "1050"         TO  WRK-KANRICD
+           PERFORM 220-MAIN-SUBCHK2-SEC
+      *
+           .
+       220-MAIN-1010-EXT.
+           EXIT.
+      *****************************************************************
+      *    自費チェック
+      *****************************************************************
+       220-MAIN-1046-SEC         SECTION.
+      *
+      *    システム管理定義取得サブチェック
+           PERFORM 220-MAIN-SUBCHK-SEC
+      *
+      *    帳票プログラム選択情報 
+           PERFORM 230-PRTPRO-1013-SEC
+      *
+           .
+       220-MAIN-1046-EXT.
+           EXIT.
+      *****************************************************************
+      *    自費プログラム選択情報 
+      *****************************************************************
+       230-PRTPRO-1013-SEC         SECTION.
+      *
+           MOVE    SPACE           TO  WRK-PRTPRO-G
+      *
+           INITIALIZE                  SYS-1013-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-1013-HOSPNUM
+           MOVE    "1013"          TO  SYS-1013-KANRICD
+           MOVE    SYS-STYUKYMD    TO  SYS-1013-STYUKYMD
+           MOVE    SYS-EDYUKYMD    TO  SYS-1013-EDYUKYMD
+           MOVE    SYS-1013-REC    TO  MCPDATA-REC
+           PERFORM 900-SYS-KEY2-DBSELECT-SEC
+      *
+           PERFORM UNTIL   FLG-SYSKANRI2   =   1
+               MOVE    MCPDATA-REC     TO  SYS-1013-REC
+               MOVE    SYS-1013-KBNCD  TO  IDX-PRT
+               EVALUATE    IDX-PRT
+               WHEN    11  THRU  19
+                   COMPUTE IDX-PRT = IDX-PRT - 10
+               WHEN    21  THRU  29
+                   COMPUTE IDX-PRT = IDX-PRT - 10
+               END-EVALUATE
+               MOVE    SYS-1013-JIHINAME   TO  WRK-PRTPRO(IDX-PRT)
+               PERFORM 900-SYS-KEY2-DBFETCH-SEC
+           END-PERFORM
+      *
+           PERFORM 900-SYS-KEY2-DBCLOSE-SEC
+      *
+           PERFORM VARYING IDX-PRT FROM 1 BY 1
+                   UNTIL   IDX-PRT >   20
+               EVALUATE    IDX-PRT
+               WHEN    1   THRU  10
+                   MOVE    IDX-PRT     TO  IDX-MAX
+               WHEN    11  THRU  20
+                   COMPUTE IDX-MAX = IDX-PRT + 30
+               END-EVALUATE
+               IF      WRK-PRTPRO(IDX-PRT) NOT =   SPACE
+                   MOVE    SPACE           TO  WRK-MEISAI
+                   STRING  TOKEI-ITEM(IDX-MAX)
+                                               DELIMITED BY SPACE
+                           "−"                DELIMITED BY SIZE
+                           WRK-PRTPRO(IDX-PRT) DELIMITED BY SPACE
+                           INTO                WRK-MEISAI
+                   END-STRING
+                   MOVE    SPACE           TO  TOKEI-ITEM(IDX-MAX)
+                   MOVE    WRK-MEISAI      TO  TOKEI-ITEM(IDX-MAX)
+               ELSE
+                   MOVE    SPACE           TO  TOKEI-NAIYO(IDX-MAX)
+               END-IF
+           END-PERFORM
+      *
+           REWRITE TOKEI-REC
+           .
+       230-PRTPRO-1013-EXT.
            EXIT.
       *****************************************************************
       *    出力先プリンタチェック
@@ -747,6 +880,20 @@
        230-PRTPRO-1035-EXT.
            EXIT.
       *****************************************************************
+      *    点数算定基準チェック
+      *****************************************************************
+       220-MAIN-1201-SEC        SECTION.
+      *
+      *    システム管理定義取得サブチェック
+           PERFORM 220-MAIN-SUBCHK-SEC
+      *
+           MOVE     "1202"         TO  WRK-KANRICD
+           PERFORM 220-MAIN-SUBCHK2-SEC
+      *
+           .
+       220-MAIN-1201-EXT.
+           EXIT.
+      *****************************************************************
       *    医療機関編集情報チェック
       *****************************************************************
        220-MAIN-PRTADRS-SEC        SECTION.
@@ -762,6 +909,32 @@
       *
            .
        220-MAIN-PRTADRS-EXT.
+           EXIT.
+     *****************************************************************
+      *    チェック
+      *****************************************************************
+       220-MAIN-2005-SEC        SECTION.
+      *
+      *    システム管理定義取得サブチェック
+           PERFORM 220-MAIN-SUBCHK-SEC
+      *
+           MOVE     "2005"         TO  WRK-KANRICD
+           MOVE     "01"           TO  WRK-CD
+           PERFORM 220-MAIN-SUBCHK2-SEC
+      *
+           MOVE     "2005"         TO  WRK-KANRICD
+           MOVE     "05"           TO  WRK-CD
+           PERFORM 220-MAIN-SUBCHK2-SEC
+      *
+           MOVE     "2008"         TO  WRK-KANRICD
+           MOVE     "00000001"     TO  WRK-CD
+           PERFORM 220-MAIN-SUBCHK2-SEC
+      *
+           MOVE     "2009"         TO  WRK-KANRICD
+           PERFORM 220-MAIN-SUBCHK2-SEC
+      *
+           .
+       220-MAIN-2005-EXT.
            EXIT.
       *****************************************************************
       *    医療機関情報−入院基本チェック
@@ -791,6 +964,7 @@
            .
        220-MAIN-BYOTO-EXT.
            EXIT.
+           
       *****************************************************************
       *    帳票プログラム選択情報 
       *****************************************************************
@@ -799,7 +973,14 @@
            INITIALIZE                  SYS2KANRI-REC
            MOVE    SPA-HOSPNUM     TO  SYS2-HOSPNUM
            MOVE    WRK-KANRICD     TO  SYS2-KANRICD
-           MOVE    SYS-KBNCD       TO  SYS2-KBNCD
+      *
+      *    2005のみ区分で構造が異なる
+           IF    ( WRK-KANRICD     =   "2005" ) OR
+                 ( WRK-KANRICD     =   "2008" )
+               MOVE    WRK-CD          TO  SYS2-KBNCD
+           ELSE
+               MOVE    SYS-KBNCD       TO  SYS2-KBNCD
+           END-IF
            MOVE    SYS-STYUKYMD    TO  SYS2-STYUKYMD
            MOVE    SYS-EDYUKYMD    TO  SYS2-STYUKYMD
            MOVE    SYS2KANRI-REC   TO  MCPDATA-REC
@@ -813,6 +994,10 @@
            END-IF
       *
            INITIALIZE                  ORCSSKDEFAREA
+      *    2005のみ区分で構造が異なる
+           IF    ( WRK-KANRICD     =   "2005" )
+               MOVE    WRK-CD      TO  ORCSSKDEF-KBNCD
+           END-IF
            MOVE    WRK-KANRICD     TO  ORCSSKDEF-KANRICD
            CALL    "ORCSSKDEF"         USING
                                        ORCSSKDEFAREA
@@ -850,19 +1035,7 @@
                GO  TO  220-MAIN-SUBCHK-EXT
            END-IF
       *
-      *    2005のみ区分で構造が異なる
-           IF    ( SYS-KANRICD     =   "2005" )
-               MOVE    SPACE           TO  WRK-KANRICD
-           END-IF
-      *
            IF      SYS-KANRICD     NOT =   WRK-KANRICD
-               INITIALIZE                  ORCSSKDEFAREA
-      *        2005のみ区分で構造が異なる
-               IF    ( SYS-KANRICD     =   "2005" )    AND
-                    (( SYS-KBNCD       =   "01" )  OR
-                     ( SYS-KBNCD       =   "05" ))
-                   MOVE    SYS-KBNCD   TO  ORCSSKDEF-KBNCD
-               END-IF
                MOVE    SYS-KANRICD     TO  ORCSSKDEF-KANRICD
                CALL    "ORCSSKDEF"         USING
                                            ORCSSKDEFAREA
@@ -1059,7 +1232,8 @@
                GO  TO  330-MEISAI-HENSYU-EXT
            END-IF
            IF    ( TOKEI-ITEM(IDX-MAX)    =   "未設定" )   OR
-                 ( TOKEI-ITEM(IDX-MAX)    =   "予備" )
+                 ( TOKEI-ITEM(IDX-MAX)    =   "予備" )     OR
+                 ( TOKEI-NAIYO(IDX-MAX)   =   SPACE )
                GO  TO  330-MEISAI-HENSYU-EXT
            END-IF
       *

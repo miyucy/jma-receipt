@@ -1,23 +1,23 @@
 kanri_cd    : "1026"
-name        : "減免事由"
+name        : "減免事由情報"
 class_cd    : "*"
 item_max    : 4
 item_list   :
 - item_no   : 1
   item      : "DISCOUNT-BODY"
-  item_jp   : "病院減免事由"
+  item_jp   : "減免事由"
   type      : "X"
   start     : 1
   length    : 40
 - item_no   : 2
   item      : "DISCOUNT-KBN"
-  item_jp   : "割引率（区分）"
+  item_jp   : "割引率区分"
   type      : "X"
   start     : 41
   length    : 2
 - item_no   : 3
   item      : "DISCOUNT-OBJ"
-  item_jp   : "割引対象"
+  item_jp   : "予備"
   type      : "X"
   start     : 43
   length    : 1

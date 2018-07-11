@@ -1,5 +1,5 @@
 kanri_cd    : "3002"
-name        : "レセプト作成指示コード"
+name        : "統計帳票出力情報（月次）"
 class_cd    : "*"
 item_max    : 33
 item_list   :
@@ -17,121 +17,121 @@ item_list   :
   length    : 24
 - item_no   : 3
   item      : "PARAHYOJI1"
-  item_jp   : "パラメタ表示１"
+  item_jp   : "帳票パラメタ１"
   type      : "X"
   start     : 185
   length    : 20
 - item_no   : 4
   item      : "PARA1"
-  item_jp   : "パラメタ１"
+  item_jp   : "入力形式１"
   type      : "X"
   start     : 205
   length    : 10
 - item_no   : 5
   item      : "PARAHYOJI2"
-  item_jp   : "パラメタ表示２"
+  item_jp   : "帳票パラメタ２"
   type      : "X"
   start     : 215
   length    : 20
 - item_no   : 6
   item      : "PARA2"
-  item_jp   : "パラメタ２"
+  item_jp   : "入力形式２"
   type      : "X"
   start     : 235
   length    : 10
 - item_no   : 7
   item      : "PARAHYOJI3"
-  item_jp   : "パラメタ表示３"
+  item_jp   : "帳票パラメタ３"
   type      : "X"
   start     : 245
   length    : 20
 - item_no   : 8
   item      : "PARA3"
-  item_jp   : "パラメタ３"
+  item_jp   : "入力形式３"
   type      : "X"
   start     : 265
   length    : 10
 - item_no   : 9
   item      : "PARAHYOJI4"
-  item_jp   : "パラメタ表示４"
+  item_jp   : "帳票パラメタ４"
   type      : "X"
   start     : 275
   length    : 20
 - item_no   : 10
   item      : "PARA4"
-  item_jp   : "パラメタ４"
+  item_jp   : "入力形式４"
   type      : "X"
   start     : 295
   length    : 10
 - item_no   : 11
   item      : "PARAHYOJI5"
-  item_jp   : "パラメタ表示５"
+  item_jp   : "帳票パラメタ５"
   type      : "X"
   start     : 305
   length    : 20
 - item_no   : 12
   item      : "PARA5"
-  item_jp   : "パラメタ５"
+  item_jp   : "入力形式５"
   type      : "X"
   start     : 325
   length    : 10
 - item_no   : 13
   item      : "PARAHYOJI6"
-  item_jp   : "パラメタ表示６"
+  item_jp   : "帳票パラメタ６"
   type      : "X"
   start     : 335
   length    : 20
 - item_no   : 14
   item      : "PARA6"
-  item_jp   : "パラメタ６"
+  item_jp   : "入力形式６"
   type      : "X"
   start     : 355
   length    : 10
 - item_no   : 15
   item      : "PARAHYOJI7"
-  item_jp   : "パラメタ表示７"
+  item_jp   : "帳票パラメタ７"
   type      : "X"
   start     : 365
   length    : 20
 - item_no   : 16
   item      : "PARA7"
-  item_jp   : "パラメタ７"
+  item_jp   : "入力形式７"
   type      : "X"
   start     : 385
   length    : 10
 - item_no   : 17
   item      : "PARAHYOJI8"
-  item_jp   : "パラメタ表示８"
+  item_jp   : "帳票パラメタ８"
   type      : "X"
   start     : 395
   length    : 20
 - item_no   : 18
   item      : "PARA8"
-  item_jp   : "パラメタ８"
+  item_jp   : "入力形式８"
   type      : "X"
   start     : 415
   length    : 10
 - item_no   : 19
   item      : "PARAHYOJI9"
-  item_jp   : "パラメタ表示９"
+  item_jp   : "帳票パラメタ９"
   type      : "X"
   start     : 425
   length    : 20
 - item_no   : 20
   item      : "PARA9"
-  item_jp   : "パラメタ９"
+  item_jp   : "入力形式９"
   type      : "X"
   start     : 445
   length    : 10
 - item_no   : 21
   item      : "PARAHYOJI10"
-  item_jp   : "パラメタ表示１０"
+  item_jp   : "帳票パラメタ１０"
   type      : "X"
   start     : 455
   length    : 20
 - item_no   : 22
   item      : "PARA10"
-  item_jp   : "パラメタ１０"
+  item_jp   : "入力形式１０"
   type      : "X"
   start     : 475
   length    : 10

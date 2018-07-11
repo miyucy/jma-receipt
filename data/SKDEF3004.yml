@@ -1,11 +1,11 @@
 kanri_cd    : "3004"
-name        : "県単独事業情報コード"
+name        : "県単独事業情報"
 class_cd    : "*"
 item_max    : 10
 item_list   :
 - item_no   : 1
   item      : "SHELLID"
-  item_jp   : "シェルＩＤ"
+  item_jp   : "シェル名"
   type      : "X"
   start     : 1
   length    : 20
@@ -17,25 +17,25 @@ item_list   :
   length    : 40
 - item_no   : 3
   item      : "CHKFLG1"
-  item_jp   : "設定フラグ１"
+  item_jp   : "処理対象１"
   type      : "X"
   start     : 61
   length    : 1
 - item_no   : 4
   item      : "CHKFLG2"
-  item_jp   : "設定フラグ２"
+  item_jp   : "処理対象２"
   type      : "X"
   start     : 62
   length    : 1
 - item_no   : 5
   item      : "CHKFLG3"
-  item_jp   : "設定フラグ３"
+  item_jp   : "処理対象３"
   type      : "X"
   start     : 63
   length    : 1
 - item_no   : 6
   item      : "CHKFLG4"
-  item_jp   : "設定フラグ４"
+  item_jp   : "処理対象４"
   type      : "X"
   start     : 64
   length    : 1

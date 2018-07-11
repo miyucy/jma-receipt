@@ -1,41 +1,41 @@
 kanri_cd    : "1900"
-name        : "医療機関編集情報−帳票別指定情報"
+name        : "医療機関編集情報"
 class_cd    : "*"
 item_max    : 31
 item_list   :
 - item_no   : 1
   item      : "PRTKBN1"
-  item_jp   : "医保・レセプト（入院外）"
+  item_jp   : "医保レセプト（入院外）"
   type      : "X"
   start     : 1
   length    : 2
 - item_no   : 2
   item      : "PRTKBN2"
-  item_jp   : "労災・レセプト（入院外）"
+  item_jp   : "労災レセプト（入院外）"
   type      : "X"
   start     : 3
   length    : 4
 - item_no   : 3
   item      : "PRTKBN3"
-  item_jp   : "自賠責・レセプト（入院外）"
+  item_jp   : "自賠責レセプト（入院外）"
   type      : "X"
   start     : 5
   length    : 2
 - item_no   : 4
   item      : "PRTKBN4"
-  item_jp   : "医保・レセプト（入院）"
+  item_jp   : "医保レセプト（入院）"
   type      : "X"
   start     : 7
   length    : 2
 - item_no   : 5
   item      : "PRTKBN5"
-  item_jp   : "労災・レセプト（入院）"
+  item_jp   : "労災レセプト（入院）"
   type      : "X"
   start     : 9
   length    : 2
 - item_no   : 6
   item      : "PRTKBN6"
-  item_jp   : "自賠責・レセプト（入院）"
+  item_jp   : "自賠責レセプト（入院）"
   type      : "X"
   start     : 11
   length    : 2
@@ -83,13 +83,13 @@ item_list   :
   length    : 2
 - item_no   : 14
   item      : "PRTKBN14"
-  item_jp   : "公害・レセプト（入院外）"
+  item_jp   : "公害レセプト（入院外）"
   type      : "X"
   start     : 27
   length    : 2
 - item_no   : 15
   item      : "PRTKBN15"
-  item_jp   : "公害・レセプト（入院）"
+  item_jp   : "公害レセプト（入院）"
   type      : "X"
   start     : 29
   length    : 2

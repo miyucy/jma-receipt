@@ -5,7 +5,7 @@ item_max    : 125
 item_list   :
 - item_no   : 1
   item      : "GYOUMUID1"
-  item_jp   : "指示画面ＩＤ１"
+  item_jp   : "起動画面１"
   type      : "X"
   start     : 1
   length    : 10
@@ -36,7 +36,7 @@ item_list   :
   length    : 3
 - item_no   : 6
   item      : "GYOUMUID2"
-  item_jp   : "指示画面ＩＤ２"
+  item_jp   : "指示画面２"
   type      : "X"
   start     : 21
   length    : 10
@@ -67,7 +67,7 @@ item_list   :
   length    : 3
 - item_no   : 11
   item      : "GYOUMUID3"
-  item_jp   : "指示画面ＩＤ３"
+  item_jp   : "指示画面３"
   type      : "X"
   start     : 41
   length    : 10
@@ -98,7 +98,7 @@ item_list   :
   length    : 3
 - item_no   : 16
   item      : "GYOUMUID4"
-  item_jp   : "指示画面ＩＤ４"
+  item_jp   : "指示画面４"
   type      : "X"
   start     : 61
   length    : 10
@@ -129,7 +129,7 @@ item_list   :
   length    : 3
 - item_no   : 21
   item      : "GYOUMUID5"
-  item_jp   : "指示画面ＩＤ５"
+  item_jp   : "指示画面５"
   type      : "X"
   start     : 81
   length    : 10
@@ -160,7 +160,7 @@ item_list   :
   length    : 3
 - item_no   : 26
   item      : "GYOUMUID6"
-  item_jp   : "指示画面ＩＤ６"
+  item_jp   : "指示画面６"
   type      : "X"
   start     : 101
   length    : 10
@@ -191,7 +191,7 @@ item_list   :
   length    : 3
 - item_no   : 31
   item      : "GYOUMUID7"
-  item_jp   : "指示画面ＩＤ７"
+  item_jp   : "指示画面７"
   type      : "X"
   start     : 121
   length    : 10
@@ -222,7 +222,7 @@ item_list   :
   length    : 3
 - item_no   : 36
   item      : "GYOUMUID8"
-  item_jp   : "指示画面ＩＤ８"
+  item_jp   : "指示画面８"
   type      : "X"
   start     : 141
   length    : 10
@@ -253,7 +253,7 @@ item_list   :
   length    : 3
 - item_no   : 41
   item      : "GYOUMUID9"
-  item_jp   : "指示画面ＩＤ９"
+  item_jp   : "指示画面９"
   type      : "X"
   start     : 161
   length    : 10
@@ -284,7 +284,7 @@ item_list   :
   length    : 3
 - item_no   : 46
   item      : "GYOUMUID10"
-  item_jp   : "指示画面ＩＤ１０"
+  item_jp   : "指示画面１０"
   type      : "X"
   start     : 181
   length    : 10
@@ -315,7 +315,7 @@ item_list   :
   length    : 3
 - item_no   : 51
   item      : "GYOUMUID11"
-  item_jp   : "指示画面ＩＤ１１"
+  item_jp   : "指示画面１１"
   type      : "X"
   start     : 201
   length    : 10
@@ -346,7 +346,7 @@ item_list   :
   length    : 3
 - item_no   : 56
   item      : "GYOUMUID12"
-  item_jp   : "指示画面ＩＤ１２"
+  item_jp   : "指示画面１２"
   type      : "X"
   start     : 221
   length    : 10
@@ -377,7 +377,7 @@ item_list   :
   length    : 3
 - item_no   : 61
   item      : "GYOUMUID13"
-  item_jp   : "指示画面ＩＤ１３"
+  item_jp   : "指示画面１３"
   type      : "X"
   start     : 241
   length    : 10
@@ -408,7 +408,7 @@ item_list   :
   length    : 3
 - item_no   : 66
   item      : "GYOUMUID14"
-  item_jp   : "指示画面ＩＤ１４"
+  item_jp   : "指示画面１４"
   type      : "X"
   start     : 261
   length    : 10
@@ -439,7 +439,7 @@ item_list   :
   length    : 3
 - item_no   : 71
   item      : "GYOUMUID15"
-  item_jp   : "指示画面ＩＤ１５"
+  item_jp   : "指示画面１５"
   type      : "X"
   start     : 281
   length    : 10
@@ -470,7 +470,7 @@ item_list   :
   length    : 3
 - item_no   : 76
   item      : "GYOUMUID16"
-  item_jp   : "指示画面ＩＤ１６"
+  item_jp   : "指示画面１６"
   type      : "X"
   start     : 301
   length    : 10
@@ -501,7 +501,7 @@ item_list   :
   length    : 3
 - item_no   : 81
   item      : "GYOUMUID17"
-  item_jp   : "指示画面ＩＤ１７"
+  item_jp   : "指示画面１７"
   type      : "X"
   start     : 321
   length    : 10
@@ -532,7 +532,7 @@ item_list   :
   length    : 3
 - item_no   : 86
   item      : "GYOUMUID18"
-  item_jp   : "指示画面ＩＤ１８"
+  item_jp   : "指示画面１８"
   type      : "X"
   start     : 341
   length    : 10
@@ -563,7 +563,7 @@ item_list   :
   length    : 3
 - item_no   : 91
   item      : "GYOUMUID19"
-  item_jp   : "指示画面ＩＤ１９"
+  item_jp   : "指示画面１９"
   type      : "X"
   start     : 361
   length    : 10
@@ -594,7 +594,7 @@ item_list   :
   length    : 3
 - item_no   : 96
   item      : "GYOUMUID20"
-  item_jp   : "指示画面ＩＤ２０"
+  item_jp   : "指示画面２０"
   type      : "X"
   start     : 381
   length    : 10
@@ -625,7 +625,7 @@ item_list   :
   length    : 3
 - item_no   : 101
   item      : "GYOUMUID21"
-  item_jp   : "指示画面ＩＤ２１"
+  item_jp   : "指示画面２１"
   type      : "X"
   start     : 401
   length    : 10
@@ -656,7 +656,7 @@ item_list   :
   length    : 3
 - item_no   : 106
   item      : "GYOUMUID22"
-  item_jp   : "指示画面ＩＤ２２"
+  item_jp   : "指示画面２２"
   type      : "X"
   start     : 421
   length    : 10
@@ -687,7 +687,7 @@ item_list   :
   length    : 3
 - item_no   : 111
   item      : "GYOUMUID23"
-  item_jp   : "指示画面ＩＤ２３"
+  item_jp   : "指示画面２３"
   type      : "X"
   start     : 441
   length    : 10
@@ -718,7 +718,7 @@ item_list   :
   length    : 3
 - item_no   : 116
   item      : "GYOUMUID24"
-  item_jp   : "指示画面ＩＤ２４"
+  item_jp   : "指示画面２４"
   type      : "X"
   start     : 461
   length    : 10
@@ -749,7 +749,7 @@ item_list   :
   length    : 3
 - item_no   : 121
   item      : "GYOUMUID25"
-  item_jp   : "指示画面ＩＤ２５"
+  item_jp   : "指示画面２５"
   type      : "X"
   start     : 481
   length    : 10

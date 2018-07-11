@@ -5,13 +5,13 @@ item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "RECEDEN"
-  item_jp   : "連携基盤用データ"
+  item_jp   : "電子レセプトデータ"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "JMAMR"
-  item_jp   : "日医診療情報データ"
+  item_jp   : "日医版診療情報データ"
   type      : "X"
   start     : 2
   length    : 1

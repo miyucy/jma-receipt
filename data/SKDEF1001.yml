@@ -12,7 +12,7 @@ item_list   :
   precision : 0
 - item_no   : 2
   item      : "TENHYOKBN"
-  item_jp   : "点数表区分"
+  item_jp   : "点数表"
   type      : "9"
   start     : 3
   length    : 1
@@ -51,13 +51,13 @@ item_list   :
   length    : 120
 - item_no   : 8
   item      : "KANRINAME"
-  item_jp   : "管理者名"
+  item_jp   : "管理者氏名（院長）"
   type      : "N"
   start     : 276
   length    : 80
 - item_no   : 9
   item      : "BEDSU"
-  item_jp   : "病床数"
+  item_jp   : "病床数（許可）"
   type      : "9"
   start     : 356
   length    : 4
@@ -70,14 +70,14 @@ item_list   :
   length    : 1
 - item_no   : 11
   item      : "HOSPSBT1"
-  item_jp   : "旧総合病院区分"
+  item_jp   : "旧総合病院フラグ"
   type      : "9"
   start     : 361
   length    : 1
   precision : 0
 - item_no   : 12
   item      : "HOSPCDN"
-  item_jp   : "医療機関コード（全角）"
+  item_jp   : "医療機関コード（漢字）"
   type      : "N"
   start     : 362
   length    : 40
@@ -120,37 +120,37 @@ item_list   :
   precision : 0
 - item_no   : 19
   item      : "DISCOUNT-HASU-KBN"
-  item_jp   : "請求額端数設定（減免有）"
+  item_jp   : "請求額端数区分（減免有）"
   type      : "X"
   start     : 411
   length    : 1
 - item_no   : 20
   item      : "TAX-HASU-KBN"
-  item_jp   : "消費税端数設定"
+  item_jp   : "消費税端数区分"
   type      : "X"
   start     : 412
   length    : 1
 - item_no   : 21
   item      : "DISCOUNT-HASU-KBN2"
-  item_jp   : "請求額端数設定医保（減免無・保険分）"
+  item_jp   : "請求額端数区分医保（減免無・保険分）"
   type      : "X"
   start     : 413
   length    : 1
 - item_no   : 22
   item      : "HIWARIKBN"
-  item_jp   : "更正・育成限度額日割計算区分"
+  item_jp   : "更正・育成限度額日割計算"
   type      : "X"
   start     : 414
   length    : 1
 - item_no   : 23
   item      : "DATACREATEFLG"
-  item_jp   : "データ作成フラグ"
+  item_jp   : "データ収集作成フラグ"
   type      : "X"
   start     : 415
   length    : 1
 - item_no   : 24
   item      : "DATATEISYUTUKBN"
-  item_jp   : "データ提出方法区分"
+  item_jp   : "データ収集提出方法区分"
   type      : "X"
   start     : 416
   length    : 1
@@ -162,7 +162,7 @@ item_list   :
   length    : 1
 - item_no   : 26
   item      : "MEIPRTFLG"
-  item_jp   : "診療費明細書発行区分"
+  item_jp   : "診療費明細書発行フラグ"
   type      : "X"
   start     : 418
   length    : 1
@@ -198,37 +198,37 @@ item_list   :
   length    : 20
 - item_no   : 32
   item      : "DISCOUNT-HASU-KBN2J"
-  item_jp   : "請求額端数設定医保（減免無・自費分）"
+  item_jp   : "請求額端数区分医保（減免無・自費分）"
   type      : "X"
   start     : 443
   length    : 1
 - item_no   : 33
   item      : "DISCOUNT-HASU-KBN3"
-  item_jp   : "請求額端数設定労災（減免無・保険分）"
+  item_jp   : "請求額端数区分労災（減免無・保険分）"
   type      : "X"
   start     : 444
   length    : 1
 - item_no   : 34
   item      : "DISCOUNT-HASU-KBN3J"
-  item_jp   : "請求額端数設定労災（減免無・自費分）"
+  item_jp   : "請求額端数区分労災（減免無・自費分）"
   type      : "X"
   start     : 445
   length    : 1
 - item_no   : 35
   item      : "DISCOUNT-HASU-KBN4"
-  item_jp   : "請求額端数設定自賠責（減免無・保険分）"
+  item_jp   : "請求額端数区分自賠責（減免無・保険分）"
   type      : "X"
   start     : 446
   length    : 1
 - item_no   : 36
   item      : "DISCOUNT-HASU-KBN4J"
-  item_jp   : "請求額端数設定自賠責（減免無・自費分）"
+  item_jp   : "請求額端数区分自賠責（減免無・自費分）"
   type      : "X"
   start     : 447
   length    : 1
 - item_no   : 37
   item      : "DISCOUNT-HASU-KBN5J"
-  item_jp   : "請求額端数設定公害（減免無・自費分）"
+  item_jp   : "請求額端数区分公害（減免無・自費分）"
   type      : "X"
   start     : 448
   length    : 1
@@ -241,19 +241,19 @@ item_list   :
   precision : 0
 - item_no   : 39
   item      : "DATAINFECTIONKBN"
-  item_jp   : "データ感染症区分"
+  item_jp   : "ＯＲＣＡサーベイランス区分"
   type      : "X"
   start     : 459
   length    : 1
 - item_no   : 40
   item      : "DISCOUNT-HASU-KBN6"
-  item_jp   : "請求額端数設定第三者行為（減免無・保険分）"
+  item_jp   : "請求額端数区分第三者行為（減免無・保険分）"
   type      : "X"
   start     : 460
   length    : 1
 - item_no   : 41
   item      : "DISCOUNT-HASU-KBN6J"
-  item_jp   : "請求額端数設定第三者行為（減免無・自費分）"
+  item_jp   : "請求額端数区分第三者行為（減免無・自費分）"
   type      : "X"
   start     : 461
   length    : 1

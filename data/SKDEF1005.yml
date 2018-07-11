@@ -29,19 +29,19 @@ item_list   :
   length    : 4
 - item_no   : 5
   item      : "RECESRYKA"
-  item_jp   : "レセ電算診療科（コード）"
+  item_jp   : "レセ電診療科コード"
   type      : "X"
   start     : 117
   length    : 2
 - item_no   : 6
   item      : "JIKANKSN1-40"
-  item_jp   : "処置時間外加算等１設定"
+  item_jp   : "処置時間外加算等１算定"
   type      : "X"
   start     : 119
   length    : 1
 - item_no   : 7
   item      : "JIKANKSN1-50"
-  item_jp   : "手術時間外加算等１設定"
+  item_jp   : "手術時間外加算等１算定"
   type      : "X"
   start     : 120
   length    : 1

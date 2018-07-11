@@ -1,5 +1,5 @@
 kanri_cd    : "1034"
-name        : "出力先プリンタ名割り当て情報（入院） "
+name        : "出力先プリンタ割り当て情報（入院） "
 class_cd    : "*"
 item_max    : 21
 item_list   :
@@ -89,37 +89,37 @@ item_list   :
   length    : 16
 - item_no   : 15
   item      : "PRTNM15"
-  item_jp   : "帳票未設定"
+  item_jp   : "予備"
   type      : "X"
   start     : 225
   length    : 16
 - item_no   : 16
   item      : "PRTNM16"
-  item_jp   : "帳票未設定"
+  item_jp   : "予備"
   type      : "X"
   start     : 241
   length    : 16
 - item_no   : 17
   item      : "PRTNM17"
-  item_jp   : "帳票未設定"
+  item_jp   : "予備"
   type      : "X"
   start     : 257
   length    : 16
 - item_no   : 18
   item      : "PRTNM18"
-  item_jp   : "帳票未設定"
+  item_jp   : "予備"
   type      : "X"
   start     : 273
   length    : 16
 - item_no   : 19
   item      : "PRTNM19"
-  item_jp   : "帳票未設定"
+  item_jp   : "予備"
   type      : "X"
   start     : 289
   length    : 16
 - item_no   : 20
   item      : "PRTNM20"
-  item_jp   : "帳票未設定"
+  item_jp   : "予備"
   type      : "X"
   start     : 305
   length    : 16

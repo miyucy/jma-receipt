@@ -1,5 +1,5 @@
 kanri_cd    : "1030"
-name        : "帳票編集区分"
+name        : "帳票編集区分情報"
 class_cd    : "*"
 item_max    : 6
 item_list   :
@@ -11,13 +11,13 @@ item_list   :
   length    : 1
 - item_no   : 2
   item      : "SYOHODSPNAME"
-  item_jp   : "処方せん後発医薬品表示区分"
+  item_jp   : "後発医薬品表示名称"
   type      : "X"
   start     : 2
   length    : 20
 - item_no   : 3
   item      : "KARUTE3KBN"
-  item_jp   : "カルテ３号紙内容"
+  item_jp   : "カルテ３号紙（外来）内容"
   type      : "X"
   start     : 22
   length    : 1

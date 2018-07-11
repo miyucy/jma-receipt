@@ -1,11 +1,11 @@
 kanri_cd    : "1038"
-name        : "診療行為一括入金管理情報"
+name        : "診療行為機能情報"
 class_cd    : "*"
 item_max    : 43
 item_list   :
 - item_no   : 1
   item      : "NYKNKNRKBN"
-  item_jp   : "入金管理区分"
+  item_jp   : "入金の取り扱い"
   type      : "X"
   start     : 1
   length    : 1
@@ -47,13 +47,13 @@ item_list   :
   length    : 1
 - item_no   : 8
   item      : "CHG310FLG"
-  item_jp   : "皮下筋肉注射料変換選択"
+  item_jp   : "皮下筋肉注射料自動変換"
   type      : "X"
   start     : 9
   length    : 1
 - item_no   : 9
   item      : "TEIKINKBN"
-  item_jp   : "訂正請求書金額選択"
+  item_jp   : "訂正の請求書金額"
   type      : "X"
   start     : 10
   length    : 1
@@ -65,13 +65,13 @@ item_list   :
   length    : 1
 - item_no   : 11
   item      : "AKUSEIHYOFLG"
-  item_jp   : "腫瘍マーカ一覧表示"
+  item_jp   : "悪性腫瘍検査一覧"
   type      : "X"
   start     : 12
   length    : 1
 - item_no   : 12
   item      : "CHGSRYSYU-FLG"
-  item_jp   : "投薬診療種別変換選択"
+  item_jp   : "投薬診療種別自動変換"
   type      : "X"
   start     : 13
   length    : 1
@@ -95,31 +95,31 @@ item_list   :
   length    : 1
 - item_no   : 16
   item      : "HAIKIKBN"
-  item_jp   : "残量廃棄区分"
+  item_jp   : "残量廃棄算定"
   type      : "X"
   start     : 17
   length    : 1
 - item_no   : 17
   item      : "NYKHNKKBN"
-  item_jp   : "入金・返金額設定区分"
+  item_jp   : "入金・返金額設定"
   type      : "X"
   start     : 18
   length    : 1
 - item_no   : 18
   item      : "SEI20KSNKBN"
-  item_jp   : "精神療法２０未満加算区分"
+  item_jp   : "精神療法２０歳未満加算"
   type      : "X"
   start     : 19
   length    : 1
 - item_no   : 19
   item      : "YMDHENKBN"
-  item_jp   : "発行日変更区分"
+  item_jp   : "発行日変更"
   type      : "X"
   start     : 20
   length    : 1
 - item_no   : 20
   item      : "GENERICFLG"
-  item_jp   : "確認画面名称表示区分"
+  item_jp   : "確認画面処方名称表示"
   type      : "X"
   start     : 21
   length    : 1
@@ -161,67 +161,67 @@ item_list   :
   length    : 16
 - item_no   : 27
   item      : "BGLINEKBN"
-  item_jp   : "入力スクロール背景行区分"
+  item_jp   : "入力スクロール背景行"
   type      : "X"
   start     : 43
   length    : 1
 - item_no   : 28
   item      : "BGCOLORSJ0"
-  item_jp   : "環境設定背景色変更―標準"
+  item_jp   : "環境設定背景色―標準"
   type      : "X"
   start     : 44
   length    : 16
 - item_no   : 29
   item      : "BGCOLORSDAY"
-  item_jp   : "環境設定背景色変更―システム日付変更"
+  item_jp   : "環境設定背景色―システム日付変更"
   type      : "X"
   start     : 60
   length    : 16
 - item_no   : 30
   item      : "BGCOLORSJ1"
-  item_jp   : "環境設定背景色変更―時間外区分１"
+  item_jp   : "環境設定背景色―時間外区分１"
   type      : "X"
   start     : 76
   length    : 16
 - item_no   : 31
   item      : "BGCOLORSJ2"
-  item_jp   : "環境設定背景色変更―時間外区分２"
+  item_jp   : "環境設定背景色―時間外区分２"
   type      : "X"
   start     : 92
   length    : 16
 - item_no   : 32
   item      : "BGCOLORSJ3"
-  item_jp   : "環境設定背景色変更―時間外区分３"
+  item_jp   : "環境設定背景色―時間外区分３"
   type      : "X"
   start     : 108
   length    : 16
 - item_no   : 33
   item      : "BGCOLORSJ4"
-  item_jp   : "環境設定背景色変更―時間外区分４"
+  item_jp   : "環境設定背景色―時間外区分４"
   type      : "X"
   start     : 124
   length    : 16
 - item_no   : 34
   item      : "BGCOLORSJ5"
-  item_jp   : "環境設定背景色変更―時間外区分５"
+  item_jp   : "環境設定背景色―時間外区分５"
   type      : "X"
   start     : 140
   length    : 16
 - item_no   : 35
   item      : "BGCOLORSJ6"
-  item_jp   : "環境設定背景色変更―時間外区分６"
+  item_jp   : "環境設定背景色―時間外区分６"
   type      : "X"
   start     : 156
   length    : 16
 - item_no   : 36
   item      : "BGCOLORSJ7"
-  item_jp   : "環境設定背景色変更―時間外区分７"
+  item_jp   : "環境設定背景色―時間外区分７"
   type      : "X"
   start     : 172
   length    : 16
 - item_no   : 37
   item      : "BGCOLORSJ8"
-  item_jp   : "環境設定背景色変更―時間外区分８"
+  item_jp   : "環境設定背景色―時間外区分８"
   type      : "X"
   start     : 188
   length    : 16
@@ -239,13 +239,13 @@ item_list   :
   length    : 16
 - item_no   : 40
   item      : "PRVLAYOUT"
-  item_jp   : "レセプトブレビュー　レイアウト"
+  item_jp   : "レセプトレイアウト"
   type      : "X"
   start     : 236
   length    : 1
 - item_no   : 41
   item      : "SETALLKBN"
-  item_jp   : "セット展開区分"
+  item_jp   : "セット内容展開"
   type      : "X"
   start     : 237
   length    : 1

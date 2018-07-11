@@ -1,25 +1,25 @@
 kanri_cd    : "5010"
-name        : "入院請求管理マスタ"
+name        : "定期請求情報"
 class_cd    : "*"
 item_max    : 16
 item_list   :
 - item_no   : 1
   item      : "DAY1"
-  item_jp   : "１期請求日"
+  item_jp   : "請求日−１期"
   type      : "9"
   start     : 1
   length    : 2
   precision : 0
 - item_no   : 2
   item      : "DAY2"
-  item_jp   : "２期請求日"
+  item_jp   : "請求日−２期"
   type      : "9"
   start     : 3
   length    : 2
   precision : 0
 - item_no   : 3
   item      : "DAY3"
-  item_jp   : "３期請求日"
+  item_jp   : "請求日−３期"
   type      : "9"
   start     : 5
   length    : 2
@@ -32,31 +32,31 @@ item_list   :
   length    : 10
 - item_no   : 5
   item      : "NYUKINKBN"
-  item_jp   : "入金区分"
+  item_jp   : "請求時入金処理"
   type      : "X"
   start     : 17
   length    : 1
 - item_no   : 6
   item      : "SAISYORIKBN"
-  item_jp   : "再処理区分"
+  item_jp   : "再処理時の取り扱い"
   type      : "X"
   start     : 18
   length    : 1
 - item_no   : 7
   item      : "NYUKINPRTKBN"
-  item_jp   : "入金印字区分"
+  item_jp   : "入金額印字"
   type      : "X"
   start     : 19
   length    : 1
 - item_no   : 8
   item      : "DELKBN"
-  item_jp   : "削除区分"
+  item_jp   : "一括削除機能"
   type      : "X"
   start     : 20
   length    : 1
 - item_no   : 9
   item      : "SKYSUMKBN"
-  item_jp   : "請求書発行方法区分"
+  item_jp   : "請求書発行方法"
   type      : "X"
   start     : 21
   length    : 1
@@ -68,31 +68,31 @@ item_list   :
   length    : 1
 - item_no   : 11
   item      : "SKYPRTKBN"
-  item_jp   : "請求書印刷区分"
+  item_jp   : "請求書兼領収書"
   type      : "X"
   start     : 23
   length    : 1
 - item_no   : 12
   item      : "SRYPRTKBN"
-  item_jp   : "明細書印刷区分"
+  item_jp   : "診療費明細書"
   type      : "X"
   start     : 24
   length    : 1
 - item_no   : 13
   item      : "PTINFREFKBN"
-  item_jp   : "患者個別情報参照区分"
+  item_jp   : "患者情報個別設定参照"
   type      : "X"
   start     : 25
   length    : 1
 - item_no   : 14
   item      : "PRTJYUN"
-  item_jp   : "出力順区分"
+  item_jp   : "出力順"
   type      : "X"
   start     : 26
   length    : 2
 - item_no   : 15
   item      : "TAIINGRPKBN"
-  item_jp   : "退院患者集計区分"
+  item_jp   : "退院患者別集計"
   type      : "X"
   start     : 28
   length    : 1

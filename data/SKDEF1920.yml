@@ -5,14 +5,14 @@ item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "POPUP-TIMEOUT"
-  item_jp   : "表示時間"
+  item_jp   : "予備"
   type      : "9"
   start     : 1
   length    : 3
   precision : 0
 - item_no   : 2
   item      : "POPUP-HKNCHK"
-  item_jp   : "保険確認日"
+  item_jp   : "保険最終確認日"
   type      : "X"
   start     : 4
   length    : 1

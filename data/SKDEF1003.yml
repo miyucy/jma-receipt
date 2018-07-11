@@ -11,13 +11,13 @@ item_list   :
   length    : 100
 - item_no   : 2
   item      : "HPURL"
-  item_jp   : "ホームページアドレス"
+  item_jp   : "ＨＰアドレス"
   type      : "X"
   start     : 101
   length    : 100
 - item_no   : 3
   item      : "USERURL"
-  item_jp   : "ユーザＵＲＬ"
+  item_jp   : "ユーザＵＲＬ設定"
   type      : "X"
   start     : 201
   length    : 200

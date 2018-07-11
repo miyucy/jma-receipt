@@ -1,5 +1,5 @@
 kanri_cd    : "1009"
-name        : "患者番号構成管理"
+name        : "患者番号構成管理情報"
 class_cd    : "*"
 item_max    : 15
 item_list   :
