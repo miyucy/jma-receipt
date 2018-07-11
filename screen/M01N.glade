@@ -1206,11 +1206,6 @@
         <y>318</y>
         <width>504</width>
         <height>24</height>
-        <sensitive>True</sensitive>
-        <can_focus>False</can_focus>
-        <has_focus>False</has_focus>
-        <border_width>0</border_width>
-        <label></label>
         <label_xalign>0</label_xalign>
         <shadow_type>GTK_SHADOW_NONE</shadow_type>
         <widget>
