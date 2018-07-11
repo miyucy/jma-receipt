@@ -98,6 +98,7 @@
       * 04.08.00     NACL-Â¿¡¹Ç¼  17/03/07  ¾¦ÉÊÌ¾ÊÔ½¸ÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  17/06/XX  HAORIÂÐ±þ
       * 04.08.00     NACL-Â¿¡¹Ç¼  18/03/XX  £È£³£°Ç¯£´·î²þÀµÂÐ±þ
+      * 05.00.00     NACL-Â¿¡¹Ç¼  18/08/XX  HAORI°õºþ¤Î¤ßÂÐ±þ
       *****************************************************************
       *
       *
@@ -217,6 +218,9 @@
            03  FLG-NEXT-B              PIC 9(01).
       *H30.4
            03  FLG-DATA-ARI            PIC 9(01).
+      *
+      *HAORI
+           03  FLG-PARA                PIC 9(01).
       *
       *
       *    Åº»úÎÎ°è
@@ -919,6 +923,9 @@
       *    »»ÄêÍúÎò
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *HAORI
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¥ï¡¼¥¯
        01  LNK-WKSRYACT-AREA.
@@ -5456,6 +5463,18 @@
       *****************************************************************
        2003-WKSRYACT-SYORI-SEC         SECTION.
       *
+      *!!
+      *H30.8
+      *    HAORIÂÐ±þ
+           IF      SPA-API-FLG     NOT =   ZERO
+      *        PARA¥Ç¡¼¥¿¤«¤é°õºþ¤¹¤ë
+               PERFORM 20039-WKSRYACT-HAORI-SEC
+      *        ÃæÅÓ¥Ç¡¼¥¿°õºþ½èÍý
+               PERFORM 20030-WKSRYACT-PRTHEN-SEC
+               GO      TO  2003-WKSRYACT-SYORI-EXT
+           END-IF
+      *!!
+      *
            INITIALIZE                  LNK-WKSRYACT-AREA
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
       *
@@ -5485,6 +5504,7 @@
            MOVE    SPA-DRCD            TO  WRK-DRCD
            PERFORM
                UNTIL   FLG-WKSRYACT    =   1
+                  OR  (LNK-WKSRYACT-MAX    >=  100   )
       *        ÊÝ¸±¤ÎºÆÊÔ½¸
                IF      WKSRY-INPUTCD(1)(1:1)   =   "#"
                    MOVE    WKSRY-INPUTCD(1)(2:4)   TO  WRK-HKNCOMBINUM
@@ -5555,6 +5575,19 @@
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *!!!
+      *H30.8
+      *    ÃæÅÓ¥Ç¡¼¥¿°õºþ½èÍý
+           PERFORM 20030-WKSRYACT-PRTHEN-SEC
+      *
+           .
+       2003-WKSRYACT-SYORI-EXT.
+           EXIT.
+      *H30.8
+      *****************************************************************
+      *    ½èÊýäµÃæÅÓ¥Ç¡¼¥¿°õºþ½èÍý
+      *****************************************************************
+       20030-WKSRYACT-PRTHEN-SEC         SECTION.
       *
       *    ¿ÇÎÅ²Ê¡¦ÊÝ¸±ÁÈ¹ç¤»Ëè¤Ë½èÊý¤»¤ó¤ò°õºþ¤¹¤ë
            MOVE    ZERO                TO  FLG-WKSRYEND
@@ -5638,7 +5671,7 @@
       *
            END-PERFORM
            .
-       2003-WKSRYACT-SYORI-EXT.
+       20030-WKSRYACT-PRTHEN-EXT.
            EXIT.
       *****************************************************************
       *    ½èÊýÊÔ½¸½é´ü¥¯¥ê¥¢½èÍý
@@ -5840,6 +5873,120 @@
            .
        20032-PRINT-HENSYU-EXT.
            EXIT.
+      *
+      *
+      *HAORIÂÐ±þ
+      *H30.8
+      *****************************************************************
+      *    £È£Á£Ï£Ò£ÉÃæÅÓ½ªÎ»°õºþ½èÍý
+      *****************************************************************
+       20039-WKSRYACT-HAORI-SEC         SECTION.
+      *
+           INITIALIZE                  LNK-WKSRYACT-AREA
+           MOVE    ZERO                TO  LNK-WKSRYACT-MAX
+      *
+           MOVE    SPA-SRYKA           TO  WRK-SRYKA
+           MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
+           MOVE    SPA-DRCD            TO  WRK-DRCD
+      *
+           MOVE    SPACE               TO  PARA-REC
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "K02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           PERFORM
+               UNTIL  (FLG-PARA            =   1     )
+                  OR  (LNK-WKSRYACT-MAX    >=  100   )
+      *
+               MOVE    PARA-DATA-REC       TO  WKSRYACT-REC
+      *        ÊÝ¸±¤ÎºÆÊÔ½¸
+               IF      WKSRY-INPUTCD(1)(1:1)   =   "#"
+                   MOVE    WKSRY-INPUTCD(1)(2:4)   TO  WRK-HKNCOMBINUM
+               END-IF
+      *        ¿ÇÎÅ²Ê¤ÎºÆÊÔ½¸
+               IF      WKSRY-INPUTCD(1)(1:1)   =   "$"
+                   MOVE    WKSRY-INPUTCD(1)(2:2)   TO  WRK-SRYKA
+                   IF      WKSRY-INPUTCD(1)(5:4)   NUMERIC
+                       MOVE    "1"                 TO  WRK-DRCD(1:1)
+                       MOVE    WKSRY-INPUTCD(1)(5:4)
+                                                   TO  WRK-DRCD(2:4)
+                   END-IF
+               END-IF
+      *        ÅêÌô¤ÈºßÂð¤Î¤ßÂÐ¾Ý¤È¤¹¤ë
+               IF     (WKSRY-SRYKBN        =   "21"
+                                           OR  "22"
+                                           OR  "23"
+                                           OR  "14"
+                                           OR  "98"  )
+      *           Êñ³çÊÝ¸±Ê¬¤ÏÂÐ¾Ý³°
+                  AND (WRK-HKNCOMBINUM NOT =   "9999" )
+      *           ÌôÉ¾Ê¬¤ÏÂÐ¾Ý³°
+                  AND  (WKSRY-ZAIKBN   NOT =   1      )
+                   MOVE    WRK-SRYKA           TO  WKSRY-SRYKA
+                   MOVE    WRK-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
+                   ADD     1                   TO  LNK-WKSRYACT-MAX
+                   MOVE    WKSRYACT-REC        TO  LNK-WKSRYACT-REC
+                                                  (LNK-WKSRYACT-MAX)
+                   MOVE    WRK-DRCD            TO  LNK-WKSRY-DRCD
+                                                  (LNK-WKSRYACT-MAX)
+               END-IF
+      *
+      *H28.4
+      *        ÃÏ°èÊñ³ç¿ÇÎÅ
+               IF     (FLG-CHIKHKT         =   ZERO )
+                  AND (PARA-CHIIKI         =   "1"  )
+                  AND (WKSRY-SRYKBN        =   "12"
+                                           OR  "13" )
+                   PERFORM VARYING     IDXA    FROM    1   BY  1
+                           UNTIL      (IDXA    >   5   )   OR
+                                      (WKSRY-SRYCD (IDXA)
+                                                       =   SPACE)
+                       EVALUATE    WKSRY-SRYCD (IDXA)
+      *                ÃÏ°èÊñ³ç¿ÇÎÅÎÁ
+                       WHEN    CONS-CHKHTCD1
+                       WHEN    CONS-CHKHTCD2
+                           MOVE    1               TO  FLG-CHIKHKT
+      *                ÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
+                       WHEN    CONS-CHKHTKSN1
+                       WHEN    CONS-CHKHTKSN2
+                           MOVE    3               TO  FLG-CHIKHKT
+      *                Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅÎÁ
+                       WHEN    CONS-NNCHICD1
+                       WHEN    CONS-NNCHICD2
+                           MOVE    2               TO  FLG-CHIKHKT
+      *                Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»
+                       WHEN    CONS-NNCHIKSN1
+                       WHEN    CONS-NNCHIKSN2
+                           MOVE    4               TO  FLG-CHIKHKT
+                       END-EVALUATE
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       20039-WKSRYACT-HAORI-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *    Á°²ó½èÊý¡ÊÆâÍÆÊÑ¹¹¡Ë½èÍý
       *****************************************************************
@@ -5887,12 +6034,20 @@
                END-PERFORM
       *
                IF      FLG-HENSYU          =   1
+      *H30.8
       *            Á°¤ÎºÞ¤Î½èÊý¤»¤ó½èÍý
-                   PERFORM 20022-SYOHOU-HENSYU-SEC
+      *            PERFORM 20022-SYOHOU-HENSYU-SEC
+      *H30.8
+      *            ÊÝÂ¸
+                   PERFORM 2100-SYOHOU-ALLHEN-SEC
                END-IF
            END-PERFORM
+      *H30.8
       *    ½èÊý¤»¤ó°õºþ
-           PERFORM 200212-PRINT-CHK-SEC
+      *    PERFORM 200212-PRINT-CHK-SEC
+      *H30.8
+      *    ½èÊý¤»¤ó°õºþ
+           PERFORM 2100-SYOHOU-SYORI-SEC
            .
        2004-HENKOU-SYORI-EXT.
            EXIT.
@@ -5938,6 +6093,18 @@
                                    NOT =   SPACE)
                MOVE    ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
                                            TO  WRK-SRY-COM-NAME
+                                                         (WRK-SRY-MAX)
+           END-IF
+      *
+      *H30.8
+      *    Ê¬³äÄ´ºÞ¤­¤¶¤ßÃÍ
+           IF     (ORCHC19-SRYCD (IDX-L IDX-L2)
+                                       =    "099208101")
+               MOVE    ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
+                                           TO  WRK-SRY-COM-NAME
+                                                         (WRK-SRY-MAX)
+               MOVE    ORCHC19-INPUTCHI-G (IDX-L IDX-L2)
+                                           TO  WRK-SRY-INPUTCHI-G
                                                          (WRK-SRY-MAX)
            END-IF
       *
@@ -7482,6 +7649,24 @@
       *
            .
        993-PTRSIINF-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Ñ¥é¥á¥¿¥Ç¡¼¥¿ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           .
+       990-PARA-READ-EXT.
            EXIT.
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý

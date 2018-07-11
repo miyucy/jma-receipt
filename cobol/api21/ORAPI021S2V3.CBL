@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.08.00    NACL-多々納  17/05/XX  包括検査数、単位コード対応
       *                                     フィルム分画数等対応
+      *  05.00.00    NACL-多々納  18/08/XX  処方箋印刷独立機能対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -76,6 +77,10 @@
            03  FLG-NYUIN               PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
            03  FLG-INGAI               PIC 9(01).
+      *
+      *    印刷のみ
+           03  FLG-SYOHOU-ARI          PIC 9(01).
+           03  FLG-YAKUZAI-ARI         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -389,6 +394,19 @@
             03  APIREQ-MODE             PIC S9(9)   BINARY.
             03  APIREQ-RECORDNAME       PIC X(128).
             03  APIREQ-PATIENTINFOREQ   PIC X(1000000).
+      *
+      *
+      *
+      *H30.8
+      *    一時ディレクトリ取得・削除サブ
+           COPY    "CPORCSTEMPDIR.INC".
+      *    クライアント印刷情報取得
+           COPY    "CPORCSPRTCTRL.INC".
+      *    オンライン帳票共通パラメタ
+           COPY    "CPONPRTDATA.INC".
+      *
+      *    処方箋印刷パラメタ（Ａ５）
+           COPY    "CPORCHC19.INC".
       *
       *
       *****************************************************************
@@ -744,6 +762,11 @@
                    WHEN    2
                        MOVE    "処理終了"
                                            TO  MDCRES-API-RESULT-MSG
+      *H30.8
+                       IF      WRK-PARA-MODE   =   "PRT"
+                           MOVE    "印刷処理終了"
+                                           TO  MDCRES-API-RESULT-MSG
+                       END-IF
                END-EVALUATE
                IF      FLG-KEIMSG          =   1
       *            警告メッセージあり
@@ -986,6 +1009,26 @@
                IF     (MDCREQ-PATIENT-MODE =   "Modify")
                   OR  (WRK-PARA-MODE       =   "UPD" )
                    PERFORM 20011-DENPNUM-CHK-SEC
+               END-IF
+           END-IF
+      *!!!!
+      *H30.8
+      *    印刷処理中判定
+           IF      WRK-ERRCD           =   SPACE
+               IF     (MDCREQ-PATIENT-MODE =   "Print")
+                  IF     (WRK-PARA-MODE    NOT =   "PRT" )
+                      MOVE    "29"             TO  WRK-ERRCD
+                  END-IF
+               END-IF
+               IF      (WRK-PARA-MODE      =   "PRT" )
+                  IF     (MDCREQ-PATIENT-MODE  NOT =   "Print")
+                      MOVE    "29"             TO  WRK-ERRCD
+                  END-IF
+               END-IF
+      *
+               IF     (MDCREQ-PATIENT-MODE =   "Print")
+                  AND (WRK-PARA-MODE       =   "PRT" )
+                    MOVE    "PRT"               TO  WRK-SYORI-MODE
                END-IF
            END-IF
       *
@@ -3294,6 +3337,16 @@
                MOVE    "02"                TO  MDCRES-RESPONSE-NUMBER
                GO      TO      2003-SYORI-02-EXT
            END-IF
+      *!!!!
+      *!!!!
+      *    印刷処理
+           IF     (MDCREQ-PATIENT-MODE =   "Print")
+              AND (WRK-PARA-MODE       =   "PRT" )
+               PERFORM 200310-PRINT-SYORI-SEC
+               GO      TO      2003-SYORI-02-EXT
+           END-IF
+      *!!!!
+      *!!!!
       *
       *    診察料確認処理
            PERFORM 20031-HENSYU-02-SEC
@@ -4001,7 +4054,7 @@
                MOVE    LNK-WKSRYACT-REC(IDX)
                                            TO  PARA-DATA-REC
       *
-                PERFORM 30010-PARA-DBINSERT-SEC
+               PERFORM 30010-PARA-DBINSERT-SEC
       *
            END-PERFORM
            .
@@ -4290,6 +4343,156 @@
       *
            .
        2002101-HKNHEN-TBL-EXT.
+           EXIT.
+      *
+      *!!!!
+      *H30.8
+      *****************************************************************
+      *     印刷処理
+      *****************************************************************
+       200310-PRINT-SYORI-SEC            SECTION.
+      *
+      *    診療行為内容編集
+           PERFORM 200311-MDCRES-HEN03-SEC
+      *
+      *
+           INITIALIZE                      SPATMP-REC
+           MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
+           MOVE    "K02"               TO  SPATMP-GYOUMUID
+           MOVE    SPA-TERMID          TO  SPATMP-TERMID
+           MOVE    "K02SPA"            TO  SPATMP-FILEMEI
+           MOVE    1                   TO  SPATMP-EDANUM
+           PERFORM 9100-SPATMP-KEYREAD-SEC
+           IF      FLG-SPATMP          =   ZERO
+               MOVE    SPATMP-DATA-REC     TO  SPA-K02
+           ELSE
+               MOVE    "08"                TO  WRK-ERRCD
+               GO      TO      200310-PRINT-SYORI-EXT
+           END-IF
+      *
+      *    一時ディレクトリ作成
+           INITIALIZE                  STEMPDIR-AREA
+           CALL    "ORCSTEMPDIR"       USING
+                                       STEMPDIR-AREA
+      *
+      *    SPA-API-FLGに1を設定
+           MOVE    1              TO  SPA-API-FLG
+      *
+      *    ORCSONPRTSETをCALL
+           CALL    "ORCSONPRTSET"      USING
+                                       SPA-AREA
+      *
+      *    ORCSPRTCTRLをCALL
+           INITIALIZE                  ORCSPRTCTRLAREA
+           CALL    "ORCSPRTCTRL"       USING
+                                       SPA-AREA
+                                       ORCSPRTCTRLAREA
+                                       MCPAREA
+      *
+      *    処方箋印刷処理
+           PERFORM 2003101-PRINT-01-SEC
+      *
+      *    印刷ダミー処理
+           MOVE    "99"                TO  SPA-PRT-FLG
+           CALL    "ORCHCDUMMY"        USING   SPA-AREA
+      *
+           MOVE    SPACE               TO  SPA-PRT-FLG
+      *
+      *    一時ディレクトリ削除
+           INITIALIZE                  STEMPDIR-AREA
+           MOVE    "DEL"           TO  STEMPDIR-MODE
+           CALL    "ORCSTEMPDIR"       USING
+                                       STEMPDIR-AREA
+      *
+           MOVE    "00"                TO  MDCRES-RESPONSE-NUMBER
+      *    終了処理
+           PERFORM 300-SYORI-END-SEC
+           .
+       200310-PRINT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     処方箋印刷処理
+      *****************************************************************
+       2003101-PRINT-01-SEC            SECTION.
+      *
+      *    処方せん発行の有無
+           MOVE    ZERO                TO  FLG-SYOHOU-ARI
+           MOVE    ZERO                TO  FLG-YAKUZAI-ARI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-GMN-MAX)  OR
+                              (FLG-SYOHOU-ARI  =   1     )
+      *    薬評以外
+               IF     (SPA-COM-YAKUHYO (IDX)     =   SPACE )
+      *            薬剤チェック
+                   IF     (SPA-COM-SRYKBN(IDX)     =   "21"  OR  "22"
+                                                   OR  "23"    )  AND
+                         ((SPA-COM-INPUTCD(IDX)(1:1)   =   "6" )  OR
+                          (SPA-COM-INPUTCD(IDX)(1:3)   =   "059" ))
+                       MOVE    1                   TO  FLG-YAKUZAI-ARI
+                   END-IF
+      *
+      *            院外処方
+                   IF    ((SPA-COM-SRYKBN(IDX)     =   "21"  OR  "22"
+                                                   OR  "23"   )  AND
+                          (SPA-COM-ZAIEND(IDX)     =   "1"    )  AND
+                          (SPA-COM-TENSU (IDX)     =   ZERO   )  AND
+                          (FLG-YAKUZAI-ARI         =   1      ))
+      *                薬剤のみの時、院内分とする
+                       IF      SPA-COM-SRYSYUKBN(IDX)  =  "213"
+                                                   OR  "223"
+                                                   OR  "233"
+      *                院内投薬
+                                                   OR  "211"
+                                                   OR  "221"
+                                                   OR  "231"
+                                                   OR  "291"
+                                                   OR  "294"
+                                                   OR  "297"
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-SYOHOU-ARI
+                       END-IF
+                   END-IF
+      *            院外の診療種別の時、院外とする
+                   IF      SPA-COM-SRYSYUKBN(IDX)  =   "212" 
+                                                   OR  "222"
+                                                   OR  "232" 
+                                                   OR  "292"
+      *            外用臨時
+                                                   OR  "295"
+      *            頓服臨時
+                                                   OR  "298"
+                       MOVE    1               TO  FLG-SYOHOU-ARI
+                   END-IF
+      *            在宅注射院外処方
+                   IF     (SPA-COM-SRYKBN(IDX)     =   "14"  )
+                       IF      SPA-COM-SRYSYUKBN(IDX)  =   "148"
+                                                       OR  "149"
+      *                    院外分
+                           MOVE    1               TO  FLG-SYOHOU-ARI
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF      SPA-COM-ZAIEND(IDX)     =   "1" 
+                   MOVE    ZERO            TO  FLG-YAKUZAI-ARI
+               END-IF
+           END-PERFORM
+      *
+           INITIALIZE                  ORCHC19AREA
+           IF      FLG-SYOHOU-ARI      =   1
+      *        中途終了時（院外）
+               MOVE    "4"                 TO  ORCHC19-KBN
+           ELSE
+      *        中途終了時（院内）
+               MOVE    "5"                 TO  ORCHC19-KBN
+           END-IF
+           MOVE    "01"                TO  SPA-PRT-FLG
+           CALL    "ORCHC02Q"          USING   SPA-AREA
+                                               ORCHC19AREA
+           .
+       2003101-PRINT-01-EXT.
            EXIT.
       *
       *****************************************************************
