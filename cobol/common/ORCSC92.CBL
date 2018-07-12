@@ -1743,7 +1743,7 @@
       *H26.4
                    WHEN    "17"
                        MOVE    8000            TO  IDX
-                   END-EVALUATE
+               END-EVALUATE
       *H24.4
                PERFORM VARYING IDY         FROM    1   BY  1
                        UNTIL  (IDY         >       500 )
@@ -4264,11 +4264,11 @@
       *TEST
       *H30.5
       *    商品名等関連コード（診療コードのコメントグループ番号）
-           IF     (TNS-SRYCD (1:1)     =   "1"   )
-              AND (SPA-SRYYMD          >=  "20180401" )
-               MOVE    TNS-SYOMEIKANREN    TO  SPA-COM-SYOMEIKANREN
-                                                             (IDX-T)
-           END-IF
+      *    IF     (TNS-SRYCD (1:1)     =   "1"   )
+      *       AND (SPA-SRYYMD          >=  "20180401" )
+      *        MOVE    TNS-SYOMEIKANREN    TO  SPA-COM-SYOMEIKANREN
+      *                                                      (IDX-T)
+      *    END-IF
       *??
       *TEST
       *
