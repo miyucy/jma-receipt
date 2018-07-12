@@ -386,12 +386,14 @@
                                                WRK-KSN-CHUKSNTUBAN
            IF     ORCSCNKSN-SRYYM          >=  "201804"
              IF ((TNS-CDKBN-KBNNUM         >=  200)   AND
-                 (TNS-CDKBN-KBNNUM         <=  299))  
+                 (TNS-CDKBN-KBNNUM         <=  299))  AND
+                ( TNS-CDKBN-KBNNUM         NOT =  246)
       *        入院基本料等加算
                MOVE    TNS-CHUKSNCD        TO  WRK-KSN-CHUKSNCD
                MOVE    TNS-CHUKSNTUBAN     TO  WRK-KSN-CHUKSNTUBAN
                IF      WRK-KSN-CHUKSNTUBAN  NOT =  "0"
       *          加算コードを注加算通番０のものに読み替える
+      *          （(A246)入退院支援加算の注の加算は読み替え対象外）
                  INITIALIZE                          TNS-TENSU-REC
                  MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                  MOVE    WRK-KSN-CHUKSNCD        TO  TNS-CHUKSNCD
