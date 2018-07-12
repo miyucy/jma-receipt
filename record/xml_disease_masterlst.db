@@ -25,7 +25,7 @@ xml_disease_masterlst {
 		Disease_Icd10_2_2	varchar(5);
 		Disease_ListingDate	varchar(10);
 		Disease_ChangeDate	varchar(10);
-		Disease_DeprecateddDate	varchar(10);
+		Disease_DeprecatedDate	varchar(10);
 		Disease_CreatedDate	varchar(10);
 		Disease_UpdateDate	varchar(10);
 		Disease_UpdateTime	varchar(8);
