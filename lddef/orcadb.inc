@@ -274,6 +274,4 @@ db	{
         tbl_receden_tmp;
     monpushevent;
         tbl_file_mis;
-        tbl_recekisai;
-        tbl_recekisai_master;
 };

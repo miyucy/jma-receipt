@@ -1109,8 +1109,6 @@ DB_files = \
 	xml_temp_medical_addv3res.db \
     xml_apiversiongetv2req.db \
     xml_apiversiongetv2res.db \
-	tbl_recekisai.db \
-	tbl_recekisai_master.db \
 	xml_statistics_formv3req.db \
 	xml_statistics_formv3res.db \
 
