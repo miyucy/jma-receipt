@@ -3489,6 +3489,7 @@
       *    間接撮影による逓減計算があれば変更
       *!!  IF      WRK-SATU-GENRT  NOT =   ZERO
       *
+           MOVE    ZERO                TO  WRK-KEI-TEN2
       *    きざみ値点数計算
            PERFORM 10001321-KZM-TENSU-SEC
       *
