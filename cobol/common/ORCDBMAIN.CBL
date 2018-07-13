@@ -213,6 +213,18 @@
                    END-IF
                END-IF
       *
+               IF    ( MCP-TABLE   =   "tbl_prtdata" )
+                   IF    ( MCP-PATHNAME (1:5)  =   "delmb" )
+                       MOVE    0   TO  MCP-REDIRECT
+                   END-IF
+               END-IF
+      *
+               IF    ( MCP-TABLE   =   "tbl_file_mis" )
+                   IF    ( MCP-PATHNAME (1:11) =   "del_monblob" )
+                       MOVE    0   TO  MCP-REDIRECT
+                   END-IF
+               END-IF
+      *
                IF    ( MCP-TABLE   =   "tbl_syumei" )
                    MOVE    MCPDATA-REC
                                    TO  SYUMEI-REC

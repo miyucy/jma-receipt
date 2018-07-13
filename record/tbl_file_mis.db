@@ -50,7 +50,7 @@ path	key2		{
 	};
 };
 
-path    del1   {
+path    del_monblob   {
 	DBDELETE        {
 		DELETE
 		FROM monblob
@@ -64,6 +64,11 @@ path    del1   {
 			AND	SHORI_RENNUM	=	:SHORI_RENNUM
 		)
                 ;
+	};
+};
+
+path    del1   {
+	DBDELETE        {
 		DELETE
 		FROM tbl_file_mis
 		WHERE 	HOSPNUM		=	:HOSPNUM
