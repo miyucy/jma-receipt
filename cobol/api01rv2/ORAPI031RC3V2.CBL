@@ -164,6 +164,13 @@
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
+      *    使用不可とする。
+           IF    ( 1 = 1 )
+              MOVE    LOW-VALUE       TO  APILST36-BODY
+              MOVE    404             TO  APILST36-HTTPSTATUS
+              GO  TO  000-MAIN-EXIT
+           END-IF
+      *
            DISPLAY   "***************************"
            DISPLAY   "* hsconfroomcharge start  *"
            DISPLAY   "***************************"
