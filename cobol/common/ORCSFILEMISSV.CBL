@@ -179,6 +179,11 @@
       *
            MOVE    FILE-MIS-REC        TO  MCPDATA-REC
            MOVE    "tbl_file_mis"      TO  MCP-TABLE
+           MOVE    "del_monblob"       TO  MCP-PATHNAME
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+      *                                      
+           MOVE    "tbl_file_mis"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            MOVE    "DBDELETE"          TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC

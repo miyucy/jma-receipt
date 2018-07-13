@@ -729,6 +729,12 @@
            MOVE    FILE-MIS-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_file_mis"      TO  MCP-TABLE
+           MOVE    "del_monblob"       TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           MOVE    FILE-MIS-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_file_mis"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
@@ -738,7 +744,7 @@
            END-IF
       *
       *    monblobの削除処理が必要だがmonblobの操作ができないため
-      *    tbl_file_mis.db内のdel1でmonblobの削除処理を行う
+      *    tbl_file_mis.db内のdel_monblobでmonblobの削除処理を行う
       *
            PERFORM 310-SPASET-SEC
            .
