@@ -3586,7 +3586,11 @@
            MOVE    "¥µº‘…È√¥§¢§Í° ¡¥≥€°À"
                                TO  SPA-GMN-SKJFUKAKBNMEIL (4)
       *
-           MOVE    4           TO  SPA-GMN-SKJFUKAKBN-MAX
+           MOVE    "4"         TO  SPA-GMN-SKJFUKAKBNL    (5)
+           MOVE    "¥µº‘…È√¥§¢§Í° ¬æ∏¯»ÒΩı¿Æ∏Â§Œ»æ≥€°À"
+                               TO  SPA-GMN-SKJFUKAKBNMEIL (5)
+      *
+           MOVE    5           TO  SPA-GMN-SKJFUKAKBN-MAX
       *
            .
        3110-SKJFUKAKBNLST-EXT.
@@ -5372,6 +5376,7 @@
                    WHEN    "0" ALSO  "0" ALSO  "0"
                    WHEN    "1" ALSO  "1" ALSO  "3"
                    WHEN    "1" ALSO  "3" ALSO  "3"
+                   WHEN    "4" ALSO  "4" ALSO  "4"
                        CONTINUE
                    WHEN    OTHER
                        MOVE    IDXE    TO  FLG-ERR
