@@ -766,6 +766,8 @@
       *  04.08.51    NACL-ÌçÏÆ    18/05/02  »ÄÎÌÇÑ´þ¥³¥á¥ó¥È¤Îµ­ºÜÆâÍÆ½¤Àµ
       *  04.08.52    NACL-ÌçÏÆ    18/06/11  Äþ¸ºÅÀ¿ô½¸·×¤Ë´Ø¤¹¤ë½¤Àµ
       *  04.08.53    NACL-ÌçÏÆ    18/06/25  ÅÅ»Ò²èÁü´ÉÍý²Ã»»¤Îµ­ºÜ½ç½¤Àµ
+      *  04.08.54    NACL-ÌçÏÆ    18/07/13  £°£·£¹Ëô£°£²£´Ã±ÆÈ¤Î¿©»öÎÅÍÜÍó
+      *                                     µ­ºÜ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -25951,6 +25953,19 @@
                   OR ( SYU-SKJ-RYOYOHI(IDX3) =   ZERO          )
                   OR ((SYU-KOH-HKNNUM(IDX3)  =  "079" OR "024") AND
                       (SYS-200501-SHOKUJI-PRTKBN  =  "0"      ))
+                  OR ((IDX3                  >   1            ) AND
+                      (SYU-KOH-HKNNUM(IDX3)(1:1)
+                                        >=  "1" AND <=  "8"   ) AND
+                      (SYU-KOH-HKNNUM(1)     =  "079" OR "024") AND
+                      (SYU-SKJ-FTN(1)        >   0            ) AND
+                      (SYU-SKJ-FTN(1)   <=   SYU-SKJ-FTN(IDX3)))
+                  OR ((IDX3                  >   1            ) AND
+                      (SYU-KOH-HKNNUM(IDX3)(1:1)
+                                        >=  "1" AND <=  "8"   ) AND
+                      (SYU-KOH-HKNNUM(1)     =  "079" OR "024") AND
+                      (SYS-200501-SHOKUJI-PRTKBN  =  "0"      ) AND
+                      (SYU-SKJ-FTN(1)             =  ZERO     ) AND
+                      (SYU-SKJ-FTN-RECE(1)   NOT  =  ZERO     ))
       *              IF   RECE62-SHOKUJINISSU(KH-IDX)  =  ZERO
                      IF   RECE62-SHOKUJIRYOYOHI(KH-IDX) =  ZERO
                          MOVE    "1"      TO
@@ -26036,11 +26051,11 @@
                          (SYU-KOH2HKNNUM      =   SPACE         ) AND
                          (SYU-KOH3HKNNUM      =   SPACE         ) AND
                          (SYU-KOH4HKNNUM      =   SPACE         ))
-                   OR   ((SYU-KOH1HKNNUM      =  "024" OR  "079") AND
-                         (SYU-KOH2HKNNUM      =   SPACE         ) AND
-                         (SYU-KOH3HKNNUM      =   SPACE         ) AND
-                         (SYU-KOH4HKNNUM      =   SPACE         ) AND
-                         (SYU-SKJ-FTNKBN(IDX3)  =  "3"          ))
+      ***          OR   ((SYU-KOH1HKNNUM      =  "024" OR  "079") AND
+      ***                (SYU-KOH2HKNNUM      =   SPACE         ) AND
+      ***                (SYU-KOH3HKNNUM      =   SPACE         ) AND
+      ***                (SYU-KOH4HKNNUM      =   SPACE         ) AND
+      ***                (SYU-SKJ-FTNKBN(IDX3)  =  "3"          ))
                    OR   ((SYU-KOH1HKNNUM      =  "015" OR  "016") AND
                          (SYU-KOH2HKNNUM      =   SPACE         ) AND
                          (SYU-KOH3HKNNUM      =   SPACE         ) AND
