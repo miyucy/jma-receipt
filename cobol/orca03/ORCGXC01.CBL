@@ -1325,12 +1325,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
       *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "print_prv.sh"          TO  WRK-SHELL-SHELL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
       *     
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
