@@ -295,6 +295,9 @@
       *
       *            対象開始番号
                    07  SPA-NAI-HKNSTR              PIC 9(04).
+      *H30.7
+      *            期間変更対象番号
+                   07  SPA-WRK-IDX              PIC 9(04).
       *
       *            公費情報（変更したらワークも）
                    07  SPA-GMN-KOH-AREA.
