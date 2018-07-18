@@ -190,6 +190,9 @@
       *                                     通則加算対象外区分を０（所定
       *                                     点数の対象となる診療行為）に
       *                                     読み替え
+      *              NACL-小豆沢  18/07/18  9999包括保険で再診の時間外加算
+      *                                     を入力時にデータ区分９２で記録
+      *                                     するよう対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7785,10 +7788,13 @@
       *分割区分
            MOVE    RECE62-RECEIPT-KBN  TO  RECE641-RECEIPT-KBN
       *診療区分
+           MOVE    ACCT-SRYKBN         TO  RECE641-SRYKBN
            IF      ACCT-SRYKBN         =   "64"
-               MOVE    "60"                TO  RECE641-SRYKBN
-           ELSE
-               MOVE    ACCT-SRYKBN         TO  RECE641-SRYKBN
+               MOVE    "60"            TO  RECE641-SRYKBN
+           END-IF
+           IF    ACCT-SRYKBN           =   "12"
+               MOVE    "92"            TO  RECE641-SRYKBN
+               MOVE    "1"             TO  RECE641-NYUSAIFLG
            END-IF
       *コード表用番号−区分番号
            MOVE    TNS-CDKBN-KBNNUM    TO  RECE641-CDKBN-KBNNUM
@@ -7801,10 +7807,12 @@
       *患者番号
            MOVE    RECE62-PTNUM        TO  RECE641-PTNUM
       *診療種別区分
+           MOVE    SRY-SRYSYUKBN       TO  RECE641-SRYSYUKBN
            IF      ACCT-SRYKBN         =   "64"
-               MOVE    "600"               TO  RECE641-SRYSYUKBN
-           ELSE
-               MOVE    SRY-SRYSYUKBN       TO  RECE641-SRYSYUKBN
+               MOVE    "600"           TO  RECE641-SRYSYUKBN
+           END-IF
+           IF      ACCT-SRYKBN         =   "12"
+               MOVE    "903"           TO  RECE641-SRYSYUKBN
            END-IF
       *診療科
            MOVE    RECE62-SRYKA(1)        TO  RECE641-SRYKA
@@ -7907,10 +7915,12 @@
       *診療科
            MOVE    RECE62-SRYKA(1)        TO  RECE65-SRYKA
       *診療区分
+           MOVE    SRY-SRYKBN          TO  RECE65-SRYKBN
            IF      SRY-SRYKBN          =   "64"
                MOVE    "60"                TO  RECE65-SRYKBN
-           ELSE
-               MOVE    SRY-SRYKBN          TO  RECE65-SRYKBN
+           END-IF
+           IF      SRY-SRYKBN          =   "12"
+               MOVE    "92"                TO  RECE65-SRYKBN
            END-IF
       *診療種別区分
            MOVE    SRY-SRYSYUKBN       TO  RECE65-SRYSYUKBN
