@@ -53,6 +53,7 @@ class Jma_print
     @report_title = (yaml["report_title"].blank? ? "no_title" : yaml["report_title"])
     @show_dialog = (yaml["show_dialog"]  == "1" ? true : false)
     @keep_pdf = (yaml["keep_pdf"]  == "1" ? true : false)
+    @orca_version = yaml["orca_version"]
 
     @print_order = ""
     @print_data = Array.new
@@ -263,7 +264,11 @@ class Jma_print
   def execute_concat(pdf_files,printer)
     out_file = "#{@mcp_temp_dir}/#{File.basename(pdf_files[0]).sub(/.pdf$/,'')}#{timestamp}.pdf"
 
-    execute("pdftk #{pdf_files.join(' ')} cat output #{out_file}")
+    if @orca_version < "050100-1"
+      execute("pdftk #{pdf_files.join(' ')} cat output #{out_file}")
+    else
+      execute("qpdf --empty --pages #{pdf_files.join(' ')} -- #{out_file}")
+    end
 
     case @print_order
     when "5"

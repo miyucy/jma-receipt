@@ -51,6 +51,7 @@ mcp_temp_dir: "${MCP_TEMPDIR}"
 report_title: "${REPORT_TITLE}"
 show_dialog: "$6"
 keep_pdf: "$7"
+orca_version: $([[ $(cat ${DOCDIR}/version) =~ version.*\(([0-9\-]*)\) ]] && echo ${BASH_REMATCH[1]})
 EOS
 
 echo "yaml"  
