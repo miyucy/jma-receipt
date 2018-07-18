@@ -723,7 +723,7 @@
       *    死産有無区分
            PERFORM 3101-SIZANKBNLST-SEC
       *
-      *    産科医療保障制度区分
+      *    産科医療補償制度区分
            PERFORM 3101-SANKAKBNLST-SEC
       *
       *    内訳明細書印刷区分
@@ -839,7 +839,7 @@
        3101-SIZANKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    産科医療保障制度区分コンボ初期処理
+      *    産科医療補償制度区分コンボ初期処理
       *****************************************************************
        3101-SANKAKBNLST-SEC            SECTION.
       *
@@ -1457,7 +1457,7 @@
        4101-NYUIN-DAY-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    産科医療保障制度区分チェック処理
+      *    産科医療補償制度区分チェック処理
       *****************************************************************
        4101-SANKAKBN-CHK-SEC           SECTION.
       *
@@ -1541,7 +1541,7 @@
        4101-SYC-MONEY-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    産科医療保障制度チェック処理
+      *    産科医療補償制度チェック処理
       *****************************************************************
        4101-SNK-MONEY-CHK-SEC          SECTION.
       *
@@ -1814,7 +1814,7 @@
        4200-SIZANKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    産科医療保障制度区分コンボチェック処理
+      *    産科医療補償制度区分コンボチェック処理
       *****************************************************************
        4200-SANKAKBNLST-CHK-SEC       SECTION.
       *
@@ -2550,7 +2550,7 @@
                    IF    ( SPA-GMN-SNK-MONEY   =   ZERO )
                        COMPUTE IDX-INFO    =   IDX-INFO    +   1
                        MOVE    "blue"  TO  S08-LBLINFO-STYLE (IDX-INFO)
-                       STRING  "産科医療保障制度の金額が未入力です。"
+                       STRING  "産科医療補償制度の金額が未入力です。"
                                                DELIMITED BY SIZE
                        INTO     S08-LBLINFO (IDX-INFO)
                        END-STRING
@@ -3036,7 +3036,7 @@
                END-STRING
            WHEN    "1006"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "出産数が１人で産科医療保障制度区分に混在が"
+               STRING  "出産数が１人で産科医療補償制度区分に混在が"
                                            DELIMITED BY SIZE
                        "設定されています"  DELIMITED BY SIZE
                INTO    SPA-ERRMSG
@@ -3049,7 +3049,7 @@
                                        TO  SPA-ERRMSG
            WHEN    "1011"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "産科医療保障制度の金額が"
+               STRING  "産科医療補償制度の金額が"
                                            DELIMITED BY SIZE
                        "入力されています"  DELIMITED BY SIZE
                INTO    SPA-ERRMSG
