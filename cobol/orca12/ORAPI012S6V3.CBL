@@ -1555,9 +1555,9 @@
                WHEN    "25"
                    MOVE    "Í×²ð¸î£µ"  TO  PTMODRES-NEED-CARE-STATE(IDX)
       *H30.7
-               WHEN    "31"
-                   MOVE    "»ö¶ÈÂÐ¾Ý¼Ô"
-                                       TO  PTMODRES-NEED-CARE-STATE(IDX)
+      *        WHEN    "31"
+      *            MOVE    "»ö¶ÈÂÐ¾Ý¼Ô"
+      *                                TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    OTHER
                    MOVE    1           TO  FLG-CHKERR
            END-EVALUATE
