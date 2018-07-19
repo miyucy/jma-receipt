@@ -2865,6 +2865,8 @@
            END-PERFORM
       *
       *    新規入力分で、開始日付と終了日付が重複している時、自動変換
+      *H30.7
+           MOVE    ZERO                TO  SPA-WRK-IDX
            IF    ( WRK-IDX             >   ZERO     )  AND
                  ((SPA-NAI-HKNSTR      =   ZERO      ) OR
                   (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
@@ -2877,6 +2879,8 @@
                                            TO  SPA-PIDMSG
                    MOVE    "0105"          TO  SPA-PIDCD
                    MOVE    SPACE           TO  SPA-ERRCD
+      *H30.7
+                   MOVE    WRK-IDX         TO  SPA-WRK-IDX
                END-IF
            END-IF
       *
@@ -2904,8 +2908,8 @@
       *
       *    自費・治験以外
       *    継続（同時発生あり）　重複可
-              IF     (SPA-GMN-CONTKBN         =   "1" ) OR
-                     (SPA-PTHKN-CONTKBN (IDX) =   "1" )
+           IF     (SPA-GMN-CONTKBN         =   "1" ) OR
+                  (SPA-PTHKN-CONTKBN (IDX) =   "1" )
                GO      TO      20041-KIKAN-CHK1-EXT
            END-IF
       *    船員
@@ -2928,14 +2932,28 @@
                    MOVE    IDX             TO  WRK-IDX
                    MOVE    16              TO  SPA-GMN-CUR
                END-IF
-               GO      TO      20041-KIKAN-CHK1-EXT
+      *H30.7
+      *        前期高齢者補助区分重複対象
+               IF     (SPA-GMN-HOJOKBN     =   SPACE
+                                           OR  "7"
+                                           OR  "8"
+                                           OR  "9" )
+                 AND  (SPA-ERRCD           =   SPACE)
+                   CONTINUE
+               ELSE
+                   GO      TO      20041-KIKAN-CHK1-EXT
+               END-IF
            END-IF
       *    共済の下船３月
            IF      (SPA-GMN-HKNNUM         =   "031"  OR
                                                "032"  OR
                                                "033"  OR
                                                "034" )  AND
-                   (SPA-GMN-HOJOKBN    NOT =   SPACE )
+      *???         (SPA-GMN-HOJOKBN    NOT =   SPACE )
+                   (SPA-GMN-HOJOKBN    NOT =   SPACE
+                                           AND "7"
+                                           AND "8"
+                                           AND "9" )
       *        補助区分が同じ時、重複エラー
                IF     (SPA-PTHKN-HKNNUM  (IDX) =   SPA-GMN-HKNNUM) AND
                       (SPA-PTHKN-HOJOKBN (IDX) =   SPA-GMN-HOJOKBN)
@@ -2946,18 +2964,22 @@
                GO      TO      20041-KIKAN-CHK1-EXT
            END-IF
       *    船員、共済の下船３月
-           IF     ((SPA-PTHKN-HKNNUM(IDX)  =   "031"  OR
-                                               "032"  OR
-                                               "033"  OR
-                                               "034" )  AND
-                   (SPA-PTHKN-HOJOKBN(IDX) =   "2" OR  "B" OR "E")) OR
-                  ((SPA-PTHKN-HKNNUM(IDX)  =   "002" )  AND
-                   (SPA-PTHKN-HOJOKBN(IDX) NOT =   SPACE AND
-                                                   "7"   AND
-                                                   "8"   AND
-                                                   "9"  ))
-               GO      TO      20041-KIKAN-CHK1-EXT
+           IF      (SPA-PTHKN-HKNNUM(IDX)  =   "002"
+                                           OR  "031"
+                                           OR  "032"
+                                           OR  "033"
+                                           OR  "034" )
+      *        前期高齢者の補助区分対象外
+               IF     (SPA-PTHKN-HOJOKBN(IDX)  =   SPACE
+                                               OR  "7"
+                                               OR  "8"
+                                               OR  "9"  )
+                   CONTINUE
+               ELSE
+                   GO      TO      20041-KIKAN-CHK1-EXT
+               END-IF
            END-IF
+      *
       *    以外の時、重複とする
            MOVE    "0064"              TO  SPA-ERRCD
            MOVE    IDX                 TO  WRK-IDX
@@ -3041,6 +3063,8 @@
        300-HKNKIKAN-SYORI-SEC         SECTION.
       *
            MOVE    ZERO                TO  WRK-IDX
+      *H30.7
+           MOVE    SPA-WRK-IDX         TO  WRK-IDX
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX             >   SPA-PTHKN-MAX)  OR
@@ -3066,57 +3090,70 @@
                       (SPA-PTHKN-HKNNUM (IDX)  =   "971" OR "973" )
                    MOVE    ZERO            TO  FLG-CHK
                END-IF
-      *
+      *        公害保険は対象外
+               IF     (SPA-GMN-HKNNUM          =   "975"  )  OR
+                      (SPA-PTHKN-HKNNUM (IDX)  =   "975"  )
+                   MOVE    ZERO            TO  FLG-CHK
+               END-IF
+      *H30.7
+      *!!!!    未使用となるが、対応のみ行う
                IF      FLG-CHK         =   1
+      *            重複期間チェック
+                   PERFORM 20041-KIKAN-CHK1-SEC
+      *            エラー　クリア
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
+      *
+      *******  IF      FLG-CHK         =   1
       *            自費・治験
-                   IF     (SPA-NAI-PTHKN-SBTKBN    =   "8" OR "9") OR
-                          (SPA-PTHKN-HKN-SBTKBN (IDX)
-                                                   =   "8" OR "9")
-                       IF     (SPA-NAI-PTHKN-SBTKBN    =   "8" OR "9" )
-                         AND  (SPA-GMN-HKNNUM      =   SPA-PTHKN-HKNNUM
-                                                            (IDX))
-                           MOVE    IDX             TO  WRK-IDX
-                       END-IF
-                   ELSE
+      *            IF     (SPA-NAI-PTHKN-SBTKBN    =   "8" OR "9") OR
+      *                   (SPA-PTHKN-HKN-SBTKBN (IDX)
+      *                                            =   "8" OR "9")
+      *                IF     (SPA-NAI-PTHKN-SBTKBN    =   "8" OR "9" )
+      *                  AND  (SPA-GMN-HKNNUM      =   SPA-PTHKN-HKNNUM
+      *                                                     (IDX))
+      *                    MOVE    IDX             TO  WRK-IDX
+      *                END-IF
+      *            ELSE
       *            自費・治験以外
       *                継続（同時発生あり）　重複可
-                       IF     (SPA-GMN-CONTKBN         =   "1" ) OR
-                              (SPA-PTHKN-CONTKBN (IDX) =   "1" )
-                           CONTINUE
-                       ELSE
+      *                IF     (SPA-GMN-CONTKBN         =   "1" ) OR
+      *                       (SPA-PTHKN-CONTKBN (IDX) =   "1" )
+      *                    CONTINUE
+      *                ELSE
       *                    船員
-                           IF      (SPA-GMN-HKNNUM       =   "002") AND
-                                   (SPA-GMN-HOJOKBN  NOT =   SPACE
-                                                         AND  "7"
-                                                         AND  "8" 
-                                                         AND  "9" )
-                               IF     (SPA-PTHKN-HKNNUM(IDX)
-                                                         =   "002")
-                                 AND  (SPA-PTHKN-HOJOKBN (IDX)
-                                                   =   SPA-GMN-HOJOKBN)
-                                   MOVE    IDX             TO  WRK-IDX
-                               END-IF
-                           ELSE
+      *                    IF      (SPA-GMN-HKNNUM       =   "002") AND
+      *                            (SPA-GMN-HOJOKBN  NOT =   SPACE
+      *                                                  AND  "7"
+      *                                                  AND  "8" 
+      *                                                  AND  "9" )
+      *                        IF     (SPA-PTHKN-HKNNUM(IDX)
+      *                                                  =   "002")
+      *                          AND  (SPA-PTHKN-HOJOKBN (IDX)
+      *                                            =   SPA-GMN-HOJOKBN)
+      *                            MOVE    IDX             TO  WRK-IDX
+      *                        END-IF
+      *                    ELSE
       ****                     IF    ((SPA-PTHKN-HKNNUM(IDX)
       *                                                =   "002") AND
       *                               (SPA-PTHKN-HOJOKBN (IDX)
       ****                                         NOT =   SPACE )) OR
-                               IF    ((SPA-PTHKN-HKNNUM(IDX)
-                                                       =   "031" OR
-                                                           "032" OR 
-                                                           "033" OR 
-                                                           "034" )  AND
-                                      (SPA-PTHKN-HOJOKBN (IDX)
-                                                       =   "2" OR "B"
-                                                               OR "E" ))
-                                   CONTINUE
-                               ELSE
-                                   MOVE    IDX             TO  WRK-IDX
-                               END-IF
-                           END-IF
-                       END-IF
-                   END-IF
-               END-IF
+      *                        IF    ((SPA-PTHKN-HKNNUM(IDX)
+      *                                                =   "031" OR
+      *                                                    "032" OR 
+      *                                                    "033" OR 
+      *                                                    "034" )  AND
+      *                               (SPA-PTHKN-HOJOKBN (IDX)
+      *                                                =   "2" OR "B"
+      *                                                        OR "E" ))
+      *                            CONTINUE
+      *                        ELSE
+      *                            MOVE    IDX             TO  WRK-IDX
+      *                        END-IF
+      *                    END-IF
+      *                END-IF
+      *            END-IF
+      *********END-IF
            END-PERFORM
       *
       *    現在表示分の開始日付−１日
@@ -3145,6 +3182,8 @@
                MOVE    WRK-HENYMD      TO  SPA-PTHKN-TEKEDYMDW(WRK-IDX)
                MOVE    18              TO  SPA-GMN-CUR
            END-IF
+      *H30.7
+           MOVE    ZERO                TO  SPA-WRK-IDX
       *
            .
        300-HKNKIKAN-SYORI-EXT.
