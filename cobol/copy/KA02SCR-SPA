@@ -151,6 +151,9 @@
                    07  SPA-GMN-DAY-G.
                        09  SPA-GMN-DAY       PIC 9(03)
                                              OCCURS   31.
+      *H30.8       日数変更チェック
+                   07  SPA-NAI-BUNKSUU         PIC 9(03).
+                   07  SPA-NAI-KEIFLG2         PIC 9(01).
       *
                05  SPA-NAI-AREA.
       *            入院期間

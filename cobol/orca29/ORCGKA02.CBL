@@ -39,6 +39,7 @@
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
       *  04.08.00    NACL-多々納  16/11/XX   用法コード数量追加
       *  05.00.00    NACL-多々納  17/05/XX  API(GINBEE)対応
+      *  04.08.00    NACL-多々納  18/08/XX  分割調剤対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -168,6 +169,8 @@
       *
            03  IDX-Z               PIC 9(04).
       *
+           03  IDXP                PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SELNUM              PIC 9(03).
@@ -276,6 +279,9 @@
            03  WRK-QRKBN               PIC X(01).
            03  WRK-CSVKBN              PIC X(01).
            03  WRK-PRTKBN              PIC X(01).
+      *
+      *H30.8
+           03  WRK-INPUT-SURYO         PIC 9(03).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -2114,6 +2120,14 @@
                                                    (SPA-WKSRY-MAX IDX-W)
                END-IF
            END-IF
+      *
+      *H30.4
+      *    分割調剤
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:7)  =   "0992081")
+               MOVE    LNK-WKSRY-INPUTCHI-G (IDX IDZ)
+                                       TO  SPA-WKSRY-INPUTCHI-G
+                                                   (SPA-WKSRY-MAX IDX-W)
+           END-IF
       *!
       *    用量割合再編集
            IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:7)  =   "0992000")  AND
@@ -2884,6 +2898,15 @@
                END-IF
       *!
                PERFORM 400411-SUURYO-HEN-SEC
+      *!!
+      *H30.8
+      *        分割調剤対応
+               IF     (SPA-WKSRY-SRYCD (IDX-W IDX) =   "099208101" )
+                 AND  (SPA-WKSRY-SRYSURYO (IDX-W IDX)  >   ZERO    )
+                   MOVE    IDX                 TO  IDX-B
+                   PERFORM 400412-BUNKATU-SEC
+               END-IF
+      *
                MOVE    IDX             TO  SPA-INPUT-MAX
            END-PERFORM
            MOVE    SPA-WKSRY-ZAIKAIKEI (IDX-W)
@@ -2969,6 +2992,35 @@
            END-PERFORM
            .
        404111-KANSURYO-GHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    分割調剤対応処理
+      *****************************************************************
+       400412-BUNKATU-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  SPA-NAI-BUNKSUU
+      *    分割数値変換
+           PERFORM VARYING     IDXP    FROM   1   BY  1
+                   UNTIL       IDXP    >   3
+               IF      SPA-WKSRY-INPUTCHI(IDX-W IDX-B IDXP) =   SPACE
+                   MOVE    ZERO                TO  WRK-INPUT-SURYO
+               ELSE
+                   INITIALIZE                      ORCSNUMAREA
+                   MOVE    SPA-WKSRY-INPUTCHI(IDX-W IDX-B IDXP)
+                                               TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+                   IF     (SNUM-RC         NOT =   ZERO  )
+                       MOVE    ZERO            TO  WRK-INPUT-SURYO
+                   ELSE
+                       MOVE    SNUM-OUTNUM     TO  WRK-INPUT-SURYO
+                   END-IF
+               END-IF
+               ADD     WRK-INPUT-SURYO         TO  SPA-NAI-BUNKSUU
+           END-PERFORM
+           .
+       400412-BUNKATU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3260,6 +3312,18 @@
                IF      SPA-GMN-SRYKBN      =   "14"  OR  "98"
                    MOVE    "0006"          TO  SPA-ERRCD
                    MOVE    10              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *H30.8
+      *    分割調剤の時、日数変更不可
+           IF     (SPA-NAI-BUNKSUU    >   ZERO )
+              AND (SPA-GMN-NISUU      >   ZERO )
+               IF      SPA-NAI-BUNKSUU    NOT =   SPA-GMN-NISUU
+                   IF      SPA-NAI-KEIFLG2     =   ZERO
+                       MOVE    "K014"          TO  SPA-ERRCD
+                       MOVE    10              TO  SPA-GMN-CUR
+                       MOVE    1               TO  SPA-NAI-KEIFLG2
+                   END-IF
                END-IF
            END-IF
            .
@@ -4265,6 +4329,13 @@
                            MOVE    SPA-PARA-INPUTCHI-G  (IDX-W IDX-W2)
                                            TO  ORCHC19-INPUTCHI-G
                                                              (IDX1 IDX2)
+      *H30.8
+      *                    分割調剤対応
+                           IF     (SPA-WKSRY-SRYCD(IDX-W IDX-W2)
+                                                   =   "099208101" )
+                               PERFORM 41021-ORCHC19-BUNKATU-SEC
+                           END-IF
+      *
                        END-IF
                    END-IF
                END-PERFORM
@@ -4275,6 +4346,25 @@
            END-IF
            .
        41021-ORCHC19-HENSYU-EXT.
+           EXIT.
+      *H30.8
+      *****************************************************************
+      *    分割調剤　編集チェック処理
+      *****************************************************************
+       41021-ORCHC19-BUNKATU-SEC             SECTION.
+      *
+      *    分割調剤
+           MOVE    IDX-W2              TO  IDX-B
+           PERFORM 400412-BUNKATU-SEC
+      *
+           IF      SPA-WKSRY-ZAIKAIKEI (IDX-W)
+                                   NOT =   SPA-NAI-BUNKSUU
+      *        分割調剤の回数と一致しない時は、分割なし
+               MOVE    SPACE               TO  ORCHC19-INPUTCHI-G
+                                                         (IDX1 IDX2)
+           END-IF
+           .
+       41021-ORCHC19-BUNKATU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5266,6 +5356,14 @@
                WHEN    "0013"
                    STRING  "院外処方では包括分入力保険の選択は"
                            "できません。他の保険組合せを選択して下さい"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *H30.8
+               WHEN    "K014"
+                   STRING  "警告！"
+                           "分割調剤の合計日数と日数が違います。"
+                           "分割調剤は反映しません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING

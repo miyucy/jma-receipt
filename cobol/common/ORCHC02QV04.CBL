@@ -99,6 +99,7 @@
       * 04.08.00     NACL-多々納  17/06/XX  HAORI対応
       * 04.08.00     NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
       * 05.00.00     NACL-多々納  18/08/XX  HAORI印刷のみ対応
+      * 04.08.00     NACL-多々納  18/08/XX  退院処方箋等分割調剤対応
       *****************************************************************
       *
       *
@@ -3896,6 +3897,8 @@
       *    中途終了、確認画面からのみ分割対応
            IF      (ORCHC19-KBN        =   SPACE
                                        OR  "4"
+      *H30.8     前回処方・退院時処方も対応
+                                       OR  "A"
                                        OR  "N"   )
                 CONTINUE
             ELSE
@@ -6567,7 +6570,11 @@
                MOVE   SYS-1034-PRTNM(12)   TO  FMSHOHO-PRINTER
            END-IF
       *    処理区分
-           MOVE    ORCHC19-KBN         TO  FMSHOHO-KBN
+           IF    ( ORCHC19-KBN         =   SPACE )
+               MOVE    "0"             TO  FMSHOHO-KBN
+           ELSE
+               MOVE    ORCHC19-KBN     TO  FMSHOHO-KBN
+           END-IF
       *    診療日
            MOVE    SPA-SRYYMD          TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
