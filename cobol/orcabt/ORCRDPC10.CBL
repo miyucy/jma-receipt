@@ -193,6 +193,10 @@
       *              NACL-小豆沢  18/07/18  9999包括保険で再診の時間外加算
       *                                     を入力時にデータ区分９２で記録
       *                                     するよう対応
+      *              NACL-小豆沢  18/07/19  出来高実績点数計算の修正
+      *                                     ％減算が２連続で記録されることを考慮して
+      *                                     WRK-FEDT-PREV-TENのゼロクリアではなく、
+      *                                     ％減算分の点数をマイナスした点数としておく
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5796,7 +5800,15 @@
                    COMPUTE  WRK-FEDT-DEKIDAKA-TEN
                                        = WRK-FEDT-PREV-TEN -
                                          WRK-FEDT-DEKIDAKA-TEN
-                   MOVE    ZERO        TO  WRK-FEDT-PREV-TEN
+      *AZU-MOD START 2018.7.19
+      *            ％減算が２連続で記録されることを考慮して
+      *            WRK-FEDT-PREV-TENのゼロクリアではなく、％減算分の
+      *            点数をマイナスした点数としておく
+      **             MOVE    ZERO        TO  WRK-FEDT-PREV-TEN
+                   COMPUTE  WRK-FEDT-PREV-TEN  =
+                            WRK-FEDT-PREV-TEN  -
+                            WRK-FEDT-DEKIDAKA-TEN
+      *AZU-MOD END 2018.7.19
                END-IF
            END-IF
       *    栄養管理体制減算規定該当（入院基本料）
