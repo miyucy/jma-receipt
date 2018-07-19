@@ -544,6 +544,32 @@
                    COMPUTE TSRRK-JIHSEIKYU
                        =   TSRRK-JIHSEIKYU
                        +   WRK-SAGAKU
+               WHEN    ( TSRRK-HKNSEIKYU   NOT =   ZERO )
+                   COMPUTE TSRRK-HKNSEIKYU
+                       =   TSRRK-HKNSEIKYU
+                       +   WRK-SAGAKU
+               WHEN    ( TSKY-GENMEN (1)   NOT =   ZERO )
+                   COMPUTE TSRRK-GENMEN
+                       =   TSRRK-GENMEN
+                       +   WRK-SAGAKU
+               WHEN    ( TSKY-CHOSEI1 (1)  NOT =   ZERO )
+                   COMPUTE TSRRK-CHOSEI1
+                       =   TSRRK-CHOSEI1
+                       +   WRK-SAGAKU
+                   COMPUTE TSRRK-CHOSEI
+                       =   TSRRK-CHOSEI
+                       +   WRK-SAGAKU
+               WHEN    ( TSKY-CHOSEI2 (1)  NOT =   ZERO )
+                   COMPUTE TSRRK-CHOSEI2
+                       =   TSRRK-CHOSEI2
+                       +   WRK-SAGAKU
+                   COMPUTE TSRRK-CHOSEI
+                       =   TSRRK-CHOSEI
+                       +   WRK-SAGAKU
+               WHEN    ( TSKY-JIHSEIKYU (1)  NOT   =   ZERO )
+                   COMPUTE TSRRK-JIHSEIKYU
+                       =   TSRRK-JIHSEIKYU
+                       +   WRK-SAGAKU
                WHEN    OTHER
                    COMPUTE TSRRK-HKNSEIKYU
                        =   TSRRK-HKNSEIKYU
