@@ -6400,7 +6400,11 @@
                MOVE   SYS-1034-PRTNM(12)   TO  FMSHOHO-PRINTER
            END-IF
       *    ½èÍý¶èÊ¬
-           MOVE    ORCHC19-KBN         TO  FMSHOHO-KBN
+           IF    ( ORCHC19-KBN         =   SPACE )
+               MOVE    "0"             TO  FMSHOHO-KBN
+           ELSE
+               MOVE    ORCHC19-KBN     TO  FMSHOHO-KBN
+           END-IF
       *    ¿ÇÎÅÆü
            MOVE    SPA-SRYYMD          TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
