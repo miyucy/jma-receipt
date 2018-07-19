@@ -60,6 +60,9 @@
            03  WRK-KANRICD                     PIC X(04).
            03  WRK-STYMD                       PIC X(08).
            03  WRK-EDYMD                       PIC X(08).
+           03  WRK-YMD                         PIC X(10). 
+           03  WRK-ZOGENPTN                    PIC X(01).
+           03  WRK-ZOGEN                       PIC S9(05).
       *
        01  CONST-AREA.
            03  CONST-H200401               PIC X(08)
@@ -110,6 +113,10 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    画面日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -1007,7 +1014,7 @@
                MOVE    SPACE           TO  QSUB03-PAYKBNL (IDXK)
            END-IF
       *
-           IF    ( HKN-HKNNUM  =   "948" OR "949"
+           IF    ( HKN-HKNNUM  =   "946" OR "948" OR "949"
                                 OR "950" OR "951" OR "954"
                                 OR "955" OR "956" OR "957"
                                 OR "958" OR "959" OR "960"
@@ -1426,6 +1433,7 @@
       *****************************************************************
        2001-KNJOTAILST-SEC                 SECTION.
       *
+      *+   MOVE    13                  TO  QSUB03-KNJOTAILST-MAX
            MOVE    12                  TO  QSUB03-KNJOTAILST-MAX
       *
            MOVE    "01"                TO  QSUB03-KNJOTAIL    (1)
@@ -1452,6 +1460,15 @@
            MOVE    "要介護"            TO  QSUB03-KNJOTAIMEIL (11)
            MOVE    "xx"                TO  QSUB03-KNJOTAIL    (12)
            MOVE    "要支援・要介護"    TO  QSUB03-KNJOTAIMEIL (12)
+      *
+      *    MOVE    "31"                TO  QSUB03-KNJOTAIL    (10)
+      *    MOVE    "事業対象者"        TO  QSUB03-KNJOTAIMEIL (10)
+      *    MOVE    "1x"                TO  QSUB03-KNJOTAIL    (11)
+      *    MOVE    "要支援"            TO  QSUB03-KNJOTAIMEIL (11)
+      *    MOVE    "2x"                TO  QSUB03-KNJOTAIL    (12)
+      *    MOVE    "要介護"            TO  QSUB03-KNJOTAIMEIL (12)
+      *    MOVE    "xx"                TO  QSUB03-KNJOTAIL    (13)
+      *    MOVE    "要支援・要介護"    TO  QSUB03-KNJOTAIMEIL (13)
       *
            .
        2001-KNJOTAILST-EXT.
@@ -1545,6 +1562,24 @@
       *
            .
        300-END-EXT.
+           EXIT.
+      *****************************************************************
+      *    カレンダー処理 ZOGENPTN 1:日/2:月/3:年
+      *****************************************************************
+       800-CALENDAR-SEC                SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
+           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
+           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-YMD
+      *
+           .
+       800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
       *    患者照会検索条件管理情報検索処理
@@ -1678,7 +1713,13 @@
            MOVE    ZERO                TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
-           MOVE    QSUB03-BASEYMD      TO  HKN-TEKSTYMD
+      *
+           MOVE    QSUB03-BASEYMD      TO  WRK-YMD
+           MOVE    "2"                 TO  WRK-ZOGENPTN
+           MOVE    1                   TO  WRK-ZOGEN
+           PERFORM 800-CALENDAR-SEC
+           MOVE    WRK-YMD             TO  HKN-TEKSTYMD
+      *
            MOVE    QSUB03-BASEYMD      TO  HKN-TEKEDYMD
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
