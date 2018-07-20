@@ -1322,8 +1322,12 @@
                       (SPA-COM-SURYO(IDX-T)    =   1      )
                    CONTINUE
                ELSE
-                   IF     (SPA-COM-SRYKBN (IDX-T)  =   "23" )
-                   AND    (SPA-COM-SURYO2 (IDX-T)  =   LNK-SC97-SURYO)
+                   IF    ((SPA-COM-SRYKBN (IDX-T)  =   "23" )
+                   AND    (SPA-COM-SURYO2 (IDX-T)  =   LNK-SC97-SURYO))
+      *H30.7       換算値入力チェック
+                   OR    ((LNK-SC97-INKBNFLG1      =   1    )  AND
+                          (SPA-COM-KANSURYO (IDX-T)
+                                                   =   LNK-SC97-SURYO))
                        CONTINUE
                    ELSE
                        MOVE    SPACE           TO  SPA-COM-KZMFLG5
