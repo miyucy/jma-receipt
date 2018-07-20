@@ -69,6 +69,7 @@
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
+           03  IDWW                    PIC 9(04).
            03  IDXX                    PIC 9(04).
            03  IDYY                    PIC 9(04).
            03  IDZZ                    PIC 9(04).
@@ -1079,24 +1080,28 @@
                        MOVE    WRK-PARM-LINE (IDX) TO  IDY
                        PERFORM VARYING IDXX    FROM    1   BY  1
                                UNTIL   IDXX    >   WRK-CONS-PARA-L01-MAX
+                               OR      WRK-PARM-PARM-NO (IDX IDXX)
+                                               =   ZERO
+                           MOVE    WRK-PARM-PARM-NO (IDX IDXX)
+                                                   TO  IDWW
                            EVALUATE    LSTREQ-PARM-CLASS (IDX IDXX)
                                WHEN    "YMD"
                                    MOVE    LSTREQ-PARM-VALUE  (IDX IDXX)
                                                        TO  WRK-HEN-DATE
                                    PERFORM 802-DAYHEN02-SEC
                                    MOVE    WRK-SYMD    TO
-                                                   L01-PARA (IDY IDXX)
+                                                   L01-PARA (IDY IDWW)
                                WHEN    "YM"
                                WHEN    "KKNYM"
                                    MOVE    LSTREQ-PARM-VALUE  (IDX IDXX)
                                                        TO  WRK-HEN-DATE
                                    PERFORM 802-DAYHEN02-SEC
                                    MOVE    WRK-SYMD    TO
-                                                   L01-PARA (IDY IDXX)
+                                                   L01-PARA (IDY IDWW)
                                WHEN    OTHER
                                    MOVE    LSTREQ-PARM-VALUE  (IDX IDXX)
                                                        TO
-                                                   L01-PARA (IDY IDXX)
+                                                   L01-PARA (IDY IDWW)
                            END-EVALUATE
                        END-PERFORM
                    END-IF
@@ -1104,7 +1109,8 @@
       *
                MOVE    SPACE           TO  LINKAREA
                                            SPA-MOTOPG
-               INITIALIZE                  SPA-L01KYOUTU
+               INITIALIZE                  SPA-LIDCD
+                                           SPA-LID1-AREA
                MOVE    LSTREQ-KARTE-UID
                                        TO  SPA-L01-JOB-KARTE-UID
                MOVE    LSTREQ-ORCA-UID TO  SPA-L01-JOB-ORCA-UID
@@ -1358,29 +1364,33 @@
                        MOVE    WRK-PARM-LINE (IDX) TO  IDY
                        PERFORM VARYING IDXX    FROM    1   BY  1
                                UNTIL   IDXX    >   WRK-CONS-PARA-G01-MAX
+                               OR      WRK-PARM-PARM-NO (IDX IDXX)
+                                               =   ZERO
+                           MOVE    WRK-PARM-PARM-NO (IDX IDXX)
+                                                   TO  IDWW
                            EVALUATE    LSTREQ-PARM-CLASS (IDX IDXX)
                                WHEN    "YMD"
                                    MOVE    LSTREQ-PARM-VALUE  (IDX IDXX)
                                                        TO  WRK-HEN-DATE
                                    PERFORM 802-DAYHEN02-SEC
                                    MOVE    WRK-SYMD    TO
-                                                   G01-PARA (IDY IDXX)
+                                                   G01-PARA (IDY IDWW)
                                WHEN    "YM"
                                    MOVE    LSTREQ-PARM-VALUE  (IDX IDXX)
                                                        TO  WRK-HEN-DATE
                                    PERFORM 802-DAYHEN02-SEC
                                    MOVE    WRK-SYMD    TO
-                                                   G01-PARA (IDY IDXX)
+                                                   G01-PARA (IDY IDWW)
                                WHEN    "KKNYM"
                                    MOVE    LSTREQ-PARM-VALUE  (IDX IDXX)
                                                        TO  WRK-HEN-DATE
                                    PERFORM 802-DAYHEN02-SEC
                                    MOVE    WRK-SYMD    TO
-                                                   G01-PARA (IDY IDXX)
+                                                   G01-PARA (IDY IDWW)
                                WHEN    OTHER
                                    MOVE    LSTREQ-PARM-VALUE  (IDX IDXX)
                                                        TO
-                                                   G01-PARA (IDY IDXX)
+                                                   G01-PARA (IDY IDWW)
                            END-EVALUATE
                        END-PERFORM
                    END-IF
@@ -1388,7 +1398,8 @@
       *
                MOVE    SPACE           TO  LINKAREA
                                            SPA-MOTOPG
-               INITIALIZE                  SPA-G01KYOUTU
+               INITIALIZE                  SPA-GIDCD
+                                           SPA-GID1-AREA
                MOVE    LSTREQ-KARTE-UID
                                        TO  SPA-G01-JOB-KARTE-UID
                MOVE    LSTREQ-ORCA-UID TO  SPA-G01-JOB-ORCA-UID
