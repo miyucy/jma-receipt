@@ -155,6 +155,8 @@
       *  04.08.17    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.18    NACL-ÌçÏÆ    18/05/02  »ÄÎÌÇÑ´þ¥³¥á¥ó¥È¤Îµ­ºÜÆâÍÆ½¤Àµ
       *  04.08.19    NACL-ÌçÏÆ    18/06/25  ÅÅ»Ò²èÁü´ÉÍý²Ã»»¤Îµ­ºÜ½ç½¤Àµ
+      *  04.08.20    NACL-ÌçÏÆ    18/07/23  Àº¿À²ÊÂà±¡Á°Ë¬Ìä»ØÆ³ÎÁ¤Î»»ÄêÆü
+      *                                     ¼«Æ°µ­ºÜ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3723,14 +3725,14 @@
            END-IF
       *
            IF      RECE220-SRYKBN      =     "80"
-              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT
-              AND  FLG-HOUSEI-COM     =     ZERO
-                   MOVE   "1"   TO    RECE220-FLG-HOUSEI-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT2
-                   MOVE  SPACE  TO    RECE220-FLG-HOUSEI-COMMENT
-                   MOVE    1    TO    FLG-HOUSEI-COM
-              END-IF
+      ***     IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT
+      ***     AND  FLG-HOUSEI-COM     =     ZERO
+      ***          MOVE   "1"   TO    RECE220-FLG-HOUSEI-COMMENT
+      ***     END-IF
+      ***     IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT2
+      ***          MOVE  SPACE  TO    RECE220-FLG-HOUSEI-COMMENT
+      ***          MOVE    1    TO    FLG-HOUSEI-COM
+      ***     END-IF
       *
               IF   RECE200-SRYYM     >=    "201204"
                 IF   SRY-SRYCD(IDX2)  =     CONS-SEIKEA1-COMMENT
