@@ -768,6 +768,8 @@
       *  04.08.53    NACL-ÃÁœ∆    18/06/25  ≈≈ª“≤Ë¡¸¥…Õ˝≤√ªª§Œµ≠∫‹ΩÁΩ§¿µ
       *  04.08.54    NACL-ÃÁœ∆    18/07/13  £∞£∑£πÀÙ£∞£≤£¥√±∆»§Œø©ªˆŒ≈Õ‹ÕÛ
       *                                     µ≠∫‹Ω§¿µ
+      *  04.08.55    NACL-ÃÁœ∆    18/07/23  ¿∫ø¿≤ ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡§ŒªªƒÍ∆¸
+      *                                     º´∆∞µ≠∫‹Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9625,15 +9627,15 @@
            END-IF
       *
            IF      RECE64-SRYKBN      =     "80"
-              IF  (SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT
-                                      OR    CONS-HOUSEI-COMMENT3)
-              AND (FLG-HOUSEI-COM     =     ZERO                )
-                   MOVE   "1"   TO    RECE64-FLG-HOUSEI-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT2
-                   MOVE  SPACE  TO    RECE64-FLG-HOUSEI-COMMENT
-                   MOVE    1    TO    FLG-HOUSEI-COM
-              END-IF
+      ***     IF  (SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT
+      ***                             OR    CONS-HOUSEI-COMMENT3)
+      ***     AND (FLG-HOUSEI-COM     =     ZERO                )
+      ***          MOVE   "1"   TO    RECE64-FLG-HOUSEI-COMMENT
+      ***     END-IF
+      ***     IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT2
+      ***          MOVE  SPACE  TO    RECE64-FLG-HOUSEI-COMMENT
+      ***          MOVE    1    TO    FLG-HOUSEI-COM
+      ***     END-IF
       *
               IF   RECE62-SRYYM      >=    "201204"
                 IF   SRY-SRYCD(IDX2)  =     CONS-SEIKEA1-COMMENT
@@ -10104,10 +10106,10 @@
                  MOVE   103           TO  WRK-SETCOM-JIDO
            END-IF
       *    ¿∫ø¿≤ ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
-           IF    RECE65-SRYCD(IDX4)   = CONS-HOUSEI-COMMENT
-                                    OR  CONS-HOUSEI-COMMENT3
-                 MOVE   105           TO  WRK-SETCOM-JIDO
-           END-IF
+      ***  IF    RECE65-SRYCD(IDX4)   = CONS-HOUSEI-COMMENT
+      ***                           OR  CONS-HOUSEI-COMMENT3
+      ***        MOVE   105           TO  WRK-SETCOM-JIDO
+      ***  END-IF
       *    º¿¥µ Ã≈˘¿ÏÃÁ•◊•Ì•∞•È•‡≤√ªª
            IF    RECE65-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
                  MOVE   107           TO  WRK-SETCOM-JIDO2
@@ -10142,8 +10144,8 @@
                                    OR CONS-KIATU5-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  103                      ) AND
                 (RECE65-SRYCD(IDX4) = CONS-HOUMON-COMMENT3      ))
-           OR  ((WRK-SETCOM-JIDO    =  105                      ) AND
-                (RECE65-SRYCD(IDX4) = CONS-HOUSEI-COMMENT2      ))
+      ***  OR  ((WRK-SETCOM-JIDO    =  105                      ) AND
+      ***       (RECE65-SRYCD(IDX4) = CONS-HOUSEI-COMMENT2      ))
            OR  ((WRK-SETCOM-JIDO2   =  107                      ) AND
                 (RECE65-SRYCD(IDX4) = CONS-SCPRO2-COMMENT       ))
       *
