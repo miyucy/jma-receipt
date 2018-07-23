@@ -301,6 +301,8 @@
       *  04.08.21    NACL-ÃÁœ∆    18/03/27   ø¿Æ£≥£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
       *  04.08.22    NACL-ÃÁœ∆    18/05/02  ªƒŒÃ«—¥˛•≥•·•Û•»§Œµ≠∫‹∆‚Õ∆Ω§¿µ
       *  04.08.23    NACL-ÃÁœ∆    18/06/25  ≈≈ª“≤Ë¡¸¥…Õ˝≤√ªª§Œµ≠∫‹ΩÁΩ§¿µ
+      *  04.08.24    NACL-ÃÁœ∆    18/07/23  ¿∫ø¿≤ ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡§ŒªªƒÍ∆¸
+      *                                     º´∆∞µ≠∫‹Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5379,14 +5381,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   (RECE84-SRYKBN         =  "80"        ))
            OR    ((RECE82-HKNKBN         =  "4"  OR "6" ) AND
                   (RECE84-SRYKBN         =  "40" OR "80"))
-              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT
-              AND  FLG-HOUSEI-COM     =     ZERO
-                   MOVE   "1"   TO    RECE84-FLG-HOUSEI-COMMENT
-              END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT2
-                   MOVE  SPACE  TO    RECE84-FLG-HOUSEI-COMMENT
-                   MOVE    1    TO    FLG-HOUSEI-COM
-              END-IF
+      ***     IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT
+      ***     AND  FLG-HOUSEI-COM     =     ZERO
+      ***          MOVE   "1"   TO    RECE84-FLG-HOUSEI-COMMENT
+      ***     END-IF
+      ***     IF   SRY-SRYCD(IDX2)    =     CONS-HOUSEI-COMMENT2
+      ***          MOVE  SPACE  TO    RECE84-FLG-HOUSEI-COMMENT
+      ***          MOVE    1    TO    FLG-HOUSEI-COM
+      ***     END-IF
       *
               IF   RECE82-SRYYM      >=    "201204"
                 IF   SRY-SRYCD(IDX2)  =     CONS-SEIKEA1-COMMENT
@@ -5957,9 +5959,9 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                  MOVE   103           TO  WRK-SETCOM-JIDO
            END-IF
       *    ¿∫ø¿≤ ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
-           IF    RECE85-SRYCD(IDX4)   = CONS-HOUSEI-COMMENT
-                 MOVE   105           TO  WRK-SETCOM-JIDO
-           END-IF
+      ***  IF    RECE85-SRYCD(IDX4)   = CONS-HOUSEI-COMMENT
+      ***        MOVE   105           TO  WRK-SETCOM-JIDO
+      ***  END-IF
       *    º¿¥µ Ã≈˘¿ÏÃÁ•◊•Ì•∞•È•‡≤√ªª
            IF    RECE85-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
                  MOVE   107           TO  WRK-SETCOM-JIDO2
@@ -5994,8 +5996,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                    OR CONS-KIATU5-COMMENT       ))
            OR  ((WRK-SETCOM-JIDO    =  103                      ) AND
                 (RECE85-SRYCD(IDX4) = CONS-HOUMON-COMMENT3      ))
-           OR  ((WRK-SETCOM-JIDO    =  105                      ) AND
-                (RECE85-SRYCD(IDX4) = CONS-HOUSEI-COMMENT2      ))
+      ***  OR  ((WRK-SETCOM-JIDO    =  105                      ) AND
+      ***       (RECE85-SRYCD(IDX4) = CONS-HOUSEI-COMMENT2      ))
            OR  ((WRK-SETCOM-JIDO2   =  107                      ) AND
                 (RECE85-SRYCD(IDX4) = CONS-SCPRO2-COMMENT       ))
       *
