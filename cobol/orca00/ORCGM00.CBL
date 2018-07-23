@@ -564,6 +564,8 @@
                END-IF
            END-IF
            IF      STS-DAY-RC1     NOT =   ZERO 
+      *H30.7
+               INITIALIZE                  ORCSCOMMONAREA
                MOVE    "1003"              TO  SPA-ERRCD
                GO  TO  310-SPASET-EXT
            END-IF
@@ -580,6 +582,9 @@
       *
       *---- (01.00.04) LINE ADD START --------------------------------
            END-IF
+      *
+      *H30.7
+           INITIALIZE                  ORCSCOMMONAREA
       *
       *---- (01.00.04) LINE ADD END   --------------------------------
       *    医療機関識別番号セット SPA-HOSPNUM
