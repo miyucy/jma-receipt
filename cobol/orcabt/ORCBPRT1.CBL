@@ -363,11 +363,15 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           IF    ( WRK-PARA-PRTFLG     =  "5" OR "6" )
-            OR   ( SPA-MW              =  SPA-GINBEE )
-               PERFORM 2001-BIND-PRINT-SEC
-           ELSE
+           IF    ( WRK-PARA-PRTFLG     =  "7" )
                PERFORM 2001-COMMON-PRINT-SEC
+           ELSE
+               IF    ( WRK-PARA-PRTFLG     =  "5" OR "6" )
+                OR   ( SPA-MW              =  SPA-GINBEE )
+                   PERFORM 2001-BIND-PRINT-SEC
+               ELSE
+                   PERFORM 2001-COMMON-PRINT-SEC
+               END-IF
            END-IF
       *
            MOVE    1                   TO  FLG-END     
