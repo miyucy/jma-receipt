@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      * 0500.201806
+      * 0500.201807
       ********************************************************************
        01  APIINF-AREA.
          03  APIINF-DATA.
@@ -138,7 +138,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ÉÂÌ¾¥Þ¥¹¥¿°ì³ç¼èÆÀ".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201805".
+           "0500.201807".
            05  FILLER                  PIC  X(16)      VALUE
            "orca22".
            05  FILLER                  PIC  X(32)      VALUE
@@ -708,7 +708,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "½èÊý¤»¤ó°õºþ".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201807".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -759,6 +759,16 @@
            "¥ì¥»¥×¥È°õºþ".
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201805".
+           05  FILLER                  PIC  X(16)      VALUE
+           "orca51".
+           05  FILLER                  PIC  X(32)      VALUE
+           "statisticsformv3".
+           05  FILLER                  PIC  X(64)      VALUE
+           "Æü¼¡¡¦·î¼¡Åý·×".
+           05  FILLER                  PIC  X(64)      VALUE
+           "Æü¼¡¡¦·î¼¡Åý·×".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201807".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -814,9 +824,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "tempmedicaladdv3".
            05  FILLER                  PIC  X(64)      VALUE
-           SPACE.
+           "Æþ±¡¿ÇÎÅ¥Ç¡¼¥¿°ì³çÅÐÏ¿".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡ÃæÅÓ¥Ç¡¼¥¿°ì³çÅÐÏ¿".
+           "Æþ±¡¿ÇÎÅ¥Ç¡¼¥¿°ì³çÅÐÏ¿".
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
            05  FILLER                  PIC  X(16)      VALUE
@@ -834,7 +844,7 @@
            05  FILLER                  PIC  X(32)      VALUE
            "tmedicalmodv2".
            05  FILLER                  PIC  X(64)      VALUE
-           SPACE.
+           "ÃæÅÓ¥Ç¡¼¥¿´ÉÍý".
            05  FILLER                  PIC  X(64)      VALUE
            "ÃæÅÓ¥Ç¡¼¥¿´ÉÍý".
            05  FILLER                  PIC  X(16)      VALUE
@@ -850,10 +860,10 @@
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
          03  APIINF-R REDEFINES APIINF-DATA.
-           05  APIINF-OCC              OCCURS 83.
+           05  APIINF-OCC              OCCURS 84.
              07  APIINF-LD             PIC  X(16).
              07  APIINF-ID             PIC  X(32).
              07  APIINF-HAORI-NAME     PIC  X(64).
              07  APIINF-NAME           PIC  X(64).
              07  APIINF-VERSION        PIC  X(16).
-         03  APIINF-MAX                PIC  9(05)      VALUE 83.
+         03  APIINF-MAX                PIC  9(05)      VALUE 84.
