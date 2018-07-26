@@ -5123,6 +5123,12 @@ grpsys                                     SPA-AREA
                        END-IF
                    WHEN    ","
                    WHEN    "."
+      *H30.8
+      *            回数がない
+                     IF     (FLG-K1              =   ZERO  )
+                        MOVE    "0062"              TO  SPA-ERRCD
+                     ELSE
+      *
                        IF      FLG-K2      =   1
       *                終了日
                            MOVE    WRK-HZNSU       TO  WRK-DAY2
@@ -5140,7 +5146,15 @@ grpsys                                     SPA-AREA
                            END-IF
                        END-IF
                        MOVE    ZERO        TO  FLG-K2
+      *H30.8
+                     END-IF
                    WHEN    "-"
+      *H30.8
+      *            回数がない
+                     IF     (FLG-K1              =   ZERO  )
+                        MOVE    "0062"              TO  SPA-ERRCD
+                     ELSE
+      *
                        MOVE    1           TO  FLG-K2
       *                開始日
                        IF      IDW9        >   ZERO
@@ -5150,6 +5164,8 @@ grpsys                                     SPA-AREA
                            MOVE    SPACE           TO  WRK-HZNSU
                            MOVE    ZERO            TO  IDW9
                        END-IF
+      *H30.8
+                     END-IF
                    WHEN    "0"  THRU   "9"
                        ADD     1               TO  IDW9
                        MOVE    SPA-GMN-KOMENTO-41 (IDW5:1)
@@ -5176,6 +5192,11 @@ grpsys                                     SPA-AREA
                        MOVE    "0022"              TO  SPA-ERRCD
                END-EVALUATE
            END-PERFORM
+      *H30.8
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF
+      *
       *!!
            IF      IDW9            >   ZERO
                IF      IDW1            =   ZERO
@@ -9067,6 +9088,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0061"
                    MOVE    "回数の指定がありません。"
                                        TO  WRK-ERRMSG
+      *H30.8
+               WHEN    "0062"
+                   MOVE    "日指定の前に回数の指定をして下さい。"
+                                       TO  WRK-ERRMSG
+      *
                WHEN    "0023"
                    MOVE    "全科指定では指定できません。"
                                        TO  WRK-ERRMSG

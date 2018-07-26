@@ -5989,6 +5989,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    WHEN    ","
                    WHEN    "."
+      *H30.8
+      *            回数がない
+                     IF     (FLG-K1              =   ZERO  )
+                        MOVE    "0065"              TO  SPA-ERRCD
+                     ELSE
+      *
                        IF      FLG-K2      =   1
       *                終了日
                            MOVE    WRK-HZNSU       TO  WRK-DAY2
@@ -6006,7 +6012,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            END-IF
                        END-IF
                        MOVE    ZERO        TO  FLG-K2
+      *H30.8
+                     END-IF
                    WHEN    "-"
+      *H30.8
+      *            回数がない
+                     IF     (FLG-K1              =   ZERO  )
+                        MOVE    "0065"              TO  SPA-ERRCD
+                     ELSE
+      *
                        MOVE    1           TO  FLG-K2
       *                開始日
                        IF      IDW9        >   ZERO
@@ -6016,6 +6030,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    SPACE           TO  WRK-HZNSU
                            MOVE    ZERO            TO  IDW9
                        END-IF
+      *H30.8
+                     END-IF
                    WHEN    "0"  THRU   "9"
                        ADD     1               TO  IDW9
                        MOVE    SPA-GMN-IKKATU (IDW5:1)
@@ -6026,6 +6042,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "0061"              TO  SPA-ERRCD
                END-EVALUATE
            END-PERFORM
+      *
+      *H30.8
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41019-IKKATU-CHK-EXT
+           END-IF
       *
            IF      IDW9            >   ZERO
                IF      IDW1            =   ZERO
@@ -14899,6 +14920,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0061"
                    MOVE    "一括回数変更内容にエラーがあります。"
                                        TO  WRK-ERRMSG
+      *H30.8
+               WHEN    "0065"
+                   MOVE    "日指定の前に回数の指定をして下さい。"
+                                       TO  WRK-ERRMSG
+      *
                WHEN    "0062"
                    MOVE    "月末日以降の日があります。"
                                        TO  WRK-ERRMSG
