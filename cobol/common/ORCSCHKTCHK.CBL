@@ -1089,9 +1089,16 @@
                    ELSE
                        MOVE    1               TO  FLG-CHK
       *H27.8
-      *            井基彩嘲丸壳弧瘟换年泣の汐阂ˇ极清勒は滦据嘲
+      *            井基彩嘲丸壳闻瘟换年泣の汐阂ˇ极清勒は滦据嘲
                        IF     (TBL-KANRICD (IDX)   =   "202" )
                           AND (SPA-SYONIKA-ARI     =   ZERO  )
+                          AND (SPA-HKNKBN          =   1     )
+                           MOVE    ZERO            TO  FLG-CHK
+                       END-IF
+      *H30.8
+      *            井基彩かかりつけ壳闻瘟换年泣の汐阂ˇ极清勒は滦据嘲
+                       IF     (TBL-KANRICD (IDX)   =   "209" )
+                          AND (SPA-SYONIKKR-ARI    =   ZERO  )
                           AND (SPA-HKNKBN          =   1     )
                            MOVE    ZERO            TO  FLG-CHK
                        END-IF
