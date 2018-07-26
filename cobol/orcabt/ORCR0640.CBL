@@ -770,6 +770,8 @@
       *                                     µ­ºÜ½¤Àµ
       *  04.08.55    NACL-ÌçÏÆ    18/07/23  Àº¿À²ÊÂà±¡Á°Ë¬Ìä»ØÆ³ÎÁ¤Î»»ÄêÆü
       *                                     ¼«Æ°µ­ºÜ½¤Àµ
+      *  04.08.56    NACL-ÌçÏÆ    18/07/26  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¡Ü¸øÈñ¤Î
+      *                                     ÉéÃ´¶â·×»»½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1296,6 +1298,7 @@
            03  WRK-TAIHI-FTNMONEYINF-AREA.
              05  WRK-TAIHI-FTNMONEYINF     OCCURS  5.
                  07  WRK-TAIHI-FTNMONEY                PIC 9(09).
+                 07  WRK-TAIHI-FTNMONEY2               PIC 9(09).
                  07  WRK-TAIHI-FTNMONEY-KOJ            PIC 9(09).
                  07  WRK-TAIHI-FTNMONEY-EN             PIC 9(09).
                  07  WRK-TAIHI-FTNMONEY-EN2            PIC 9(09)V9(01).
@@ -25629,6 +25632,8 @@
                                    WRK-TAIHI-FTNMONEY-KOJ(KH-IDX)
                    ADD   SYU-SKJ-FTN(IDX3)          TO
                                    WRK-SKJ-FTN(KH-IDX)
+                   ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
+                                   WRK-TAIHI-FTNMONEY2(KH-IDX)
                    MOVE   1   TO   WRK-KOGAKU-TAISYOGAI(KH-IDX - 1)
                   ELSE
                    ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
@@ -31168,6 +31173,11 @@
                MOVE  WRK-FTNMONEY-MAE    TO  WRK-CHK-KOKIGAK2
              ELSE
                MOVE  RECE62-FTNMONEY(2)  TO  WRK-CHK-KOKIGAK2
+               IF   (RECE62-KOUREI           = "2")
+               AND  (WRK-KOGAKU-TAISYOGAI(1) =  1 )
+                 MOVE  WRK-TAIHI-FTNMONEY2(2)
+                                         TO  WRK-CHK-KOKIGAK2
+               END-IF
              END-IF
            END-IF
       *
