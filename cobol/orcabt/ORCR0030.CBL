@@ -794,6 +794,8 @@
       *  04.08.59    NACL-ÌçÏÆ    18/05/07  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.60    NACL-ÌçÏÆ    18/06/11  Äþ¸ºÅÀ¿ô½¸·×¤Ë´Ø¤¹¤ë½¤Àµ
       *  04.08.61    NACL-ÌçÏÆ    18/06/25  ÅÅ»Ò²èÁü´ÉÍý²Ã»»¤Îµ­ºÜ½ç½¤Àµ
+      *  04.08.62    NACL-ÌçÏÆ    18/07/26  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¡Ü¸øÈñ¤Î
+      *                                     ÉéÃ´¶â·×»»½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1335,6 +1337,7 @@
            03  WRK-TAIHI-FTNMONEYINF-AREA.
              05  WRK-TAIHI-FTNMONEYINF     OCCURS  5.
                  07  WRK-TAIHI-FTNMONEY                PIC 9(09).
+                 07  WRK-TAIHI-FTNMONEY2               PIC 9(09).
                  07  WRK-TAIHI-FTNMONEY-KOJ            PIC 9(09).
                  07  WRK-TAIHI-FTNMONEY-EN             PIC 9(09).
                  07  WRK-TAIHI-FTNMONEY-EN2            PIC 9(09)V9(01).
@@ -22838,6 +22841,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   ADD   SYU-KOH-COMPFTN(IDX3)      TO
                                         WRK-TAIHI-FTNMONEY(KH-IDX)
                                         WRK-TAIHI-FTNMONEY-KOJ(KH-IDX)
+                  ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
+                                        WRK-TAIHI-FTNMONEY2(KH-IDX)
                   MOVE   1   TO   WRK-KOGAKU-TAISYOGAI(KH-IDX - 1)
                 ELSE
                   ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
@@ -27501,6 +27506,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE  WRK-FTNMONEY-MAE    TO  WRK-CHK-KOKIGAK2
              ELSE
                MOVE  RECE02-FTNMONEY(2)  TO  WRK-CHK-KOKIGAK2
+               IF   (RECE02-ZAITAKU          = "2")
+               AND  (WRK-KOGAKU-TAISYOGAI(1) =  1 )
+                 MOVE  WRK-TAIHI-FTNMONEY2(2)
+                                         TO  WRK-CHK-KOKIGAK2
+               END-IF
              END-IF
            END-IF
       *
