@@ -464,6 +464,8 @@
       *  04.08.30    NACL-ÌçÏÆ    18/07/02  Ê¿À®£³£°Ç¯£¸·î²þÀµ
       *                                     ¡Ê¹â³ÛÎÅÍÜÈñÀ©ÅÙ¤Î¸«Ä¾¤·¡Ë
       *  04.08.31    NACL-ÌçÏÆ    18/07/11  ËÌ³¤Æ»°°Àî»ÔÂÐ±þ½¤Àµ
+      *  04.08.32    NACL-ÌçÏÆ    18/07/26  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¡Ü¸øÈñ¤Î
+      *                                     ÉéÃ´¶â·×»»½¤Àµ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -9565,13 +9567,17 @@
                            MOVE  12          TO  FLG-IRYOHI70
                        END-EVALUATE
                       ELSE
-                        IF    FLG-TOKU75  =  3
-                          MOVE   40050     TO   MAX-KIN-SYU-M
-                        ELSE
-                          MOVE   80100     TO   MAX-KIN-SYU-M
+                       IF  FLG-IRYOHI70  =  1 OR 2 OR 7 OR 8
+                        IF   FLG-IRYOHI70 = 1 OR 7 OR 8
+                          IF    FLG-TOKU75  =  3
+                            MOVE   40050   TO   MAX-KIN-SYU-M
+                          ELSE
+                            MOVE   80100   TO   MAX-KIN-SYU-M
+                          END-IF
                         END-IF
                         MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI70
                         MOVE   6           TO   FLG-IRYOHI70
+                       END-IF
                       END-IF
                    END-IF
                   END-IF
