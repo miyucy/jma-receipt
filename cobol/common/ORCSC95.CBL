@@ -300,7 +300,8 @@
       *    病名編集用
            03  WRK-BYOMEI-AREA.
                05  WRK-BYOMEI-TBL.
-                   07  WRK-BYOMEI-OCC          OCCURS   100.
+      *H30.8       07  WRK-BYOMEI-OCC          OCCURS   100.
+                   07  WRK-BYOMEI-OCC          OCCURS   999.
                        09  WRK-BYOMEI-NO       PIC X(02).
                        09  WRK-BYOMEI          PIC X(164).
                        09  WRK-UTAGAIFLG       PIC X(02).
@@ -3679,8 +3680,14 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX-B
-           PERFORM UNTIL      (FLG-PTBYOMEI    =   1 )  OR
-                              (IDX-B           >=  100)
+           PERFORM UNTIL      (FLG-PTBYOMEI    =   1 )
+      *H30.8             OR   (IDX-B           >=  100)
+      *
+      *H30.8   テーブル編集
+               IF      IDX-B           >=  999
+      *            テーブルオーバー
+                   CONTINUE
+               ELSE
       *
                ADD     1               TO  IDX-B
                MOVE    PTBYO-SRYKA     TO  WRK-BYOMEI-NO(IDX-B)
@@ -3722,6 +3729,8 @@
       *        レセプト表示月数
                IF      PTBYO-REZEMM    NOT =   ZERO
                    PERFORM 110123-BYOMEI-KIKAN-SEC
+               END-IF
+      *H30.8
                END-IF
       *
       *        特定疾患の有無
@@ -3806,7 +3815,6 @@
                END-PERFORM
       *H28.12
              END-IF
-      *
            END-PERFORM
       *
            END-IF
@@ -3825,6 +3833,7 @@
                                                     (SPA-BYOMEI-MAX)
                END-IF
            END-IF
+      *
            .
        11012-BYOMEI-HENSYU-EXT.
            EXIT.
