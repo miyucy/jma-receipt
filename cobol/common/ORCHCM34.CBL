@@ -2455,6 +2455,8 @@
                     AND  ( PTHKN-HKNNUM (1:1) NOT =    "9")
                        IF    ( PTHKN-TEKSTYMD  >=  CONST-H181001 )
                            EVALUATE    WRK-PTHKN-HOJOKBN
+                           WHEN    "8"
+                               MOVE    "£²³ä"  TO  WRK-PTHKN-HOJOKBNMEI
                            WHEN    "7"
                                MOVE    "£³³ä"  TO  WRK-PTHKN-HOJOKBNMEI
                            WHEN    "9"
