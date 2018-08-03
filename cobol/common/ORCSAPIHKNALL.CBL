@@ -854,8 +854,9 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    "4002"              TO  SYS-KANRICD
-               MOVE    PTRSI-RYOSTYMD      TO  SYS-STYUKYMD
-               MOVE    PTRSI-RYOSTYMD      TO  SYS-EDYUKYMD
+      *        アフター療養開始年月日
+               MOVE    PTRSI-SINSATUYMD    TO  SYS-STYUKYMD
+               MOVE    PTRSI-SINSATUYMD    TO  SYS-EDYUKYMD
                MOVE    ORCSAPIHKN-DAMAGE-CLASS (IDXH)
                                            TO  SYS-KBNCD
                PERFORM 900-SYSKANRI-KEYREAD-SEC
