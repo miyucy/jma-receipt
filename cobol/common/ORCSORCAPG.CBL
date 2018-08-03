@@ -490,9 +490,6 @@
                END-IF
            END-IF
       *
-           DISPLAY SORCAPG-NYUGAIKBN ":" SORCAPG-KBNCD ":"
-                   SORCAPG-PGID "[" SORCAPG-RC "]"
-      *
            .
       *
        2001-ONLINE-EXT.
