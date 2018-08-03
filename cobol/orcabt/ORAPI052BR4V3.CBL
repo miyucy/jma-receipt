@@ -705,7 +705,7 @@
                                                                (IDZ IDY)
       *    保険者番号
            MOVE    ORCSAPIHKN-HKNJANUM (IDX)
-                                   TO  PTINFLST-MAIN-NUMBER
+                                   TO  PTINFLST-INSURANCE-NUMBER
                                                                (IDZ IDY)
       *    保険の名称
            MOVE    ORCSAPIHKN-HKNNUM-NAME (IDX)
