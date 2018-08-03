@@ -27,6 +27,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07.05.28  グループ診療対応
+      *  05.00.01    NACL-太田    18/07/11  クラウド対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -68,6 +69,8 @@
            03  IDXA                            PIC 9(05).
            03  IDXI                            PIC 9(04).
            03  IDXK                            PIC 9(04).
+           03  IDXT                            PIC 9(04).
+           03  IDXU                            PIC 9(04).
            03  IDX-STR                         PIC 9(05).
       *
        01  WRK-AREA.
@@ -1666,6 +1669,27 @@
             AND  ( SPA-G01-CUSTOM-ENABLED
                                    NOT =   "1" )
                MOVE    ZERO        TO  FLG-ENABLED
+           END-IF
+      *
+           IF    ( SPA-MW              =   SPA-GINBEE )
+             AND ( SPA-GMN-G03-REPOS-NAME
+                                       =   SPACE )
+               MOVE    ZERO        TO  IDXU
+               PERFORM VARYING IDXT    FROM    1   BY  1
+                       UNTIL ( IDXT    >   SPA-G01-PGLST-MAX )
+                        OR   ( IDXU    >   ZERO )
+      *
+                   IF    ( SPA-GMN-G03-PRGNAME
+                                       =   SPA-G01-TPGID (IDXT))
+                       MOVE    IDXT    TO  IDXU
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF    ( IDXU            =   ZERO )
+                   MOVE    ZERO        TO  FLG-ENABLED
+               END-IF
+      *
            END-IF
       *
            .

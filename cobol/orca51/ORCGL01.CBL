@@ -54,6 +54,7 @@
       *  04.08.01    NACL-藤原    14/08/28  ４．８ミドル対応
       *
       *  05.00.01    NACL-藤原    17/12/25  ＨＡＯＲＩ対応
+      *  05.00.02    NACL-太田    18/07/11  クラウド対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -108,12 +109,12 @@
            03  IDXI                            PIC 9(04).
            03  IDXJ                            PIC 9(04).
            03  IDXK                            PIC 9(04).
-           03  IDXU                            PIC 9(04).
            03  IDX0                            PIC 9(04).
            03  IDX1                            PIC 9(04).
            03  IDX2                            PIC 9(04).
            03  IDXL                            PIC 9(04).
            03  IDXT                            PIC 9(04).
+           03  IDXU                            PIC 9(04).
            03  IDX-PARA                        PIC 9(04).
            03  IDW                             PIC 9(04).
       *
@@ -307,6 +308,9 @@
       *
       *    課金チェック
            COPY    "CPORCSBILLINGCHECK.INC".
+      *
+      *    日レセ選択式プログラム一覧
+           COPY    "CPORCSORCAPG.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -521,6 +525,22 @@
            ELSE
                MOVE    "1"             TO  SPA-L01-CUSTOM-ENABLED
            END-IF
+      *
+           INITIALIZE                      SORCAPG-AREA
+           MOVE    SPA-SYSYMD          TO  SORCAPG-SYSYMD
+           MOVE    "DAILY"             TO  SORCAPG-TYPE
+           CALL    "ORCSORCAPG"        USING
+                                       SORCAPG-AREA
+                                       SPA-AREA
+      *
+           MOVE    SORCAPG-PGLST-MAX   TO  SPA-L01-PGLST-MAX
+           PERFORM VARYING IDXT    FROM    1   BY  1
+                   UNTIL ( IDXT    >   SORCAPG-PGLST-MAX )
+      *
+               MOVE    SORCAPG-TPGID (IDXT)
+                                       TO  SPA-L01-TPGID (IDXT)
+      *
+           END-PERFORM
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL ( IDX >       WRK-CONS-LINE-MAX )
@@ -3653,6 +3673,27 @@
                                             NOT =   SPACE )
              AND ( SPA-L01-CUSTOM-ENABLED   NOT =   "1" )
                MOVE    ZERO        TO  FLG-ENABLED
+           END-IF
+      *
+           IF    ( SPA-MW                       =   SPA-GINBEE )
+             AND ( SPA-GMN-L01-REPOS-NAME (IDXI)
+                                               =   SPACE )
+               MOVE    ZERO        TO  IDXU
+               PERFORM VARYING IDXT    FROM    1   BY  1
+                       UNTIL ( IDXT    >   SPA-L01-PGLST-MAX )
+                        OR   ( IDXU    >   ZERO )
+      *
+                   IF    ( SPA-GMN-L01-PRGNAME (IDXI)
+                                       =   SPA-L01-TPGID (IDXT))
+                       MOVE    IDXT    TO  IDXU
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF    ( IDXU            =   ZERO )
+                   MOVE    ZERO        TO  FLG-ENABLED
+               END-IF
+      *
            END-IF
       *
            .

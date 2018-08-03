@@ -111,34 +111,22 @@
                            11  SPA-NPGNM-MAX           PIC 9(04).
                            11  SPA-NPGNM-MAX2          PIC 9(04).
       *
-                       09  SPA-GMN-ORGPGNM03NLST-G.
-                           11  SPA-GMN-ORGPGNM03NMEIL PIC X(20)
-                                                   OCCURS  5.
-                           11  SPA-GMN-ORGPGNM03N-MAX
-                                                   PIC 9(04).
-                       09  SPA-GMN-ORGPGNM09NLST-G.
-                           11  SPA-GMN-ORGPGNM09NMEIL PIC X(20)
-                                                   OCCURS  5.
-                           11  SPA-GMN-ORGPGNM09N-MAX
-                                                   PIC 9(04).
-      *
-      *                院外処方せん
-                       09  SPA-GMN-ORGPGNM02LST-G.
-                           11  SPA-GMN-ORGPGNM02-MEI  PIC X(20)
-                                                      OCCURS  5.
-                           11  SPA-GMN-ORGPGNM02-MAX  PIC 9(04).
-      *
-      *                薬剤情報提供書
-                       09  SPA-GMN-ORGPGNM04LST-G.
-                           11  SPA-GMN-ORGPGNM04-MEI  PIC X(20)
-                                                      OCCURS  5.
-                           11  SPA-GMN-ORGPGNM04-MAX  PIC 9(04).
-      *
+                       09  SPA-GMN-ORGPGNMLST-G.
+                           11  SPA-GMN-ORGPGNMLST          OCCURS 12.
+                               13  SPA-GMN-ORGPGNMLST-MAX  PIC 9(04).
+                               13  SPA-GMN-ORGPGNMMEIL PIC X(20)
+                                                       OCCURS  10.
                        09  SPA-GMN-CSTPGNMLST-G.
                            11  SPA-GMN-CSTPGNMLST          OCCURS 12.
                                13  SPA-GMN-CSTPGNMLST-MAX  PIC 9(04).
                                13  SPA-GMN-CSTPGNMMEIL PIC X(20)
                                                        OCCURS  10.
+                       09  SPA-GMN-ORGPGNM-NLST-G.
+                           11  SPA-GMN-ORGPGNM-NLST          OCCURS 10.
+                               13  SPA-GMN-ORGPGNM-NLST-MAX  PIC 9(04).
+                               13  SPA-GMN-ORGPGNM-NMEIL PIC X(20)
+                                                       OCCURS  10.
+      *
                        09  SPA-GMN-CSTPGNM-NLST-G.
                            11  SPA-GMN-CSTPGNM-NLST          OCCURS 10.
                                13  SPA-GMN-CSTPGNM-NLST-MAX  PIC 9(04).
