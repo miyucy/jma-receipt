@@ -50,6 +50,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "ENUM-VALUE".
+      *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-SYSKANRI        PIC 9(01).
@@ -60,6 +62,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
       *
       *    ¥ï¡¼¥¯ÎÎ°è
        01  WRK-AREA.
@@ -69,6 +72,7 @@
       *
            03  WRK-KBNCD           PIC X(08).
            03  WRK-PRTPG           PIC X(20).
+           03  WRK-SITEKBN         PIC X(01).
       *
       *
       *****************************************************************
@@ -76,6 +80,9 @@
       *****************************************************************
       *
            COPY    "MCPAREA".
+      *
+      *    ÁªÂò¼°¥×¥í¥°¥é¥à°ìÍ÷¼èÆÀ
+           COPY    "CPORCSORCAPG.INC".
       *
       *    ¥Õ¥¡¥¤¥ëÃµº÷¥µ¥Ö
            COPY    "CPORCSACCESS.INC".
@@ -170,6 +177,7 @@
            MOVE    SPACE               TO  ORCSPRTNM-PRTPG
            MOVE    SPACE               TO  WRK-PRTPG
            MOVE    ZERO                TO  FLG-ORG
+           MOVE    "1"                 TO  WRK-SITEKBN
       *
       *    ¿¦°÷Ëè¤Î¥×¥í¥°¥é¥àÌ¾¼èÆÀ
            MOVE    ORCSPRTNM-KBNCD     TO  WRK-KBNCD
@@ -188,38 +196,63 @@
                MOVE    SPACE               TO  WRK-PRTPG
            END-IF
       *
+           IF    (FLG-ORG          NOT =   1 )
+               MOVE    "2"             TO  WRK-SITEKBN
+           END-IF
+      *
            IF      WRK-PRTPG           =   SPACE
       *        É¸½à¤Î¥×¥í¥°¥é¥àÌ¾¤È¤¹¤ë
                PERFORM 11011-HYOJUN-PRTPG-SEC
                IF      ORCSPRTNM-PRTPG        =   SPACE
-                   MOVE    10                 TO  ORCSPRTNM-RC
+                   MOVE    "orcnop"    TO  ORCSPRTNM-PRTPG
+                   MOVE    10          TO  ORCSPRTNM-RC
                END-IF
            ELSE
-      *
-               INITIALIZE              SACCESS-AREA
-               MOVE    "X"             TO  SACCESS-MODE
-               STRING  WRK-PRTPG           DELIMITED   BY  SPACE
-                       ".so"               DELIMITED   BY  SIZE
-               INTO    SACCESS-IN-FILENAME
-               END-STRING
-               CALL    "ORCSACCESS"    USING
-                                       SACCESS-AREA
-               IF    ( SACCESS-RC      =   ZERO )
-                   MOVE    WRK-PRTPG   TO  ORCSPRTNM-PRTPG
+               IF    ( SPA-MW          =   SPA-GINBEE )
+                   INITIALIZE              SORCAPG-AREA
+                   MOVE    WRK-SRYYMD  TO  SORCAPG-SYSYMD
+                   MOVE    "ONLINE"    TO  SORCAPG-TYPE
+                   MOVE    WRK-NYUGAIKBN   TO  SORCAPG-NYUGAIKBN
+                   MOVE    ORCSPRTNM-KBNCD TO  SORCAPG-KBNCD
+                   MOVE    WRK-PRTPG       TO  SORCAPG-PGID
+                   CALL    "ORCSORCAPG"        USING
+                                               SORCAPG-AREA
+                                               SPA-AREA
+                   IF   ( SORCAPG-RC       =   ZERO )
+                    AND ( SORCAPG-SITEKBN  =   WRK-SITEKBN )
+                       MOVE    WRK-PRTPG   TO  ORCSPRTNM-PRTPG
+                   ELSE
+                       MOVE    "orcnop"    TO  ORCSPRTNM-PRTPG
+                   END-IF
                ELSE
-      *
-                   MOVE    "orcnop"    TO  ORCSPRTNM-PRTPG
-      *
-                   MOVE   SPACE            TO  WRK-ERRMSG
-                   STRING "Couldn't find module:"  DELIMITED   BY  SIZE
-                          SACCESS-IN-FILENAME      DELIMITED   BY  SPACE
-                          LOW-VALUE                DELIMITED   BY  SIZE
-                   INTO   WRK-ERRMSG
+                   INITIALIZE              SACCESS-AREA
+                   MOVE    "X"             TO  SACCESS-MODE
+                   STRING  WRK-PRTPG           DELIMITED   BY  SPACE
+                           ".so"               DELIMITED   BY  SIZE
+                   INTO    SACCESS-IN-FILENAME
                    END-STRING
-                   CALL    "coblog"    USING   WRK-ERRMSG
+                   CALL    "ORCSACCESS"    USING
+                                           SACCESS-AREA
+                   IF    ( SACCESS-RC      =   ZERO )
+                       MOVE    WRK-PRTPG   TO  ORCSPRTNM-PRTPG
+                   ELSE
+      *
+                       MOVE    "orcnop"    TO  ORCSPRTNM-PRTPG
+      *
+                       MOVE   SPACE            TO  WRK-ERRMSG
+                       STRING "Couldn't find module:" DELIMITED BY SIZE
+                              SACCESS-IN-FILENAME     DELIMITED BY SPACE
+                              LOW-VALUE               DELIMITED BY SIZE
+                       INTO   WRK-ERRMSG
+                       END-STRING
+                       CALL    "coblog"    USING   WRK-ERRMSG
+                   END-IF
       *
                END-IF
+      *
            END-IF
+      *
+           DISPLAY ORCSPRTNM-KBNCD "[" ORCSPRTNM-PRTPG "]"
       *
            .
        110-PTNUM-SYORI-EXT.
@@ -230,74 +263,20 @@
       *****************************************************************
        11011-HYOJUN-PRTPG-SEC                SECTION.
       *
-           IF      WRK-NYUGAIKBN       =   "1"
-      *        Æþ±¡
-               EVALUATE    ORCSPRTNM-KBNCD
-      *            ¥«¥ë¥Æ
-                   WHEN    "00000001"
-                       MOVE    "ORCHCN01"      TO  ORCSPRTNM-PRTPG
-      *            Âà±¡¾ÚÌÀ½ñ
-                   WHEN    "00000002"
-                       MOVE    "ORCHCN02"      TO  ORCSPRTNM-PRTPG
-      *            ÀÁµá½ñ
-                   WHEN    "00000003"
-                       MOVE    "ORCHCN03"      TO  ORCSPRTNM-PRTPG
-      *            ¥«¥ë¥Æ¡Ê£³¹æ»æ¡Ë
-                   WHEN    "00000004"
-                       MOVE    "ORCHCN33"      TO  ORCSPRTNM-PRTPG
-      *            Æþ±¡½èÊýäµ
-                   WHEN    "00000005"
-                       MOVE    "ORCHC501"      TO  ORCSPRTNM-PRTPG
-      *            Ãí¼Íäµ
-                   WHEN    "00000006"
-                       MOVE    "ORCHC502"      TO  ORCSPRTNM-PRTPG
-      *            »Ø¼¨äµ
-                   WHEN    "00000007"
-                       MOVE    "ORCHC503"      TO  ORCSPRTNM-PRTPG
-      *            ¿ÇÎÅÈñÌÀºÙ½ñ
-                   WHEN    "00000008"
-                       MOVE    "ORCHCN04"      TO  ORCSPRTNM-PRTPG
-      *            ÌôºÞ¾ðÊó
-                   WHEN    "00000009"
-                       MOVE    "ORCHCN30"      TO  ORCSPRTNM-PRTPG
-      *            ¤ªÌô¼êÄ¢
-                   WHEN    "00000010"
-                       MOVE    "ORCHCN62"      TO  ORCSPRTNM-PRTPG
-               END-EVALUATE
-           ELSE
-      *        ³°Íè
-               EVALUATE    ORCSPRTNM-KBNCD
-      *            ¥«¥ë¥Æ
-                   WHEN    "00000001"
-                       MOVE    "ORCHC01"       TO  ORCSPRTNM-PRTPG
-      *            ½èÊý¤»¤ó
-                   WHEN    "00000002"
-                       MOVE    "ORCHCM19"      TO  ORCSPRTNM-PRTPG
-      *            ÀÁµá½ñ
-                   WHEN    "00000003"
-                       MOVE    "ORCHC03"       TO  ORCSPRTNM-PRTPG
-      *            ÌôºÞ¾ðÊó
-                   WHEN    "00000004"
-                       MOVE    "ORCHC30"       TO  ORCSPRTNM-PRTPG
-      *            ¥«¥ë¥Æ¡Ê£³¹æ»æ¡Ë
-                   WHEN    "00000005"
-                       MOVE    "ORCHC33"       TO  ORCSPRTNM-PRTPG
-      *            ¿ÇÎÅÈñÌÀºÙ½ñ
-                   WHEN    "00000008"
-                       MOVE    "ORCHC04"       TO  ORCSPRTNM-PRTPG
-      *            ¤ªÌô¼êÄ¢
-                   WHEN    "00000009"
-                       MOVE    "ORCHC62"       TO  ORCSPRTNM-PRTPG
-      *            Í½ÌóÉ¼
-                   WHEN    "00000010"
-                       MOVE    "ORCHC67"       TO  ORCSPRTNM-PRTPG
-      *            Í½Ìó°ìÍ÷
-                   WHEN    "00000011"
-                       MOVE    "ORCHC14"       TO  ORCSPRTNM-PRTPG
-      *            Í½Ìó´µ¼Ô°ìÍ÷
-                   WHEN    "00000012"
-                       MOVE    "ORCHC15"       TO  ORCSPRTNM-PRTPG
-               END-EVALUATE
+           INITIALIZE                  SORCAPG-AREA
+           MOVE    WRK-SRYYMD      TO  SORCAPG-SYSYMD
+           MOVE    "ONLINE"        TO  SORCAPG-TYPE
+           MOVE    "1"             TO  SORCAPG-SET-DEFAULT
+           MOVE    WRK-NYUGAIKBN   TO  SORCAPG-NYUGAIKBN
+           CALL    "ORCSORCAPG"        USING
+                                       SORCAPG-AREA
+                                       SPA-AREA
+           MOVE    FUNCTION NUMVAL(ORCSPRTNM-KBNCD)
+                                   TO  IDZ
+           IF    ( IDZ             >=  1 )
+            AND  ( IDZ             <=  SORCAPG-PGLST-MAX )
+               MOVE    SORCAPG-TPGID (IDZ)
+                                   TO  ORCSPRTNM-PRTPG
            END-IF
       *
            .

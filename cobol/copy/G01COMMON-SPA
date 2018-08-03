@@ -55,3 +55,7 @@
            03  SPA-G01-PARAHYOJI-1         PIC 9(03).
            03  SPA-G01-PARAHYOJI-2         PIC 9(03).
       *
+           03  SPA-G01-PGLST-MAX           PIC 9(05).
+           03  SPA-G01-PGLST.
+               05  SPA-G01-PGLST-OCC       OCCURS 200.
+                   07  SPA-G01-TPGID       PIC X(20).

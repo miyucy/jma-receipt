@@ -195,8 +195,10 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-      *    日付サブルーチン領域
+      *    日レセ選択式プログラム一覧
+           COPY    "CPORCSORCAPG.INC".
       *
+      *    日付サブルーチン領域
            COPY  "CPORCSDAY.INC".
       *
            COPY  "CPORCSLNK.INC".
@@ -1572,7 +1574,28 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE  "0099"                TO  SPA-ERRCD
                MOVE   1                    TO  SPA-GMN-W10-CUR
            END-IF
-      *   
+      *
+           IF    ( SPA-ERRCD               =   SPACE )
+               IF    ( SPA-MW              =   SPA-GINBEE )
+                AND  ( SPA-GMN-W10-REPOS-NAME  =   SPACE )
+                   INITIALIZE                      SORCAPG-AREA
+                   MOVE    SPA-W10-STYUKYMD    TO  SORCAPG-SYSYMD
+                   IF    ( SPA-W10-KANRICD     =   "3001" )
+                       MOVE    "DAILY"         TO  SORCAPG-TYPE
+                   ELSE
+                       MOVE    "MONTHLY"       TO  SORCAPG-TYPE
+                   END-IF
+                   MOVE    SPA-GMN-W10-PRGNAME TO  SORCAPG-PGID
+                   CALL    "ORCSORCAPG"        USING
+                                               SORCAPG-AREA
+                                               SPA-AREA
+                   IF    ( SORCAPG-RC      NOT =   ZERO )
+                       MOVE    "0007"          TO  SPA-ERRCD
+                       MOVE    3               TO  SPA-GMN-W10-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -1786,7 +1809,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WIDGET-INSENSITIVE     TO  W10-B03-STATE
            MOVE    WIDGET-INSENSITIVE     TO  W10-B12-STATE
       *
-           IF      SPA-W10-SELNUM          >   ZERO    
+           IF      SPA-W10-SELNUM          >   ZERO
                MOVE    WIDGET-NORMAL      TO  W10-B03-STATE
            END-IF
       *
@@ -1827,6 +1850,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE    "レポジトリ名は半角で指定してください" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0007"
+                 MOVE "プログラムが複写可能な統計帳票一覧に存在しません"
                                                TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
