@@ -4683,15 +4683,7 @@
            END-PERFORM
       *    複数科まとめ集計フラグ
            MOVE    SPA-KAGRPFLG        TO  LNK-S01-KAGRPFLG
-      *TEST
-      *TEST
-      *    DISPLAY "K08 LNK-ORCS01-REC"
-      *    DISPLAY LNK-ORCS01-REC
-      *    DISPLAY "K08 SYUNOU(1)"
-      *    DISPLAY LNK-SYUNOU2-REC (1)
-      *    DISPLAY "K08 SYUNOU(2)"
-      *    DISPLAY LNK-SYUNOU2-REC (2)
-      *TEST
+      *
       *    負担金計算処理
            CALL    "ORCSGAIFTN"        USING
                                        MCPAREA
@@ -4931,6 +4923,10 @@
            MOVE    ORCSCSYU-SYUNOU-MAX TO  LNK-SYUNOU2-MAX
       *
       *H30.6
+      *    収納オーバー
+           IF      ORCSCSYU-ERRCD      =   9
+               MOVE    "0013"          TO  SPA-ERRCD
+           END-IF
       *    金額桁あふれ
            IF      ORCSCSYU-ERRCD      =   11
       *        請求額
@@ -7731,6 +7727,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0012"
                    STRING  "今回請求金額が７桁を超えます。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0013"
+                   STRING  "作成する収納が上限件数を超えます。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

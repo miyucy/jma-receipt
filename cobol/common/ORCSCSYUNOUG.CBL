@@ -588,6 +588,13 @@
                    PERFORM 2002-SYUNOU-ADD-SEC
                END-IF
            END-PERFORM
+      *
+           IF      ORCSCSYU-ERRCD  NOT =   ZERO
+               MOVE    LNK-SYUNOU2-AREA    TO  LNK-SYUNOU-AREA
+               MOVE    LNK-SYUNOU2-MAX     TO  ORCSCSYU-SYUNOU-MAX
+               GO      TO      200-MAIN-SYORI-EXT
+           END-IF
+      *
       *    複数科まとめ集計フラグ
            MOVE    SPA-KAGRPFLG        TO  LNK-S01-KAGRPFLG
       *
@@ -618,6 +625,10 @@
       *
            MOVE    LNK-SYUNOU-REC (IDH)    TO  SYUNOU-REC
            INITIALIZE                  WRK-SUM-AREA
+           IF      LNK-SYUNOU2-MAX     >=  15
+               MOVE    9                   TO  ORCSCSYU-ERRCD
+               GO      TO      2001-SYUNOU-HENSYU-EXT
+           END-IF
            ADD     1                   TO  LNK-SYUNOU2-MAX
       *
       *    各点数
@@ -1029,6 +1040,10 @@
            END-PERFORM
       *
            MOVE    ZERO                TO  SYU-SRYKA
+           IF      LNK-SYUNOU2-MAX     >=  15
+               MOVE    9                   TO  ORCSCSYU-ERRCD
+               GO      TO      2002-SYUNOU-ADD-EXT
+           END-IF
            ADD     1                   TO  LNK-SYUNOU2-MAX
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU2-REC
                                                    (LNK-SYUNOU2-MAX)
