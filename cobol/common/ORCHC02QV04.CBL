@@ -6574,6 +6574,18 @@
                MOVE    "0"             TO  FMSHOHO-KBN
            ELSE
                MOVE    ORCHC19-KBN     TO  FMSHOHO-KBN
+      *H30.8
+      *        HAORIÂÐ±þ
+               IF      SPA-API-FLG     NOT =   ZERO
+      *            HAORI ±¡³°
+                   IF      ORCHC19-KBN         =   "4"
+                       MOVE    "H"             TO  FMSHOHO-KBN
+                   END-IF
+      *            HAORI ±¡Æâ
+                   IF      ORCHC19-KBN         =   "5"
+                       MOVE    "I"             TO  FMSHOHO-KBN
+                   END-IF
+               END-IF
            END-IF
       *    ¿ÇÎÅÆü
            MOVE    SPA-SRYYMD          TO  WRK-SYMD
