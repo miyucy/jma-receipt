@@ -4918,6 +4918,10 @@
                                        PARA-WKSRYACT-AREA
            MOVE    ORCSCSYU-SYUNOU-MAX TO  LNK-SYUNOU2-MAX
       *H30.6
+      *    ¼ýÇ¼¥ª¡¼¥Ð¡¼
+           IF      ORCSCSYU-ERRCD      =   9
+               MOVE    "0013"          TO  SPA-ERRCD
+           END-IF
       *    ¶â³Û·å¤¢¤Õ¤ì
            IF      ORCSCSYU-ERRCD      =   11
       *        ÀÁµá³Û
@@ -7704,6 +7708,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0012"
                    STRING  "º£²óÀÁµá¶â³Û¤¬£··å¤òÄ¶¤¨¤Þ¤¹¡£"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0013"
+                   STRING  "ºîÀ®¤¹¤ë¼ýÇ¼¤¬¾å¸Â·ï¿ô¤òÄ¶¤¨¤Þ¤¹¡£"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
