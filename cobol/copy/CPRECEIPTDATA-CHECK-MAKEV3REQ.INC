@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-RECEIPTDATA-CHECK-MAKEREQ.
             02  RECEDMAKEQ-CONTEXT          PIC S9(9)   BINARY.
-            02  RECEDMAKEQ-OBJECT           PIC X(8).
+            02  RECEDMAKEQ-OBJECT           PIC X(36).
             02  RECEDMAKEQ-MODE             PIC S9(9)   BINARY.
             02  RECEDMAKEQ-RECORDNAME       PIC X(128).
             02  RECEDMAKEQ-PATIENTREQ.

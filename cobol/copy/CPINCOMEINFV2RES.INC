@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-INCOMEINFRES.
             03  ICINFRES-CONTEXT                       PIC S9(9) BINARY.
-            03  ICINFRES-OBJECT                        PIC X(8).
+            03  ICINFRES-OBJECT                        PIC X(36).
             03  ICINFRES-MODE                          PIC S9(9) BINARY.
             03  ICINFRES-RECORDNAME                    PIC X(128).
             03  ICINFRES-PRIVATE-OBJECTS.

@@ -26,5 +26,5 @@
                 05  APIPTA-FORMAT      PIC X(20).
               04  APIPTA-METHOD        PIC X(100).
               04  APIPTA-CONTENT-TYPE  PIC X(100).
-              04  APIPTA-BODY          PIC X(8).
+              04  APIPTA-BODY          PIC X(36).
               04  APIPTA-HTTPSTATUS    PIC S9(9)   BINARY.

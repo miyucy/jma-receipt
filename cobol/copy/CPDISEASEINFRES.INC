@@ -19,7 +19,7 @@
       *    ＡＰＩレスポンス患者病名情報     COPY (CPDISEASEINFREQ.INC)
       ******************************************************************
         01  XML-DISEASE-INFRES.
-            02  DISERES-OBJECT              PIC X(8).
+            02  DISERES-OBJECT              PIC X(36).
             02  DISERES-MODE                PIC S9(9)   BINARY.
             02  DISERES-DISEASE-INFRES.
       *       実施日

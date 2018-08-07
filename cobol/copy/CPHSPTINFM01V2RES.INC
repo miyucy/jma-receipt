@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-HSPTINFM01RES.
            03  HSPTINFM01RES-CONTEXT              PIC S9(9)   BINARY.
-           03  HSPTINFM01RES-OBJECT               PIC X(8).
+           03  HSPTINFM01RES-OBJECT               PIC X(36).
            03  HSPTINFM01RES-MODE                 PIC S9(9)   BINARY.
            03  HSPTINFM01RES-RECORDNAME           PIC X(128).
            03  HSPTINFM01RES-PRIVATE-OBJECTS.

@@ -69,5 +69,5 @@
               03  XG03-CONTEXT             PIC X(50000).
               03  XG03-PANDATIMER1             PIC S9(9)   BINARY.
               03  XG03-PANDADOWNLOAD1.
-                  05  XG03-OBJECTDATA          PIC X(8).
+                  05  XG03-OBJECTDATA          PIC X(36).
                   05  XG03-FILENAME            PIC X(1024).

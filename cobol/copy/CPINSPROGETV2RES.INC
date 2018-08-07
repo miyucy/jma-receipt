@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-INSPROGETRES.
             02  INSPRORES-CONTEXT            PIC S9(9)   BINARY.
-            02  INSPRORES-OBJECT             PIC X(8).
+            02  INSPRORES-OBJECT             PIC X(36).
             02  INSPRORES-MODE               PIC S9(9)   BINARY.
             02  INSPRORES-RECORDNAME         PIC X(128).
             02  INSPRORES-APPOINTRES.

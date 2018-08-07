@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-HSMEALV2REQ.
             03  HSMEALREQ-CONTEXT          PIC S9(9)   BINARY.
-            03  HSMEALREQ-OBJECT           PIC X(8).
+            03  HSMEALREQ-OBJECT           PIC X(36).
             03  HSMEALREQ-MODE             PIC S9(9)   BINARY.
             03  HSMEALREQ-RECORDNAME       PIC X(128).
       *

@@ -12,4 +12,4 @@
               04  HTTP-METHOD PIC X(8).
               04  HTTP-STATUS PIC S9(9)   BINARY.
               04  CONTENT-TYPE    PIC X(64).
-              04  BODY    PIC X(8).
+              04  SESSION-BODY    PIC X(36).

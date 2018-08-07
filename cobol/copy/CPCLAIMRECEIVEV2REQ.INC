@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-CLAIM-RECEIVEV2REQ.
            02  CLREREQ-CONTEXT           PIC S9(9)   BINARY.
-           02  CLREREQ-OBJECT            PIC X(8).
+           02  CLREREQ-OBJECT            PIC X(36).
            02  CLREREQ-MODE              PIC S9(9)   BINARY.
            02  CLREREQ-RECORDNAME        PIC X(128).
            02  CLREREQ-RECEIVE-FRONT.

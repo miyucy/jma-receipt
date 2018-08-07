@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-IMGGETREQ.
            03  IMGGETREQ-CONTEXT              PIC S9(9)   BINARY.
-           03  IMGGETREQ-OBJECT               PIC X(8).
+           03  IMGGETREQ-OBJECT               PIC X(36).
            03  IMGGETREQ-MODE                 PIC S9(9)   BINARY.
            03  IMGGETREQ-RECORDNAME           PIC X(128).
            03  IMGGETREQ-AREA.

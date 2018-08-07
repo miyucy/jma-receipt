@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMTAIIN-REC.
             03  FMTAIIN-PCONTEXT               PIC S9(9)   BINARY.
-            03  FMTAIIN-OBJECT                 PIC X(8).
+            03  FMTAIIN-OBJECT                 PIC X(36).
             03  FMTAIIN-MODE                   PIC S9(9)   BINARY.
             03  FMTAIIN-RECORDNAME             PIC X(128).
             03  FMTAIIN-DATA.

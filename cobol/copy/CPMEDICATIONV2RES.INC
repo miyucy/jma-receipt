@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-MEDICATIONRES.
             02  MEDIRES-CONTEXT            PIC S9(9)   BINARY.
-            02  MEDIRES-OBJECT             PIC X(8).
+            02  MEDIRES-OBJECT             PIC X(36).
             02  MEDIRES-MODE               PIC S9(9)   BINARY.
             02  MEDIRES-RECORDNAME         PIC X(128).
             02  MEDIRES-APPOINTRES.

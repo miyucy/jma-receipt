@@ -20,7 +20,7 @@
       ******************************************************************
        01  XML-FDGREQ.
            03  FDGREQ-CONTEXT          PIC S9(9)   BINARY.
-           03  FDGREQ-OBJECT           PIC X(8).
+           03  FDGREQ-OBJECT           PIC X(36).
            03  FDGREQ-MODE             PIC S9(9)   BINARY.
            03  FDGREQ-RECORDNAME       PIC X(128).
       *

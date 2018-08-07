@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-TMEDICALMODRES.
             03  TMDCRES-CONTEXT             PIC S9(9)   BINARY.
-            03  TMDCRES-OBJECT              PIC X(8).
+            03  TMDCRES-OBJECT              PIC X(36).
             03  TMDCRES-MODE                PIC S9(9)   BINARY.
             03  TMDCRES-RECORDNAME          PIC X(128).
             03  TMDCRES-MEDICALRES.

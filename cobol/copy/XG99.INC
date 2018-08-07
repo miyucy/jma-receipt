@@ -16,5 +16,5 @@
                   05  XG99-SELECT  PIC X       OCCURS  30 TIMES.
               03  XG99-DURATION   PIC S9(09) BINARY.
               03  XG99-DOWNLOAD1.
-                  05  XG99-OBJECTDATA   PIC X(8).
+                  05  XG99-OBJECTDATA   PIC X(36).
                   05  XG99-FILENAME     PIC X(1024).

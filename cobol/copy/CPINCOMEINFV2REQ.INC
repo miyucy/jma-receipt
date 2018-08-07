@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-INCOMEINFREQ.
             03  ICINFREQ-CONTEXT             PIC S9(9)   BINARY.
-            03  ICINFREQ-OBJECT              PIC X(8).
+            03  ICINFREQ-OBJECT              PIC X(36).
             03  ICINFREQ-MODE                PIC S9(9)   BINARY.
             03  ICINFREQ-RECORDNAME          PIC X(128).
       *

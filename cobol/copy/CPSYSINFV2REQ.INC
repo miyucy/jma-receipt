@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-SYSINFV2REQ.
             03  SYSINFREQ-CONTEXT          PIC S9(9)   BINARY.
-            03  SYSINFREQ-OBJECT           PIC X(8).
+            03  SYSINFREQ-OBJECT           PIC X(36).
             03  SYSINFREQ-MODE             PIC S9(9)   BINARY.
             03  SYSINFREQ-RECORDNAME       PIC X(128).
       *

@@ -20,7 +20,7 @@
       ********************************************************************
        01  XML-FDGRES.
            03  FDGRES-CONTEXT                     PIC S9(9)   BINARY.
-           03  FDGRES-OBJECT                      PIC X(8).
+           03  FDGRES-OBJECT                      PIC X(36).
            03  FDGRES-MODE                        PIC S9(9)   BINARY.
            03  FDGRES-RECORDNAME                  PIC X(128).
       *
@@ -41,5 +41,5 @@
                    07  FDGRES-SEX                 PIC X(01).
                05  FDGRES-SRYYMD                  PIC X(10).
                05  FDGRES-DATAID                  PIC X(80).
-               05  FDGRES-RPDATA                  PIC X(8).
+               05  FDGRES-RPDATA                  PIC X(36).
                05  FDGRES-OFFSET                  PIC X(10).

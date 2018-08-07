@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-SYSTEMDAILYREQ.
             02  SYSDAYREQ-CONTEXT           PIC S9(9)   BINARY.
-            02  SYSDAYREQ-OBJECT            PIC X(8).
+            02  SYSDAYREQ-OBJECT            PIC X(36).
             02  SYSDAYREQ-MODE              PIC S9(9)   BINARY.
             02  SYSDAYREQ-RECORDNAME        PIC X(128).
             02  SYSDAYREQ-REGIST.

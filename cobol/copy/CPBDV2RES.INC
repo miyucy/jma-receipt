@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-BDRES.
            03  BDRES-CONTEXT                      PIC S9(9)   BINARY.
-           03  BDRES-OBJECT                       PIC X(8).
+           03  BDRES-OBJECT                       PIC X(36).
            03  BDRES-MODE                         PIC S9(9)   BINARY.
            03  BDRES-RECORDNAME                   PIC X(128).
            03  BDRES-PRIVATE-OBJECTS.

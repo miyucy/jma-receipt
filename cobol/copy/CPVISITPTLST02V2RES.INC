@@ -25,7 +25,7 @@
       *****************************************************************
         01  XML-VISITPTLST02RES.
             02  VIS02RES-CONTEXT           PIC S9(9)   BINARY.
-            02  VIS02RES-OBJECT            PIC X(8).
+            02  VIS02RES-OBJECT            PIC X(36).
             02  VIS02RES-MODE              PIC S9(9)   BINARY.
             02  VIS02RES-RECORDNAME        PIC X(128).
             02  VIS02RES-VISITPTLSTRES.

@@ -6,4 +6,4 @@
                     06  W62-PRTNUMLST         PIC X(20)
                                                OCCURS  20 TIMES.
                   05  W62-PSAREA.
-                    06  W62-VALUE  PIC X(8).
+                    06  W62-VALUE  PIC X(36).

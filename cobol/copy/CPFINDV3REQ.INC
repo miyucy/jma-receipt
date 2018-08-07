@@ -17,7 +17,7 @@
       ********************************************************************
        01  XML-FINDV3REQ.
          02  FINDREQ-CONTEXT                 PIC S9(9)   BINARY.
-         02  FINDREQ-OBJECT                  PIC X(8).
+         02  FINDREQ-OBJECT                  PIC X(36).
          02  FINDREQ-MODE                    PIC S9(9)   BINARY.
          02  FINDREQ-RECORDNAME              PIC X(128).
          02  FINDREQ-FINDV2REQ.

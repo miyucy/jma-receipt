@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-SUBJECTLSTREQ.
             03  SUBJETREQ-CONTEXT           PIC S9(9)   BINARY.
-            03  SUBJETREQ-OBJECT            PIC X(8).
+            03  SUBJETREQ-OBJECT            PIC X(36).
             03  SUBJETREQ-MODE              PIC S9(9)   BINARY.
             03  SUBJETREQ-RECORDNAME        PIC X(128).
             03  SUBJETREQ-MEDICALREQ.

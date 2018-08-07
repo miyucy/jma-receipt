@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-HSPTINFV2REQ.
             03  HSPTINFREQ-CONTEXT             PIC S9(9)   BINARY.
-            03  HSPTINFREQ-OBJECT              PIC X(8).
+            03  HSPTINFREQ-OBJECT              PIC X(36).
             03  HSPTINFREQ-MODE                PIC S9(9)   BINARY.
             03  HSPTINFREQ-RECORDNAME          PIC X(128).
       *

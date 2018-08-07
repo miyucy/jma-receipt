@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMSHOHO-REC.
             03  FMSHOHO-CONTEXT                PIC S9(9)   BINARY.
-            03  FMSHOHO-OBJECT                 PIC X(8).
+            03  FMSHOHO-OBJECT                 PIC X(36).
             03  FMSHOHO-MODE                   PIC S9(9)   BINARY.
             03  FMSHOHO-RECORDNAME             PIC X(128).
             03  FMSHOHO-DATA.

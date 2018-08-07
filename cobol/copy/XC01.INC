@@ -8,7 +8,7 @@
                   05  XC01-TITLE-STYLE      PIC X(20).
                   05  XC01-TITLE            PIC X(40).
                   05  XC01-PSAREA.
-                    06  XC01-VALUE  PIC X(8).
+                    06  XC01-VALUE  PIC X(36).
                   05  XC01-SCROLLEDWINDOW26.
                     06  XC01-CLIST.
                       07  XC01-COUNT        PIC S9(9)   BINARY.

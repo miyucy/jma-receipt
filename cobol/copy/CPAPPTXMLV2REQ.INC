@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-APPOINTREQ.
             02  APNTREQ-CONTEXT            PIC S9(9)   BINARY.
-            02  APNTREQ-OBJECT             PIC X(8).
+            02  APNTREQ-OBJECT             PIC X(36).
             02  APNTREQ-MODE               PIC S9(9)   BINARY.
             02  APNTREQ-RECORDNAME         PIC X(128).
             02  APNTREQ-APPOINT.

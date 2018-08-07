@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-AVGRES.
             03  AVGRES-CONTEXT                 PIC S9(9)   BINARY.
-            03  AVGRES-OBJECT                  PIC X(8).
+            03  AVGRES-OBJECT                  PIC X(36).
             03  AVGRES-MODE                    PIC S9(9)   BINARY.
             03  AVGRES-RECORDNAME              PIC X(128).
             03  AVGRES-AREA.

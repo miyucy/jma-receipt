@@ -36,5 +36,5 @@
                                    OCCURS  30 TIMES.
           03  Q97-DURATION   PIC S9(09) BINARY.
           03  Q97-DOWNLOAD1.
-              05  Q97-OBJECTDATA   PIC X(8).
+              05  Q97-OBJECTDATA   PIC X(36).
               05  Q97-FILENAME     PIC X(1024).

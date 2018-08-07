@@ -20,7 +20,7 @@
       ******************************************************************
         01  INCOMERES01-AREA.
             03  INCOMERES01-CONTEXT                  PIC S9(9) BINARY.
-            03  INCOMERES01-OBJECT                   PIC X(8).
+            03  INCOMERES01-OBJECT                   PIC X(36).
             03  INCOMERES01-MODE                     PIC S9(9) BINARY.
             03  INCOMERES01-RECORDNAME               PIC X(128).
             03  INCOMERES01-DATA-AREA.

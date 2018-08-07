@@ -24,7 +24,7 @@
       *  04.07.00    NACL-多々納  12/10/01  禁忌〜コメント等追加
       *****************************************************************
         01  XML-PATIENTINFORES.
-            02  PTRES-OBJECT           PIC X(8).
+            02  PTRES-OBJECT           PIC X(36).
             02  PTRES-MODE             PIC S9(9)   BINARY.
             02  PTRES-PATIENTINFORES.
       *       実施日

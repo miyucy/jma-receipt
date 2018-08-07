@@ -17,7 +17,7 @@
       ********************************************************************
        01  XML-HSPMMREQ.
          02  HSPMMREQ-CONTEXT                  PIC S9(9)   BINARY.
-         02  HSPMMREQ-OBJECT                   PIC X(8).
+         02  HSPMMREQ-OBJECT                   PIC X(36).
          02  HSPMMREQ-MODE                     PIC S9(9)   BINARY.
          02  HSPMMREQ-RECORDNAME               PIC X(128).
          02  HSPMMREQ-AREA.

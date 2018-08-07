@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-ACCEPTRES.
             02  ACCPTRES-CONTEXT          PIC S9(9)   BINARY.
-            02  ACCPTRES-OBJECT           PIC X(8).
+            02  ACCPTRES-OBJECT           PIC X(36).
             02  ACCPTRES-MODE             PIC S9(9)   BINARY.
             02  ACCPTRES-RECORDNAME       PIC X(128).
             02  ACCPTRES-REGISTRES.

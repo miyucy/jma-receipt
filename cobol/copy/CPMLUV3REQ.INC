@@ -17,7 +17,7 @@
       ********************************************************************
        01  XML-MLUREQ.
          02  MLUREQ-CONTEXT            PIC S9(9)   BINARY.
-         02  MLUREQ-OBJECT             PIC X(8).
+         02  MLUREQ-OBJECT             PIC X(36).
          02  MLUREQ-MODE               PIC S9(9)   BINARY.
          02  MLUREQ-RECORDNAME         PIC X(128).
          02  MLUREQ-AREA.

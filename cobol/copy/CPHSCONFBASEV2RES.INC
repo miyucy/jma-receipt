@@ -20,7 +20,7 @@
       ******************************************************************
        01  XML-HSCONFBASERES.
            03  HSCBRES-CONTEXT          PIC S9(9)   BINARY.
-           03  HSCBRES-OBJECT           PIC X(8).
+           03  HSCBRES-OBJECT           PIC X(36).
            03  HSCBRES-MODE             PIC S9(9)   BINARY.
            03  HSCBRES-RECORDNAME       PIC X(128).
       *

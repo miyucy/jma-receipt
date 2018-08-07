@@ -21,7 +21,7 @@
       ******************************************************
        01  PSREQ-AREA.
            03  PSREQ-CONTEXT               PIC S9(9)   BINARY.
-           03  PSREQ-OBJECT                PIC X(8).
+           03  PSREQ-OBJECT                PIC X(36).
            03  PSREQ-MODE                  PIC S9(9)   BINARY.
            03  PSREQ-RECORDNAME            PIC X(128).
            03  PSREQ-DATA-AREA.

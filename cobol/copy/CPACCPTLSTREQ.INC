@@ -19,7 +19,7 @@
       *    ＡＰＩリクエスト受付一覧　　         COPY (CPACCPTLSTREQ.INC)
       ******************************************************************
         01  XML-ACCEPTLSTREQ.
-            02  ACPLSTREQ-OBJECT         PIC X(8).
+            02  ACPLSTREQ-OBJECT         PIC X(36).
             02  ACPLSTREQ-MODE           PIC S9(9)   BINARY.
             02  ACPLSTREQ-APPOINT.
       *       受付日

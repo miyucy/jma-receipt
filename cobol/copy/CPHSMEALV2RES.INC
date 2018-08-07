@@ -20,7 +20,7 @@
       ******************************************************************
        01  XML-HSMEALRES.
            03  HSMEALRES-CONTEXT                     PIC S9(9)   BINARY.
-           03  HSMEALRES-OBJECT                      PIC X(8).
+           03  HSMEALRES-OBJECT                      PIC X(36).
            03  HSMEALRES-MODE                        PIC S9(9)   BINARY.
            03  HSMEALRES-RECORDNAME                  PIC X(128).
       *

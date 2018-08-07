@@ -24,7 +24,7 @@
       *                                       COPY (CPPATIENTMODRES.INC)
       ******************************************************************
         01  XML-PATIENTMODRES.
-            02  PTMODRES-OBJECT         PIC X(8).
+            02  PTMODRES-OBJECT         PIC X(36).
             02  PTMODRES-MODE           PIC S9(9)   BINARY.
             02  PTMODRES-APPOINTRES.
       *       ¼Â»ÜÆü

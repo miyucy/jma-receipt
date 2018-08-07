@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-HSACSIMULATEREQ.
             03  HSACSREQ-CONTEXT             PIC S9(9)   BINARY.
-            03  HSACSREQ-OBJECT              PIC X(8).
+            03  HSACSREQ-OBJECT              PIC X(36).
             03  HSACSREQ-MODE                PIC S9(9)   BINARY.
             03  HSACSREQ-RECORDNAME          PIC X(128).
       *

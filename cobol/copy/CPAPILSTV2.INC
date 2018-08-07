@@ -24,6 +24,6 @@
                 05  APILST-CLASS       PIC X(2).
               04  APILST-METHOD        PIC X(100).
               04  APILST-CONTENT-TYPE  PIC X(100).
-              04  APILST-BODY          PIC X(8).
+              04  APILST-BODY          PIC X(36).
               04  APILST-HTTPSTATUS    PIC S9(9)   BINARY.
 

@@ -25,7 +25,7 @@
       *****************************************************************
        01  XML-CLAIM-FRONTV2RES.
            02  CLFRRES-CONTEXT           PIC S9(9)   BINARY.
-           02  CLFRRES-OBJECT            PIC X(8).
+           02  CLFRRES-OBJECT            PIC X(36).
            02  CLFRRES-MODE              PIC S9(9)   BINARY.
            02  CLFRRES-RECORDNAME        PIC X(128).
            02  CLFRRES-CLAIM-FRONT.

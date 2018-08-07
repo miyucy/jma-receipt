@@ -24,7 +24,7 @@
       *                                       COPY (CPPATIENTMODREQ.INC)
       ******************************************************************
         01  XML-PATIENTMODREQ.
-            02  PTMODREQ-OBJECT        PIC X(8).
+            02  PTMODREQ-OBJECT        PIC X(36).
             02  PTMODREQ-MODE          PIC S9(9)   BINARY.
             02  PTMODREQ-MEDICALREQ.
       *       処理日付

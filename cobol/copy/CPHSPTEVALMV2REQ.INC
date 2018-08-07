@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-HSPTEVALMREQ.
            03  HSPTEVALMREQ-CONTEXT              PIC S9(9)   BINARY.
-           03  HSPTEVALMREQ-OBJECT               PIC X(8).
+           03  HSPTEVALMREQ-OBJECT               PIC X(36).
            03  HSPTEVALMREQ-MODE                 PIC S9(9)   BINARY.
            03  HSPTEVALMREQ-RECORDNAME           PIC X(128).
            03  HSPTEVALMREQ-PRIVATE-OBJECTS.

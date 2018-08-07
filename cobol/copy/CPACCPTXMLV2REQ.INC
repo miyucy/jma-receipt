@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-ACCEPTREQ.
             02  ACCPTREQ-CONTEXT          PIC S9(9)   BINARY.
-            02  ACCPTREQ-OBJECT           PIC X(8).
+            02  ACCPTREQ-OBJECT           PIC X(36).
             02  ACCPTREQ-MODE             PIC S9(9)   BINARY.
             02  ACCPTREQ-RECORDNAME       PIC X(128).
             02  ACCPTREQ-REGIST.

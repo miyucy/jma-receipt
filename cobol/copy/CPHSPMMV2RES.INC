@@ -17,7 +17,7 @@
       ********************************************************************
        01  XML-HSPMMRES.
          02  HSPMMRES-CONTEXT                  PIC S9(9)   BINARY.
-         02  HSPMMRES-OBJECT                   PIC X(8).
+         02  HSPMMRES-OBJECT                   PIC X(36).
          02  HSPMMRES-MODE                     PIC S9(9)   BINARY.
          02  HSPMMRES-RECORDNAME               PIC X(128).
          02  HSPMMRES-AREA.

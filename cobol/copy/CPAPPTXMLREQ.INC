@@ -19,7 +19,7 @@
       *    ＡＰＩリクエスト予約情報　　         COPY (CPAPPTXMLREQ.INC)
       ******************************************************************
         01  XML-APPOINTREQ.
-            02  APNTREQ-OBJECT         PIC X(8).
+            02  APNTREQ-OBJECT         PIC X(36).
             02  APNTREQ-MODE           PIC S9(9)   BINARY.
             02  APNTREQ-APPOINT.
       *       患者番号

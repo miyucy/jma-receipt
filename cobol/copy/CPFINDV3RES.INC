@@ -17,7 +17,7 @@
       ********************************************************************
        01  XML-FINDV3RES.
          02  FINDRES-CONTEXT                 PIC S9(9)   BINARY.
-         02  FINDRES-OBJECT                  PIC X(8).
+         02  FINDRES-OBJECT                  PIC X(36).
          02  FINDRES-MODE                    PIC S9(9)   BINARY.
          02  FINDRES-RECORDNAME              PIC X(128).
          02  FINDRES-FINDV2RES.

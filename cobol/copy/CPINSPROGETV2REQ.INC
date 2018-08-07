@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-INSPROGETREQ.
             02  INSPROREQ-CONTEXT            PIC S9(9)   BINARY.
-            02  INSPROREQ-OBJECT             PIC X(8).
+            02  INSPROREQ-OBJECT             PIC X(36).
             02  INSPROREQ-MODE               PIC S9(9)   BINARY.
             02  INSPROREQ-RECORDNAME         PIC X(128).
             02  INSPROREQ-INSURANCE.

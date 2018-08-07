@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-MURES.
             02  MURES-CONTEXT                      PIC S9(9)   BINARY.
-            02  MURES-OBJECT                       PIC X(8).
+            02  MURES-OBJECT                       PIC X(36).
             02  MURES-MODE                         PIC S9(9)   BINARY.
             02  MURES-RECORDNAME                   PIC X(128).
             02  MURES-MANAGE-USERSRES.

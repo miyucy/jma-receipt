@@ -25,7 +25,7 @@
       *****************************************************************
        01  XML-LSTRES.
            03  LSTRES-CONTEXT              PIC S9(9)   BINARY.
-           03  LSTRES-OBJECT               PIC X(8).
+           03  LSTRES-OBJECT               PIC X(36).
            03  LSTRES-MODE                 PIC S9(9)   BINARY.
            03  LSTRES-RECORDNAME           PIC X(128).
            03  LSTRES-MEDICALRES.

@@ -23,7 +23,7 @@
       *    ＡＰＩリクエスト中途終了情報         COPY (CPMDCXMLREQ.INC)
       ******************************************************************
         01  XML-MEDICALREQ.
-            02  MDCREQ-OBJECT   PIC X(8).
+            02  MDCREQ-OBJECT   PIC X(36).
             02  MDCREQ-MODE PIC S9(9)   BINARY.
             02  MDCREQ-MEDICALREQ.
       *       03  MDCREQ-INFORMATION-DATE PIC X(10).

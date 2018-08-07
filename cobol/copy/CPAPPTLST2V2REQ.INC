@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-APPOINTLST2REQ.
             03  APLST2REQ-CONTEXT           PIC S9(9)   BINARY.
-            03  APLST2REQ-OBJECT            PIC X(8).
+            03  APLST2REQ-OBJECT            PIC X(36).
             03  APLST2REQ-MODE              PIC S9(9)   BINARY.
             03  APLST2REQ-RECORDNAME        PIC X(128).
             03  APLST2REQ-APPOINT.

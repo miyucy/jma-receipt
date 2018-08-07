@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-DISEASERES.
            03  DISEASES-CONTEXT            PIC S9(9)   BINARY.
-           03  DISEASES-OBJECT             PIC X(8).
+           03  DISEASES-OBJECT             PIC X(36).
            03  DISEASES-MODE               PIC S9(9)   BINARY.
            03  DISEASES-RECORDNAME         PIC X(128).
            03  DISEASES-DISEASE-RES.

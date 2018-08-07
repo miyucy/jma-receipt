@@ -20,5 +20,5 @@
                   04  XA01-FILENAME    PIC X(100).
                 03  XA01-METHODTYPE    PIC X(100).
                 03  XA01-CONTENT-TYPE  PIC X(100).
-                03  XA01-BODY          PIC X(8).
+                03  XA01-BODY          PIC X(36).
 

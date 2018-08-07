@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMYYKPTLIST-REC.
             03  FMYPL-CONTEXT              PIC S9(9)   BINARY.
-            03  FMYPL-OBJECT               PIC X(8).
+            03  FMYPL-OBJECT               PIC X(36).
             03  FMYPL-MODE                 PIC S9(9)   BINARY.
             03  FMYPL-RECORDNAME           PIC X(128).
             03  FMYPL-DATA.

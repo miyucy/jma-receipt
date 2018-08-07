@@ -19,7 +19,7 @@
       *    ＡＰＩリクエスト患者情報一覧取得      COPY (CPPATIENTLST2SEQ.INC)
       ******************************************************************
         01  XML-PATIENTLST2REQ.
-            03  PATLSTREQ-OBJECT           PIC X(8).
+            03  PATLSTREQ-OBJECT           PIC X(36).
             03  PATLSTREQ-MODE             PIC S9(9)   BINARY.
             03  PATLSTREQ-PATIENTINFOREQ.
       *       患者番号

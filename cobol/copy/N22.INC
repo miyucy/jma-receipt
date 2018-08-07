@@ -47,7 +47,7 @@
                   07  N22-COPYKBN-COUNT
                                        PIC S9(9)   BINARY.
                   07  N22-COPYKBNLST   PIC X(14)   OCCURS  3 TIMES.
-                05  N22-GAZO           PIC X(8)    OCCURS  3 TIMES.
+                05  N22-GAZO           PIC X(36)   OCCURS  3 TIMES.
                 05  N22-GAZOLABEL      PIC X(14)   OCCURS  3 TIMES.
                 05  N22-SCROLLEDWINDOW2.
                   07  N22-SCR2-HPOS    PIC S9(9)   BINARY.

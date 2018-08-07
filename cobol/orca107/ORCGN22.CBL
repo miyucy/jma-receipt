@@ -80,7 +80,7 @@
            03  WRK-HENFLG          PIC 9(01).
            03  WRK-GAZO            PIC X(256).
            03  WRK-GAZOFILE        PIC X(256).
-           03  WRK-OBJECT          PIC X(8).
+           03  WRK-OBJECT          PIC X(36).
            03  WRK-N21IDMSG        PIC X(70).
       *
        01  SHELL-AREA.

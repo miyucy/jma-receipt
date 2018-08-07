@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-CONTRA-CHECKV2REQ.
            03  CHKREQ-CONTEXT          PIC S9(9)   BINARY.
-           03  CHKREQ-OBJECT           PIC X(8).
+           03  CHKREQ-OBJECT           PIC X(36).
            03  CHKREQ-MODE             PIC S9(9)   BINARY.
            03  CHKREQ-RECORDNAME       PIC X(128).
            03  CHKREQ-CONTRACHKREQ.

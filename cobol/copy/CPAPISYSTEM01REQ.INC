@@ -19,7 +19,7 @@
       *    ＡＰＩリクエスト診療科・ドクター一覧      COPY (CPDEPARTMENTREQ.INC)
       ******************************************************************
         01  XML-SYSTEM01MANAGEREQ.
-            02  SYS01REQ-OBJECT         PIC X(8).
+            02  SYS01REQ-OBJECT         PIC X(36).
             02  SYS01REQ-MODE           PIC S9(9)   BINARY.
             02  SYS01REQ-REGIST.
       *       基準日

@@ -27,7 +27,7 @@
       ******************************************************************
        01  XML-MEDICALV3RES6.
             03  MDCRES-CONTEXT             PIC S9(9)   BINARY.
-            03  MDCRES-OBJECT              PIC X(8).
+            03  MDCRES-OBJECT              PIC X(36).
             03  MDCRES-MODE                PIC S9(9)   BINARY.
             03  MDCRES-RECORDNAME          PIC X(128).
             03  MDCRES-MEDICALRES.

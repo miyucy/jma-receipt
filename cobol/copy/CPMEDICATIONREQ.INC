@@ -19,7 +19,7 @@
       *    ＡＰＩリクエスト点数マスタ登録     COPY (CPACCPTLSTREQ.INC)
       ******************************************************************
         01  XML-MEDICATIONREQ.
-            02  MEDIREQ-OBJECT         PIC X(8).
+            02  MEDIREQ-OBJECT         PIC X(36).
             02  MEDIREQ-MODE           PIC S9(9)   BINARY.
             02  MEDIREQ-APPOINT.
       *       マスタコード

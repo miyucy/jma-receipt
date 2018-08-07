@@ -19,7 +19,7 @@
       *    ＡＰＩリクエスト患者病名情報     COPY (CPDISEASEINFREQ.INC)
       ******************************************************************
         01  XML-DISEASE-INFREQ.
-            02  DISEREQ-OBJECT         PIC X(8).
+            02  DISEREQ-OBJECT         PIC X(36).
             02  DISEREQ-MODE           PIC S9(9)   BINARY.
             02  DISEREQ-DISEASE-INFREQ.
       *       患者番号

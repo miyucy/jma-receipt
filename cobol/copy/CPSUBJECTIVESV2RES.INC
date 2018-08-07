@@ -25,7 +25,7 @@
       *****************************************************************
         01  XML-SUBJECTIVESRES.
             03  SUBJETRES-CONTEXT           PIC S9(9)   BINARY.
-            03  SUBJETRES-OBJECT            PIC X(8).
+            03  SUBJETRES-OBJECT            PIC X(36).
             03  SUBJETRES-MODE              PIC S9(9)   BINARY.
             03  SUBJETRES-RECORDNAME        PIC X(128).
             03  SUBJETRES-MEDICALRES.

@@ -8,7 +8,7 @@
                   05  XC02-TITLE-STYLE      PIC X(20).
                   05  XC02-TITLE            PIC X(40).
                   05  XC02-PSAREA.
-                    06  XC02-VALUE  PIC X(8).
+                    06  XC02-VALUE  PIC X(36).
                   05  XC02-SCROLLEDWINDOW26.
                     06  XC02-CLIST.
                       07  XC02-COUNT        PIC S9(9)   BINARY.

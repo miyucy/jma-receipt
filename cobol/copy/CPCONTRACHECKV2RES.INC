@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-CONTRA-CHECKV2RES.
             03  CHKRES-CONTEXT             PIC S9(9)   BINARY.
-            03  CHKRES-OBJECT              PIC X(8).
+            03  CHKRES-OBJECT              PIC X(36).
             03  CHKRES-MODE                PIC S9(9)   BINARY.
             03  CHKRES-RECORDNAME          PIC X(128).
             03  CHKRES-MEDICALRES.

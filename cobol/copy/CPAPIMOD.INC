@@ -24,4 +24,4 @@
                 05  APIREQ-CLASS       PIC X(2).
               04  APIREQ-METHOD        PIC X(100).
               04  APIREQ-CONTENT-TYPE  PIC X(100).
-              04  API-BODY             PIC X(8).
+              04  API-BODY             PIC X(36).

@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-TMEDICALMODREQ.
             02  TMDCREQ-CONTEXT           PIC S9(9)   BINARY.
-            02  TMDCREQ-OBJECT            PIC X(8).
+            02  TMDCREQ-OBJECT            PIC X(36).
             02  TMDCREQ-MODE              PIC S9(9)   BINARY.
             02  TMDCREQ-RECORDNAME        PIC X(128).
             02  TMDCREQ-TMEDICALREQ.

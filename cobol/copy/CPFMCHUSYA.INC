@@ -20,7 +20,7 @@
       ******************************************************************
         01  FMCHUSYA-REC.
             03  FMCHUSYA-CONTEXT                PIC S9(9)   BINARY.
-            03  FMCHUSYA-OBJECT                 PIC X(8).
+            03  FMCHUSYA-OBJECT                 PIC X(36).
             03  FMCHUSYA-MODE                   PIC S9(9)   BINARY.
             03  FMCHUSYA-RECORDNAME             PIC X(128).
             03  FMCHUSYA-DATA.

@@ -24,7 +24,7 @@
       ******************************************************************
         01  XML-MEDICALREQ.
             02  MDCREQ-CONTEXT          PIC S9(9)   BINARY.
-            02  MDCREQ-OBJECT           PIC X(8).
+            02  MDCREQ-OBJECT           PIC X(36).
             02  MDCREQ-MODE             PIC S9(9)   BINARY.
             02  MDCREQ-RECORDNAME       PIC X(128).
             02  MDCREQ-MEDICALREQ.

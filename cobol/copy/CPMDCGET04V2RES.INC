@@ -25,7 +25,7 @@
       *****************************************************************
         01  XML-MEDICALGET04RES.
             02  MDC04RES-CONTEXT           PIC S9(9)   BINARY.
-            02  MDC04RES-OBJECT            PIC X(8).
+            02  MDC04RES-OBJECT            PIC X(36).
             02  MDC04RES-MODE              PIC S9(9)   BINARY.
             02  MDC04RES-RECORDNAME        PIC X(128).
             02  MDC04RES-MEDICALRES.

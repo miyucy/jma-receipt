@@ -24,5 +24,5 @@
                 05  APIMOD-CLASS           PIC X(2).
               04  APIMOD-METHOD            PIC X(100).
               04  APIMOD-CONTENT-TYPE      PIC X(100).
-              04  APIMOD-BODY              PIC X(8).
+              04  APIMOD-BODY              PIC X(36).
               04  APIMOD-HTTPSTATUS        PIC S9(9)   BINARY.

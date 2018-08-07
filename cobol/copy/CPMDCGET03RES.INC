@@ -24,7 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
         01  XML-MEDICALGET03RES.
-            02  MDC03RES-OBJECT              PIC X(8).
+            02  MDC03RES-OBJECT              PIC X(36).
             02  MDC03RES-MODE                PIC S9(9)   BINARY.
             02  MDC03RES-MEDICALRES.
       *       実施日

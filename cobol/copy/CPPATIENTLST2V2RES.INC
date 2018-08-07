@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-PATIENTLST2RES.
             02  PATLSTRES-CONTEXT          PIC S9(9)   BINARY.
-            02  PATLSTRES-OBJECT           PIC X(8).
+            02  PATLSTRES-OBJECT           PIC X(36).
             02  PATLSTRES-MODE             PIC S9(9)   BINARY.
             02  PATLSTRES-RECORDNAME       PIC X(128).
             02  PATLSTRES-PATIENTINFORES.

@@ -23,7 +23,7 @@
       *    ＡＰＩリクエスト診療行為情報取得      COPY (CPMDCGETREQ.INC)
       ******************************************************************
         01  XML-MEDICALGETREQ.
-            02  MDCREQ-OBJECT       PIC X(8).
+            02  MDCREQ-OBJECT       PIC X(36).
             02  MDCREQ-MODE         PIC S9(9)   BINARY.
             02  MDCREQ-MEDICALREQ.
       *       患者番号

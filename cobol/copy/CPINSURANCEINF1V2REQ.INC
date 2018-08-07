@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-INSURANCEINFREQ.
             02  INSUINFQ-CONTEXT           PIC S9(9)   BINARY.
-            02  INSUINFQ-OBJECT            PIC X(8).
+            02  INSUINFQ-OBJECT            PIC X(36).
             02  INSUINFQ-MODE              PIC S9(9)   BINARY.
             02  INSUINFQ-RECORDNAME        PIC X(128).
             02  INSUINFQ-PATIENTREQ.

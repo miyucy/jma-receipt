@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-AVGREQ.
             02  AVGREQ-CONTEXT             PIC S9(9)   BINARY.
-            02  AVGREQ-OBJECT              PIC X(8).
+            02  AVGREQ-OBJECT              PIC X(36).
             02  AVGREQ-MODE                PIC S9(9)   BINARY.
             02  AVGREQ-RECORDNAME          PIC X(128).
             02  AVGREQ-AREA.

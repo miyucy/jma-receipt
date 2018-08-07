@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMYYKLIST-REC.
             03  FMYL-CONTEXT                   PIC S9(9)   BINARY.
-            03  FMYL-OBJECT                    PIC X(8).
+            03  FMYL-OBJECT                    PIC X(36).
             03  FMYL-MODE                      PIC S9(9)   BINARY.
             03  FMYL-RECORDNAME                PIC X(128).
             03  FMYL-DATA.

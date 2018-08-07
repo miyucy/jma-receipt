@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-RECEIPT-INFREQ.
             02  RECEIPT-INFQ-CONTEXT       PIC S9(9)   BINARY.
-            02  RECEIPT-INFQ-OBJECT        PIC X(8).
+            02  RECEIPT-INFQ-OBJECT        PIC X(36).
             02  RECEIPT-INFQ-MODE          PIC S9(9)   BINARY.
             02  RECEIPT-INFQ-RECORDNAME    PIC X(128).
             02  RECEIPT-INFQ-PATIENTREQ.

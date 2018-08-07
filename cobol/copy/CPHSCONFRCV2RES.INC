@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-HSCONFRCRES.
             03  HSCONFRCRES-CONTEXT          PIC S9(9)   BINARY.
-            03  HSCONFRCRES-OBJECT           PIC X(8).
+            03  HSCONFRCRES-OBJECT           PIC X(36).
             03  HSCONFRCRES-MODE             PIC S9(9)   BINARY.
             03  HSCONFRCRES-RECORDNAME       PIC X(128).
       *

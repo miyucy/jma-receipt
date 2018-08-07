@@ -19,7 +19,7 @@
       *    ＡＰＩレスポンス受付一覧           COPY (CPACCPTLSTRES.INC)
       ******************************************************************
         01  XML-ACCEPTLSTRES.
-            02  ACPLSTRES-OBJECT         PIC X(8).
+            02  ACPLSTRES-OBJECT         PIC X(36).
             02  ACPLSTRES-MODE           PIC S9(9)   BINARY.
             02  ACPLSTRES-APPOINTRES.
       *       実施日

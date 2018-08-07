@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-HSPTINFRES.
            03  HSPTINFRES-CONTEXT                  PIC S9(9)   BINARY.
-           03  HSPTINFRES-OBJECT                   PIC X(8).
+           03  HSPTINFRES-OBJECT                   PIC X(36).
            03  HSPTINFRES-MODE                     PIC S9(9)   BINARY.
            03  HSPTINFRES-RECORDNAME               PIC X(128).
       *

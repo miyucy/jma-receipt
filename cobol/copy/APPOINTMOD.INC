@@ -21,4 +21,4 @@
                 05  APNTREQ-CLASS      PIC X(2).
               04  APNTREQ-METHOD       PIC X(100).
               04  APNTREQ-CONTENT-TYPE PIC X(100).
-              04  APNT-BODY            PIC X(8).
+              04  APNT-BODY            PIC X(36).

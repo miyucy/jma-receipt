@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-HSPTEVALRES.
            03  HSPTEVALRES-CONTEXT                 PIC S9(9)   BINARY.
-           03  HSPTEVALRES-OBJECT                  PIC X(8).
+           03  HSPTEVALRES-OBJECT                  PIC X(36).
            03  HSPTEVALRES-MODE                    PIC S9(9)   BINARY.
            03  HSPTEVALRES-RECORDNAME              PIC X(128).
       *

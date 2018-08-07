@@ -95,7 +95,7 @@
                    07  SPA-GMN-TITLE2              PIC X(10).
                    07  SPA-GMN-ERRMSG              PIC X(60).
                    07  SPA-GMN-FILENAME            PIC X(200).
-      *            07  SPA-GMN-OBJECT              PIC X(08).
+      *            07  SPA-GMN-OBJECT              PIC X(36).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-OCC             OCCURS  100.
                            11  SPA-GMN-TNO         PIC 9(05).

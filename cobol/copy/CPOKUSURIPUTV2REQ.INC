@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-OKUSURIPUTREQ.
            03  OKUSURIPUTREQ-CONTEXT         PIC S9(9)   BINARY.
-           03  OKUSURIPUTREQ-OBJECT          PIC X(8).
+           03  OKUSURIPUTREQ-OBJECT          PIC X(36).
            03  OKUSURIPUTREQ-MODE            PIC S9(9)   BINARY.
            03  OKUSURIPUTREQ-RECORDNAME      PIC X(128).
       *    お薬手帳データ

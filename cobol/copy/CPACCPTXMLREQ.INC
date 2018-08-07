@@ -19,7 +19,7 @@
       *    ＡＰＩリクエスト受付情報　　         COPY (CPACCPTXMLREQ.INC)
       ******************************************************************
         01  XML-ACCEPTREQ.
-            02  ACCPTREQ-OBJECT         PIC X(8).
+            02  ACCPTREQ-OBJECT         PIC X(36).
             02  ACCPTREQ-MODE           PIC S9(9)   BINARY.
             02  ACCPTREQ-REGIST.
       *       患者番号

@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-BDREQ.
             03  BDREQ-CONTEXT             PIC S9(9)   BINARY.
-            03  BDREQ-OBJECT              PIC X(8).
+            03  BDREQ-OBJECT              PIC X(36).
             03  BDREQ-MODE                PIC S9(9)   BINARY.
             03  BDREQ-RECORDNAME          PIC X(128).
             03  BDREQ-PRIVATE-OBJECTS.

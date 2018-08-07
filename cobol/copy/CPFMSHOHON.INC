@@ -19,7 +19,7 @@
       ******************************************************************
         01  FMSHOHON-REC.
             03  FMSHOHON-CONTEXT                PIC S9(9)   BINARY.
-            03  FMSHOHON-OBJECT                 PIC X(8).
+            03  FMSHOHON-OBJECT                 PIC X(36).
             03  FMSHOHON-MODE                   PIC S9(9)   BINARY.
             03  FMSHOHON-RECORDNAME             PIC X(128).
             03  FMSHOHON-DATA.

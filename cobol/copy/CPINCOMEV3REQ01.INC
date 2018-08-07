@@ -21,7 +21,7 @@
       ******************************************************************
         01  INCOMEREQ01-AREA.
             03  INCOMEREQ01-CONTEXT        PIC S9(9)   BINARY.
-            03  INCOMEREQ01-OBJECT         PIC X(8).
+            03  INCOMEREQ01-OBJECT         PIC X(36).
             03  INCOMEREQ01-MODE           PIC S9(9)   BINARY.
             03  INCOMEREQ01-RECORDNAME     PIC X(128).
       *

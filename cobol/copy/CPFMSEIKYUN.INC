@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMSEIKYUN-REC.
             03  FMSEIKYUN-CONTEXT              PIC S9(9)   BINARY.
-            03  FMSEIKYUN-OBJECT               PIC X(8).
+            03  FMSEIKYUN-OBJECT               PIC X(36).
             03  FMSEIKYUN-MODE                 PIC S9(9)   BINARY.
             03  FMSEIKYUN-RECORDNAME           PIC X(128).
             03  FMSEIKYUN-DATA.

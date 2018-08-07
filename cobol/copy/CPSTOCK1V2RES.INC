@@ -25,7 +25,7 @@
       *****************************************************************
         01  XML-STOCKRES.
             03  STOCKRES-CONTEXT             PIC S9(9)   BINARY.
-            03  STOCKRES-OBJECT              PIC X(8).
+            03  STOCKRES-OBJECT              PIC X(36).
             03  STOCKRES-MODE                PIC S9(9)   BINARY.
             03  STOCKRES-RECORDNAME          PIC X(128).
             03  STOCKRES-MEDICALRES.

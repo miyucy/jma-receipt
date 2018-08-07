@@ -17,7 +17,7 @@
       ********************************************************************
        01  XML-PEGERR.
          02  PEGERR-CONTEXT                PIC S9(9)   BINARY.
-         02  PEGERR-OBJECT                 PIC X(8).
+         02  PEGERR-OBJECT                 PIC X(36).
          02  PEGERR-MODE                   PIC S9(9)   BINARY.
          02  PEGERR-RECORDNAME             PIC X(128).
          02  PEGERR-AREA.

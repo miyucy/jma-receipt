@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-HSCONFBASEREQ.
             03  HSCBREQ-CONTEXT          PIC S9(9)   BINARY.
-            03  HSCBREQ-OBJECT           PIC X(8).
+            03  HSCBREQ-OBJECT           PIC X(36).
             03  HSCBREQ-MODE             PIC S9(9)   BINARY.
             03  HSCBREQ-RECORDNAME       PIC X(128).
       *

@@ -27,6 +27,8 @@ fi
 # ミドルウェア
 # panda or ginbee (default panda)
 #export "__MCP_MIDDLEWARE_NAME=panda"
+#export MCP_TEMPDIR_ROOT=/tmp/panda_root
+#export MON_DIRECTORY_PATH="$ORCA_DIR"/lddef/directory
 
 # glserver を起動するか？
 Start_GLSERVER=true
@@ -158,7 +160,7 @@ export JMARECEIPT_ENV="$ORCA_DIR"/etc/jma-receipt.env
 trap "server_exit" 2
 
 if test "x"$Start_GLSERVER = "xtrue"; then
-    $GLSERVER -api -auth api://localhost/session/session_start -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
+    $GLSERVER -dir $DIRECTORY -api -auth api://localhost/session/session_start -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
     glpid=$!
 fi
 

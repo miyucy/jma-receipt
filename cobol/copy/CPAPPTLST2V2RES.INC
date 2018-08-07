@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-APPOINTLST2RES.
             02  APLST2RES-CONTEXT           PIC S9(9)   BINARY.
-            02  APLST2RES-OBJECT            PIC X(8).
+            02  APLST2RES-OBJECT            PIC X(36).
             02  APLST2RES-MODE              PIC S9(9)   BINARY.
             02  APLST2RES-RECORDNAME        PIC X(128).
             02  APLST2RES-APPOINTRES.

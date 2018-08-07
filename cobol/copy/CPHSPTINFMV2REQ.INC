@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-HSPTINFMREQ.
             03  HSPTINFMREQ-CONTEXT             PIC S9(9)   BINARY.
-            03  HSPTINFMREQ-OBJECT              PIC X(8).
+            03  HSPTINFMREQ-OBJECT              PIC X(36).
             03  HSPTINFMREQ-MODE                PIC S9(9)   BINARY.
             03  HSPTINFMREQ-RECORDNAME          PIC X(128).
             03  HSPTINFMREQ-PRIVATE-OBJECTS.

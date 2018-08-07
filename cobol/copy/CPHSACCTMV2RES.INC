@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-HSACCTMRES.
            03  HSACCTMRES-CONTEXT              PIC S9(9)   BINARY.
-           03  HSACCTMRES-OBJECT               PIC X(8).
+           03  HSACCTMRES-OBJECT               PIC X(36).
            03  HSACCTMRES-MODE                 PIC S9(9)   BINARY.
            03  HSACCTMRES-RECORDNAME           PIC X(128).
            03  HSACCTMRES-PRIVATE-OBJECTS.

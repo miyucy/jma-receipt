@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-ACSIMULATEREQ.
             02  ACSREQ-CONTEXT          PIC S9(9)   BINARY.
-            02  ACSREQ-OBJECT           PIC X(8).
+            02  ACSREQ-OBJECT           PIC X(36).
             02  ACSREQ-MODE             PIC S9(9)   BINARY.
             02  ACSREQ-RECORDNAME       PIC X(128).
             02  ACSREQ-MEDICALREQ.

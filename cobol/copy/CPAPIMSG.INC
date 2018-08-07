@@ -19,6 +19,6 @@
       *    ＡＰＩリクエスト共通      COPY (CPAPIMSG.INC)
       ******************************************************************
         01  XML-APIMSG.
-            03  APIMSG-OBJECT           PIC X(8).
+            03  APIMSG-OBJECT           PIC X(36).
             03  APIMSG-MODE             PIC S9(9)   BINARY.
             03  APIMSG-DATA             PIC X(50000).

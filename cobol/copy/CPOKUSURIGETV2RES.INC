@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-OKUSURIGETRES.
            03  OKUSURIGETRES-CONTEXT     PIC S9(9)   BINARY.
-           03  OKUSURIGETRES-OBJECT      PIC X(8).
+           03  OKUSURIGETRES-OBJECT      PIC X(36).
            03  OKUSURIGETRES-MODE        PIC S9(9)   BINARY.
            03  OKUSURIGETRES-RECORDNAME  PIC X(128).
       *

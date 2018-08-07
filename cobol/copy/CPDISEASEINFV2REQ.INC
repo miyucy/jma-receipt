@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-DISEASE-INFREQ.
             02  DISEREQ-CONTEXT            PIC S9(9)   BINARY.
-            02  DISEREQ-OBJECT             PIC X(8).
+            02  DISEREQ-OBJECT             PIC X(36).
             02  DISEREQ-MODE               PIC S9(9)   BINARY.
             02  DISEREQ-RECORDNAME         PIC X(128).
             02  DISEREQ-DISEASE-INFREQ.

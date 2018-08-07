@@ -18,6 +18,6 @@
               03  L99-B12-LABEL   PIC X(14).
               03  L99-DURATION   PIC S9(09) BINARY.
               03  L99-DOWNLOAD1.
-                  05  L99-OBJECTDATA   PIC X(8).
+                  05  L99-OBJECTDATA   PIC X(36).
                   05  L99-FILENAME     PIC X(1024).
 

@@ -17,7 +17,7 @@
       ********************************************************************
        01  FMMNOTEN-REC.
            03  FMMNOTEN-CONTEXT                     PIC S9(9)   BINARY.
-           03  FMMNOTEN-OBJECT                      PIC X(8).
+           03  FMMNOTEN-OBJECT                      PIC X(36).
            03  FMMNOTEN-MODE                        PIC S9(9)   BINARY.
            03  FMMNOTEN-RECORDNAME                  PIC X(128).
            03  FMMNOTEN-DATA.

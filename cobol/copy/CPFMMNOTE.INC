@@ -17,7 +17,7 @@
       ********************************************************************
        01  FMMNOTE-REC.
            03  FMMNOTE-CONTEXT                     PIC S9(9)   BINARY.
-           03  FMMNOTE-OBJECT                      PIC X(8).
+           03  FMMNOTE-OBJECT                      PIC X(36).
            03  FMMNOTE-MODE                        PIC S9(9)   BINARY.
            03  FMMNOTE-RECORDNAME                  PIC X(128).
            03  FMMNOTE-DATA.

@@ -19,7 +19,7 @@
       *    £Á£Ð£É¥ì¥¹¥Ý¥ó¥¹Í½Ìó°ìÍ÷           COPY (CPACCPTLSTRES.INC)
       ******************************************************************
         01  XML-APPOINTLSTRES.
-            02  APLSTRES-OBJECT         PIC X(8).
+            02  APLSTRES-OBJECT         PIC X(36).
             02  APLSTRES-MODE           PIC S9(9)   BINARY.
             02  APLSTRES-APPOINTRES.
       *       ¼Â»ÜÆü

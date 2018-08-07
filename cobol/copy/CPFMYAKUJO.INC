@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMYAKUJO-REC.
             03  FMYAKUJO-CONTEXT                PIC S9(9)   BINARY.
-            03  FMYAKUJO-OBJECT                 PIC X(8).
+            03  FMYAKUJO-OBJECT                 PIC X(36).
             03  FMYAKUJO-MODE                   PIC S9(9)   BINARY.
             03  FMYAKUJO-RECORDNAME             PIC X(128).
             03  FMYAKUJO-DATA.

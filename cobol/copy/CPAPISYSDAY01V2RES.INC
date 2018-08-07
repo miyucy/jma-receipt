@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-SYSTEMDAILYRES.
             02  SYSDAYRES-CONTEXT            PIC S9(9)   BINARY.
-            02  SYSDAYRES-OBJECT             PIC X(8).
+            02  SYSDAYRES-OBJECT             PIC X(36).
             02  SYSDAYRES-MODE               PIC S9(9)   BINARY.
             02  SYSDAYRES-RECORDNAME         PIC X(128).
             02  SYSDAYRES-APPOINTRES.

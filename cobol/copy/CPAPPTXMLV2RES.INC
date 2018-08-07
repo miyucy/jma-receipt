@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-APPOINTRES.
             02  APNTRES-CONTEXT            PIC S9(9)   BINARY.
-            02  APNTRES-OBJECT             PIC X(8).
+            02  APNTRES-OBJECT             PIC X(36).
             02  APNTRES-MODE               PIC S9(9)   BINARY.
             02  APNTRES-RECORDNAME         PIC X(128).
             02  APNTRES-APPOINTRES.

@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-SYSTEM1001RES.
             02  SYS101RES-CONTEXT            PIC S9(9)   BINARY.
-            02  SYS101RES-OBJECT             PIC X(8).
+            02  SYS101RES-OBJECT             PIC X(36).
             02  SYS101RES-MODE               PIC S9(9)   BINARY.
             02  SYS101RES-RECORDNAME         PIC X(128).
             02  SYS101RES-APPOINTRES.

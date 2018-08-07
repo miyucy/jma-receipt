@@ -25,7 +25,7 @@
       *****************************************************************
         01  XML-ACSIMULATERES.
             03  ACSRES-CONTEXT             PIC S9(9)   BINARY.
-            03  ACSRES-OBJECT              PIC X(8).
+            03  ACSRES-OBJECT              PIC X(36).
             03  ACSRES-MODE                PIC S9(9)   BINARY.
             03  ACSRES-RECORDNAME          PIC X(128).
             03  ACSRES-MEDICALRES.

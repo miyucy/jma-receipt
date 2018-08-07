@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMSHIHARAI-REC.
             03  FMSHIHARAI-PCONTEXT             PIC S9(9)   BINARY.
-            03  FMSHIHARAI-OBJECT               PIC X(8).
+            03  FMSHIHARAI-OBJECT               PIC X(36).
             03  FMSHIHARAI-MODE                 PIC S9(9)   BINARY.
             03  FMSHIHARAI-RECORDNAME           PIC X(128).
             03  FMSHIHARAI-DATA.

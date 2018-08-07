@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-HSCONFWARDV2REQ.
             03  HSCWREQ-CONTEXT          PIC S9(9)   BINARY.
-            03  HSCWREQ-OBJECT           PIC X(8).
+            03  HSCWREQ-OBJECT           PIC X(36).
             03  HSCWREQ-MODE             PIC S9(9)   BINARY.
             03  HSCWREQ-RECORDNAME       PIC X(128).
       *

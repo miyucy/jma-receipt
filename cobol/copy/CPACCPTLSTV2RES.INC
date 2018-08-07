@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-ACCEPTLSTRES.
             02  ACPLSTRES-CONTEXT          PIC S9(9)   BINARY.
-            02  ACPLSTRES-OBJECT           PIC X(8).
+            02  ACPLSTRES-OBJECT           PIC X(36).
             02  ACPLSTRES-MODE             PIC S9(9)   BINARY.
             02  ACPLSTRES-RECORDNAME       PIC X(128).
             02  ACPLSTRES-APPOINTRES.

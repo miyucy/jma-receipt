@@ -25,7 +25,7 @@
       *****************************************************************
        01  XML-CLAIM-ACCOUNTV2RES.
            02  CLACRES-CONTEXT           PIC S9(9)   BINARY.
-           02  CLACRES-OBJECT            PIC X(8).
+           02  CLACRES-OBJECT            PIC X(36).
            02  CLACRES-MODE              PIC S9(9)   BINARY.
            02  CLACRES-RECORDNAME        PIC X(128).
            02  CLACRES-CLAIM-FRONT.

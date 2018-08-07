@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-VISITPTLSTREQ.
             02  VISREQ-CONTEXT           PIC S9(9)   BINARY.
-            02  VISREQ-OBJECT            PIC X(8).
+            02  VISREQ-OBJECT            PIC X(36).
             02  VISREQ-MODE              PIC S9(9)   BINARY.
             02  VISREQ-RECORDNAME        PIC X(128).
             02  VISREQ-VISITPTREQ.

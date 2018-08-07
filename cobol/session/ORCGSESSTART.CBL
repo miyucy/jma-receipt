@@ -80,7 +80,7 @@
       *****************************************************************
        010-GET                     SECTION.
       *
-           MOVE    LOW-VALUE       TO  BODY.
+           MOVE    LOW-VALUE       TO  SESSION-BODY.
       *
            PERFORM 900-PASSWD-READ-SEC
       *

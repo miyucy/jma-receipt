@@ -19,7 +19,7 @@
       *    ＡＰＩレスポンス受付情報           COPY (CPACCPTXMLRES.INC)
       ******************************************************************
         01  XML-ACCEPTRES.
-            02  ACCPTRES-OBJECT                       PIC X(8).
+            02  ACCPTRES-OBJECT                       PIC X(36).
             02  ACCPTRES-MODE                         PIC S9(9)
                                                       BINARY.
             02  ACCPTRES-REGISTRES.

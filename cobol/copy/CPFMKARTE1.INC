@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMKARTE1-REC.
             03  FMKARTE1-PCONTEXT               PIC S9(9)   BINARY.
-            03  FMKARTE1-OBJECT                 PIC X(8).
+            03  FMKARTE1-OBJECT                 PIC X(36).
             03  FMKARTE1-MODE                   PIC S9(9)   BINARY.
             03  FMKARTE1-RECORDNAME             PIC X(128).
             03  FMKARTE1-DATA.

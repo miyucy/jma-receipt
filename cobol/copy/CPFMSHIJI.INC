@@ -19,7 +19,7 @@
       ******************************************************************
         01  FMSHIJI-REC.
             03  FMSHIJI-CONTEXT                PIC S9(9)   BINARY.
-            03  FMSHIJI-OBJECT                 PIC X(8).
+            03  FMSHIJI-OBJECT                 PIC X(36).
             03  FMSHIJI-MODE                   PIC S9(9)   BINARY.
             03  FMSHIJI-RECORDNAME             PIC X(128).
             03  FMSHIJI-DATA.

@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-OKUSURIGETREQ.
            03  OKUSURIGETREQ-CONTEXT         PIC S9(9)   BINARY.
-           03  OKUSURIGETREQ-OBJECT          PIC X(8).
+           03  OKUSURIGETREQ-OBJECT          PIC X(36).
            03  OKUSURIGETREQ-MODE            PIC S9(9)   BINARY.
            03  OKUSURIGETREQ-RECORDNAME      PIC X(128).
            03  OKUSURIGETREQ-OKUSURIGETV2REQ.

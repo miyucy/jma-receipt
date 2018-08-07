@@ -25,4 +25,4 @@
        01  SAPIFM-AREA.
            03  SAPIFM-ERRCD            PIC X(4).
            03  SAPIFM-DATAID           PIC X(80).
-           03  SAPIFM-OBJECT           PIC X(8).
+           03  SAPIFM-OBJECT           PIC X(36).

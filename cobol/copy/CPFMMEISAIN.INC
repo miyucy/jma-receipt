@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMMEISAIN-REC.
             03  FMMEISAIN-CONTEXT              PIC S9(9)   BINARY.
-            03  FMMEISAIN-OBJECT               PIC X(8).
+            03  FMMEISAIN-OBJECT               PIC X(36).
             03  FMMEISAIN-MODE                 PIC S9(9)   BINARY.
             03  FMMEISAIN-RECORDNAME           PIC X(128).
             03  FMMEISAIN-DATA.

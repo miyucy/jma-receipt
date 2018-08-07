@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-RECEIPT-INFRES.
            02  RECEIPT-INFS-CONTEXT            PIC S9(9)   BINARY.
-           02  RECEIPT-INFS-OBJECT             PIC X(8).
+           02  RECEIPT-INFS-OBJECT             PIC X(36).
            02  RECEIPT-INFS-MODE               PIC S9(9)   BINARY.
            02  RECEIPT-INFS-RECORDNAME         PIC X(128).
            02  RECEIPT-INFS-RECEIPT-INF-RES.

@@ -19,7 +19,7 @@
       *    £Á£Ð£É¥ê¥¯¥¨¥¹¥ÈÍ½Ìó°ìÍ÷¡¡¡¡         COPY (CPAPPTLSTREQ.INC)
       ******************************************************************
         01  XML-APPOINTLSTREQ.
-            02  APLSTREQ-OBJECT         PIC X(8).
+            02  APLSTREQ-OBJECT         PIC X(36).
             02  APLSTREQ-MODE           PIC S9(9)   BINARY.
             02  APLSTREQ-APPOINT.
       *       Í½ÌóÆü

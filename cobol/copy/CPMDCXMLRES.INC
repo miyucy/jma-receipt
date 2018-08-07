@@ -23,7 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
         01  XML-MEDICALRES.
-            02  MDCRES-OBJECT              PIC X(8).
+            02  MDCRES-OBJECT              PIC X(36).
             02  MDCRES-MODE                PIC S9(9)   BINARY.
             02  MDCRES-MEDICALRES.
               03  MDCRES-INFORMATION-DATE  PIC X(10).

@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-INSURANCEINFRES.
            02  INSUINFS-CONTEXT          PIC S9(9)   BINARY.
-           02  INSUINFS-OBJECT           PIC X(8).
+           02  INSUINFS-OBJECT           PIC X(36).
            02  INSUINFS-MODE             PIC S9(9)   BINARY.
            02  INSUINFS-RECORDNAME       PIC X(128).
            02  INSUINFS-INSURANCEINF-RES.

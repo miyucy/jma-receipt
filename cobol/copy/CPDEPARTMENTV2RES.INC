@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-DEPARTMENTRES.
             02  DEPTRES-CONTEXT            PIC S9(9)   BINARY.
-            02  DEPTRES-OBJECT             PIC X(8).
+            02  DEPTRES-OBJECT             PIC X(36).
             02  DEPTRES-MODE               PIC S9(9)   BINARY.
             02  DEPTRES-RECORDNAME         PIC X(128).
             02  DEPTRES-APPOINTRES.

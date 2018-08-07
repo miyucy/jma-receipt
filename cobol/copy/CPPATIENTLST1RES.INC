@@ -19,7 +19,7 @@
       *    ＡＰＩレスポンス患者一覧取得       COPY (CPPATIENTLST1RES.INC)
       ******************************************************************
         01  XML-PATIENTLST1RES.
-            02  PATLSTRES-OBJECT           PIC X(8).
+            02  PATLSTRES-OBJECT           PIC X(36).
             02  PATLSTRES-MODE             PIC S9(9)   BINARY.
             02  PATLSTRES-PATIENTINFORES.
       *       実施日

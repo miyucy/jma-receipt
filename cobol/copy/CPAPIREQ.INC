@@ -19,7 +19,7 @@
       *    ＡＰＩリクエスト共通      COPY (CPAPISEQ.INC)
       ******************************************************************
         01  XML-APIREQ.
-            03  APIREQ-OBJECT           PIC X(8).
+            03  APIREQ-OBJECT           PIC X(36).
             03  APIREQ-MODE             PIC S9(9)   BINARY.
             03  APIREQ-PATIENTINFOREQ   PIC X(400000).
       *

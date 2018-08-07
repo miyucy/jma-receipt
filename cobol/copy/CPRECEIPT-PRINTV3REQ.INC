@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-RECEIPT-PRINTREQ.
             02  RECEPRINTQ-CONTEXT         PIC S9(9)   BINARY.
-            02  RECEPRINTQ-OBJECT          PIC X(8).
+            02  RECEPRINTQ-OBJECT          PIC X(36).
             02  RECEPRINTQ-MODE            PIC S9(9)   BINARY.
             02  RECEPRINTQ-RECORDNAME      PIC X(128).
             02  RECEPRINTQ-PATIENTREQ.

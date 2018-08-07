@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-DISEASEREQ.
            03  DISEASEQ-CONTEXT            PIC S9(9)   BINARY.
-           03  DISEASEQ-OBJECT             PIC X(8).
+           03  DISEASEQ-OBJECT             PIC X(36).
            03  DISEASEQ-MODE               PIC S9(9)   BINARY.
            03  DISEASEQ-RECORDNAME         PIC X(128).
            03  DISEASEQ-PATIENTREQ.

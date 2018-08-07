@@ -215,7 +215,7 @@
                05  WRK-HOST        PIC X(40).
                05  WRK-PORT        PIC X(05).
            03  WRK-AGE-X           PIC X(03).
-           03  WRK-OBJECTDATA      PIC X(8).
+           03  WRK-OBJECTDATA      PIC X(36).
            03  WRK-DL-FILENAME     PIC X(1024).
            03  WRK-DEL-FILENAME    PIC X(1024).
            03  WRK-MAX-TEXTSIZE    PIC 9(8).

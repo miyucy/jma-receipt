@@ -17,7 +17,7 @@
       ********************************************************************
         01  XML-FINDINFV3RES.
             02  FINDINFRES-CONTEXT                 PIC S9(9)   BINARY.
-            02  FINDINFRES-OBJECT                  PIC X(8).
+            02  FINDINFRES-OBJECT                  PIC X(36).
             02  FINDINFRES-MODE                    PIC S9(9)   BINARY.
             02  FINDINFRES-RECORDNAME              PIC X(128).
             02  FINDINFRES-FINDINFV2RES.

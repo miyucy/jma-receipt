@@ -17,7 +17,7 @@
       ********************************************************************
        01  XML-MLURES.
          02  MLURES-CONTEXT                        PIC S9(9)   BINARY.
-         02  MLURES-OBJECT                         PIC X(8).
+         02  MLURES-OBJECT                         PIC X(36).
          02  MLURES-MODE                           PIC S9(9)   BINARY.
          02  MLURES-RECORDNAME                     PIC X(128).
          02  MLURES-AREA.

@@ -256,5 +256,5 @@
                    07  SPA-W62-PRTFL      PIC X(01).
                    07  SPA-W62-PRTNUML    PIC X(17).
                05  SPA-W62-PRTNUM-MAX     PIC 9(02).
-               05  SPA-W62-OBJECT         PIC X(08).
+               05  SPA-W62-OBJECT         PIC X(36).
       *

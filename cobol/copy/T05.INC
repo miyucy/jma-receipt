@@ -2,7 +2,7 @@
               03  T05-SELNUM.
                 04  T05-VALUE   PIC S9(2).
               03  T05-FILEENTRY1.
-                04  T05-OBJECTDATA  PIC X(8).
+                04  T05-OBJECTDATA  PIC X(36).
                 04  T05-ENTRY1      PIC X(200).
               03  T05-ERRMSG1.
                 04  T05-ERRMSG1-STYLE   PIC X(20).

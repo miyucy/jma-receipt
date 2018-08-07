@@ -21,7 +21,7 @@
       ******************************************************
        01  MNOTEREQ-AREA.
            03  MNOTEREQ-CONTEXT            PIC S9(9)   BINARY.
-           03  MNOTEREQ-OBJECT             PIC X(8).
+           03  MNOTEREQ-OBJECT             PIC X(36).
            03  MNOTEREQ-MODE               PIC S9(9)   BINARY.
            03  MNOTEREQ-RECORDNAME         PIC X(128).
            03  MNOTEREQ-DATA-AREA.

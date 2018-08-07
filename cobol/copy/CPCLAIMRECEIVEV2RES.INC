@@ -25,7 +25,7 @@
       *****************************************************************
        01  XML-CLAIM-RECEIVEV2RES.
            02  CLRERES-CONTEXT           PIC S9(9)   BINARY.
-           02  CLRERES-OBJECT            PIC X(8).
+           02  CLRERES-OBJECT            PIC X(36).
            02  CLRERES-MODE              PIC S9(9)   BINARY.
            02  CLRERES-RECORDNAME        PIC X(128).
            02  CLRERES-CLAIM-FRONT.

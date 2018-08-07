@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-LSTREQ.
            03  LSTREQ-CONTEXT              PIC S9(9)   BINARY.
-           03  LSTREQ-OBJECT               PIC X(8).
+           03  LSTREQ-OBJECT               PIC X(36).
            03  LSTREQ-MODE                 PIC S9(9)   BINARY.
            03  LSTREQ-RECORDNAME           PIC X(128).
            03  LSTREQ-MEDICALREQ.

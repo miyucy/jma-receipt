@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-OKUSURIPUTRES.
            03  OKUSURIPUTRES-CONTEXT     PIC S9(9)   BINARY.
-           03  OKUSURIPUTRES-OBJECT      PIC X(8).
+           03  OKUSURIPUTRES-OBJECT      PIC X(36).
            03  OKUSURIPUTRES-MODE        PIC S9(9)   BINARY.
            03  OKUSURIPUTRES-RECORDNAME  PIC X(128).
       *

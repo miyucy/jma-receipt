@@ -20,6 +20,6 @@
                   04  MPRT-FILENAME    PIC X(100).
                 03  MPRT-METHODTYPE    PIC X(100).
                 03  MPRT-CONTENT-TYPE  PIC X(100).
-                03  MPRT-BODY          PIC X(8).
+                03  MPRT-BODY          PIC X(36).
                 03  MPRT-HTTPSTATUS    PIC S9(9)   BINARY.
 

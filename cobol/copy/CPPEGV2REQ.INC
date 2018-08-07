@@ -17,7 +17,7 @@
       ********************************************************************
        01  XML-PEGREQ.
          02  PEGREQ-CONTEXT                  PIC S9(9)   BINARY.
-         02  PEGREQ-OBJECT                   PIC X(8).
+         02  PEGREQ-OBJECT                   PIC X(36).
          02  PEGREQ-MODE                     PIC S9(9)   BINARY.
          02  PEGREQ-RECORDNAME               PIC X(128).
          02  PEGREQ-AREA.

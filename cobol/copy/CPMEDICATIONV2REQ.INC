@@ -20,7 +20,7 @@
       ******************************************************************
         01  XML-MEDICATIONREQ.
             02  MEDIREQ-CONTEXT            PIC S9(9)   BINARY.
-            02  MEDIREQ-OBJECT             PIC X(8).
+            02  MEDIREQ-OBJECT             PIC X(36).
             02  MEDIREQ-MODE               PIC S9(9)   BINARY.
             02  MEDIREQ-RECORDNAME         PIC X(128).
             02  MEDIREQ-APPOINT.

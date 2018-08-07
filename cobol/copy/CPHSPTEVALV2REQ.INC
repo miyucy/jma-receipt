@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-HSPTEVALV2REQ.
             03  HSPTEVALREQ-CONTEXT          PIC S9(9)   BINARY.
-            03  HSPTEVALREQ-OBJECT           PIC X(8).
+            03  HSPTEVALREQ-OBJECT           PIC X(36).
             03  HSPTEVALREQ-MODE             PIC S9(9)   BINARY.
             03  HSPTEVALREQ-RECORDNAME       PIC X(128).
       *

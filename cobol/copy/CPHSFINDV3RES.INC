@@ -17,7 +17,7 @@
       ********************************************************************
        01  XML-HSFINDRES.
          02  HSFINDRES-CONTEXT                 PIC S9(9)   BINARY.
-         02  HSFINDRES-OBJECT                  PIC X(8).
+         02  HSFINDRES-OBJECT                  PIC X(36).
          02  HSFINDRES-MODE                    PIC S9(9)   BINARY.
          02  HSFINDRES-RECORDNAME              PIC X(128).
          02  HSFINDRES-HSFINDV2RES.

@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMYAKUJON-REC.
             03  FMYAKUJON-CONTEXT                PIC S9(9)   BINARY.
-            03  FMYAKUJON-OBJECT                 PIC X(8).
+            03  FMYAKUJON-OBJECT                 PIC X(36).
             03  FMYAKUJON-MODE                   PIC S9(9)   BINARY.
             03  FMYAKUJON-RECORDNAME             PIC X(128).
             03  FMYAKUJON-DATA.

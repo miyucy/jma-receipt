@@ -32,7 +32,7 @@
       ************************************************************
         01  XML-PATIENTINFORES.
             02  PTRES-CONTEXT          PIC S9(9)   BINARY.
-            02  PTRES-OBJECT           PIC X(8).
+            02  PTRES-OBJECT           PIC X(36).
             02  PTRES-MODE             PIC S9(9)   BINARY.
             02  PTRES-RECORDNAME       PIC X(128).
             02  PTRES-PATIENTINFORES.

@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-CLAIM-ACCOUNTV2REQ.
            02  CLACREQ-CONTEXT           PIC S9(9)   BINARY.
-           02  CLACREQ-OBJECT            PIC X(8).
+           02  CLACREQ-OBJECT            PIC X(36).
            02  CLACREQ-MODE              PIC S9(9)   BINARY.
            02  CLACREQ-RECORDNAME        PIC X(128).
            02  CLACREQ-CLAIM-FRONT.

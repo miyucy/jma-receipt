@@ -19,7 +19,7 @@
       *    £Á£Ð£É¥¹¥Ý¥ó¥¹ÅÀ¿ô¥Þ¥¹¥¿ÅÐÏ¿     COPY (CPMEDICATIONRES.INC)
       ******************************************************************
         01  XML-MEDICATIONRES.
-            02  MEDIRES-OBJECT          PIC X(8).
+            02  MEDIRES-OBJECT          PIC X(36).
             02  MEDIRES-MODE            PIC S9(9)   BINARY.
             02  MEDIRES-APPOINTRES.
       *       ¼Â»ÜÆü

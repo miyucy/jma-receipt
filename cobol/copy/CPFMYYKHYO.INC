@@ -17,7 +17,7 @@
       ********************************************************************
         01  FMYYKHYO-REC.
             03  FMYH-CONTEXT                PIC S9(9)   BINARY.
-            03  FMYH-OBJECT                 PIC X(8).
+            03  FMYH-OBJECT                 PIC X(36).
             03  FMYH-MODE                   PIC S9(9)   BINARY.
             03  FMYH-RECORDNAME             PIC X(128).
             03  FMYH-DATA.

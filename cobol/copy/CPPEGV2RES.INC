@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        01  XML-PEGRES.
-         02  PEGRES-OBJECT                 PIC X(8).
+         02  PEGRES-OBJECT                 PIC X(36).
          02  PEGRES-MODE                   PIC S9(9)   BINARY.
          02  PEGRES-AREA.
            03  PEGRES-DATA               PIC X(4096).

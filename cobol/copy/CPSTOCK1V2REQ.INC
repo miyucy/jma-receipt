@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-STOCKREQ.
             02  STOCKREQ-CONTEXT           PIC S9(9)   BINARY.
-            02  STOCKREQ-OBJECT            PIC X(8).
+            02  STOCKREQ-OBJECT            PIC X(36).
             02  STOCKREQ-MODE              PIC S9(9)   BINARY.
             02  STOCKREQ-RECORDNAME        PIC X(128).
             02  STOCKREQ-MEDICALREQ.

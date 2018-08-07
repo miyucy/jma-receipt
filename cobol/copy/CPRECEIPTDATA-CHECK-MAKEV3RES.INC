@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-RECEIPTDATA-CHECK-MAKERES.
            02  RECEDMAKES-CONTEXT          PIC S9(9)   BINARY.
-           02  RECEDMAKES-OBJECT           PIC X(8).
+           02  RECEDMAKES-OBJECT           PIC X(36).
            02  RECEDMAKES-MODE             PIC S9(9)   BINARY.
            02  RECEDMAKES-RECORDNAME       PIC X(128).
            02  RECEDMAKES-RECEIPT-MAKE-RES.

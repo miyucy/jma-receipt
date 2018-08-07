@@ -20,7 +20,7 @@
       *                                      COPY (CPPATIENTLST3SEQ.INC)
       ******************************************************************
         01  XML-PATIENTLST3REQ.
-            03  PATLSTREQ-OBJECT           PIC X(8).
+            03  PATLSTREQ-OBJECT           PIC X(36).
             03  PATLSTREQ-MODE             PIC S9(9)   BINARY.
       *     ´µ¼Ô¾ðÊó
             03  PATLSTREQ-PTINF-INFO.

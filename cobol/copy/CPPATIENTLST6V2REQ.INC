@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-PATIENTLST6REQ.
             03  PTREQ-CONTEXT          PIC S9(9)   BINARY.
-            03  PTREQ-OBJECT           PIC X(8).
+            03  PTREQ-OBJECT           PIC X(36).
             03  PTREQ-MODE             PIC S9(9)   BINARY.
             03  PTREQ-RECORDNAME       PIC X(128).
       *     ´µ¼Ô¾ðÊó

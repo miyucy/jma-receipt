@@ -21,7 +21,7 @@
       ******************************************************************
         01  XML-PHYSICIANRES.
             02  PHYSRES-CONTEXT            PIC S9(9)   BINARY.
-            02  PHYSRES-OBJECT             PIC X(8).
+            02  PHYSRES-OBJECT             PIC X(36).
             02  PHYSRES-MODE               PIC S9(9)   BINARY.
             02  PHYSRES-RECORDNAME         PIC X(128).
             02  PHYSRES-APPOINTRES.

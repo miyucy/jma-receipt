@@ -19,7 +19,7 @@
       *    £Á£Ð£É¥ì¥¹¥Ý¥ó¥¹¿ÇÎÅ²Ê¾ðÊó°ìÍ÷      COPY (CPDEPARTMETRES.INC)
       ******************************************************************
         01  XML-DEPARTMENTRES.
-            02  DEPTRES-OBJECT         PIC X(8).
+            02  DEPTRES-OBJECT         PIC X(36).
             02  DEPTRES-MODE           PIC S9(9)   BINARY.
             02  DEPTRES-APPOINTRES.
       *       ¼Â»ÜÆü

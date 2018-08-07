@@ -25,7 +25,7 @@
       ******************************************************************
        01  XML-RECEIPT-PRINTRES.
            02  RECEPRINTS-CONTEXT           PIC S9(9)   BINARY.
-           02  RECEPRINTS-OBJECT            PIC X(8).
+           02  RECEPRINTS-OBJECT            PIC X(36).
            02  RECEPRINTS-MODE              PIC S9(9)   BINARY.
            02  RECEPRINTS-RECORDNAME        PIC X(128).
            02  RECEPRINTS-RECEIPT-PRINT-RES.

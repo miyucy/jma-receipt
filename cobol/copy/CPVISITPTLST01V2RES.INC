@@ -25,7 +25,7 @@
       *****************************************************************
         01  XML-VISITPTLST01RES.
             02  VIS01RES-CONTEXT           PIC S9(9)   BINARY.
-            02  VIS01RES-OBJECT            PIC X(8).
+            02  VIS01RES-OBJECT            PIC X(36).
             02  VIS01RES-MODE              PIC S9(9)   BINARY.
             02  VIS01RES-RECORDNAME        PIC X(128).
             02  VIS01RES-MEDICALRES.

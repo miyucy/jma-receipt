@@ -36,5 +36,5 @@
                                    OCCURS  30 TIMES.
           03  I23-DURATION   PIC S9(09) BINARY.
           03  I23-DOWNLOAD1.
-              05  I23-OBJECTDATA   PIC X(8).
+              05  I23-OBJECTDATA   PIC X(36).
               05  I23-FILENAME     PIC X(1024).

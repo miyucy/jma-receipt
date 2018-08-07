@@ -21,7 +21,7 @@
       ******************************************************************
        01  XML-SYSINFRES.
            03  SYSINFRES-CONTEXT                PIC S9(9)   BINARY.
-           03  SYSINFRES-OBJECT                 PIC X(8).
+           03  SYSINFRES-OBJECT                 PIC X(36).
            03  SYSINFRES-MODE                   PIC S9(9)   BINARY.
            03  SYSINFRES-RECORDNAME             PIC X(128).
       *

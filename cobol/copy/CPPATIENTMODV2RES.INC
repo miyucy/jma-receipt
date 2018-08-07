@@ -25,7 +25,7 @@
       ******************************************************************
         01  XML-PATIENTMODRES.
             02  PTMODRES-CONTEXT           PIC S9(9)   BINARY.
-            02  PTMODRES-OBJECT            PIC X(8).
+            02  PTMODRES-OBJECT            PIC X(36).
             02  PTMODRES-MODE              PIC S9(9)   BINARY.
             02  PTMODRES-RECORDNAME        PIC X(128).
             02  PTMODRES-APPOINTRES.
