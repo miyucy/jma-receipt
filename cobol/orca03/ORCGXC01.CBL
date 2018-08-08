@@ -243,7 +243,6 @@
       *
        01  WRK-PSFILE-AREA.
              05  WRK-PSFILE-FOLDER     PIC X(165).
-             05  WRK-PSFILE-HOSPNUM    PIC X(02).
              05  WRK-PSFILE-TBL-KEY    PIC X(08).
              05  WRK-PSFILE-RENNUM     PIC X(04).
              05  WRK-PSFILE-GROUP      PIC X(14).
@@ -327,6 +326,9 @@
       *
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    ファイル存在チェック
+           COPY    "CPORCSACCESS.INC".
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
@@ -709,7 +711,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-NAI-FILENAME (IDY)
                                        TO  WRK-PSFILE-AREA
            STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
-                   WRK-PSFILE-HOSPNUM  DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SPACE
                    WRK-PSFILE-TBL-KEY  DELIMITED  BY  SPACE
                    WRK-PSFILE-RENNUM   DELIMITED  BY  SPACE
                    WRK-PSFILE-GROUP    DELIMITED  BY  SPACE
@@ -1572,6 +1574,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
                    MOVE    PRVKANRI-TBL-KEY    TO
                                            SPA-NAI-TBL-KEY   (IDX)
+                   
                    MOVE    PRVKANRI-RENNUM     TO  
                                            SPA-NAI-RENNUM   (IDX)
                    MOVE    PRVKANRI-TBL-GROUP  TO  
@@ -1588,7 +1591,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                            SPA-NAI-MEMO (IDX)
                    MOVE    PRVKANRI-FILENAME   TO  WRK-PSFILE-AREA
                    STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
-                          WRK-PSFILE-HOSPNUM   DELIMITED  BY  SPACE
+                          SPA-HOSPNUM          DELIMITED  BY  SPACE
                           WRK-PSFILE-TBL-KEY   DELIMITED  BY  SPACE
                           WRK-PSFILE-RENNUM    DELIMITED  BY  SPACE
                           WRK-PSFILE-GROUP     DELIMITED  BY  SPACE
@@ -1679,7 +1682,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *    MOVE   PRVKANRI-FILENAME    TO  WRK-PSFILE-AREA
       *
-           MOVE   SPA-HOSPNUM              TO  WRK-PSFILE-HOSPNUM
            MOVE   SPA-NAI-TBL-KEY (IDX)    TO  WRK-PSFILE-TBL-KEY
            MOVE   SPA-NAI-RENNUM    (IDX)  TO  WRK-PSFILE-RENNUM
            MOVE   SPA-NAI-TBL-GROUP (IDX)  TO  WRK-PSFILE-GROUP
@@ -1690,7 +1692,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPACE               TO  ORCF-FILE-NAME
            STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
-                   WRK-PSFILE-HOSPNUM  DELIMITED  BY  SPACE
+                   SPA-HOSPNUM         DELIMITED  BY  SPACE
                    WRK-PSFILE-TBL-KEY  DELIMITED  BY  SPACE
                    WRK-PSFILE-RENNUM   DELIMITED  BY  SPACE
                    WRK-PSFILE-GROUP    DELIMITED  BY  SPACE
@@ -1928,18 +1930,25 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
       *    MOVE    SPA-GMN-TITLE2      TO  XC01-HEAD2
       *
            MOVE    SPA-GMN-SELNUM      TO  XC01-SELNUM
+           MOVE    LOW-VALUE           TO  XC01-PSAREA
       *
            IF    ( SPA-GMN-FILENAME    NOT =   SPACE )
-               MOVE   "BLOBIMPORT"     TO  MCP-FUNC
-               MOVE   SPA-GMN-FILENAME TO  ORCA-BLOB-FILE
-               MOVE    "key"           TO  MCP-PATHNAME
-               MOVE    "blob"          TO  MCP-TABLE
-               CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       ORCA-BLOB
-                                       SPA-AREA
-               MOVE    ORCA-BLOB-OBJECT
+               INITIALIZE                  SACCESS-AREA
+               MOVE    SPA-GMN-FILENAME TO SACCESS-IN-FILENAME
+               CALL    "ORCSACCESS"        USING
+                                           SACCESS-AREA
+               IF    ( SACCESS-RC  =   ZERO )
+                   MOVE   "BLOBIMPORT"     TO  MCP-FUNC
+                   MOVE   SPA-GMN-FILENAME TO  ORCA-BLOB-FILE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   MOVE    "blob"          TO  MCP-TABLE
+                   CALL    "ORCDBMAIN"     USING
+                                           MCPAREA
+                                           ORCA-BLOB
+                                           SPA-AREA
+                   MOVE    ORCA-BLOB-OBJECT
                                        TO  XC01-PSAREA
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  WRK-TITLE
