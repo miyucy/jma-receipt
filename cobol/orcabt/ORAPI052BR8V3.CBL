@@ -333,6 +333,7 @@
            MOVE    ADRS-LPUBCD         TO  ADRSLST-LPUBCD          (IDX)
            MOVE    ADRS-POST           TO  ADRSLST-POST            (IDX)
            MOVE    ADRS-EDANUM         TO  ADRSLST-EDANUM-9        (IDX)
+           MOVE    ADRS-PREFKANA       TO  ADRSLST-PREFKANA        (IDX)
            MOVE    ADRS-CITYKANA       TO  ADRSLST-CITYKANA        (IDX)
            MOVE    ADRS-TOWNKANA       TO  ADRSLST-TOWNKANA        (IDX)
            MOVE    ADRS-PREFNAME       TO  ADRSLST-PREFNAME        (IDX)
