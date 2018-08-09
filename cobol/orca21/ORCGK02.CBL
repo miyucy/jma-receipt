@@ -10827,12 +10827,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
            MOVE    "01"                TO  SPA-PRT-FLG
-           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            INITIALIZE                  ORCHC19AREA
            EVALUATE    FLG-SYOHOU
                WHEN    1
       *            頭書
                    MOVE    "2"                 TO  ORCHC19-KBN
+      *            再印刷なし
+                   MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
       *            クライアント印刷用
                    IF    ( SPA-CLIENT-PRT-FLG  =   2 )
                      OR  ( SPA-PRTCONF         =   "1" )
