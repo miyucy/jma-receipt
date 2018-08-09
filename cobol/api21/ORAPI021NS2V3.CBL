@@ -59,7 +59,7 @@
            03  FLG-GENERICNAME         PIC 9(01).
            03  FLG-JYURRK              PIC 9(01).
            03  FLG-SRYACT              PIC 9(01).
-           03  FLG-SRYACCT             PIC 9(01).
+      *    03  FLG-SRYACCT             PIC 9(01).
       *
            03  FLG-SYORI               PIC 9(01).
            03  FLG-SP                  PIC 9(01).
@@ -416,12 +416,13 @@
       *ver.4.7
       *    API XML読み込み共通定義
       **** COPY    "CPAPIV2REQ.INC".
-        01  XML-APIREQ.
-            03  APIREQ-CONTEXT          PIC S9(9)   BINARY.
-            03  APIREQ-OBJECT           PIC X(36).
-            03  APIREQ-MODE             PIC S9(9)   BINARY.
-            03  APIREQ-RECORDNAME       PIC X(128).
-            03  APIREQ-PATIENTINFOREQ   PIC X(1000000).
+           COPY    "CPAPI21V3REQ.INC".
+      **01  XML-APIREQ.
+      *     03  APIREQ-CONTEXT          PIC S9(9)   BINARY.
+      *     03  APIREQ-OBJECT           PIC X(8).
+      *     03  APIREQ-MODE             PIC S9(9)   BINARY.
+      *     03  APIREQ-RECORDNAME       PIC X(128).
+      *     03  APIREQ-PATIENTINFOREQ   PIC X(1000000).
       *
       *
       *****************************************************************
@@ -466,12 +467,12 @@
            COPY    "CPJYURRK.INC".
       *
       *    診療行為マスタ−
-       01  SRYACT-REC.
-           COPY    "CPSRYACT.INC".
+      *01  SRYACT-REC.
+      *    COPY    "CPSRYACT.INC".
       *
       *    診療会計マスタ−
-       01  SRYACCT-REC.
-           COPY    "CPSRYACCT.INC".
+      *01  SRYACCT-REC.
+      *    COPY    "CPSRYACCT.INC".
       *
       *    ＳＰＡ一時テーブル
        01  SPATMP-REC.
@@ -2944,6 +2945,8 @@
       *       用法コメント
               OR ((SPA-COM-INPUTCD(IDX)(1:3)   =   "001") AND
                   (SPA-COM-YCOMKBN (IDX)       =   "1" ))
+      *       予約コード
+              OR  (SPA-COM-INPUTCD(IDX)(1:7)   =   "0992081")
                PERFORM VARYING     IDX-A   FROM    1   BY  1
                        UNTIL      (IDX-A       >   5   )
                    IF      SPA-COM-ATAI (IDX IDX-A)    NOT =   SPACE
@@ -5069,40 +5072,6 @@
       *
            .
        910-JYURRK-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療会計マスター読込
-      *****************************************************************
-       940-SRYACCT-READ-SEC         SECTION.
-      *
-           PERFORM 910-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SRYACCT-REC
-               MOVE    ZERO            TO  FLG-SRYACCT
-           ELSE
-               INITIALIZE                  SRYACCT-REC
-               MOVE    1               TO  FLG-SRYACCT
-           END-IF
-      *
-           .
-       940-SRYACCT-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療行為マスター読込
-      *****************************************************************
-       950-SRYACT-READ-SEC         SECTION.
-      *
-           PERFORM 910-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
-               MOVE    ZERO            TO  FLG-SRYACT
-           ELSE
-               INITIALIZE                  SRYACT-REC
-               MOVE    1               TO  FLG-SRYACT
-           END-IF
-      *
-           .
-       950-SRYACT-READ-EXT.
            EXIT.
       *
       *****************************************************************

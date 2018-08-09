@@ -388,12 +388,13 @@
       *ver.4.7
       *    API XML読み込み共通定義
       **** COPY    "CPAPIV2REQ.INC".
-        01  XML-APIREQ.
-            03  APIREQ-CONTEXT          PIC S9(9)   BINARY.
-            03  APIREQ-OBJECT           PIC X(36).
-            03  APIREQ-MODE             PIC S9(9)   BINARY.
-            03  APIREQ-RECORDNAME       PIC X(128).
-            03  APIREQ-PATIENTINFOREQ   PIC X(1000000).
+           COPY    "CPAPI21V3REQ.INC".
+      **01  XML-APIREQ.
+      *     03  APIREQ-CONTEXT          PIC S9(9)   BINARY.
+      *     03  APIREQ-OBJECT           PIC X(36).
+      *     03  APIREQ-MODE             PIC S9(9)   BINARY.
+      *     03  APIREQ-RECORDNAME       PIC X(128).
+      ***   03  APIREQ-PATIENTINFOREQ   PIC X(1000000).
       *
       *
       *
