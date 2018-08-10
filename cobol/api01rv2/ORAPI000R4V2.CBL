@@ -446,21 +446,16 @@
       *
            MOVE    SPACE           TO  WRK-EDTYMD1
       *
-           IF  ( WRK-SYMD          =   ALL "9"  OR   ZERO )
-               MOVE    WRK-SYMD (1:8)
-                                   TO  WRK-EDTYMD1
-           ELSE
-               INITIALIZE              STS-AREA-DAY
-               INITIALIZE              LNK-DAY2-AREA
-               MOVE    "21"        TO  LNK-DAY2-IRAI
-               MOVE    WRK-SYMD    TO  LNK-DAY2-YMD
-               CALL    "ORCSDAY"       USING
-                                       STS-AREA-DAY
-                                       LNK-DAY2-AREA
-               IF    ( STS-DAY-RC1     =   ZERO )
-                   MOVE    LNK-DAY2-EDTYMD1
-                                   TO  WRK-EDTYMD1
-               END-IF
+           INITIALIZE              STS-AREA-DAY
+           INITIALIZE              LNK-DAY2-AREA
+           MOVE    "21"        TO  LNK-DAY2-IRAI
+           MOVE    WRK-SYMD    TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"       USING
+                                   STS-AREA-DAY
+                                   LNK-DAY2-AREA
+           IF    ( STS-DAY-RC1     =   ZERO )
+               MOVE    LNK-DAY2-EDTYMD1
+                               TO  WRK-EDTYMD1
            END-IF
       *
            .

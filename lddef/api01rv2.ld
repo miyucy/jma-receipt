@@ -42,6 +42,10 @@ bindapi	"system01dailyv2"	"OpenCOBOL"	"ORAPI101R2V2";
 bindapi	"hsconfroomchargev2"	"OpenCOBOL"	"ORAPI031RC3V2";
 bindapi	"pusheventgetv2"	"OpenCOBOL"	"ORAPI000R3V2";
 bindapi	"apiversiongetv2"	"OpenCOBOL"	"ORAPI000R4V2";
+bindapi	"karteno1v2"	"OpenCOBOL"	"ORAPI001R4V2";
+bindapi	"karteno1hv2"	"OpenCOBOL"	"ORAPI001R5V2";
+bindapi	"karteno3v2"	"OpenCOBOL"	"ORAPI001R6V2";
+bindapi	"karteno3hv2"	"OpenCOBOL"	"ORAPI001R7V2";
 
 multiplex_group	api01rv2;
 
@@ -87,6 +91,10 @@ data	{
         hsconfroomchargev2;
         pusheventgetv2;
         apiversiongetv2;
+		karteno1v2;
+		karteno1hv2;
+		karteno3v2;
+		karteno3hv2;
 	};
 };
 db "xml2" {
@@ -171,6 +179,14 @@ db "xml2" {
  xml_pusheventgetv2err;
  xml_apiversiongetv2req;
  xml_apiversiongetv2res;
+ xml_karte_no1v2req;
+ fm_karte_no1;
+ xml_karte_no1_hv2req;
+ fm_karte_no1_h;
+ xml_karte_no3v2req;
+ fm_karte_no3;
+ xml_karte_no3_hv2req;
+ fm_karte_no3_h;
 };
 
 #include "orcadb.inc"
