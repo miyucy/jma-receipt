@@ -28,7 +28,7 @@ module OrcaMNT
       begin
         fmd5 = File.open(PATCHMD5,"r")
         tmphash = Hash.new
-        YAML.load_documents(fmd5) {|y|
+        YAML.load_stream(fmd5) {|y|
           tmphash = y
         }
         fmd5.close
