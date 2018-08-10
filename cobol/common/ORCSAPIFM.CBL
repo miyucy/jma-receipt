@@ -616,6 +616,55 @@
            WHEN    "0106"
                MOVE    "院内・院外区分の入力に誤りがあります。"
                                        TO  WRK-ERRMSG
+           WHEN    "0107"
+               MOVE    "印刷指示の入力に誤りがあります。"
+                                       TO  WRK-ERRMSG
+           WHEN    "0108"
+               MOVE    "診療科の入力に誤りがあります。"
+                                       TO  WRK-ERRMSG
+           WHEN    "0109"
+               MOVE    "保険組合せの入力に誤りがあります。"
+                                       TO  WRK-ERRMSG
+           WHEN    "0110"
+               MOVE    "入院日の入力に誤りがあります。"
+                                       TO  WRK-ERRMSG
+           WHEN    "0111"
+               MOVE    "退院日の入力に誤りがあります。"
+                                       TO  WRK-ERRMSG
+           WHEN    "0112"
+               MOVE    "入院日＞退院日です。"
+                                       TO  WRK-ERRMSG
+           WHEN    "0113"
+               MOVE    "担当医の入力に誤りがあります。"
+                                       TO  WRK-ERRMSG
+           WHEN    "0114"
+               MOVE    "診療年月が未入力です。" 
+                                       TO  WRK-ERRMSG
+           WHEN    "0115"
+               MOVE    "診療年月の入力に誤りがあります。" 
+                                       TO  WRK-ERRMSG
+           WHEN    "0116"
+               MOVE    "印刷開始日の入力に誤りがあります。" 
+                                       TO  WRK-ERRMSG
+           WHEN    "0117"
+               MOVE    "最終印刷頁の入力に誤りがあります。" 
+                                       TO  WRK-ERRMSG
+           WHEN    "0118"
+               MOVE    "最終印刷行の入力に誤りがあります。" 
+                                       TO  WRK-ERRMSG
+           WHEN    "0119"
+               MOVE    "最終印刷行は４０行未満にして下さい。" 
+                                       TO  WRK-ERRMSG
+           WHEN    "0120"
+               STRING  "保険組合せでの印刷となります。"
+                                               DELIMITED  BY  SIZE
+                       "保険組合せを確認して下さい。"
+                                               DELIMITED  BY  SIZE
+               INTO  WRK-ERRMSG
+               END-STRING
+           WHEN    "0121"
+               MOVE    "カルテ３号紙の印刷対象がありませんでした。" 
+                                       TO  WRK-ERRMSG
       *共通エラー
            WHEN    "0089"
       *        ORCSCOMMON のエラー

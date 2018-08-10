@@ -64,6 +64,7 @@
       *  04.07.00    NACL-多々納  13/10/07  第三者行為対応
       *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
       *  04.08.00    NACL-多々納  16/07/XX  API(GINBEE)対応
+      *  05.00.01    NACL-太田    18/07/26  API印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -645,6 +646,15 @@
            ELSE
       *        API送信なし
                MOVE    "0"             TO  PARA-API-DATA
+           END-IF
+      *
+           IF    ( SPA-API-FLG         NOT =   ZERO )
+               MOVE    "1"             TO  PARA-API-DATA
+               IF    ( SPA-API-FLG     =   "2" OR "3" )
+                   IF    ( SPA-SRYKA   =   SPACE )
+                       MOVE    "1"     TO  PARA-SRYKAKBN
+                   END-IF
+               END-IF
            END-IF
       *
       *    ＡＰＩカスタムＩＤ

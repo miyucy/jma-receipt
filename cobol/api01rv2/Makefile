@@ -40,6 +40,11 @@ SRCS = ORAPI012R1V2.CBL \
        ORAPI031RC3V2.CBL \
        ORAPI000R3V2.CBL \
        ORAPI000R4V2.CBL \
+       ORAPI001R4V2.CBL \
+       ORAPI001R5V2.CBL \
+       ORAPI001R6V2.CBL \
+       ORAPI001R6V2S01.CBL \
+       ORAPI001R7V2.CBL \
        
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
