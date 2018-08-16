@@ -41,6 +41,8 @@
       *    エラーファイル 名称領域
            COPY    "CPERRFL.INC".
       *
+           COPY    "ENUM-VALUE".
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
@@ -63,6 +65,7 @@
       *
            03  FLG-SYORI               PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
+           03  FLG-ENABLED             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -77,6 +80,10 @@
            03  IDAA                    PIC 9(04).
            03  IDBB                    PIC 9(04).
            03  IDCC                    PIC 9(04).
+      *
+           03  IDXI                    PIC 9(04).
+           03  IDXT                    PIC 9(04).
+           03  IDXU                    PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -897,6 +904,15 @@
                        MOVE    SPA-GMN-L01-HCNAME  (IDX)
                                            TO   LSTRES-PROGRAM-LABEL
                                                                (IDXX)
+                       MOVE    IDX         TO  IDXI
+                       PERFORM 800-IS-ENABLED-SEC
+                       IF      FLG-ENABLED =   ZERO
+                           MOVE    "False"     TO  LSTRES-PERFORM-CLASS
+                                                               (IDXX)
+                       ELSE
+                           MOVE    "True"      TO  LSTRES-PERFORM-CLASS
+                                                               (IDXX)
+                       END-IF
                        MOVE    ZERO        TO  IDYY
                        PERFORM VARYING IDY FROM    1   BY  1
                                UNTIL   IDY >       WRK-CONS-PARA-L01-MAX
@@ -974,6 +990,11 @@
       *            プログラム名のチェック
                    IF     LSTREQ-PROGRAM-NAME (IDX)
                                        =   SPA-GMN-L01-PRGNAME (IDXX)
+                     MOVE    IDXX          TO  IDXI
+                     PERFORM 800-IS-ENABLED-SEC
+                     IF      FLG-ENABLED     =   ZERO
+                       MOVE    8               TO  FLG-CHK
+                     ELSE
                        MOVE    1               TO  FLG-CHK
       *
                        COMPUTE IDZ     = ( IDXX
@@ -1030,6 +1051,7 @@
                                            TO  LSTRES-PROGRAM-NAME (IDX)
                        MOVE    SPA-GMN-L01-HCNAME  (IDXX)
                                            TO  LSTRES-PROGRAM-LABEL(IDX)
+                     END-IF
                    END-IF
                END-PERFORM
       *
@@ -1041,6 +1063,9 @@
                        MOVE    "E31"           TO  WRK-PROCESSING-ERRCD
                    END-IF
                ELSE
+                   IF      FLG-CHK             =   8
+                       MOVE    "E33"           TO  WRK-PROCESSING-ERRCD
+                   END-IF
                    IF      FLG-CHK             =   9
                        MOVE    "E32"           TO  WRK-PROCESSING-ERRCD
                    END-IF
@@ -1181,6 +1206,15 @@
                        MOVE    SPA-GMN-G01-HCNAME  (IDX)
                                            TO   LSTRES-PROGRAM-LABEL
                                                                (IDXX)
+                       MOVE    IDX         TO  IDXI
+                       PERFORM 800-IS-ENABLED-SEC
+                       IF      FLG-ENABLED =   ZERO
+                           MOVE    "False"     TO  LSTRES-PERFORM-CLASS
+                                                               (IDXX)
+                       ELSE
+                           MOVE    "True"      TO  LSTRES-PERFORM-CLASS
+                                                               (IDXX)
+                       END-IF
                        MOVE    ZERO        TO  IDYY
                        PERFORM VARYING IDY FROM    1   BY  1
                                UNTIL   IDY >       WRK-CONS-PARA-G01-MAX
@@ -1258,6 +1292,11 @@
       *            プログラム名のチェック
                    IF     LSTREQ-PROGRAM-NAME (IDX)
                                        =   SPA-GMN-G01-PRGNAME (IDXX)
+                     MOVE    IDXX          TO  IDXI
+                     PERFORM 800-IS-ENABLED-SEC
+                     IF      FLG-ENABLED     =   ZERO
+                       MOVE    8               TO  FLG-CHK
+                     ELSE
                        MOVE    1               TO  FLG-CHK
       *
                        COMPUTE IDZ     = ( IDXX
@@ -1314,6 +1353,7 @@
                                            TO  LSTRES-PROGRAM-NAME (IDX)
                        MOVE    SPA-GMN-G01-HCNAME  (IDXX)
                                            TO  LSTRES-PROGRAM-LABEL(IDX)
+                     END-IF
                    END-IF
                END-PERFORM
       *
@@ -1325,6 +1365,9 @@
                        MOVE    "E31"           TO  WRK-PROCESSING-ERRCD
                    END-IF
                ELSE
+                   IF      FLG-CHK             =   8
+                       MOVE    "E33"           TO  WRK-PROCESSING-ERRCD
+                   END-IF
                    IF      FLG-CHK             =   9
                        MOVE    "E32"           TO  WRK-PROCESSING-ERRCD
                    END-IF
@@ -1513,6 +1556,10 @@
                    WHEN    "E32"
                        MOVE
                       "設定したプログラム番号に処理の登録がありません。"
+                                               TO  LSTRES-ERROR-MSG
+                                               (WRK-ERR-PROCESSING-MAX)
+                   WHEN    "E33"
+                       MOVE   "設定したプログラムは処理できません。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                END-EVALUATE
@@ -1959,6 +2006,70 @@
            MOVE    WRK-SPA-TERMID  TO  SPA-TERMID
            .
        800-TEMPDIR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    使用可否チェック処理
+      *****************************************************************
+       800-IS-ENABLED-SEC        SECTION.
+      *
+           MOVE    1               TO  FLG-ENABLED
+      *
+           EVALUATE    LSTREQ-STATISTICS-MODE
+               WHEN    "Daily"
+                   IF    ( SPA-MW                      =   SPA-GINBEE )
+                   AND   ( SPA-GMN-L01-REPOS-NAME (IDXI)
+                                                   NOT =   SPACE )
+                   AND   ( SPA-L01-CUSTOM-ENABLED  NOT =   "1"   )
+                       MOVE    ZERO        TO  FLG-ENABLED
+                   END-IF
+      *
+                   IF    ( SPA-MW                       =   SPA-GINBEE )
+                   AND ( SPA-GMN-L01-REPOS-NAME (IDXI)
+                                                        =   SPACE )
+                       MOVE    ZERO        TO  IDXU
+                       PERFORM VARYING IDXT    FROM    1   BY  1
+                               UNTIL ( IDXT    >   SPA-L01-PGLST-MAX )
+                               OR    ( IDXU    >   ZERO )
+                           IF    ( SPA-GMN-L01-PRGNAME (IDXI)
+                                               =   SPA-L01-TPGID (IDXT))
+                               MOVE    IDXT    TO  IDXU
+                           END-IF
+                       END-PERFORM
+      *
+                       IF    ( IDXU            =   ZERO )
+                           MOVE    ZERO        TO  FLG-ENABLED
+                       END-IF
+                   END-IF
+               WHEN    "Monthly"
+                   IF    ( SPA-MW                      =   SPA-GINBEE )
+                   AND   ( SPA-GMN-G01-REPOS-NAME (IDXI)
+                                                   NOT =   SPACE )
+                   AND   ( SPA-G01-CUSTOM-ENABLED  NOT =   "1" )
+                       MOVE    ZERO        TO  FLG-ENABLED
+                   END-IF
+      *
+                   IF    ( SPA-MW                      =   SPA-GINBEE )
+                   AND   ( SPA-GMN-G01-REPOS-NAME (IDXI)
+                                                       =   SPACE )
+                       MOVE    ZERO        TO  IDXU
+                       PERFORM VARYING IDXT    FROM    1   BY  1
+                               UNTIL ( IDXT    >   SPA-G01-PGLST-MAX )
+                               OR    ( IDXU    >   ZERO )
+                           IF    ( SPA-GMN-G01-PRGNAME (IDXI)
+                                               =   SPA-G01-TPGID (IDXT))
+                               MOVE    IDXT    TO  IDXU
+                           END-IF
+                       END-PERFORM
+      *
+                       IF    ( IDXU            =   ZERO )
+                           MOVE    ZERO        TO  FLG-ENABLED
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *
+           .
+       800-IS-ENABLED-EXT.
            EXIT.
       *
       *****************************************************************
