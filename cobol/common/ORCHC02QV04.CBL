@@ -3467,8 +3467,14 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    受診履歴なし（見出しのみ）
+      *
            IF      FLG-PRINT           =   ZERO
+      *H30.8
+      *        受診履歴なし（見出しのみ）
+               IF      FLG-DATA-ARI    =   ZERO
+                   PERFORM 200211-SYOHOU-INIT-SEC
+                   MOVE    ZERO                TO  FLG-CHIKHKT
+               END-IF
                IF      WRK-PAGE-MAX        =   ZERO
                    MOVE    1                   TO  WRK-PAGE-MAX
                END-IF
