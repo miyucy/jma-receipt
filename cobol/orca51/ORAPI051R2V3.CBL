@@ -896,22 +896,24 @@
                        ADD     1           TO  IDXX
       *
                        MOVE    IDX         TO  WRK-NUM
-                       MOVE    WRK-NUM-X   TO   LSTRES-PROGRAM-NO
+                       MOVE    WRK-NUM-X   TO  LSTRES-PROGRAM-NO
                                                                (IDXX)
                        MOVE    SPA-GMN-L01-PRGNAME (IDX)
-                                           TO   LSTRES-PROGRAM-NAME
+                                           TO  LSTRES-PROGRAM-NAME
                                                                (IDXX)
                        MOVE    SPA-GMN-L01-HCNAME  (IDX)
-                                           TO   LSTRES-PROGRAM-LABEL
+                                           TO  LSTRES-PROGRAM-LABEL
                                                                (IDXX)
-                       MOVE    IDX         TO  IDXI
-                       PERFORM 800-IS-ENABLED-SEC
-                       IF      FLG-ENABLED =   ZERO
-                           MOVE    "False"     TO  LSTRES-PERFORM-CLASS
+                       IF      SPA-MW      =   SPA-GINBEE
+                           MOVE    IDX         TO  IDXI
+                           PERFORM 800-IS-ENABLED-SEC
+                           IF      FLG-ENABLED =   ZERO
+                               MOVE    "False" TO  LSTRES-PERFORM-CLASS
                                                                (IDXX)
-                       ELSE
-                           MOVE    "True"      TO  LSTRES-PERFORM-CLASS
+                           ELSE
+                               MOVE    "True"  TO  LSTRES-PERFORM-CLASS
                                                                (IDXX)
+                           END-IF
                        END-IF
                        MOVE    ZERO        TO  IDYY
                        PERFORM VARYING IDY FROM    1   BY  1
@@ -1206,14 +1208,16 @@
                        MOVE    SPA-GMN-G01-HCNAME  (IDX)
                                            TO   LSTRES-PROGRAM-LABEL
                                                                (IDXX)
-                       MOVE    IDX         TO  IDXI
-                       PERFORM 800-IS-ENABLED-SEC
-                       IF      FLG-ENABLED =   ZERO
-                           MOVE    "False"     TO  LSTRES-PERFORM-CLASS
+                       IF      SPA-MW      =   SPA-GINBEE
+                           MOVE    IDX         TO  IDXI
+                           PERFORM 800-IS-ENABLED-SEC
+                           IF      FLG-ENABLED =   ZERO
+                               MOVE    "False" TO  LSTRES-PERFORM-CLASS
                                                                (IDXX)
-                       ELSE
-                           MOVE    "True"      TO  LSTRES-PERFORM-CLASS
+                           ELSE
+                               MOVE    "True"  TO  LSTRES-PERFORM-CLASS
                                                                (IDXX)
+                           END-IF
                        END-IF
                        MOVE    ZERO        TO  IDYY
                        PERFORM VARYING IDY FROM    1   BY  1
