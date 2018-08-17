@@ -3144,6 +3144,9 @@
       *H27.4
            MOVE    ZERO                TO  FLG-ALLKISAI
            INITIALIZE                  WRK-SRYACT-ALL-AREA
+      *H30.8
+      *    備考コメント
+           INITIALIZE                  WRK-SRYACT98-ALL-AREA
            .
        200211-SYOHOU-INIT-EXT.
            EXIT.
@@ -3288,6 +3291,8 @@
            IF      WRK-PAGE-MAX        >   ZERO
       *        印刷
                PERFORM 400-PRINT-SYORI-SEC
+      *H30.8
+               MOVE    1               TO  FLG-PRINT
            END-IF
       *
            .
@@ -3342,6 +3347,8 @@
       ***              END-IF
                    END-IF
                    PERFORM 200211-SYOHOU-INIT-SEC
+      *H30.8
+                   MOVE    ZERO                TO  FLG-CHIKHKT
                    MOVE    JYURRK-RENNUM       TO  WRK-RENNUM
                    MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
                    IF      JYURRK-SRYKA        =   SPA-SRYKA
@@ -3382,8 +3389,14 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    受診履歴なし（見出しのみ）
+      *
            IF      FLG-PRINT           =   ZERO
+      *H30.8
+      *        受診履歴なし（見出しのみ）
+               IF      FLG-DATA-ARI    =   ZERO
+                   PERFORM 200211-SYOHOU-INIT-SEC
+                   MOVE    ZERO                TO  FLG-CHIKHKT
+               END-IF
                IF      WRK-PAGE-MAX        =   ZERO
                    MOVE    1                   TO  WRK-PAGE-MAX
                END-IF
@@ -3750,9 +3763,11 @@
                ELSE
       *            剤分割判定
                    PERFORM 21001-SYOHOU-BUNKATU-SEC
+      *H30.8
+                   MOVE    1               TO  FLG-DATA-ARI
                END-IF
       *
-               MOVE    1               TO  FLG-DATA-ARI
+      ******   MOVE    1               TO  FLG-DATA-ARI
            END-EVALUATE
       *
            .
@@ -5401,6 +5416,7 @@
            MOVE    SPA-DRCD            TO  WRK-DRCD
            PERFORM
                UNTIL   FLG-WKSRYACT    =   1
+                  OR  (LNK-WKSRYACT-MAX    >=  100   )
       *        保険の再編集
                IF      WKSRY-INPUTCD(1)(1:1)   =   "#"
                    MOVE    WKSRY-INPUTCD(1)(2:4)   TO  WRK-HKNCOMBINUM
@@ -5567,6 +5583,9 @@
            PERFORM 200211-KYOTU-INIT-SEC
       *H27.4
            INITIALIZE                  WRK-SRYACT-ALL-AREA
+      *H30.8
+      *    備考コメント
+           INITIALIZE                  WRK-SRYACT98-ALL-AREA
       *
            .
        20031-WKSYOHOU-INIT-EXT.
