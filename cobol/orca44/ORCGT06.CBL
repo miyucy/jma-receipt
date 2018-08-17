@@ -182,6 +182,10 @@
                05  WRK-WRNO        PIC 9(02).
            03  WRK-PRTKANRI-RENNUM PIC 9(04).
            03  WRK-RENNUM          PIC 9(03).
+      *
+           03  WRK-IDX             PIC 9(02).
+           03  WRK-ST              PIC 9(02).
+           03  WRK-LEN             PIC 9(02).
       *     
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC  X(06).
@@ -3199,6 +3203,29 @@
                    MOVE    "外"    TO  SPA-GMN-T09-TNYUGAIKBN (IDX)
            END-EVALUATE
       *
+      *    ＨＡＯＲＩのとき
+           IF      SPA-T01-JOB-PARAM
+                                   NOT =   SPACE
+               MOVE    RECE10-HKNID    TO  SPA-NAI-T09-RECE10-THKNID
+                                                                 (IDX)
+               EVALUATE    RECE10-TEISYUTUSAKI
+                   WHEN    "3"
+                       MOVE    RECE10-HKNKBN   TO
+                                       SPA-NAI-T09-RECE10-THKNKBN  (IDX)
+                       MOVE    RECE10-SAIGAIKBN    TO
+                                       SPA-NAI-T09-RECE10-TSAIGAIKBN
+                                                                   (IDX)
+                   WHEN    OTHER
+                       MOVE    RECE10-HOJOKBN  TO
+                                       SPA-NAI-T09-THOJOKBN  (IDX)
+                       IF      RECE10-KOHNUM (1)
+                                           NOT =   SPACE
+      *                    対象患者一覧編集処理（公費情報の設定）
+                           PERFORM 420311-T09-HENSYU-KOH-SEC
+                       END-IF
+               END-EVALUATE
+           END-IF
+      *
            EVALUATE    RECE10-TEISYUTUSAKI
                WHEN    "3"
                    EVALUATE    RECE10-RECESYUBETU
@@ -3716,6 +3743,87 @@
            .
       *
        42031-T09-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象患者一覧編集処理（公費情報の設定）
+      *****************************************************************
+       420311-T09-HENSYU-KOH-SEC   SECTION.
+      *
+           PERFORM VARYING IDZZ    FROM    1   BY  1
+                   UNTIL   IDZZ    >       4
+                   OR      RECE10-KOHNUM (IDZZ)
+                                   =       SPACE
+               MOVE    RECE10-KOHNUM  (IDZZ)  TO
+                                   SPA-NAI-RECE10-T09-KOHNUM (IDX IDZZ)
+               MOVE    RECE10-KOHID   (IDZZ)  TO
+                                   SPA-NAI-RECE10-T09-KOHID  (IDX IDZZ)
+           END-PERFORM
+      *
+           MOVE    ZERO                TO  FLG-RECEDEN
+                                           IDZZ
+      *
+           MOVE    SPACE               TO  RECEDEN-REC
+           INITIALIZE                      RECEDEN-REC
+           MOVE    RECE10-KEY          TO  RECEDEN-KEY
+           MOVE    "1"                 TO  RECEDEN-RECKBN
+           MOVE    RECEDEN-REC         TO  MCPDATA-REC
+      *
+           MOVE    "tbl_receden"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 900-RECEDEN-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-RECEDEN
+           END-IF
+       *
+           PERFORM             UNTIL   FLG-RECEDEN =   1
+                               OR      IDZZ        =   4
+               IF      RECEDEN-RECEDATA (1:2)  =   "KO"
+                   ADD     1           TO  IDZZ
+                   MOVE    4           TO  WRK-ST
+                   MOVE    ZERO        TO  WRK-IDX
+                   PERFORM VARYING IDY FROM    4   BY  1
+                           UNTIL   IDY     >   20
+                           OR      WRK-IDX >=  2
+                       IF      RECEDEN-RECEDATA (IDY:1)    =   ","
+                           ADD     1           TO  WRK-IDX
+                           IF      WRK-ST      <   IDY
+                               COMPUTE WRK-LEN =   IDY -   WRK-ST
+                               EVALUATE   WRK-IDX
+                                   WHEN    1
+                                       MOVE    RECEDEN-RECEDATA
+                                                      (WRK-ST:WRK-LEN)
+                                               TO
+                                       SPA-NAI-T09-FTNJANUM  (IDX IDZZ)
+                                   WHEN    2
+                                       MOVE    RECEDEN-RECEDATA
+                                                      (WRK-ST:WRK-LEN)
+                                               TO
+                                       SPA-NAI-T09-JKYSNUM   (IDX IDZZ)
+                               END-EVALUATE
+                           END-IF
+                           COMPUTE WRK-ST  =   IDY +   1
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+      *        ＫＯレコード以外のデータになった場合終わる
+               IF      RECEDEN-RECEDATA (1:2)  =   "SY"    OR
+                                                   "SI"
+                   MOVE    1               TO  FLG-RECEDEN
+               ELSE
+                   PERFORM 900-RECEDEN-READ-N-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "tbl_receden"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .
+      *
+       420311-T09-HENSYU-KOH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6897,6 +7005,25 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
       *
            .
        900-RECEDEN-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセ電ＤＢ読込
+      *****************************************************************
+       900-RECEDEN-READ-N-SEC          SECTION.
+      *
+           MOVE    "tbl_receden"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  RECEDEN-REC
+               MOVE    ZERO                TO  FLG-RECEDEN
+           ELSE
+               MOVE    1                   TO  FLG-RECEDEN
+           END-IF
+      *
+           .
+       900-RECEDEN-READ-N-EXT.
            EXIT.
       *
       *****************************************************************

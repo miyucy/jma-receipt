@@ -132,7 +132,7 @@ trap cleanup EXIT
             ROUSAI_FOLDER1="${23}_Rousai_${5}"
         fi
     fi
-    if  [ ${21} -eq '5' ]|| [ ${21} -eq '6' ]|| [ ${21} -eq '8' ]; then
+    if  [ ${21} -eq '5' ]|| [ ${21} -eq '6' ]|| [ ${21} -eq '8' ]|| [ ${21} -eq '9' ]; then
         ROUSAI_FOLDER="${ROUSAI_FOLDER1}_Kobetsu"
     else
         ROUSAI_FOLDER="${ROUSAI_FOLDER1}/Kobetsu"
@@ -350,7 +350,7 @@ trap cleanup EXIT
     fi
 
 #   ÂçÍÆÎÌ£Á£Ð£ÉºîÀ®
-    if  [ ${21} -eq '8' ]; then
+    if  [ ${21} -eq '8' ]||[ ${21} -eq '9' ]; then
         cd  ${MCP_TEMPDIR}/
         FILENM="${ROUSAI_FOLDER}.zip"
         echo "filenm=[" $FILENM "]"

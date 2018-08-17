@@ -20,8 +20,9 @@ bind	"TERR"		"OpenCOBOL"	"ORCGTERR";
 bind	"TID1"		"OpenCOBOL"	"ORCGTID1";
 bind	"TID2"		"OpenCOBOL"	"ORCGTID2";
 bind	"TID3"		"OpenCOBOL"	"ORCGTID3";
-bindapi	"receiptdatamakev3"	"OpenCOBOL"	"ORAPI044R1V3";
-bindapi	"receiptdatacheckmakev3" "OpenCOBOL"	"ORAPI044R2V3";
+bindapi	"receiptdatamakev3"		"OpenCOBOL"	"ORAPI044R1V3";
+bindapi	"receiptdatacheckmakev3"	"OpenCOBOL"	"ORAPI044R2V3";
+bindapi	"receiptdatapatientmakev3"	"OpenCOBOL"	"ORAPI044R3V3";
 
 multiplex_group	orca44;
 
@@ -47,6 +48,7 @@ data	{
 		TID3;
 		receiptdatamakev3;
 		receiptdatacheckmakev3;
+		receiptdatapatientmakev3;
 	};
 };
 
@@ -55,6 +57,8 @@ db "xml2" {
  xml_receiptdata_makev3res;
  xml_receiptdata_check_makev3req;
  xml_receiptdata_check_makev3res;
+ xml_receiptdata_patient_makev3req;
+ xml_receiptdata_patient_makev3res;
 };
 
 db "monblob" {

@@ -354,6 +354,17 @@
                        09  SPA-NAI-T09-RECE10-TKIGO    PIC X(40).
                        09  SPA-NAI-T09-RECE10-TNUM     PIC X(40).
                        09  SPA-NAI-T09-TDISASTER       PIC 9(02).
+      *                £È£Á£Ï£Ò£É
+                       09  SPA-NAI-T09-RECE10-THKNID   PIC 9(10).
+                       09  SPA-NAI-T09-THOJOKBN        PIC X(01).
+                       09  SPA-NAI-T09-KOHINF          OCCURS  4.
+                           11  SPA-NAI-RECE10-T09-KOHNUM   PIC X(03).
+                           11  SPA-NAI-RECE10-T09-KOHID    PIC 9(10).
+                           11  SPA-NAI-T09-FTNJANUM        PIC X(08).
+                           11  SPA-NAI-T09-JKYSNUM         PIC X(20).
+                       09  SPA-NAI-T09-RECE10-THKNKBN  PIC X(01).
+                       09  SPA-NAI-T09-RECE10-TSAIGAIKBN
+                                                       PIC X(01).
       *
                        09  SPA-NAI-T09-RECE10-KEY.
                            11  SPA-NAI-T09-RECE10-THOSPNUM PIC 9(02).

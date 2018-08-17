@@ -366,7 +366,7 @@ trap cleanup EXIT
     fi
 
 #   ÂçÍÆÎÌ£Á£Ð£ÉºîÀ®
-    if  [ ${21} -eq '8' ]; then
+    if  [ ${21} -eq '8' ]||[ ${21} -eq '9' ]; then
         cp ${MCP_TEMPDIR}/${23}${RECEFILE1}.UKE ${MCP_TEMPDIR}/${RECEFILE1}.UKE
         FILENM="${RECEFILE1}.UKE"
         echo "filenm=[" $FILENM "]"
