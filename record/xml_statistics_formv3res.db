@@ -18,6 +18,7 @@ xml_statistics_formv3res {
 			Statistics_Program_No	varchar(3);
 			Statistics_Program_Name	varchar(24);
 			Statistics_Program_Label	varchar(80);
+			Statistics_Perform_Class	varchar(5);
 			Statistics_Parameter_Information {
 				Statistics_Parm_No	varchar(2);
 				Statistics_Parm_Class	varchar(10);

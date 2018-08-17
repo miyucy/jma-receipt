@@ -55,6 +55,7 @@
                        09   LSTRES-PROGRAM-NO      PIC X(3).
                        09   LSTRES-PROGRAM-NAME    PIC X(24).
                        09   LSTRES-PROGRAM-LABEL   PIC X(80).
+                       09   LSTRES-PERFORM-CLASS   PIC X(05).
                        09   LSTRES-PARAMETER-G.
                            11   LSTRES-PARM-INFO   OCCURS  10.
                                13  LSTRES-PARM-NO  PIC X(2).
