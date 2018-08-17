@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  05.00.00    NACL-多々納  17/08/XX  リクエスト＝００追加
+      *  05.00.00    NACL-多々納  18/08/XX  処方箋印刷独立機能対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -178,6 +179,10 @@
                05  WRK-RESPONSE-NUMBER     PIC X(02).
       *        処理ＰＧ
                05  WRK-PARA-SYORIPG        PIC X(02).
+      *
+               05  WRK-SELECT-CODE         PIC X(04).
+      *        処理区分
+               05  WRK-PARA-MODE           PIC X(03).
       *
       *処理最大行
        01  MAX-LINE-VALUE          PIC 9(04)   VALUE   400.
@@ -949,6 +954,12 @@
                PERFORM 20011-DOCTORS-CHK-SEC
            END-IF
       *
+      *    処理区分チェック
+           IF     (MDCREQ-DOCTORS-FEE  NOT =   SPACE  )
+           AND    (WRK-ERRCD           =   SPACE  )
+               PERFORM 20011-PATIENT-MODE-CHK-SEC
+           END-IF
+      *
            .
        2001-INPUT-CHK-EXT.
            EXIT.
@@ -1203,6 +1214,23 @@
            END-EVALUATE
            .
        20011-DOCTORS-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理区分チェック処理
+      *****************************************************************
+       20011-PATIENT-MODE-CHK-SEC        SECTION.
+      *
+      *    印刷のみ
+           EVALUATE    MDCREQ-PATIENT-MODE
+               WHEN    "Print"
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    OTHER
+                   MOVE    "26"                TO  WRK-ERRCD
+           END-EVALUATE
+           .
+       20011-PATIENT-MODE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2205,6 +2233,14 @@
       *    有効終了日
            MOVE    ORCSAPIHKN-TEKEDYMD  (IDX)
                                    TO  MDCRES-MAIN-END-DATE
+      *H30.8
+      *    非表示区分判定
+           IF      ORCSAPIHKN-HYOJIKBN (IDX)   =   "1"
+                                               OR  "3"
+      *        非表示分
+               MOVE    "27"                    TO  WRK-ERRCD
+           END-IF
+      *
       *    公費情報
            PERFORM VARYING     IDY2    FROM    1   BY  1
                    UNTIL       IDY2    >   4
@@ -2498,6 +2534,11 @@
                                        TO  WRK-RESPONSE-NUMBER
       *    処理ＰＧ
            MOVE    "01"                TO  WRK-PARA-SYORIPG
+      *!!!
+      *    印刷のみ
+           IF      MDCREQ-PATIENT-MODE =   "Print"
+               MOVE    "PRT"           TO  WRK-PARA-MODE
+           END-IF
       *
            MOVE    WRK-APIV3DATA-REC   TO  APIPARA-DATA-REC
       *
@@ -3046,6 +3087,16 @@
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
+      *!
+           WHEN    "26"
+               MOVE    "処理区分エラー"        TO  WRK-ERRMSG 
+           WHEN    "27"
+               STRING  "保険組合せは外来非表示となっています。"
+                       "外来では使用できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+      *!
            WHEN    "60"
                STRING  "解除対象がありません。"
                                                DELIMITED  BY  SIZE
