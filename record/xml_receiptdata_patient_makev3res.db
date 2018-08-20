@@ -14,7 +14,7 @@ xml_receiptdata_patient_makev3res {
 		Api_Result_Message	varchar(100);
 		Reskey			varchar(100);
 		Submission_Mode		varchar(2);
-		Perform_Month		varchar(07);
+		Perform_Month		varchar(7);
 		Start_Month		varchar(7);
 		End_Month		varchar(7);
 		InsuranceProvider_Number	varchar(8);
@@ -27,7 +27,7 @@ xml_receiptdata_patient_makev3res {
 			Receiptdata_Warning_Message	varchar(100);
 		} [5];
 		Err_Patient_Information {
-			Err_Receipt_Item_Position	varchar(3);
+			Err_Patient_Item_Position	varchar(3);
 			Err_Patient_ID			varchar(20);
 			Err_Patient_Perform_Month	varchar(7);
 			Err_Patient_InOut		varchar(2);
@@ -62,7 +62,7 @@ xml_receiptdata_patient_makev3res {
 			} [30];
 		} [100];
 		Selection_Patient_Information {
-			Selection_Receipt_Item_Position	varchar(3);
+			Selection_Patient_Item_Position	varchar(3);
 			Selection_Patient_ID		varchar(20);
 			Selection_Patient_Perform_Month	varchar(7);
 			Selection_Patient_InOut		varchar(2);

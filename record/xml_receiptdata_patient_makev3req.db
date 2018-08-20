@@ -9,7 +9,7 @@ xml_receiptdata_patient_makev3req {
 		Orca_Uid		varchar(36);
 		Perform_Date		varchar(10);
 #---     診療年月(2016-09)
-                Perform_Month           varchar(07);
+                Perform_Month           varchar(7);
 #---     請求年月日
 		Ac_Date			varchar(10);
 #---     作成モード(Check:点検用 Ckeck以外:提出用)
