@@ -987,6 +987,7 @@
            03  FLG-WRKFILE-KGKTAI                      PIC 9(01).
            03  FLG-SAIGAI-TAISYO                       PIC 9(01).
            03  FLG-CHIIKI                              PIC 9(01).
+           03  FLG-CHIIKI2                             PIC 9(01).
            03  FLG-KGKIPNTAI                           PIC 9(01).
            03  FLG-KGK                                 PIC 9(01).
            03  FLG-SKY-TOKKOH                          PIC 9(01).
@@ -26231,6 +26232,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              AND ((FLG-HOKENICHIBU2  NOT = ZERO             )  OR
                   (FLG-HOKENICHIBU3  NOT = ZERO             ))
                  MOVE     ZERO    TO   FLG-CHIIKI
+                 MOVE     ZERO    TO   FLG-CHIIKI2
                  PERFORM  21096-HOKEN-ICHIBUFTN-CHK-SEC
              END-IF
       *
@@ -26248,6 +26250,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              AND (FLG-HOKENICHIBU3       = ZERO              )
              AND (FLG-HOKENICHIBU-SYU    =  1                )
                  MOVE     ZERO    TO   FLG-CHIIKI
+                 MOVE     ZERO    TO   FLG-CHIIKI2
                  PERFORM  21096-HOKEN-ICHIBUFTN-CHK-SEC
              END-IF
       *
@@ -26287,6 +26290,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              AND (FLG-HOKENICHIBU7       =  1                )
              AND (FLG-HOKENICHIBU-SYU    =  1                )
                  MOVE     ZERO    TO   FLG-CHIIKI
+                 MOVE     ZERO    TO   FLG-CHIIKI2
                  PERFORM  21096-HOKEN-ICHIBUFTN-CHK-SEC
              END-IF
       *
@@ -26305,10 +26309,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
              AND ((WRK-TAIHI-TOTALTEN   =  WRK-CHK-KOKIGAK4 ) OR
                   (WRK-TAIHI-TOTALTEN   =
                                        RECE02-HENTOTALTEN(3)) )
-               IF ((RECE02-HON-GAIKFTNRATE(2)  =  100         ) AND
-                   (WRK-TAIHI-TOTALTEN = RECE02-HENTOTALTEN(3)))
-               OR ( FLG-ZENKOKUKOHI-NISYU4     =   1           )
-                 MOVE     1       TO   FLG-CHIIKI
+               IF  (RECE02-HON-GAIKFTNRATE(2)  =  100)
+               OR  (FLG-ZENKOKUKOHI-NISYU4     =   1 )
+                 IF   FLG-ZENKOKUKOHI-NISYU4   =   1
+                   MOVE   1       TO   FLG-CHIIKI
+                 END-IF
+                 MOVE     1       TO   FLG-CHIIKI2
                  PERFORM  21096-HOKEN-ICHIBUFTN-CHK-SEC
                END-IF
              END-IF
@@ -27971,7 +27977,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 IF  FLG-HOKENICHIBU6  NOT = ZERO
                    MOVE     1     TO    FLG-HOKENICHIBU-CHK
                 ELSE
-                   COMPUTE WRK-FTNKEI5 = WRK-JYOGENKBN-TEN3
+      *************COMPUTE WRK-FTNKEI5 = WRK-JYOGENKBN-TEN3
+                   COMPUTE WRK-FTNKEI5 = WRK-JYOGENKBN-TEN6
                                        * 10
                                        * RECE02-KYURATE
                                        / 100
@@ -27984,15 +27991,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            EVALUATE  RECE02-ZAITAKU
              WHEN      "1"
-               IF    FLG-CHIIKI           =  1
-                 MOVE   WRK-TAIHI-TOTALTEN  TO  WRK-HANTEI-TOTALTEN
-               ELSE
                  COMPUTE  WRK-HANTEI-TOTALTEN = WRK-TAIHI-TOTALTEN
                                               - RECE02-TOTALTEN(2)
-               END-IF
              WHEN      "2"
-               IF   (FLG-CHIIKI           =  1)
-               OR   (FLG-HOKENICHIBU-CHK  =  1)
+               IF    FLG-HOKENICHIBU-CHK  =  1
                  MOVE   WRK-TAIHI-TOTALTEN  TO  WRK-HANTEI-TOTALTEN
                ELSE
                  COMPUTE  WRK-HANTEI-TOTALTEN = WRK-TAIHI-TOTALTEN
@@ -28075,7 +28077,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              COMPUTE  RECE02-FTNMONEY(1) = WRK-CHK-KOKIGAK7
                                          + FTN-KOH-XXX
       *
-             IF     (FLG-CHIIKI                  =   1        )
+             IF     (FLG-CHIIKI2                 =   1        )
              AND    (RECE02-SRYYM               >=  "200804"  )
              AND    (RECE02-ZAITAKU-SAIKEI2  NOT =   999999999)
                MOVE  WRK-CHK-KOKIGAK7  TO  RECE02-ZAITAKU-SAIKEI2
