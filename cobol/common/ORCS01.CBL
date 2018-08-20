@@ -4116,6 +4116,10 @@
                                  MOVE  11  TO  FLG-GENBUTU70-KBN
                                 END-IF
                                END-IF
+                               IF   (LNK-SYU-SRYYMD(1:6) >= "201204")
+                               AND  (FLG-SANSHOU3     NOT =  SPACE  )
+                                 MOVE  SPACE  TO  FLG-SANSHOU3
+                               END-IF
                              WHEN        2
                                IF    FLG-SANSHOU3  =  SPACE
                                  MOVE  2   TO  FLG-GENBUTU70
@@ -4166,6 +4170,11 @@
                     IF  LNK-SYU-SRYYMD(1:6) >= "201501"
                       MOVE  FLG-TOKUSITU-KBN
                                             TO  FLG-GENBUTU70-KBN
+                    END-IF
+                    IF   (LNK-SYU-SRYYMD(1:6) >= "201204")
+                    AND  (FLG-TOKUSITU         =  1      )
+                    AND  (FLG-SANSHOU3     NOT =  SPACE  )
+                      MOVE  SPACE  TO  FLG-SANSHOU3
                     END-IF
                  END-IF
                END-IF
@@ -4245,6 +4254,13 @@
                END-IF
              END-IF
             END-IF
+           END-IF
+      *
+           IF     (LNK-S01-KOUREI-ZAITAKU-KBN  =  "1"       )
+           AND    (LNK-SYU-SRYYMD(1:6)        >=  "201204"  )
+           AND    (COMB-HOJOKBN        =   "3" OR "6" OR "7")
+           AND    (FLG-SANSHOU3            NOT =   SPACE    )
+                   MOVE  SPACE       TO  FLG-SANSHOU3
            END-IF
       *
            IF   LNK-S01-KOUREI-ZAITAKU-KBN   =  "1"
