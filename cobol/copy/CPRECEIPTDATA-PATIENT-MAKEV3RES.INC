@@ -129,6 +129,12 @@
       *                    受給者番号
                            09  RECEDMAKES-RECIPIENT-NUMBER
                                            PIC X(20).
+      *                災害該当の有無
+                       07  RECEDMAKES-ACCIDENT-TARGET
+                                           PIC X(4).
+      *                入所中の有無
+                       07  RECEDMAKES-INCARE-CLASS
+                                           PIC X(4).
       *                労災情報
                        07  RECEDMAKES-ACCIDENT-INSURANCE.
       *****************傷病の部位
@@ -146,12 +152,6 @@
       *                    災害区分
                            09  RECEDMAKES-ACCIDENT-CLASS
                                            PIC X(1).
-      *                災害該当の有無
-                       07  RECEDMAKES-ACCIDENT-TARGET
-                                           PIC X(4).
-      *                入所中の有無
-                       07  RECEDMAKES-INCARE-CLASS
-                                           PIC X(4).
       *
                        07  RECEDMAKES-DETAIL-ERROR-CODE
                                            PIC X(3).

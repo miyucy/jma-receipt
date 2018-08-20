@@ -50,13 +50,13 @@ xml_receiptdata_patient_makev3res {
 					Err_Patient_Detail_PublicInsurer_Number		varchar(8);
 					Err_Patient_Detail_PublicInsuredPerson_Number	varchar(20);
 				} [4];
+				Err_Patient_Detail_Accident_Target_Class	varchar(4);
+				Err_Patient_Detail_Incare_Class			varchar(4);
 #---				Err_Patient_Detail_Disease_Location		varchar(100);
 				Err_Patient_Detail_Accident_Insurance		varchar(1);
 				Err_Patient_Detail_Accident_Insurance_Number	varchar(14);
 				Err_Patient_Detail_PensionCertificate_Number	varchar(9);
 				Err_Patient_Detail_Accident_Class		varchar(1);
-				Err_Patient_Detail_Accident_Target_Class	varchar(4);
-				Err_Patient_Detail_Incare_Class			varchar(4);
 				Err_Patient_Detail_Error_Code			varchar(3);
 				Err_Patient_Detail_Error_Message		varchar(100);
 			} [30];

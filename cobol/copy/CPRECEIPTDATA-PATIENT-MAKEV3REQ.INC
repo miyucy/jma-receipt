@@ -110,6 +110,12 @@
       *                        受給者番号
                                13  RECEDMAKEQ-RECIPIENT-NUMBER
                                                PIC X(20).
+      *                災害該当の有無
+                       09  RECEDMAKEQ-ACCIDENT-TARGET
+                                           PIC X(4).
+      *                入所中の有無
+                       09  RECEDMAKEQ-INCARE-CLASS
+                                           PIC X(4).
       *                労災情報
                        09  RECEDMAKEQ-ACCIDENT-INSURANCE.
       *****************    傷病の部位
@@ -127,12 +133,6 @@
       *                    災害区分
                            11  RECEDMAKEQ-ACCIDENT-CLASS
                                            PIC X(1).
-      *                災害該当の有無
-                       09  RECEDMAKEQ-ACCIDENT-TARGET
-                                           PIC X(4).
-      *                入所中の有無
-                       09  RECEDMAKEQ-INCARE-CLASS
-                                           PIC X(4).
       *                実施確認指示（警告）
                        09  RECEDMAKEQ-RECEIPT-PERFORM-FLAG
                                            PIC X(4).
