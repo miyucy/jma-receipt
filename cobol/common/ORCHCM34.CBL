@@ -2333,6 +2333,8 @@
                        EVALUATE    WRK-PTHKN-HOJOKBN
                        WHEN    "7"
                            MOVE    "£³³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "8"
+                           MOVE    "£²³ä"      TO  WRK-PTHKN-HOJOKBNMEI
                        WHEN    "9"
                            MOVE    "£±³ä"      TO  WRK-PTHKN-HOJOKBNMEI
                        WHEN    "A" 
@@ -2341,6 +2343,12 @@
                            MOVE    "£±³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
                        WHEN    "C" 
                            MOVE    "£±³äÄÌ¶Ð"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "D" 
+                           MOVE    "£²³ä¿¦Ì³"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "E" 
+                           MOVE    "£²³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "F" 
+                           MOVE    "£²³äÄÌ¶Ð"  TO  WRK-PTHKN-HOJOKBNMEI
                        WHEN    "G" 
                            MOVE    "£³³ä¿¦Ì³"  TO  WRK-PTHKN-HOJOKBNMEI
                        WHEN    "H" 
@@ -2403,10 +2411,14 @@
                        EVALUATE    WRK-PTHKN-HOJOKBN
                        WHEN    "7"
                            MOVE    "£³³ä"      TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "8"
+                           MOVE    "£²³ä"      TO  WRK-PTHKN-HOJOKBNMEI
                        WHEN    "9"
                            MOVE    "£±³ä"      TO  WRK-PTHKN-HOJOKBNMEI
                        WHEN    "B"
                            MOVE    "£±³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
+                       WHEN    "E"
+                           MOVE    "£²³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
                        WHEN    "H"
                            MOVE    "£³³ä²¼Á¥"  TO  WRK-PTHKN-HOJOKBNMEI
                        END-EVALUATE
