@@ -1729,6 +1729,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                         OR        (SPA-GMN20-YBANGOU(IDX)  =   ZERO)
                         OR        (FLG-OK                  =   1   )
                    IF     (SPA-NAI20-UKETIME(IDX)  =   SPACE   OR  ZERO)
+      *H30.8
+                   AND    (SPA-NAI20-DELKBN (IDX)  =   ZERO  )
                        CONTINUE
                    ELSE
                        IF      SPA-NAI20-UKEID (IDX) =   UKE-UKEID
