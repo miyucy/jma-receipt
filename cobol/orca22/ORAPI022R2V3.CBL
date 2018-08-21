@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  05.00.01    NACL-藤原    18/05/01  急性フラグの追加
       *                                     傷病名コードを２１に変更
+      *  05.00.02    NACL-藤原    18/08/21  病名からの疑いフラグの設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2786,6 +2787,8 @@
                ELSE
                    EVALUATE    PTBYO-UTAGAIFLG ALSO
                                            LNK-BYO-UTAGAIFLG
+                       WHEN    ANY             ALSO    "3"
+                           MOVE    "3"         TO  PTBYO-UTAGAIFLG
                        WHEN    SPACE           ALSO    "1"
                        WHEN    SPACE           ALSO    "2"
                            MOVE    LNK-BYO-UTAGAIFLG
