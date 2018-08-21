@@ -85,6 +85,7 @@
       *  04.08.02    NACL-藤原    17/03/15  単独病名の病名コードのみ設定時の
       *                                     取り込み修正
       *                                     病名コード数の設定の修正
+      *  04.08.03    NACL-藤原    18/08/21  病名からの疑いフラグの設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1614,6 +1615,8 @@
                ELSE
                    EVALUATE    PTBYO-UTAGAIFLG ALSO
                                            LNK-BYO-UTAGAIFLG
+                       WHEN    ANY             ALSO    "3"
+                           MOVE    "3"         TO  PTBYO-UTAGAIFLG
                        WHEN    SPACE           ALSO    "1"
                        WHEN    SPACE           ALSO    "2"
                            MOVE    LNK-BYO-UTAGAIFLG
