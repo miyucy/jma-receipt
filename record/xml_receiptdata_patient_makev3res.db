@@ -34,7 +34,7 @@ xml_receiptdata_patient_makev3res {
 			Err_Patient_Error_Code		varchar(3);
 			Err_Patient_Error_Message	varchar(100);
 			Err_Patient_Detail_Information {
-				Err_Receipt_Detail_Item_Position		varchar(2);
+				Err_Patient_Detail_Item_Position		varchar(2);
 				Err_Patient_Detail_Code				varchar(4);
 				Err_Patient_Detail_Type				varchar(10);
 				Err_Patient_Detail_InOut			varchar(1);
@@ -67,7 +67,7 @@ xml_receiptdata_patient_makev3res {
 			Selection_Patient_Perform_Month	varchar(7);
 			Selection_Patient_InOut		varchar(2);
 			Selection_Patient_Detail_Information {
-				Selection_Receipt_Detail_Item_Position	varchar(2);
+				Selection_Patient_Detail_Item_Position	varchar(2);
 				Selection_Receipt_Detail_Information {
 					Patient_Detail_Code				varchar(4);
 					Patient_Detail_Type				varchar(10);
