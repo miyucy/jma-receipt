@@ -31598,8 +31598,7 @@
                    MOVE     ZERO         TO    WRK-CHK-KOKIGAK5
                  END-IF
              WHEN      "2"
-               IF   (FLG-CHIIKI           =  1)
-               OR   (FLG-HOKENICHIBU-CHK  =  1)
+               IF    FLG-HOKENICHIBU-CHK  =  1
                  IF   WRK-KINGAKU3  >  WRK-CHK-KOKIGAK2
                    COMPUTE  WRK-CHK-KOKIGAK5  =  WRK-KINGAKU3
                                               -  WRK-CHK-KOKIGAK2
