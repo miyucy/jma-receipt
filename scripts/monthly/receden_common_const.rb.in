@@ -16,6 +16,7 @@ class Receden_common_const
   H261201 = "20141201"
   H270101 = "20150101"
   H290801 = "20170801"
+  H300801 = "20180801"
 
   N = NUMERIC      = 0
   A = ALPHANUMERIC = 1
