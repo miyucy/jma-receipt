@@ -12971,7 +12971,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             WRK-DAISAN-FTNMONEY  +
                             WRK-DAISAN-FTNMONEY2
                  END-IF
-                 IF  SYU-ACCT-UPDKBN   =   "1"
+                 IF  SYU-ACCT-UPDKBN  NOT =  SPACE
                    MOVE  "1"  TO  WRK-DAISAN-ACCT-UPDKBN
                  END-IF
                END-IF
@@ -13048,7 +13048,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             WRK-DAISAN-FTNMONEY  +
                             SYU-SYUCOMPFTN
                  END-IF
-                 IF  SYU-ACCT-UPDKBN   =   "1"
+                 IF  SYU-ACCT-UPDKBN  NOT =  SPACE
                    MOVE  "1"  TO  WRK-DAISAN-ACCT-UPDKBN
                  END-IF
                END-IF
