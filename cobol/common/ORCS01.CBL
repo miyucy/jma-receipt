@@ -34637,6 +34637,7 @@
                       (COMB-KOH1HKNNUM          =  "970"          ) AND
                       (SYU-KOH1HKNNUM       NOT =  "970"          ) AND
                       (SYU-NYUGAIKBN            =   "2"           ))
+               OR    ( SYU-ACCT-UPDKBN          =   "2"            )
       *
                    IF   (LNK-S01-SAIKEISAN-KBN    =   "1" )
                    AND  (LNK-S01-IKTGENKEIFLG NOT =  SPACE)
@@ -34645,6 +34646,7 @@
                    AND  (LNK-SYU-SAIKEISANKBN     =  SPACE)
                    AND  (SYU-SAIKEISANKBN         =   "1" )
                    AND  (SYU-NYUGAIKBN            =   "2" )
+                   AND  (SYU-ACCT-UPDKBN      NOT =   "2" )
                      MOVE    ZERO    TO   FLG-OK
                      PERFORM    SYUNOU-CHECK-XXX-SEC
                      IF  FLG-OK  =  ZERO
@@ -34747,9 +34749,11 @@
                       (LNK-S01-IKTGENMKJFLG     =  SPACE          ) AND
                       (LNK-SYU-GRP-DENPNUM  NOT =  ZERO           ) AND
                       (LNK-SYU-GRP-DENPNUM      =  SYU-DENPNUM    ))
+               OR    ( SYU-ACCT-UPDKBN          =   "2"            )
                        IF  (LNK-S01-SAIKEISAN-KBN  =   "1"       )
                        AND (LNK-SYU-DENPNUM    NOT =  ZERO       )
                        AND (LNK-SYU-DENPNUM        =  SYU-DENPNUM)
+                       AND (SYU-ACCT-UPDKBN    NOT =   "2"       )
                          MOVE  SYU-SECMONEY      TO
                                    WK-SYUNOU-GENBUTU-SECMONEY-MAE
                          MOVE  SYU-TOTAL-HKNTEN  TO
@@ -34792,6 +34796,7 @@
                       (LNK-S01-IKTGENMKJFLG     =  SPACE          ) AND
                       (LNK-SYU-GRP-DENPNUM  NOT =  ZERO           ) AND
                       (LNK-SYU-GRP-DENPNUM      =  SYU-DENPNUM    ))
+               OR    ( SYU-ACCT-UPDKBN          =   "2"            )
                        GO    TO    SYUNOU-READ3-100
                ELSE
                        MOVE    ZERO    TO  FLG-SYUNOU
