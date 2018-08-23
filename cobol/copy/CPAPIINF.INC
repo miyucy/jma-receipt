@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      * 0500.201807
+      * 0500.201808
       ********************************************************************
        01  APIINF-AREA.
          03  APIINF-DATA.
@@ -58,7 +58,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "住所マスタ取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201805".
+           "0500.201808".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -148,7 +148,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者病名登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201808".
            05  FILLER                  PIC  X(16)      VALUE
            "orca22".
            05  FILLER                  PIC  X(32)      VALUE
@@ -158,7 +158,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者病名登録２".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201805".
+           "0500.201808".
            05  FILLER                  PIC  X(16)      VALUE
            "orca13".
            05  FILLER                  PIC  X(32)      VALUE
@@ -350,6 +350,46 @@
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
            05  FILLER                  PIC  X(16)      VALUE
+           "api01rv2".
+           05  FILLER                  PIC  X(32)      VALUE
+           "karteno1hv2".
+           05  FILLER                  PIC  X(64)      VALUE
+           SPACE.
+           05  FILLER                  PIC  X(64)      VALUE
+           "カルテ１号紙（入院）".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201808".
+           05  FILLER                  PIC  X(16)      VALUE
+           "api01rv2".
+           05  FILLER                  PIC  X(32)      VALUE
+           "karteno1v2".
+           05  FILLER                  PIC  X(64)      VALUE
+           SPACE.
+           05  FILLER                  PIC  X(64)      VALUE
+           "カルテ１号紙（外来）".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201808".
+           05  FILLER                  PIC  X(16)      VALUE
+           "api01rv2".
+           05  FILLER                  PIC  X(32)      VALUE
+           "karteno3hv2".
+           05  FILLER                  PIC  X(64)      VALUE
+           SPACE.
+           05  FILLER                  PIC  X(64)      VALUE
+           "カルテ３号紙（入院）".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201808".
+           05  FILLER                  PIC  X(16)      VALUE
+           "api01rv2".
+           05  FILLER                  PIC  X(32)      VALUE
+           "karteno3v2".
+           05  FILLER                  PIC  X(64)      VALUE
+           SPACE.
+           05  FILLER                  PIC  X(64)      VALUE
+           "カルテ３号紙（外来）".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201808".
+           05  FILLER                  PIC  X(16)      VALUE
            "orca101".
            05  FILLER                  PIC  X(32)      VALUE
            "manageusersv2".
@@ -438,7 +478,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診察料取得（初回接続）".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201808".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -448,7 +488,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療内容基本チェック".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201808".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -548,7 +588,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者基本情報一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201805".
+           "0500.201808".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -768,7 +808,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "日次・月次統計".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201807".
+           "0500.201808".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -860,10 +900,10 @@
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
          03  APIINF-R REDEFINES APIINF-DATA.
-           05  APIINF-OCC              OCCURS 84.
+           05  APIINF-OCC              OCCURS 88.
              07  APIINF-LD             PIC  X(16).
              07  APIINF-ID             PIC  X(32).
              07  APIINF-HAORI-NAME     PIC  X(64).
              07  APIINF-NAME           PIC  X(64).
              07  APIINF-VERSION        PIC  X(16).
-         03  APIINF-MAX                PIC  9(05)      VALUE 84.
+         03  APIINF-MAX                PIC  9(05)      VALUE 88.
