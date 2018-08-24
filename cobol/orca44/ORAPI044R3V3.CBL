@@ -435,6 +435,9 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE   "E89"                TO  WRK-ERRCD
            END-IF
+      *??
+           display "100 SPA-SYSYMD=" SPA-SYSYMD "#" 
+      *??
       *
            .
        100-INIT-EXT.
@@ -673,6 +676,8 @@
            ELSE
                DISPLAY "XMLOPEN failure = " MCP-RC
            END-IF
+      *??
+               DISPLAY "XMLOPEN"
       *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_receiptdata_patient_makev3res"
@@ -689,6 +694,8 @@
            ELSE
                DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
+      *??
+               DISPLAY "XMLWRITE"
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_receiptdata_patient_makev3res"
@@ -707,6 +714,8 @@
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "accept xml write failure "
            END-IF
+      *??
+               DISPLAY "300-RGTXMLMAKE-EXT"
       *
           .
        300-RGTXMLMAKE-EXT.
@@ -737,6 +746,9 @@
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN (1:6)
                                        TO  WRK-SYSYM-2
+      *??
+           display "2001 SPA-SYSYMD=" SPA-SYSYMD "#" WRK-SYSYM-2 "#" 
+      *??
       *
       *    カルテUID
            IF      RECEDMAKEQ-KARTE-UID =   SPACE
@@ -1242,11 +1254,6 @@
                                    =   SPACE
                        AND RECEDMAKEQ-PATIENT-MONTH (IDZZ)
                                    =   SPACE )
-      *??
-                DISPLAY "IDZZ=" IDZZ "#" RECEDMAKEQ-PATIENT-ID (IDZZ)
-                      "#" RECEDMAKEQ-PATIENT-INOUT (IDZZ)
-                       "#" RECEDMAKEQ-PATIENT-MONTH (IDZZ) "#"
-      *??
                INITIALIZE              SPA-T01KYOUTU-H
                MOVE    SPACE           TO  LINKAREA
                                            SPA-MOTOPG
@@ -1259,6 +1266,13 @@
                                            WRK-SELNUM
                INITIALIZE                  WRK-DETAIL-TBL
                                            WRK-T09-TBL
+               INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
+                                           SPA-NAI-T06-RECE-KOUMOKU
+                                           SPA-NAI-T06-BODY-SELNUM
+                                           SPA-T09-AREA
+      *??
+              display "idzz=" idzz "#"
+      *??
       *
       *        個別指定の重複チェック
                IF      IDZZ            >   1
@@ -1272,7 +1286,7 @@
                        AND   ( RECEDMAKEQ-PATIENT-MONTH (IDZZ)
                                    =   RECEDMAKEQ-PATIENT-MONTH (IDYY) )
                            MOVE    "E029"              TO  SPA-ERRCD
-                           MOVE    "同じ内容で設定してあります"
+                           MOVE    "同じ内容で設定してあります。"
                                                        TO  SPA-ERRMSG
                            MOVE    WRK-CONS-LINE-MAX   TO  IDYY
                        END-IF
@@ -1317,7 +1331,8 @@
                                MOVE    "2"             TO  T06-NYUGAIKBN
                            WHEN    OTHER
                                MOVE    "0001"          TO  SPA-ERRCD
-                               MOVE    "入外区分の設定に誤りがあります"
+                               MOVE
+                                   "入外区分の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                        END-EVALUATE
                    END-IF
@@ -1338,6 +1353,9 @@
                    END-IF
                END-IF
       *
+      *??
+          DISPLAY "2001 SPA-ERRCD=" SPA-ERRCD "#" SPA-GMN-T09-MAX "#"
+      *??
                IF      SPA-ERRCD       =   SPACE
                    MOVE    SPACE           TO  MCP-STATUS
                    MOVE    "ACTIVATE"      TO  MCP-EVENT
@@ -1347,6 +1365,9 @@
                END-IF
       *
                IF      SPA-ERRCD       =   SPACE
+      *??
+          DISPLAY "SPA-GMN-T09-MAX="   SPA-GMN-T09-MAX "#"
+      *??
       *            個別対象−レセプト情報チェック処理
                    PERFORM 20011-PATIENT-DETAIL-CHK-SEC
                ELSE
@@ -1393,10 +1414,10 @@
                                MOVE    SPACE       TO  MCP-EVENT
       *
                                PERFORM 800-ORCGT06-CALL-SEC
-                               INITIALIZE      SPA-GMN-T06-RECE-KOUMOKU
-                                               SPA-NAI-T06-RECE-KOUMOKU
-                               MOVE    ZERO        TO
-                                               SPA-NAI-T06-BODY-SELNUM
+      *??                         INITIALIZE      SPA-GMN-T06-RECE-KOUMOKU
+      *??                                         SPA-NAI-T06-RECE-KOUMOKU
+      *??                         MOVE    ZERO        TO
+      *??                                         SPA-NAI-T06-BODY-SELNUM
                            END-IF
                        WHEN    OTHER
                            IF      SPA-GMN-T09-MAX >   1
@@ -1564,7 +1585,7 @@
                                    =   SPACE
                MOVE    SPACE           TO  SPA-ERRCD
       *??
-                DISPLAY "IDYY=" IDYY "#" 
+      *         DISPLAY "IDYY=" IDYY "#" 
       *??
                ADD     1               TO  WRK-DETAIL-MAX
       *        個別指定の重複チェック
@@ -1576,7 +1597,7 @@
                                    =   RECEDMAKEQ-DETAIL-INFORMATION
                                                           (IDZZ IDYY) )
                            MOVE    "E029"              TO  SPA-ERRCD
-                           MOVE    "同じ内容で設定してあります"
+                           MOVE    "同じ内容で設定してあります。"
                                                        TO  SPA-ERRMSG
                            MOVE    30                  TO  IDVV
                        END-IF
@@ -1613,13 +1634,9 @@
                                                        (WRK-DETAIL-MAX)
                            END-IF
                        WHEN    SPACE   ALSO    ANY
-                           MOVE    "E028"          TO  SPA-ERRCD
-                           MOVE    "入外区分が未設定です"
-                                                   TO  SPA-ERRMSG
+                           MOVE    "E3o"          TO  SPA-ERRCD
                        WHEN    OTHER
-                           MOVE    "0001"          TO  SPA-ERRCD
-                           MOVE    "入外区分の設定に誤りがあります"
-                                                   TO  SPA-ERRMSG
+                           MOVE    "E3n"          TO  SPA-ERRCD
                    END-EVALUATE
                END-IF
       *
@@ -1704,7 +1721,7 @@
                                                            (IDZZ IDYY)
                                                NOT =   SPACE )
       *                        労働保険番号と年金証書番号の重複
-                               MOVE    "E??"       TO  SPA-ERRCD
+                               MOVE    "E3m"       TO  SPA-ERRCD
                            END-IF
                        END-IF
       *                労働保険番号
@@ -1723,7 +1740,7 @@
                                IF    ( KANACHK-RC      =   ZERO       )
                                AND   ( KANACHK-RC2     =   ZERO       )
                                AND   ( KANACHK-SYUBETU =   1          )
-                               AND   ( KANACHK-MAX     =   14  OR  11 )
+      *************************AND   ( KANACHK-MAX     =   14  OR  11 )
                                    MOVE    RECEDMAKEQ-ACCIDENT-NUMBER
                                                           (IDZZ IDYY)
                                                        TO
@@ -1750,7 +1767,7 @@
                                IF    ( KANACHK-RC      =   ZERO )
                                AND   ( KANACHK-RC2     =   ZERO )
                                AND   ( KANACHK-SYUBETU =   1    )
-                               AND   ( KANACHK-MAX     =   9    )
+      *************************AND   ( KANACHK-MAX     =   9    )
                                    MOVE    RECEDMAKEQ-PENSIONCERTIFICATE
                                                           (IDZZ IDYY)
                                                        TO
@@ -1998,7 +2015,7 @@
                                    IF    ( KANACHK-RC      =   ZERO )
                                    AND   ( KANACHK-RC2     =   ZERO )
                                    AND   ( KANACHK-SYUBETU =   1    )
-                                   AND   ( KANACHK-MAX     =   8    )
+      **************************** AND   ( KANACHK-MAX     =   8    )
                                        MOVE   RECEDMAKEQ-PROVIDER-NUMBER
                                                       (IDZZ IDYY IDXX)
                                                TO  WRK-DETAIL-FTAJANUM
@@ -2026,7 +2043,7 @@
                                    IF    ( KANACHK-RC      =   ZERO )
                                    AND   ( KANACHK-RC2     =   ZERO )
                                    AND   ( KANACHK-SYUBETU =   1    )
-                                   AND   ( KANACHK-MAX     =   7    )
+      **************************** AND   ( KANACHK-MAX     =   7    )
                                        MOVE
                                            RECEDMAKEQ-RECIPIENT-NUMBER
                                                       (IDZZ IDYY IDXX)
@@ -2431,7 +2448,7 @@
                                                    (WRK-ERR-PATIENT-MAX)
                            WHEN    "0008"
                                MOVE
-                               "同じレセプトが既に対象になっています"
+                               "同じレセプトが既に対象になっています。"
                                                TO  SPA-ERRMSG
                                MOVE    "E51"   TO  RECEDMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
@@ -2463,7 +2480,7 @@
                        EVALUATE    SPA-ERRCD
                            WHEN    "0008"
                                MOVE
-                               "同じレセプトが既に対象になっています"
+                               "同じレセプトが既に対象になっています。"
                                                TO  SPA-ERRMSG
                        END-EVALUATE
                        MOVE    "E51"           TO
@@ -2510,70 +2527,91 @@
                                    (WRK-ERR-PATIENT-MAX WRK-DETAIL-IDX)
                        EVALUATE    SPA-ERRCD
                            WHEN    "E33"
-                               MOVE    "不要な設定があります"
+                               MOVE    "不要な設定があります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E34"
                                MOVE
-                               "労災自賠保険区分の設定に誤りがあります"
+                              "労災自賠保険区分の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E35"
                                MOVE
-                                   "労働保険番号の設定に誤りがあります"
+                               "労働保険番号の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E36"
                                MOVE
-                                   "年金証書番号の設定に誤りがあります"
+                               "年金証書番号の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E37"
-                               MOVE    "災害区分の設定に誤りがあります"
+                               MOVE
+                                   "災害区分の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E38"
                                MOVE
-                                   "種別コードの設定に誤りがあります"
+                                   "種別コードの設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E39"
                                MOVE
-                                   "保険者番号の設定に誤りがあります"
+                                   "保険者番号の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E3a"
-                               MOVE    "記号の設定に誤りがあります"
+                               MOVE    "記号の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E3b"
-                               MOVE    "番号の設定に誤りがあります"
+                               MOVE    "番号の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
-                           WHEN    "E3c"
-                               MOVE    "補助区分の設定に誤りがあります"
-                                                       TO  SPA-ERRMSG
+      ***                  WHEN    "E3c"
+      ***                      MOVE
+      ***                          "補助区分の設定に誤りがあります。"
+      ***                                              TO  SPA-ERRMSG
                            WHEN    "E3d"
-                               MOVE    "公費ＩＤの設定に誤りがあります"
+                               MOVE
+                                   "公費ＩＤの設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E3e"
                                MOVE
-                                   "負担者番号の設定に誤りがあります"
+                                   "負担者番号の設定に誤りがあります。"
                                                        TO SPA-ERRMSG
                            WHEN    "E3f"
                                MOVE
-                                   "受給者番号の設定に誤りがあります"
+                                   "受給者番号の設定に誤りがあります。"
                                                        TO SPA-ERRMSG
                            WHEN    "E3g"
                                MOVE
-                                  "災害該当の有無の設定に誤りがあります"
+                               "災害該当の有無の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E3h"
                                MOVE
-                                  "入所中の有無の設定に誤りがあります"
+                                  "入所中の有無の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E3i"
                                MOVE
-                                  "実施確認指示の設定に誤りがあります"
+                                  "実施確認指示の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E3j"
                                MOVE
-                                  "保険の種類の設定に誤りがあります"
+                                  "保険の種類の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E3k"
                                MOVE
-                                  "公費の種類の設定に誤りがあります"
+                                  "公費の種類の設定に誤りがあります。"
+                                                       TO  SPA-ERRMSG
+                           WHEN    "E3l"
+                               MOVE
+                                   "保険ＩＤの設定に誤りがあります。"
+                                                       TO  SPA-ERRMSG
+                           WHEN    "E3m"
+                               STRING  "労働保険番号、年金証書番号の"
+                                                   DELIMITED   BY  SIZE
+                                       "の両方に設定してあります。"
+                                                   DELIMITED   BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                               END-STRING
+                           WHEN    "E3n"
+                               MOVE
+                                   "入外区分の設定に誤りがあります。"
+                                                       TO  SPA-ERRMSG
+                           WHEN    "E3o"
+                               MOVE    "入外区分が未設定です。"
                                                        TO  SPA-ERRMSG
                            WHEN    "E53"
                                MOVE
@@ -2850,11 +2888,6 @@
                END-IF
            END-PERFORM
       *
-      *??  IF      WRK-ERRCD       =   SPACE
-      *??      MOVE    "E55"           TO  WRK-ERRCD
-      *??      MOVE    "対象のレセプトが複数存在します。"
-      *??                              TO  WRK-ERRMSG
-      *??  END-IF
            .
        20013-PATIENT-SELECT-EXT.
            EXIT.
@@ -3597,10 +3630,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "期間指定が暦日ではありません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E26"
-                   MOVE    "保険者番号が未設定です。"
+                   MOVE    "直接請求する保険者番号が未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E27"
-                   MOVE    "保険者番号の設定に誤りがあります。"
+                   MOVE
+                       "直接請求する保険者番号の設定に誤りがあります。"
                                                    TO  WRK-ERRMSG
                WHEN    "E30"
                    MOVE
@@ -3621,15 +3655,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    SPA-ERRMSG              TO  WRK-ERRMSG
                WHEN    "E63"
       *            個別対象患者エラー
-                   MOVE    "設定内容に誤りがあります"
+                   MOVE    "設定内容に誤りがあります。"
                                                    TO  WRK-ERRMSG
                WHEN    "E55"
       *            レセプト複数対象個別対象患者エラー
                    MOVE    "対象のレセプトが複数存在します。"
-                                                   TO  WRK-ERRMSG
-      *
-               WHEN    "E80"
-                   MOVE    "一時ディレクトリが取得できません"
                                                    TO  WRK-ERRMSG
       *        共通エラー
                WHEN    "E89"
