@@ -3932,10 +3932,17 @@
                                         TO  T06-RECE-LIST-ROW
            END-IF
       * 
-           INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
-                                       SPA-NAI-T06-RECE-KOUMOKU
-                                       SPA-NAI-T06-BODY-SELNUM
-                                       SPA-T09-AREA
+      *
+      *    £È£Á£Ï£Ò£É¤Î¤È¤­
+           IF      SPA-T01-JOB-PARAM
+                                   NOT =   SPACE
+               CONTINUE
+           ELSE
+               INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
+                                           SPA-NAI-T06-RECE-KOUMOKU
+                                           SPA-NAI-T06-BODY-SELNUM
+                                           SPA-T09-AREA
+           END-IF
       *
            MOVE    4                TO  SPA-GMN-T06-CUR
            .
