@@ -25,6 +25,7 @@ path	key		{
 			WHERE   HOSPNUM     =   :HOSPNUM
 			AND   CDSYU        =   :CDSYU
 			AND   INPUTCD      LIKE   :INPUTCD
+			ESCAPE  '/'
 			ORDER   BY         INPUTCD
 		;
 	};
@@ -75,6 +76,7 @@ path	del11	{
 			WHERE   HOSPNUM     =   :HOSPNUM
 			AND   CDSYU        =   :CDSYU
 			AND   INPUTCD      LIKE   :INPUTCD
+			ESCAPE  '/'
 		;
 	};
 };
