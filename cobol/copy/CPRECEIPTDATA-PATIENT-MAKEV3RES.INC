@@ -70,7 +70,7 @@
                    05  RECEDMAKES-API-WARNING-MSG
                                            PIC X(100).
       *        エラー患者一覧
-               03  RECEDMAKES-ERR-INFORMATION      OCCURS  100.
+               03  RECEDMAKES-ERR-INFORMATION      OCCURS  20.
                    05  RECEDMAKES-ITEM-POSITION
                                            PIC X(3).
                    05  RECEDMAKES-PATIENT-ID
@@ -158,7 +158,7 @@
                        07  RECEDMAKES-DETAIL-ERROR-MSG
                                            PIC X(100).
       *        選択一覧
-               03  RECEDMAKES-SELECT-INFORMATION       OCCURS  100.
+               03  RECEDMAKES-SELECT-INFORMATION       OCCURS  20.
                    05  RECEDMAKES-S-ITEM-POSITION
                                            PIC X(3).
                    05  RECEDMAKES-S-PATIENT-ID

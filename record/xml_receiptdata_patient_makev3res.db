@@ -60,7 +60,7 @@ xml_receiptdata_patient_makev3res {
 				Err_Patient_Detail_Error_Code			varchar(3);
 				Err_Patient_Detail_Error_Message		varchar(100);
 			} [30];
-		} [100];
+		} [20];
 		Selection_Patient_Information {
 			Selection_Patient_Item_Position	varchar(3);
 			Selection_Patient_ID		varchar(20);
@@ -95,7 +95,7 @@ xml_receiptdata_patient_makev3res {
 					Patient_Detail_Warning_Message			varchar(100);
 				} [30];
 			} [30];
-		} [100];
+		} [20];
 		Effective_Period_Information{
 			Info_Period_Start_Month	varchar(7);
 			Info_Period_End_Month	varchar(7);

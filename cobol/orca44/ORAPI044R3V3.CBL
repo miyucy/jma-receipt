@@ -435,9 +435,6 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE   "E89"                TO  WRK-ERRCD
            END-IF
-      *??
-           display "100 SPA-SYSYMD=" SPA-SYSYMD "#" 
-      *??
       *
            .
        100-INIT-EXT.
@@ -676,8 +673,6 @@
            ELSE
                DISPLAY "XMLOPEN failure = " MCP-RC
            END-IF
-      *??
-               DISPLAY "XMLOPEN"
       *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_receiptdata_patient_makev3res"
@@ -694,8 +689,6 @@
            ELSE
                DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
-      *??
-               DISPLAY "XMLWRITE"
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_receiptdata_patient_makev3res"
@@ -714,8 +707,6 @@
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "accept xml write failure "
            END-IF
-      *??
-               DISPLAY "300-RGTXMLMAKE-EXT"
       *
           .
        300-RGTXMLMAKE-EXT.
@@ -746,9 +737,6 @@
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN (1:6)
                                        TO  WRK-SYSYM-2
-      *??
-           display "2001 SPA-SYSYMD=" SPA-SYSYMD "#" WRK-SYSYM-2 "#" 
-      *??
       *
       *    カルテUID
            IF      RECEDMAKEQ-KARTE-UID =   SPACE
@@ -1271,7 +1259,7 @@
                                            SPA-NAI-T06-BODY-SELNUM
                                            SPA-T09-AREA
       *??
-              display "idzz=" idzz "#"
+      *        display "idzz=" idzz "#"
       *??
       *
       *        個別指定の重複チェック
@@ -1353,9 +1341,6 @@
                    END-IF
                END-IF
       *
-      *??
-          DISPLAY "2001 SPA-ERRCD=" SPA-ERRCD "#" SPA-GMN-T09-MAX "#"
-      *??
                IF      SPA-ERRCD       =   SPACE
                    MOVE    SPACE           TO  MCP-STATUS
                    MOVE    "ACTIVATE"      TO  MCP-EVENT
@@ -1365,9 +1350,6 @@
                END-IF
       *
                IF      SPA-ERRCD       =   SPACE
-      *??
-          DISPLAY "SPA-GMN-T09-MAX="   SPA-GMN-T09-MAX "#"
-      *??
       *            個別対象−レセプト情報チェック処理
                    PERFORM 20011-PATIENT-DETAIL-CHK-SEC
                ELSE
@@ -1378,8 +1360,8 @@
                END-IF
       *
       *??
-          DISPLAY "2001 SPA-TIDCD=" IDZZ "#" SPA-ERRCD "#" SPA-TIDCD "#"
-                       SPA-GMN-T09-MAX "#"
+      *    DISPLAY "2001 SPA-TIDCD=" IDZZ "#" SPA-ERRCD "#" SPA-TIDCD "#"
+      *                 SPA-GMN-T09-MAX "#" WRK-DETAIL-MAX "#"
       *??
                IF      SPA-ERRCD       =   SPACE
                    EVALUATE    SPA-TIDCD
@@ -1396,7 +1378,7 @@
                                PERFORM 20013-PATIENT-SELECT-SEC
                            ELSE
       *                        個別対象一覧に存在するか
-                               INITIALIZE          SPA-T01KYOUTU-H
+      *************************INITIALIZE          SPA-T01KYOUTU-H
                                MOVE    SPACE       TO  LINKAREA
                                                        SPA-MOTOPG
                                                        SPA-ERRCD
@@ -1414,10 +1396,6 @@
                                MOVE    SPACE       TO  MCP-EVENT
       *
                                PERFORM 800-ORCGT06-CALL-SEC
-      *??                         INITIALIZE      SPA-GMN-T06-RECE-KOUMOKU
-      *??                                         SPA-NAI-T06-RECE-KOUMOKU
-      *??                         MOVE    ZERO        TO
-      *??                                         SPA-NAI-T06-BODY-SELNUM
                            END-IF
                        WHEN    OTHER
                            IF      SPA-GMN-T09-MAX >   1
@@ -1472,8 +1450,8 @@
                                                IF      WRK-T09-FLAG(IDZ)
                                                            =   "True"
       *                                            警告分を対象とする
-                                                   INITIALIZE
-                                                       SPA-T01KYOUTU-H
+      *****************************                INITIALIZE
+      *****************************                    SPA-T01KYOUTU-H
                                                    MOVE    SPACE
                                                        TO  SPA-ERRCD
                                                            SPA-ERRMSG
@@ -1613,6 +1591,7 @@
                                MOVE    RECEDMAKEQ-PATIENT-INOUT (IDZZ)
                                            TO
                                    RECEDMAKEQ-DETAIL-INOUT (IDZZ IDYY)
+
                        END-EVALUATE
                    END-IF
                    EVALUATE    RECEDMAKEQ-DETAIL-INOUT (IDZZ IDYY)
@@ -2077,6 +2056,7 @@
                                WHEN    "True"
                                    MOVE    RECEDMAKEQ-INCARE-CLASS
                                                            (IDZZ IDYY)
+
                                            TO    WRK-DETAIL-INCARE-CLASS
                                                        (WRK-DETAIL-MAX)
                                WHEN    OTHER
@@ -2357,7 +2337,7 @@
            IF      SPA-ERRCD       NOT =   SPACE
       *        複数の個別対象−レセプト情報と一致するとき
                IF      FLG-SELECT-ERR      =   1
-                   IF      FLG-PATIENT-SEL      =   ZERO
+                   IF      FLG-PATIENT-SEL     =   ZERO
                        MOVE    ZERO            TO  WRK-S-DETAIL-MAX
                                                    IDVV
                    END-IF
@@ -2379,7 +2359,32 @@
                        END-IF
                    END-PERFORM
                END-IF
+           END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+      *        ひとつの個別対象−レセプト情報と一致するとき
+               PERFORM VARYING IDYY    FROM    1   BY  1
+                       UNTIL   IDYY    >       WRK-DETAIL-MAX
+                   PERFORM VARYING IDW FROM    1   BY  1
+                           UNTIL   IDW >       SPA-GMN-T09-MAX
+                       IF      WRK-T09-CHK (IDW)   >   1
+                           IF      WRK-T09-IDX (IDYY IDW)
+                                                   >   ZERO
+                               MOVE    "E57"       TO  SPA-ERRCD
+                               MOVE    IDYY        TO  WRK-DETAIL-ERR
+                               PERFORM 20012-PATIENT-ERR-SEC
+      *                        個別対象患者選択一覧処理
+                               MOVE    1           TO  FLG-SELECT-ERR
+                               ADD     1           TO  WRK-S-DETAIL-MAX
+                               MOVE    IDW         TO  WRK-T09-SELNUM
+                               PERFORM 20013-PATIENT-SELECT-SEC
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
                INITIALIZE                  WRK-DETAIL-TBL
                                            WRK-T09-TBL
                MOVE    ZERO            TO  FLG-SELECT-ERR
@@ -2620,6 +2625,10 @@
                            WHEN    "E54"
                                MOVE
                      "レセプト情報から複数のレセプトが対象になります。"
+                                                       TO  SPA-ERRMSG
+                           WHEN    "E57"
+                               MOVE
+                               "複数のレセプト情報から対象となります。"
                                                        TO  SPA-ERRMSG
                        END-EVALUATE
                END-EVALUATE
