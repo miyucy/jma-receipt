@@ -96,6 +96,9 @@ Z06 {
       state int;
       label varchar(10);
     };
+    B03 {
+      state int;
+    };
     MIDASHI { #GtkLabel
       style varchar(20);
       textdata varchar(80);

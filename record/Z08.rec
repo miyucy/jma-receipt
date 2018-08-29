@@ -76,5 +76,8 @@ Z08 {
       style varchar(20);
       textdata varchar(30);
     };
+    B03 {
+      state int;
+    };
   };
 };

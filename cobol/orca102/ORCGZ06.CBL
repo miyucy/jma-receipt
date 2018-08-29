@@ -1444,6 +1444,12 @@
       *****************************************************************
        403-DEL-SEC                     SECTION.
       *
+      *    新規・改正は削除処理なし
+           IF      SPA-Z01-SYORIKBN    =   1
+                                       OR  3
+               GO      TO   403-DEL-EXT
+           END-IF
+      *
            MOVE    "0001"              TO  SPA-ZIDCD
       *
            .
@@ -1991,6 +1997,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WIDGET-NORMAL       TO  Z06-COPYCD-STATE
            MOVE    WIDGET-NORMAL       TO  Z06-B06-STATE
            MOVE    WIDGET-NORMAL       TO  Z06-B09-STATE
+      *H30.9
+      *    新規・改正処理は削除なし
+           IF      SPA-Z01-SYORIKBN    =   1
+                                       OR  3
+               MOVE    WIDGET-INSENSITIVE  TO  Z06-B03-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  Z06-B03-STATE
+           END-IF
       *
            .
        51O-GSRAUTH-EXT.

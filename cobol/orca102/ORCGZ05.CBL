@@ -2631,7 +2631,7 @@
       *****************************************************************
       *    削除確認画面表示処理
       *****************************************************************
-       403-DEL-SEC                               SECTION.
+       403-DEL-SEC                     SECTION.
       *
            IF      SPA-NAI-KEIFLG1     =   ZERO
                IF      SPA-Z01-SRYCD(1:1)  =   "7"
@@ -3857,6 +3857,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-NORMAL           TO  Z05-B03-STATE
            ELSE
                MOVE    WIDGET-NORMAL           TO  Z05-B12-STATE
+               MOVE    WIDGET-INSENSITIVE      TO  Z05-B03-STATE
+           END-IF
+      *H30.9
+      *    新規・改正処理はなし
+           IF      SPA-Z01-SYORIKBN    =   1
+                                       OR  3
                MOVE    WIDGET-INSENSITIVE      TO  Z05-B03-STATE
            END-IF
       *

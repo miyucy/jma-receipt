@@ -4436,6 +4436,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    WIDGET-INSENSITIVE      TO  Z04-B03-STATE
            END-IF
+      *H30.9
+      *    新規・改正処理はなし
+           IF      SPA-Z01-SYORIKBN    =   1
+                                       OR  3
+               MOVE    WIDGET-INSENSITIVE      TO  Z04-B03-STATE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *

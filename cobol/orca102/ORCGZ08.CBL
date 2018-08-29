@@ -41,6 +41,9 @@
       *
        WORKING-STORAGE                           SECTION.
       *
+      *    画面色等
+           COPY    "ENUM-VALUE".
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
@@ -1663,8 +1666,9 @@
       *****************************************************************
        403-DEL-SEC                               SECTION.
       *
-      *    新規は処理なし
+      *    新規・改正は削除処理なし
            IF      SPA-Z01-SYORIKBN    =   1
+                                       OR  3
                GO      TO   403-DEL-EXT
            END-IF
       *
@@ -2433,6 +2437,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-MASTER-CLASS    =   2
                MOVE    "【ユーザー管理】"  TO  Z08-MIDASHI-DATA
                MOVE    "red"               TO  Z08-MIDASHI-STYLE
+           END-IF
+      *
+      *H30.9
+      *    新規・改正処理は削除なし
+           IF      SPA-Z01-SYORIKBN    =   1
+                                       OR  3
+               MOVE    WIDGET-INSENSITIVE  TO  Z08-B03-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  Z08-B03-STATE
            END-IF
       *
       *

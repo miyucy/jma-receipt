@@ -2139,6 +2139,13 @@
       *****************************************************************
        403-DEL-SEC                               SECTION.
       *
+      *H30.9
+      *    新規・改正処理はなし
+           IF      SPA-Z01-SYORIKBN    =   1
+                                       OR  3
+               GO      TO     403-DEL-EXT
+           END-IF
+      *
            IF      SPA-NAI-KEIFLG1     =   ZERO
                IF      SPA-Z01-SRYCD(1:1)  =   "8"
                    MOVE    "K003"          TO  SPA-ERRCD
@@ -2964,6 +2971,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                OR (SPA-MENTE-OK        =   1 )
                MOVE    WIDGET-NORMAL           TO  Z02-B03-STATE
            ELSE
+               MOVE    WIDGET-INSENSITIVE      TO  Z02-B03-STATE
+           END-IF
+      *H30.9
+      *    新規・改正処理はなし
+           IF      SPA-Z01-SYORIKBN    =   1
+                                       OR  3
                MOVE    WIDGET-INSENSITIVE      TO  Z02-B03-STATE
            END-IF
       *

@@ -55,3 +55,5 @@
               03  Z08-MNEXT.
                 04  Z08-MNEXT-STYLE   PIC X(20).
                 04  Z08-MNEXT-DATA    PIC X(30).
+              03  Z08-B03.
+                04  Z08-B03-STATE   PIC S9(9)   BINARY.
