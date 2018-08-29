@@ -3396,6 +3396,10 @@
                IF      FLG-DATA-ARI    =   ZERO
                    PERFORM 200211-SYOHOU-INIT-SEC
                    MOVE    ZERO                TO  FLG-CHIKHKT
+                   MOVE    SPA-DRCD            TO  WRK-DRCD
+                   MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
+                   MOVE    SPA-SRYKA           TO  WRK-SRYKA
+                   MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
                END-IF
                IF      WRK-PAGE-MAX        =   ZERO
                    MOVE    1                   TO  WRK-PAGE-MAX
