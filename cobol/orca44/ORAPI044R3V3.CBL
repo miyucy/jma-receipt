@@ -124,7 +124,7 @@
            03  WRK-ERR-PATIENT-MAX     PIC 9(03).
            03  WRK-S-PATIENT-MAX       PIC 9(03).
            03  WRK-S-DETAIL-MAX        PIC 9(03).
-           03  WRK-S-RECEIPT-MAX      PIC 9(03).
+           03  WRK-S-RECEIPT-MAX       PIC 9(03).
       *
       *    ワーニング患者一覧
            03  WRK-WARNING-INFORMATION.
@@ -208,6 +208,7 @@
                05  WRK-T09-SEL-OCC     OCCURS  20.
                    07  WRK-T09-CHK         PIC 9(02).
                    07  WRK-T09-FLAG        PIC X(04).
+                   07  WRK-T09-DET-IDX     PIC 9(02).
       *        対象となるレセプト件数
                05  WRK-T09-DET-OCC     OCCURS  30.
                    07  WRK-T09-CNT         PIC 9(02).
@@ -1252,6 +1253,8 @@
                                            FLG-PATIENT-SEL
                                            WRK-DETAIL-ERR
                                            WRK-SELNUM
+                                           WRK-S-DETAIL-MAX
+                                           WRK-S-RECEIPT-MAX
                INITIALIZE                  WRK-DETAIL-TBL
                                            WRK-T09-TBL
                INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
@@ -1259,7 +1262,7 @@
                                            SPA-NAI-T06-BODY-SELNUM
                                            SPA-T09-AREA
       *??
-      *        display "idzz=" idzz "#"
+      *        display "IDZZ=" idzz "#"
       *??
       *
       *        個別指定の重複チェック
@@ -1360,8 +1363,8 @@
                END-IF
       *
       *??
-      *    DISPLAY "2001 SPA-TIDCD=" IDZZ "#" SPA-ERRCD "#" SPA-TIDCD "#"
-      *                 SPA-GMN-T09-MAX "#" WRK-DETAIL-MAX "#"
+      *   DISPLAY "2001 SPA-TIDCD=" IDZZ "#" SPA-ERRCD "#" SPA-TIDCD "#"
+      *                SPA-GMN-T09-MAX "#" WRK-DETAIL-MAX "#"
       *??
                IF      SPA-ERRCD       =   SPACE
                    EVALUATE    SPA-TIDCD
@@ -1450,8 +1453,6 @@
                                                IF      WRK-T09-FLAG(IDZ)
                                                            =   "True"
       *                                            警告分を対象とする
-      *****************************                INITIALIZE
-      *****************************                    SPA-T01KYOUTU-H
                                                    MOVE    SPACE
                                                        TO  SPA-ERRCD
                                                            SPA-ERRMSG
@@ -1470,6 +1471,14 @@
                                                    MOVE    IDYY    TO
                                                            WRK-SELNUM
                                                ELSE
+                                                   IF  WRK-DETAIL-MAX
+                                                               =   ZERO
+                                                       MOVE    ZERO  TO
+                                                          FLG-SELECT-ERR
+                                                   ELSE
+                                                       MOVE    2     TO
+                                                          FLG-SELECT-ERR
+                                                   END-IF
                                                    MOVE    IDZ TO
                                                           WRK-T09-SELNUM
       *                                            個別対象患者選択一覧処理
@@ -1479,6 +1488,8 @@
                                            WHEN    OTHER
                                                IF      WRK-DETAIL-MAX
                                                                =   ZERO
+                                                   MOVE    ZERO    TO
+                                                          FLG-SELECT-ERR
                                                    MOVE    IDZ TO
                                                           WRK-T09-SELNUM
       *                                            個別対象患者選択一覧処理
@@ -1591,7 +1602,6 @@
                                MOVE    RECEDMAKEQ-PATIENT-INOUT (IDZZ)
                                            TO
                                    RECEDMAKEQ-DETAIL-INOUT (IDZZ IDYY)
-
                        END-EVALUATE
                    END-IF
                    EVALUATE    RECEDMAKEQ-DETAIL-INOUT (IDZZ IDYY)
@@ -2056,7 +2066,6 @@
                                WHEN    "True"
                                    MOVE    RECEDMAKEQ-INCARE-CLASS
                                                            (IDZZ IDYY)
-
                                            TO    WRK-DETAIL-INCARE-CLASS
                                                        (WRK-DETAIL-MAX)
                                WHEN    OTHER
@@ -2099,11 +2108,11 @@
        DISPLAY "KOH-OCC(2)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 2)
        DISPLAY "KOH-OCC(3)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 3)
        DISPLAY "KOH-OCC(4)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 4)
-       DISPLAY " "
        DISPLAY "HKNKBN   =" WRK-DETAIL-HKNKBN (WRK-DETAIL-MAX)
        DISPLAY "SAIGAIKBN=" WRK-DETAIL-SAIGAIKBN (WRK-DETAIL-MAX)
        display "KOFUNUM  =" WRK-DETAIL-KOFUNUM  (WRK-DETAIL-MAX)
        DISPLAY "SPA-ERRCD=" SPA-ERRCD "#"
+       display " "
       *??
                IF      SPA-ERRCD       =   SPACE
                    CONTINUE
@@ -2236,28 +2245,46 @@
                                MOVE    1            TO  FLG-DETAIL-CHK
                            END-IF
                        END-IF
-                       IF      WRK-DETAIL-DISASTER (IDYY)
-                                               =   "True"
-                           IF      SPA-NAI-T09-TDISASTER  (IDVV)
-                                   >   ZERO
-                               CONTINUE
-                           ELSE
-                               MOVE    1            TO  FLG-DETAIL-CHK
-                           END-IF
-                       END-IF
-                       IF      WRK-DETAIL-INCARE-CLASS (IDYY)
-                                               =   "True"
-                           EVALUATE    SPA-NAI-T09-RECE10-TRECEIPT-KBN
-                                                           (IDVV) (1:1)
-                               WHEN    "1"
-                               WHEN    "2"
-                               WHEN    "3"
-                               WHEN    "4"
+                       EVALUATE    WRK-DETAIL-DISASTER (IDYY)
+                           WHEN    "True"
+                               IF      SPA-NAI-T09-TDISASTER  (IDVV)
+                                                   >   ZERO
                                    CONTINUE
-                               WHEN    OTHER
+                               ELSE
                                    MOVE    1       TO  FLG-DETAIL-CHK
-                           END-EVALUATE
-                       END-IF
+                               END-IF
+                           WHEN    SPACE
+                               IF      SPA-NAI-T09-TDISASTER  (IDVV)
+                                                   =   ZERO
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1       TO  FLG-DETAIL-CHK
+                               END-IF
+                       END-EVALUATE
+                       EVALUATE    WRK-DETAIL-INCARE-CLASS (IDYY)
+                           WHEN    "True"
+                               EVALUATE
+                                   SPA-NAI-T09-RECE10-TRECEIPT-KBN
+                                                           (IDVV) (1:1)
+                                   WHEN    "1"
+                                   WHEN    "2"
+                                   WHEN    "3"
+                                   WHEN    "4"
+                                       CONTINUE
+                                   WHEN    OTHER
+                                       MOVE    1   TO  FLG-DETAIL-CHK
+                               END-EVALUATE
+                           WHEN    SPACE
+                               EVALUATE
+                                   SPA-NAI-T09-RECE10-TRECEIPT-KBN
+                                                           (IDVV) (1:1)
+                                   WHEN    "1"
+                                   WHEN    "2"
+                                   WHEN    "3"
+                                   WHEN    "4"
+                                       MOVE    1   TO  FLG-DETAIL-CHK
+                               END-EVALUATE
+                       END-EVALUATE
                        PERFORM VARYING IDY     FROM    1   BY  1
                                UNTIL   IDY     >       4
                                OR     FLG-DETAIL-CHK  =       1
@@ -2305,6 +2332,7 @@
                    IF      FLG-DETAIL-CHK         =   ZERO
       *                対象のレセプトに対する件数
                        ADD     1               TO  WRK-T09-CHK    (IDVV)
+                       MOVE    IDYY            TO  WRK-T09-DET-IDX(IDVV)
                        MOVE    WRK-DETAIL-RECEIPT-PERFORM-FLAG (IDYY)
                                                TO  WRK-T09-FLAG   (IDVV)
       *                リクエストに対する件数
@@ -2418,8 +2446,8 @@
            END-IF
       *
       *??
-          DISPLAY "20012 ERR=" WRK-DETAIL-ERR "#" WRK-T09-SELNUM "#"
-                SPA-ERRCD "#"
+      *    DISPLAY "20012 ERR=" WRK-DETAIL-ERR "#" WRK-T09-SELNUM "#"
+      *          SPA-ERRCD "#"
       *??
            IF      WRK-DETAIL-ERR      =   ZERO
                IF      WRK-T09-SELNUM      =   ZERO
@@ -2692,14 +2720,21 @@
            END-IF
       *
            IF      FLG-SELECT-ERR      =   ZERO
+      *        詳細設定なしのとき
                MOVE    1                   TO  IDVV
                                                WRK-S-DETAIL-MAX
                MOVE    ZERO                TO  WRK-NUM
            ELSE
-               MOVE    IDYY                TO  WRK-NUM
+               IF      FLG-SELECT-ERR      =   2
+      *            警告ありのとき
+                   ADD     1                   TO  WRK-S-DETAIL-MAX
+                   MOVE    WRK-T09-DET-IDX (WRK-T09-SELNUM)
+                                               TO  WRK-NUM
+               ELSE
+                   MOVE    IDYY                TO  WRK-NUM
+               END-IF
            END-IF
-           MOVE    WRK-NUM-X (2:2)     TO
-                                       RECEDMAKES-S-DETAIL-POSITION
+           MOVE    WRK-NUM-X (2:2)     TO  RECEDMAKES-S-DETAIL-POSITION
                                    (WRK-S-PATIENT-MAX WRK-S-DETAIL-MAX)
       *
            PERFORM VARYING IDXX    FROM    ST-IDX  BY  1
