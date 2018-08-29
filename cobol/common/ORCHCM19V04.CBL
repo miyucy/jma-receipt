@@ -3368,6 +3368,10 @@
       *        受診履歴なし（見出しのみ）
                IF      FLG-DATA-ARI    =   ZERO
                    PERFORM 200211-SYOHOU-INIT-SEC
+                   MOVE    SPA-DRCD            TO  WRK-DRCD
+                   MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
+                   MOVE    SPA-SRYKA           TO  WRK-SRYKA
+                   MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
                    MOVE    ZERO                TO  FLG-CHIKHKT
                END-IF
                IF      WRK-PAGE-MAX        =   ZERO
