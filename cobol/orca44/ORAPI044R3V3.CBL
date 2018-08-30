@@ -1312,20 +1312,32 @@
                        MOVE    "入外区分が未設定です"
                                                TO  SPA-ERRMSG
                    ELSE
-                       EVALUATE    RECEDMAKEQ-PATIENT-INOUT (IDZZ)
-                           WHEN    "IO"
-                           WHEN    "OI"
-                               MOVE    SPACE           TO  T06-NYUGAIKBN
-                           WHEN    "I"
-                               MOVE    "1"             TO  T06-NYUGAIKBN
-                           WHEN    "O"
-                               MOVE    "2"             TO  T06-NYUGAIKBN
-                           WHEN    OTHER
-                               MOVE    "0001"          TO  SPA-ERRCD
-                               MOVE
+      *                病床数０で設定無しのとき、入院を設定
+                       IF    ( SPA-BEDSU       =   ZERO )
+                       AND   ( RECEDMAKEQ-PATIENT-INOUT (IDZZ)
+                                               =   "O"  )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0001"          TO  SPA-ERRCD
+                           MOVE    "入外区分の設定に誤りがあります。"
+                                                   TO  SPA-ERRMSG
+                       END-IF
+                       IF      SPA-ERRCD       =   SPACE
+                           EVALUATE    RECEDMAKEQ-PATIENT-INOUT (IDZZ)
+                               WHEN    "IO"
+                               WHEN    "OI"
+                                   MOVE    SPACE       TO  T06-NYUGAIKBN
+                               WHEN    "I"
+                                   MOVE    "1"         TO  T06-NYUGAIKBN
+                               WHEN    "O"
+                                   MOVE    "2"         TO  T06-NYUGAIKBN
+                               WHEN    OTHER
+                                   MOVE    "0001"      TO  SPA-ERRCD
+                                   MOVE
                                    "入外区分の設定に誤りがあります。"
                                                        TO  SPA-ERRMSG
-                       END-EVALUATE
+                           END-EVALUATE
+                       END-IF
                    END-IF
                END-IF
       *
