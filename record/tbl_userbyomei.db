@@ -213,6 +213,7 @@ path	key11	{
 			WHERE HOSPNUM          =   :HOSPNUM
 			AND   CDSYU           <>  'C'
 			AND   BYOMEIINPUTCD   LIKE :BYOMEIINPUTCD 
+			ESCAPE  '/'
 			ORDER  BY  DSPSEQ,BYOMEIINPUTCD
 		;
 	};
