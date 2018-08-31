@@ -350,15 +350,15 @@
                05  KEY-DENPNUM         PIC 9(07).
            03  KEY-GAI-SKYEDYMD        PIC X(08).
       *
-       01  TSYU-AREA.
-           03  TSYU-MAX                    PIC 9(05).
-           03  TSYU-OCC                    OCCURS 401.
-               05  TSYU-KEY.
-                   07  TSYU-SRYYMD         PIC X(08).
-                   07  TSYU-SRYKA          PIC X(02).
-                   07  TSYU-HKNCOMBI       PIC X(04).
-                   07  TSYU-DENPNUM        PIC 9(07).
-               05  TSYU-NYUKIN             PIC S9(10).
+       01  TSRT-AREA.
+           03  TSRT-MAX                    PIC 9(05).
+           03  TSRT-OCC                    OCCURS 401.
+               05  TSRT-KEY.
+                   07  TSRT-SRYYMD         PIC X(08).
+                   07  TSRT-SRYKA          PIC X(02).
+                   07  TSRT-HKNCOMBI       PIC X(04).
+                   07  TSRT-DENPNUM        PIC 9(07).
+               05  TSRT-NYUKIN             PIC S9(10).
       *
        01  CONST-AREA.
            03  CONST-MODE-NORMON           PIC 9(01) VALUE 0.
@@ -2728,6 +2728,9 @@
            INITIALIZE                      WRK-DENPITEM-G
                                            KEY-AREA
       *
+      *    収納機能情報取得
+           PERFORM 3101-SYS-1039-GET-SEC
+      *
       *    まとめ入金サブ呼出処理
            PERFORM 4801-ORCSNYUKINS-CALL-SEC
       *
@@ -2818,8 +2821,8 @@
                                        TO  KEY-GAI-MISYU (1)
                        END-IF
                        IF    ( KEY-GAI-SKYEDYMD
-                                       <   SPA-GMN-TSRYYMD  (IDX0))
-                           MOVE    SPA-GMN-TSRYYMD  (IDX0)
+                                       <   SPA-NAI-TSRYYMD  (IDX0))
+                           MOVE    SPA-NAI-TSRYYMD  (IDX0)
                                        TO  KEY-GAI-SKYEDYMD
                        END-IF
       *
@@ -2962,7 +2965,7 @@
       *
            INITIALIZE                  SYUPARA01-AREA
                                        SYUPARA02-AREA
-                                       TSYU-AREA
+                                       TSRT-AREA
       *
       *
            MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
@@ -2993,10 +2996,12 @@
            MOVE    3                   TO  SYUPARA01-HAKKOFLG
            MOVE    SPA-SYSYMD          TO  SYUPARA01-DENPPRTYMD
       *
-           DISPLAY "SYUPARA01-NYU-MISYU  [" SYUPARA01-NYU-MISYU "]"
-           DISPLAY "SYUPARA01-GAI-MISYU  [" SYUPARA01-GAI-MISYU "]"
-           DISPLAY "SYUPARA01-GAI-MISYU-P[" SYUPARA01-GAI-MISYU-P "]"
-           DISPLAY "SYUPARA01-GAI-MISYU-M[" SYUPARA01-GAI-MISYU-P "]"
+      D    DISPLAY "WRK-GAI-NYUKIN       [" WRK-GAI-NYUKIN "]"
+      D    DISPLAY "WRK-GAI-KONSEIKYU    [" WRK-GAI-KONSEIKYU "]"
+      D    DISPLAY "SYUPARA01-NYU-MISYU  [" SYUPARA01-NYU-MISYU "]"
+      D    DISPLAY "SYUPARA01-GAI-MISYU  [" SYUPARA01-GAI-MISYU "]"
+      D    DISPLAY "SYUPARA01-GAI-MISYU-P[" SYUPARA01-GAI-MISYU-P "]"
+      D    DISPLAY "SYUPARA01-GAI-MISYU-M[" SYUPARA01-GAI-MISYU-M "]"
       *
            IF    ( SPA-ERRCD           =   SPACE )
                MOVE    "001%"          TO  WRK-FILEMEI-CD
@@ -3025,49 +3030,49 @@
                    UNTIL ( IDX0            >   SPA-GMN-SYULIST-MAX )
                IF    ( SPA-NAI-TNYUGAIKBN (IDX0)   =   "2"  )
                 AND  ( SPA-GMN-TNYUKIN (IDX0)  NOT =   ZERO )
-                   COMPUTE TSYU-MAX    =   TSYU-MAX    +   1
+                   COMPUTE TSRT-MAX    =   TSRT-MAX    +   1
                    MOVE    SPA-NAI-TSRYYMD (IDX0)
-                                       TO  TSYU-SRYYMD(TSYU-MAX)
+                                       TO  TSRT-SRYYMD(TSRT-MAX)
                    MOVE    SPA-NAI-TSRYKA (IDX0)
-                                       TO  TSYU-SRYKA(TSYU-MAX)
+                                       TO  TSRT-SRYKA(TSRT-MAX)
                    MOVE    SPA-NAI-THKNCOMBI (IDX0)
-                                       TO  TSYU-HKNCOMBI(TSYU-MAX)
+                                       TO  TSRT-HKNCOMBI(TSRT-MAX)
                    MOVE    SPA-GMN-TDENPNUM (IDX0)
-                                       TO  TSYU-DENPNUM(TSYU-MAX)
+                                       TO  TSRT-DENPNUM(TSRT-MAX)
                    MOVE    SPA-GMN-TNYUKIN (IDX0)
-                                       TO  TSYU-NYUKIN (TSYU-MAX)
+                                       TO  TSRT-NYUKIN (TSRT-MAX)
                END-IF
            END-PERFORM
       *
            COMPUTE IDX-TMP =   SPA-GMN-SYULIST-MAX     +   1
            PERFORM VARYING IDXA FROM    1   BY  1
-                   UNTIL ( IDXA     >   TSYU-MAX - 1)
+                   UNTIL ( IDXA     >   TSRT-MAX - 1)
                COMPUTE WRK-STIDX   =   IDXA +   1
                PERFORM VARYING IDX-SRT FROM    WRK-STIDX   BY  1
-                       UNTIL ( IDX-SRT >   TSYU-MAX )
+                       UNTIL ( IDX-SRT >   TSRT-MAX )
       *
-                   IF    ( TSYU-KEY (IDXA)
-                                       >   TSYU-KEY (IDX-SRT))
-                       MOVE    TSYU-OCC (IDXA)
-                                       TO  TSYU-OCC (IDX-TMP)
-                       MOVE    TSYU-OCC (IDX-SRT)
-                                       TO  TSYU-OCC (IDXA)
-                       MOVE    TSYU-OCC (IDX-TMP)
-                                       TO  TSYU-OCC (IDX-SRT)
+                   IF    ( TSRT-KEY (IDXA)
+                                       >   TSRT-KEY (IDX-SRT))
+                       MOVE    TSRT-OCC (IDXA)
+                                       TO  TSRT-OCC (IDX-TMP)
+                       MOVE    TSRT-OCC (IDX-SRT)
+                                       TO  TSRT-OCC (IDXA)
+                       MOVE    TSRT-OCC (IDX-TMP)
+                                       TO  TSRT-OCC (IDX-SRT)
                    END-IF
                END-PERFORM
            END-PERFORM
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0            >   TSYU-MAX )
+                   UNTIL ( IDX0            >   TSRT-MAX )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
                    COMPUTE PARA-EDANUM =   PARA-EDANUM +   1
       *
                    INITIALIZE              SYUPARA02-AREA
-                   MOVE    TSYU-DENPNUM (IDX0)
+                   MOVE    TSRT-DENPNUM (IDX0)
                                        TO  SYUPARA02-DENPNUM
-                   MOVE    TSYU-NYUKIN (IDX0)
+                   MOVE    TSRT-NYUKIN (IDX0)
                                        TO  SYUPARA02-NYUKIN
                    MOVE    SYUPARA02-AREA
                                        TO  PARA-DATA-REC
@@ -3100,28 +3105,10 @@
                MOVE    WRK-GAI-SRYYMD      TO  WRK-SPA-SRYYMD
                INITIALIZE                      ORCHC03AREA
                MOVE    WRK-GAI-DENPNUM     TO  ORCHC03-DENPNUM
-               MOVE    WRK-GAI-NYUKIN      TO  ORCHC03-NYUKIN
                MOVE    3                   TO  ORCHC03-HAKKOFLG
                MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
                MOVE    1                   TO  ORCHC03-PARAFLG
-               COMPUTE ORCHC03-ZENMISYU
-                   =   WRK-GAI-NYUKIN
-                   +   SPA-GMN-GAI-MISYU
-               IF    ( ORCHC03-ZENMISYU    <   ZERO )
-                   MOVE    ORCHC03-ZENMISYU
-                                           TO  ORCHC03-HENKIN
-                   MOVE    ZERO            TO  ORCHC03-ZENMISYU
-               END-IF
       *
-               MOVE    WRK-GAI-MISYU-P     TO  ORCHC03-ZENMISYU-2
-               COMPUTE ORCHC03-KANYUKIN
-                   =   WRK-GAI-MISYU-M     *   -1
-      *
-               IF    ( SPA-NAI-TNYUKIN-TOTAL (IDX0) 
-                                           =   ZERO )
-                   MOVE    SYU-SKYMONEY-TAX-SAI
-                                           TO  ORCHC03-SEIKYU-TAX-SAI
-               END-IF
                MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
                MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
                MOVE    "00102"             TO  WRK-FILEMEI-CD

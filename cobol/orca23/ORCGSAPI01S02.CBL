@@ -49,12 +49,18 @@
            03  FLG-ENTRYCHK            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
+           03  FLG-PTRSIINF            PIC 9(01).
+           03  FLG-HKNCOMBI            PIC 9(01).
+           03  FLG-NYU-SKYPRT          PIC 9(01).
+           03  FLG-GAI-SKYPRT          PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDXA                    PIC 9(05).
            03  IDXB                    PIC 9(05).
            03  IDXL                    PIC 9(05).
+           03  IDX-TMP                 PIC 9(05).
+           03  IDX-SRT                 PIC 9(05).
       *
        01  CNT-AREA.
            03  CNT-APIPARA             PIC 9(07).
@@ -108,6 +114,32 @@
            03  WRK-SYU-JOTAINAME       PIC X(10).
            03  WRK-SMEI-JOTAIKBN       PIC X(1).
            03  WRK-SMEI-PROC-FLG       PIC X(1).
+           03  WRK-GYOUMUID            PIC X(03).
+           03  WRK-UID                 PIC X(36).
+           03  WRK-FILEMEI.
+               05  WRK-FILEMEI-YMD     PIC X(08).
+               05  WRK-FILEMEI-HMS     PIC X(06).
+               05  WRK-FILEMEI-CD      PIC X(06).
+           03  WRK-DENPITEM-G.
+               05  WRK-NYU-NYUKIN          PIC S9(10).
+               05  WRK-NYU-HENKIN          PIC S9(10).
+               05  WRK-GAI-NYUKIN          PIC S9(10).
+               05  WRK-GAI-HENKIN          PIC S9(10).
+               05  WRK-GAI-DENPNUM         PIC 9(07).
+               05  WRK-NYU-DENPNUM         PIC 9(07).
+               05  WRK-GAI-SRYYMD          PIC X(08).
+               05  WRK-NYU-SRYYMD          PIC X(08).
+               05  WRK-GAI-KONSEIKYU       PIC S9(10).
+               05  WRK-NYU-KONSEIKYU       PIC S9(10).
+               05  WRK-GAI-MISYU-P         PIC S9(10).
+               05  WRK-GAI-MISYU-M         PIC S9(10).
+           03  WRK-STIDX               PIC 9(05). 
+      *
+       01  KEY-AREA.
+           03  KEY-GAI-MISYU           OCCURS 2.
+               05  KEY-SRYYMD          PIC X(08).
+               05  KEY-DENPNUM         PIC 9(07).
+           03  KEY-GAI-SKYEDYMD        PIC X(08).
       *
       *    固定値領域
        01  CONST-AREA.
@@ -132,6 +164,18 @@
                                            PIC X(02)   VALUE "08".
       *
            COPY    "SAPI01SCR-SPA.INC".
+      *
+           COPY    "S01COMMON-SPA".
+      *
+       01  TSRT-AREA.
+           03  TSRT-MAX                    PIC 9(05).
+           03  TSRT-OCC                    OCCURS 501.
+               05  TSRT-KEY.
+                   07  TSRT-SRYYMD         PIC X(08).
+                   07  TSRT-SRYKA          PIC X(02).
+                   07  TSRT-HKNCOMBI       PIC X(04).
+                   07  TSRT-DENPNUM        PIC 9(07).
+               05  TSRT-NYUKIN             PIC S9(10).
       *
        01  TSYU-REC.
            COPY    "CPSYUNOU.INC"  REPLACING //SYU-//
@@ -199,6 +243,33 @@
       *    再計算サブ
            COPY    "CPSSUB05.INC".
       *
+      *    請求書印刷パラメタ
+           COPY    "CPORCHC03.INC".
+           COPY    "CPORCHCN03.INC".
+       *
+           COPY    "CPORCHC03S02.INC".
+     *
+      *    入院請求書兼領収書まとめサブ
+           COPY    "CPORCHCN03S02.INC".
+      *
+      *    明細書印刷パラメタ
+           COPY    "CPORCHC04.INC".
+           COPY    "CPORCHCN04.INC".
+      *
+      *    請求書・明細書編集サブ
+           COPY    "CPSSUB03.INC".
+      *
+      *    未収金取得サブ
+           COPY    "CPORCSMISYU.INC".
+      *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *
+       01  UIDIO-AREA.
+           03  C-RET                   PIC X(2).
+           03  C-UID                   PIC X(36).
+       01  UIDIO-ST                    PIC 9(2).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -220,6 +291,14 @@
            COPY    "CPSK1039.INC".
            COPY    "CPSK1010.INC".
       *
+      *    保険組合せ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
+      *
       *    ＡＰＩパラメタ
        01  APIPARA-REC.
            COPY    "CPAPIPARA.INC".
@@ -228,6 +307,14 @@
       *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
+      *
+           COPY    "CPSYUPARA01.INC".
+           COPY    "CPSYUPARA02.INC".
+           COPY    "CPSYUPARA03.INC".
       *
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -301,6 +388,12 @@
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-1039-REC
+           IF    ( SYS-1039-S06SKYSUMKBN  =   SPACE )
+               MOVE    "0"         TO  SYS-1039-S06SKYSUMKBN
+           END-IF
+           IF    ( SYS-1039-MISYUKIKANKBN      =   SPACE )
+               MOVE    "0"         TO  SYS-1039-MISYUKIKANKBN
+           END-IF
       *
            MOVE    "01"            TO  SPA-API-RESNUM
       *
@@ -357,6 +450,12 @@
                    MOVE    SPTID-PTNUM TO  SPA-PTNUM
                    MOVE    SPTID-PTID  TO  SPA-PTID
                    PERFORM 900-PTINF-KEY-SEL-SEC
+                   IF    ( FLG-PTINF   = ZERO )
+                       MOVE    PTINF-NAME      TO  SPA-NAME
+                       MOVE    PTINF-KANANAME  TO  SPA-KANANAME
+                   ELSE
+                       MOVE    "0072"  TO  SPA-ERRCD
+                   END-IF
                ELSE
                    MOVE    "0072"      TO  SPA-ERRCD
                END-IF
@@ -481,6 +580,16 @@
                END-IF
            END-IF
       *
+           IF    ( SPA-API-NYUHENKBN       =   "1" )
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 20011-SKYPRT-CHK-SEC
+               END-IF
+      *
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 20011-SRYPRT-CHK-SEC
+               END-IF
+           END-IF
+      *
            .
        20010-NYUKIN-CHK-EXT.
            EXIT.
@@ -588,6 +697,14 @@
                END-IF
            END-IF
       *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 20011-SKYPRT-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 20011-SRYPRT-CHK-SEC
+           END-IF
+      *
            .
        20010-RIREKISYUSEI-CHK-EXT.
            EXIT.
@@ -657,6 +774,8 @@
                WHEN    OTHER
                    PERFORM 20011-NYUGAIKBN-CHK-SEC
                END-EVALUATE
+               MOVE    SPA-API-NYUGAIKBN
+                                   TO  SPA-NYUGAIKBN
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -745,6 +864,16 @@
                MOVE    "0112"      TO  SPA-ERRCD
            END-IF
       *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 20011-SKYPRT-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-API-SKYPRT  =   "1" )
+                   PERFORM 20011-SKYGRP-CHK-SEC
+               END-IF
+           END-IF
+      *
            .
        20010-M-NYUKIN-CHK-EXT.
            EXIT.
@@ -773,6 +902,17 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 20011-SYUNOU-CHK-SEC
+               MOVE    SPA-API-SRYYMD
+                                   TO  SPA-API-TSRYYMD (IDXA)
+               MOVE    SPA-API-SRYKA
+                                   TO  SPA-API-TSRYKA (IDXA)
+               MOVE    SPA-HKNKBN  TO  SPA-API-THKNKBN (IDXA)
+               MOVE    SPA-RSI-HKNKBN
+                                   TO  SPA-API-TRSI-HKNKBN (IDXA)
+               MOVE    SPA-API-HKNCOMBI
+                                   TO  SPA-API-THKNCOMBI (IDXA)
+               MOVE    SPA-API-MISYU
+                                   TO  SPA-API-TMISYU (IDXA)
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -820,11 +960,20 @@
                                    TO  INCOMEREQ01-NYUKIN
                IF    ( SPA-API-TNYUHENKBN (IDXA)   =   "1" )
                    PERFORM 20011-NYUKIN-CHK-SEC
+                   COMPUTE SPA-API-TMISYU (IDXA)
+                       =   SPA-API-TMISYU (IDXA)
+                       -   SPA-API-NYUKIN
+                   COMPUTE SPA-API-TNYUKIN (IDXA)
+                       =   SPA-API-NYUKIN
                ELSE
                    PERFORM 20011-HENKIN-CHK-SEC
+                   COMPUTE SPA-API-TMISYU (IDXA)
+                       =   SPA-API-TMISYU (IDXA)
+                       +   SPA-API-NYUKIN
+                   COMPUTE SPA-API-TNYUKIN (IDXA)
+                       =   SPA-API-NYUKIN
+                       *   -1
                END-IF
-               MOVE    SPA-API-NYUKIN
-                                   TO  SPA-API-TNYUKIN (IDXA)
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -930,8 +1079,30 @@
            MOVE    SPA-API-DENPNUM    TO  SYU-DENPNUM
            PERFORM 900-SYUNOU-KEY-SEL-SEC
            MOVE    SYUNOU-REC         TO  TSYU-REC
-           IF    ( FLG-SYUNOU     NOT =   ZERO )
-            OR   ( SYU-CREATEKBN      =   "3" )
+           IF    ( FLG-SYUNOU         =   ZERO )
+      *
+               MOVE    SYU-SRYYMD     TO  SPA-API-SRYYMD
+               MOVE    SYU-SRYKA      TO  SPA-API-SRYKA
+               MOVE    SYU-HKNCOMBINUM TO SPA-API-HKNCOMBI
+      *
+               COMPUTE SPA-API-MISYU
+                   =   SYU-SKYMONEY
+                   -   SYU-NYUKIN-TOTAL
+      *
+               IF  (  SYU-SYUHKNNUM   =   "971" OR "973" )
+                   MOVE    1          TO  SPA-HKNKBN
+                   PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+                   PERFORM 900-PTRSIINF-KEY-SEL-SEC
+                   MOVE    PTRSI-HKNKBN
+                                      TO  SPA-RSI-HKNKBN
+               ELSE
+                   MOVE    ZERO       TO  SPA-HKNKBN
+               END-IF
+      *
+               IF    ( SYU-CREATEKBN  =   "3" )
+                   MOVE    "0085"     TO  SPA-ERRCD
+               END-IF
+           ELSE
                MOVE    "0085"         TO  SPA-ERRCD
            END-IF
       *
@@ -1362,6 +1533,65 @@
        20011-SRYYM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    請求書兼領収書印刷区分チェック
+      *****************************************************************
+       20011-SKYPRT-CHK-SEC            SECTION.
+      *
+           IF    ( INCOMEREQ01-SKYPRT  =   SPACE )
+               MOVE    "0"     TO      SPA-API-SKYPRT
+           ELSE
+               IF    ( INCOMEREQ01-SKYPRT  =   "0" OR "1" )
+                   MOVE    INCOMEREQ01-SKYPRT
+                                   TO  SPA-API-SKYPRT
+               ELSE
+                   MOVE    "0121"  TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       20011-SKYPRT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療費明細書印刷区分チェック
+      *****************************************************************
+       20011-SRYPRT-CHK-SEC             SECTION.
+      *
+           IF    ( INCOMEREQ01-SRYPRT  =   SPACE )
+               MOVE    "0"     TO      SPA-API-SRYPRT
+           ELSE
+               IF    ( INCOMEREQ01-SRYPRT  =   "0" OR "1" )
+                   MOVE    INCOMEREQ01-SRYPRT
+                                   TO  SPA-API-SRYPRT
+               ELSE
+                   MOVE    "0122"  TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       20011-SRYPRT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書兼領収書発行方法チェック
+      *****************************************************************
+       20011-SKYGRP-CHK-SEC            SECTION.
+      *
+           IF    ( INCOMEREQ01-SKYGRP  =   SPACE )
+               MOVE    SYS-1039-S06SKYSUMKBN
+                                   TO  SPA-API-SKYGRP
+           ELSE
+               IF    ( INCOMEREQ01-SKYGRP  =   "0" OR "1" OR "2"
+                                                   OR "3" OR "4" )
+                   MOVE    INCOMEREQ01-SKYGRP
+                                   TO  SPA-API-SKYGRP
+               ELSE
+                   MOVE    "0129"  TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       20011-SKYGRP-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    関連チェック処理
       *****************************************************************
        2002-KANREN-CHK-SEC             SECTION.
@@ -1377,6 +1607,10 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 20031-DB-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 20031-PRINT-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -1455,7 +1689,10 @@
       *
            CALL    "ORCSNYUKINS"   USING   ORCSNYUKINAREAS
                                            SPA-AREA
-           IF    ( LNK-SCNYUKINS-RC    NOT =   ZERO )
+           IF    ( LNK-SCNYUKINS-RC    =   ZERO )
+               MOVE    LNK-SCNYUKINS-DENPEDANUM   (IDXB)
+                                   TO  SPA-API-DENPEDANUM
+           ELSE
                MOVE    "4000"      TO  SPA-ERRCD
            END-IF
       *
@@ -1535,6 +1772,7 @@
                                        TSYU-REC
                                        TSMEI-REC
                                        SPA-AREA
+           MOVE SS016-DENPEDANUM       TO  SPA-API-DENPEDANUM
       *
            .
        200311-DB-TORIKESHI-EXT.
@@ -1596,6 +1834,9 @@
       *
            MOVE    ZERO                TO  IDXB
       *
+           MOVE    HIGH-VALUE          TO  KEY-GAI-MISYU (1)
+           MOVE    LOW-VALUE           TO  KEY-GAI-SKYEDYMD
+      *
            INITIALIZE                      ORCSNYUKINAREAS
            MOVE    SPA-HOSPNUM         TO  LNK-SCNYUKINS-HOSPNUM
            MOVE    SPA-PTID            TO  LNK-SCNYUKINS-PTID
@@ -1613,20 +1854,66 @@
                                    TO  LNK-SCNYUKINS-NYUGAIKBN (IDXB)
                    MOVE    SPA-API-TDENPNUM (IDXA)
                                    TO  LNK-SCNYUKINS-DENPNUM   (IDXB)
-                   IF    ( SPA-API-TNYUHENKBN (IDXA)   =   "1" )
-                       MOVE    SPA-API-TNYUKIN (IDXA)
+                   MOVE    SPA-API-TNYUKIN (IDXA)
                                    TO  LNK-SCNYUKINS-NYUKIN-MONEY (IDXB)
+                   IF    ( SPA-API-TNYUHENKBN (IDXA)   =   "1" )
                        MOVE    SPA-API-TNYUKIN-HOHO (IDXA)
                                    TO  LNK-SCNYUKINS-NYUKIN-HOHO2 (IDXB)
-                   ELSE
-                       COMPUTE LNK-SCNYUKINS-NYUKIN-MONEY (IDXB)
-                           =   SPA-API-TNYUKIN (IDXA) * -1
                    END-IF
       *
                    MOVE    SPA-API-TNYUHENYMD (IDXA)
                                    TO  LNK-SCNYUKINS-NYUKIN-YMD2 (IDXB)
                    MOVE    SPA-API-TNYUHENHMS (IDXA)
                                    TO  LNK-SCNYUKINS-NYUKIN-HMS2 (IDXB)
+      *
+                   IF    ( SPA-API-TNYUGAIKBN (IDXA)   =   "1" )
+                       MOVE    1       TO  FLG-NYU-SKYPRT
+                       COMPUTE WRK-NYU-NYUKIN
+                           =   WRK-NYU-NYUKIN
+                           +   SPA-API-TNYUKIN  (IDXA)
+                       COMPUTE WRK-NYU-KONSEIKYU
+                           =   WRK-NYU-KONSEIKYU
+                           +   SPA-API-TMISYU   (IDXA)
+                       IF    ( SPA-API-TDENPNUM  (IDXA)
+                                       >   WRK-NYU-DENPNUM )
+                           MOVE    SPA-API-TDENPNUM  (IDXA)
+                                       TO  WRK-NYU-DENPNUM
+                           MOVE    SPA-API-TSRYYMD   (IDXA)
+                                       TO  WRK-NYU-SRYYMD
+                       END-IF
+                   ELSE
+                       MOVE    1       TO  FLG-GAI-SKYPRT
+                       COMPUTE WRK-GAI-NYUKIN
+                           =   WRK-GAI-NYUKIN
+                           +   SPA-API-TNYUKIN  (IDXA)
+                       COMPUTE WRK-GAI-KONSEIKYU
+                           =   WRK-GAI-KONSEIKYU
+                           +   SPA-API-TMISYU   (IDXA)
+                       IF    ( SPA-API-TDENPNUM  (IDXA)
+                                       >   WRK-GAI-DENPNUM )
+                           MOVE    SPA-API-TDENPNUM  (IDXA)
+                                       TO  WRK-GAI-DENPNUM
+                           MOVE    SPA-API-TSRYYMD   (IDXA)
+                                       TO  WRK-GAI-SRYYMD
+                       END-IF
+      *
+                       MOVE    SPA-API-TSRYYMD  (IDXA)
+                                       TO  KEY-SRYYMD (2)
+                       MOVE    SPA-API-TDENPNUM  (IDXA)
+                                       TO  KEY-DENPNUM (2)
+      *
+                       IF    ( KEY-GAI-MISYU (1)
+                                       >   KEY-GAI-MISYU (2))
+                           MOVE    KEY-GAI-MISYU (2)
+                                       TO  KEY-GAI-MISYU (1)
+                       END-IF
+                       IF    ( KEY-GAI-SKYEDYMD
+                                       <   SPA-API-TSRYYMD  (IDXA))
+                           MOVE    SPA-API-TSRYYMD  (IDXA)
+                                       TO  KEY-GAI-SKYEDYMD
+                       END-IF
+                   END-IF
+
                END-IF
       *
            END-PERFORM
@@ -1662,6 +1949,337 @@
       *
            .
        200311-DB-SKY-TORIKESHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷処理
+      *****************************************************************
+       20031-PRINT-SEC                 SECTION.
+      *
+           MOVE    1               TO  SPA-API-FLG
+      *
+           CALL    "ORCSONPRTSET"      USING
+                                       SPA-AREA
+      *
+           INITIALIZE                  ORCSPRTCTRLAREA
+           CALL    "ORCSPRTCTRL"       USING
+                                       SPA-AREA
+                                       ORCSPRTCTRLAREA
+                                       MCPAREA
+      *
+           PERFORM 2800-SPAKYOTUKEY-SET-SEC
+      *
+           EVALUATE    INCOMEREQ01-REQMODE
+           WHEN    CONST-REQMODE-NYUKIN
+           WHEN    CONST-REQMODE-HENKIN
+           WHEN    CONST-REQMODE-RRKSYU
+           WHEN    CONST-REQMODE-TORIKESHI
+               PERFORM 200311-PRINT-SEC
+           WHEN    CONST-REQMODE-M-NYUKIN
+               PERFORM 200312-PRINT-SEC
+           END-EVALUATE
+      *
+      *    印刷ダミー処理
+           MOVE    "99"                TO  SPA-PRT-FLG
+           CALL    "ORCHCDUMMY"        USING   SPA-AREA
+      *
+           .
+       20031-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷処理
+      *****************************************************************
+       200311-PRINT-SEC                SECTION.
+      *
+           INITIALIZE                      SSUB03-AREA
+           MOVE    2                   TO  SSUB03-REQNO
+           MOVE    SPA-API-DENPEDANUM  TO  SSUB03-DENPEDANUM
+           MOVE    SPA-API-SKYPRT      TO  SSUB03-SKYPRT
+           MOVE    SPA-API-SRYPRT      TO  SSUB03-SRYPRT
+           CALL    "ORCGSSUB03"        USING
+                                       SPA-AREA
+                                       SPA-S01KYOUTU
+                                       SSUB03-AREA
+      *
+           .
+       200311-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷処理（一括入返金）
+      *****************************************************************
+       200312-PRINT-SEC                SECTION.
+      *
+           IF    ( FLG-GAI-SKYPRT      =   1 )
+            AND  ( SPA-API-SKYPRT      =   "1" )
+               PERFORM 2003121-GAI-PRINT-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( FLG-NYU-SKYPRT      =   1 )
+                AND  ( SPA-API-SKYPRT      =   "1" )
+                   PERFORM 2003121-NYU-PRINT-SEC
+               END-IF
+           END-IF
+      *
+           .
+       200312-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷処理（一括入返金）
+      *****************************************************************
+       2003121-GAI-PRINT-SEC           SECTION.
+      *
+           MOVE    "2"                 TO  SPA-NYUGAIKBN
+      *
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
+           MOVE    SPA-PTID            TO  SYU-PTID
+           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    KEY-DENPNUM(1)      TO  SYU-DENPNUM
+           PERFORM 900-SYUNOU-KEY-SEL-SEC
+           MOVE    ZERO                TO  SYU-GRP-DENPNUM
+           MOVE    KEY-GAI-SKYEDYMD    TO  SYU-SKYEDYMD
+           INITIALIZE                  SMISYU-AREA
+           CALL    "ORCSMISYU"         USING
+                                       SYUNOU-REC
+                                       SMISYU-AREA
+                                       SPA-AREA
+           MOVE    SMISYU-GAIRAI-P     TO  WRK-GAI-MISYU-P
+           MOVE    SMISYU-GAIRAI-M     TO  WRK-GAI-MISYU-M
+      *
+           INITIALIZE                  SYUPARA01-AREA
+                                       SYUPARA02-AREA
+                                       TSRT-AREA
+      *
+           MOVE    SPA-NYUGAIKBN       TO  SYUPARA01-NYUGAIKBN
+           MOVE    SMISYU-NYUIN        TO  SYUPARA01-NYU-MISYU
+           MOVE    SMISYU-GAIRAI       TO  SYUPARA01-GAI-MISYU
+           IF    ( SYS-1039-MISYUKIKANKBN  =   "1" )
+               CONTINUE
+           ELSE
+               COMPUTE SYUPARA01-GAI-MISYU
+                   =   SYUPARA01-GAI-MISYU   -   WRK-GAI-KONSEIKYU
+               COMPUTE SYUPARA01-NYU-MISYU
+                   =   SYUPARA01-NYU-MISYU   -   WRK-NYU-KONSEIKYU
+               IF    ( WRK-GAI-KONSEIKYU     <   WRK-GAI-NYUKIN )
+                   COMPUTE SYUPARA01-GAI-MISYU-M
+                       =   SYUPARA01-GAI-MISYU-M
+                       - ( WRK-GAI-KONSEIKYU -   WRK-GAI-NYUKIN )
+               ELSE
+                   COMPUTE SYUPARA01-GAI-MISYU-P
+                       =   SYUPARA01-GAI-MISYU-P
+                       - ( WRK-GAI-KONSEIKYU -   WRK-GAI-NYUKIN )
+               END-IF
+           END-IF
+           MOVE    WRK-GAI-MISYU-P     TO  SYUPARA01-GAI-MISYU-P
+           MOVE    WRK-GAI-MISYU-M     TO  SYUPARA01-GAI-MISYU-M
+           MOVE    WRK-NYU-NYUKIN      TO  SYUPARA01-NYU-NYUKIN
+           MOVE    WRK-GAI-NYUKIN      TO  SYUPARA01-GAI-NYUKIN
+           MOVE    SPA-API-SKYGRP      TO  SYUPARA01-SKYSUMFLG
+           MOVE    3                   TO  SYUPARA01-HAKKOFLG
+           MOVE    SPA-SYSYMD          TO  SYUPARA01-DENPPRTYMD
+      *
+      D    DISPLAY "WRK-GAI-NYUKIN       [" WRK-GAI-NYUKIN "]"
+      D    DISPLAY "WRK-GAI-KONSEIKYU    [" WRK-GAI-KONSEIKYU "]"
+      D    DISPLAY "SYUPARA01-NYU-MISYU  [" SYUPARA01-NYU-MISYU "]"
+      D    DISPLAY "SYUPARA01-GAI-MISYU  [" SYUPARA01-GAI-MISYU "]"
+      D    DISPLAY "SYUPARA01-GAI-MISYU-P[" SYUPARA01-GAI-MISYU-P "]"
+      D    DISPLAY "SYUPARA01-GAI-MISYU-M[" SYUPARA01-GAI-MISYU-M "]"
+      *
+           MOVE    "001%"          TO  WRK-FILEMEI-CD
+           PERFORM 900-DELETE-PARA-SEC
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               INITIALIZE                  PARA-REC
+               MOVE    SPA-HOSPNUM     TO  PARA-HOSPNUM
+               MOVE    "S02"           TO  PARA-GYOUMUID
+               MOVE    SPA-TERMID      TO  PARA-TERMID
+               MOVE    "00101"         TO  WRK-FILEMEI-CD
+               MOVE    WRK-FILEMEI     TO  PARA-FILEMEI
+               MOVE    1               TO  PARA-EDANUM
+               MOVE    SYUPARA01-AREA  TO  PARA-DATA-REC
+               MOVE    PARA-REC        TO  MCPDATA-REC
+               MOVE    "tbl_para"      TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC      NOT =   ZERO )
+                   MOVE    "4003"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0            >   SPA-API-SYUNOU-MAX )
+               IF    ( SPA-API-TNYUGAIKBN (IDX0)   =   "2"  )
+                AND  ( SPA-API-TNYUKIN (IDX0)  NOT =   ZERO )
+                   COMPUTE TSRT-MAX    =   TSRT-MAX    +   1
+                   MOVE    SPA-API-TSRYYMD (IDX0)
+                                       TO  TSRT-SRYYMD(TSRT-MAX)
+                   MOVE    SPA-API-TSRYKA (IDX0)
+                                       TO  TSRT-SRYKA(TSRT-MAX)
+                   MOVE    SPA-API-THKNCOMBI (IDX0)
+                                       TO  TSRT-HKNCOMBI(TSRT-MAX)
+                   MOVE    SPA-API-TDENPNUM (IDX0)
+                                       TO  TSRT-DENPNUM(TSRT-MAX)
+                   MOVE    SPA-API-TNYUKIN (IDX0)
+                                       TO  TSRT-NYUKIN (TSRT-MAX)
+               END-IF
+           END-PERFORM
+      *
+           COMPUTE IDX-TMP =   SPA-API-SYUNOU-MAX  +   1
+           PERFORM VARYING IDXA FROM    1   BY  1
+                   UNTIL ( IDXA     >   TSRT-MAX - 1)
+               COMPUTE WRK-STIDX   =   IDXA +   1
+               PERFORM VARYING IDX-SRT FROM    WRK-STIDX   BY  1
+                       UNTIL ( IDX-SRT >   TSRT-MAX )
+      *
+                   IF    ( TSRT-KEY (IDXA)
+                                       >   TSRT-KEY (IDX-SRT))
+                       MOVE    TSRT-OCC (IDXA)
+                                       TO  TSRT-OCC (IDX-TMP)
+                       MOVE    TSRT-OCC (IDX-SRT)
+                                       TO  TSRT-OCC (IDXA)
+                       MOVE    TSRT-OCC (IDX-TMP)
+                                       TO  TSRT-OCC (IDX-SRT)
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0            >   TSRT-MAX )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   COMPUTE PARA-EDANUM =   PARA-EDANUM +   1
+      *
+                   INITIALIZE              SYUPARA02-AREA
+                   MOVE    TSRT-DENPNUM (IDX0)
+                                       TO  SYUPARA02-DENPNUM
+                   MOVE    TSRT-NYUKIN (IDX0)
+                                       TO  SYUPARA02-NYUKIN
+                   MOVE    SYUPARA02-AREA
+                                       TO  PARA-DATA-REC
+                   MOVE    PARA-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_para"      TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    "4004"      TO  SPA-ERRCD
+                   END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( SPA-ERRCD           =       SPACE )
+               INITIALIZE                      ORCHC03S02AREA
+               MOVE    SPA-HOSPNUM     TO      ORCHC03S02-HOSPNUM
+               MOVE    "S02"           TO      ORCHC03S02-GYOUMUID
+               MOVE    SPA-TERMID      TO      ORCHC03S02-TERMID
+               MOVE    "00101"         TO      WRK-FILEMEI-CD
+               MOVE    WRK-FILEMEI     TO      ORCHC03S02-FILEMEI
+               CALL    "ORCHC03S02"    USING   SPA-AREA
+                                               ORCHC03S02AREA
+               IF    ( ORCHC03S02-RC   NOT =   ZERO )
+                   MOVE    "4005"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =       SPACE )
+      *
+               MOVE    WRK-GAI-SRYYMD      TO  SPA-SRYYMD
+               INITIALIZE                      ORCHC03AREA
+               MOVE    WRK-GAI-DENPNUM     TO  ORCHC03-DENPNUM
+               MOVE    3                   TO  ORCHC03-HAKKOFLG
+               MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
+               MOVE    1                   TO  ORCHC03-PARAFLG
+      *
+               MOVE    "S02"               TO  ORCHC03-PARA-GYOUMUID
+               MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
+               MOVE    "00102"             TO  WRK-FILEMEI-CD
+               MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
+               MOVE    4                   TO  ORCHC03-MOTOID
+               MOVE    "01"                TO  SPA-PRT-FLG
+               CALL    "ORCHC03V03A5"          USING
+                                               SPA-AREA
+                                               ORCHC03AREA
+               MOVE    SPACE               TO  SPA-PRT-FLG
+      *
+           END-IF
+      *
+           MOVE    "001%"          TO  WRK-FILEMEI-CD
+           PERFORM 900-DELETE-PARA-SEC
+      *
+           .
+       2003121-GAI-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷処理（一括入返金）
+      *****************************************************************
+       2003121-NYU-PRINT-SEC           SECTION.
+      *
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+      *
+           MOVE    WRK-NYU-SRYYMD      TO  SPA-SRYYMD
+      *
+           INITIALIZE                      ORCHCN03AREA
+           MOVE    SPA-HOSPNUM         TO  ORCHCN03-HEAD-HOSPNUM
+           MOVE    SPA-STAFFCD         TO  ORCHCN03-STAFFCD
+           MOVE    SPA-SYSYMD          TO  ORCHCN03-SYSYMD
+           MOVE    SPA-TERMID          TO  ORCHCN03-TERMID
+           MOVE    4                   TO  ORCHCN03-MOTOID
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0            >   SPA-API-SYUNOU-MAX )
+      *
+               IF    ( SPA-API-TNYUGAIKBN (IDX0)   =   "1" )
+                 AND ( SPA-API-TNYUKIN  (IDX0) NOT =   ZERO )
+      *
+                   COMPUTE ORCHCN03-CNT    =   ORCHCN03-CNT    +   1
+                   INITIALIZE                      SYUNOU-REC
+                   MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
+                   MOVE    SPA-PTID            TO  SYU-PTID
+                   MOVE    SPA-API-TNYUGAIKBN (IDX0)
+                                               TO  SYU-NYUGAIKBN
+                   MOVE    SPA-API-TDENPNUM (IDX0)
+                                               TO  SYU-DENPNUM
+                   PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
+                   MOVE    SPA-HOSPNUM     TO  ORCHCN03-HOSPNUM
+                                                         (ORCHCN03-CNT)
+                   MOVE    SPA-PTID        TO  ORCHCN03-PTID
+                                                         (ORCHCN03-CNT)
+                   MOVE    SPA-PTNUM       TO  ORCHCN03-PTNUM
+                                                         (ORCHCN03-CNT)
+                   MOVE    "1"             TO  ORCHCN03-NYUGAIKBN
+                                                         (ORCHCN03-CNT)
+      *
+                   MOVE    SYU-SKYSTYMD    TO  ORCHCN03-KJNYMD
+                                                         (ORCHCN03-CNT)
+                   MOVE    SYU-DENPNUM     TO  ORCHCN03-DENPNUM
+                                                         (ORCHCN03-CNT)
+                   IF    ( SYU-NYUKIN-TOTAL
+                                           =   ZERO )
+                       MOVE    SYU-SKYMONEY-TAX-SAI
+                                           TO  ORCHCN03-SEIKYU-TAX-SAI
+                                                         (ORCHCN03-CNT)
+                   END-IF
+                   COMPUTE ORCHCN03-SEIKYU (ORCHCN03-CNT)
+                       =   SYU-SKYMONEY
+                       -   SYU-NYUKIN-TOTAL
+                       +   SPA-API-TNYUKIN (IDX0)
+                   MOVE    SPA-API-TNYUKIN (IDX0)
+                                           TO  ORCHCN03-NYUKIN
+                                                         (ORCHCN03-CNT)
+                   MOVE    4               TO  ORCHCN03-HAKKOFLG
+                                                         (ORCHCN03-CNT)
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "02"                    TO  SPA-PRT-FLG
+           CALL    "ORCHCN03V03"               USING
+                                               ORCHCN03AREA
+                                               SPA-AREA
+           MOVE    SPACE                   TO  SPA-PRT-FLG
+      *
+           .
+       2003121-NYU-PRINT-EXT.
            EXIT.
       *****************************************************************
       *    レスポンス編集処理
@@ -1944,6 +2562,37 @@
       *
            .
        200313-RESPONSE-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納共通ＳＰＡ編集処理
+      *****************************************************************
+       2800-SPAKYOTUKEY-SET-SEC        SECTION.
+      *
+           INITIALIZE                      SPA-S01KYOUTU
+      *
+           INITIALIZE                      WRK-FILEMEI
+           MOVE    SMCNDATE-YMD        TO  WRK-FILEMEI-YMD
+           MOVE    SMCNDATE-HMS        TO  WRK-FILEMEI-HMS
+      *
+           MOVE    SPA-API-DENPNUM     TO  SPA-S01-DENPNUM
+           MOVE    WRK-FILEMEI         TO  SPA-S01-FILEMEI
+           MOVE    "S02"               TO  SPA-S01-GYOUMUID
+                                           WRK-GYOUMUID
+           MOVE    SPA-SRYYMD          TO  SPA-S01-SRYYMD
+           MOVE    SPA-NYUGAIKBN       TO  SPA-S01-NYUGAIKBN
+           MOVE    TSYU-SYUHKNNUM      TO  SPA-S01-HKNNUM
+           MOVE    SPA-RSI-HKNKBN      TO  SPA-S01-RSI-HKNKBN
+           MOVE    SPA-PTID            TO  SPA-S01-PTID
+           MOVE    SPA-PTNUM           TO  SPA-S01-PTNUM
+           MOVE    SPA-KANANAME        TO  SPA-S01-KANANAME
+           MOVE    SPA-NAME            TO  SPA-S01-NAME
+      *
+           PERFORM 800-ORCUIDSET-SEC
+           MOVE    C-UID               TO  SPA-S01-UID
+                                           WRK-UID
+      *
+           .
+       2800-SPAKYOTUKEY-SET-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -2284,6 +2933,19 @@
       *
            .
        800-LENGTH-EXT.
+           EXIT.
+      *****************************************************************
+      *    UID取得処理
+      *****************************************************************
+       800-ORCUIDSET-SEC               SECTION.
+      *
+           INITIALIZE                  UIDIO-AREA
+           CALL    "orcuidset"         USING
+                                       UIDIO-ST
+                                       UIDIO-AREA
+      *
+           .
+       800-ORCUIDSET-EXT.
            EXIT.
       *****************************************************************
       *    エラーメッセージ編集処理
@@ -2746,6 +3408,66 @@
        900-SYUMEI-KEY7-SEL-EXT.
            EXIT.
       *****************************************************************
+      *    保険組合せ取得処理
+      *****************************************************************
+       900-HKNCOMBI-KEY-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNCOMBI
+      *
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+           MOVE    SPA-PTID            TO  COMB-PTID
+           MOVE    SYU-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+      *
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-HKNCOMBI-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者労災情報検索処理
+      *****************************************************************
+       900-PTRSIINF-KEY-SEL-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTRSIINF
+      *
+           INITIALIZE                      PTRSIINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
+           MOVE    SPA-PTID            TO  PTRSI-PTID
+           MOVE    COMB-HKNID          TO  PTRSI-HKNID
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+               MOVE    ZERO            TO  FLG-PTRSIINF
+           ELSE
+               MOVE    1               TO  FLG-PTRSIINF
+               INITIALIZE                  PTRSIINF-REC
+           END-IF
+     *
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-PTRSIINF-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    APIパラメタ検索処理
       *****************************************************************
        900-APIPARA-KEY5-SEL-SEC        SECTION.
@@ -2808,6 +3530,27 @@
       *
            .
        900-APIPARA-KEY7-SEL-EXT.
+           EXIT.
+      *************************************************************
+      *    パラメタ削除処理
+      *************************************************************
+       900-DELETE-PARA-SEC            SECTION.
+      *
+           INITIALIZE                  PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    WRK-GYOUMUID        TO  PARA-GYOUMUID
+           MOVE    WRK-UID             TO  PARA-TERMID
+           MOVE    WRK-FILEMEI         TO  PARA-FILEMEI
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del11"             TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    "4000"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       900-DELETE-PARA-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

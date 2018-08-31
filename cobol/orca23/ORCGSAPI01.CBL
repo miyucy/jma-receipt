@@ -97,6 +97,10 @@
                05  CONST-MODE-SKY-TORIKESHI
                                            PIC X(02)   VALUE "08".
       *
+               05  CONST-MODE-REPRINT       PIC X(02)  VALUE "09".
+               05  CONST-MODE-MONTHLY-PRINT PIC X(02)  VALUE "10".
+      *
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -312,11 +316,12 @@
                MOVE    ORCA-BLOB-OBJECT
                                        TO  SAPI01-BODY
       *
-               IF    ( INCOMEREQ-REQNUM    =   "01" )
+               EVALUATE    INCOMEREQ-REQNUM
+               WHEN    "01"
                    PERFORM 2001-REQ01-SEC
-               ELSE
+               WHEN    "02"
                    PERFORM 2001-REQ02-SEC
-               END-IF
+               END-EVALUATE
       *
            WHEN    "99"
                CALL    "ORCGSAPI01S99" USING
@@ -382,6 +387,16 @@
                PERFORM 900-INCOMEREQ01-READ-SEC
       *
                CALL    "ORCGSAPI01S02" USING
+                                       SCRAREA
+                                       INCOMEREQ01-AREA
+                                       SPA-AREA
+      *
+           WHEN    CONST-MODE-REPRINT
+           WHEN    CONST-MODE-MONTHLY-PRINT
+      *
+               PERFORM 900-INCOMEREQ01-READ-SEC
+      *
+               CALL    "ORCGSAPI01S04" USING
                                        SCRAREA
                                        INCOMEREQ01-AREA
                                        SPA-AREA

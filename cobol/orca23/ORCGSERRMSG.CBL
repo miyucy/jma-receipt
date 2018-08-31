@@ -249,6 +249,33 @@
            WHEN    "0120"
                MOVE    "診療年月を入力してください。"
                                        TO  SPA-ERRMSG
+           WHEN    "0121"
+               MOVE    "請求書兼領収書印刷区分の入力に誤りがあります。"
+                                       TO  SPA-ERRMSG
+           WHEN    "0122"
+               MOVE    "診療費明細書印刷区分の入力に誤りがあります。"
+                                       TO  SPA-ERRMSG
+           WHEN    "0123"
+               MOVE    "帳票の印刷指示がありません。"
+                                       TO  SPA-ERRMSG
+           WHEN    "0125"
+               MOVE "期間指定開始日の入力に誤りがあります。" 
+                                               TO  SPA-ERRMSG
+           WHEN    "0126"
+               MOVE "期間指定終了日の入力に誤りがあります。" 
+                                               TO  SPA-ERRMSG
+           WHEN    "0127"
+               MOVE "期間指定開始日＞期間指定終了日となっています。" 
+                                               TO  SPA-ERRMSG
+           WHEN    "0128"
+               MOVE "印刷対象の請求情報が存在しません。"
+                                               TO  SPA-ERRMSG
+           WHEN    "0129"
+               MOVE "外来請求書兼領収書発行方法の入力に誤りがあります。"
+                                       TO  SPA-ERRMSG
+           WHEN    "0130"
+               MOVE    "診療年月を入力してください。"
+                                               TO  SPA-ERRMSG
            WHEN    "0203"
                MOVE    SPACE           TO  SPA-ERRMSG
                STRING  "電子カルテＵＩＤが未入力です。"

@@ -758,6 +758,9 @@
       *        APIÁ÷¿®¤Ê¤·
                MOVE    "0"             TO  PARA-API-DATA
            END-IF
+           IF      SPA-API-FLG         =   1
+               MOVE    "1"             TO  PARA-API-DATA
+           END-IF
       *    £Á£Ð£É¥«¥¹¥¿¥à£É£Ä
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
            MOVE    30                  TO  WRK-PARA-MAX
@@ -3168,6 +3171,7 @@
       *            ±ß
                    MOVE    "1"                 TO  TBL-HA-EN
                                                       (IDX-HA)
+                   MOVE    "¡þ"                TO  TBL-HA-ZKBN (IDX-HA)
                END-IF
       *        ÌÀºÙÅÀ¿ôµ­ºÜ
                IF     (FLG-MEISAI          =   1  )  AND

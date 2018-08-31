@@ -10,6 +10,9 @@ xml_incomev3req01 {
     Orca_Uid             varchar(36);
     Patient_ID           varchar(20);
     Information_Class    varchar(1);
+    Perform_Month        varchar(07);
+    Start_Day            varchar(2);
+    End_Day              varchar(2);
     Start_Date           varchar(10);
     End_Date             varchar(10);
     Start_Month          varchar(7);
@@ -32,7 +35,6 @@ xml_incomev3req01 {
         Ic_Money         varchar(10);
         Force_Ic         varchar(05);
     }[500];
-    Perform_Month        varchar(07);
     InOut                varchar(1);
     Invoice_Number       varchar(07);
     Ic_Class             varchar(1);
@@ -44,5 +46,12 @@ xml_incomev3req01 {
     Ic_Money             varchar(10);
     Ic_Code              varchar(02);
     Force_Ic             varchar(05);
+    Print_Information{
+      Print_Invoice_Receipt_Class varchar(01);
+      Print_Statement_Class varchar(01);
+    };
+    Print_Order_Information{
+      Order_Invoice_Receipt_Class varchar(01);
+    };
   };
 };

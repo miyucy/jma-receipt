@@ -32,6 +32,9 @@
                 05  INCOMEREQ01-ORCA-UID       PIC X(36).
                 05  INCOMEREQ01-PTNUM          PIC X(20).
                 05  INCOMEREQ01-OUTKBN         PIC X(1).
+                05  INCOMEREQ01-SRYYM          PIC X(7).
+                05  INCOMEREQ01-STDAY          PIC X(2).
+                05  INCOMEREQ01-EDDAY          PIC X(2).
                 05  INCOMEREQ01-STSRYYMD       PIC X(10).
                 05  INCOMEREQ01-EDSRYYMD       PIC X(10).
                 05  INCOMEREQ01-STSRYYM        PIC X(07).
@@ -50,7 +53,6 @@
                         09  INCOMEREQ01-TNYUKIN-HOHO   PIC X(02).
                         09  INCOMEREQ01-TNYUKIN        PIC X(10).
                         09  INCOMEREQ01-TFORCE         PIC X(05).
-                05  INCOMEREQ01-SRYYM          PIC X(7).
                 05  INCOMEREQ01-NYUGAIKBN      PIC X(1).
                 05  INCOMEREQ01-DENPNUM        PIC X(07).
       *         内部処理用(NYUHENKBN)仕様書には記載しない
@@ -63,3 +65,8 @@
                 05  INCOMEREQ01-NYUKIN         PIC X(10).
                 05  INCOMEREQ01-NYUKIN-HOHO    PIC X(2).
                 05  INCOMEREQ01-FORCE          PIC X(05).
+                05  INCOMEREQ01-PRINT-AREA.
+                    07  INCOMEREQ01-SKYPRT     PIC X(1).
+                    07  INCOMEREQ01-SRYPRT     PIC X(1).
+                05  INCOMEREQ01-PRINT-ORDER-AREA.
+                    07  INCOMEREQ01-SKYGRP     PIC X(1).
