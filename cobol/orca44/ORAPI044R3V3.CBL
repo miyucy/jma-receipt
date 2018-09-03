@@ -173,7 +173,7 @@
            03  WRK-DETAIL-IDX          PIC 9(02).
            03  WRK-DETAIL-TBL.
                05  WRK-DETAIL-MAX      PIC 9(02).
-               05  WRK-DETAIL-OCC      OCCURS  30.
+               05  WRK-DETAIL-OCC      OCCURS  5.
                    07  WRK-DETAIL-RECEIPT-PERFORM-FLAG
                                            PIC X(04).
                    07  WRK-DETAIL-NYUGAIKBN
@@ -267,6 +267,13 @@
       *
       *    個別対象患者一覧
            03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   100.
+      *    個別対象−レセプト情報
+           03  WRK-CONS-DETAIL-MAX PIC 9(03)   VALUE   5.
+      *
+      *    エラー一覧、選択一覧の最大値
+           03  WRK-CONS-OVERFLOW   PIC 9(03)   VALUE   100.
+           03  WRK-CONS-DETAIL-OVERFLOW
+                                   PIC 9(03)   VALUE   20.
       *
       *****************************************************************
       *    サブプロ用領域
@@ -1313,14 +1320,16 @@
                                                TO  SPA-ERRMSG
                    ELSE
       *                病床数０で設定無しのとき、入院を設定
-                       IF    ( SPA-BEDSU       =   ZERO )
-                       AND   ( RECEDMAKEQ-PATIENT-INOUT (IDZZ)
-                                               =   "O"  )
-                           CONTINUE
-                       ELSE
-                           MOVE    "0001"          TO  SPA-ERRCD
-                           MOVE    "入外区分の設定に誤りがあります。"
-                                                   TO  SPA-ERRMSG
+                       IF      SPA-BEDSU       =   ZERO
+                           IF      RECEDMAKEQ-PATIENT-INOUT (IDZZ)
+                                                   =   "O"
+                               CONTINUE
+                           ELSE
+                               MOVE    "0001"          TO  SPA-ERRCD
+                               MOVE
+                                   "入外区分の設定に誤りがあります。"
+                                                       TO  SPA-ERRMSG
+                           END-IF
                        END-IF
                        IF      SPA-ERRCD       =   SPACE
                            EVALUATE    RECEDMAKEQ-PATIENT-INOUT (IDZZ)
@@ -1581,7 +1590,7 @@
            END-IF
       *
            PERFORM VARYING IDYY    FROM    1   BY  1
-                   UNTIL   IDYY    >       30
+                   UNTIL   IDYY    >       WRK-CONS-DETAIL-MAX
                    OR      RECEDMAKEQ-DETAIL-INFORMATION  (IDZZ IDYY)
                                    =   SPACE
                MOVE    SPACE           TO  SPA-ERRCD
@@ -1600,7 +1609,7 @@
                            MOVE    "E029"              TO  SPA-ERRCD
                            MOVE    "同じ内容で設定してあります。"
                                                        TO  SPA-ERRMSG
-                           MOVE    30                  TO  IDVV
+                           MOVE    WRK-CONS-DETAIL-MAX TO  IDVV
                        END-IF
                    END-PERFORM
                END-IF
@@ -2103,28 +2112,28 @@
                END-IF
       *
       *??
-       DISPLAY "MAX       =" WRK-DETAIL-MAX 
-       DISPLAY "FLAG      =" WRK-DETAIL-RECEIPT-PERFORM-FLAG
-                                            (WRK-DETAIL-MAX)
-       DISPLAY "SYUBETU   =" WRK-DETAIL-RECESYUBETU (WRK-DETAIL-MAX)
-       DISPLAY "NYUGAIKBN =" WRK-DETAIL-NYUGAIKBN (WRK-DETAIL-MAX)
-       DISPLAY "HKNID     =" WRK-DETAIL-HKNID (WRK-DETAIL-MAX)
-       DISPLAY "HKNNUM    =" WRK-DETAIL-HKNNUM (WRK-DETAIL-MAX)
-       DISPLAY "HKNJANUM  =" WRK-DETAIL-HKNJANUM (WRK-DETAIL-MAX)
-       DISPLAY "HOJOKBN   =" WRK-DETAIL-HOJOKBN (WRK-DETAIL-MAX) 
-       DISPLAY "KIGO      =" WRK-DETAIL-KIGO (WRK-DETAIL-MAX)
-       DISPLAY "NUM       =" WRK-DETAIL-NUM (WRK-DETAIL-MAX)
-       DISPLAY "DISASTER  =" WRK-DETAIL-DISASTER (WRK-DETAIL-MAX)
-       DISPLAY "INCARE-CLASS="   WRK-DETAIL-INCARE-CLASS(WRK-DETAIL-MAX)
-       DISPLAY "KOH-OCC(1)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 1)
-       DISPLAY "KOH-OCC(2)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 2)
-       DISPLAY "KOH-OCC(3)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 3)
-       DISPLAY "KOH-OCC(4)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 4)
-       DISPLAY "HKNKBN   =" WRK-DETAIL-HKNKBN (WRK-DETAIL-MAX)
-       DISPLAY "SAIGAIKBN=" WRK-DETAIL-SAIGAIKBN (WRK-DETAIL-MAX)
-       display "KOFUNUM  =" WRK-DETAIL-KOFUNUM  (WRK-DETAIL-MAX)
-       DISPLAY "SPA-ERRCD=" SPA-ERRCD "#"
-       display " "
+      *?? DISPLAY "MAX       =" WRK-DETAIL-MAX 
+      *?? DISPLAY "FLAG      =" WRK-DETAIL-RECEIPT-PERFORM-FLAG
+      *??                                      (WRK-DETAIL-MAX)
+      *?? DISPLAY "SYUBETU   =" WRK-DETAIL-RECESYUBETU (WRK-DETAIL-MAX)
+      *?? DISPLAY "NYUGAIKBN =" WRK-DETAIL-NYUGAIKBN (WRK-DETAIL-MAX)
+      *?? DISPLAY "HKNID     =" WRK-DETAIL-HKNID (WRK-DETAIL-MAX)
+      *?? DISPLAY "HKNNUM    =" WRK-DETAIL-HKNNUM (WRK-DETAIL-MAX)
+      *?? DISPLAY "HKNJANUM  =" WRK-DETAIL-HKNJANUM (WRK-DETAIL-MAX)
+      *?? DISPLAY "HOJOKBN   =" WRK-DETAIL-HOJOKBN (WRK-DETAIL-MAX) 
+      *?? DISPLAY "KIGO      =" WRK-DETAIL-KIGO (WRK-DETAIL-MAX)
+      *?? DISPLAY "NUM       =" WRK-DETAIL-NUM (WRK-DETAIL-MAX)
+      *?? DISPLAY "DISASTER  =" WRK-DETAIL-DISASTER (WRK-DETAIL-MAX)
+      *?? DISPLAY "INCARE-CLASS="   WRK-DETAIL-INCARE-CLASS(WRK-DETAIL-MAX)
+      *?? DISPLAY "KOH-OCC(1)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 1)
+      *?? DISPLAY "KOH-OCC(2)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 2)
+      *?? DISPLAY "KOH-OCC(3)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 3)
+      *?? DISPLAY "KOH-OCC(4)=" WRK-DETAIL-KOH-OCC (WRK-DETAIL-MAX 4)
+      *?? DISPLAY "HKNKBN   =" WRK-DETAIL-HKNKBN (WRK-DETAIL-MAX)
+      *?? DISPLAY "SAIGAIKBN=" WRK-DETAIL-SAIGAIKBN (WRK-DETAIL-MAX)
+      *?? display "KOFUNUM  =" WRK-DETAIL-KOFUNUM  (WRK-DETAIL-MAX)
+      *?? DISPLAY "SPA-ERRCD=" SPA-ERRCD "#"
+      *?? display " "
       *??
                IF      SPA-ERRCD       =   SPACE
                    CONTINUE
@@ -2440,6 +2449,19 @@
       *
            IF      FLG-PATIENT-ERR     =   ZERO
                ADD     1               TO  WRK-ERR-PATIENT-MAX
+      *
+               MOVE    1               TO  FLG-PATIENT-ERR
+               MOVE    ZERO            TO  WRK-DETAIL-IDX
+      *
+      ***     IF      WRK-ERR-PATIENT-MAX >   WRK-CONS-OVERFLOW
+      *??          100件以上あり
+      ***          MOVE    "True"          TO  RECEDMAKES-ERR-OVERFLOW
+      *
+      ***          MOVE    ZERO            TO  WRK-T09-SELNUM
+      ***                                      WRK-DETAIL-ERR
+      ***          GO  TO  20012-PATIENT-ERR-EXT
+      ***      END-IF
+      *
                MOVE    IDZZ            TO  WRK-NUM
                MOVE    WRK-NUM-X       TO  RECEDMAKES-ITEM-POSITION
                                                    (WRK-ERR-PATIENT-MAX)
@@ -2452,9 +2474,6 @@
                MOVE    RECEDMAKEQ-PATIENT-INOUT (IDZZ)
                                        TO  RECEDMAKES-PATIENT-INOUT
                                                    (WRK-ERR-PATIENT-MAX)
-      *
-               MOVE    1               TO  FLG-PATIENT-ERR
-               MOVE    ZERO            TO  WRK-DETAIL-IDX
            END-IF
       *
       *??
@@ -2543,6 +2562,16 @@
            ELSE
       *        個別対象−レセプト情報がエラーのとき
                ADD     1                   TO  WRK-DETAIL-IDX
+      *
+      ***      IF      WRK-DETAIL-IDX  >   WRK-CONS-DETAIL-OVERFLOW
+      ***          20件以上あり
+      ***          MOVE    "True"          TO  RECEDMAKES-ERR-OVERFLOW
+      *
+      ***          MOVE    ZERO            TO  WRK-T09-SELNUM
+      ***                                      WRK-DETAIL-ERR
+      ***          GO  TO  20012-PATIENT-ERR-EXT
+      ***      END-IF
+      *
                MOVE    WRK-DETAIL-ERR      TO  WRK-NUM
                MOVE    WRK-NUM-X (2:2)     TO
                                    RECEDMAKES-DETAIL-ITEM-POSITION
@@ -2706,6 +2735,18 @@
       *
            IF      FLG-PATIENT-SEL  =   ZERO
                ADD     1               TO  WRK-S-PATIENT-MAX
+      *
+               MOVE    1               TO  FLG-PATIENT-SEL
+               MOVE    ZERO            TO  WRK-S-RECEIPT-MAX
+      *
+      ***      IF      WRK-S-PATIENT-MAX
+      ***                              >   WRK-CONS-OVERFLOW
+      *            100件以上あり
+      ***          MOVE    "True"          TO
+      ***                                  RECEDMAKES-SELECT-OVERFLOW
+      ***          GO  TO  20013-PATIENT-SELECT-EXT
+      ***      END-IF
+      *
                MOVE    IDZZ            TO  WRK-NUM
                MOVE    WRK-NUM-X       TO  RECEDMAKES-S-ITEM-POSITION
                                                    (WRK-S-PATIENT-MAX)
@@ -2718,9 +2759,6 @@
                MOVE    RECEDMAKEQ-PATIENT-INOUT (IDZZ)
                                        TO  RECEDMAKES-S-PATIENT-INOUT
                                                    (WRK-S-PATIENT-MAX)
-      *
-               MOVE    1               TO  FLG-PATIENT-SEL
-               MOVE    ZERO            TO  WRK-S-RECEIPT-MAX
            END-IF
       *
            IF      WRK-T09-SELNUM  =   ZERO
@@ -2746,12 +2784,27 @@
                    MOVE    IDYY                TO  WRK-NUM
                END-IF
            END-IF
+      *
+      ***  IF      WRK-S-DETAIL-MAX
+      ***                          >   WRK-CONS-DETAIL-OVERFLOW
+      *        20件以上あり
+      ***      MOVE    "True"          TO  RECEDMAKES-SELECT-OVERFLOW
+      ***      GO  TO  20013-PATIENT-SELECT-EXT
+      ***  END-IF
+      *
            MOVE    WRK-NUM-X (2:2)     TO  RECEDMAKES-S-DETAIL-POSITION
                                    (WRK-S-PATIENT-MAX WRK-S-DETAIL-MAX)
       *
            PERFORM VARYING IDXX    FROM    ST-IDX  BY  1
                    UNTIL   IDXX    >       ED-IDX
                ADD     1                   TO  WRK-S-RECEIPT-MAX
+      *
+      ***      IF      WRK-S-RECEIPT-MAX
+      ***                              >   WRK-CONS-DETAIL-OVERFLOW
+      *        20件以上あり
+      ***      MOVE    "True"          TO  RECEDMAKES-SELECT-OVERFLOW
+      ***      GO  TO  20013-PATIENT-SELECT-EXT
+      ***  END-IF
       *
                EVALUATE    SPA-NAI-T09-RECE10-TNYUGAIKBN (IDXX)
                    WHEN    "1"

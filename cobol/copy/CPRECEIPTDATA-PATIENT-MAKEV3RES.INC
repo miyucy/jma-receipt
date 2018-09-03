@@ -70,7 +70,8 @@
                    05  RECEDMAKES-API-WARNING-MSG
                                            PIC X(100).
       *        エラー患者一覧
-               03  RECEDMAKES-ERR-INFORMATION      OCCURS  20.
+               03  RECEDMAKES-ERR-OVERFLOW PIC X(04).
+               03  RECEDMAKES-ERR-INFORMATION      OCCURS  100.
                    05  RECEDMAKES-ITEM-POSITION
                                            PIC X(3).
                    05  RECEDMAKES-PATIENT-ID
@@ -83,7 +84,7 @@
                                            PIC X(3).
                    05  RECEDMAKES-ERROR-MSG
                                            PIC X(100).
-                   05  RECEDMAKES-DETAIL-INFORMATION   OCCURS  30.
+                   05  RECEDMAKES-DETAIL-INFORMATION   OCCURS  5.
                      06  RECEDMAKES-DETAIL-ITEM-POSITION
                                            PIC X(2).
                      06  RECEDMAKES-DETAIL-INFORMATION-G.
@@ -158,7 +159,9 @@
                        07  RECEDMAKES-DETAIL-ERROR-MSG
                                            PIC X(100).
       *        選択一覧
-               03  RECEDMAKES-SELECT-INFORMATION       OCCURS  20.
+               03  RECEDMAKES-SELECT-OVERFLOW
+                                           PIC X(04).
+               03  RECEDMAKES-SELECT-INFORMATION       OCCURS  100.
                    05  RECEDMAKES-S-ITEM-POSITION
                                            PIC X(3).
                    05  RECEDMAKES-S-PATIENT-ID
@@ -167,11 +170,11 @@
                                            PIC X(7).
                    05  RECEDMAKES-S-PATIENT-INOUT
                                            PIC X(2).
-                   05  RECEDMAKES-S-DETAIL-INFORMATION OCCURS  30.
+                   05  RECEDMAKES-S-DETAIL-INFORMATION OCCURS  5.
                      06  RECEDMAKES-S-DETAIL-POSITION
                                            PIC X(2).
                      06  RECEDMAKES-S-RE-DETAIL-POSITION
-                                                       OCCURS  30.
+                                                       OCCURS  20.
       *                種別コード
                        07  RECEDMAKES-S-DETAIL-CODE
                                            PIC X(04).

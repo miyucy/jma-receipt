@@ -65,7 +65,7 @@
                    07 RECEDMAKEQ-PATIENT-INOUT    PIC X(2).
       *            個別対象−レセプト情報
                    07 RECEDMAKEQ-DETAIL-INFORMATION-G.
-                     08 RECEDMAKEQ-DETAIL-INFORMATION   OCCURS  30.
+                     08 RECEDMAKEQ-DETAIL-INFORMATION   OCCURS  5.
       *                種別コード
                        09  RECEDMAKEQ-DETAIL-CODE
                                            PIC X(04).

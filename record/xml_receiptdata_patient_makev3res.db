@@ -26,6 +26,7 @@ xml_receiptdata_patient_makev3res {
 			Receiptdata_Warning		varchar(3);
 			Receiptdata_Warning_Message	varchar(100);
 		} [5];
+		Err_Patient_Information_Overflow	varchar(4);
 		Err_Patient_Information {
 			Err_Patient_Item_Position	varchar(3);
 			Err_Patient_ID			varchar(20);
@@ -59,8 +60,9 @@ xml_receiptdata_patient_makev3res {
 				Err_Patient_Detail_Accident_Class		varchar(1);
 				Err_Patient_Detail_Error_Code			varchar(3);
 				Err_Patient_Detail_Error_Message		varchar(100);
-			} [30];
-		} [20];
+			} [5];
+		} [100];
+		Selection_Patient_Information_Overflow	varchar(4);
 		Selection_Patient_Information {
 			Selection_Patient_Item_Position	varchar(3);
 			Selection_Patient_ID		varchar(20);
@@ -93,9 +95,9 @@ xml_receiptdata_patient_makev3res {
 					Patient_Detail_Accident_Class			varchar(1);
 					Patient_Detail_Warning				varchar(3);
 					Patient_Detail_Warning_Message			varchar(100);
-				} [30];
-			} [30];
-		} [20];
+				} [20];
+			} [5];
+		} [100];
 		Effective_Period_Information{
 			Info_Period_Start_Month	varchar(7);
 			Info_Period_End_Month	varchar(7);

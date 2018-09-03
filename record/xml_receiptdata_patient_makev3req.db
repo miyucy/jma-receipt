@@ -53,7 +53,7 @@ xml_receiptdata_patient_makev3req {
 				Patient_Detail_Accident_Class			varchar(1);
 #---     実施確認指示（警告）
 				Patient_Detail_Receipt_Perform_Flag		varchar(4);
-			} [30];
+			} [5];
 		} [100];
 	};
 };
