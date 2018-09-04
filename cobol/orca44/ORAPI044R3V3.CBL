@@ -1,4 +1,4 @@
-     *******************************************************************
+     ******************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -1385,7 +1385,7 @@
       *
       *??
       *   DISPLAY "2001 SPA-TIDCD=" IDZZ "#" SPA-ERRCD "#" SPA-TIDCD "#"
-      *                SPA-GMN-T09-MAX "#" WRK-DETAIL-MAX "#"
+      *                 SPA-GMN-T09-MAX "#" WRK-DETAIL-MAX "#"
       *??
                IF      SPA-ERRCD       =   SPACE
                    EVALUATE    SPA-TIDCD
@@ -1464,6 +1464,10 @@
                                    IF      SPA-ERRCD   NOT =   SPACE
                                        MOVE    IDZ     TO
                                                        WRK-T09-SELNUM
+                                       IF      WRK-T09-CHK (IDZ)   =   1
+                                           MOVE    WRK-T09-DET-IDX (IDZ)
+                                                   TO  WRK-DETAIL-ERR
+                                       END-IF
                                        PERFORM 20012-PATIENT-ERR-SEC
                                    ELSE
                                        EVALUATE    SPA-TIDCD
@@ -1511,7 +1515,7 @@
                                                                =   ZERO
                                                    MOVE    ZERO    TO
                                                           FLG-SELECT-ERR
-                                                   MOVE    IDZ TO
+                                                   MOVE    IDZ     TO
                                                           WRK-T09-SELNUM
       *                                            個別対象患者選択一覧処理
                                                    PERFORM
@@ -1525,8 +1529,8 @@
                                  END-IF
                                END-PERFORM
       *
-      *                        エラーがない場合全て対象とする
-                               IF      WRK-ERRCD       =   SPACE
+      *                        選択がある場合対象とする
+                               IF      WRK-SELNUM    >   ZERO
                                  INITIALIZE          SPA-T01KYOUTU-H
                                  MOVE    SPACE       TO  LINKAREA
                                                          SPA-MOTOPG
@@ -1544,6 +1548,9 @@
                            END-IF
                    END-EVALUATE
                END-IF
+      *??
+      *    DISPLAY "SPA-GMN-T06-RECE-MAX=" SPA-GMN-T06-RECE-MAX "#" 
+      *??
            END-PERFORM
       *
       *    エラーがあれば処理終了
@@ -2477,7 +2484,7 @@
            END-IF
       *
       *??
-      *    DISPLAY "20012 ERR=" WRK-DETAIL-ERR "#" WRK-T09-SELNUM "#"
+      *   DISPLAY "20012 ERR=" WRK-DETAIL-ERR "#" WRK-T09-SELNUM "#"
       *          SPA-ERRCD "#"
       *??
            IF      WRK-DETAIL-ERR      =   ZERO
@@ -2593,6 +2600,12 @@
                                    (WRK-ERR-PATIENT-MAX WRK-DETAIL-IDX)
                    WHEN    "E029"
                        MOVE    "E29"       TO
+                                   RECEDMAKES-DETAIL-ERROR-CODE
+                                   (WRK-ERR-PATIENT-MAX WRK-DETAIL-IDX)
+                   WHEN    "0008"
+                       MOVE    "同じレセプトが既に対象になっています。"
+                                               TO  SPA-ERRMSG
+                       MOVE    "E51"       TO
                                    RECEDMAKES-DETAIL-ERROR-CODE
                                    (WRK-ERR-PATIENT-MAX WRK-DETAIL-IDX)
                    WHEN    OTHER
