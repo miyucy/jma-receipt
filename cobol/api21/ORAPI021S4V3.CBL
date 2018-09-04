@@ -930,6 +930,9 @@
                                            TO  MDCRES-PERFORM-DATE
            END-IF
       *
+      *!!! 診療日付＝システム日付とする
+           MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
+      *
            MOVE    WRK-PERFORM-YMD     TO  SPA-SRYYMD
       *    診療科
            MOVE    MDCREQ-APPOINT-DEP-CODE
