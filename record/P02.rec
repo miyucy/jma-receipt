@@ -346,14 +346,14 @@ P02 {
             textdata varchar(23);
           };
           count int;
-            item varchar(23)[99];
+            item varchar(23)[100];
         };
         P02_DISCOUNT_COB {
           P02_DISCOUNT {
             textdata varchar(14);
           };
           count int;
-            item varchar(14)[99];
+            item varchar(14)[100];
         };
         P02_SETAINUSI {
           textdata varchar(50);
@@ -366,21 +366,21 @@ P02 {
             textdata varchar(23);
           };
           count int;
-            item varchar(23)[99];
+            item varchar(23)[100];
         };
         P02_CONDITION2_COB {
           P02_CONDITION2 {
             textdata varchar(23);
           };
           count int;
-            item varchar(23)[99];
+            item varchar(23)[100];
         };
         P02_CONDITION3_COB {
           P02_CONDITION3 {
             textdata varchar(23);
           };
           count int;
-            item varchar(23)[99];
+            item varchar(23)[100];
         };
         P02_TABOO1 {
           textdata varchar(100);
@@ -442,7 +442,7 @@ P02 {
             textdata varchar(23);
           };
           count int;
-            item varchar(23)[99];
+            item varchar(23)[100];
         };
         P02_USERPG_COB {
           state int;
