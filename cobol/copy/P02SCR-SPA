@@ -147,36 +147,36 @@
                    07  SPA-GMN-COMMENT-2       PIC X(100).
       *            ¸ºÌÈ»öÍ³¡Ê1026¡Ë
                    07  SPA-GMN-DISCOUNTKBN-TBL.
-                       09  SPA-GMN-DISCOUNTKBN-LST       OCCURS   99.
+                       09  SPA-GMN-DISCOUNTKBN-LST       OCCURS  100.
                            11  SPA-GMN-DISCOUNTKBN-KBNCD     PIC X(02).
                            11  SPA-GMN-DISCOUNTKBN-BODY      PIC X(20).
                            11  SPA-GMN-DISCOUNTKBN-RATEKBN   PIC X(02).
-                       09  SPA-DISCOUNTKBN-MAX           PIC 9(03).
+                       09  SPA-DISCOUNTKBN-MAX           PIC 9(04).
       *            ³ä°úÎ¨¡Ê1027¡Ë
                    07  SPA-GMN-DISCOUNT-TBL.
-                       09  SPA-GMN-DISCOUNT-LST           OCCURS   99.
+                       09  SPA-GMN-DISCOUNT-LST           OCCURS  100.
                            11  SPA-GMN-DISCOUNT-KBNCD        PIC X(02).
                            11  SPA-GMN-DISCOUNT-TEIRITU      PIC X(01).
                            11  SPA-GMN-DISCOUNT-RITU         PIC 9(07).
                            11  SPA-GMN-DISCOUNT-EDIT         PIC X(14).
-                       09  SPA-DISCOUNT-MAX              PIC 9(03).
+                       09  SPA-DISCOUNT-MAX              PIC 9(04).
       *            ¾õÂÖ£±¡Á£³
                    07  SPA-GMN-CONDITION-TBL.
                        09  SPA-GMN-CONDITION-KBN       OCCURS   3.
-                           11  SPA-GMN-CONDITION-LST       OCCURS   99.
+                           11  SPA-GMN-CONDITION-LST       OCCURS  100.
                                13  SPA-GMN-CONDITION-KBNCD PIC X(02).
                                13  SPA-GMN-CONDITION-H     PIC X(01).
                                13  SPA-GMN-CONDITION-BODY  PIC X(20).
-                           11  SPA-GMN-CONDITION-LST2      OCCURS   99.
+                           11  SPA-GMN-CONDITION-LST2      OCCURS  100.
                                13  SPA-GMN-CONDITION-WORD  PIC X(02).
-                           11  SPA-CONDITION-MAX           PIC 9(03).
+                           11  SPA-CONDITION-MAX           PIC 9(04).
       *            Æþ¶âÊýË¡(1041)
                    07  SPA-GMN-NYUKIN-HOHO-TBL.
-                       09  SPA-GMN-NYUKIN-LST           OCCURS   99.
+                       09  SPA-GMN-NYUKIN-LST           OCCURS  100.
                            11  SPA-GMN-NYUKIN-HOHOL         PIC X(02).
                            11  SPA-GMN-NYUKIN-HL            PIC X(01).
                            11  SPA-GMN-NYUKIN-MEIL          PIC X(20).
-                       09  SPA-NYUKIN-MAX                   PIC 9(03).
+                       09  SPA-NYUKIN-MAX                   PIC 9(04).
       *            ÀÁµá½ñÈ¯¹Ô¶èÊ¬
                    07  SPA-GMN-SKYPRTFLG-G.
                        09  SPA-GMN-SKYPRTFLG          PIC X(01).

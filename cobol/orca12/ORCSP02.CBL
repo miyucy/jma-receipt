@@ -640,7 +640,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL   ( FLG-SYSKANRI  =   1  )
-                     OR      ( IDX           >   99 )
+      *H30.9   100∑Ô§À
+      ****           OR      ( IDX           >   99 )
+                     OR      ( IDX           >  100 )
                MOVE    MCPDATA-REC     TO  SYS-1026-REC
                MOVE    SYS-1026-KBNCD (1:2)
                                    TO  SPA-GMN-DISCOUNTKBN-KBNCD  (IDX)
@@ -692,7 +694,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL   ( FLG-SYSKANRI  =   1  )
-                     OR      ( IDX           >   99 )
+      *H30.9   100∑Ô§À
+      ****           OR      ( IDX           >   99 )
+                     OR      ( IDX           >  100 )
                MOVE    MCPDATA-REC     TO  SYS-1027-REC
                MOVE    SPACE           TO  WRK-RATE-AREA
                MOVE    SYS-1027-KBNCD (1:2)
@@ -768,7 +772,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              END-IF
              PERFORM   VARYING   IDY   FROM    1   BY  1
                        UNTIL   ( FLG-SYSKANRI  =   1  )
-                       OR      ( IDY           >   99 )
+      *H30.9   100∑Ô§À
+      ****             OR      ( IDY           >   99 )
+                       OR      ( IDY           >  100 )
                MOVE    MCPDATA-REC       TO  SYS-1018-REC
                MOVE    SYS-1018-KBNCD (1:2)
                                  TO  SPA-GMN-CONDITION-KBNCD (IDX IDY)
@@ -831,7 +837,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL   ( FLG-SYSKANRI  =   1  )
-                     OR      ( IDX           >   99 )
+      *H30.9   100∑Ô§À
+      *****          OR      ( IDX           >   99 )
+                     OR      ( IDX           >   100)
                MOVE    MCPDATA-REC     TO  SYS-1041-REC
                MOVE    SYS-1041-KBNCD (1:2)
                                        TO  SPA-GMN-NYUKIN-HOHOL(IDX)
@@ -2261,7 +2269,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    IDX                 TO  PARA-EDANUM
                    MOVE    HKNCOMBI-REC        TO  PARA-DATA-REC
                    PERFORM 400-PARA-INSERT-SEC
-      *
+      *TEST
       *            »Û…Ωº®∂Ë ¨ ›¬∏
                    ADD    1                    TO  SPA-HYO-MAX
                    IF     SPA-HYO-MAX          <=  200
