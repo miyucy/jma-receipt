@@ -41,7 +41,7 @@ fi
 
         echo "window  ${MCP_WINDOW}"
 
-        if  [ "${MCP_WINDOW}" == "receiptdatacheckmakev3" ]; then
+        if  [ "${MCP_WINDOW}" == "receiptdatacheckmakev3" ] || [ "${MCP_WINDOW}" == "receiptdatapatientmakev3" ]; then
             mkdir -p  ${MCP_TEMPDIR}
         fi
 

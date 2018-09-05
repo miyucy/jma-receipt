@@ -1559,9 +1559,15 @@
                GO  TO  2001-INPUT-CHK-EXT
            END-IF
       *
+      *    オンラインの変わりに追加処理後のクリア処理を行う
+           INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-BODY-SELNUM
+                                       SPA-T09-AREA
       *    レセ電データ作成前チェック
            MOVE    SPACE           TO  LINKAREA
                                        SPA-MOTOPG
+                                       SPA-ERRCD
            INITIALIZE                  SPA-T01KYOUTU-H
       *
            MOVE    "PUTG"          TO  MCP-STATUS
