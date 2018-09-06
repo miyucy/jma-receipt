@@ -1,23 +1,33 @@
 tbl_recekisai_master {
-	C_GROUP			varchar(9);
+	ITEMNO			number(4,0);
+	EDANO			number(2,0);
 	STYM			varchar(6);
 	EDYM			varchar(6);
-	KISAINUM		number(2,0);
+	SRYCD			varchar(9);
 	RENNUM			number(2,0);
 	C_CD			varchar(9);
+	JYOTAICD		varchar(3);
+	KEISAIKBN		number(1,0);
+	KUBUN			varchar(64);
+	JYOKEN			number(2,0);
+	HISANTEI		number(1,0);
 	SYORIKBN		number(1,0);
+	MEISYOETC		varchar(300);
+	CHGYMD			varchar(8);
+	HAISIYMD		varchar(8);
 	CREYMD			varchar(8);
 	UPYMD			varchar(8);
 	UPHMS			varchar(6);
 #-----> 主キー更新用項目
-	UPC_GROUP			varchar(9),virtual;
+	UPITEMNO		number(4,0),virtual;
+	UPEDANO			number(2,0),virtual;
 	UPSTYM			varchar(6),virtual;
 	UPEDYM			varchar(6),virtual;
-	UPKISAINUM		number(2,0),virtual;
+	UPSRYCD			varchar(9),virtual;
 	UPRENNUM			number(2,0),virtual;
 };
 primary	{
-	C_GROUP,STYM,EDYM,KISAINUM,RENNUM;
+	ITEMNO,EDANO,STYM,EDYM,SRYCD,RENNUM;
 };
 
 path	key 	{
@@ -25,10 +35,11 @@ path	key 	{
 		DECLARE tbl_recekisai_master_key_csr CURSOR FOR
 		SELECT *
 		FROM master.tbl_recekisai
- 			WHERE   C_GROUP   = :C_GROUP
+ 			WHERE   ITEMNO    = :ITEMNO
+ 			AND     EDANO     = :EDANO
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
-			AND     KISAINUM  = :KISAINUM
+			AND     SRYCD     = :SRYCD
 			AND     RENNUM    = :RENNUM
 		;
 	};
@@ -36,13 +47,22 @@ path	key 	{
 	DBINSERT	{
 		INSERT INTO 	master.tbl_recekisai
 			VALUES(
-				:C_GROUP,
+				:ITEMNO,
+				:EDANO,
 				:STYM,
 				:EDYM,
-				:KISAINUM,
+				:SRYCD,
 				:RENNUM,
 				:C_CD,
+				:JYOTAICD,
+				:KEISAIKBN,
+				:KUBUN,
+				:JYOKEN,
+				:HISANTEI,
 				:SYORIKBN,
+				:MEISYOETC,
+				:CHGYMD,
+				:HAISIYMD,
 				:CREYMD,
 				:UPYMD,
 				:UPHMS
@@ -53,30 +73,41 @@ path	key 	{
 	DBUPDATE		{
 		UPDATE master.tbl_recekisai
 			SET
-				C_GROUP   = :C_GROUP,
+				ITEMNO    = :ITEMNO,
+				EDANO     = :EDANO,
 				STYM      = :STYM,
 				EDYM      = :EDYM,
-				KISAINUM  = :KISAINUM,
+				SRYCD     = :SRYCD,
 				RENNUM    = :RENNUM,
 				C_CD      = :C_CD,
+				JYOTAICD  = :JYOTAICD,
+				KEISAIKBN = :KEISAIKBN,
+				KUBUN     = :KUBUN,
+				JYOKEN    = :JYOKEN,
+				HISANTEI  = :HISANTEI,
 				SYORIKBN  = :SYORIKBN,
+				MEISYOETC = :MEISYOETC,
+				CHGYMD    = :CHGYMD,
+				HAISIYMD  = :HAISIYMD,
 				CREYMD    = :CREYMD,
 				UPYMD     = :UPYMD,
 				UPHMS     = :UPHMS
- 			WHERE   C_GROUP   = :C_GROUP
+ 			WHERE   ITEMNO    = :ITEMNO
+ 			AND     EDANO     = :EDANO
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
-			AND     KISAINUM  = :KISAINUM
+			AND     SRYCD     = :SRYCD
 			AND     RENNUM    = :RENNUM
 		;
 	};
 
 	DBDELETE	{
 		DELETE FROM	master.tbl_recekisai
- 			WHERE   C_GROUP   = :C_GROUP
+ 			WHERE   ITEMNO    = :ITEMNO
+ 			AND     EDANO     = :EDANO
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
-			AND     KISAINUM  = :KISAINUM
+			AND     SRYCD     = :SRYCD
 			AND     RENNUM    = :RENNUM
 		;
 	};
@@ -87,11 +118,13 @@ path	key2 	{
 		DECLARE tbl_recekisai_master_key2_csr CURSOR FOR
 		SELECT *
 		FROM master.tbl_recekisai
- 			WHERE   C_GROUP   = :C_GROUP
+ 			WHERE   ITEMNO    = :ITEMNO
+ 			AND     EDANO     = :EDANO
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
-			AND     SYORIKBN  IN (1, 2)
-			ORDER   BY	KISAINUM, RENNUM
+			AND     SRYCD     = :SRYCD
+			AND     RENNUM    = :RENNUM
+			ORDER   BY	ITEMNO, EDANO, SRYCD, RENNUM
 		;
 	};
 };

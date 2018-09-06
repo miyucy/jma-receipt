@@ -605,10 +605,9 @@ ito   *
                    07  SPA-K98-USERMEI            PIC X(18).
                05  SPA-K98-USER-COB               OCCURS  10.
                    07  SPA-K98-USERLST            PIC X(20).
-      *TEST
-      *H30.5
+      *
+      *H30.9
                05  SPA-K98-SELCOM-SRYCD            PIC X(09).
-               05  SPA-K98-SELCOM-GRPCD            PIC X(09).
       *
       *    £Ë£°£²£³²èÌÌÍÑ
            03  SPA-K023GMN-AREA.

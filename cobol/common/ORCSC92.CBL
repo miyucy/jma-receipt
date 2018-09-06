@@ -78,6 +78,7 @@
       *  04.08.00    NACL-多々納  16/04/20  向精神薬区分追加対応
       *  05.00.00    NACL-多々納  17/01/XX  点数マスタユーザ対応
       *  04.08.00    NACL-多々納  18/03/XX  平成３０年４月改正対応
+      *  04.08.00    NACL-多々納  18/09/XX  選択式コメント対応
       *****************************************************************
       *
       *
@@ -110,6 +111,7 @@
            03  FLG-GENERICNAME     PIC 9(01).
            03  FLG-PSYCHOTROPIC    PIC 9(01).
            03  FLG-TENSUPRICE      PIC 9(01).
+           03  FLG-RECEKISAI       PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-SST             PIC 9(01).
@@ -464,6 +466,11 @@
       *    点数マスタ器材金額
         01 TENSU-PRICE-REC.
            COPY    "CPTENSU-PRICE.INC".
+      *
+      *H30.9
+      *    レセプト記載事項
+       01  RECEKISAI-REC.
+           COPY    "CPRECEKISAI.INC".
       *
       *    算定履歴
        01  HZN-SANTEI-REC.
@@ -4265,15 +4272,14 @@
                MOVE    "2"             TO  SPA-COM-MASTER-CLASS
                                                              (IDX-T)
            END-IF
+      *
       *TEST
-      *H30.5
-      *    商品名等関連コード（診療コードのコメントグループ番号）
-      *    IF     (TNS-SRYCD (1:1)     =   "1"   )
-      *       AND (SPA-SRYYMD          >=  "20180401" )
-      *        MOVE    TNS-SYOMEIKANREN    TO  SPA-COM-SYOMEIKANREN
-      *                                                      (IDX-T)
-      *    END-IF
-      *??
+      *H30.9
+      *    レセプト記載事項編集
+           IF     (TNS-SRYCD (1:1)     =   "1" )
+              AND (SPA-SRYYMD          >=  "20180401" )
+               PERFORM 3010-RECEKISAI-HEN-SEC
+           END-IF
       *TEST
       *
       *    点数マスタ付加情報より編集
@@ -5586,6 +5592,67 @@
       *
            .
        3009-PSYCHOTROPIC-HEN-EXT.
+           EXIT.
+      *TEST
+      *H30.9
+      *****************************************************************
+      *    レセプト記載事項編集処理
+      *****************************************************************
+       3010-RECEKISAI-HEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  RECEKISAI-REC
+           INITIALIZE                      RECEKISAI-REC
+           MOVE    TNS-SRYCD           TO  RKISAI-SRYCD
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-STYM
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-EDYM
+           MOVE    RECEKISAI-REC       TO  MCPDATA-REC
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_recekisai"     TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  RECEKISAI-REC
+                   MOVE    ZERO                TO  FLG-RECEKISAI
+               ELSE
+                   INITIALIZE                  RECEKISAI-REC
+                   MOVE    1                   TO  FLG-RECEKISAI
+               END-IF
+           ELSE
+               INITIALIZE                  RECEKISAI-REC
+               MOVE    1                   TO  FLG-RECEKISAI
+           END-IF
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-RECEKISAI       =   ZERO
+      *        処理区分＝１ 自動選択肢
+      *        IF      RKISAI-SYORIKBN     =   "1"
+      *            MOVE    "1"                 TO  SPA-COM-RECEKISAI
+      *                                                   (IDX-T)
+      *        END-IF
+      *        処理区分＝１、２ 検索あり
+      *        IF      RKISAI-SYORIKBN     =   "2"
+      **                                   OR  "2"
+      *            MOVE    "2"                 TO  SPA-COM-RECEKISAI
+      *                                                   (IDX-T)
+      *****    END-IF
+      *
+               IF      RKISAI-JYOKEN       =   1
+      *            条件＝１　は他条件なし
+                   MOVE    "1"                 TO  SPA-COM-RECEKISAI
+                                                          (IDX-T)
+               ELSE
+      *            条件≠１　は他条件あり
+                   MOVE    "2"                 TO  SPA-COM-RECEKISAI
+                                                          (IDX-T)
+               END-IF
+          END-IF
+           .
+       3010-RECEKISAI-HEN-EXT.
            EXIT.
       *
       *****************************************************************

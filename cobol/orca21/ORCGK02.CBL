@@ -117,6 +117,7 @@
       *  04.08.00    NACL-多々納  16/06/XX  中心静脈（植入型カテーテル）対応
       *  04.08.00    NACL-多々納  16/12/XX  電子お薬手帳連携対応
       *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
+      *  04.08.00    NACL-多々納  18/09/XX  選択式コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1539,7 +1540,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    1                   TO  FLG-GMN
                    ELSE
       *TEST
-      *H30.5
+      *H30.9
       *            選択式コメント
                    IF      SPA-SELCOM-FLG      =   1
                        PERFORM 30113-SELCOMMNT-COMMENT-SEC
@@ -2872,7 +2873,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1"             TO  SPA-COM-IN2(SPA-GMN-IDX)
                END-IF
       *
-           END-PERFORM
+            END-PERFORM
       *
       *    入力コード・名称チェック処理
            PERFORM 410112-KOUI-SPACHK-SEC
@@ -2929,7 +2930,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        30112-AKUSEI-COMMENT-EXT.
            EXIT.
       *TEST
-      *H30.5
+      *H30.9
       *****************************************************************
       *    選択式コメントへ処理
       *****************************************************************
@@ -2937,11 +2938,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF     (SPA-SELCOM-IDX      >   ZERO  )
              AND  (SPA-COM-INPUTCD(SPA-SELCOM-IDX)(1:1)  =   "1"  )
-             AND  (SPA-COM-SYOMEIKANREN (SPA-SELCOM-IDX) NOT =   SPACE)
-      *        選択済み(H18.3までは、寝たきり老人診療料に使用）
-               MOVE    "1"             TO  SPA-COM-AUTOFLG
+             AND  (SPA-COM-RECEKISAI (SPA-SELCOM-IDX)    =   "1"
+                                                         OR  "2"  )
+      *        選択済み
+               MOVE    "1"             TO  SPA-COM-RECEAUTO
                                                     (SPA-SELCOM-IDX)
-           END-IF
+           END-IF 
       *
       *    対象行の下に挿入
            IF      SPA-COM-INPUTCD (SPA-GMN-IDX) NOT =  SPACE
@@ -2952,6 +2954,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM 3011-K98-SET-SEC
+           MOVE    1                   TO  FLG-GMN
            .
        30113-SELCOMMNT-COMMENT-EXT.
            EXIT.
@@ -4737,6 +4740,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPACE               TO  SPA-COM-HKEIFLG (IDX)
                    MOVE    SPACE               TO  SPA-COM-HCHKFLG (IDX)
                END-IF
+      *TEST
+      *H30.9
+      *        訂正展開時、選択コメント対応済みとする
+               IF     (SPA-SYORIFLG        =   1  )
+                 AND  (FLG-TEISEI          =   1  )
+                   IF     (SPA-COM-INPUTCD (IDX) (1:1) =   "1" )
+                      AND (SPA-COM-RECEKISAI(IDX) NOT  =   SPACE)
+                       MOVE    "1"         TO  SPA-COM-RECEAUTO
+                                                            (IDX)
+                   END-IF
+               END-IF
+      *!!
       *        訂正時の点数判定
                IF      SPA-SYORIFLG        =   1
                    IF      FLG-MAE-TENSU   =   ZERO
@@ -7018,6 +7033,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                IF       (K02-MEISYO  (WRK-IDX2)   NOT =
                                        SPA-GMN-MEISYO-G (SPA-GMN-IDX))
                  AND    (K02-INPUTCD(WRK-IDX2 + 1) NOT =   SPACE )
+      *H30.9
+                 AND   ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)
+                                               =   "8"   )  OR
+                        (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)
+                                               =   "008"))
                    MOVE    "2"                 TO  SPA-COM-IN4
                                                            (SPA-GMN-IDX)
                END-IF
@@ -8034,8 +8054,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    "R"
                    WHEN    "r"
                        MOVE    SPA-K98-INPUTCD     TO  SPA-K98-GMN-INPUT
-      *TEST
-      *H30.5
+      *
+      *H30.9
       *            選択式コメント一覧
                    WHEN    "S"
                    WHEN    "s"
@@ -8045,7 +8065,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                            PERFORM 510112-SELCOM-CHK-SEC
                        END-IF
                        IF     (SPA-SELCOM-IDX  =   ZERO  )
-      *H30.5 から
                          OR   (SPA-SRYYMD      <   "20180401" )
                            MOVE    SPACE           TO  SPA-K98-GMN-SYORI
                            MOVE    SPACE           TO  SPA-K98-INPUTCD
@@ -8054,8 +8073,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        ELSE
                            MOVE    SPA-COM-INPUTCD (SPA-SELCOM-IDX)
                                                TO  SPA-K98-SELCOM-SRYCD
-                           MOVE    SPA-COM-SYOMEIKANREN (SPA-SELCOM-IDX)
-                                               TO  SPA-K98-SELCOM-GRPCD
                        END-IF
       *
                    WHEN    OTHER
@@ -9333,6 +9350,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *!!!!
       *TEST
       *TEST
+      *H30.9
       *    選択コメント一覧へ
            IF     (SPA-SELCOM-FLG      =   1   )
       *    中途データ展開時はなし
@@ -9384,25 +9402,27 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
         510-TBLHEN-EXT.
            EXIT.
       *!!!!
+      *
       *TEST
-      *TEST
+      *H30.9
       *****************************************************************
       *    選択コメント一覧へ処理
       *****************************************************************
        510112-SELCOM-CHK-SEC       SECTION.
       *
-           PERFORM VARYING    IDX      FROM    SPA-GMN-IDX  BY  -1
+           COMPUTE IDX-STR             =   SPA-GMN-IDX  -  1
+           PERFORM VARYING    IDX      FROM    IDX-STR  BY  -1
                    UNTIL     (IDX      <       1   )
                         OR   (SPA-SELCOM-IDX   >   ZERO  )
                IF     (SPA-COM-INPUTCD (IDX)(1:1)  =   "1" )
-                  AND (SPA-COM-SYOMEIKANREN(IDX)   NOT =   SPACE)
+                  AND (SPA-COM-RECEKISAI(IDX)      =   "1"
+                                                   OR  "2"  )
                    MOVE    IDX                 TO  SPA-SELCOM-IDX
                    MOVE    1                   TO  SPA-SELCOM-FLG
                END-IF
       *        同じ剤内での検索
-               IF      (IDX            NOT =   SPA-GMN-IDX )
-                   AND (SPA-COM-ZAIEND (IDX)   =   "1"     )
-                   AND (SPA-GMN-INPUTCD (IDX + 1)  NOT =  SPACE )
+               IF      (IDX            NOT =   IDX-STR )
+                   AND (SPA-COM-ZAIEND (IDX)   =   "1" )
                    MOVE    1               TO  IDX
                END-IF
            END-PERFORM
@@ -12555,6 +12575,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  FLG-TOROKU
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD       NOT =   SPACE )
+      *H30.9
+             OR   (FLG-END             =   1     )
                GO      TO      4100-TOROKU-EXT
            END-IF
       *    新規で明細がない時、エラー
@@ -12899,6 +12921,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    クライアント印刷前　処理
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
+      *TEST
+           DISPLAY "K02 ORCSPRTCTRL CALL"
       *
       *    INITIALIZE                  KDMY01
       *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
@@ -13620,6 +13644,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  K02-SRYKBN(IDX)
                    MOVE    SPA-GMN-INPUTCD(WRK-IDX)
                                                TO  K02-INPUTCD(IDX)
+      *
+      *TEST
+      *H30.9       選択式コメントあり
+                   IF      SPA-COM-RECEKISAI (WRK-IDX) NOT =  SPACE
+                       MOVE   "S"       TO  SPA-GMN-MEIH (WRK-IDX)(2:1)
+                   END-IF
+      *
                    MOVE    SPA-GMN-MEISYO-G(WRK-IDX)
                                                TO  K02-MEISYO(IDX)
       *H29.1

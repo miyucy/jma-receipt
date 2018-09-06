@@ -1114,6 +1114,8 @@ DB_files = \
 	xml_statistics_formv3res.db \
 	xml_receiptdata_patinet_makev3req.db \
 	xml_receiptdata_patient_makev3res.db \
+	tbl_recekisai \
+	tbl_recekisai_master \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

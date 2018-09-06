@@ -455,7 +455,9 @@
                    MOVE    "F"             TO  SPA-K02N-KENSAFLG
                END-IF
                MOVE    LNK-SC93-ERRCD      TO  ORCSC100-KENSAERR
-           ELSE
+      ***  ELSE
+           END-IF
+      *入院も妊婦判定を行う
       *外来
       *        特定診療チェック
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -471,7 +473,7 @@
                   AND (ORCSC100-INIT       =   ZERO )
                    GO      TO      5101-TBLSAIHEN-EXT
                END-IF
-           END-IF
+      **** END-IF
       *
       *    剤ごとに回数を入れ直す（リハビリ等同時回数チェックのため）
            MOVE    ZERO                TO  FLG-SONOTA
@@ -1442,7 +1444,7 @@
            EXIT.
       *TEST
       *TEST
-      *H30.5
+      *H30.9
       *****************************************************************
       *    選択式コメント一覧チェック処理
       *****************************************************************
@@ -1459,17 +1461,18 @@
                               (SPA-COM-INPUTCD (IDX)   =   SPACE ))
                           OR ( SPA-SELCOM-FLG          =   1     )
       *
+      *        選択コメント対象
                IF      (SPA-COM-INPUTCD(IDX)(1:1)  =   "1"  )
-                  AND  (SPA-COM-SYOMEIKANREN (IDX) NOT =   SPACE)
-      *            選択コメント対象
-                   MOVE    IDX                 TO  SPA-SELCOM-IDX
+                  AND  (SPA-COM-RECEKISAI (IDX)    =   "1"  )
       *            今回入力以外
-                   IF     (SPA-COM-AUTOFLG (IDX)   =   "1")
-                       MOVE    ZERO            TO  SPA-SELCOM-IDX
+                  AND  (SPA-COM-RECEAUTO (IDX) NOT =   "1"  )
+                   IF      SPA-SELCOM-IDX      =   ZERO
+                       MOVE    IDX             TO  SPA-SELCOM-IDX
                    END-IF
                END-IF
       *
-               IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "8" )
+               IF      (SPA-COM-INPUTCD (IDX)(1:2) =   "82" )
+                   OR  (SPA-COM-INPUTCD (IDX)(1:2) =   "81" )
                    OR  (SPA-COM-INPUTCD (IDX)(1:3) =   "008")
                    MOVE    1                   TO  FLG-COMMNT-ARI
                END-IF
