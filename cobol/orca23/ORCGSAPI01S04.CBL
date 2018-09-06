@@ -644,8 +644,10 @@
                    END-IF
                END-IF
       *
-               IF    ( SPA-API-STDAY       >   SPA-API-EDDAY )
-                   MOVE    "0127"          TO  SPA-ERRCD
+               IF    ( SPA-ERRCD           =   SPACE )
+                   IF    ( SPA-API-STDAY   >   SPA-API-EDDAY )
+                       MOVE    "0127"      TO  SPA-ERRCD
+                   END-IF
                END-IF
       *
            END-IF

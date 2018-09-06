@@ -174,14 +174,6 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           MOVE    SMCNDATE-YMD        TO  WRK-YMD
-           COMPUTE WRK-ZOGEN   =   -1
-           MOVE    "1"                 TO  WRK-ZOGENPTN
-           PERFORM 800-CALENDAR-SEC
-           MOVE    WRK-KEISANYMD       TO  WRK-DELYMDHMS-YMD
-           MOVE    SMCNDATE-HMS        TO  WRK-DELYMDHMS-HMS
-           PERFORM 900-APIPARA-DEL5-SEC
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -306,6 +298,13 @@
       *
            PERFORM 900-XML-WRITE-SEC
       *
+           MOVE    SMCNDATE-YMD        TO  WRK-YMD
+           COMPUTE WRK-ZOGEN   =   -1
+           MOVE    "1"                 TO  WRK-ZOGENPTN
+           PERFORM 800-CALENDAR-SEC
+           MOVE    WRK-KEISANYMD       TO  WRK-DELYMDHMS-YMD
+           MOVE    SMCNDATE-HMS        TO  WRK-DELYMDHMS-HMS
+           PERFORM 900-APIPARA-DEL5-SEC
       *
            .
        300-END-EXT.
