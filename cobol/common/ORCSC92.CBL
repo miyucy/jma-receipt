@@ -5629,27 +5629,15 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-RECEKISAI       =   ZERO
-      *        ½èÍý¶èÊ¬¡á£± ¼«Æ°ÁªÂò»è
-      *        IF      RKISAI-SYORIKBN     =   "1"
-      *            MOVE    "1"                 TO  SPA-COM-RECEKISAI
-      *                                                   (IDX-T)
-      *        END-IF
-      *        ½èÍý¶èÊ¬¡á£±¡¢£² ¸¡º÷¤¢¤ê
-      *        IF      RKISAI-SYORIKBN     =   "2"
-      **                                   OR  "2"
-      *            MOVE    "2"                 TO  SPA-COM-RECEKISAI
-      *                                                   (IDX-T)
-      *****    END-IF
-      *
-               IF      RKISAI-JYOKEN       =   1
+      *        IF      RKISAI-JYOKEN       =   1
       *            ¾ò·ï¡á£±¡¡¤ÏÂ¾¾ò·ï¤Ê¤·
                    MOVE    "1"                 TO  SPA-COM-RECEKISAI
                                                           (IDX-T)
-               ELSE
+      **       ELSE
       *            ¾ò·ï¡â£±¡¡¤ÏÂ¾¾ò·ï¤¢¤ê
-                   MOVE    "2"                 TO  SPA-COM-RECEKISAI
-                                                          (IDX-T)
-               END-IF
+      *            MOVE    "2"                 TO  SPA-COM-RECEKISAI
+      *                                                   (IDX-T)
+      **       END-IF
           END-IF
            .
        3010-RECEKISAI-HEN-EXT.

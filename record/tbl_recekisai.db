@@ -54,8 +54,8 @@ path	key2 	{
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
 			AND     HISANTEI  = '0'
-			AND     SYORIKBN  <> '0'
-			AND     SYORIKBN  <> '4'
+			AND   ( SYORIKBN  =  1
+			OR      SYORIKBN  =  2  )
 			ORDER   BY      ITEMNO,
 				        EDANO,
 				        RENNUM
@@ -88,8 +88,8 @@ path	key4 	{
  			WHERE   KUBUN     = :KUBUN
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
-			AND     SYORIKBN  <> '0'
-			AND     SYORIKBN  <> '4'
+			AND   ( SYORIKBN  =  1
+			OR      SYORIKBN  =  2  )
 			ORDER   BY      ITEMNO,
 				        EDANO,
 			                SRYCD,
