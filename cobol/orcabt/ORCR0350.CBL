@@ -426,7 +426,7 @@
       *  04.08.19    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.20    NACL-Æ£¸¶    18/04/06  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¥«¥¿¥«¥Ê¡Ê»áÌ¾¡Ë¡¢´µ¼Ô¾õÂÖ¤ÎÄÉ²Ã
-      *
+      *  04.08.21    NACL-ÌçÏÆ    18/09/07  É¸½àÉéÃ´³Û¶èÊ¬¤Îµ­ºÜ¾ò·ï½¤Àµ
       *
       *  05.00.02    NACL-¾®Æ¦Âô  17/11/07  ¥ì¥»ÅÅ¥µ¥Ö°ú¿ô¤ËÊÝ¸±ÁÈ¹ç¤»ÄÉ²Ã
       *  05.00.03    NACL-°ËÆ£    17/12/20  ¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÂÐ±þ
@@ -2913,8 +2913,11 @@
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬
            IF      RECE62-SRYYM  >=  "201710"
-             IF     (RECE62-KOUREI           = "1"  )
-             AND    (RECE62-TEISYOTOKU   NOT = SPACE)
+             IF    ((RECE62-KOUREI           = "1"  ) AND
+                    (RECE62-TEISYOTOKU   NOT = SPACE))
+             OR    ((RECE62-KOUREI           = "4"  ) AND
+                    (RECE62-TEISYOTOKU   NOT = SPACE) AND
+                    (RECE62-SRYYM  >=  "201808"     ))
                EVALUATE    RECE62-TEISYOTOKU
                  WHEN    "1"
                  WHEN    "4"

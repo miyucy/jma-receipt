@@ -798,6 +798,8 @@
       *                                     ÉéÃ´¶â·×»»½¤Àµ
       *  04.08.63    NACL-ÌçÏÆ    18/07/27  Ê¿À®£³£°Ç¯£¸·î²þÀµ
       *                                     ¡Ê¹â³ÛÎÅÍÜÈñÀ©ÅÙ¤Î¸«Ä¾¤·¡Ë
+      *  04.08.64    NACL-ÌçÏÆ    18/09/07  Ê¿À®£³£°Ç¯£¸·î²þÀµ
+      *                                     ÆÃµ­»ö¹àµ­ºÜ½¤Àµ¡Ê²¼Á¥¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6792,7 +6794,12 @@ grpsys        MOVE  RECE02-HOSPNUM    TO  LNK-ORCSJGNGET-HOSPNUM
       *****************************************************************
        2121-KOUREI-GENBUTU-HENSYU-SEC      SECTION.
       *
-           IF   RECE02-KYURATE   =   30
+           IF  ( RECE02-KYURATE =  30               )
+           OR  ((RECE02-HKNNUM  = "002"            ) AND
+                (RECE02-HOJOKBN = "G" OR "H" OR "I"))
+           OR  ((RECE02-HKNNUM  = "031" OR "032" OR
+                                  "033" OR "034"   ) AND
+                (RECE02-HOJOKBN = "H"              ))
              MOVE     1      TO      FLG-KOUREI-GENEKIKBN
       *
              MOVE     RECE02-SRYYM            TO   WRK-GEN70-YM
