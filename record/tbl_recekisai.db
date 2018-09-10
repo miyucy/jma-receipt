@@ -53,9 +53,8 @@ path	key2 	{
  			WHERE   SRYCD     = :SRYCD
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
-			AND     HISANTEI  = '0'
-			AND   ( SYORIKBN  =  1
-			OR      SYORIKBN  =  2  )
+			AND   ( SYORIKBN  = 1
+			OR      SYORIKBN  = 2 )
 			ORDER   BY      ITEMNO,
 				        EDANO,
 				        RENNUM
@@ -70,8 +69,8 @@ path	key3 	{
 		FROM tbl_recekisai
  			WHERE   STYM     <= :STYM
 			AND     EDYM     >= :EDYM
-			AND   ( SYORIKBN  =  '1' 
-			OR      SYORIKBN  =  '3' )
+			AND   ( SYORIKBN  =  1 
+			OR      SYORIKBN  =  3 )
 			ORDER   BY      KUBUN,
 					ITEMNO,
 				        EDANO,
@@ -88,8 +87,8 @@ path	key4 	{
  			WHERE   KUBUN     = :KUBUN
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
-			AND   ( SYORIKBN  =  1
-			OR      SYORIKBN  =  2  )
+			AND   ( SYORIKBN  =  1 
+			OR      SYORIKBN  =  3 )
 			ORDER   BY      ITEMNO,
 				        EDANO,
 			                SRYCD,
