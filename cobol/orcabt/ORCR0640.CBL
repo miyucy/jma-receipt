@@ -774,6 +774,8 @@
       *                                     ÉéÃ´¶â·×»»½¤Àµ
       *  04.08.57    NACL-ÌçÏÆ    18/07/27  Ê¿À®£³£°Ç¯£¸·î²þÀµ
       *                                     ¡Ê¹â³ÛÎÅÍÜÈñÀ©ÅÙ¤Î¸«Ä¾¤·¡Ë
+      *  04.08.58    NACL-ÌçÏÆ    18/09/07  Ê¿À®£³£°Ç¯£¸·î²þÀµ
+      *                                     ÆÃµ­»ö¹àµ­ºÜ½¤Àµ¡Ê²¼Á¥¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -31874,7 +31876,12 @@
       *****************************************************************
        2104M-KOUREI-GENBUTU-HENSYU-SEC      SECTION.
       *
-           IF   RECE62-KYURATE   =   30
+           IF  ( RECE62-KYURATE =  30               )
+           OR  ((RECE62-HKNNUM  = "002"            ) AND
+                (RECE62-HOJOKBN = "G" OR "H" OR "I"))
+           OR  ((RECE62-HKNNUM  = "031" OR "032" OR
+                                  "033" OR "034"   ) AND
+                (RECE62-HOJOKBN = "H"              ))
              MOVE     1      TO      FLG-KOUREI-GENEKIKBN
       *
              MOVE     RECE62-SRYYM            TO   WRK-GEN70-YM
