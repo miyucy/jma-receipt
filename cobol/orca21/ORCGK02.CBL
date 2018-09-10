@@ -2929,7 +2929,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        30112-AKUSEI-COMMENT-EXT.
            EXIT.
-      *TEST
+      *
       *H30.9
       *****************************************************************
       *    選択式コメントへ処理
@@ -2952,6 +2952,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 41014-GYOINSN-SEC
                END-IF
            END-IF
+      *
+           MOVE    ZERO                TO  SPA-SELCOM-FLG
+           MOVE    ZERO                TO  SPA-SELCOM-IDX
       *
            PERFORM 3011-K98-SET-SEC
            MOVE    1                   TO  FLG-GMN
@@ -12921,6 +12924,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    クライアント印刷前　処理
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
+      *TEST
+           DISPLAY "K02 ORCSPRTCTRL CALL"
       *
       *    INITIALIZE                  KDMY01
       *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1

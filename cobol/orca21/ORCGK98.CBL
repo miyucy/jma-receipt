@@ -475,6 +475,7 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *H30.9
            COPY    "CPORCXKANACONV2.INC".
       *
       *    診療種別名テーブル
@@ -684,8 +685,7 @@
                    WHEN    "G"
       *                一般名
                        PERFORM 2901-GENERICNAME-SYORI-SEC
-      *TEST
-      *TEST
+      *
       *H30.9
                    WHEN    "C"
       *                選択コメント一覧
@@ -693,8 +693,7 @@
                    WHEN    "R"
       *                レセプト記載事項処理
                        PERFORM 31002-RECEKISAI-SYORI-SEC
-      *TEST
-      *TEST
+      *
                    WHEN    OTHER
       *                その他
                        PERFORM 3100-KENSAKU-SEC
@@ -3447,6 +3446,7 @@
       *H24.4
                    IF    ((SPA-K98-GMN-SYORI   =   "G"  )  AND
                           (SPA-K98-GMN-SYORI2  =   "1"  ))
+      *H30.9
                    OR    ( SPA-K98-GMN-SYORI   =   "C"  )
                    OR    ( SPA-K98-GMN-SYORI   =   "R"  )
                        MOVE    SNUM-OUTNUM         TO  WRK-SELNO
@@ -3543,9 +3543,10 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-K98-GMN-MAX
-      *24.4
+      *H24.4
       *        一般名からの検索時
                IF      SPA-K98-GMN-NO-X(IDX)   =   "G"
+      *H30.6
                                                OR  "C"
                    MOVE    SPA-K98-NAI-SELNUM (IDX-1)
                                                TO  WRK-SELNO
@@ -3843,6 +3844,7 @@
       *        一般名
                    IF     (SPA-K98-GMN-NO-X(IDX)    =   "G" )
                    OR     (SPA-K98-GMN-NO-X(IDX)    =   "S" )
+      *H30.9
                    OR     (SPA-K98-GMN-NO-X(IDX)    =   "C" )
                        CONTINUE
                    ELSE
@@ -4831,9 +4833,7 @@
            EXIT.
       *
       *
-      *TEST
-      *TEST
-      *H30.5
+      *H30.9
       *****************************************************************
       *    選択コメント一覧検索処理
       *****************************************************************
@@ -4853,7 +4853,6 @@
                MOVE    1                   TO  SPA-K98-PAGE
            END-IF
            COMPUTE WRK-STR             =  (SPA-K98-PAGE   -   1  )
-      *???                             *   200
                                        *   199
                                        +   1
       *
@@ -4951,7 +4950,7 @@
            .
        31001-SELCOMMNT-HEN-EXT.
            EXIT.
-      *H30.5
+      *H30.9
       *****************************************************************
       *    選択式コメント展開処理
       *****************************************************************
@@ -6427,7 +6426,7 @@
            .
        975-INPSET-READ-EXT.
            EXIT.
-      *TEST
+      *
       *H30.9
       *****************************************************************
       *    入力セットデータ次読込
