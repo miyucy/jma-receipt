@@ -12921,8 +12921,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    クライアント印刷前　処理
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
-      *TEST
-           DISPLAY "K02 ORCSPRTCTRL CALL"
       *
       *    INITIALIZE                  KDMY01
       *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
