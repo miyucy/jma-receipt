@@ -1552,11 +1552,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-GMN28-CAREJOTAI-LST (8)
            MOVE    "25 Í×²ð¸î£µ"
                                        TO  SPA-GMN28-CAREJOTAI-LST (9)
-      *H30.7
-      *    MOVE    "31 »ö¶ÈÂÐ¾Ý¼Ô"
-      *                                TO  SPA-GMN28-CAREJOTAI-LST (10)
-      **   MOVE    10                  TO  SPA-GMN28-CAREJOTAI-MAX
-           MOVE    9                   TO  SPA-GMN28-CAREJOTAI-MAX
+      *H30.9
+           MOVE    "31 »ö¶ÈÂÐ¾Ý¼Ô"
+                                       TO  SPA-GMN28-CAREJOTAI-LST (10)
+           MOVE    10                  TO  SPA-GMN28-CAREJOTAI-MAX
       *
            .
        1005-COMB-SET-EXT.
