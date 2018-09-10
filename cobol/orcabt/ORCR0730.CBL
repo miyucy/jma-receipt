@@ -247,6 +247,7 @@
       *                                     での食事算定対応
       *  04.08.23    NACL-藤原    18/03/28  平成３０年４月改正対応
       *  04.08.24    NACL-門脇    18/06/04  診療区分別点数欄の集計修正
+      *  04.08.25    NACL-門脇    18/09/07  低所得１・２の記載条件修正
       *
       *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
       *  05.00.02    NACL-伊藤    17/12/20  診療情報システム対応
@@ -6612,8 +6613,11 @@
       *                                                                 
       *        <減、免、猶、低所得１、低所得２、３月超>            
       *                                                                
-           IF     (RECE62-KOUREI           = "1"  )
-           AND    (RECE62-TEISYOTOKU   NOT = SPACE)
+           IF    ((RECE62-KOUREI           = "1"  ) AND
+                  (RECE62-TEISYOTOKU   NOT = SPACE))
+           OR    ((RECE62-KOUREI           = "4"  ) AND
+                  (RECE62-TEISYOTOKU   NOT = SPACE) AND
+                  (RECE62-SRYYM  >=  "201808"     ))
                EVALUATE    RECE62-TEISYOTOKU
                    WHEN    "1"
                    WHEN    "4"
