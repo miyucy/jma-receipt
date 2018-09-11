@@ -2403,6 +2403,13 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "1107"
+                   STRING  "選択式コメントは、平成３０年４月から"
+                            "有効です。"
+                            "入力できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .

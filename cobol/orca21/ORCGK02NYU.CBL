@@ -5598,20 +5598,14 @@
       *        選択式コメント一覧
                WHEN    "S"
                WHEN    "s"
-                   MOVE    "C"             TO  SPA-K98-GMN-SYORI
-                   MOVE    SPACE           TO  SPA-K98-INPUTCD
-                   IF      SPA-SELCOM-IDX  =   ZERO
-                       PERFORM 510112-SELCOM-CHK-SEC
-                   END-IF
-                   IF     (SPA-SELCOM-IDX  =   ZERO  )
-                     OR   (SPA-SRYYMD      <   "20180401" )
-                       MOVE    SPACE           TO  SPA-K98-GMN-SYORI
-                       MOVE    SPACE           TO  SPA-K98-INPUTCD
-                       MOVE    "1106"          TO  SPA-ERRCD
-                       GO      TO  410-K98-SYORI-EXT
+                   IF      SPA-SRYYMD      <   "20180401"
+                       MOVE    "1107"          TO  SPA-ERRCD
+                       MOVE    SPACE           TO  SPA-K98-GMN-INPUT
                    ELSE
-                       MOVE    SPA-COM-INPUTCD (SPA-SELCOM-IDX)
-                                           TO  SPA-K98-SELCOM-SRYCD
+                       PERFORM 41019-K98-RECEKISAI-SEC
+                   END-IF
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO  410-K98-SYORI-EXT
                    END-IF
       *
                WHEN    OTHER
@@ -5720,6 +5714,37 @@
            .
       *
        4101-K98-SYRKBN-EXT.
+           EXIT.
+      *
+      *H30.9
+      *****************************************************************
+      *    選択式コメント一覧編集処理
+      *****************************************************************
+       41019-K98-RECEKISAI-SEC       SECTION.
+      *
+           IF       SPA-K98-INPUTCD(4:1)   =   "S"
+                                           OR  "s"
+               MOVE    "R"             TO  SPA-K98-GMN-SYORI
+               MOVE    SPACE           TO  SPA-K98-INPUTCD
+               MOVE    SPACE           TO  SPA-K98-GMN-SYORI2
+               MOVE    "2"             TO  SPA-K98-TYPE
+           ELSE
+               MOVE    "C"             TO  SPA-K98-GMN-SYORI
+               MOVE    SPACE           TO  SPA-K98-INPUTCD
+               IF      SPA-SELCOM-IDX  =   ZERO
+                   PERFORM 510112-SELCOM-CHK-SEC
+               END-IF
+               IF     (SPA-SELCOM-IDX  =   ZERO  )
+                   MOVE    SPACE           TO  SPA-K98-GMN-SYORI
+                   MOVE    SPACE           TO  SPA-K98-INPUTCD
+                   MOVE    "1106"          TO  SPA-ERRCD
+               ELSE
+                   MOVE    SPA-COM-INPUTCD (SPA-SELCOM-IDX)
+                                               TO  SPA-K98-SELCOM-SRYCD
+               END-IF
+           END-IF
+           .
+       41019-K98-RECEKISAI-EXT.
            EXIT.
       *****************************************************************
       *    Ｋ９８画面編集処理
@@ -6573,6 +6598,7 @@
            IF     (SPA-SELCOM-FLG      =   1   )
       *    中途データ展開時はなし
            AND    (FLG-INIT            =   ZERO )
+           AND    (SPA-SRYYMD          >=  "20180401")
                PERFORM 51011-SELCOM-K98-SEC
                GO    TO  510-TBLHEN-EXT
            END-IF
@@ -6819,6 +6845,8 @@
            .
        51011-SELCOM-K98-EXT.
            EXIT.
+      *TEST
+      *TEST
       *!!!!
       *
       *****************************************************************
