@@ -4956,6 +4956,11 @@
       *****************************************************************
        2601-SELCOM-TENKAI-SEC                    SECTION.
       *
+           IF      SPA-SRYYMD          <   "20180401"
+               MOVE    "0024"          TO  SPA-ERRCD
+               GO      TO   2601-SELCOM-TENKAI-EXT
+           END-IF
+      *
            IF     (SPA-K98-GMN-MAX     =   ZERO )
             OR    (SPA-K98-GMN-SYORI   =   "R"  )
                PERFORM 2610-RECEKISAI-SYORI-SEC
@@ -5001,6 +5006,7 @@
            MOVE    SPACE               TO  SPA-K98-GMN-SYORI2
            MOVE    "2"                 TO  SPA-K98-TYPE
            MOVE    SPA-K98-GMN-SYORI   TO  SPA-K98-OLD-SYORI
+           MOVE    SPACE               TO  SPA-K98-GMN-INPUT
       *    ＳＰＡセット
            PERFORM                     310-SPA-SET-SEC
       *
@@ -5943,12 +5949,18 @@
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
-      *TEST
+      *
       *H30.9
                WHEN    "0023"
                    STRING  "展開対象のコメントはありません。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0024"
+                   STRING  "選択式コメントは、平成３０年４月から"
+                            "有効です。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
                    END-STRING
            END-EVALUATE
       *
