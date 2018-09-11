@@ -2396,6 +2396,14 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
+      *H30.9
+               WHEN    "1106"
+                   STRING  "剤内に選択式コメントの必要な"
+                           "診療はありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

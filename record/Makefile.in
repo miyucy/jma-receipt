@@ -1095,6 +1095,8 @@ DB_files = \
 	xml_medicalav3res4.db \
 	xml_statistics_formv3req.db \
 	xml_statistics_formv3res.db \
+	tbl_recekisai.db \
+	tbl_recekisai_master.db \
 
 
 shell.db: shell.db.in

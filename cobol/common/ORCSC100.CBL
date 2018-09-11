@@ -31,6 +31,7 @@
       *  04.07.00    NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
       *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
       *  04.08.00    NACL-多々納  16/11/XX  投薬投与量チェック区分対応
+      *  04.08.00    NACL-多々納  18/09/XX  選択式コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -65,6 +66,8 @@
            03  FLG-AUTOERR             PIC 9(01).
       *TEST 
            03  FLG-INNAI               PIC 9(01).
+      *TEST
+           03  FLG-COMMNT-ARI          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -453,7 +456,9 @@
                    MOVE    "F"             TO  SPA-K02N-KENSAFLG
                END-IF
                MOVE    LNK-SC93-ERRCD      TO  ORCSC100-KENSAERR
-           ELSE
+      ***  ELSE
+           END-IF
+      *入院も妊婦判定を行う
       *外来
       *        特定診療チェック
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -469,7 +474,7 @@
                   AND (ORCSC100-INIT       =   ZERO )
                    GO      TO      5101-TBLSAIHEN-EXT
                END-IF
-           END-IF
+      **** END-IF
       *
       *    剤ごとに回数を入れ直す（リハビリ等同時回数チェックのため）
            MOVE    ZERO                TO  FLG-SONOTA
@@ -545,6 +550,21 @@
               AND (ORCSC100-INIT       =   ZERO )
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
+      *
+      *TEST
+      *H30.5
+      *    選択式コメント一覧チェック
+           IF     (ORCSC100-INIT       =   ZERO )
+             AND  (SPA-SRYYMD          >=  "20180401")
+               PERFORM 51020-SELCOM-CHEK-SEC
+               IF     (SPA-SELCOM-FLG      =   1  )
+                   GO      TO      5101-TBLSAIHEN-EXT
+               END-IF
+           END-IF
+      *TEST
+      *TEST
+      *TEST
+      *
       *H27.4
       *    後発品変更可・不可処方毎処理
            PERFORM 51019-INGIKSN-HEN-SEC
@@ -1423,6 +1443,57 @@
            .
        510191-INGIKSN-HENSYORI-EXT.
            EXIT.
+      *TEST
+      *TEST
+      *H30.9
+      *****************************************************************
+      *    選択式コメント一覧チェック処理
+      *****************************************************************
+       51020-SELCOM-CHEK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  SPA-SELCOM-FLG
+           MOVE    ZERO                TO  SPA-SELCOM-IDX
+      *
+           MOVE    ZERO                TO  FLG-COMMNT-ARI
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE    )
+                          OR ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE ))
+                          OR ( SPA-SELCOM-FLG          =   1     )
+      *
+      *        選択コメント対象
+               IF      (SPA-COM-INPUTCD(IDX)(1:1)  =   "1"  )
+                  AND  (SPA-COM-RECEKISAI (IDX)    =   "1"  )
+      *            今回入力以外
+                  AND  (SPA-COM-RECEAUTO (IDX) NOT =   "1"  )
+                   IF      SPA-SELCOM-IDX      =   ZERO
+                       MOVE    IDX             TO  SPA-SELCOM-IDX
+                   END-IF
+               END-IF
+      *
+               IF      (SPA-COM-INPUTCD (IDX)(1:2) =   "82" )
+                   OR  (SPA-COM-INPUTCD (IDX)(1:2) =   "81" )
+                   OR  (SPA-COM-INPUTCD (IDX)(1:3) =   "008")
+                   MOVE    1                   TO  FLG-COMMNT-ARI
+               END-IF
+      *
+               IF      SPA-COM-ZAIEND (IDX)        =   "1"
+                   IF      (SPA-SELCOM-IDX     NOT =   ZERO )
+                       AND (FLG-COMMNT-ARI         =   ZERO )
+                       MOVE    1                   TO  SPA-SELCOM-FLG
+                   ELSE
+                       MOVE    ZERO                TO  FLG-COMMNT-ARI
+                       MOVE    ZERO                TO  SPA-SELCOM-IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       51020-SELCOM-CHEK-EXT.
+           EXIT.
+      *TEST
+      *TEST
+      *TEST
       *!!!
       *****************************************************************
       *    剤ごとの処理
