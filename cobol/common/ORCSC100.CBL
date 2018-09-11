@@ -66,7 +66,7 @@
            03  FLG-AUTOERR             PIC 9(01).
       *TEST 
            03  FLG-INNAI               PIC 9(01).
-      *TEST
+      *H30.9
            03  FLG-COMMNT-ARI          PIC 9(01).
       *
       *    添字領域
@@ -456,9 +456,24 @@
                    MOVE    "F"             TO  SPA-K02N-KENSAFLG
                END-IF
                MOVE    LNK-SC93-ERRCD      TO  ORCSC100-KENSAERR
-      ***  ELSE
-           END-IF
-      *入院も妊婦判定を行う
+      *
+      *        入院も妊婦判定を行う
+               IF      SPA-SRYYMD          >=  "20180401"
+                   MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+                   INITIALIZE                      ORCSC10SAREA
+                   MOVE    "7"                 TO  LNK-SC10S-SYORI
+                   CALL    "ORCSC10S"          USING
+                                               ORCSC10SAREA
+                                               SPA-AREA
+                                               SPA-SCR-REC
+                                               SPA-K02
+                   MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+                   IF     (SPA-ERRCD       NOT =   SPACE)
+                      AND (ORCSC100-INIT       =   ZERO )
+                       GO      TO      5101-TBLSAIHEN-EXT
+                   END-IF
+               END-IF
+           ELSE
       *外来
       *        特定診療チェック
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -474,7 +489,7 @@
                   AND (ORCSC100-INIT       =   ZERO )
                    GO      TO      5101-TBLSAIHEN-EXT
                END-IF
-      **** END-IF
+           END-IF
       *
       *    剤ごとに回数を入れ直す（リハビリ等同時回数チェックのため）
            MOVE    ZERO                TO  FLG-SONOTA
@@ -551,7 +566,7 @@
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
       *
-      *
+      *TEST
       *H30.5
       *    選択式コメント一覧チェック
            IF     (ORCSC100-INIT       =   ZERO )
@@ -561,7 +576,9 @@
                    GO      TO      5101-TBLSAIHEN-EXT
                END-IF
            END-IF
-      *
+      *TEST
+      *TEST
+      *TEST
       *
       *H27.4
       *    後発品変更可・不可処方毎処理
@@ -1441,8 +1458,7 @@
            .
        510191-INGIKSN-HENSYORI-EXT.
            EXIT.
-      *TEST
-      *TEST
+      *
       *H30.9
       *****************************************************************
       *    選択式コメント一覧チェック処理
@@ -1489,9 +1505,7 @@
            .
        51020-SELCOM-CHEK-EXT.
            EXIT.
-      *TEST
-      *TEST
-      *TEST
+      *
       *!!!
       *****************************************************************
       *    剤ごとの処理
