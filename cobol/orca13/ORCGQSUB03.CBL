@@ -1433,8 +1433,7 @@
       *****************************************************************
        2001-KNJOTAILST-SEC                 SECTION.
       *
-      *+   MOVE    13                  TO  QSUB03-KNJOTAILST-MAX
-           MOVE    12                  TO  QSUB03-KNJOTAILST-MAX
+           MOVE    13                  TO  QSUB03-KNJOTAILST-MAX
       *
            MOVE    "01"                TO  QSUB03-KNJOTAIL    (1)
            MOVE    "¼«Î©"              TO  QSUB03-KNJOTAIMEIL (1)
@@ -1454,21 +1453,14 @@
            MOVE    "Í×²ð¸î£´"          TO  QSUB03-KNJOTAIMEIL (8)
            MOVE    "25"                TO  QSUB03-KNJOTAIL    (9)
            MOVE    "Í×²ð¸î£µ"          TO  QSUB03-KNJOTAIMEIL (9)
-           MOVE    "1x"                TO  QSUB03-KNJOTAIL    (10)
-           MOVE    "Í×»Ù±ç"            TO  QSUB03-KNJOTAIMEIL (10)
-           MOVE    "2x"                TO  QSUB03-KNJOTAIL    (11)
-           MOVE    "Í×²ð¸î"            TO  QSUB03-KNJOTAIMEIL (11)
-           MOVE    "xx"                TO  QSUB03-KNJOTAIL    (12)
-           MOVE    "Í×»Ù±ç¡¦Í×²ð¸î"    TO  QSUB03-KNJOTAIMEIL (12)
-      *
-      *    MOVE    "31"                TO  QSUB03-KNJOTAIL    (10)
-      *    MOVE    "»ö¶ÈÂÐ¾Ý¼Ô"        TO  QSUB03-KNJOTAIMEIL (10)
-      *    MOVE    "1x"                TO  QSUB03-KNJOTAIL    (11)
-      *    MOVE    "Í×»Ù±ç"            TO  QSUB03-KNJOTAIMEIL (11)
-      *    MOVE    "2x"                TO  QSUB03-KNJOTAIL    (12)
-      *    MOVE    "Í×²ð¸î"            TO  QSUB03-KNJOTAIMEIL (12)
-      *    MOVE    "xx"                TO  QSUB03-KNJOTAIL    (13)
-      *    MOVE    "Í×»Ù±ç¡¦Í×²ð¸î"    TO  QSUB03-KNJOTAIMEIL (13)
+           MOVE    "31"                TO  QSUB03-KNJOTAIL    (10)
+           MOVE    "»ö¶ÈÂÐ¾Ý¼Ô"        TO  QSUB03-KNJOTAIMEIL (10)
+           MOVE    "1x"                TO  QSUB03-KNJOTAIL    (11)
+           MOVE    "Í×»Ù±ç"            TO  QSUB03-KNJOTAIMEIL (11)
+           MOVE    "2x"                TO  QSUB03-KNJOTAIL    (12)
+           MOVE    "Í×²ð¸î"            TO  QSUB03-KNJOTAIMEIL (12)
+           MOVE    "xx"                TO  QSUB03-KNJOTAIL    (13)
+           MOVE    "Í×»Ù±ç¡¦Í×²ð¸î"    TO  QSUB03-KNJOTAIMEIL (13)
       *
            .
        2001-KNJOTAILST-EXT.
