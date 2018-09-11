@@ -566,19 +566,18 @@
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
       *
-      *TEST
+      *
       *H30.5
       *    選択式コメント一覧チェック
            IF     (ORCSC100-INIT       =   ZERO )
              AND  (SPA-SRYYMD          >=  "20180401")
+             AND  (SPA-RECEKISAIFLG    =   "1"    )
                PERFORM 51020-SELCOM-CHEK-SEC
                IF     (SPA-SELCOM-FLG      =   1  )
                    GO      TO      5101-TBLSAIHEN-EXT
                END-IF
            END-IF
-      *TEST
-      *TEST
-      *TEST
+      *
       *
       *H27.4
       *    後発品変更可・不可処方毎処理

@@ -128,7 +128,10 @@
                05  SYS-1038-GMNHYOKBN-6    PIC  X(01).
       *H29.7
       *¿´¿ÈÎÅË¡£²£°Ì¤Ëþ²Ã»»¶èÊ¬
-               05  SYS-1038-SIN20KSNKBN   PIC  X(01).
+               05  SYS-1038-SIN20KSNKBN    PIC  X(01).
+      *H30.9
+      *ÁªÂò¼°¥³¥á¥ó¥È°ìÍ÷¶èÊ¬
+               05  SYS-1038-RECEKISAIFLG   PIC  X(01).
       *Í½È÷ 
       ******   05                          PIC  X(488).
       ******   05  SYS-1038-YOBI           PIC  X(480).
@@ -136,7 +139,7 @@
       ****     05  SYS-1038-YOBI           PIC  X(253).
       *****    05  SYS-1038-YOBI           PIC  X(213).
       ****     05  SYS-1038-YOBI           PIC  X(259).
-               05  SYS-1038-YOBI           PIC  X(257).
+               05  SYS-1038-YOBI           PIC  X(256).
       *Ã¼Ëö£É£Ä
            03  SYS-1038-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

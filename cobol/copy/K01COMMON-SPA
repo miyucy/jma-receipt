@@ -230,6 +230,9 @@
       *H28.4
       *一般名表示区分
                05  SPA-GENERICFLG             PIC X(01).
+      *H30.9
+      *選択式コメント表示区分
+               05  SPA-RECEKISAIFLG           PIC X(01).
       *
       *前回保険組合せ相違チェック
                05  SPA-ZENHKNCHK-FLG       PIC X(01).

@@ -548,6 +548,12 @@
                     06  W07-GENERIC-FLG-COUNT   PIC S9(9)   BINARY.
                     06  W07-GENERIC-FLG-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
+                  05  W07-RECEKISAI-FLG-COMB.
+                    06  W07-RECEKISAI-FLG.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-RECEKISAI-FLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-RECEKISAI-FLG-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
                   05  W07-ERRCOLORS.
                     06  W07-COLOR   PIC X(16).
                   05  W07-KEICOLORS.
