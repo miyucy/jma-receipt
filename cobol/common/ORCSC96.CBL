@@ -2396,8 +2396,7 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
-      *TEST
-      *H30.5
+      *H30.9
                WHEN    "1106"
                    STRING  "剤内に選択式コメントの必要な"
                            "診療はありません。"
@@ -2411,14 +2410,6 @@
                             "数量と回数を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K275"
-                   STRING  "警告！"
-                           "既にコンタクトレンズ検査料の算定が"
-                           "あります。"
-                           "初診の算定はできません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
                    END-STRING
       *
            END-EVALUATE

@@ -111,6 +111,7 @@
            03  FLG-GENERICNAME     PIC 9(01).
            03  FLG-PSYCHOTROPIC    PIC 9(01).
            03  FLG-TENSUPRICE      PIC 9(01).
+      *H30.9
            03  FLG-RECEKISAI       PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
@@ -4273,14 +4274,12 @@
                                                              (IDX-T)
            END-IF
       *
-      *TEST
       *H30.9
       *    レセプト記載事項編集
            IF     (TNS-SRYCD (1:1)     =   "1" )
               AND (SPA-SRYYMD          >=  "20180401" )
                PERFORM 3010-RECEKISAI-HEN-SEC
            END-IF
-      *TEST
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
@@ -5593,7 +5592,7 @@
            .
        3009-PSYCHOTROPIC-HEN-EXT.
            EXIT.
-      *TEST
+      *
       *H30.9
       *****************************************************************
       *    レセプト記載事項編集処理
@@ -5629,15 +5628,9 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-RECEKISAI       =   ZERO
-      *        IF      RKISAI-JYOKEN       =   1
-      *            条件＝１　は他条件なし
-                   MOVE    "1"                 TO  SPA-COM-RECEKISAI
+      *        自動表示あり
+               MOVE    "1"                 TO  SPA-COM-RECEKISAI
                                                           (IDX-T)
-      **       ELSE
-      *            条件≠１　は他条件あり
-      *            MOVE    "2"                 TO  SPA-COM-RECEKISAI
-      *                                                   (IDX-T)
-      **       END-IF
           END-IF
            .
        3010-RECEKISAI-HEN-EXT.
