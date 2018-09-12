@@ -1810,6 +1810,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+           MOVE    ZERO                TO  SPA-SELCOM-FLG
+           MOVE    ZERO                TO  SPA-SELCOM-IDX
+      *
            PERFORM 3011-J98-SET-SEC
            MOVE    1                   TO  FLG-GMN
            .
@@ -3836,7 +3839,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "C"             TO  SPA-J98-GMN-SYORI
                MOVE    SPACE           TO  SPA-J98-INPUTCD
-               IF      SPA-SELCOM-IDX  =   ZERO
+               IF     (SPA-SELCOM-IDX  =   ZERO )
+                 AND  (SPA-GMN-IDX     >   1    )
                    PERFORM 510112-SELCOM-CHK-SEC
                END-IF
                IF     (SPA-SELCOM-IDX  =   ZERO  )
