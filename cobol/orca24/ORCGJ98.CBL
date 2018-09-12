@@ -3547,6 +3547,8 @@
       *24.4
       *        一般名からの検索時
                IF      SPA-J98-GMN-NO-X(IDX)   =   "G"
+      *H30.6
+                                               OR  "C"
                    MOVE    SPA-J98-NAI-SELNUM (IDX-1)
                                                TO  WRK-SELNO
                    MOVE    SPA-J98-GMN-MAX     TO  IDX
