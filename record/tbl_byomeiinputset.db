@@ -48,6 +48,7 @@ path	key3	{
 		FROM tbl_byomeiinputset
 			WHERE HOSPNUM          =    :HOSPNUM
 			AND   BYOMEIINPUTSET   like :BYOMEIINPUTSET
+			ESCAPE  '/'
 			ORDER  BY  BYOMEIINPUTSET
 		;
 	};
