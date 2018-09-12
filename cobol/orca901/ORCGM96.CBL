@@ -41,6 +41,7 @@
       *  04.06.00    NACL-伊藤    11/03/10  新マスター追加
       *  04.07.00    NACL-伊藤    11/10/12  新マスター追加
       *  04.07.00    NACL-伊藤    12/03/19  新マスター追加
+      *  04.08.00    NACL-伊藤    18/09/12  新マスター追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -645,7 +646,11 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
        3102-LIST3-HENSYU-SEC         SECTION.
       *
            MOVE    MSTKANRI-KANRICD(7:2)   TO  IDX2
-           ADD     1                       TO  IDX2
+      *    インデックス32レセプト記載追加特別対応
+      *    インデックス31のマスタが5.0以降対応のためレコードなし
+           IF      IDX2            NOT =   32
+               ADD     1                       TO  IDX2
+           END-IF
       *
            IF      MSTKANRI-HOSPNUM     =   1
                ADD     1                    TO  SPA-GMN-MAX3
