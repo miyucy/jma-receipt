@@ -59,9 +59,10 @@
       * 04.07.00     NACL-多々納  14/02/13  労災金額％加算対応
       * 04.08.00     NACL-多々納  14/12/XX  平成２７年１月改正対応
       * 04.08.00     NACL-多々納  16/05/XX  一般名表示対応
-      *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
-      *  04.08.00    NACL-多々納  16/11/XX  投薬投与量チェック区分対応
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
+      * 04.08.00     NACL-多々納  16/08/XX  持参薬対応
+      * 04.08.00     NACL-多々納  16/11/XX  投薬投与量チェック区分対応
+      * 04.08.00     NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
+      * 04.08.00     NACL-多々納  18/09/XX  選択式コメント対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1823,6 +1824,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 41014-GYOINSN-SEC
                END-IF
            END-IF
+      *
+           MOVE    ZERO                TO  SPA-SELCOM-FLG
+           MOVE    ZERO                TO  SPA-SELCOM-IDX
       *
            PERFORM 3011-J98-SET-SEC
            MOVE    1                   TO  FLG-GMN
