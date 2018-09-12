@@ -2452,6 +2452,9 @@
       *
       *    腫瘍マーカー一覧展開しないとする
            MOVE    ZERO                TO  SPA-AKUSEIHYOFLG
+      *H30.9
+      *    選択式コメント一覧展開しないとする
+           MOVE    ZERO                TO  SPA-RECEKISAIFLG
       *    診療行為、計計算処理、編集
            MOVE    ZERO                TO  FLG-END-SYORI
            MOVE    SPACE               TO  SPA-ERRMSG2
