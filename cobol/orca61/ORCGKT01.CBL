@@ -5186,7 +5186,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "C"             TO  SPA-KT98-GMN-SYORI
                MOVE    SPACE           TO  SPA-KT98-INPUTCD
-               IF      SPA-SELCOM-IDX  =   ZERO
+               IF     (SPA-SELCOM-IDX  =   ZERO )
+                 AND  (SPA-GMN-IDX     >   1    )
                    PERFORM 510112-SELCOM-CHK-SEC
                END-IF
                IF     (SPA-SELCOM-IDX  =   ZERO  )
@@ -6116,6 +6117,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        510112-SELCOM-CHK-SEC       SECTION.
       *
            COMPUTE IDX-STR             =   SPA-GMN-IDX  -  1
+      *    直前に＊があれば、エラー
+           IF     (SPA-COM-ZAIEND (IDX-STR)    =   "1" )
+              AND (SPA-COM-KAIFLG (IDX-STR)    =   "1" )
+               GO      TO      510112-SELCOM-CHK-EXT
+           END-IF
+      *
            PERFORM VARYING    IDX      FROM    IDX-STR  BY  -1
                    UNTIL     (IDX      <       1   )
                         OR   (SPA-SELCOM-IDX   >   ZERO  )

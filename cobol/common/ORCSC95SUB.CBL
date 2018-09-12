@@ -762,6 +762,9 @@
                IF      SYS-1038-GENERICFLG     =   "2"
                    MOVE    "1"                 TO  SPA-GENERICFLG
                END-IF
+      *H30.9
+      *        選択式コメント表示区分
+               MOVE    SYS-1038-RECEKISAIFLG   TO  SPA-RECEKISAIFLG
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
@@ -843,6 +846,12 @@
       *H28.6   セット展開区分
            IF      SPA-SETALLKBN      =   SPACE
                MOVE    "0"                 TO  SPA-SETALLKBN
+           END-IF
+      *
+      *H30.9   選択式コメント表示区分
+           IF      SPA-RECEKISAIFLG   =   SPACE
+      *        表示するを初期
+               MOVE    "1"                 TO  SPA-RECEKISAIFLG
            END-IF
       *
       *ver.4.8
