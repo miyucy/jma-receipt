@@ -2312,8 +2312,7 @@
            .
        30112-AKUSEI-COMMENT-EXT.
            EXIT.
-      *TEST
-      *TEST
+      *
       *H30.9
       *****************************************************************
       *    選択式コメントへ処理
@@ -2336,6 +2335,9 @@
                    PERFORM 41014-GYOINSN-SEC
                END-IF
            END-IF
+      *
+           MOVE    ZERO                TO  SPA-SELCOM-FLG
+           MOVE    ZERO                TO  SPA-SELCOM-IDX
       *
            PERFORM 3011-K98-SET-SEC
            MOVE    1                   TO  FLG-GMN
