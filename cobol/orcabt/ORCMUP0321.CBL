@@ -404,11 +404,11 @@
            MOVE    RKISAI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_recekisai" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "all"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_recekisai" TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
+               MOVE    "all"           TO  MCP-PATHNAME
                PERFORM 910-RKISAI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-RKISAI
@@ -427,13 +427,13 @@
                    MOVE    1               TO  FLG-SYORI
                ELSE
                    MOVE    "tbl_recekisai" TO  MCP-TABLE
-                   MOVE    "key2"          TO  MCP-PATHNAME
+                   MOVE    "all"           TO  MCP-PATHNAME
                    PERFORM 910-RKISAI-READ-SEC
                END-IF
            END-PERFORM
       *
            MOVE    "tbl_recekisai" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "all"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-SYORI       =   ZERO
@@ -457,11 +457,11 @@
            MOVE    RKISAI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_recekisai" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "all"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_recekisai" TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
+               MOVE    "all"           TO  MCP-PATHNAME
                PERFORM 910-RKISAI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-RKISAI
@@ -491,13 +491,13 @@
                    MOVE    1               TO  FLG-SYORI
                ELSE
                    MOVE    "tbl_recekisai" TO  MCP-TABLE
-                   MOVE    "key2"          TO  MCP-PATHNAME
+                   MOVE    "all"           TO  MCP-PATHNAME
                    PERFORM 910-RKISAI-READ-SEC
                END-IF
            END-PERFORM
       *
            MOVE    "tbl_recekisai" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "all"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-SYORI       =   ZERO
@@ -521,11 +521,11 @@
            MOVE    RKISAI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_recekisai" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "all"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_recekisai" TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
+               MOVE    "all"           TO  MCP-PATHNAME
                PERFORM 910-RKISAI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-RKISAI
@@ -540,13 +540,13 @@
                    MOVE    1               TO  FLG-SYORI
                ELSE
                    MOVE    "tbl_recekisai" TO  MCP-TABLE
-                   MOVE    "key2"          TO  MCP-PATHNAME
+                   MOVE    "all"           TO  MCP-PATHNAME
                    PERFORM 910-RKISAI-READ-SEC
                END-IF
            END-PERFORM
       *
            MOVE    "tbl_recekisai" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "all"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-SYORI       =   ZERO

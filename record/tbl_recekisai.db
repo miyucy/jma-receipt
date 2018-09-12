@@ -43,6 +43,90 @@ path	key 	{
 			AND     RENNUM    = :RENNUM
 		;
 	};
+
+	DBINSERT	{
+		INSERT INTO tbl_recekisai
+			VALUES(
+				:ITEMNO,
+				:EDANO,
+				:STYM,
+				:EDYM,
+				:SRYCD,
+				:RENNUM,
+				:C_CD,
+				:JYOTAICD,
+				:KEISAIKBN,
+				:KUBUN,
+				:JYOKEN,
+				:HISANTEI,
+				:SYORIKBN,
+				:MEISYOETC,
+				:CHGYMD,
+				:HAISIYMD,
+				:CREYMD,
+				:UPYMD,
+				:UPHMS
+			)
+		;
+	};
+
+	DBUPDATE		{
+		UPDATE tbl_recekisai
+			SET
+				ITEMNO    = :ITEMNO,
+				EDANO     = :EDANO,
+				STYM      = :STYM,
+				EDYM      = :EDYM,
+				SRYCD     = :SRYCD,
+				RENNUM    = :RENNUM,
+				C_CD      = :C_CD,
+				JYOTAICD  = :JYOTAICD,
+				KEISAIKBN = :KEISAIKBN,
+				KUBUN     = :KUBUN,
+				JYOKEN    = :JYOKEN,
+				HISANTEI  = :HISANTEI,
+				SYORIKBN  = :SYORIKBN,
+				MEISYOETC = :MEISYOETC,
+				CHGYMD    = :CHGYMD,
+				HAISIYMD  = :HAISIYMD,
+				CREYMD    = :CREYMD,
+				UPYMD     = :UPYMD,
+				UPHMS     = :UPHMS
+ 			WHERE   ITEMNO    = :ITEMNO
+ 			AND     EDANO     = :EDANO
+ 			AND     STYM     <= :STYM
+			AND     EDYM     >= :EDYM
+			AND     SRYCD     = :SRYCD
+			AND     RENNUM    = :RENNUM
+		;
+	};
+
+	DBDELETE	{
+		DELETE FROM	tbl_recekisai
+ 			WHERE   ITEMNO    = :ITEMNO
+ 			AND     EDANO     = :EDANO
+ 			AND     STYM     <= :STYM
+			AND     EDYM     >= :EDYM
+			AND     SRYCD     = :SRYCD
+			AND     RENNUM    = :RENNUM
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_recekisai_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekisai
+ 			WHERE   ITEMNO    = :ITEMNO
+ 			AND     EDANO     = :EDANO
+ 			AND     STYM     <= :STYM
+			AND     EDYM     >= :EDYM
+			AND     SRYCD     = :SRYCD
+			AND     RENNUM    = :RENNUM
+			ORDER   BY	ITEMNO, EDANO, SRYCD, RENNUM
+		;
+	};
 };
 
 path	key2 	{
