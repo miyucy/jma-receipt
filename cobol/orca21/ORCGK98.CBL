@@ -55,6 +55,8 @@
       *  04.07.00    NACL-多々納  13/03/01  労災レセ電対応
       *  04.08.00    NACL-多々納  15/09/XX  セット内容展開対応他
       *  04.08.00    NACL-多々納  16/05/XX  一般名検索・向精神薬記載対応
+      *  05.00.00    NACL-多々納  17/02/XX  酸素等器材金額編集対応
+      *  05.00.00    NACL-多々納  18/09/XX  レセプト記載コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -106,11 +108,15 @@
            03  FLG-GENERICPRICE        PIC 9(01).
            03  FLG-TENSUPLUS           PIC 9(01).
            03  FLG-PSYCHOTROPIC        PIC 9(01).
+      *
+           03  FLG-RECEKISAI           PIC 9(01).
       *H27.9
            03  FLG-SET-SEL             PIC 9(01).
            03  FLG-SETKBN              PIC 9(01).
            03  FLG-SETSEQ              PIC 9(01).
            03  FLG-SETKEN              PIC 9(01).
+      *
+           03  FLG-CDARI               PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -143,6 +149,8 @@
            03  IDX-K               PIC 9(04).
       *
            03  IDX-KAI             PIC 9(04).
+      *
+           03  IDX-C               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -254,6 +262,16 @@
       *
            03  WRK-GENERICNAME             PIC X(200).
            03  WRK-YAKKAKJNCD              PIC X(12).
+      *
+      *H30.9
+           03  WRK-RECEKISAI-AREA.
+               05  WRK-SEL-KUBUN       PIC X(64).
+               05  WRK-SEL-NAME        PIC X(80).
+           03  WRK-RKISAI-KUBUN        PIC X(64).
+           03  WRK-KUBUN-NAME-G.
+               05  WRK-KUBUN-CD            PIC X(12).
+               05  WRK-KUBUN-NAME          PIC X(58).
+      *
       *H28.4
        01  TBL-YAKKAKJNCD-AREA.
            03  TBL-YAKKAKJNCD-OCC          OCCURS   200.
@@ -396,6 +414,9 @@
                05  TBL-GRP-MEI     PIC X(40).
                05  TBL-GRP-RMEI    PIC X(20).
       *
+      *緑
+       01  CL-GREEN                PIC X(07)   VALUE   "#00B000".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -429,6 +450,11 @@
        01  PSYCHOTROPIC-REC.
            COPY    "CPPSYCHOTROPIC.INC".
       *
+      *H30.9
+      *    レセプト記載要領マスター
+        01 RECEKISAI-REC.
+           COPY    "CPRECEKISAI.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -443,6 +469,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *H30.9
+           COPY    "CPORCXKANACONV2.INC".
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -651,6 +680,15 @@
                    WHEN    "G"
       *                一般名
                        PERFORM 2901-GENERICNAME-SYORI-SEC
+      *
+      *H30.9
+                   WHEN    "C"
+      *                選択コメント一覧
+                       PERFORM 31001-SELCOMMNT-SYORI-SEC
+                   WHEN    "R"
+      *                レセプト記載事項処理
+                       PERFORM 31002-RECEKISAI-SYORI-SEC
+      *
                    WHEN    OTHER
       *                その他
                        PERFORM 3100-KENSAKU-SEC
@@ -1798,7 +1836,7 @@
                IF      SPA-K98-GMN-SYORI3      =   "U6"
                    IF      TNS-SRYCD           >=  "099999911"
                        IF     (TNS-SRYCD           >=  "099999921"
-      *H29.12                                  AND <=  "099999929" )
+      *H29.10                                  AND <=  "099999929" )
                                                AND <=  "099999949" )
                            CONTINUE
                        ELSE
@@ -2216,6 +2254,7 @@
                                                              (IDX)
            MOVE    TNS-TEN             TO  SPA-K98-GMN-KISOTEN
                                                             (IDX)
+      *
       *H28.4
       *    薬剤　除算金額（１０で除す）
            IF     (TNS-SRYCD(1:1)      =   "6"  ) AND
@@ -2259,58 +2298,6 @@
       *        薬剤名称編集
                PERFORM 310212-YAKUZAI-NAME-SEC
            END-IF
-      *
-      *    後発医薬品再編集
-      *    IF     (TNS-SRYCD(1:1)      =   "6") AND
-      *           (TNS-KOUHATUKBN      =   1  )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  "【後発】"    DELIMITED   BY  SIZE
-      *                 TNS-NAME      DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *    END-IF
-      *    後発医薬品再編集
-      *    IF     (TNS-SRYCD(1:1)      =   "6") AND
-      *           (TNS-KOUHATUKBN      =   2  )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  "【後発有】"  DELIMITED   BY  SIZE
-      *                 TNS-NAME      DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *    END-IF
-      *H24.4
-      *    後発医薬品再編集
-      *    IF     (TNS-SRYCD(1:1)      =   "6") AND
-      *           (TNS-KOUHATUKBN      =   7  )
-      *         MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-      *         STRING  "【先発無】"  DELIMITED   BY  SIZE
-      *                 TNS-NAME      DELIMITED   BY  SIZE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *         END-STRING
-      *    END-IF
-      *H24.4
-      *    薬価基準コード
-      *    IF      TNS-SRYCD (1:1)     =   "6"
-      *        MOVE    TNS-YAKKAKJNCD      TO  SPA-K98-GMN-INPUTCD(IDX)
-      *        一般名記載区分
-      *        PERFORM 9101-TENSUPLUS-READ-SEC
-      *
-      *        MOVE    SPACE                TO  WRK-MSG-2
-      *        EVALUATE    TNSP-IPN-KISAIKBN
-      *            WHEN    1
-      *                MOVE    "〔般〕"        TO  WRK-MSG-2
-      *            WHEN    2
-      *                MOVE    "〔２〕"        TO  WRK-MSG-2
-      *            WHEN    3
-      *                MOVE    "〔処〕"        TO  WRK-MSG-2
-      *        END-EVALUATE
-      *        MOVE    SPA-K98-GMN-NAME(IDX)   TO  WRK-NAME
-      *        MOVE    SPACE                   TO  SPA-K98-GMN-NAME(IDX)
-      *        STRING  WRK-MSG-2               DELIMITED   BY  SPACE
-      *                WRK-NAME                DELIMITED   BY  SPACE
-      *                        INTO        SPA-K98-GMN-NAME(IDX)
-      *        END-STRING
-      *****END-IF
       *
       *    検査正式名称
            IF     (TNS-SRYCD(1:1)      =   "1") AND
@@ -2726,6 +2713,20 @@
                                                TO  K98-SENTAKU
                        END-IF
                    END-IF
+      *H30.9
+      *        選択コメント
+               WHEN    "C"
+                   MOVE    "【選択式コメント】"
+                                               TO  K98-SENTAKU
+      *        選択コメント
+               WHEN    "R"
+                   MOVE    "【レセプト記載】"
+                                               TO  K98-SENTAKU
+                   IF      SPA-K98-SENTAKU     NOT =   SPACE
+                      AND (SPA-K98-GMN-SYORI2  =   "1"  )
+                       MOVE    SPA-K98-SENTAKU TO  K98-SENTAKU
+                   END-IF
+      *
       *        その他
                WHEN    OTHER
                    MOVE    "入力コード全体（自院）"
@@ -2765,6 +2766,13 @@
       *        一般名記載
                IF      SPA-K98-GMN-NO-X(IDX)   =   "G"
                    MOVE    "G**"               TO  K98-NO (IDX)
+                   MOVE    999                 TO  SPA-K98-NAI-NO(IDX)
+                   COMPUTE IDXG            =   IDXG   -   1
+               END-IF
+      *H30.9
+      *        レセプト記載
+               IF      SPA-K98-GMN-NO-X(IDX)   =   "C"
+                   MOVE    "C**"               TO  K98-NO (IDX)
                    MOVE    999                 TO  SPA-K98-NAI-NO(IDX)
                    COMPUTE IDXG            =   IDXG   -   1
                END-IF
@@ -2875,10 +2883,18 @@
                END-IF
       *
       *TEST
+      *H30.9
+      *        選択式コメント　単価なし
+               IF     (SPA-K98-GMN-SYORI       =   "C"  )
+                   IF     (SPA-K98-GMN-NO-X(IDX)   =   "C"   )
+                       MOVE    SPACE           TO  K98-KISOTEN(IDX)
+                   END-IF
+               END-IF
       *
                MOVE    "F"             TO  K98-SELECT  (IDX)
       *H24.4
                IF      SPA-K98-GMN-NO-X(IDX)   =   "G"
+                                               OR  "C"
                    CONTINUE
                ELSE
       *
@@ -2911,6 +2927,12 @@
                    END-IF
                END-IF
       *!!!
+      *H29.1
+      *        ユーザー
+      *        IF      SPA-K98-NAI-MASTER (IDX) =   "2"
+      *            MOVE    CL-GREEN        TO
+      *                               K98-FGCORLOR (IDX)
+      ****     END-IF
            END-PERFORM
       *
            MOVE    SPA-K98-GMN-MAX     TO  K98-COUNT
@@ -3168,6 +3190,12 @@
                WHEN    "CLICKED"       ALSO    "B05S"
                    PERFORM 2501-SET-TENKAI-SEC
       *
+      *TEST
+      *H30.9
+      *        選択式コメント展開
+               WHEN    "CLICKED"       ALSO    "B06S"
+                   PERFORM 2601-SELCOM-TENKAI-SEC
+      *
            END-EVALUATE
           .
       *
@@ -3387,10 +3415,15 @@
                                            TO  WRK-NOZ
                    MOVE    WRK-NOZ         TO  SPA-K98-GMN-SELNUM(IDX-1)
       *H24.4
-                   IF     (SPA-K98-GMN-SYORI   =   "G"  )  AND
-                          (SPA-K98-GMN-SYORI2  =   "1"  )
+                   IF    ((SPA-K98-GMN-SYORI   =   "G"  )  AND
+                          (SPA-K98-GMN-SYORI2  =   "1"  ))
+      *H30.9
+                   OR    ( SPA-K98-GMN-SYORI   =   "C"  )
+                   OR    ( SPA-K98-GMN-SYORI   =   "R"  )
                        MOVE    SNUM-OUTNUM         TO  WRK-SELNO
-                       PERFORM 4101101-SELNUM-NAIHEN-SEC
+                       IF      WRK-SELNO           >   ZERO
+                           PERFORM 4101101-SELNUM-NAIHEN-SEC
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -3430,6 +3463,9 @@
                        SPA-K98-GMN-SYORI2  =   SPACE )
       *H24.4
                OR     (SPA-K98-GMN-SYORI   =   "G"   AND
+                       SPA-K98-GMN-SYORI2  =   SPACE )
+      *H30.9
+               OR     (SPA-K98-GMN-SYORI   =   "R"    AND
                        SPA-K98-GMN-SYORI2  =   SPACE )
                    CONTINUE
                ELSE
@@ -3475,11 +3511,14 @@
            END-IF
       *
            MOVE    ZERO                TO  WRK-SELNO
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-K98-GMN-MAX
-      *24.4
+      *H24.4
       *        一般名からの検索時
                IF      SPA-K98-GMN-NO-X(IDX)   =   "G"
+      *H30.6
+                                               OR  "C"
                    MOVE    SPA-K98-NAI-SELNUM (IDX-1)
                                                TO  WRK-SELNO
                    MOVE    SPA-K98-GMN-MAX     TO  IDX
@@ -3493,11 +3532,23 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
       *H24.4
       *    一般名チェック
            IF      SPA-K98-GMN-SYORI   =   "G"
                IF      SPA-K98-GMN-SYORI2  =   SPACE
                    PERFORM 41013-GENERIC-GRP-SEC
+                   MOVE    1               TO  FLG-HENSYU
+               ELSE
+                   PERFORM 41014-KENSA-SEL-SEC
+               END-IF
+               GO     TO   41011-SELNUM-CHK-EXT
+           END-IF
+      *H30.9
+      *    レセプト区分選択
+           IF      SPA-K98-GMN-SYORI   =   "R"
+               IF      SPA-K98-GMN-SYORI2  =   SPACE
+                   PERFORM 310022-RECEKISAI-COMMT-SEC
                    MOVE    1               TO  FLG-HENSYU
                ELSE
                    PERFORM 41014-KENSA-SEL-SEC
@@ -3515,13 +3566,6 @@
                END-IF
            ELSE
                PERFORM 41014-KENSA-SEL-SEC
-      *!!!!!!! PERFORM 41012-SRYCD-SEL-SEC
-      *        診療行為の時１件以上入力可
-      *********IF      SPA-K98-GMN-SYORI   =   "8"
-      *            PERFORM 41014-KENSA-SEL-SEC
-      *        ELSE
-      *            PERFORM 41012-SRYCD-SEL-SEC
-      ******** END-IF
            END-IF
            .
        41011-SELNUM-CHK-EXT.
@@ -3652,6 +3696,7 @@
       *****************************************************************
        410141-TBL-SAIHEN-SEC       SECTION.
       *
+      *
            MOVE    ZERO                TO  IDX1
            MOVE    SPA-K98-NAI-SELNUM-G    TO  WRK-NAI-SELNUM-G
            MOVE    SPA-K98-GMN-SELNUM-G    TO  WRK-GMN-SELNUM-G
@@ -3770,6 +3815,8 @@
       *        一般名
                    IF     (SPA-K98-GMN-NO-X(IDX)    =   "G" )
                    OR     (SPA-K98-GMN-NO-X(IDX)    =   "S" )
+      *H30.9
+                   OR     (SPA-K98-GMN-NO-X(IDX)    =   "C" )
                        CONTINUE
                    ELSE
       *
@@ -3815,6 +3862,17 @@
                IF      SPA-K98-GMN-SYORI   =   "G"
                    IF      SPA-K98-GMN-SYORI2  =   SPACE
                        PERFORM 41013-GENERIC-GRP-SEC
+                       MOVE    1               TO  FLG-HENSYU
+                   ELSE
+                       PERFORM 41014-KENSA-SEL-SEC
+                   END-IF
+                   GO      TO      41012-LISTSEL-EXT
+               END-IF
+      *H30.9
+      *        レセプト区分選択
+               IF      SPA-K98-GMN-SYORI   =   "R"
+                   IF      SPA-K98-GMN-SYORI2  =   SPACE
+                       PERFORM 310022-RECEKISAI-COMMT-SEC
                        MOVE    1               TO  FLG-HENSYU
                    ELSE
                        PERFORM 41014-KENSA-SEL-SEC
@@ -3888,7 +3946,7 @@
            END-IF
            MOVE    WRK-SELNO           TO  IDX
       *
-      *****PERFORM 410111-SEL-SYUKBN-CHK-SEC
+      *****PERFORM 410111-SEL-SYUKBN-CHK-SEC 
       *
            MOVE    SPA-K98-GMN-SRYCD (IDX)
                                        TO  SPA-K98-SRYCD (IDX-1)
@@ -4002,13 +4060,13 @@
                INITIALIZE                  SPA-K98-GMN-TBL
                MOVE    ZERO                TO  SPA-K98-GMN-MAX
                MOVE    21                  TO  SPA-K98-GMN-CUR
-      *TEST(全体）
+      *(全体）
       *        自院・器材
                MOVE    "U"                  TO  SPA-K98-GMN-SYORI
                MOVE    "JK"                 TO  SPA-K98-GMN-SYORI3
                MOVE    SPACE                TO  SPA-ERRCD
                PERFORM 3102-TENSU-SET-SEC
-      *TEST
+      *
            ELSE
                PERFORM 310-SPA-SET-SEC
            END-IF
@@ -4746,6 +4804,461 @@
            EXIT.
       *
       *
+      *H30.9
+      *****************************************************************
+      *    選択コメント一覧検索処理
+      *****************************************************************
+       31001-SELCOMMNT-SYORI-SEC      SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT
+      *
+           INITIALIZE                      SPA-K98-NAI-SELNUM-G
+           INITIALIZE                      SPA-K98-GMN-SELNUM-G
+      *
+           INITIALIZE                  SPA-K98-GMN-TBL
+           MOVE    ZERO                TO  SPA-K98-GMN-MAX
+           MOVE    ZERO                TO  FLG-MAX
+           MOVE    ZERO                TO  SPA-K98-NEXT
+      *    開始
+           IF     (SPA-K98-PAGE        =   ZERO )
+               MOVE    1                   TO  SPA-K98-PAGE
+           END-IF
+           COMPUTE WRK-STR             =  (SPA-K98-PAGE   -   1  )
+                                       *   199
+                                       +   1
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  IDX3
+      *
+      *    １件目を診療情報とする
+           MOVE    1                   TO  WRK-CNT-ENT
+           MOVE    1                   TO  IDX
+           MOVE    "C"                 TO  SPA-K98-GMN-NO-X (IDX)
+           MOVE    SPA-K98-SELCOM-SRYCD
+                                       TO  SPA-K98-GMN-INPUTCD
+                                                            (IDX)
+           MOVE    SPA-K98-SELCOM-SRYCD
+                                       TO  SPA-K98-GMN-SRYCD(IDX)
+           INITIALIZE                  TNS-TENSU-REC
+           MOVE    SPA-K98-SELCOM-SRYCD    TO  TNS-SRYCD
+           PERFORM 9110-TENSU-KEYREAD-SEC
+           MOVE    TNS-NAME            TO  SPA-K98-GMN-NAME (IDX)
+           MOVE    ZERO                TO  SPA-K98-GMN-KISOTEN(IDX)
+      *
+      *
+           MOVE    SPACE               TO  RECEKISAI-REC
+           INITIALIZE                      RECEKISAI-REC
+      *    診療コード
+           MOVE    SPA-K98-SELCOM-SRYCD    TO  RKISAI-SRYCD
+      *    開始年月
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-STYM
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-EDYM
+      *
+           MOVE    RECEKISAI-REC       TO  MCPDATA-REC
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 9103-RECEKISAI-READ-SEC
+           ELSE
+               INITIALIZE                      RECEKISAI-REC
+               MOVE    1                   TO  FLG-RECEKISAI
+           END-IF
+           PERFORM
+               UNTIL      (IDX         >   200 )   OR
+                          (FLG-RECEKISAI   =   1   )
+      *        選択コメント編集
+               PERFORM 31001-SELCOMMNT-HEN-SEC
+      *
+               MOVE    "tbl_recekisai"     TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 9103-RECEKISAI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
+      *
+          .
+       31001-SELCOMMNT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選択コメント編集処理
+      *****************************************************************
+       31001-SELCOMMNT-HEN-SEC       SECTION.
+      *
+      *    同じコードは対象外
+           MOVE    ZERO                TO  FLG-CDARI
+           PERFORM VARYING     IDX-C   FROM    1   BY  1
+                   UNTIL      (IDX-C   >   200 )
+                         OR   (SPA-K98-GMN-NO(IDX-C)   =   SPACE)
+                         OR   (FLG-CDARI       =   1   )
+               IF      RKISAI-C-CD     =   SPA-K98-GMN-SRYCD(IDX-C)
+                   MOVE    1           TO  FLG-CDARI
+               END-IF
+           END-PERFORM
+           IF      FLG-CDARI           =   1
+               GO      TO      31001-SELCOMMNT-HEN-EXT
+           END-IF
+      *
+           INITIALIZE                  TNS-TENSU-REC
+      *    コメントコード
+           MOVE    RKISAI-C-CD         TO  TNS-SRYCD
+           PERFORM 9110-TENSU-KEYREAD-SEC
+           IF      FLG-TENSU           =   ZERO
+               ADD     1               TO  IDX2
+      *        次ページの時、表示分は読み飛ばし
+               IF      IDX2            >=  WRK-STR
+                   PERFORM 31021-TENSU-HEN-SEC
+      *            行番号変更
+                   ADD     1               TO  IDX3
+                   MOVE    IDX3            TO  SPA-K98-GMN-NO(IDX)
+               END-IF
+           END-IF
+           .
+       31001-SELCOMMNT-HEN-EXT.
+           EXIT.
+      *H30.9
+      *****************************************************************
+      *    選択式コメント展開処理
+      *****************************************************************
+       2601-SELCOM-TENKAI-SEC                    SECTION.
+      *
+           IF      SPA-SRYYMD          <   "20180401"
+               MOVE    "0024"          TO  SPA-ERRCD
+               GO      TO   2601-SELCOM-TENKAI-EXT
+           END-IF
+      *
+           IF     (SPA-K98-GMN-MAX     =   ZERO )
+            OR    (SPA-K98-GMN-SYORI   =   "R"  )
+               PERFORM 2610-RECEKISAI-SYORI-SEC
+               GO      TO   2601-SELCOM-TENKAI-EXT
+           END-IF
+      *
+           IF     (SPA-K98-GMN-SYORI   =   "C"  )
+              OR  (SPA-K98-GMN-MAX     =   ZERO )
+               GO   TO  2601-SELCOM-TENKAI-EXT
+           ELSE
+               IF      (SPA-K98-GMN-MAX        =   1    )  AND
+                       (SPA-K98-NAI-SELNUM(1)  =   ZERO )
+                   MOVE    1               TO  SPA-K98-NAI-SELNUM(1)
+               END-IF
+               IF      (SPA-K98-NAI-SELNUM(1)  >   ZERO )
+      *
+                   MOVE    SPA-K98-NAI-SELNUM (1)  TO  WRK-SELNO
+                   IF      SPA-K98-GMN-SRYCD (WRK-SELNO)(1:1)  =   "1"
+                       INITIALIZE                  TNS-TENSU-REC
+                       MOVE    SPA-K98-GMN-SRYCD (WRK-SELNO)
+                                                   TO  TNS-SRYCD
+                       PERFORM 9110-TENSU-KEYREAD-SEC
+                       PERFORM 26011-RECEKISAI-CHK-SEC
+      *                レセプト記載事項あり
+                       IF      FLG-RECEKISAI       =   ZERO
+                           MOVE    SPA-K98-GMN-SRYCD (WRK-SELNO)
+                                               TO  SPA-K98-SELCOM-SRYCD
+                       ELSE
+                           MOVE    "0023"      TO  SPA-ERRCD
+                       END-IF
+                   ELSE
+                       MOVE    "0023"      TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   GO   TO  2601-SELCOM-TENKAI-EXT
+               END-IF
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO   TO  2601-SELCOM-TENKAI-EXT
+           END-IF
+      *
+           MOVE    "C"                 TO  SPA-K98-GMN-SYORI
+           MOVE    SPACE               TO  SPA-K98-GMN-SYORI2
+           MOVE    "2"                 TO  SPA-K98-TYPE
+           MOVE    SPA-K98-GMN-SYORI   TO  SPA-K98-OLD-SYORI
+           MOVE    SPACE               TO  SPA-K98-GMN-INPUT
+      *    ＳＰＡセット
+           PERFORM                     310-SPA-SET-SEC
+      *
+          .
+       2601-SELCOM-TENKAI-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    レセプト記載事項存在チェック処理
+      *****************************************************************
+       26011-RECEKISAI-CHK-SEC                   SECTION.
+      *
+           MOVE    SPACE               TO  RECEKISAI-REC
+           INITIALIZE                      RECEKISAI-REC
+           MOVE    TNS-SRYCD           TO  RKISAI-SRYCD
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-STYM
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-EDYM
+           MOVE    RECEKISAI-REC       TO  MCPDATA-REC
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM  9103-RECEKISAI-READ-SEC
+           ELSE
+               INITIALIZE                  RECEKISAI-REC
+               MOVE    1                   TO  FLG-RECEKISAI
+           END-IF
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       26011-RECEKISAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト記載事項一覧処理
+      *****************************************************************
+       2610-RECEKISAI-SYORI-SEC        SECTION.
+      *
+           MOVE    "R"                 TO  SPA-K98-GMN-SYORI
+           MOVE    SPACE               TO  SPA-K98-GMN-SYORI2
+           MOVE    "2"                 TO  SPA-K98-TYPE
+           MOVE    SPA-K98-GMN-SYORI   TO  SPA-K98-OLD-SYORI
+      *    ＳＰＡセット
+           PERFORM                     310-SPA-SET-SEC
+           .
+       2610-RECEKISAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト記載事項一覧処理
+      *****************************************************************
+       31002-RECEKISAI-SYORI-SEC        SECTION.
+      *
+           IF      SPA-K98-GMN-SYORI2  =   SPACE
+      *        区分番号リスト一覧
+               PERFORM 310021-RECEKISAI-KUBUN-SEC
+           ELSE
+      *        区分番号からレセプト記載事項一覧
+               PERFORM 310022-RECEKISAI-COMMT-SEC
+           END-IF
+           .
+       2610-RECEKISAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト記載事項区分番号リスト一覧
+      *****************************************************************
+       310021-RECEKISAI-KUBUN-SEC        SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT
+      *
+           INITIALIZE                      SPA-K98-NAI-SELNUM-G
+           INITIALIZE                      SPA-K98-GMN-SELNUM-G
+      *
+           INITIALIZE                  SPA-K98-GMN-TBL
+           MOVE    ZERO                TO  SPA-K98-GMN-MAX
+           MOVE    ZERO                TO  FLG-MAX
+           MOVE    ZERO                TO  SPA-K98-NEXT
+      *    開始
+           IF     (SPA-K98-PAGE        =   ZERO )
+               MOVE    1                   TO  SPA-K98-PAGE
+           END-IF
+           COMPUTE WRK-STR             =  (SPA-K98-PAGE   -   1  )
+                                       *   200
+                                       +   1
+      *
+           MOVE    SPACE               TO  RECEKISAI-REC
+           INITIALIZE                      RECEKISAI-REC
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-STYM
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-EDYM
+           MOVE    RECEKISAI-REC       TO  MCPDATA-REC
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM  9103-RECEKISAI-READ-SEC
+           ELSE
+               INITIALIZE                  RECEKISAI-REC
+               MOVE    1                   TO  FLG-RECEKISAI
+           END-IF
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  IDX3
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-CNT-ENT
+           MOVE    SPACE               TO  WRK-RKISAI-KUBUN
+           PERFORM
+               UNTIL      (IDX             >    200 )   OR
+                          (FLG-RECEKISAI   =   1    )
+      *        同じ区分は対象外
+               IF      RKISAI-KUBUN        =   WRK-RKISAI-KUBUN
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  IDX2
+      *            次ページの時、表示分は読み飛ばし
+                   IF      IDX2            >=  WRK-STR
+                       PERFORM 310021-KUBUN-HENSYU-SEC
+                   END-IF
+               END-IF
+               MOVE    RKISAI-KUBUN        TO  WRK-RKISAI-KUBUN
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM  9103-RECEKISAI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
+           .
+       310021-RECEKISAI-KUBUN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    区分番号からレセプト記載事項一覧処理
+      *****************************************************************
+       310021-KUBUN-HENSYU-SEC        SECTION.
+      *
+           ADD     1                   TO  IDX
+      *    ２００件オーバーチェック
+           IF      IDX                 >   200
+               MOVE    1                   TO  FLG-MAX
+               MOVE    1                   TO  SPA-K98-NEXT
+               GO      TO      310021-KUBUN-HENSYU-EXT
+           END-IF
+      *
+           ADD     1                   TO  WRK-CNT-ENT
+           MOVE    IDX                 TO  SPA-K98-GMN-NO   (IDX)
+           MOVE    RKISAI-KUBUN        TO  SPA-K98-GMN-INPUTCD
+                                                            (IDX)
+           MOVE    SPACE               TO  WRK-KUBUN-NAME-G
+           MOVE    RKISAI-KUBUN        TO  WRK-KUBUN-CD
+           PERFORM 310021-KUBUN-MEISYO-SEC
+           MOVE    WRK-KUBUN-NAME-G    TO  SPA-K98-GMN-NAME (IDX)
+           .
+       310021-KUBUN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    区分番号名称取得処理
+      *****************************************************************
+       310021-KUBUN-MEISYO-SEC        SECTION.
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    58                  TO  KANACONV-LEN
+           MOVE    5000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    0                   TO  KANACONV-CHAR-TYPE
+           MOVE    RKISAI-MEISYOETC    TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           IF     (KANACONV-RETURN     =   ZERO )
+               MOVE    KANACONV-OUTDATA
+                                       TO  WRK-KUBUN-NAME
+           ELSE
+               MOVE    KANACONV-OUTDATA
+                                       TO  WRK-KUBUN-NAME
+           END-IF
+           .
+       310021-KUBUN-MEISYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    区分番号からレセプト記載事項一覧処理
+      *****************************************************************
+       310022-RECEKISAI-COMMT-SEC        SECTION.
+      *
+           MOVE    1                   TO  SPA-K98-GMN-CUR
+      *
+           IF     (SPA-K98-NAI-SELNUM(IDX-1)
+                                       NOT =   ZERO ) AND
+                  (IDX-1               NOT =   1     ) 
+               MOVE    "0003"          TO  SPA-ERRCD
+               GO      TO      310022-RECEKISAI-COMMT-EXT
+           ELSE
+               IF      SPA-K98-NAI-SELNUM(IDX-1)   =   ZERO
+                   GO      TO      310022-RECEKISAI-COMMT-EXT
+               END-IF
+           END-IF
+      *
+           IF      WRK-SELNO           =   ZERO
+               MOVE    "0002"              TO  SPA-ERRCD
+               GO      TO      310022-RECEKISAI-COMMT-EXT
+           END-IF
+      *
+           MOVE    1                   TO  FLG-GMN-INIT
+      *    レセプト記載事項コメント一覧
+           MOVE    "1"                 TO  SPA-K98-GMN-SYORI2
+      *
+           INITIALIZE                      WRK-RECEKISAI-AREA
+           MOVE    SPA-K98-GMN-INPUTCD(WRK-SELNO)
+                                       TO  WRK-SEL-KUBUN
+           MOVE    SPA-K98-GMN-NAME (WRK-SELNO)
+                                       TO  WRK-SEL-NAME
+      *
+           INITIALIZE                      SPA-K98-NAI-SELNUM-G
+           INITIALIZE                      SPA-K98-GMN-SELNUM-G
+           INITIALIZE                      SPA-K98-GMN-TBL
+           MOVE    ZERO                TO  SPA-K98-GMN-MAX
+           MOVE    ZERO                TO  FLG-MAX
+           MOVE    ZERO                TO  SPA-K98-NEXT
+      *    開始
+           IF     (SPA-K98-PAGE        =   ZERO )
+               MOVE    1                   TO  SPA-K98-PAGE
+           END-IF
+           COMPUTE WRK-STR             =  (SPA-K98-PAGE   -   1  )
+                                       *   199
+                                       +   1
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  IDX3
+      *
+      *    １件目を選択情報とする
+           MOVE    1                   TO  WRK-CNT-ENT
+           MOVE    1                   TO  IDX
+           MOVE    "C"                 TO  SPA-K98-GMN-NO-X (IDX)
+           MOVE    WRK-SEL-KUBUN       TO  SPA-K98-GMN-INPUTCD
+                                                            (IDX)
+           MOVE    WRK-SEL-NAME        TO  SPA-K98-GMN-NAME (IDX)
+           MOVE    ZERO                TO  SPA-K98-GMN-KISOTEN(IDX)
+      *
+      *
+           MOVE    SPACE               TO  RECEKISAI-REC
+           INITIALIZE                      RECEKISAI-REC
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-STYM
+           MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-EDYM
+           MOVE    WRK-SEL-KUBUN       TO  RKISAI-KUBUN
+           MOVE    RECEKISAI-REC       TO  MCPDATA-REC
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM  9103-RECEKISAI-READ-SEC
+           ELSE
+               INITIALIZE                  RECEKISAI-REC
+               MOVE    1                   TO  FLG-RECEKISAI
+           END-IF
+           PERFORM
+               UNTIL      (IDX             >    200 )   OR
+                          (FLG-RECEKISAI   =   1    )
+      *        選択コメント編集
+               PERFORM 31001-SELCOMMNT-HEN-SEC
+      *
+               MOVE    RKISAI-KUBUN        TO  WRK-RKISAI-KUBUN
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM  9103-RECEKISAI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
+      *
+           .
+       310022-RECEKISAI-COMMT-EXT.
+      *TEST
+      *TEST
+      *
       *****************************************************************
       *    次ページ処理
       *****************************************************************
@@ -5407,6 +5920,18 @@
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
+      *H30.9
+               WHEN    "0023"
+                   STRING  "展開対象のコメントはありません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0024"
+                   STRING  "選択式コメントは、平成３０年４月から"
+                            "有効です。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
       *
@@ -5720,8 +6245,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOEDYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
@@ -5883,6 +6408,28 @@
            .
        975-INPSET-READ-EXT.
            EXIT.
+      *
+      *H30.9
+      *****************************************************************
+      *    入力セットデータ次読込
+      *****************************************************************
+       9103-RECEKISAI-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_recekisai"     TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  RECEKISAI-REC
+               MOVE    ZERO                TO  FLG-RECEKISAI
+           ELSE
+               INITIALIZE                      RECEKISAI-REC
+               MOVE    1                   TO  FLG-RECEKISAI
+           END-IF
+      *
+           .
+       9103-RECEKISAI-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

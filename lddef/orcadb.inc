@@ -201,4 +201,5 @@ db	{
         tbl_jibai_prt;
         tbl_ptmynumber;
         tbl_receden_tmp;
+	tbl_recekisai;
 };

@@ -140,6 +140,7 @@
       *  04.08.00    NACL-多々納  17/04/XX  投薬３０日超チェック追加
       *  04.08.00    NACL-多々納  17/07/XX  心身療法２０未満加算区分追加
       *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
+      *  04.08.00    NACL-多々納  18/09/XX  選択式コメント一覧区分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -819,6 +820,16 @@
                            11  SPA-GMN-GENERICFLG-LST   PIC X(40)
                                                         OCCURS  5.
                            11  SPA-GMN-GENERICFLG-MAX   PIC 9(01).
+      *H30.9
+      *                選択式コメント一覧区分
+                       09  SPA-GMN-RECEKISAIFLG-G.
+                           11  SPA-GMN-RECEKISAIFLG       PIC X(01).
+                           11  SPA-GMN-RECEKISAIFLG-F1    PIC X(01).
+                           11  SPA-GMN-RECEKISAIFLG-MEI   PIC X(38).
+                       09  SPA-GMN-RECEKISAIFLG-COMB.
+                           11  SPA-GMN-RECEKISAIFLG-LST   PIC X(40)
+                                                        OCCURS  5.
+                           11  SPA-GMN-RECEKISAIFLG-MAX   PIC 9(01).
       *ver.4.7
       *                入力スクロール背景色
                        09  SPA-GMN-BGCOLORS            PIC  X(16).
@@ -2246,10 +2257,16 @@
       *    確認画面名称表示区分
            MOVE    "0 一般名表示"      TO  SPA-GMN-GENERICFLG-LST(1)
            MOVE    "1 銘柄名表示"      TO  SPA-GMN-GENERICFLG-LST(2)
-           MOVE    2                   TO  SPA-GMN-GENERICFLG-MAX
       **   MOVE    "2 一般名表示（全画面）"
       **                               TO  SPA-GMN-GENERICFLG-LST(3)
       **   MOVE    3                   TO  SPA-GMN-GENERICFLG-MAX
+           MOVE    2                   TO  SPA-GMN-GENERICFLG-MAX
+      *
+      *H30.9
+      *選択式コメント一覧区分
+           MOVE    "0 自動表示しない"  TO  SPA-GMN-RECEKISAIFLG-LST(1)
+           MOVE    "1 自動表示する"    TO  SPA-GMN-RECEKISAIFLG-LST(2)
+           MOVE    2                   TO  SPA-GMN-RECEKISAIFLG-MAX
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
@@ -3686,6 +3703,9 @@
       *H28.6
       *    セット展開表示
            MOVE    SYS-1038-SETALLKBN      TO  SPA-GMN-SETALLKBN
+      *H30.9
+      *選択式コメント一覧区分
+           MOVE    SYS-1038-RECEKISAIFLG   TO  SPA-GMN-RECEKISAIFLG
       *
       *ver.4.7
       *    リハビリ・患者情報表示区分
@@ -4195,6 +4215,27 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-SETALLKBN-LST (1)
                                        TO  SPA-GMN-SETALLKBN-G
+           END-IF
+      *
+      *H30.9
+      *    選択式コメント一覧区分
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-RECEKISAIFLG-MAX
+               IF      SPA-GMN-RECEKISAIFLG
+                                       =   SPA-GMN-RECEKISAIFLG-LST
+                                                        (IDY)(1:1)
+                   MOVE    SPA-GMN-RECEKISAIFLG-LST (IDY)
+                                       TO  SPA-GMN-RECEKISAIFLG-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-RECEKISAIFLG-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+      *        自動表示するを初期表示
+               MOVE    SPA-GMN-RECEKISAIFLG-LST (2)
+                                       TO  SPA-GMN-RECEKISAIFLG-G
            END-IF
       *
            MOVE    301                  TO  SPA-GMN-CUR
@@ -5740,6 +5781,9 @@
       *H24.4
       *    確認画面名称表示区分
            MOVE    W07-GENERIC-FLG     TO  SPA-GMN-GENERICFLG-G
+      *H30.9
+      *    選択式コメント一覧区分
+           MOVE    W07-RECEKISAI-FLG   TO  SPA-GMN-RECEKISAIFLG-G
       *
            MOVE    W07-GMNHYOKBN1      TO  SPA-GMN-GMNHYOKBN-G (1)
            MOVE    W07-GMNHYOKBN2      TO  SPA-GMN-GMNHYOKBN-G (2)
@@ -6085,6 +6129,11 @@
       *            腫瘍マーカー検査表示
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-AKUSEIHYO-CHK-SEC
+                   END-IF
+      *H30.9
+      *            選択式コメント一覧区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-RECEKISAIFLG-CHK-SEC
                    END-IF
       *H24.4
       *            確認画面名称表示区分
@@ -8320,6 +8369,31 @@
       *
            .
        4108-AKUSEIHYO-CHK-EXT.
+           EXIT.
+      *H30.9
+      *****************************************************************
+      *    選択式コメント一覧区分チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-RECEKISAIFLG-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-RECEKISAIFLG-MAX
+               IF      SPA-GMN-RECEKISAIFLG
+                                       =   SPA-GMN-RECEKISAIFLG-LST
+                                                     (IDX) (1:1)
+                   MOVE    SPA-GMN-RECEKISAIFLG-LST(IDX)
+                                          TO  SPA-GMN-RECEKISAIFLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    315             TO  SPA-GMN-CUR
+               MOVE    "2030"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-RECEKISAIFLG-CHK-EXT.
            EXIT.
       *H24.4
       *****************************************************************
@@ -11026,6 +11100,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-AKUSEIHYO       TO  SYS-1038-AKUSEIHYOFLG
       *H24.4
            MOVE    SPA-GMN-GENERICFLG      TO  SYS-1038-GENERICFLG
+      *H30.9
+           MOVE    SPA-GMN-RECEKISAIFLG    TO  SYS-1038-RECEKISAIFLG
            MOVE    SPA-GMN-TEISEIFLG       TO  SYS-1038-TEISEIFLG
            MOVE    SPA-GMN-CHG310FLG       TO  SYS-1038-CHG310FLG
            MOVE    SPA-GMN-YKJOKUKBN       TO  SYS-1038-YKJOKUKBN
@@ -12129,6 +12205,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-AKUSEIHYO-MAX
                                        TO  W07-AKUSEIHYO-COUNT
+      *H30.9
+      *    選択式コメント一覧表示（診療行為機能情報）
+           MOVE    SPA-GMN-RECEKISAIFLG-G   TO  W07-RECEKISAI-FLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-RECEKISAIFLG-MAX
+               MOVE    SPA-GMN-RECEKISAIFLG-LST (IDX)
+                                       TO  W07-RECEKISAI-FLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-RECEKISAIFLG-MAX
+                                       TO  W07-RECEKISAI-FLG-COUNT
       *H24.4
       *    確認画面名称表示区分（診療行為機能情報）
            MOVE    SPA-GMN-GENERICFLG-G   TO  W07-GENERIC-FLG
@@ -13294,6 +13380,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    DELIMITED  BY  SIZE
                                                    INTO    SPA-ERRMSG
                    END-STRING
+      *H30.9
+               WHEN    "2030"
+                   STRING  "選択式コメント一覧区分がありません。"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
       *    収納情報
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
@@ -13686,6 +13778,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "PRVLAYOUT038"    TO   MCP-WIDGET
                WHEN    313
                    MOVE  "SETALLKBN"       TO   MCP-WIDGET
+      *H30.9
+               WHEN    315
+                   MOVE  "RECEKISAI_FLG"   TO   MCP-WIDGET
       *        請求選択
                WHEN    320
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -14120,7 +14215,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    311             TO  SPA-GMN-CUR
       *H24.4
                WHEN    "GENERIC_FLG" 
+      *H30.9
+     *****         MOVE    305             TO  SPA-GMN-CUR
+                   MOVE    315             TO  SPA-GMN-CUR
+      *H30.9
+               WHEN    "RECEKISAI_FLG" 
                    MOVE    305             TO  SPA-GMN-CUR
+      *
                WHEN    "TEISEIFLG"
                    MOVE    306             TO  SPA-GMN-CUR
                WHEN    "CHG310FLG"

@@ -352,6 +352,11 @@ ito   *
       *悪性腫瘍検査検索用
            03  SPA-AKUSEI-IDX              PIC 9(04).
            03  SPA-AKUSEI-FLG              PIC 9(01).
+      *H30.5
+      *選択コメント検索用
+           03  SPA-SELCOM-IDX              PIC 9(04).
+           03  SPA-SELCOM-FLG              PIC 9(01).
+      *
       *    ユーザプログラム起動有無
            03  SPA-NAI-GYOMU-AREA.
                05  SPA-NAI-GYOUMU-FLG             PIC X(01).
@@ -584,6 +589,8 @@ ito   *
                        11  SPA-K98-NAI-GECODE     PIC X(12).
       *
                        11  SPA-K98-NAI-NO         PIC 9(03).
+      *H29.2
+                       11  SPA-K98-NAI-MASTER     PIC X(01).
       *        自院採用
                05  SPA-K98-JIIN-G.
                    07  SPA-K98-JIIN               PIC X(01).
@@ -598,6 +605,9 @@ ito   *
                    07  SPA-K98-USERMEI            PIC X(18).
                05  SPA-K98-USER-COB               OCCURS  10.
                    07  SPA-K98-USERLST            PIC X(20).
+      *
+      *H30.9
+               05  SPA-K98-SELCOM-SRYCD            PIC X(09).
       *
       *    Ｋ０２３画面用
            03  SPA-K023GMN-AREA.

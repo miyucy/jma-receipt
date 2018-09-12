@@ -310,6 +310,11 @@
       *悪性腫瘍検査検索用
            03  SPA-AKUSEI-IDX              PIC 9(04).
            03  SPA-AKUSEI-FLG              PIC 9(01).
+      *H30.9
+      *選択コメント検索用
+           03  SPA-SELCOM-IDX              PIC 9(04).
+           03  SPA-SELCOM-FLG              PIC 9(01).
+      *
       *
       *月内の算定履歴
            03  SPA-SANTEI-AREA.
@@ -500,6 +505,10 @@
                    07  SPA-KT98-USERMEI            PIC X(18).
                05  SPA-KT98-USER-COB               OCCURS  10.
                    07  SPA-KT98-USERLST            PIC X(20).
+      *
+      *H30.9
+               05  SPA-KT98-SELCOM-SRYCD           PIC X(09).
+      *
       *Ｋ９８画面より
            03  SPA-KT98-AREA.
                05  SPA-KT98-CDSYUBETU       PIC X(01).

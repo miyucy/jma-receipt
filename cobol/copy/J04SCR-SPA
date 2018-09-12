@@ -156,6 +156,10 @@
       *°­À­¼ðáç¸¡ºº¸¡º÷ÍÑ
            03  SPA-AKUSEI-IDX              PIC 9(04).
            03  SPA-AKUSEI-FLG              PIC 9(01).
+      *H30.9
+      *ÁªÂò¥³¥á¥ó¥È¸¡º÷ÍÑ
+           03  SPA-SELCOM-IDX              PIC 9(04).
+           03  SPA-SELCOM-FLG              PIC 9(01).
       *    £Ë£¹£¸²èÌÌÍÑ
            03  SPA-J98-MOTOPG              PIC X(08).
            03  SPA-J98GMN-AREA.
@@ -210,6 +214,8 @@
                    07  SPA-J98-USERMEI            PIC X(18).
                05  SPA-J98-USER-COB               OCCURS  10.
                    07  SPA-J98-USERLST            PIC X(20).
+      *H30.9
+               05  SPA-J98-SELCOM-SRYCD            PIC X(09).
       *
       *    £Ë£¹£¹²èÌÌÍÑ
            03  SPA-J99-MOTOPG              PIC X(08).
