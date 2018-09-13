@@ -2410,10 +2410,10 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-               WHEN    "K107"
+               WHEN    "K117"
                    STRING  "警告！"
                            "選択式コメントの前行で剤終了しています。"
-                           "剤終了を削除して下さい。"
+                           "回数行を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

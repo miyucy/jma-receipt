@@ -2359,7 +2359,7 @@
            IF      FLG-AUTOERR         =   1
                MOVE    "1"              TO  SPA-COM-CUR
                                                     (IDX-SELCOM)
-               MOVE    "K107"           TO  SPA-ERRCD
+               MOVE    "K117"           TO  SPA-ERRCD
            END-IF
       *
            MOVE    1                   TO  FLG-GMN
