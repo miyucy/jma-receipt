@@ -2931,8 +2931,8 @@
                    MOVE    16              TO  SPA-GMN-CUR
                END-IF
       *        自官・国公以外重複エラー
-               IF     (SPA-PTHKN-HKNNUM  (IDX) =   "031")
-                AND   (SPA-GMN-HKNNUM      NOT =   "007")
+               IF     (SPA-PTHKN-HKNNUM  (IDX) NOT =   "031")
+                AND   (SPA-GMN-HKNNUM      =   "007")
                    MOVE    "0064"          TO  SPA-ERRCD
                    MOVE    IDX             TO  WRK-IDX
                    MOVE    16              TO  SPA-GMN-CUR
