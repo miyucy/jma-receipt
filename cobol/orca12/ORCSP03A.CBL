@@ -2912,6 +2912,20 @@
                   (SPA-PTHKN-CONTKBN (IDX) =   "1" )
                GO      TO      20041-KIKAN-CHK1-EXT
            END-IF
+      *!!!!
+      *H30.9
+      *    自官　は重複可とする
+           IF      (SPA-GMN-HKNNUM         =   "007")
+               OR  (SPA-PTHKN-HKNNUM(IDX)  =   "007")
+      *        自官のみ重複エラー
+               IF     (SPA-PTHKN-HKNNUM  (IDX) =   SPA-GMN-HKNNUM)
+                   MOVE    "0064"          TO  SPA-ERRCD
+                   MOVE    IDX             TO  WRK-IDX
+                   MOVE    16              TO  SPA-GMN-CUR
+               END-IF
+               GO      TO      20041-KIKAN-CHK1-EXT
+           END-IF
+      *!!!!
       *    船員
            IF      (SPA-GMN-HKNNUM         =   "002") AND
                    (SPA-GMN-HOJOKBN    NOT =   SPACE )
