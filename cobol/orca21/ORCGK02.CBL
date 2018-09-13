@@ -723,6 +723,9 @@
       *
       *H28.1
            03  WRK-HZN-DRCD             PIC X(05).
+      *H30.9
+           03  FLG-AUTOERR             PIC 9(01).
+           03  IDX-SELCOM              PIC 9(04).
       *
       *    訂正時の内容保存
        01  WRK-ORCSC95AREA             PIC X(150).
@@ -2936,6 +2939,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        30113-SELCOMMNT-COMMENT-SEC       SECTION.
       *
+           MOVE    ZERO                TO  FLG-AUTOERR
+           MOVE    ZERO                TO  IDX-SELCOM
+      *
            IF     (SPA-SELCOM-IDX      >   ZERO  )
              AND  (SPA-COM-INPUTCD(SPA-SELCOM-IDX)(1:1)  =   "1"  )
              AND  (SPA-COM-RECEKISAI (SPA-SELCOM-IDX)    =   "1"
@@ -2943,6 +2949,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *        選択済み
                MOVE    "1"             TO  SPA-COM-RECEAUTO
                                                     (SPA-SELCOM-IDX)
+      *!
+      *        回数入力の下に追加
+               IF     (SPA-COM-KAIFLG (SPA-SELCOM-IDX)  =   "1"  )
+                 AND  (SPA-COM-ZAIEND (SPA-SELCOM-IDX)  =   "1"  )
+                 AND  (SPA-K98-SRYCD-G     NOT =   SPACE  )
+                   MOVE    1                   TO  FLG-AUTOERR
+                   MOVE    SPA-SELCOM-IDX      TO  IDX-SELCOM
+               END-IF
            END-IF 
       *
       *    対象行の下に挿入
@@ -2957,6 +2971,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  SPA-SELCOM-IDX
       *
            PERFORM 3011-K98-SET-SEC
+      *
+      *    コメント挿入行前で剤終了は警告
+           IF      FLG-AUTOERR         =   1
+               MOVE    "1"              TO  SPA-COM-CUR
+                                                    (IDX-SELCOM)
+               MOVE    "K117"           TO  SPA-ERRCD
+           END-IF
+      *
            MOVE    1                   TO  FLG-GMN
            .
        30113-SELCOMMNT-COMMENT-EXT.
