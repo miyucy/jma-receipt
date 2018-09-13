@@ -602,6 +602,9 @@
            03  FLG-NEXTTUKI            PIC 9(01).
            03  IDN3                    PIC 9(04).
            03  IDN4                    PIC 9(04).
+      *H30.9
+           03  FLG-AUTOERR             PIC 9(01).
+           03  IDX-SELCOM              PIC 9(04).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -2312,13 +2315,15 @@
            .
        30112-AKUSEI-COMMENT-EXT.
            EXIT.
-      *TEST
-      *TEST
+      *
       *H30.9
       *****************************************************************
       *    選択式コメントへ処理
       *****************************************************************
        30113-SELCOMMNT-COMMENT-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-AUTOERR
+           MOVE    ZERO                TO  IDX-SELCOM
       *
            IF     (SPA-SELCOM-IDX      >   ZERO  )
              AND  (SPA-COM-INPUTCD(SPA-SELCOM-IDX)(1:1)  =   "1"  )
@@ -2327,6 +2332,14 @@
       *        選択済み
                MOVE    "1"             TO  SPA-COM-RECEAUTO
                                                     (SPA-SELCOM-IDX)
+      *!
+      *        回数入力の下に追加
+               IF     (SPA-COM-KAIFLG (SPA-SELCOM-IDX)  =   "1"  )
+                 AND  (SPA-COM-ZAIEND (SPA-SELCOM-IDX)  =   "1"  )
+                 AND  (SPA-K98-SRYCD-G     NOT =   SPACE  )
+                   MOVE    1                   TO  FLG-AUTOERR
+                   MOVE    SPA-SELCOM-IDX      TO  IDX-SELCOM
+               END-IF
            END-IF 
       *
       *    対象行の下に挿入
@@ -2341,6 +2354,14 @@
            MOVE    ZERO                TO  SPA-SELCOM-IDX
       *
            PERFORM 3011-K98-SET-SEC
+      *
+      *    コメント挿入行前で剤終了は警告
+           IF      FLG-AUTOERR         =   1
+               MOVE    "1"              TO  SPA-COM-CUR
+                                                    (IDX-SELCOM)
+               MOVE    "K107"           TO  SPA-ERRCD
+           END-IF
+      *
            MOVE    1                   TO  FLG-GMN
            .
        30113-SELCOMMNT-COMMENT-EXT.

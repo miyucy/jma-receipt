@@ -1012,7 +1012,7 @@
                    PERFORM 20011-DENPNUM-CHK-SEC
                END-IF
            END-IF
-      *!!!!
+      *
       *H30.8
       *    °õºþ½èÍýÃæÈ½Äê
            IF      WRK-ERRCD           =   SPACE
@@ -3341,16 +3341,15 @@
                MOVE    "02"                TO  MDCRES-RESPONSE-NUMBER
                GO      TO      2003-SYORI-02-EXT
            END-IF
+      *
       *!!!!
-      *!!!!
+      *H30.8
       *    °õºþ½èÍý
            IF     (MDCREQ-PATIENT-MODE =   "Print")
               AND (WRK-PARA-MODE       =   "PRT" )
                PERFORM 200310-PRINT-SYORI-SEC
                GO      TO      2003-SYORI-02-EXT
            END-IF
-      *!!!!
-      *!!!!
       *
       *    ¿Ç»¡ÎÁ³ÎÇ§½èÍý
            PERFORM 20031-HENSYU-02-SEC
