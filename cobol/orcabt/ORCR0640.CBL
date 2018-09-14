@@ -776,6 +776,8 @@
       *                                     ¡Ê¹â³ÛÎÅÍÜÈñÀ©ÅÙ¤Î¸«Ä¾¤·¡Ë
       *  04.08.58    NACL-ÌçÏÆ    18/09/07  Ê¿À®£³£°Ç¯£¸·î²þÀµ
       *                                     ÆÃµ­»ö¹àµ­ºÜ½¤Àµ¡Ê²¼Á¥¡Ë
+      *  04.08.59    NACL-ÌçÏÆ    18/09/14  ÀÁµáÅÀ¿ô£°ÅÀ¸øÈñ¥ì¥»µ­ºÜ¤Ë
+      *                                     ´Ø¤ï¤ë½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -945,7 +947,6 @@
            03  FLG-HOKENICHIBU-SYU                     PIC 9(01).
            03  FLG-HOKENICHIBU2                        PIC 9(01).
            03  FLG-HOKENICHIBU3                        PIC 9(01).
-           03  FLG-HOKENICHIBU4                        PIC 9(01).
            03  FLG-HOKENICHIBU5                        PIC 9(01).
            03  FLG-HOKENICHIBU6                        PIC 9(01).
            03  FLG-HOKENICHIBU7                        PIC 9(01).
@@ -1017,6 +1018,12 @@
            03  FLG-KOHSKY-ARI                          PIC 9(01).
            03  FLG-HENSYU                              PIC 9(01).
            03  FLG-KOUREI-GENEKIKBN                    PIC 9(01).
+           03  FLG-XX8-TUUKA                           PIC 9(01).
+           03  FLG-XX5-TUUKA                           PIC 9(01).
+           03  FLG-XX3-TUUKA                           PIC 9(01).
+           03  FLG-XX6-TUUKA                           PIC 9(01).
+           03  FLG-HANTEI                              PIC 9(01).
+           03  FLG-HANTEI2                             PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -1633,6 +1640,7 @@
        01  TBL-HKNCOMBI.
            03  TBL-HKNCOMBI-OCC                        OCCURS  10.
                05  TBL-HKNCOMBI-TOTALTEN               PIC  9(07).
+               05  TBL-HKNCOMBI-CHKFLG                 PIC  9(01).
       *
        01  TBL-HKNCOMBI2.
            03  TBL-HKNCOMBI2-OCC                       OCCURS  10.
@@ -19877,8 +19885,18 @@
            MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU5
            MOVE    ZERO                 TO      FLG-KEISAN-TOK1
                                                 FLG-KEISAN-TOK2
-                                                WRK-KINGAKU-TOK1
+           MOVE    ZERO                 TO      WRK-KINGAKU-TOK1
                                                 WRK-KINGAKU-TOK1X
+                                                WRK-KINGAKU-TOK3
+                                                WRK-KINGAKU-TOK4
+                                                WRK-KINGAKU-TOK5
+                                                WRK-KINGAKU-TOK7
+                                                WRK-KINGAKU-TOK8
+                                                WRK-KINGAKU-TOK9
+           MOVE    ZERO                 TO      FLG-XX8-TUUKA
+                                                FLG-XX5-TUUKA
+                                                FLG-XX3-TUUKA
+                                                FLG-XX6-TUUKA
            MOVE    ZERO                 TO      FLG-KOUGAKU
       *
            MOVE    ZERO                 TO      FLG-SYUNOU-ARI
@@ -20240,7 +20258,6 @@
            MOVE    ZERO                 TO      FLG-HOKENICHIBU-SYU
            MOVE    ZERO                 TO      FLG-HOKENICHIBU2
            MOVE    ZERO                 TO      FLG-HOKENICHIBU3
-           MOVE    ZERO                 TO      FLG-HOKENICHIBU4
            MOVE    ZERO                 TO      FLG-HOKENICHIBU5
            MOVE    ZERO                 TO      FLG-HOKENICHIBU6
            MOVE    ZERO                 TO      FLG-HOKENICHIBU7
@@ -20281,26 +20298,35 @@
                            OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
                      IF    SYU-HKNCOMBINUM  =  RECE62-HKNCOMBI(IDX1)
                        IF  SYU-DENPJTIKBN    NOT =  "3"
-                        IF  (SYU-TOTAL-HKNTEN    NOT = ZERO)
-                        OR  (SYU-SYUSKJ-RYOYOHI  NOT = ZERO)
-                        OR  (SYU-KOH1SKJ-RYOYOHI NOT = ZERO)
+                         MOVE    ZERO   TO   FLG-HANTEI
+                         MOVE    ZERO   TO   FLG-HANTEI2
+                         IF  SYU-TOTAL-HKNTEN    NOT = ZERO
+                           MOVE    1    TO   FLG-HANTEI
+                         END-IF
+                         IF (SYU-TOTAL-HKNTEN    NOT = ZERO)
+                         OR (SYU-SYUSKJ-RYOYOHI  NOT = ZERO)
+                         OR (SYU-KOH1SKJ-RYOYOHI NOT = ZERO)
+                           MOVE    1    TO   FLG-HANTEI2
+                         END-IF
+      *
                          IF  RECE62-DAISANFLG(IDX1) =  1
-                          IF   (RECE62-DAISAN-GAITO    =   1 OR 2)
-                          AND  (RECE62-DAISAN-GENBUTU-GAITO  =  1)
-                            PERFORM 21044-RECE62-FTN-HENSYU-SEC
-                          ELSE
-                            PERFORM 2104K-RECE62-FTN-HENSYU-XXX-SEC
-                          END-IF
+                           IF   (RECE62-DAISAN-GAITO    =   1 OR 2)
+                           AND  (RECE62-DAISAN-GENBUTU-GAITO  =  1)
+                             PERFORM 21044-RECE62-FTN-HENSYU-SEC
+                           ELSE
+                             IF  FLG-HANTEI2  =  1
+                               PERFORM 2104K-RECE62-FTN-HENSYU-XXX-SEC
+                             ELSE
+                               IF   RECE62-NYUINRYOFLG  =  "1"
+                               AND  FLG-NYUINRYO        =  ZERO
+                                 PERFORM 210441-NYUINRYOFLG-SET-SEC
+                               END-IF
+                             END-IF
+                           END-IF
                          ELSE
-                            PERFORM 21044-RECE62-FTN-HENSYU-SEC
+                           PERFORM 21044-RECE62-FTN-HENSYU-SEC
                          END-IF
-                        ELSE
-                         IF   RECE62-NYUINRYOFLG  =  "1"
-                         AND  FLG-NYUINRYO        =  ZERO
-                            PERFORM 210441-NYUINRYOFLG-SET-SEC
-                         END-IF
-                        END-IF
-                        MOVE    1           TO   FLG-SYUNOU-ARI
+                         MOVE   1           TO  FLG-SYUNOU-ARI
                        END-IF
                        MOVE    10           TO  IDX1
                      END-IF
@@ -20746,6 +20772,7 @@
              PERFORM   VARYING  IDX1    FROM    1   BY  1
                         UNTIL   IDX1    >       10
                          OR     RECE62-HKNCOMBI (IDX1)  =   ZERO
+              IF   RECE62-HKNCOMBIFLG(IDX1) =  1 OR 2
                INITIALIZE                      SYUNOU-REC
                MOVE  RECE62-HOSPNUM        TO  SYU-HOSPNUM
                MOVE  RECE62-NYUGAIKBN      TO  SYU-NYUGAIKBN
@@ -20762,10 +20789,21 @@
                  MOVE    "key19"           TO  MCP-PATHNAME
                  PERFORM  900-SYUNOU-READ-SEC
                  PERFORM  UNTIL  (FLG-SYUNOU  =  1)
-                   IF  (SYU-DENPJTIKBN         NOT =  "3")
-                   AND (RECE62-DAISANFLG(IDX1) NOT =   1 )
-                     ADD   SYU-TOTAL-HKNTEN
+                   IF   SYU-DENPJTIKBN           NOT =  "3"
+                     IF   RECE62-DAISANFLG(IDX1) NOT =   1
+                       ADD   SYU-TOTAL-HKNTEN
                                 TO  TBL-HKNCOMBI-TOTALTEN(IDX1)
+                     END-IF
+                     IF  (SYU-KOH-HKNNUM(1)  =
+                          "012" OR "025" OR "972" OR "974")
+                     OR  (SYU-KOH-HKNNUM(2)  =
+                          "012" OR "025" OR "972" OR "974")
+                     OR  (SYU-KOH-HKNNUM(3)  =
+                          "012" OR "025" OR "972" OR "974")
+                     OR  (SYU-KOH-HKNNUM(4)  =
+                          "012" OR "025" OR "972" OR "974")
+                       MOVE  1  TO  TBL-HKNCOMBI-CHKFLG(IDX1)
+                     END-IF
                    END-IF
                    MOVE    "tbl_syunou"    TO  MCP-TABLE
                    MOVE    "key19"         TO  MCP-PATHNAME
@@ -20775,6 +20813,21 @@
                MOVE      "tbl_syunou"      TO  MCP-TABLE
                MOVE      "key19"           TO  MCP-PATHNAME
                PERFORM    900-CLOSE-SEC
+      *
+               IF  (TBL-HKNCOMBI-TOTALTEN(IDX1) =  ZERO)
+               AND (TBL-HKNCOMBI-CHKFLG(IDX1)   =  ZERO)
+                 IF ((RECE62-KOHNUMHC(IDX1 1)      NOT = "027") AND
+                     (RECE62-KOHNUMHC(IDX1 1)(1:1)     = "0"  ))
+                 OR ((RECE62-KOHNUMHC(IDX1 2)      NOT = "027") AND
+                     (RECE62-KOHNUMHC(IDX1 2)(1:1)     = "0"  ))
+                 OR ((RECE62-KOHNUMHC(IDX1 3)      NOT = "027") AND
+                     (RECE62-KOHNUMHC(IDX1 3)(1:1)     = "0"  ))
+                 OR ((RECE62-KOHNUMHC(IDX1 4)      NOT = "027") AND
+                     (RECE62-KOHNUMHC(IDX1 4)(1:1)     = "0"  ))
+                     MOVE  1  TO  TBL-HKNCOMBI-CHKFLG(IDX1)
+                 END-IF
+               END-IF
+              END-IF
              END-PERFORM
       *
              PERFORM   VARYING  IDX1    FROM    1   BY  1
@@ -20782,6 +20835,7 @@
                          OR     RECE62-HKNCOMBI (IDX1)  =   ZERO
                IF    (RECE62-HKNCOMBIFLG(IDX1)    =  1 OR 2)
                AND   (TBL-HKNCOMBI-TOTALTEN(IDX1) =  ZERO  )
+               AND   (TBL-HKNCOMBI-CHKFLG(IDX1)   =  ZERO  )
                  MOVE   ZERO    TO  RECE62-HKNCOMBIFLG(IDX1)
                END-IF
              END-PERFORM
@@ -21407,73 +21461,74 @@
       *****************************************************************
        21044-RECE62-FTN-HENSYU-SEC               SECTION.
       *
-           IF    SYU-YKZKENNUM   =   1  OR  2  OR  5
-              COMPUTE  WK-GENGAKU-KEISAN1 = SYU-TOTAL-HKNTEN
-                                          * 10
-                                          * RECE62-KYURATE
-                                          / 100
-              ADD   WK-GENGAKU-KEISAN1  TO  WK-GENGAKU-KEISAN2
+           IF  FLG-HANTEI2  =  1
+             IF    SYU-YKZKENNUM   =   1  OR  2  OR  5
+                COMPUTE  WK-GENGAKU-KEISAN1 = SYU-TOTAL-HKNTEN
+                                            * 10
+                                            * RECE62-KYURATE
+                                            / 100
+                ADD   WK-GENGAKU-KEISAN1  TO  WK-GENGAKU-KEISAN2
       *
-              COMPUTE  WK-GENGAKU-KEISAN1 = SYU-TOTAL-HKNTEN
-                                          * 10
-                                          * RECE62-KYURATE
-                                          / 100
-              COMPUTE  WK-GENGAKU-KEISAN1 = WK-GENGAKU-KEISAN1 +  5
-              COMPUTE  WK-GENGAKU-KEISAN1 = WK-GENGAKU-KEISAN1 / 10
-              COMPUTE  WK-GENGAKU-KEISAN1 = WK-GENGAKU-KEISAN1 * 10
-              ADD   WK-GENGAKU-KEISAN1  TO  WK-GENGAKU-KEISAN3
+                COMPUTE  WK-GENGAKU-KEISAN1 = SYU-TOTAL-HKNTEN
+                                            * 10
+                                            * RECE62-KYURATE
+                                            / 100
+                COMPUTE  WK-GENGAKU-KEISAN1 = WK-GENGAKU-KEISAN1 +  5
+                COMPUTE  WK-GENGAKU-KEISAN1 = WK-GENGAKU-KEISAN1 / 10
+                COMPUTE  WK-GENGAKU-KEISAN1 = WK-GENGAKU-KEISAN1 * 10
+                ADD   WK-GENGAKU-KEISAN1  TO  WK-GENGAKU-KEISAN3
       *
-              IF   (SYU-SYUHKNNUM   NOT =  SPACE)
-              AND  (SYU-KOH1HKNNUM      =  SPACE)
-              AND  (SYU-KOH2HKNNUM      =  SPACE)
-              AND  (SYU-KOH3HKNNUM      =  SPACE)
-              AND  (SYU-KOH4HKNNUM      =  SPACE)
-                CONTINUE
-              ELSE
-                MOVE  1     TO   FLG-GENGAKU5
-              END-IF
-           END-IF
-      *
-           IF    SYU-YKZKENNUM  NOT = ZERO
-              MOVE    1     TO   FLG-GENMEN-ARI
-           ELSE
-              MOVE    1     TO   FLG-GENMEN-NASI
-              IF     SYU-KOH-HKNNUM(1) = "970"
-                ADD   SYU-SYUCOMPFTN     TO   WRK-GENMEN-NASI-KIN
-                ADD   SYU-KOH1SKJ-FTN-RECE
-                                         TO   WRK-GENMEN-NASI-SKJ
-              ELSE
-                ADD   SYU-HKNTEKMONEY    TO   WRK-GENMEN-NASI-KIN
-                ADD   SYU-KOH-FTN        TO   WRK-GENMEN-NASI-KIN
-                ADD   SYU-SKYMONEY-SKJ   TO   WRK-GENMEN-NASI-SKJ
-                ADD   SYU-SKYMONEY-LIFE  TO   WRK-GENMEN-NASI-SKJ
-              END-IF
-           END-IF
-      *
-           IF   (FLG-SAIGAI-TAISYO  =  1    )
-           AND  (RECE62-HKNNUM      =  SPACE)
-              PERFORM    VARYING   IDX-SAI    FROM   1   BY   1
-                          UNTIL    IDX-SAI      >   31
-                IF   SYU-DAY(IDX-SAI)   =   "1"  OR  "2"  OR  "9"
-                    IF   IDX-SAI  <  WRK-SAIGAI-DD
-                       MOVE    1     TO   FLG-GENMEN-NASI2
-                    ELSE
-                       MOVE    1     TO   FLG-GENMEN-ARI2
-                    END-IF
+                IF   (SYU-SYUHKNNUM   NOT =  SPACE)
+                AND  (SYU-KOH1HKNNUM      =  SPACE)
+                AND  (SYU-KOH2HKNNUM      =  SPACE)
+                AND  (SYU-KOH3HKNNUM      =  SPACE)
+                AND  (SYU-KOH4HKNNUM      =  SPACE)
+                  CONTINUE
+                ELSE
+                  MOVE  1     TO   FLG-GENGAKU5
                 END-IF
-              END-PERFORM
-              ADD   SYU-HKNTEKMONEY
-                            TO   WRK-GENMEN-NASI-KIN2
-              ADD   SYU-KOH-FTN
-                            TO   WRK-GENMEN-NASI-KIN2
-              ADD   SYU-SKYMONEY-SKJ
-                            TO   WRK-GENMEN-NASI-SKJ2
-              ADD   SYU-SKYMONEY-LIFE
-                            TO   WRK-GENMEN-NASI-SKJ2
-           END-IF
+             END-IF
       *
-      *    ÀÁµá³Û¼ýÇ¼ÊÔ½¸
-           PERFORM   210448-SKY-SYUNOU-HENSYU-SEC
+             IF    SYU-YKZKENNUM  NOT = ZERO
+                MOVE    1     TO   FLG-GENMEN-ARI
+             ELSE
+                MOVE    1     TO   FLG-GENMEN-NASI
+                IF     SYU-KOH-HKNNUM(1) = "970"
+                  ADD   SYU-SYUCOMPFTN     TO   WRK-GENMEN-NASI-KIN
+                  ADD   SYU-KOH1SKJ-FTN-RECE
+                                           TO   WRK-GENMEN-NASI-SKJ
+                ELSE
+                  ADD   SYU-HKNTEKMONEY    TO   WRK-GENMEN-NASI-KIN
+                  ADD   SYU-KOH-FTN        TO   WRK-GENMEN-NASI-KIN
+                  ADD   SYU-SKYMONEY-SKJ   TO   WRK-GENMEN-NASI-SKJ
+                  ADD   SYU-SKYMONEY-LIFE  TO   WRK-GENMEN-NASI-SKJ
+                END-IF
+             END-IF
+             IF   (FLG-SAIGAI-TAISYO  =  1    )
+             AND  (RECE62-HKNNUM      =  SPACE)
+                PERFORM    VARYING   IDX-SAI    FROM   1   BY   1
+                            UNTIL    IDX-SAI      >   31
+                  IF   SYU-DAY(IDX-SAI)   =   "1"  OR  "2"  OR  "9"
+                      IF   IDX-SAI  <  WRK-SAIGAI-DD
+                         MOVE    1     TO   FLG-GENMEN-NASI2
+                      ELSE
+                         MOVE    1     TO   FLG-GENMEN-ARI2
+                      END-IF
+                  END-IF
+                END-PERFORM
+                ADD   SYU-HKNTEKMONEY
+                              TO   WRK-GENMEN-NASI-KIN2
+                ADD   SYU-KOH-FTN
+                              TO   WRK-GENMEN-NASI-KIN2
+                ADD   SYU-SKYMONEY-SKJ
+                              TO   WRK-GENMEN-NASI-SKJ2
+                ADD   SYU-SKYMONEY-LIFE
+                              TO   WRK-GENMEN-NASI-SKJ2
+             END-IF
+      *
+      *      ÀÁµá³Û¼ýÇ¼ÊÔ½¸
+             PERFORM   210448-SKY-SYUNOU-HENSYU-SEC
+           END-IF
       *
       *    ¼ýÇ¼¤è¤êÁíÅÀ¿ô¤ò½¸·×
            ADD       SYU-TOTAL-HKNTEN   TO   RECE62-RJNGAIFTN
@@ -21558,9 +21613,11 @@
       *
            MOVE    IDX1            TO  HC-IDX
       *
-           MOVE       ZERO              TO   KH-IDX
-           PERFORM    VARYING   IDX2    FROM   1   BY   1
-             UNTIL    IDX2      >       4
+           MOVE    ZERO            TO  KH-IDX
+      *
+           IF  FLG-HANTEI2  =  1
+            PERFORM    VARYING   IDX2    FROM   1   BY   1
+              UNTIL    IDX2      >       4
               IF      RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
                  AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
@@ -21643,10 +21700,10 @@
                       PERFORM   210443-KOHJNISSUTBL-SET-SEC
                  END-IF
               END-IF
-           END-PERFORM
+            END-PERFORM
       *
-      *    £³ºÐ»ù»ë³ÐÄ°³ÐÀºÌ©·ò¹¯¿Çºº¡ÊÃÏ°è¸øÈñ¡Ë¤ÎÅÀ¿ô½¸·×
-           EVALUATE   WRK-PREFNUM
+      *     £³ºÐ»ù»ë³ÐÄ°³ÐÀºÌ©·ò¹¯¿Çºº¡ÊÃÏ°è¸øÈñ¡Ë¤ÎÅÀ¿ô½¸·×
+            EVALUATE   WRK-PREFNUM
              WHEN    "38"
                IF   (SYU-KOH-HKNNUM(1) = "394")
                OR   (SYU-KOH-HKNNUM(2) = "394")
@@ -21657,7 +21714,8 @@
                     ADD   SYU-TOTAL-HKNTEN  TO  RECE62-SEIKENTEN
                  END-IF
                END-IF
-           END-EVALUATE
+            END-EVALUATE
+           END-IF
       *
            .
        21044-RECE62-FTN-HENSYU-EXT.
@@ -21909,7 +21967,8 @@
                 ( SYU-KOH-HKNNUM(3)   =   SPACE         ) AND
                 ( SYU-KOH-HKNNUM(4)   =   SPACE         ))
            OR  (  SYU-KOH-HKNNUM(1)   =   "970"          )
-             IF   FLG-WRKFILE-CLEAR   =   ZERO
+             IF    (FLG-WRKFILE-CLEAR   =  ZERO)
+             AND   (FLG-HANTEI          =  1   )
                MOVE    1      TO    FLG-HOKENICHIBU-SYU
                IF    RECE62-RJNHKNNUM    NOT =    SPACE            
                  ADD    SYU-KOH1COMPFTN  TO   RECE62-FTNMONEY(1)   
@@ -21924,7 +21983,9 @@
                ADD    SYU-TOTAL-HKNTEN   TO   WRK-JYOGENKBN-TEN
              END-IF
            ELSE
-             MOVE      1      TO    FLG-HOKENICHIBU
+             IF  FLG-HANTEI2  =  1
+               MOVE    1      TO    FLG-HOKENICHIBU
+             END-IF
              IF  ((SYU-KOH-HKNNUM(1) = "012" OR "025") OR
                   (SYU-KOH-HKNNUM(2) = "012" OR "025") OR
                   (SYU-KOH-HKNNUM(3) = "012" OR "025") OR
@@ -22044,19 +22105,20 @@
                    OR  ( SYU-KOH-HKNNUM(4)(1:1)    = "0"   )
                    OR  ( TBL-TOKATUKAIFLG2         =  1    )
       *
-                      MOVE         1    TO   FLG-HOKENICHIBU7
-      *
-                      IF  (SYU-KOH-HKNNUM(1)(1:1) >= "1" AND <= "8")
-                        IF  TBL-TOKATUKAIFLG2  =  1
-                           CONTINUE
-                        ELSE
-                           MOVE    1    TO   FLG-HOKENICHIBU2
+                      IF  FLG-HANTEI  =  1
+                        MOVE       1    TO   FLG-HOKENICHIBU7
+                        IF   SYU-KOH-HKNNUM(1)(1:1) >= "1" AND <= "8"
+                          IF  TBL-TOKATUKAIFLG2  =  1
+                            CONTINUE
+                          ELSE
+                            MOVE   1    TO   FLG-HOKENICHIBU2
+                          END-IF
                         END-IF
-                      END-IF
-                      IF  (SYU-KOH-HKNNUM(2)(1:1) >= "1" AND <= "8")
-                      OR  (SYU-KOH-HKNNUM(3)(1:1) >= "1" AND <= "8")
-                      OR  (SYU-KOH-HKNNUM(4)(1:1) >= "1" AND <= "8")
-                           MOVE    1    TO   FLG-HOKENICHIBU2
+                        IF  (SYU-KOH-HKNNUM(2)(1:1) >= "1" AND <= "8")
+                        OR  (SYU-KOH-HKNNUM(3)(1:1) >= "1" AND <= "8")
+                        OR  (SYU-KOH-HKNNUM(4)(1:1) >= "1" AND <= "8")
+                          MOVE     1    TO   FLG-HOKENICHIBU2
+                        END-IF
                       END-IF
       *
                       IF  FLG-ZENKOKUKOHI-NISYU  =  1 OR 5
@@ -22073,9 +22135,11 @@
                       END-IF
                       PERFORM 2104427-TOKUSITU-HENSYU-SEC
                    ELSE
-                      MOVE       1    TO   FLG-HOKENICHIBU3
+                      IF   FLG-HANTEI  =  1
+                        MOVE     1    TO   FLG-HOKENICHIBU3
+                      END-IF
                       IF   RECE62-RJNGENMENKBN  =   "1"
-                          MOVE   1    TO   FLG-RJNGENMEN-CHIARI
+                        MOVE     1    TO   FLG-RJNGENMEN-CHIARI
                       END-IF
                       IF   FLG-ZENKOKUKOHI-NISYU  =  2 OR 4
                         MOVE     2    TO   FLG-KEISAN
@@ -22163,7 +22227,8 @@
                 ( SYU-KOH-HKNNUM(3)   =   SPACE ) AND
                 ( SYU-KOH-HKNNUM(4)   =   SPACE ))
            OR  (  SYU-KOH-HKNNUM(1)   =   "970"  )
-             IF   FLG-WRKFILE-CLEAR   =   ZERO
+             IF    (FLG-WRKFILE-CLEAR   =  ZERO)
+             AND   (FLG-HANTEI          =  1   )
                  MOVE      1             TO   FLG-HOKENICHIBU-SYU
                  ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)
                                               WRK-KOH-GAI
@@ -22180,7 +22245,9 @@
              END-IF
              ADD        SYU-TOTAL-HKNTEN    TO  WRK-JYOGENKBN-TEN6
            ELSE
-             MOVE      1      TO    FLG-HOKENICHIBU
+             IF  FLG-HANTEI2  =  1
+               MOVE    1      TO    FLG-HOKENICHIBU
+             END-IF
              IF   ( SYU-KOHTAIYKZKBN  = "9"            )
              OR   ((SYU-KOH-HKNNUM(1) = "972" OR "974") AND
                    (SYU-KOH-HKNNUM(2) = SPACE         ) AND
@@ -22385,19 +22452,20 @@
                    OR  ( SYU-KOH-HKNNUM(4)(1:1)    = "0" )
                    OR  ( TBL-TOKATUKAIFLG2         =  1  )
       *
-                     MOVE          1    TO   FLG-HOKENICHIBU7
-      *
-                     IF  (SYU-KOH-HKNNUM(1)(1:1) >= "1" AND <= "8")
-                       IF  TBL-TOKATUKAIFLG2  =  1
+                     IF  FLG-HANTEI  =  1
+                       MOVE        1    TO   FLG-HOKENICHIBU7
+                       IF   SYU-KOH-HKNNUM(1)(1:1) >= "1" AND <= "8"
+                         IF  TBL-TOKATUKAIFLG2  =  1
                            CONTINUE
-                       ELSE
+                         ELSE
                            MOVE    1    TO   FLG-HOKENICHIBU2
+                         END-IF
                        END-IF
-                     END-IF
-                     IF  (SYU-KOH-HKNNUM(2)(1:1) >= "1" AND <= "8")
-                     OR  (SYU-KOH-HKNNUM(3)(1:1) >= "1" AND <= "8")
-                     OR  (SYU-KOH-HKNNUM(4)(1:1) >= "1" AND <= "8")
-                           MOVE    1    TO   FLG-HOKENICHIBU2
+                       IF  (SYU-KOH-HKNNUM(2)(1:1) >= "1" AND <= "8")
+                       OR  (SYU-KOH-HKNNUM(3)(1:1) >= "1" AND <= "8")
+                       OR  (SYU-KOH-HKNNUM(4)(1:1) >= "1" AND <= "8")
+                         MOVE      1    TO   FLG-HOKENICHIBU2
+                       END-IF
                      END-IF
       *
                      IF  FLG-ZENKOKUKOHI-NISYU  =  1 OR 5
@@ -22432,7 +22500,9 @@
                                       TO   WRK-JYOGENKBN-TEN2
                      END-IF
                    ELSE
-                     MOVE        1    TO   FLG-HOKENICHIBU3
+                     IF   FLG-HANTEI  =  1
+                        MOVE     1    TO   FLG-HOKENICHIBU3
+                     END-IF
                      IF   FLG-ZENKOKUKOHI-NISYU  =  2 OR 4
                         MOVE     2    TO   FLG-KEISAN
                      ELSE
@@ -22462,7 +22532,6 @@
                                            = SYU-KOH-HKNNUM(1))
                       OR (RECE62-KOHSKY-KOHNUM(4)
                                            = SYU-KOH-HKNNUM(1))
-                        MOVE    1    TO   FLG-HOKENICHIBU4
                         ADD    SYU-TOTAL-HKNTEN
                                      TO   WRK-TOTAL-HKNTEN
                         COMPUTE WRK-FTNKEI5 = WRK-TOTAL-HKNTEN
@@ -22649,6 +22718,7 @@
       *@
                  ADD      SYU-TOTAL-HKNTEN  TO  WRK-KOH-GAI-GEN70-TEN1
                  ADD      SYU-TOTAL-HKNTEN  TO  WRK-KOH-GAI-GEN70-TEN8
+                 MOVE     1                 TO  FLG-XX8-TUUKA
                WHEN         2
                  IF  FTN-KOH-XX3  >   WRK-KINGAKU
                       MOVE     WRK-KINGAKU  TO  FTN-KOH-XX3
@@ -22669,6 +22739,7 @@
                  END-IF
       *@
                  ADD      SYU-TOTAL-HKNTEN  TO  WRK-KOH-GAI-GEN70-TEN3
+                 MOVE     1                 TO  FLG-XX3-TUUKA
              END-EVALUATE
            END-IF
       *
@@ -25474,6 +25545,7 @@
                       ADD    WRK-FTNKEI     TO  FTN-KOH-XX5
                  END-IF
                  ADD      SYU-TOTAL-HKNTEN  TO  WRK-KOH-GAI-GEN70-TEN5
+                 MOVE     1                 TO  FLG-XX5-TUUKA
              WHEN         2
                  IF  FTN-KOH-XX6  >   WRK-KINGAKU
                       MOVE   WRK-KINGAKU    TO  FTN-KOH-XX6
@@ -25485,6 +25557,7 @@
                       ADD    WRK-FTNKEI     TO  FTN-KOH-XX6
                  END-IF
                  ADD      SYU-TOTAL-HKNTEN  TO  WRK-KOH-GAI-GEN70-TEN6
+                 MOVE     1                 TO  FLG-XX6-TUUKA
            END-EVALUATE
       *
            .
@@ -28564,6 +28637,7 @@
            AND  FLG-KEISAN-TOK2            =  1
            AND  FTN-KOH-XX8                =  ZERO
            AND  FLG-ZENKOKUKOHI-NISYU  NOT =  4
+            IF    FLG-XX8-TUUKA  =  ZERO
               COMPUTE  WRK-KINGAKU-TOK3 = WRK-CHK-ICHIBUGAKU
                                         + FTN-KOH-XX7
               IF  WRK-KINGAKU-TOK3  >  WRK-KINGAKU-TOK8
@@ -28571,6 +28645,16 @@
               ELSE
                  MOVE  WRK-KINGAKU-TOK3  TO  FTN-KOH-XXX
               END-IF
+            ELSE
+              MOVE   FTN-KOH-XX8   TO   FTN-KOH-XXX
+              MOVE    5     TO   FLG-JYOGENKBN2
+              MOVE   WRK-KINGAKU-GENBUTU4-XXX
+                            TO   WRK-KINGAKU-GENBUTU4
+              MOVE   WRK-KOH-GAI-GEN70-TEN8
+                            TO   WRK-KOH-GAI-GEN70-TEN1
+              MOVE   WRK-KOH-GAI-GEN70-TEN9
+                            TO   WRK-KOH-GAI-GEN70-TEN3
+            END-IF
            END-IF
       *
            IF   FLG-KEISAN-TOK1            =  ZERO
@@ -28592,20 +28676,41 @@
                             TO   WRK-KOH-GAI-GEN70-TEN3
            END-IF
       *
-           IF  FTN-KOH-XX5   NOT =   ZERO
-           AND FTN-KOH-XX6       =   ZERO
-           AND FTN-KOH-XX8       =   ZERO
-           AND FTN-KOH-XX3   NOT =   ZERO
+           IF  ((FTN-KOH-XX5   NOT =   ZERO) AND
+                (FTN-KOH-XX6       =   ZERO) AND
+                (FTN-KOH-XX8       =   ZERO) AND
+                (FTN-KOH-XX3   NOT =   ZERO))
+           OR  ((FTN-KOH-XX5       =   ZERO) AND
+                (FTN-KOH-XX6       =   ZERO) AND
+                (FTN-KOH-XX8       =   ZERO) AND
+                (FTN-KOH-XX3   NOT =   ZERO) AND
+                (FLG-XX5-TUUKA NOT =   ZERO))
+           OR  ((FTN-KOH-XX5   NOT =   ZERO) AND
+                (FTN-KOH-XX6       =   ZERO) AND
+                (FTN-KOH-XX8       =   ZERO) AND
+                (FTN-KOH-XX3       =   ZERO) AND
+                (FLG-XX3-TUUKA NOT =   ZERO))
              MOVE    5      TO   FLG-JYOGENKBN2
              MOVE    WRK-KINGAKU-GENBUTU2-XXX
                             TO   WRK-KINGAKU-GENBUTU2
              MOVE    WRK-KOH-GAI-GEN70-TEN5
                             TO   WRK-KOH-GAI-GEN70-TEN1
            END-IF
-           IF  FTN-KOH-XX5       =   ZERO
-           AND FTN-KOH-XX6   NOT =   ZERO
-           AND FTN-KOH-XX8   NOT =   ZERO
-           AND FTN-KOH-XX3       =   ZERO
+      *
+           IF  ((FTN-KOH-XX5       =   ZERO) AND
+                (FTN-KOH-XX6   NOT =   ZERO) AND
+                (FTN-KOH-XX8   NOT =   ZERO) AND
+                (FTN-KOH-XX3       =   ZERO))
+           OR  ((FTN-KOH-XX5       =   ZERO) AND
+                (FTN-KOH-XX6   NOT =   ZERO) AND
+                (FTN-KOH-XX8       =   ZERO) AND
+                (FTN-KOH-XX3       =   ZERO) AND
+                (FLG-XX8-TUUKA NOT =   ZERO))
+           OR  ((FTN-KOH-XX5       =   ZERO) AND
+                (FTN-KOH-XX6       =   ZERO) AND
+                (FTN-KOH-XX8   NOT =   ZERO) AND
+                (FTN-KOH-XX3       =   ZERO) AND
+                (FLG-XX6-TUUKA NOT =   ZERO))
              MOVE    FTN-KOH-XX8   TO   FTN-KOH-XXX
              MOVE    5      TO   FLG-JYOGENKBN2
              MOVE    WRK-KINGAKU-GENBUTU4-XXX
@@ -28743,6 +28848,12 @@
                OR   ((FLG-KEISAN-TOK1     =  ZERO) AND
                      (FLG-KEISAN-TOK2     =  1   ) AND
                      (FTN-KOH-XX8     NOT =  ZERO))
+               OR   ((FLG-KEISAN-TOK1     =  ZERO) AND
+                     (FLG-KEISAN-TOK2     =  1   ) AND
+                     (FTN-KOH-XX8         =  ZERO) AND
+                     (FLG-ZENKOKUKOHI-NISYU
+                                      NOT =  4   ) AND
+                     (FLG-XX8-TUUKA   NOT =  ZERO))
                    CONTINUE
                ELSE
                    MOVE    9999999              TO  WRK-CHK-KINGAKU3
@@ -28829,6 +28940,7 @@
                         AND (  RECE62-HKNCOMBI(2) NOT = ZERO   )
                         AND (  WRK-TAIHI-TOTALTEN
                                        NOT = RECE62-TOTALTEN(2))
+                        AND (  RECE62-TOTALTEN(2) NOT = ZERO   )
                           IF WRK-KINGAKU-GENBUTU3 > RECE62-FTNMONEY(2)
                             COMPUTE  WRK-CHK-KOKIGAK9      =
                                      WRK-KINGAKU-GENBUTU3  -
@@ -28859,6 +28971,7 @@
                 AND (  RECE62-KOHNUM(4)       =  SPACE            )
                 AND (  RECE62-HKNCOMBI(2) NOT = ZERO              )
                 AND (  WRK-TAIHI-TOTALTEN NOT = RECE62-TOTALTEN(2))
+                AND (  RECE62-TOTALTEN(2) NOT = ZERO              )
                 AND (( WRK-TAIHI-TOTALTEN = WRK-CHK-KOKIGAK4     ) OR
                      ( WRK-TAIHI-TOTALTEN = RECE62-HENTOTALTEN(3)))
                 AND (  WRK-JYOGENKBN-TEN2 NOT = ZERO              )
@@ -28927,6 +29040,7 @@
                  AND (RECE62-KOHNUM(4)        = SPACE             )
                  AND (RECE62-HKNCOMBI(2)  NOT = ZERO              )
                  AND (WRK-TAIHI-TOTALTEN  NOT = RECE62-TOTALTEN(2))
+                 AND (RECE62-TOTALTEN(2)  NOT = ZERO              )
                  AND ((WRK-TAIHI-TOTALTEN   =  WRK-CHK-KOKIGAK4 ) OR
                       (WRK-TAIHI-TOTALTEN   =
                                            RECE62-HENTOTALTEN(3)) )
@@ -29285,14 +29399,13 @@
                                             RECE62-KOUREI-SAIKEI2
                                             FLG-ZENKOKUKOHI-NISYU
            ELSE
-              IF    FTN-KOH-XXX   =   ZERO
+              IF    RECE62-KOHNUM(1)  =  SPACE
+              AND   RECE62-KOHNUM(2)  =  SPACE
+              AND   RECE62-KOHNUM(3)  =  SPACE
+              AND   RECE62-KOHNUM(4)  =  SPACE
                   MOVE     ZERO         TO  RECE62-KOUREI-SAIKEI
                                             RECE62-KOUREI-SAIKEI2
-                  IF   (FLG-CYOKI-HENSYU       =   1     )
-                  AND  (FLG-ZENKOKUKOHI-NISYU  =   2 OR 4)
-                     MOVE   1           TO  RECE62-SAIKEIZEROKSI2
-                  END-IF
-                  MOVE     ZERO         TO  FLG-ZENKOKUKOHI-NISYU
+                                            FLG-ZENKOKUKOHI-NISYU
               ELSE
                   IF  FLG-KOH  =   2
                      ADD   WRK-KOH-GAI  TO  RECE62-FTNMONEY(2)
@@ -29385,10 +29498,15 @@
                    END-IF
                   END-IF
       *
-                  IF  FTN-KOH-XX5   NOT =   ZERO
-                  AND FTN-KOH-XX6   NOT =   ZERO
-                  AND FTN-KOH-XX3       =   ZERO
-                  AND FTN-KOH-XX8       =   ZERO
+                  IF  ((FTN-KOH-XX5    NOT =  ZERO) AND
+                       (FTN-KOH-XX6    NOT =  ZERO) AND
+                       (FTN-KOH-XX3        =  ZERO) AND
+                       (FTN-KOH-XX8        =  ZERO))
+                  OR  ((FTN-KOH-XX5        =  ZERO) AND
+                       (FTN-KOH-XX6    NOT =  ZERO) AND
+                       (FTN-KOH-XX3        =  ZERO) AND
+                       (FTN-KOH-XX8        =  ZERO) AND
+                       (FLG-XX5-TUUKA  NOT =  ZERO))
                     MOVE   FTN-KOH-XX5  TO  RECE62-KOUREI-SAIKEI
                     MOVE   FTN-KOH-XX6  TO  RECE62-KOUREI-SAIKEI2
                     IF  (FLG-KOH           =   2   )
@@ -29429,10 +29547,15 @@
       ***           END-IF
                   END-IF
       *
-                  IF  FTN-KOH-XX5   NOT =   ZERO
-                  AND FTN-KOH-XX6       =   ZERO
-                  AND FTN-KOH-XX8       =   ZERO
-                  AND FTN-KOH-XX3   NOT =   ZERO
+                  IF  ((FTN-KOH-XX5   NOT =   ZERO) AND
+                       (FTN-KOH-XX6       =   ZERO) AND
+                       (FTN-KOH-XX8       =   ZERO) AND
+                       (FTN-KOH-XX3   NOT =   ZERO))
+                  OR  ((FTN-KOH-XX5       =   ZERO) AND
+                       (FTN-KOH-XX6       =   ZERO) AND
+                       (FTN-KOH-XX8       =   ZERO) AND
+                       (FTN-KOH-XX3   NOT =   ZERO) AND
+                       (FLG-XX5-TUUKA NOT =   ZERO))
                     COMPUTE RECE62-FTNMONEY(1) = WRK-KOH-GAI2
                                                + FTN-KOH-XX5
                                                + FTN-KOH-XX3
@@ -29463,10 +29586,15 @@
                                                RECE62-FTNMONEY-KOJ(3)
                     END-IF
                   END-IF
-                  IF  FTN-KOH-XX5       =   ZERO
-                  AND FTN-KOH-XX6   NOT =   ZERO
-                  AND FTN-KOH-XX8   NOT =   ZERO
-                  AND FTN-KOH-XX3       =   ZERO
+                  IF  ((FTN-KOH-XX5       =   ZERO) AND
+                       (FTN-KOH-XX6   NOT =   ZERO) AND
+                       (FTN-KOH-XX8   NOT =   ZERO) AND
+                       (FTN-KOH-XX3       =   ZERO))
+                  OR  ((FTN-KOH-XX5       =   ZERO) AND
+                       (FTN-KOH-XX6   NOT =   ZERO) AND
+                       (FTN-KOH-XX8       =   ZERO) AND
+                       (FTN-KOH-XX3       =   ZERO) AND
+                       (FLG-XX8-TUUKA NOT =   ZERO))
                     COMPUTE RECE62-FTNMONEY(1) = WRK-KOH-GAI2
                                                + FTN-KOH-XX8
                                                + FTN-KOH-XX6
@@ -29492,9 +29620,14 @@
                     END-IF
                   END-IF
       *
-                  IF   FLG-KEISAN-TOK1     =  ZERO
-                  AND  FLG-KEISAN-TOK2     =  1
-                  AND  FTN-KOH-XX8     NOT =  ZERO
+                  IF ((FLG-KEISAN-TOK1            =  ZERO) AND
+                      (FLG-KEISAN-TOK2            =  1   ) AND
+                      (FTN-KOH-XX8            NOT =  ZERO))
+                  OR ((FLG-KEISAN-TOK1            =  ZERO) AND
+                      (FLG-KEISAN-TOK2            =  1   ) AND
+                      (FTN-KOH-XX8                =  ZERO) AND
+                      (FLG-ZENKOKUKOHI-NISYU  NOT =  4   ) AND
+                      (FLG-XX8-TUUKA          NOT =  ZERO))
                     COMPUTE RECE62-FTNMONEY(1) = WRK-KOH-GAI2
                                                + FTN-KOH-XX8
                                                + FTN-KOH-XX7X
@@ -29685,6 +29818,16 @@
              END-IF
              MOVE          999999999    TO  RECE62-KOUREI-SAIKEI3
              MOVE          999999999    TO  RECE62-KOUREI-SAIKEI4
+      *
+             IF      RECE62-KOUREI-SAIKEI     = 999999999
+               IF ((RECE62-SAIKEIZEROKSI2     = 1                 ) AND
+                   (RECE62-KOUREI-SAIKEI2 NOT = 999999999         ))
+               OR ((RECE62-SAIKEIZEROKSI2     = ZERO              ) AND
+                   (RECE62-KOUREI-SAIKEI2 NOT = 999999999 AND ZERO))
+                  MOVE     ZERO         TO  RECE62-KOUREI-SAIKEI
+                  MOVE      1           TO  RECE62-SAIKEIZEROKSI1
+               END-IF
+             END-IF
            END-IF
       *
            IF      RECE62-RJNGENMENKBN   =   "1"
@@ -29804,6 +29947,7 @@
              AND (RECE62-KOHNUM(4)       = SPACE             )
              AND (RECE62-HKNCOMBI(2) NOT = ZERO              )
              AND (WRK-TAIHI-TOTALTEN NOT = RECE62-TOTALTEN(2))
+             AND (RECE62-TOTALTEN(2) NOT = ZERO              )
              AND ((FLG-HOKENICHIBU2  NOT = ZERO             )  OR
                   (FLG-HOKENICHIBU3  NOT = ZERO             ))
                  MOVE     ZERO    TO   FLG-CHIIKI
@@ -29820,6 +29964,7 @@
              AND (RECE62-KOHNUM(4)       = SPACE             )
              AND (RECE62-HKNCOMBI(2) NOT = ZERO              )
              AND (WRK-TAIHI-TOTALTEN NOT = RECE62-TOTALTEN(2))
+             AND (RECE62-TOTALTEN(2) NOT = ZERO              )
              AND (FLG-HOKENICHIBU2   NOT = ZERO              )
              AND (FLG-HOKENICHIBU3       = ZERO              )
              AND (FLG-HOKENICHIBU-SYU    =  1                )
@@ -29857,6 +30002,7 @@
              AND (RECE62-KOHNUM(4)       = SPACE             )
              AND (RECE62-HKNCOMBI(2) NOT = ZERO              )
              AND (WRK-TAIHI-TOTALTEN NOT = RECE62-TOTALTEN(2))
+             AND (RECE62-TOTALTEN(2) NOT = ZERO              )
              AND (FLG-HOKENICHIBU2       = ZERO              )
              AND (FLG-HOKENICHIBU3       = ZERO              )
              AND (FLG-HOKENICHIBU7       =  1                )
@@ -29877,6 +30023,7 @@
              AND (RECE62-KOHNUM(4)        = SPACE             )
              AND (RECE62-HKNCOMBI(2)  NOT = ZERO              )
              AND (WRK-TAIHI-TOTALTEN  NOT = RECE62-TOTALTEN(2))
+             AND (RECE62-TOTALTEN(2)  NOT = ZERO              )
              AND ((WRK-TAIHI-TOTALTEN   =  WRK-CHK-KOKIGAK4 ) OR
                   (WRK-TAIHI-TOTALTEN   =
                                        RECE62-HENTOTALTEN(3)) )
@@ -29899,6 +30046,7 @@
                  AND (RECE62-KOHNUM(3)       =  SPACE            )
                  AND (RECE62-KOHNUM(4)       =  SPACE            )
                  AND (WRK-TAIHI-TOTALTEN NOT = RECE62-TOTALTEN(2))
+                 AND (RECE62-TOTALTEN(2) NOT = ZERO              )
                    MOVE     WRK-TAIHI-TOTALTEN  TO  WRK-HANTEI-TOTALTEN
                    PERFORM  210464-JYOGENGAKU-HENSYU-SEC
                    IF   RECE62-FTNMONEY(1)  >  WRK-KINGAKU3
@@ -29930,6 +30078,7 @@
                  AND (RECE62-KOHNUM(3)       =  SPACE            )
                  AND (RECE62-KOHNUM(4)       =  SPACE            )
                  AND (WRK-TAIHI-TOTALTEN NOT = RECE62-TOTALTEN(2))
+                 AND (RECE62-TOTALTEN(2) NOT = ZERO              )
                    MOVE     WRK-TAIHI-TOTALTEN  TO  WRK-HANTEI-TOTALTEN
                    PERFORM  210464-JYOGENGAKU-HENSYU-SEC
                    IF   RECE62-FTNMONEY(1)  >  WRK-KINGAKU3
@@ -29951,6 +30100,7 @@
                  AND (RECE62-KOHNUM(4)       =  SPACE            )
                  AND (WRK-TAIHI-TOTALTEN     = RECE62-TOTALTEN(2))
                  AND (WRK-TAIHI-TOTALTEN NOT = RECE62-TOTALTEN(3))
+                 AND (RECE62-TOTALTEN(3) NOT = ZERO              )
                  AND (FLG-CYOKI-HENSYU       = ZERO              )
                    EVALUATE   RECE62-KOUREI
                      WHEN      "1"
@@ -30013,6 +30163,7 @@
                  AND (RECE62-KOHNUM(3)   =  SPACE                )
                  AND (RECE62-KOHNUM(4)   =  SPACE                )
                  AND (WRK-TAIHI-TOTALTEN NOT = RECE62-TOTALTEN(2))
+                 AND (RECE62-TOTALTEN(2) NOT = ZERO              )
                    MOVE     WRK-TAIHI-TOTALTEN  TO  WRK-HANTEI-TOTALTEN
                    PERFORM  210464-JYOGENGAKU-HENSYU-SEC
                    IF   RECE62-FTNMONEY(1)  >  WRK-KINGAKU3
@@ -30433,7 +30584,7 @@
                      IF  FLG-TOKU75 = 1 OR 2 OR 3
                          MOVE  40050   TO   WRK-JYOGEN-KOH
                      ELSE
-???                      MOVE  80100   TO   WRK-JYOGEN-KOH
+                         MOVE  80100   TO   WRK-JYOGEN-KOH
                      END-IF
                      MOVE    3         TO   FLG-IRYOHI70K
                    END-IF
@@ -34046,12 +34197,71 @@
            AND (RECE62-SRYYM       >=  "201004")
               MOVE   RECE62-FTNMONEY(1)  TO   RECE62-FTNMONEY-SKY
       *
-              MOVE   FTN-KOH-XXX         TO   WRK-SAIKEI-TAIHI
-              IF     FTN-KOH-XX5  NOT =  ZERO
-              AND    FTN-KOH-XX6  NOT =  ZERO
-              AND    FTN-KOH-XX3      =  ZERO
-              AND    FTN-KOH-XX8      =  ZERO
-                MOVE FTN-KOH-XX5         TO   WRK-SAIKEI-TAIHI
+              MOVE   FTN-KOH-XXX           TO  WRK-SAIKEI-TAIHI
+      *
+              IF   ((FTN-KOH-XX5            NOT =  ZERO) AND
+                    (FTN-KOH-XX6            NOT =  ZERO) AND
+                    (FTN-KOH-XX3                =  ZERO) AND
+                    (FTN-KOH-XX8                =  ZERO))
+              OR   ((FTN-KOH-XX5                =  ZERO) AND
+                    (FTN-KOH-XX6            NOT =  ZERO) AND
+                    (FTN-KOH-XX3                =  ZERO) AND
+                    (FTN-KOH-XX8                =  ZERO) AND
+                    (FLG-XX5-TUUKA          NOT =  ZERO))
+                MOVE    FTN-KOH-XX5        TO  WRK-SAIKEI-TAIHI
+              END-IF
+              IF   FLG-KEISAN-TOK1  =  1
+              AND  FLG-KEISAN-TOK2  =  1
+                COMPUTE  WRK-KINGAKU-TOK3 = WRK-CHK-ICHIBUGAKU
+                                          + WRK-KINGAKU-TOK1
+                IF  WRK-KINGAKU-TOK3  >  WRK-KINGAKU-TOK7
+                   MOVE  WRK-KINGAKU-TOK7  TO  WRK-SAIKEI-TAIHI
+                ELSE
+                   MOVE  WRK-KINGAKU-TOK3  TO  WRK-SAIKEI-TAIHI
+                END-IF
+              END-IF
+              IF     FLG-KEISAN-TOK1            =  ZERO
+              AND    FLG-KEISAN-TOK2            =  1
+              AND    FTN-KOH-XX8                =  ZERO
+              AND    FLG-ZENKOKUKOHI-NISYU  NOT =  4
+              AND    FLG-XX8-TUUKA              =  ZERO
+                COMPUTE  WRK-KINGAKU-TOK3 = WRK-CHK-ICHIBUGAKU
+                                          + FTN-KOH-XX7
+                IF  WRK-KINGAKU-TOK3  >  WRK-KINGAKU-TOK8
+                   MOVE  WRK-KINGAKU-TOK8  TO  WRK-SAIKEI-TAIHI
+                ELSE
+                   MOVE  WRK-KINGAKU-TOK3  TO  WRK-SAIKEI-TAIHI
+                END-IF
+              END-IF
+              IF     FLG-KEISAN-TOK1            =  ZERO
+              AND    FLG-KEISAN-TOK2            =  1
+              AND    FTN-KOH-XX8                =  ZERO
+              AND    FLG-ZENKOKUKOHI-NISYU      =  4
+                MOVE    FTN-KOH-XX4        TO  WRK-SAIKEI-TAIHI
+              END-IF
+              IF   ((FLG-KEISAN-TOK1            =  ZERO) AND
+                    (FLG-KEISAN-TOK2            =  1   ) AND
+                    (FTN-KOH-XX8            NOT =  ZERO))
+              OR   ((FLG-KEISAN-TOK1            =  ZERO) AND
+                    (FLG-KEISAN-TOK2            =  1   ) AND
+                    (FTN-KOH-XX8                =  ZERO) AND
+                    (FLG-ZENKOKUKOHI-NISYU  NOT =  4   ) AND
+                    (FLG-XX8-TUUKA          NOT =  ZERO))
+              OR   ((FTN-KOH-XX5                =  ZERO) AND
+                    (FTN-KOH-XX6            NOT =  ZERO) AND
+                    (FTN-KOH-XX8            NOT =  ZERO) AND
+                    (FTN-KOH-XX3                =  ZERO))
+              OR   ((FTN-KOH-XX5                =  ZERO) AND
+                    (FTN-KOH-XX6            NOT =  ZERO) AND
+                    (FTN-KOH-XX8                =  ZERO) AND
+                    (FTN-KOH-XX3                =  ZERO) AND
+                    (FLG-XX8-TUUKA          NOT =  ZERO))
+              OR   ((FTN-KOH-XX5                =  ZERO) AND
+                    (FTN-KOH-XX6                =  ZERO) AND
+                    (FTN-KOH-XX8            NOT =  ZERO) AND
+                    (FTN-KOH-XX3                =  ZERO) AND
+                    (FLG-XX6-TUUKA          NOT =  ZERO))
+                MOVE    FTN-KOH-XX8        TO  WRK-SAIKEI-TAIHI
               END-IF
       *
               IF   FLG-WRKFILE-CLEAR   =   1
@@ -34061,6 +34271,14 @@
                 MOVE   ZERO              TO   FLG-KEISAN-TOK1
                 MOVE   ZERO              TO   FLG-KEISAN-TOK2
                 MOVE   ZERO              TO   FTN-KOH-XXX
+                MOVE   ZERO              TO   FTN-KOH-XX2
+                MOVE   ZERO              TO   FTN-KOH-XX3
+                MOVE   ZERO              TO   FTN-KOH-XX4
+                MOVE   ZERO              TO   FTN-KOH-XX5
+                MOVE   ZERO              TO   FTN-KOH-XX6
+                MOVE   ZERO              TO   FTN-KOH-XX7
+                MOVE   ZERO              TO   FTN-KOH-XX7X
+                MOVE   ZERO              TO   FTN-KOH-XX8
               END-IF
            END-IF
       *
