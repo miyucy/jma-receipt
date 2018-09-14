@@ -6056,6 +6056,9 @@ grpsys           PERFORM 900-DBSELECT-SEC
                IF   (TBL-TOKUSITUFLG(IDX10) =   1               )
                AND  (RECE02-HOJOKBN         =  "3" OR "6" OR "7")
                  MOVE   80100    TO   WRK-KOH-GENDOGAKU
+                 IF  FLG-KOHYONKAIME = 1
+                   MOVE 44400    TO   WRK-KOH-GENDOGAKU
+                 END-IF
                ELSE
                  MOVE   18000    TO   WRK-KOH-GENDOGAKU
                END-IF
@@ -6105,7 +6108,9 @@ grpsys           PERFORM 900-DBSELECT-SEC
                 WHEN        2
                   MOVE     80100  TO   WRK-GEN70-GENDOGAKU
                   IF   TBL-TOKUSITUFLG(IDX10) = 1
-                    CONTINUE
+                    IF  FLG-KOHYONKAIME = 1
+                       MOVE  44400  TO   WRK-GEN70-GENDOGAKU
+                    END-IF
                   ELSE
                     IF  FLG-KOHYONKAIME = 1
                        MOVE  44400  TO   WRK-GEN70-GENDOGAKU
@@ -6114,7 +6119,9 @@ grpsys           PERFORM 900-DBSELECT-SEC
                 WHEN        3
                   MOVE     35400  TO   WRK-GEN70-GENDOGAKU
                   IF   TBL-TOKUSITUFLG(IDX10) = 1
-                    CONTINUE
+                    IF  FLG-KOHYONKAIME = 1
+                       MOVE  24600  TO   WRK-GEN70-GENDOGAKU
+                    END-IF
                   ELSE
                     IF  FLG-KOHYONKAIME = 1
                        MOVE  24600  TO   WRK-GEN70-GENDOGAKU
@@ -19700,20 +19707,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF    SYU-KOH-HKNNUM(1)(1:1)  >= "1" AND <= "8"
              IF  ((RECE02-KOHNUM(1) = SYU-KOH-HKNNUM(1)      ) AND
                   (RECE02-KOHNUM(1) = RECE02-KOHNUMHC(IDX1 1)) AND
-                  (RECE02-KOHID(1)  = RECE02-KOHIDHC(IDX1 1) ) AND
-                  (RECE02-HON-GAIKFTNRATE(1) NOT = 100       ))
+                  (RECE02-KOHID(1)  = RECE02-KOHIDHC(IDX1 1) ))
              OR  ((RECE02-KOHNUM(2) = SYU-KOH-HKNNUM(1)      ) AND
                   (RECE02-KOHNUM(2) = RECE02-KOHNUMHC(IDX1 1)) AND
-                  (RECE02-KOHID(2)  = RECE02-KOHIDHC(IDX1 1) ) AND
-                  (RECE02-HON-GAIKFTNRATE(2) NOT = 100       ))
+                  (RECE02-KOHID(2)  = RECE02-KOHIDHC(IDX1 1) ))
              OR  ((RECE02-KOHNUM(3) = SYU-KOH-HKNNUM(1)      ) AND
                   (RECE02-KOHNUM(3) = RECE02-KOHNUMHC(IDX1 1)) AND
-                  (RECE02-KOHID(3)  = RECE02-KOHIDHC(IDX1 1) ) AND
-                  (RECE02-HON-GAIKFTNRATE(3) NOT = 100       ))
+                  (RECE02-KOHID(3)  = RECE02-KOHIDHC(IDX1 1) ))
              OR  ((RECE02-KOHNUM(4) = SYU-KOH-HKNNUM(1)      ) AND
                   (RECE02-KOHNUM(4) = RECE02-KOHNUMHC(IDX1 1)) AND
-                  (RECE02-KOHID(4)  = RECE02-KOHIDHC(IDX1 1) ) AND
-                  (RECE02-HON-GAIKFTNRATE(4) NOT = 100       ))
+                  (RECE02-KOHID(4)  = RECE02-KOHIDHC(IDX1 1) ))
                  IF   FLG-WRKFILE-CLEAR  =  ZERO
                      MOVE    1    TO   FLG-KGKIPNTAI
                  END-IF
@@ -20103,20 +20106,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF    SYU-KOH-HKNNUM(1)(1:1)  >= "1" AND <= "8"
              IF  ((RECE02-KOHNUM(1) = SYU-KOH-HKNNUM(1)      ) AND
                   (RECE02-KOHNUM(1) = RECE02-KOHNUMHC(IDX1 1)) AND
-                  (RECE02-KOHID(1)  = RECE02-KOHIDHC(IDX1 1) ) AND
-                  (RECE02-HON-GAIKFTNRATE(1) NOT = 100       ))
+                  (RECE02-KOHID(1)  = RECE02-KOHIDHC(IDX1 1) ))
              OR  ((RECE02-KOHNUM(2) = SYU-KOH-HKNNUM(1)      ) AND
                   (RECE02-KOHNUM(2) = RECE02-KOHNUMHC(IDX1 1)) AND
-                  (RECE02-KOHID(2)  = RECE02-KOHIDHC(IDX1 1) ) AND
-                  (RECE02-HON-GAIKFTNRATE(2) NOT = 100       ))
+                  (RECE02-KOHID(2)  = RECE02-KOHIDHC(IDX1 1) ))
              OR  ((RECE02-KOHNUM(3) = SYU-KOH-HKNNUM(1)      ) AND
                   (RECE02-KOHNUM(3) = RECE02-KOHNUMHC(IDX1 1)) AND
-                  (RECE02-KOHID(3)  = RECE02-KOHIDHC(IDX1 1) ) AND
-                  (RECE02-HON-GAIKFTNRATE(3) NOT = 100       ))
+                  (RECE02-KOHID(3)  = RECE02-KOHIDHC(IDX1 1) ))
              OR  ((RECE02-KOHNUM(4) = SYU-KOH-HKNNUM(1)      ) AND
                   (RECE02-KOHNUM(4) = RECE02-KOHNUMHC(IDX1 1)) AND
-                  (RECE02-KOHID(4)  = RECE02-KOHIDHC(IDX1 1) ) AND
-                  (RECE02-HON-GAIKFTNRATE(4) NOT = 100       ))
+                  (RECE02-KOHID(4)  = RECE02-KOHIDHC(IDX1 1) ))
                  IF   FLG-WRKFILE-CLEAR  =  ZERO
                      MOVE    1    TO   FLG-KGKIPNTAI
                  END-IF
@@ -24915,8 +24914,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 AND (( WRK-TAIHI-TOTALTEN = WRK-CHK-KOKIGAK4     ) OR
                      ( WRK-TAIHI-TOTALTEN = RECE02-HENTOTALTEN(3)))
                 AND (  WRK-JYOGENKBN-TEN2 NOT = ZERO              )
-                AND (( RECE02-HON-GAIKFTNRATE(2)  =  100         ) OR
-                     ( FLG-ZENKOKUKOHI-NISYU4     =   1          ))
+                AND (  FLG-ZENKOKUKOHI-NISYU4 =  1                )
                   COMPUTE WRK-JYOGENKBN-TEN9 =
                           WRK-TAIHI-TOTALTEN -
                           RECE02-TOTALTEN(2)
@@ -25470,8 +25468,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    AND (( WRK-TAIHI-TOTALTEN = WRK-CHK-KOKIGAK4     ) OR
                         ( WRK-TAIHI-TOTALTEN = RECE02-HENTOTALTEN(3)))
                    AND (  WRK-JYOGENKBN-TEN2 NOT = ZERO              )
-                   AND (( RECE02-HON-GAIKFTNRATE(2)  =  100         ) OR
-                        ( FLG-ZENKOKUKOHI-NISYU4     =   1          ))
+                   AND (  FLG-ZENKOKUKOHI-NISYU4 =  1                )
                      COMPUTE WRK-JYOGENKBN-TEN9 =
                              WRK-TAIHI-TOTALTEN -
                              RECE02-TOTALTEN(2)
@@ -25479,7 +25476,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                          * 10
                                          * WRK-KYURATE
                                          / 100
-                     MOVE  WRK-TAIHI-TOTALTEN TO  WRK-HANTEI-TOTALTEN
+      ***            MOVE  WRK-TAIHI-TOTALTEN TO  WRK-HANTEI-TOTALTEN
+                     MOVE  WRK-JYOGENKBN-TEN9 TO  WRK-HANTEI-TOTALTEN
                      PERFORM  21094-JYOGENGAKU-HENSYU-SEC
                      IF WRK-KINGAKU-GENBUTU3 > RECE02-FTNMONEY(2)
                        COMPUTE  WRK-CHK-KOKIGAK9      =
@@ -26467,11 +26465,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
              AND ((WRK-TAIHI-TOTALTEN   =  WRK-CHK-KOKIGAK4 ) OR
                   (WRK-TAIHI-TOTALTEN   =
                                        RECE02-HENTOTALTEN(3)) )
-               IF  (RECE02-HON-GAIKFTNRATE(2)  =  100)
-               OR  (FLG-ZENKOKUKOHI-NISYU4     =   1 )
+             AND (FLG-ZENKOKUKOHI-NISYU4  =  1                )
                  MOVE     1       TO   FLG-CHIIKI
                  PERFORM  21096-HOKEN-ICHIBUFTN-CHK-SEC
-               END-IF
              END-IF
             END-IF
       *
