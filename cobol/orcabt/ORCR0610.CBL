@@ -202,6 +202,9 @@
       *                                     £¹£°¤È£¹£±¤Îµ­ºÜ½ç
       *                                     Å¬ÍÑ³«»ÏÆü¡¢Ë¡ÊÌÈÖ¹æ¤Î½ç¤È¤¹¤ë
       *  04.08.05    NACL-Æ£¸¶    18/06/11  Warning ÂÐ±þ
+      *  04.08.06    NACL-Æ£¸¶    18/09/09  ËÌ³¤Æ»¤ÎÃÏÊý¸øÈñ¤Îµ­ºÜ½çÂÐ±þ
+      *                                     £´£µ¤È£´£¶¡¢£¹£³¤È£¹£´¤Îµ­ºÜ½ç
+      *                                     Å¬ÍÑ³«»ÏÆü¡¢Ë¡ÊÌÈÖ¹æ¤Î½ç¤È¤¹¤ë
       *
       *  05.00.01    NACL-°ËÆ£    18/01/11  ¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÂÐ±þ
       *****************************************************************
@@ -3322,12 +3325,22 @@
                        MOVE    WRK-KOHI-TBL(IDY) TO  WRK-KOHI-TBL(IDX)
                        MOVE    WRK-KOHI          TO  WRK-KOHI-TBL(IDY)
                    ELSE
-      *                ËÌ³¤Æ»¤ÎÃÏÊý¸øÈñ¡Ê£¹£±¡Ü£¹£°¡Ë
-                       IF    ( SYS-1001-PREFNUM    =   "01"  ) 
+      *                ËÌ³¤Æ»¤ÎÃÏÊý¸øÈñ¡Ê£¹£±¡Ü£¹£°¡¢£´£µ¡Ü£´£¶¡¢£¹£³¡Ü£¹£´¡Ë
+                       IF  ( ( SYS-1001-PREFNUM    =   "01"  ) 
                        AND   ( WRK-KOHHBTNUM-O (IDX)
                                                    =   "90"  OR  "91" )
                        AND   ( WRK-KOHHBTNUM-O (IDY)
-                                                   =   "90"  OR  "91" )
+                                                   =   "90"  OR  "91" ))
+                       OR  ( ( SYS-1001-PREFNUM    =   "01"  ) 
+                       AND   ( WRK-KOHHBTNUM-O (IDX)
+                                                   =   "45"  OR  "46" )
+                       AND   ( WRK-KOHHBTNUM-O (IDY)
+                                                   =   "45"  OR  "46" ))
+                       OR  ( ( SYS-1001-PREFNUM    =   "01"  ) 
+                       AND   ( WRK-KOHHBTNUM-O (IDX)
+                                                   =   "93"  OR  "94" )
+                       AND   ( WRK-KOHHBTNUM-O (IDY)
+                                                   =   "93"  OR  "94" ))
                            IF      WRK-KOHTEKSTYMD-O (IDX)
                                                <   WRK-KOHTEKSTYMD-O
                                                             (IDY)
@@ -3714,6 +3727,18 @@
                                                =   "90"    OR "91" )
                            AND   ( WRK-KOHHBTNUM-O (IDY)
                                                =   "90"    OR "91" ) )
+      *                    ËÌ³¤Æ»¤ÎÃÏÊý¸øÈñ¡ÊË¡ÊÌ£´£µ¡¢£´£¶¡Ë
+                           OR  ( ( SYS-1001-PREFNUM    =   "01"    ) 
+                           AND   ( WRK-KOHHBTNUM-O (IDX)
+                                               =   "45"    OR "46" )
+                           AND   ( WRK-KOHHBTNUM-O (IDY)
+                                               =   "45"    OR "46" ) )
+      *                    ËÌ³¤Æ»¤ÎÃÏÊý¸øÈñ¡ÊË¡ÊÌ£¹£³¡¢£¹£´¡Ë
+                           OR  ( ( SYS-1001-PREFNUM    =   "01"    ) 
+                           AND   ( WRK-KOHHBTNUM-O (IDX)
+                                               =   "93"    OR "94" )
+                           AND   ( WRK-KOHHBTNUM-O (IDY)
+                                               =   "93"    OR "94" ) )
                                IF      WRK-KOHTEKSTYMD-O (IDX)
                                                    <   WRK-KOHTEKSTYMD-O
                                                                 (IDY)
