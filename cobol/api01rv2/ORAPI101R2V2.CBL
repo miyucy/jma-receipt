@@ -962,7 +962,7 @@
            MOVE    SYS-1038-NYKNKNRKBN     TO  SYSDAYRES-NYKNKNRKBN
            EVALUATE    SYS-1038-NYKNKNRKBN
            WHEN    "1"
-               MOVE    "今回請求分のみ入力"
+               MOVE    "今回請求分のみ入金"
                                            TO  SYSDAYRES-NYKNKNRKBN-MEI
            WHEN    "2"
                MOVE    "今回分・伝票の古い未収順に入金"
