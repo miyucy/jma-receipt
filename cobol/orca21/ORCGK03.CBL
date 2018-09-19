@@ -2431,7 +2431,7 @@
            INITIALIZE                  SPA-GMN-NYUKINKBN-G
            INITIALIZE                  SPA-GMN-NYUKINKBN-LISTG
            INITIALIZE                  SPA-NYUKINKBN-MAX
-           MOVE    "1 今回請求分のみ入力"
+           MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-NYUKINKBN-LST(01)
            MOVE    "2 今回分・伝票の古い未収順に入金"
                                        TO  SPA-GMN-NYUKINKBN-LST(02)
@@ -8083,7 +8083,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0113"
-                   STRING  "今回請求分のみの入力です。"
+                   STRING  "今回請求分のみの入金です。"
                            "過入金の返金はできません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
