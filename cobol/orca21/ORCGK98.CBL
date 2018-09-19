@@ -266,8 +266,12 @@
       *H30.9
            03  WRK-RECEKISAI-AREA.
                05  WRK-SEL-KUBUN       PIC X(64).
+               05  WRK-SEL-ITEMNO      PIC X(04).
+               05  WRK-SEL-EDANO       PIC X(02).
                05  WRK-SEL-NAME        PIC X(80).
            03  WRK-RKISAI-KUBUN        PIC X(64).
+           03  WRK-RKISAI-ITEMNO       PIC X(04).
+           03  WRK-RKISAI-EDANO        PIC X(02).
            03  WRK-KUBUN-NAME-G.
                05  WRK-KUBUN-CD            PIC X(12).
                05  WRK-KUBUN-NAME          PIC X(58).
@@ -5087,11 +5091,15 @@
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  WRK-CNT-ENT
            MOVE    SPACE               TO  WRK-RKISAI-KUBUN
+           MOVE    SPACE               TO  WRK-RKISAI-ITEMNO
+           MOVE    SPACE               TO  WRK-RKISAI-EDANO
            PERFORM
                UNTIL      (IDX             >    200 )   OR
                           (FLG-RECEKISAI   =   1    )
       *        同じ区分は対象外
-               IF      RKISAI-KUBUN        =   WRK-RKISAI-KUBUN
+               IF     (RKISAI-KUBUN        =   WRK-RKISAI-KUBUN)
+                 AND  (RKISAI-ITEMNO       =   WRK-RKISAI-ITEMNO)
+                 AND  (RKISAI-EDANO        =   WRK-RKISAI-EDANO )
                    CONTINUE
                ELSE
                    ADD     1               TO  IDX2
@@ -5101,6 +5109,8 @@
                    END-IF
                END-IF
                MOVE    RKISAI-KUBUN        TO  WRK-RKISAI-KUBUN
+               MOVE    RKISAI-ITEMNO       TO  WRK-RKISAI-ITEMNO
+               MOVE    RKISAI-EDANO        TO  WRK-RKISAI-EDANO
                MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM  9103-RECEKISAI-READ-SEC
            END-PERFORM
@@ -5130,6 +5140,8 @@
            MOVE    IDX                 TO  SPA-K98-GMN-NO   (IDX)
            MOVE    RKISAI-KUBUN        TO  SPA-K98-GMN-INPUTCD
                                                             (IDX)
+           MOVE    RKISAI-ITEMNO       TO  SPA-K98-NAI-ITEMNO(IDX)
+           MOVE    RKISAI-EDANO        TO  SPA-K98-NAI-EDANO(IDX)
            MOVE    SPACE               TO  WRK-KUBUN-NAME-G
            MOVE    RKISAI-KUBUN        TO  WRK-KUBUN-CD
            PERFORM 310021-KUBUN-MEISYO-SEC
@@ -5191,6 +5203,10 @@
            INITIALIZE                      WRK-RECEKISAI-AREA
            MOVE    SPA-K98-GMN-INPUTCD(WRK-SELNO)
                                        TO  WRK-SEL-KUBUN
+           MOVE    SPA-K98-NAI-ITEMNO  (WRK-SELNO)
+                                       TO  WRK-SEL-ITEMNO
+           MOVE    SPA-K98-NAI-EDANO  (WRK-SELNO)
+                                       TO  WRK-SEL-EDANO
            MOVE    SPA-K98-GMN-NAME (WRK-SELNO)
                                        TO  WRK-SEL-NAME
       *
@@ -5227,6 +5243,8 @@
            MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-STYM
            MOVE    SPA-SRYYMD(1:6)     TO  RKISAI-EDYM
            MOVE    WRK-SEL-KUBUN       TO  RKISAI-KUBUN
+           MOVE    WRK-SEL-ITEMNO      TO  RKISAI-ITEMNO
+           MOVE    WRK-SEL-EDANO       TO  RKISAI-EDANO
            MOVE    RECEKISAI-REC       TO  MCPDATA-REC
            MOVE    "tbl_recekisai"     TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -5244,7 +5262,6 @@
       *        選択コメント編集
                PERFORM 31001-SELCOMMNT-HEN-SEC
       *
-               MOVE    RKISAI-KUBUN        TO  WRK-RKISAI-KUBUN
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM  9103-RECEKISAI-READ-SEC
            END-PERFORM

@@ -169,13 +169,13 @@ path	key4 	{
 		SELECT *
 		FROM tbl_recekisai
  			WHERE   KUBUN     = :KUBUN
+ 			AND     ITEMNO    = :ITEMNO
+ 			AND     EDANO     = :EDANO
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
 			AND   ( SYORIKBN  =  1 
 			OR      SYORIKBN  =  3 )
-			ORDER   BY      ITEMNO,
-				        EDANO,
-			                SRYCD,
+			ORDER   BY      SRYCD,
 				        RENNUM
 		;
 	};
