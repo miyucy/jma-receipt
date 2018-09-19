@@ -41,6 +41,7 @@ path	key 	{
 			AND     EDYM     >= :EDYM
 			AND     SRYCD     = :SRYCD
 			AND     RENNUM    = :RENNUM
+			ORDER   BY	ITEMNO, EDANO, SRYCD, RENNUM
 		;
 	};
 
@@ -69,7 +70,9 @@ path	key 	{
 			)
 		;
 	};
+};
 
+path	upd1	{ 	
 	DBUPDATE		{
 		UPDATE tbl_recekisai
 			SET
@@ -98,33 +101,6 @@ path	key 	{
 			AND     EDYM     >= :EDYM
 			AND     SRYCD     = :SRYCD
 			AND     RENNUM    = :RENNUM
-		;
-	};
-
-	DBDELETE	{
-		DELETE FROM	tbl_recekisai
- 			WHERE   ITEMNO    = :ITEMNO
- 			AND     EDANO     = :EDANO
- 			AND     STYM     <= :STYM
-			AND     EDYM     >= :EDYM
-			AND     SRYCD     = :SRYCD
-			AND     RENNUM    = :RENNUM
-		;
-	};
-};
-
-path	all 	{
-	DBSELECT	{
-		DECLARE tbl_recekisai_all_csr CURSOR FOR
-		SELECT *
-		FROM tbl_recekisai
- 			WHERE   ITEMNO    = :ITEMNO
- 			AND     EDANO     = :EDANO
- 			AND     STYM     <= :STYM
-			AND     EDYM     >= :EDYM
-			AND     SRYCD     = :SRYCD
-			AND     RENNUM    = :RENNUM
-			ORDER   BY	ITEMNO, EDANO, SRYCD, RENNUM
 		;
 	};
 };
