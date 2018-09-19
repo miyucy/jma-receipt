@@ -36,3 +36,5 @@
            COPY    "CPAPILSTV2.INC".
            COPY    "CPAPILSTV2.INC"    REPLACING
                                        //APILST-// BY //APILST02-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //APILST03-//.

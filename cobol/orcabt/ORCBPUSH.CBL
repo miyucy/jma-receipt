@@ -262,6 +262,7 @@
                EVALUATE    WRK-PARA-EVENT
                    WHEN    "receiptdata_make"
                    WHEN    "receiptdata_check_make"
+                   WHEN    "receiptdata_patient_make"
                        MOVE    LNK-PRTKANRI-SRYYM
                                            TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
