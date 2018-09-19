@@ -1929,6 +1929,7 @@
                MOVE    WRK-SRYKA-MEI   TO  FMSEIKYU-SRYKANAME
            END-IF
       *
+           
            MOVE    WRK-SRYKIKANKBN     TO  FMSEIKYU-SRYKIKANKBN
       *
            IF    ( WRK-SRYKIKANKBN     =   "1" )

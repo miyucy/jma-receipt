@@ -55,6 +55,7 @@
                    07  LNK-SCNYUKINS-NYUKIN-TOTAL  PIC S9(08).
                    07  LNK-SCNYUKINS-DENPJTIKBN    PIC X(01).
                    07  LNK-SCNYUKINS-CREATEKBN     PIC X(01).
+                   07  LNK-SCNYUKINS-DENPEDANUM    PIC 9(02).
       *
       *復帰コード
       *00:正常

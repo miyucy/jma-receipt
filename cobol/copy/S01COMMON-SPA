@@ -61,9 +61,13 @@
       *月別請求書期間区分
                    07  SPA-S01-TUKI-KIKANKBN PIC  X(06).
       *請求期間開始日
-                   07  SPA-S01-TUKI-STYMD    PIC  X(08).
+                   07  SPA-S01-TUKI-STYMD.
+                       09  SPA-S01-TUKI-STYM PIC  X(06).
+                       09  SPA-S01-TUKI-STDD PIC  9(02).
       *請求期間終了日
-                   07  SPA-S01-TUKI-EDYMD    PIC  X(08).
+                   07  SPA-S01-TUKI-EDYMD.
+                       09  SPA-S01-TUKI-EDYM PIC  X(06).
+                       09  SPA-S01-TUKI-EDDD PIC  9(02).
       *月別請求書発行方法
                    07  SPA-S01-TUKI-GRPKBN   PIC  X(01).
       *月別請求書印刷区分

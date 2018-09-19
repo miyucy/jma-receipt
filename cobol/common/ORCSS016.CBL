@@ -448,6 +448,8 @@
       *
                COMPUTE WRK-DENPEDANUM  =   SMEI-DENPEDANUM +   1
       *
+               MOVE    WRK-DENPEDANUM  TO  SS016-DENPEDANUM
+      *
                INITIALIZE                  SYUMEI-REC
       *
                MOVE    SPA-HOSPNUM          TO  SMEI-HOSPNUM

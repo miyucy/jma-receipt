@@ -281,6 +281,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key2"         TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
+           MOVE    IDX1                TO  LNK-SCNYUKINS-DENPEDANUM(IDX)
+      *
       *収納明細作成処理
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC

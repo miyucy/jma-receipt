@@ -36,8 +36,12 @@
            03  SPA-REQ-NYUKIN                  PIC X(10).
            03  SPA-REQ-FORCE                   PIC X(05).
       *
+           03  SPA-API-HAKKOKBN                PIC X(01).
            03  SPA-API-NYUGAIKBN               PIC X(01).
            03  SPA-API-DENPNUM                 PIC 9(07).
+           03  SPA-API-SRYYMD                  PIC X(08).
+           03  SPA-API-SRYKA                   PIC X(02).
+           03  SPA-API-HKNCOMBI                PIC X(04).
            03  SPA-API-DENPEDANUM              PIC 9(02).
            03  SPA-API-NYUHENKBN               PIC X(1).
            03  SPA-API-NYUKIN-HOHO             PIC X(02).
@@ -46,6 +50,7 @@
            03  SPA-API-CHOSEI1                 PIC S9(10).
            03  SPA-API-CHOSEI2                 PIC S9(10).
            03  SPA-API-NYUKIN                  PIC S9(10).
+           03  SPA-API-MISYU                   PIC S9(10).
            03  SPA-API-FORCE                   PIC X(01).
            03  SPA-API-PROC-FLG                PIC 9(01).
            03  SPA-API-MINUS                   PIC X(01).
@@ -72,12 +77,29 @@
                05  SPA-API-SYUNOU-OCC          OCCURS  500.
                    07  SPA-API-TNYUHENKBN      PIC X(01).
                    07  SPA-API-TDENPNUM        PIC 9(07).
+                   07  SPA-API-TSRYYMD         PIC X(08).
+                   07  SPA-API-TSRYKA          PIC X(02).
+                   07  SPA-API-THKNCOMBI       PIC X(04).
+                   07  SPA-API-THKNKBN         PIC X(01).
+                   07  SPA-API-TRSI-HKNKBN     PIC X(01).
                    07  SPA-API-TNYUGAIKBN      PIC X(01).
                    07  SPA-API-TNYUKIN-HOHO    PIC X(02).
                    07  SPA-API-TNYUKIN         PIC S9(10).
+                   07  SPA-API-TMISYU          PIC S9(10).
                    07  SPA-API-TNYUHENYMD      PIC X(08).
                    07  SPA-API-TNYUHENHMS      PIC X(06).
                    07  SPA-API-TFORCE          PIC X(01).
                    07  SPA-API-TERRCD          PIC X(04).
                    07  SPA-API-TERRMSG         PIC X(100).
+           03  SPA-API-TUKISUMKBN              PIC X(01).
+           03  SPA-API-KIKANKBN                PIC X(01).
+           03  SPA-API-STYMD.
+               05  SPA-API-STYM                PIC X(06).
+               05  SPA-API-STDAY               PIC 9(02).
+           03  SPA-API-EDYMD.
+               05  SPA-API-EDYM                PIC X(06).
+               05  SPA-API-EDDAY               PIC 9(02).
+           03  SPA-API-SKYPRT                  PIC X(01).
+           03  SPA-API-SKYGRP                  PIC X(01).
+           03  SPA-API-SRYPRT                  PIC X(01).
 
