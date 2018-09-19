@@ -1294,7 +1294,7 @@
                WHEN    SPACE
                    CONTINUE
                WHEN    "1"
-                   MOVE    "今回請求分のみ入力"
+                   MOVE    "今回請求分のみ入金"
                                        TO  MDCRES-IC-REQUEST-NAME
                WHEN    "2"
                    MOVE    "今回分・伝票の古い未収順に入金"
@@ -3826,7 +3826,7 @@
                    END-STRING
                    MOVE    "35"            TO  WRK-ERRCD
                WHEN    "0113"
-                   STRING  "今回請求分のみの入力です。"
+                   STRING  "今回請求分のみの入金です。"
                            "過入金の返金はできません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
