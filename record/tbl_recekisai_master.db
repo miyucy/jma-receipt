@@ -41,6 +41,7 @@ path	key 	{
 			AND     EDYM     >= :EDYM
 			AND     SRYCD     = :SRYCD
 			AND     RENNUM    = :RENNUM
+			ORDER   BY	ITEMNO, EDANO, SRYCD, RENNUM
 		;
 	};
 
@@ -109,22 +110,6 @@ path	key 	{
 			AND     EDYM     >= :EDYM
 			AND     SRYCD     = :SRYCD
 			AND     RENNUM    = :RENNUM
-		;
-	};
-};
-
-path	key2 	{
-	DBSELECT	{
-		DECLARE tbl_recekisai_master_key2_csr CURSOR FOR
-		SELECT *
-		FROM master.tbl_recekisai
- 			WHERE   ITEMNO    = :ITEMNO
- 			AND     EDANO     = :EDANO
- 			AND     STYM     <= :STYM
-			AND     EDYM     >= :EDYM
-			AND     SRYCD     = :SRYCD
-			AND     RENNUM    = :RENNUM
-			ORDER   BY	ITEMNO, EDANO, SRYCD, RENNUM
 		;
 	};
 };
