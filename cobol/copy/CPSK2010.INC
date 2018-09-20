@@ -294,8 +294,15 @@
            03  SYS-2010-ZENDAY2KBN-N        PIC  X(01).
            03  SYS-2010-ZENDAY2-TAIKBN-N    PIC  X(01).
       *
+      *½é¿Ç»þ¤ÎÉéÃ´¶â·×»»¡Ê³°Íè¡Ë
+           03  SYS-2010-SYOKEI2KBN-G        PIC  X(01).
+           03  SYS-2010-SYOKEI2-TAIKBN-G    PIC  X(01).
+      *½é¿Ç»þ¤ÎÉéÃ´¶â·×»»¡ÊÆþ±¡¡Ë
+           03  SYS-2010-SYOKEI2KBN-N        PIC  X(01).
+           03  SYS-2010-SYOKEI2-TAIKBN-N    PIC  X(01).
+      *
       *Í½È÷
-           03  SYS-2010-YOBI                PIC  X(332).
+           03  SYS-2010-YOBI                PIC  X(328).
       *Ã¼Ëö£É£Ä
            03  SYS-2010-TERMID              PIC  X(16).
       *¥ª¥Ú¥ì¡¼¥¿£É£Ä

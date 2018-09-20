@@ -4085,6 +4085,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  FLG-TENSU
                INITIALIZE                      TNS-TENSU-REC
            END-IF
+           DISPLAY "----"
+           DISPLAY TNS-TENSU-REC
+           DISPLAY "----"
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
