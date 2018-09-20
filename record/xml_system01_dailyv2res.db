@@ -25,7 +25,7 @@ xml_system01_dailyv2res {
 	};
 #--¿ÇÎÅ¹Ô°ÙÅÐÏ¿´Ø·¸
 	Medical_Information	{
-	    Medical_Set_Information	{
+	    Medical_Set01_Information	{
 #--     ½èÊý¶èÊ¬
 		Outside_Class			varchar(1);
 		Outside_Class_Name		varchar(40);
@@ -45,7 +45,7 @@ xml_system01_dailyv2res {
 		Set_Mode_Class		varchar(1);
 		Set_Mode_Class_Name	varchar(40);
 		};
-	    Medical_Set01_Information	{
+	    Medical_Set02_Information	{
 #--     ¿Ç»¡ÎÁ¼«Æ°È¯À¸
 		Medical_Auto_Class		varchar(1);
 		Medical_Auto_Class_Name		varchar(40);
@@ -73,7 +73,7 @@ xml_system01_dailyv2res {
 		Combination_Number_Chk_Class		varchar(1);
 		Combination_Number_Chk_Class_Name	varchar(40);
 		};
-	    Medical_Set02_Information	{
+	    Medical_Set03_Information	{
 #--     ÌôºÞÅêÍ¿ÎÌ¥Á¥§¥Ã¥¯
 		Dosage_Chk_Class		varchar(1);
 		Dosage_Chk_Class_Name		varchar(40);
