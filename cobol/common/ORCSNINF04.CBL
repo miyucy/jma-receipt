@@ -87,6 +87,8 @@
                05  WRK-ADLTEN          PIC 9(02).
            03  WRK-MEDKBN              PIC X(1).
            03  WRK-PTEVAL              PIC X(1).
+           03  WRK-Z9-G.
+               05  WRK-Z9              PIC Z9.
       *
        01  KEY-AREA.
            03  KEY-SRYYM               PIC X(06).
@@ -96,7 +98,7 @@
            03  TDAY-DAY-G.
                05  TDAY-DAY            PIC 9(02)
                                        OCCURS      31.
-           03  TDAY-CSV                PIC X(256).
+           03  TDAY-CSV                PIC X(128).
       *
        01  TCOMB-AREA.
            COPY    "CPNYUINACCT.INC"   REPLACING   //NACCT//
@@ -248,6 +250,8 @@
            PERFORM 2001-ADLTEN-EDIT-SEC
       *
            PERFORM 2001-PTEVAL-EDIT-SEC
+      *
+           PERFORM 2001-DESIGNR-EDIT-SEC
       *
            .
        200-MAIN-EXT.
@@ -555,6 +559,51 @@
       *
           .
        2001-PTEVAL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Å£Ó£É£Ç£Î¡Ý£Ò¹ç·×ÅÀÊÔ½¸½èÍý
+      *****************************************************************
+       2001-DESIGNR-EDIT-SEC                SECTION.
+      *
+           PERFORM VARYING IDXM
+                   FROM    HCN68S01-RYOLIST-DESIGNR-STIDX
+                   BY      1
+                   UNTIL ( IDXM    >   HCN68S01-RYOLIST-MAX )
+      *
+               IF    ( HCN68S01-TZAISKBKBN (IDXM)  =   "A" )
+                   INITIALIZE              TDAY-AREA
+                   MOVE    1       TO      TDAY-POS
+      *
+                   PERFORM VARYING IDXD    FROM    1   BY  1
+                           UNTIL ( IDXD    >   31 )
+      *
+                       IF    ( IDXD        =   1 )
+                           CONTINUE
+                       ELSE
+                           STRING    ","   DELIMITED BY SIZE
+                           INTO  TDAY-CSV
+                           WITH  POINTER   TDAY-POS
+                           END-STRING
+                       END-IF
+      *
+                       IF    ( HCN68S01-DESIGNR-EVAL-DAY (IDXD)
+                                           >   ZERO )
+                           MOVE    HCN68S01-TDAY (IDXM IDXD)
+                                           TO  WRK-Z9
+                           STRING  FUNCTION TRIM (WRK-Z9-G)
+                                           DELIMITED BY SIZE
+                           INTO  TDAY-CSV
+                           WITH  POINTER   TDAY-POS
+                           END-STRING
+                       END-IF
+                   END-PERFORM
+                   MOVE    TDAY-CSV        TO  SNINF04-DESIGNR-DAY
+               END-IF
+      *
+           END-PERFORM
+      *
+          .
+       2001-DESIGNR-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    É¾²ÁÆü¾ðÊó£Ã£Ó£ÖÊÔ½¸½èÍý¡Ê°åÎÅ¶èÊ¬¡Ë

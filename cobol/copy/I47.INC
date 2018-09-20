@@ -55,7 +55,7 @@
               05  I47-RYOLIST-ROW PIC S9(9)   BINARY.
               05  I47-RYOLIST-ROWATTR PIC S9(9)   BINARY.
               05  I47-RYOLIST-ITEM    OCCURS  100 TIMES.
-                06  I47-TNUM    PIC X(2).
+                06  I47-TNUM    PIC X(3).
                 06  I47-TMARK   PIC X(1).
                 06  I47-TNAME   PIC X(100).
                 06  I47-TDAYLMT PIC X(2).

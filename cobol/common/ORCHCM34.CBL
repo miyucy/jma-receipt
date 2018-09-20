@@ -526,7 +526,9 @@
                05  WRK-SRYACT-DAY-OCC              OCCURS  31.
                    07  WRK-SRYACT-DAY-X            PIC X(03).
                    07  WRK-SRYACT-DAY-Z    REDEFINES   WRK-SRYACT-DAY-X
-                                                   PIC Z(03).
+                                                   PIC ZZZ.
+                   07  WRK-SRYACT-DAY-Z9   REDEFINES   WRK-SRYACT-DAY-X
+                                                   PIC ZZ9.
       *
        01  TCOMBI-AREA.
            03  TCOMBI-MAX                          PIC 9(05).
@@ -865,6 +867,8 @@
       *
            COPY    "CPORCHCN68S01.INC" REPLACING   //HCN68S01-//
                                        BY          //THCN68S01-//.
+      *
+           COPY    "CPMEDKBN.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -3931,8 +3935,15 @@
       *
            MOVE    1                   TO  FLG-EDIT
       *
-           IF    ( ACCT-ZAIKAISU       =   ZERO )
-               MOVE    ZERO            TO  FLG-EDIT
+           IF    ( ACCT-SRYCDTOTAL   = FUNCTION NUMVAL (DESIGNR-SRYCD))
+               IF    ( HCN68S01-DESIGNR-EVAL-DAY-G
+                                       =   ZERO )
+                   MOVE    ZERO            TO  FLG-EDIT
+               END-IF
+           ELSE
+               IF    ( ACCT-ZAIKAISU   =   ZERO )
+                   MOVE    ZERO            TO  FLG-EDIT
+               END-IF
            END-IF
       *
            IF    ( FLG-EDIT            =   ZERO )
@@ -4320,8 +4331,17 @@
       *    回数
            PERFORM VARYING IDX8    FROM    ORCHCM34-STDAY   BY  1
                    UNTIL ( IDX8    >   ORCHCM34-EDDAY )
-               MOVE    ACCT-DAY  (1 IDX8)
+               IF    ( ACCT-SRYCDTOTAL
+                                   =   FUNCTION NUMVAL (DESIGNR-SRYCD))
+                   IF    ( HCN68S01-DESIGNR-EVAL-DAY (IDX8)
+                                       >   ZERO )
+                       MOVE    ACCT-DAY  (1 IDX8)
+                                       TO  WRK-SRYACT-DAY-Z9(IDX8)
+                   END-IF
+               ELSE
+                   MOVE    ACCT-DAY  (1 IDX8)
                                        TO  WRK-SRYACT-DAY-Z (IDX8)
+               END-IF
            END-PERFORM
       *
            .
@@ -7365,6 +7385,30 @@
       *
            MOVE    HCN68S01-AREA   TO  THCN68S01-AREA
       *
+           INITIALIZE                  HCN68S01-RYOYO-DAY-G
+                                       HCN68S01-DESIGNR-AREA
+      *
+           PERFORM VARYING IDX-DAY FROM  ORCHCM34-STDAY    BY  1
+                   UNTIL ( IDX-DAY >     ORCHCM34-EDDAY )
+      *
+               IF    ( HCN68S01-COMB-DAY (IDX-DAY)
+                                   =   COMB-HKNCOMBINUM )
+                   EVALUATE     TRUE
+                   WHEN  ( ORCHCM34-SRYKAKBN   =   SPACE )
+                   WHEN  ( ORCHCM34-SRYKAKBN   =   "1" )
+                    AND  ( ORCHCM34-SRYKADAY (IDX-DAY)     = 1 )
+                       MOVE    THCN68S01-RYOYO-DAY-OCC (IDX-DAY)
+                                   TO  HCN68S01-RYOYO-DAY-OCC (IDX-DAY)
+                       IF    ( THCN68S01-RYOYO-CD (IDX-DAY)
+                                           NOT =   SPACE )
+                           MOVE THCN68S01-DESIGNR-EVAL-DAY (IDX-DAY)
+                                 TO  HCN68S01-DESIGNR-EVAL-DAY (IDX-DAY)
+                       END-IF
+                   END-EVALUATE
+               END-IF
+      *
+           END-PERFORM
+      *
            PERFORM VARYING IDXR    FROM    1   BY  1
                    UNTIL ( IDXR    >   HCN68S01-RYOLIST-MAX )
       *
@@ -7374,38 +7418,34 @@
                PERFORM VARYING IDX-DAY FROM  ORCHCM34-STDAY    BY  1
                        UNTIL ( IDX-DAY >     ORCHCM34-EDDAY )
       *
-                   IF    ( HCN68S01-COMB-DAY (IDX-DAY)
-                                       =   COMB-HKNCOMBINUM )
-                       EVALUATE     TRUE
-                       WHEN  ( ORCHCM34-SRYKAKBN   =   SPACE )
-                       WHEN  ( ORCHCM34-SRYKAKBN   =   "1" )
-                        AND  ( ORCHCM34-SRYKADAY (IDX-DAY)     = 1 )
-                           IF    ( THCN68S01-TDAYALL (IDXR)
+                   IF    ( THCN68S01-TDAYALL (IDXR)
                                                    >   ZERO )
-                               IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
+                       IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
                                                 NOT =   SPACE )
-                                   MOVE    THCN68S01-TDAYALL (IDXR)
+                           MOVE    THCN68S01-TDAYALL (IDXR)
                                        TO  HCN68S01-TDAY (IDXR IDX-DAY)
-                               END-IF
-                           ELSE
-                               IF    ( THCN68S01-TDAY (IDXR IDX-DAY)
-                                                   >   ZERO )
-                                   MOVE    THCN68S01-TDAY (IDXR IDX-DAY)
+                       END-IF
+                   ELSE
+                       IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
+                                                NOT =   SPACE )
+                           MOVE    THCN68S01-TDAY (IDXR IDX-DAY)
                                        TO  HCN68S01-TDAY (IDXR IDX-DAY)
-                               END-IF
-                           END-IF
-                       END-EVALUATE
+                       END-IF
                    END-IF
       *
                END-PERFORM
       *
-               IF    ( HCN68S01-TDAY-G  (IDXR) NOT =   ZERO )
-                   PERFORM 2801-MEDADL-ACCT-SEC
+               IF    ( HCN68S01-TZAISKBKBN(IDXR)   =   "A" )
+                   IF    ( HCN68S01-DESIGNR-EVAL-DAY-G NOT =   ZERO )
+                       PERFORM 2801-MEDADL-ACCT-SEC
+                   END-IF
+               ELSE
+                   IF    ( HCN68S01-TDAY-G  (IDXR) NOT =   ZERO )
+                       PERFORM 2801-MEDADL-ACCT-SEC
+                   END-IF
                END-IF
       *
            END-PERFORM
-      *
-           MOVE    THCN68S01-AREA  TO   HCN68S01-AREA
       *
            .
        280-MEDADL-EXT.

@@ -771,3 +771,17 @@
                    07  MEDH20-ID       PIC X(02).
                    07  MEDH20-MEIL     PIC X(106).
        01  MEDH20-MAX                  PIC 9(03)     VALUE  56.
+       01  DESIGNR-AREA.
+           03  DESIGNR-ZAINUM-EVAL     PIC 9(04)    VALUE  9000.
+           03  DESIGNR-SRYCD-EVAL      PIC X(09)    VALUE  "099999932".
+      *    剤番号9000で入力日（０点の考慮用）、9001で点数を記録
+           03  DESIGNR-STYMD    PIC X(08)    VALUE  "20180401".
+           03  DESIGNR-EDYMD    PIC X(08)    VALUE  "99999999".
+           03  DESIGNR-SRYCD    PIC X(09)    VALUE  "099999933".
+           03  DESIGNR-MEDKBN   PIC X(01)    VALUE  "0".
+           03  DESIGNR-LIMIT    PIC 9(03)    VALUE  0.
+           03  DESIGNR-ALLKBN   PIC 9(01)    VALUE  0.
+           03  DESIGNR-ZAINUM   PIC 9(04)    VALUE  9001.
+           03  DESIGNR-ID       PIC X(02)    VALUE  "A1".
+           03  DESIGNR-MEI      PIC X(106)   VALUE
+           "ＤＥＳＩＧＮ−Ｒ合計点（深さの点数は加えない）".

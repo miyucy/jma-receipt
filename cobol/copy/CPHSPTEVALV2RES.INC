@@ -47,14 +47,16 @@
                        09  HSPTEVALRES-MEDKBN-ID       PIC X(2).
                        09  HSPTEVALRES-MEDKBN-NAME     PIC X(100).
                        09  HSPTEVALRES-MEDKBN-MON      PIC X(1).
-                       09  HSPTEVALRES-MEDKBN-DAY      PIC X(256).
+                       09  HSPTEVALRES-MEDKBN-DAY      PIC X(128).
                05  HSPTEVALRES-ADLKBN-AREA.
                    07  HSPTEVALRES-ADLKBN-OCC          OCCURS  4.
                        09  HSPTEVALRES-ADLKBN-ID       PIC X(1).
                        09  HSPTEVALRES-ADLKBN-NAME     PIC X(100).
-                       09  HSPTEVALRES-ADLKBN-DAY      PIC X(256).
-               05  HSPTEVALRES-MEDKBN-LV-DAY           PIC X(256).
-               05  HSPTEVALRES-ADLKBN-TTL-DAY          PIC X(256).
+                       09  HSPTEVALRES-ADLKBN-DAY      PIC X(128).
+               05  HSPTEVALRES-MEDKBN-LV-DAY           PIC X(128).
+               05  HSPTEVALRES-ADLKBN-TTL-DAY          PIC X(128).
                05  HSPTEVALRES-PTEVAL-AREA.
-                   07  HSPTEVALRES-PTEVAL-DAY          PIC X(256).
-                   07  HSPTEVALRES-PTEVAL-DIFF         PIC X(256).
+                   07  HSPTEVALRES-PTEVAL-DAY          PIC X(128).
+                   07  HSPTEVALRES-PTEVAL-DIFF         PIC X(128).
+               05  HSPTEVALRES-DESIGNR-AREA.
+                   07  HSPTEVALRES-DESIGNR-DAY         PIC X(128).

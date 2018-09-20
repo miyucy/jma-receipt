@@ -33,9 +33,11 @@
                    07  HSPTEVALMREQ-MED-OCC      OCCURS    50.
                        09  HSPTEVALMREQ-MED-ID   PIC X(02).
                        09  HSPTEVALMREQ-MED-DATA PIC X(01).
-                       09  HSPTEVALMREQ-MED-ALL  PIC X(80).
+                       09  HSPTEVALMREQ-MED-ALL  PIC X(128).
                05  HSPTEVALMREQ-ADL-AREA.
                    07  HSPTEVALMREQ-ADL-OCC      OCCURS    4.
                        09  HSPTEVALMREQ-ADL-ID   PIC X(1).
                        09  HSPTEVALMREQ-ADL-TEN  PIC X(1).
-                       09  HSPTEVALMREQ-ADL-ALL  PIC X(80).
+                       09  HSPTEVALMREQ-ADL-ALL  PIC X(128).
+               05  HSPTEVALMREQ-DESIGNR-AREA.
+                   07  HSPTEVALMREQ-DESIGNR-ALL  PIC X(128).

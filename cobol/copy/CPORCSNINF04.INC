@@ -39,14 +39,16 @@
                        09  SNINF04-MEDKBN-ID       PIC X(2).
                        09  SNINF04-MEDKBN-NAME     PIC X(100).
                        09  SNINF04-MEDKBN-MON      PIC X(1).
-                       09  SNINF04-MEDKBN-DAY      PIC X(256).
+                       09  SNINF04-MEDKBN-DAY      PIC X(128).
                05  SNINF04-ADLKBN-AREA.
                    07  SNINF04-ADLKBN-OCC          OCCURS  4.
                        09  SNINF04-ADLKBN-ID       PIC X(1).
                        09  SNINF04-ADLKBN-NAME     PIC X(100).
-                       09  SNINF04-ADLKBN-DAY      PIC X(256).
-               05  SNINF04-MEDKBN-LV-DAY           PIC X(256).
-               05  SNINF04-ADLKBN-TTL-DAY          PIC X(256).
+                       09  SNINF04-ADLKBN-DAY      PIC X(128).
+               05  SNINF04-MEDKBN-LV-DAY           PIC X(128).
+               05  SNINF04-ADLKBN-TTL-DAY          PIC X(128).
                05  SNINF04-PTEVAL-AREA.
-                   07  SNINF04-PTEVAL-DAY          PIC X(256).
-                   07  SNINF04-PTEVAL-DIFF         PIC X(256).
+                   07  SNINF04-PTEVAL-DAY          PIC X(128).
+                   07  SNINF04-PTEVAL-DIFF         PIC X(128).
+               05  SNINF04-DESIGNR-AREA.
+                   07  SNINF04-DESIGNR-DAY         PIC X(128).

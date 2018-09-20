@@ -68,6 +68,8 @@
            03  IDXA                    PIC 9(05).
            03  IDXD                    PIC 9(05).
            03  IDXH                    PIC 9(05).
+           03  IDXI                    PIC 9(05).
+           03  IDXJ                    PIC 9(05).
            03  IDXM                    PIC 9(05).
            03  IDX-MED                 PIC 9(05).
            03  IDX-ADL                 PIC 9(05).
@@ -100,6 +102,7 @@
            03  WRK-SRYYM               PIC X(06).
            03  WRK-MED-DATA            PIC 9(01).
            03  WRK-ADL-TEN             PIC 9(03).
+           03  WRK-DESIGNR-TEN         PIC 9(03).
       *
        01  ITEM-AREA.
            03  ITEM-SRYYMD.
@@ -110,7 +113,7 @@
                05  ITEM-MED-OCC            OCCURS  100.
                    07  ITEM-MED-ID         PIC X(02).
                    07  ITEM-MED-DATA       PIC X(01).
-                   07  ITEM-MED-ALL        PIC X(80).
+                   07  ITEM-MED-ALL        PIC X(128).
                    07  ITEM-MED-ZAINUM     PIC 9(04).
                    07  ITEM-MED-IDX-MEDH20 PIC 9(03).
                    07  ITEM-MED-IDX-ID     PIC 9(03).
@@ -119,9 +122,12 @@
                05  ITEM-ADL-OCC            OCCURS  4.
                    07  ITEM-ADL-ID         PIC X(01).
                    07  ITEM-ADL-TEN        PIC X(01).
-                   07  ITEM-ADL-ALL        PIC X(80).
+                   07  ITEM-ADL-ALL        PIC X(128).
                    07  ITEM-ADL-ZAINUM     PIC 9(04).
                    07  ITEM-ADL-IDX-ID     PIC 9(03).
+           03  ITEM-DESIGNR-AREA.
+               05  ITEM-DESIGNR-ALL        PIC X(128).
+               05  ITEM-DESIGNR-IDX-ID     PIC 9(03).
       *
        01  TSRYYM-AREA.
            03  TSRYYM-SRYYMD.
@@ -134,7 +140,7 @@
       *
        01  TRYOCOM-AREA.
         02 TRYOCOM-MAX                     PIC 9(03).
-        02 TRYOCOM-OCC                     OCCURS  50.
+        02 TRYOCOM-OCC                     OCCURS  100.
            COPY    "CPRYOCOM.INC"          REPLACING   //RYOCOM//
                                            BY         //TRYOCOM//.
        01  WRYOCOM-AREA.
@@ -148,7 +154,7 @@
            03  ERRCD-ERRCD             PIC X(04).
       *
        01  CONST-AREA.
-           03  CONST-ITEMNUM-MAX       PIC 9(05)   VALUE 50.
+           03  CONST-H300401           PIC X(08)   VALUE "20180401".
       *
       *    項目IDコピー句
            COPY    "CPNCLAIMID.INC".
@@ -422,6 +428,31 @@
       *
            END-PERFORM
       *
+           IF    ( SODR-SRYYMD     >=  CONST-H300401 )
+      *
+               COMPUTE IDXA    =   IDXA    +   1
+      *
+               MOVE    SPA-HOSPNUM     TO  TRYOCOM-HOSPNUM (IDXA)
+               MOVE    "1"             TO  TRYOCOM-NYUGAIKBN (IDXA)
+               MOVE    SPA-PTID        TO  TRYOCOM-PTID  (IDXA)
+               MOVE    SODR-SRYYMD (1:6)
+                                       TO  TRYOCOM-SRYYM (IDXA)
+               MOVE    DESIGNR-ZAINUM-EVAL
+                                       TO  TRYOCOM-ZAINUM (IDXA)
+               MOVE    "A"             TO  TRYOCOM-ZAISKBKBN (IDXA)
+               MOVE    DESIGNR-SRYCD-EVAL
+                                       TO  TRYOCOM-SRYCD (IDXA)
+      *
+               MOVE    TRYOCOM-OCC (IDXA)
+                                       TO  TRYOCOM-OCC (IDXA + 1)
+               COMPUTE IDXA    =   IDXA    +   1
+      *
+               MOVE    DESIGNR-ZAINUM  TO  TRYOCOM-ZAINUM (IDXA)
+               MOVE    "A"             TO  TRYOCOM-ZAISKBKBN (IDXA)
+               MOVE    DESIGNR-SRYCD   TO  TRYOCOM-SRYCD (IDXA)
+      *
+           END-IF
+      *
            MOVE    IDXA            TO  TRYOCOM-MAX
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
@@ -530,6 +561,8 @@
                    PERFORM 20011-ADLTEN-CHK-SEC
                WHEN    NCLAIMID-ADLALLJMA
                    PERFORM 20011-ADLALL-CHK-SEC
+               WHEN    NCLAIMID-DESIGNRALLJMA
+                   PERFORM 20011-DESIGNRALL-CHK-SEC
                END-EVALUATE
       *
            END-PERFORM
@@ -665,6 +698,18 @@
        20011-ADLALL-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    複数日設定チェック処理
+      *****************************************************************
+       20011-DESIGNRALL-CHK-SEC            SECTION.
+      *
+           MOVE    LNK-ODRITEM-MEMO (IDX-ODR)
+                                   TO  ITEM-DESIGNR-ALL
+           MOVE    IDX-ODR         TO  ITEM-DESIGNR-IDX-ID
+      *
+           .
+       20011-DESIGNRALL-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    項目未処理状態設定処理
       *****************************************************************
        2100-ITEM-UNPROCSTS-SET-SEC        SECTION.
@@ -705,6 +750,11 @@
            IF    ( ERRCD-ITEM-G        =   SPACE )
       *        ＡＤＬ区分項目チェック処理
                PERFORM 20021-ADL-CHK-SEC
+           END-IF
+      *
+           IF    ( ERRCD-ITEM-G        =   SPACE )
+      *        ＤＥＳＩＧＮ−Ｒチェック処理
+               PERFORM 20021-DESIGNR-CHK-SEC
            END-IF
       *
            .
@@ -1106,6 +1156,115 @@
        200211-ADL-ALL-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    DESIGNR項目チェック処理
+      *****************************************************************
+       20021-DESIGNR-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  IDXI
+                                       IDXJ
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   TRYOCOM-MAX )
+                    OR  (( IDXI    >   ZERO )
+                     AND ( IDXJ    >   ZERO ))
+      *
+               EVALUATE    TRYOCOM-ZAINUM (IDXA)
+               WHEN    DESIGNR-ZAINUM-EVAL
+                   MOVE    IDXA    TO  IDXI
+               WHEN    DESIGNR-ZAINUM
+                   MOVE    IDXA    TO  IDXJ
+               END-EVALUATE
+      *
+           END-PERFORM
+      *
+           IF    ( IDXI                    >   ZERO )
+            AND  ( IDXJ                    >   ZERO )
+            AND  ( ITEM-DESIGNR-ALL    NOT =   SPACE )
+      *
+               PERFORM 200211-DESIGNR-CHK-SEC
+      *
+               MOVE    "UPDATE"    TO  TRYOCOM-OPID (IDXI)
+               MOVE    "UPDATE"    TO  TRYOCOM-OPID (IDXJ)
+           END-IF
+      *
+           .
+       20021-DESIGNR-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    DESIGNR項目チェック（複数日指定）
+      *****************************************************************
+       200211-DESIGNR-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  IDXD
+           MOVE    1               TO  IDXP
+           MOVE    ZERO            TO  FLG-BREAK
+      *
+           MOVE    ZERO            TO  CNT-COMMA
+           INSPECT ITEM-DESIGNR-ALL
+                                   TALLYING CNT-COMMA FOR ALL ","
+           IF    ( CNT-COMMA       NOT =   30 )
+               MOVE    "0202"          TO  ERRCD-ERRCD
+               MOVE    ITEM-DESIGNR-IDX-ID
+                                       TO  IDX-ODR
+               PERFORM 2100-ITEM-ERR-SET-SEC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-BREAK   NOT =   ZERO )
+                    OR   ( IDXD    >=  31 )
+                    OR   ( ERRCD-ITEM-G    NOT =   SPACE )
+      *
+               COMPUTE IDXD    =   IDXD    +  1
+      *
+               MOVE    ZERO        TO  WRK-DESIGNR-TEN
+      *
+               MOVE    SPACE       TO  WRK-DATA
+               UNSTRING  ITEM-DESIGNR-ALL DELIMITED BY ","
+               INTO      WRK-DATA
+               WITH POINTER IDXP
+               NOT  ON OVERFLOW
+                  MOVE    1        TO  FLG-BREAK
+               END-UNSTRING
+      *
+               EVALUATE    WRK-DATA
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "-"
+                   MOVE    ZERO        TO  TRYOCOM-DAY (IDXI IDXD)
+                                           TRYOCOM-DAY (IDXJ IDXD)
+               WHEN    OTHER
+                   MOVE    WRK-DATA    TO  WRK-SNUM-INX
+                   PERFORM 800-ORCSNUM-SEC
+                   IF    ( FLG-ORCSNUM     =   ZERO )
+                    AND  ( WRK-SNUM-OUTNUM >=  0 )
+                    AND  ( WRK-SNUM-OUTNUM <=  66 )
+                       MOVE    WRK-SNUM-OUTNUM
+                                       TO  WRK-DESIGNR-TEN
+                       IF    ( TSRYYM-NYUIN-DAY (IDXD)
+                                       =   ZERO )
+                           MOVE    "0075"      TO  ERRCD-ERRCD
+                           MOVE    ITEM-DESIGNR-IDX-ID
+                                               TO  IDX-ODR
+                           PERFORM 2100-ITEM-ERR-SET-SEC
+                       END-IF
+                   ELSE
+                       MOVE    "0203"      TO  ERRCD-ERRCD
+                       MOVE    ITEM-DESIGNR-IDX-ID
+                                           TO  IDX-ODR
+                       PERFORM 2100-ITEM-ERR-SET-SEC
+                   END-IF
+      *
+                   IF    ( ERRCD-ITEM-G        =   SPACE )
+                       MOVE    1               TO TRYOCOM-DAY(IDXI IDXD)
+                       MOVE    WRK-DESIGNR-TEN TO TRYOCOM-DAY(IDXJ IDXD)
+                   END-IF
+               END-EVALUATE
+      *
+           END-PERFORM
+      *
+           .
+       200211-DESIGNR-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    オーダー情報再編成処理
       *****************************************************************
        2101-ORDER-RECONF-SEC           SECTION.
@@ -1190,7 +1349,7 @@
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
            IF    ( FLG-ORDER           =   ZERO )
-               DISPLAY "ORCSDR03 ERROR 001:ORDER INSERT CHK ERR"
+               DISPLAY "ORCSDR10 ERROR 001:ORDER INSERT CHK ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-KARTE-KEY
                MOVE    1               TO  FLG-END
@@ -1202,7 +1361,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR03 ERROR 002:ORDER INSERT ERR"
+               DISPLAY "ORCSDR10 ERROR 002:ORDER INSERT ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-KARTE-KEY
                MOVE    1               TO  FLG-END
@@ -1226,6 +1385,7 @@
                                         OR NCLAIMID-ADLIDJMA
                                         OR NCLAIMID-ADLTENJMA
                                         OR NCLAIMID-ADLALLJMA
+                                        OR NCLAIMID-DESIGNRALLJMA
                                                                 )
                CONTINUE
            ELSE
@@ -1241,7 +1401,7 @@
       *
            PERFORM 900-ODRITEM-KEY-SEL-SEC
            IF    ( FLG-ODRITEM         =   ZERO )
-               DISPLAY "ORCSDR03 ERROR 003:ODRITEM INSERT CHK ERR"
+               DISPLAY "ORCSDR10 ERROR 003:ODRITEM INSERT CHK ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-KARTE-KEY
                MOVE    1               TO  FLG-END
@@ -1253,7 +1413,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR03 ERROR 004:ODRITEM INSERT ERR"
+               DISPLAY "ORCSDR10 ERROR 004:ODRITEM INSERT ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-KARTE-KEY
                MOVE    1               TO  FLG-END
@@ -1393,15 +1553,21 @@
       *
            MOVE    ZERO                TO  FLG-ORCSNUM
       *
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    WRK-SNUM-INX        TO  SNUM-INX
-           CALL    "ORCSNUM"           USING   ORCSNUMAREA
-           IF    ( SNUM-RC         NOT =   ZERO  )
-            OR   ( SNUM-MINKBN     NOT =   SPACE )
-            OR   ( SNUM-SYOKBN     NOT =   SPACE )
+           IF    ( FUNCTION LENGTH(FUNCTION TRIM(WRK-SNUM-INX)) =   1 )
+            AND  ( FUNCTION TRIM(WRK-SNUM-INX)  IS  NOT NUMERIC )
                MOVE    1               TO  FLG-ORCSNUM
            ELSE
-               MOVE    SNUM-OUTNUM     TO  WRK-SNUM-OUTNUM
+      *
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    WRK-SNUM-INX        TO  SNUM-INX
+               CALL    "ORCSNUM"           USING   ORCSNUMAREA
+               IF    ( SNUM-RC         NOT =   ZERO  )
+                OR   ( SNUM-MINKBN     NOT =   SPACE )
+                OR   ( SNUM-SYOKBN     NOT =   SPACE )
+                   MOVE    1               TO  FLG-ORCSNUM
+               ELSE
+                   MOVE    SNUM-OUTNUM     TO  WRK-SNUM-OUTNUM
+               END-IF
            END-IF
       *
            .

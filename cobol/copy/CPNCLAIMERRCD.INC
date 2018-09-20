@@ -824,6 +824,14 @@
                05                      PIC X(04)   VALUE   "0201".
                05                      PIC X(80)   VALUE
                    "食事継続区分の入力に誤りがあります".
+      *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "0202".
+               05                      PIC X(80)   VALUE
+                   "ＤＥＳＩＧＮ−Ｒ合計点のカンマの数に誤りがあります".
+      *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "0203".
+               05                      PIC X(80)   VALUE
+                   "ＤＥＳＩＧＮ−Ｒ合計点の入力に誤りがあります".
       *  7000番台は負担金計算のエラーとする。
       *  エラー番号返却時は7001に変換する。(ORCSODRS03)
       *-----------------------------------------------------------
@@ -1078,7 +1086,7 @@
                    "処理終了".
       *
            03  NCLAIMERRCD-R   REDEFINES   NCLAIMERRCD-VAL.
-               05  NCLAIMERRCD-OCC     OCCURS  261.
+               05  NCLAIMERRCD-OCC     OCCURS  263.
                    07  NCLAIMERRCDL    PIC X(04).
                    07  NCLAIMERRCDLMEI PIC X(80).
-           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   261.
+           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   263.

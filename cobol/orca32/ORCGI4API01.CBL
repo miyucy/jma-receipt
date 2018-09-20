@@ -105,13 +105,13 @@
                05  API-MED-OCC         OCCURS    100.
                    07  API-MED-ID      PIC X(02).
                    07  API-MED-DATA    PIC X(01).
-                   07  API-MED-ALL     PIC X(80).
+                   07  API-MED-ALL     PIC X(128).
            03  API-ADL-AREA.
                05  API-ADL-MAX         PIC 9(05).
                05  API-ADL-OCC         OCCURS  4.
                    07  API-ADL-ID      PIC X(01).
                    07  API-ADL-TEN     PIC X(01).
-                   07  API-ADL-ALL     PIC X(80).
+                   07  API-ADL-ALL     PIC X(128).
            03  API-ERR-MAX             PIC 9(03).
            03  API-ERR-OCC             OCCURS  10.
                05  API-ERRCD           PIC X(04).
@@ -574,6 +574,8 @@
       *
            END-PERFORM
       *
+           PERFORM 2300-DESIGNRINF-SET-SEC
+      *
            MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
       *
            CALL   "ORCSODR10"      USING   SODR-AREA
@@ -653,6 +655,22 @@
       *
            .
        2300-ADLINF-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    DESIGNR情報設定処理
+      *****************************************************************
+       2300-DESIGNRINF-SET-SEC         SECTION.
+      *
+           IF    ( HSPTEVALMREQ-DESIGNR-ALL    NOT =   SPACE )
+               PERFORM 2300-ODRITEM-COMMON-SET-SEC
+               MOVE    NCLAIMID-DESIGNRALLJMA
+                                   TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+               MOVE    HSPTEVALMREQ-DESIGNR-ALL
+                                   TO  LNK-ODRITEM-MEMO   (IDX-ITM)
+           END-IF
+      *
+           .
+       2300-DESIGNRINF-SET-EXT.
            EXIT.
       *****************************************************************
       *    共通項目設定処理
@@ -791,6 +809,8 @@
                                        TO HSPTEVALMRES-PTEVAL-DAY
       *     MOVE    SNINF04-PTEVAL-DIFF
       *                                TO HSPTEVALMRES-PTEVAL-DIFF
+           MOVE    SNINF04-DESIGNR-DAY
+                                       TO HSPTEVALMRES-DESIGNR-DAY
       *
            .
        2001-RESPONSE-EDIT-EXT.

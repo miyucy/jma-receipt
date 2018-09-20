@@ -88,6 +88,8 @@
                                                    OCCURS  31.
                05  SPA-NAI-RYOLIST-AREA.
                    07  SPA-NAI-RYOLIST-ADL-STIDX   PIC 9(03).
+                   07  SPA-NAI-RYOLIST-DESIGNR-STIDX
+                                                   PIC 9(03).
                    07  SPA-NAI-RYOLIST-OCC         OCCURS  100.
                        09  SPA-NAI-TZAISKBKBN      PIC X(01).
                        09  SPA-NAI-TMEDKBN         PIC 9(01).
@@ -95,6 +97,9 @@
                        09  SPA-NAI-TALLKBN         PIC 9(01).
                        09  SPA-NAI-TZAINUM         PIC 9(04).
                        09  SPA-NAI-TSRYCD          PIC X(09).
+                   07  SPA-NAI-DESIGNR-EVAL-DAY-G.
+                       09  SPA-NAI-DESIGNR-EVAL-DAY     PIC 9(1)
+                                                   OCCURS  31.
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-INPUT-MODE          PIC 9(1).
                    07  SPA-NAI-MUL-MAIN            PIC 9(1).
@@ -127,6 +132,7 @@
            03  FLG-RYOLIST-ROW             PIC 9(01).
            03  FLG-DIFFER                  PIC 9(01).
            03  FLG-EDIT                    PIC 9(01).
+           03  FLG-DESIGNR                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -262,6 +268,7 @@
       *
            03  CONST-RYOLIST-MAX       PIC 9(04)   VALUE   100.
       *
+           03  CONST-DESIGNRTEN-MAX    PIC 9(03)   VALUE   66.
            03  CONST-ADLKBN-G.
                05  CONST-ADLKBN-BASE-IDX   PIC 9(03).
                05  CONST-ADLTEN-MAX        PIC 9(03).
@@ -1945,6 +1952,55 @@
       *
            END-PERFORM
       *
+           IF    ( SPA-I40-SRYYMD  >=  CONST-H300401 )
+               COMPUTE IDX-LST =   IDX-LST +   1
+               MOVE    IDX-LST TO  SPA-NAI-RYOLIST-DESIGNR-STIDX
+      *
+               MOVE    "A"         TO  SPA-NAI-TZAISKBKBN
+                                                   (IDX-LST)
+      *
+               MOVE    DESIGNR-ALLKBN
+                                   TO  SPA-NAI-TALLKBN (IDX-LST)
+               MOVE    DESIGNR-ZAINUM
+                                   TO  SPA-NAI-TZAINUM (IDX-LST)
+               MOVE    DESIGNR-SRYCD
+                                   TO  SPA-NAI-TSRYCD  (IDX-LST)
+               MOVE    DESIGNR-MEI
+                                   TO  SPA-GMN-TNAME   (IDX-LST)
+      *
+               COMPUTE SPA-GMN-TNUM (IDX-LST)
+                   =   101
+      *
+               MOVE    SPA-I40-SRYYMD (1:6)
+                                   TO  WRK-SRYYM
+               MOVE    SPA-NAI-TZAINUM (IDX-LST)
+                                   TO  WRK-ZAINUM
+               PERFORM 900-RYOCOM-KEY-SEL-SEC
+               IF    ( FLG-RYOCOM  =   ZERO )
+      *
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       MOVE    RYOCOM-DAY (IDX-DAY)
+                                   TO  SPA-GMN-TDAY (IDX-LST IDX-DAY)
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    SPA-I40-SRYYMD (1:6)
+                                   TO  WRK-SRYYM
+               MOVE    DESIGNR-ZAINUM-EVAL
+                                   TO  WRK-ZAINUM
+               PERFORM 900-RYOCOM-KEY-SEL-SEC
+               IF    ( FLG-RYOCOM  =   ZERO )
+      *
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       MOVE    RYOCOM-DAY (IDX-DAY)
+                                   TO  SPA-NAI-DESIGNR-EVAL-DAY(IDX-DAY)
+                   END-PERFORM
+               END-IF
+      *
+           END-IF
+      *
            MOVE    IDX-LST         TO  SPA-GMN-RYOLIST-MAX
       *
            .
@@ -2551,6 +2607,11 @@
                    PERFORM 21211-RYOCOM-INS-SEC
                END-IF
       *
+               IF    ( SPA-NAI-DESIGNR-EVAL-DAY-G  NOT =   ZERO )
+                AND  ( SPA-NAI-TZAISKBKBN (IDX-LST)    =   "A" )
+                   PERFORM 21212-RYOCOM-INS-SEC
+               END-IF
+      *
            END-PERFORM
       *
            .
@@ -2596,6 +2657,45 @@
       *
            .
        21211-RYOCOM-INS-EXT.
+           EXIT.
+      *****************************************************************
+      *    療養レセプトコメントマスタ作成処理
+      *****************************************************************
+       21212-RYOCOM-INS-SEC            SECTION.
+      *
+           INITIALIZE                  RYOCOM-REC
+           MOVE    SPA-HOSPNUM     TO  RYOCOM-HOSPNUM
+           MOVE    "1"             TO  RYOCOM-NYUGAIKBN
+           MOVE    SPA-GMN-PTID    TO  RYOCOM-PTID
+           MOVE    SPA-I40-SRYYMD (1:6)
+                                   TO  RYOCOM-SRYYM
+           MOVE    DESIGNR-ZAINUM-EVAL
+                                   TO  RYOCOM-ZAINUM
+           MOVE    SPA-NAI-TZAISKBKBN (IDX-LST)
+                                   TO  RYOCOM-ZAISKBKBN
+           MOVE    DESIGNR-SRYCD-EVAL
+                                   TO  RYOCOM-SRYCD
+      *
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+               MOVE    SPA-NAI-DESIGNR-EVAL-DAY (IDX-DAY)
+                                   TO  RYOCOM-DAY (IDX-DAY)
+           END-PERFORM
+      *
+           MOVE    SMCNDATE-YMD    TO  RYOCOM-CREYMD
+                                       RYOCOM-UPYMD
+           MOVE    SMCNDATE-HMS    TO  RYOCOM-UPHMS
+      *
+           MOVE    RYOCOM-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ryocom"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "4005"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       21212-RYOCOM-INS-EXT.
            EXIT.
       *****************************************************************
       *    入力チェック処理
@@ -2684,15 +2784,9 @@
                ELSE
                    IF    ( SPA-GMN-DAY (IDX-DAY)   NOT =   SPACE )
                     AND  ( SPA-I47-NYUIN-DAY (IDX-DAY) =   ZERO )
-                       MOVE    SPA-GMN-DAY (IDX-DAY)
-                                   TO  WRK-TENSU-X
-                       PERFORM 4101-TENSU-LIMIT-CHK-SEC
-                       IF    ( WRK-TENSU   =   ZERO )
-                           CONTINUE
-                       ELSE
-                           MOVE    "0007"      TO  SPA-ERRCD
-                           COMPUTE SPA-GMN-CUR =   IDX-DAY     +   100
-                       END-IF
+      *
+                       MOVE    "0007"      TO  SPA-ERRCD
+                       COMPUTE SPA-GMN-CUR =   IDX-DAY     +   100
                    ELSE
       *
                        MOVE    SPA-GMN-DAY (IDX-DAY)
@@ -2979,15 +3073,31 @@
            CALL    "ORCSNUM"       USING   ORCSNUMAREA
            IF    ( SNUM-RC         =   ZERO )
             AND  ( SNUM-MINKBN     =   SPACE )
-            AND  ( SNUM-SYOKBN     =   SPACE ) 
+            AND  ( SNUM-SYOKBN     =   SPACE )
                MOVE    SNUM-OUTNUM TO  WRK-TENSU
-               IF    ( WRK-TENSU  >=  ZERO )
-                AND  ( WRK-TENSU  <=  CONST-ADLTEN-MAX )
-                   CONTINUE
-               ELSE
-                   MOVE    1       TO  FLG-LIMIT-ERR
-               END-IF
-      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-NAI-INPUT-MODE  =   2 )
+               WHEN  ( SPA-NAI-INPUT-MODE  =   1 )
+                 AND ( SPA-GMN-RYOLIST-SEL >   ZERO )
+                 AND ( SPA-NAI-TZAISKBKBN (SPA-GMN-RYOLIST-SEL)
+                                       NOT =   "A" )
+                   IF    ( WRK-TENSU  >=  ZERO )
+                    AND  ( WRK-TENSU  <=  CONST-ADLTEN-MAX )
+                       CONTINUE
+                   ELSE
+                       MOVE    1       TO  FLG-LIMIT-ERR
+                   END-IF
+               WHEN  ( SPA-NAI-INPUT-MODE  =   1 )
+                 AND ( SPA-GMN-RYOLIST-SEL >   ZERO )
+                 AND ( SPA-NAI-TZAISKBKBN (SPA-GMN-RYOLIST-SEL)
+                                       =   "A" )
+                   IF    ( WRK-TENSU  >=  ZERO )
+                    AND  ( WRK-TENSU  <=  CONST-DESIGNRTEN-MAX )
+                       CONTINUE
+                   ELSE
+                       MOVE    1       TO  FLG-LIMIT-ERR
+                   END-IF
+               END-EVALUATE
            ELSE
                    MOVE    1       TO  FLG-LIMIT-ERR
            END-IF
@@ -3038,6 +3148,7 @@
       *
            INITIALIZE                  WRK-MULTI-AREA
       *
+           MOVE    ZERO            TO  FLG-DESIGNR
            MOVE    ZERO            TO  WRK-INPUT-MODE
       *
       *    入力がないとき
@@ -3129,7 +3240,10 @@
       *                     IF    ( SPA-NAI-TZAINUM (IDX1)  =   2039 )
       *                         CONTINUE
       *                     ELSE
-                               MOVE    1       TO  WRK-SELNUM-FLG (IDX1)
+                            MOVE    1       TO  WRK-SELNUM-FLG (IDX1)
+                            IF    ( SPA-NAI-TZAISKBKBN (IDX1)  =   "A" )
+                               MOVE    1    TO  FLG-DESIGNR
+                            END-IF
       *                     END-IF
                        END-IF
                    END-PERFORM
@@ -3152,6 +3266,11 @@
                MOVE    2           TO  WRK-INPUT-MODE
            ELSE
                MOVE    1           TO  WRK-INPUT-MODE
+           END-IF
+      *
+           IF    ( WRK-INPUT-MODE  =   2 )
+            AND  ( FLG-DESIGNR     =   1 )
+               MOVE    "0008"      TO  SPA-ERRCD
            END-IF
       *
            .
@@ -3338,7 +3457,8 @@
       *
            MOVE    SPACE           TO  SPA-GMN-MEISYO
       *
-           IF    ( SPA-NAI-TZAISKBKBN(IDX-SEL) =   "1" )
+           EVALUATE    SPA-NAI-TZAISKBKBN(IDX-SEL)
+           WHEN    "1"
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   CONST-ADLKBN-MAX )
                         OR   ( SPA-GMN-MEISYO
@@ -3349,7 +3469,7 @@
                                    TO  SPA-GMN-MEISYO
                    END-IF
                END-PERFORM
-           ELSE
+           WHEN    "2"
                IF    ( SPA-I40-SRYYMD  >=  CONST-H200401 )
                    PERFORM VARYING IDX2 FROM    1   BY  1
                            UNTIL ( IDX2 >   MEDH20-MAX )
@@ -3375,7 +3495,9 @@
                    PERFORM 900-TENSU-KEY-SEL-SEC
                    MOVE    TNS-NAME TO  SPA-GMN-MEISYO
                END-IF
-           END-IF
+           WHEN    "A"
+               MOVE    DESIGNR-MEI  TO  SPA-GMN-MEISYO
+           END-EVALUATE
       *
            MOVE    SPA-GMN-TNUM (IDX-SEL)
                                    TO  WRK-ZZZ
@@ -3389,9 +3511,17 @@
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
       *
-               MOVE    SPA-GMN-TDAY  (IDX-SEL IDX-DAY)
-                                   TO  WRK-ZZ
-               MOVE    WRK-ZZ      TO  SPA-GMN-DAY (IDX-DAY)
+               IF    ( SPA-NAI-TZAISKBKBN(IDX-SEL) = "A" )
+                   IF    ( SPA-NAI-DESIGNR-EVAL-DAY (IDX-DAY) > ZERO )
+                       MOVE    SPA-GMN-TDAY  (IDX-SEL IDX-DAY)
+                                       TO  WRK-Z9
+                       MOVE    WRK-Z9  TO  SPA-GMN-DAY (IDX-DAY)
+                   END-IF
+               ELSE
+                   MOVE    SPA-GMN-TDAY  (IDX-SEL IDX-DAY)
+                                       TO  WRK-ZZ
+                   MOVE    WRK-ZZ      TO  SPA-GMN-DAY (IDX-DAY)
+               END-IF
       *
            END-PERFORM
       *
@@ -3554,6 +3684,10 @@
       *****************************************************************
        41011-ZAIHENKOU-SEC             SECTION.
       *
+           IF    ( SPA-NAI-TZAISKBKBN(IDX-LST) =   "A" )
+               MOVE    ZERO            TO  SPA-NAI-DESIGNR-EVAL-DAY-G
+           END-IF
+      *
            IF    ( SPA-NAI-TALLKBN (IDX-LST)   =   1 )
       *
                MOVE    ZERO                TO  WRK-DAY
@@ -3599,14 +3733,25 @@
                    MOVE    ZERO            TO  WRK-DAY
       *
                    IF    ( SPA-NAI-INPUT-MODE  =   1 )
-                       IF    ( SPA-NAI-DAY (IDX-DAY)   >   ZERO )
-                           IF    ( SPA-NAI-TZAISKBKBN(IDX-LST) =   "1" )
+                       EVALUATE    SPA-NAI-TZAISKBKBN(IDX-LST)
+                       WHEN    "1"
+                           IF    ( SPA-NAI-DAY (IDX-DAY) > ZERO )
                                MOVE    SPA-NAI-DAY (IDX-DAY)
-                                               TO  WRK-DAY
-                           ELSE
-                               MOVE    1       TO  WRK-DAY
+                                           TO  WRK-DAY
                            END-IF
-                       END-IF
+                       WHEN    "A"
+                           IF    ( SPA-GMN-DAY (IDX-DAY)
+                                           NOT = SPACE )
+                               MOVE    SPA-NAI-DAY (IDX-DAY)
+                                           TO  WRK-DAY
+                               MOVE    1   TO  SPA-NAI-DESIGNR-EVAL-DAY
+                                                         (IDX-DAY)
+                           END-IF
+                       WHEN    OTHER
+                           IF    ( SPA-NAI-DAY (IDX-DAY) > ZERO )
+                               MOVE    1   TO  WRK-DAY
+                           END-IF
+                       END-EVALUATE
       *
                        MOVE    WRK-DAY         TO  SPA-GMN-TDAY
                                                    (IDX-LST IDX-DAY)
@@ -3887,8 +4032,8 @@
                                    TO  IDX-LST
            ELSE
                MOVE    SPA-GMN-TNUM (IDX0)
-                                   TO  WRK-ZZ
-               MOVE    WRK-ZZ      TO  I47-TNUM (IDX-LST)
+                                    TO  WRK-ZZZ
+               MOVE    WRK-ZZZ-G    TO  I47-TNUM (IDX-LST)
       *
                IF    ( SPA-NAI-INPUT-MODE  =   2 )
                    IF    ( SPA-NAI-SELNUM-FLG (IDX0)   =   "1" )
@@ -3905,7 +4050,7 @@
                                        TO  WRK-ZZ
                MOVE    WRK-ZZ          TO  I47-TDAYLMT (IDX-LST)
       *
-               IF    ( SPA-NAI-TZAISKBKBN (IDX0)   =   "2" )
+               IF    ( SPA-NAI-TZAISKBKBN (IDX0)   =   "2" OR "A")
                 AND  ( SPA-NAI-TALLKBN (IDX0)      =   ZERO )
                        MOVE    "--"    TO  I47-TDAYALL (IDX-LST)
                ELSE
@@ -3920,9 +4065,19 @@
                     AND  ( SPA-NAI-TALLKBN (IDX0)      =   1 )
                        MOVE    "--"        TO  I47-TDAY(IDX-LST IDX-DAY)
                    ELSE
-                       MOVE    SPA-GMN-TDAY (IDX0 IDX-DAY)
+                       IF    ( SPA-NAI-TZAISKBKBN (IDX0)   =   "A")
+                           IF    ( SPA-NAI-DESIGNR-EVAL-DAY (IDX-DAY)
+                                                       >   ZERO )
+                               MOVE    SPA-GMN-TDAY (IDX0 IDX-DAY)
+                                           TO  WRK-Z9
+                               MOVE    WRK-Z9
+                                           TO  I47-TDAY(IDX-LST IDX-DAY)
+                           END-IF
+                       ELSE
+                           MOVE    SPA-GMN-TDAY (IDX0 IDX-DAY)
                                            TO  WRK-ZZ
-                       MOVE    WRK-ZZ      TO  I47-TDAY(IDX-LST IDX-DAY)
+                           MOVE    WRK-ZZ  TO  I47-TDAY(IDX-LST IDX-DAY)
+                       END-IF
                    END-IF
                END-PERFORM
       *
@@ -4347,7 +4502,7 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               MOVE    "選択番号入力エラー"
+               MOVE    "選択番号の入力に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "0002"
                MOVE    "指定された番号が多すぎます"
@@ -4359,14 +4514,21 @@
                MOVE    "指定された期間が多すぎます"
                                        TO  SPA-ERRMSG
            WHEN    "0005"
-               MOVE    "一括修正入力エラー"
+               MOVE    "一括修正の入力に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "0006"
-               MOVE    "日別入力エラー"
+               MOVE    "日別の入力に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "0007"
                MOVE    "入院期間外です"
                                        TO  SPA-ERRMSG
+           WHEN    "0008"
+               STRING  "ＤＥＳＧＩＮ−Ｒ合計点と"
+                                           DELIMITED   BY  SIZE
+                       "他の項目は同時に選択できません"
+                                           DELIMITED   BY  SIZE
+               INTO  SPA-ERRMSG
+               END-STRING
            WHEN    "0101"
                MOVE    "連続して１４日を越えて入力されています"
                                        TO  SPA-ERRMSG
@@ -4392,7 +4554,7 @@
            WHEN    "1001"
                MOVE    "剤が修正中です。変更確定かクリアをしてください"
                                        TO  SPA-ERRMSG
-           WHEN    "4001"  THRU    "4004"
+           WHEN    "4001"  THRU    "4005"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            END-EVALUATE

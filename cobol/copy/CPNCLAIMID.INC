@@ -480,6 +480,14 @@
                07  NCLAIMID-TEMPSETMES
                                 PIC X(100)
                                     VALUE  " ›∏±¡»πÁ§ª≤æ»÷πÊ¿ﬂƒÍ∂Ë ¨".
+             05  NCLAIMID-DESIGNRALL-G.
+               07  NCLAIMID-DESIGNRALL
+                                PIC X(20)   VALUE  "XXXXXXX".
+               07  NCLAIMID-DESIGNRALLJMA
+                                PIC X(05)   VALUE  "00061".
+               07  NCLAIMID-DESIGNRALLMES
+                                PIC X(100)
+                                    VALUE  "£ƒ£≈£”£…£«£Œ°›£“πÁ∑◊≈¿".
              05  NCLAIMID-UNCHKECK-G.
                07  NCLAIMID-UNCHKECK
                                 PIC X(20)   VALUE  "XXXXXXX".
@@ -488,8 +496,8 @@
                07  NCLAIMID-UNCHKECKMES
                                 PIC X(100)  VALUE  "…‘Ã¿".
            03  NCLAIMID-ITEM-R          REDEFINES   NCLAIMID-ITEM-VAL.
-             05  NCLAIMID-ITEM-OCC      OCCURS  61.
+             05  NCLAIMID-ITEM-OCC      OCCURS  62.
                07  NCLAIMID-ITEM        PIC X(20).
                07  NCLAIMID-ITEMJMA     PIC X(05).
                07  NCLAIMID-ITEMMES     PIC X(100).
-           03  NCLAIMID-ITEM-MAX        PIC 9(03)   VALUE   61.
+           03  NCLAIMID-ITEM-MAX        PIC 9(03)   VALUE   62.

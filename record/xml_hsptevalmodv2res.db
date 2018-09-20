@@ -27,17 +27,18 @@ xml_hsptevalmodv2res {
 			ID					varchar(2);
 			Name				varchar(100);
 			Evaluation_Month	varchar(1);
-			Evaluation_Daily		varchar(256);
+			Evaluation_Daily		varchar(128);
 		}[50];
 		ADL_Score	{
 			ID					varchar(1);
 			Name				varchar(100);
-			Evaluation_Daily	varchar(256);
+			Evaluation_Daily	varchar(128);
 		}[4];
-		Medical_Condition_Level_Daily	varchar(256);
-		ADL_Total_Score_Daily	varchar(256);
+		Medical_Condition_Level_Daily	varchar(128);
+		ADL_Total_Score_Daily	varchar(128);
 		Patient_Condition	{
-			Evaluation_Daily		varchar(256);
+			Evaluation_Daily		varchar(128);
 		};
+		Designr_Total_Score_Daily		varchar(128);
 	};
 };
