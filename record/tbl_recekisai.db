@@ -44,32 +44,6 @@ path	key 	{
 			ORDER   BY	ITEMNO, EDANO, SRYCD, RENNUM
 		;
 	};
-
-	DBINSERT	{
-		INSERT INTO tbl_recekisai
-			VALUES(
-				:ITEMNO,
-				:EDANO,
-				:STYM,
-				:EDYM,
-				:SRYCD,
-				:RENNUM,
-				:C_CD,
-				:JYOTAICD,
-				:KEISAIKBN,
-				:KUBUN,
-				:JYOKEN,
-				:HISANTEI,
-				:SYORIKBN,
-				:MEISYOETC,
-				:CHGYMD,
-				:HAISIYMD,
-				:CREYMD,
-				:UPYMD,
-				:UPHMS
-			)
-		;
-	};
 };
 
 path	upd1	{ 	
@@ -95,12 +69,12 @@ path	upd1	{
 				CREYMD    = :CREYMD,
 				UPYMD     = :UPYMD,
 				UPHMS     = :UPHMS
- 			WHERE   ITEMNO    = :ITEMNO
- 			AND     EDANO     = :EDANO
- 			AND     STYM     <= :STYM
-			AND     EDYM     >= :EDYM
-			AND     SRYCD     = :SRYCD
-			AND     RENNUM    = :RENNUM
+ 			WHERE   ITEMNO    = :UPITEMNO
+ 			AND     EDANO     = :UPEDANO
+ 			AND     STYM      = :UPSTYM
+			AND     EDYM      = :UPEDYM
+			AND     SRYCD     = :UPSRYCD
+			AND     RENNUM    = :UPRENNUM
 		;
 	};
 };
