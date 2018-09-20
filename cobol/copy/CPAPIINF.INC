@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      * 0500.201808
+      * 0500.201809
       ********************************************************************
        01  APIINF-AREA.
          03  APIINF-DATA.
@@ -268,7 +268,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "∞ÂŒ≈∂Ë ¨°¶ADL≈¿øÙ≈–œø".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201809".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -278,7 +278,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "∞ÂŒ≈∂Ë ¨°¶ADL≈¿øÙæ ÛºË∆¿".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201809".
            05  FILLER                  PIC  X(16)      VALUE
            "orca31".
            05  FILLER                  PIC  X(32)      VALUE
@@ -328,7 +328,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "º˝«º≈–œø".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201806".
+           "0500.201809".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -458,7 +458,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ø«Œ≈π‘∞Ÿ∫ÔΩ¸".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201806".
+           "0500.201809".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -498,7 +498,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ø«Œ≈≥Œ«ß°¶¿¡µ·≥Œ«ß".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201809".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -508,7 +508,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ø«Œ≈π‘∞Ÿ∫ÔΩ¸".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201809".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -780,6 +780,16 @@
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
            05  FILLER                  PIC  X(16)      VALUE
+           "orca44".
+           05  FILLER                  PIC  X(32)      VALUE
+           "receiptdatapatientmakev3".
+           05  FILLER                  PIC  X(64)      VALUE
+           "∏ƒ Ã•Ï•ª≈≈•«°º•øºË∆¿".
+           05  FILLER                  PIC  X(64)      VALUE
+           "∏ƒ Ã•Ï•ª≈≈•«°º•øºË∆¿".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201809".
+           05  FILLER                  PIC  X(16)      VALUE
            "orca42".
            05  FILLER                  PIC  X(32)      VALUE
            "receiptmakev3".
@@ -838,7 +848,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "¥À‹æ ÛºË∆¿".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201809".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -900,10 +910,10 @@
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
          03  APIINF-R REDEFINES APIINF-DATA.
-           05  APIINF-OCC              OCCURS 88.
+           05  APIINF-OCC              OCCURS 89.
              07  APIINF-LD             PIC  X(16).
              07  APIINF-ID             PIC  X(32).
              07  APIINF-HAORI-NAME     PIC  X(64).
              07  APIINF-NAME           PIC  X(64).
              07  APIINF-VERSION        PIC  X(16).
-         03  APIINF-MAX                PIC  9(05)      VALUE 88.
+         03  APIINF-MAX                PIC  9(05)      VALUE 89.
