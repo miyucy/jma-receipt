@@ -47,14 +47,16 @@
                        09  HSPTEVALMRES-MEDKBN-ID       PIC X(2).
                        09  HSPTEVALMRES-MEDKBN-NAME     PIC X(100).
                        09  HSPTEVALMRES-MEDKBN-MON      PIC X(1).
-                       09  HSPTEVALMRES-MEDKBN-DAY      PIC X(256).
+                       09  HSPTEVALMRES-MEDKBN-DAY      PIC X(128).
                05  HSPTEVALMRES-ADLKBN-AREA.
                    07  HSPTEVALMRES-ADLKBN-OCC          OCCURS  4.
                        09  HSPTEVALMRES-ADLKBN-ID       PIC X(1).
                        09  HSPTEVALMRES-ADLKBN-NAME     PIC X(100).
-                       09  HSPTEVALMRES-ADLKBN-DAY      PIC X(256).
-               05  HSPTEVALMRES-MEDKBN-LV-DAY           PIC X(256).
-               05  HSPTEVALMRES-ADLKBN-TTL-DAY          PIC X(256).
+                       09  HSPTEVALMRES-ADLKBN-DAY      PIC X(128).
+               05  HSPTEVALMRES-MEDKBN-LV-DAY           PIC X(128).
+               05  HSPTEVALMRES-ADLKBN-TTL-DAY          PIC X(128).
                05  HSPTEVALMRES-PTEVAL-AREA.
-                   07  HSPTEVALMRES-PTEVAL-DAY          PIC X(256).
-      *            07  HSPTEVALMRES-PTEVAL-DIFF         PIC X(256).
+                   07  HSPTEVALMRES-PTEVAL-DAY          PIC X(128).
+      *            07  HSPTEVALMRES-PTEVAL-DIFF         PIC X(128).
+               05  HSPTEVALMRES-DESIGNR-AREA.
+                   07  HSPTEVALMRES-DESIGNR-DAY         PIC X(128).

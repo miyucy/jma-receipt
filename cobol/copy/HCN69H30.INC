@@ -30,3 +30,6 @@
                         PIC X(2)        OCCURS 31 TIMES.
             02  HCN69H30-LOPTION
                         PIC X(100).
+            02  HCN69H30-DESIGNR-G.
+              03  HCN69H30-DESIGNR-DAY
+                        PIC X(2)        OCCURS 31 TIMES.

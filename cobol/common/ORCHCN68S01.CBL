@@ -91,6 +91,7 @@
                09  MEDINF-NAME             PIC X(100).
       *
        01  CONST-AREA.
+           03  CONST-H300401           PIC X(08)   VALUE   "20180401".
            03  CONST-H240401           PIC X(08)   VALUE   "20120401".
            03  CONST-H220401           PIC X(08)   VALUE   "20100401".
            03  CONST-H200401           PIC X(08)   VALUE   "20080401".
@@ -509,6 +510,10 @@
       *
            END-PERFORM
       *
+           IF    ( HCN68S01-SRYYMD >=  CONST-H300401 )
+               PERFORM 21011-EDIT-RYOLST-DESIGNR-SEC
+           END-IF
+      *
            MOVE    IDX-LST         TO  HCN68S01-RYOLIST-MAX
       *
            .
@@ -585,6 +590,55 @@
       *
            .
        21011-EDIT-MEDINF-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Á£Ä£Ì¶èÊ¬¡¦°åÎÅ¶èÊ¬¥ê¥¹¥ÈÊÔ½¸½èÍý ¡Ê£Ä£Å£Ó£É£Ç£Î£ÒÊÔ½¸¡Ë
+      *****************************************************************
+       21011-EDIT-RYOLST-DESIGNR-SEC    SECTION.
+      *
+           COMPUTE IDX-LST =   IDX-LST +   1
+      *
+           MOVE    IDX-LST TO  HCN68S01-RYOLIST-DESIGNR-STIDX
+      *
+           MOVE    "A"             TO  HCN68S01-TZAISKBKBN  (IDX-LST)
+      *
+           MOVE    DESIGNR-ALLKBN  TO  HCN68S01-TALLKBN (IDX-LST)
+           MOVE    DESIGNR-ZAINUM  TO  HCN68S01-TZAINUM (IDX-LST)
+           MOVE    DESIGNR-SRYCD   TO  HCN68S01-TSRYCD  (IDX-LST)
+           MOVE    DESIGNR-ID      TO  HCN68S01-TID     (IDX-LST)
+           MOVE    DESIGNR-MEI     TO  HCN68S01-TNAME   (IDX-LST)
+      *
+           MOVE    HCN68S01-SRYYM  TO  WRK-SRYYM
+           MOVE    DESIGNR-ZAINUM  TO  WRK-ZAINUM
+           PERFORM 900-RYOCOM-KEY-SEL-SEC
+           IF    ( FLG-RYOCOM  =   ZERO )
+               PERFORM VARYING IDX-DAY FROM    1   BY  1
+                       UNTIL ( IDX-DAY >   31 )
+                   IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
+                                               NOT =   SPACE )
+                       MOVE    RYOCOM-DAY (IDX-DAY)
+                                   TO  HCN68S01-TDAY (IDX-LST IDX-DAY)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           MOVE    HCN68S01-SRYYM  TO  WRK-SRYYM
+           MOVE    DESIGNR-ZAINUM-EVAL
+                                   TO  WRK-ZAINUM
+           PERFORM 900-RYOCOM-KEY-SEL-SEC
+           IF    ( FLG-RYOCOM  =   ZERO )
+               PERFORM VARYING IDX-DAY FROM    1   BY  1
+                       UNTIL ( IDX-DAY >   31 )
+                   IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
+                                               NOT =   SPACE )
+                       MOVE    RYOCOM-DAY (IDX-DAY)
+                               TO  HCN68S01-DESIGNR-EVAL-DAY (IDX-DAY)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       21011-EDIT-RYOLST-DESIGNR-EXT.
            EXIT.
       *****************************************************************
       *    ´µ¼Ô¾õÂÖÊÔ½¸½èÍý

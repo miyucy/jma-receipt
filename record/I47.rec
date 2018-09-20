@@ -154,7 +154,7 @@ I47 {
         row int;
         rowattr int;
           item {
-            column1 varchar(2);
+            column1 varchar(3);
             column2 varchar(1);
             column3 varchar(100);
             column4 varchar(2);

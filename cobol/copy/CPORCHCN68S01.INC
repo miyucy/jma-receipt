@@ -44,6 +44,7 @@
                    07  HCN68S01-RYOYO-KHN          PIC 9(02).
            03  HCN68S01-RYOLIST-AREA.
                05  HCN68S01-RYOLIST-ADL-STIDX      PIC 9(03).
+               05  HCN68S01-RYOLIST-DESIGNR-STIDX  PIC 9(03).
                05  HCN68S01-RYOLIST-MAX            PIC 9(05).
                05  HCN68S01-RYOLIST-OCC            OCCURS  100.
                    07  HCN68S01-TID                PIC X(02).
@@ -74,4 +75,8 @@
            03  HCN68S01-ADLTEN-DAY-AREA.
                05  HCN68S01-ADLTEN-DAY-G.
                    07  HCN68S01-ADLTEN-DAY         PIC 9(02)
+                                                   OCCURS  31.
+           03  HCN68S01-DESIGNR-AREA.
+               05  HCN68S01-DESIGNR-EVAL-DAY-G.
+                   07  HCN68S01-DESIGNR-EVAL-DAY   PIC 9(02)
                                                    OCCURS  31.

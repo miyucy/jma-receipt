@@ -11,13 +11,14 @@ xml_hsptevalmodv2req {
 		Medical_Condition {
 			ID				varchar(2);
 			Evaluation      varchar(1);
-			Evaluation_Daily	varchar(80);
+			Evaluation_Daily	varchar(128);
 		}[50];
 		ADL_Score	{
 			ID				varchar(1);
 			Evaluation      varchar(1);
-			Evaluation_Daily varchar(80);
+			Evaluation_Daily varchar(128);
 		}[4];
+		Designr_Total_Score_Daily		varchar(128);
 	};
 };
 

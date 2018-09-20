@@ -477,6 +477,8 @@
                                        TO HSPTEVALRES-PTEVAL-DAY
            MOVE    SNINF04-PTEVAL-DIFF
                                        TO HSPTEVALRES-PTEVAL-DIFF
+           MOVE    SNINF04-DESIGNR-DAY
+                                       TO HSPTEVALRES-DESIGNR-DAY
       *
            .
        2001-RESPONSE-EDIT-EXT.

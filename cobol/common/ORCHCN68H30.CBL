@@ -81,10 +81,12 @@
            03  WRK-EDTYMD3         PIC X(22).
            03  WRK-PRT-SRYYM       PIC X(16).
            03  WRK-PRT-SAKYMD      PIC X(22).
-           03  WRK-ADLTEN-G.
-               05  WRK-ADLTEN      PIC 9(02).
-           03  WRK-PRT-ADLTEN      PIC X(02).
+           03  WRK-TEN-G.
+               05  WRK-TEN      PIC 9(02).
+           03  WRK-PRT-TEN      PIC X(02).
            03  WRK-KANACHK-STR     PIC X(500).
+      *
+           COPY    "CPMEDKBN.INC".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -615,6 +617,23 @@
                    PERFORM 200111-EDIT-HCN69-SEC
                END-IF
       *
+               IF    ( HCN68S01-TZAINUM (IDXL)
+                                   =   DESIGNR-ZAINUM )
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
+                                       NOT =   SPACE )
+                        AND  ( HCN68S01-DESIGNR-EVAL-DAY (IDX-DAY)
+                                           >   ZERO )
+                           MOVE    HCN68S01-TDAY (IDXL IDX-DAY)
+                                           TO  WRK-TEN
+                           PERFORM 2001111-EDIT-TEN-SEC
+                           MOVE    WRK-PRT-TEN
+                                   TO  HCN69-DESIGNR-DAY (IDX-DAY)
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
            END-PERFORM
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
@@ -622,9 +641,9 @@
                IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
                                    NOT =   SPACE )
                    MOVE    HCN68S01-ADLTEN-DAY (IDX-DAY)
-                                   TO  WRK-ADLTEN
-                   PERFORM 2001111-EDIT-ADLTEN-SEC
-                   MOVE    WRK-PRT-ADLTEN
+                                   TO  WRK-TEN
+                   PERFORM 2001111-EDIT-TEN-SEC
+                   MOVE    WRK-PRT-TEN
                                    TO  HCN69-TTL-ADLTEN-DAY (IDX-DAY)
                END-IF
            END-PERFORM
@@ -676,9 +695,9 @@
                IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
                                    NOT =   SPACE )
                    MOVE    HCN68S01-TDAY (IDXL IDX-DAY)
-                           TO  WRK-ADLTEN
-                   PERFORM 2001111-EDIT-ADLTEN-SEC
-                   MOVE    WRK-PRT-ADLTEN
+                           TO  WRK-TEN
+                   PERFORM 2001111-EDIT-TEN-SEC
+                   MOVE    WRK-PRT-TEN
                            TO  HCN69-ADLTEN-DAY (IDX-ADL IDX-DAY)
                END-IF
          END-PERFORM
@@ -687,19 +706,19 @@
        200111-EDIT-HCN69-EXT.
            EXIT.
       *****************************************************************
-      *    £Á£Ä£ÌÅÀ¿ôÊÔ½¸½èÍý
+      *    ÅÀ¿ôÊÔ½¸½èÍý
       *****************************************************************
-       2001111-EDIT-ADLTEN-SEC         SECTION.
+       2001111-EDIT-TEN-SEC         SECTION.
       *
-           IF    ( WRK-ADLTEN-G (1:1)  =   "0" )
-               MOVE  WRK-ADLTEN-G (2:1)
-                                   TO  WRK-PRT-ADLTEN
+           IF    ( WRK-TEN-G (1:1)  =   "0" )
+               MOVE  WRK-TEN-G (2:1)
+                                   TO  WRK-PRT-TEN
            ELSE
-               MOVE  WRK-ADLTEN-G  TO  WRK-PRT-ADLTEN
+               MOVE  WRK-TEN-G     TO  WRK-PRT-TEN
            END-IF
       *
            .
-       2001111-EDIT-ADLTEN-EXT.
+       2001111-EDIT-TEN-EXT.
            EXIT.
       *****************************************************************
       *    £Á£Ä£Ì¶èÊ¬É¾²ÁÉ¼°õºþ½èÍý
