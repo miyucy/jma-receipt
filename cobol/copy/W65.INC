@@ -919,6 +919,26 @@
                     06  W65-ZENDAY2TAIKBNN-COUNT  PIC S9(9) BINARY.
                     06  W65-ZENDAY2TAIKBNN-ITEM   PIC X(40) OCCURS 10.
                     06  W65-ZENDAY2TAIKBNN-ITEM-STATE  PIC S9(9) BINARY.
+                  05  W65-CMB-SYOKEI2KBNG.
+                    06  W65-SYOKEI2KBNG           PIC X(80).
+                    06  W65-SYOKEI2KBNG-COUNT     PIC S9(9) BINARY.
+                    06  W65-SYOKEI2KBNG-ITEM      PIC X(80) OCCURS 10.
+                  05  W65-CMB-SYOKEI2TAIKBNG.
+                    06  W65-SYOKEI2TAIKBNG        PIC X(40).
+                    06  W65-SYOKEI2TAIKBNG-STATE  PIC S9(9) BINARY.
+                    06  W65-SYOKEI2TAIKBNG-COUNT  PIC S9(9) BINARY.
+                    06  W65-SYOKEI2TAIKBNG-ITEM   PIC X(40) OCCURS 10.
+                    06  W65-SYOKEI2TAIKBNG-ITEM-STATE  PIC S9(9) BINARY.
+                  05  W65-CMB-SYOKEI2KBNN.
+                    06  W65-SYOKEI2KBNN           PIC X(80).
+                    06  W65-SYOKEI2KBNN-COUNT     PIC S9(9) BINARY.
+                    06  W65-SYOKEI2KBNN-ITEM      PIC X(80) OCCURS 10.
+                  05  W65-CMB-SYOKEI2TAIKBNN.
+                    06  W65-SYOKEI2TAIKBNN        PIC X(40).
+                    06  W65-SYOKEI2TAIKBNN-STATE  PIC S9(9) BINARY.
+                    06  W65-SYOKEI2TAIKBNN-COUNT  PIC S9(9) BINARY.
+                    06  W65-SYOKEI2TAIKBNN-ITEM   PIC X(40) OCCURS 10.
+                    06  W65-SYOKEI2TAIKBNN-ITEM-STATE  PIC S9(9) BINARY.
               03  W65-YUKOSTYMD                  PIC X(10).
               03  W65-YUKOSTYMD-STATE            PIC S9(9) BINARY.
               03  W65-YUKOEDYMD                  PIC X(10).

@@ -1396,6 +1396,38 @@ W65 {
             item varchar(40)[10];
           state int;
         };
+        CMB_SYOKEI2KBNG {
+          SYOKEI2KBNG {
+            textdata varchar(80);
+          };
+          count int;
+            item varchar(80)[10];
+        };
+        CMB_SYOKEI2TAIKBNG {
+          SYOKEI2TAIKBNG {
+            textdata varchar(40);
+            state int;
+          };
+          count int;
+            item varchar(40)[10];
+          state int;
+        };
+        CMB_SYOKEI2KBNN {
+          SYOKEI2KBNN {
+            textdata varchar(80);
+          };
+          count int;
+            item varchar(80)[10];
+        };
+        CMB_SYOKEI2TAIKBNN {
+          SYOKEI2TAIKBNN {
+            textdata varchar(40);
+            state int;
+          };
+          count int;
+            item varchar(40)[10];
+          state int;
+        };
       };
     };
     YUKOSTYMD {
