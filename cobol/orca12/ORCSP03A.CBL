@@ -2937,6 +2937,15 @@
                    MOVE    IDX             TO  WRK-IDX
                    MOVE    16              TO  SPA-GMN-CUR
                END-IF
+      *        どちらかが家族はエラー
+               IF      SPA-ERRCD           =   SPACE
+                   IF     (SPA-PTHKN-HONKZKKBN (IDX) =   "2" )
+                       OR (SPA-GMN-HONKZKKBN         =   "2" )
+                       MOVE    "0064"          TO  SPA-ERRCD
+                       MOVE    IDX             TO  WRK-IDX
+                       MOVE    16              TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
                GO      TO      20041-KIKAN-CHK1-EXT
            END-IF
       *!!!!
