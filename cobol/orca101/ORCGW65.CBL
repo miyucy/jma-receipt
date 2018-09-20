@@ -765,6 +765,22 @@
                        09  SPA-GMN-ZENDAY2TAIKBNN           PIC X(01).
                        09  SPA-GMN-ZENDAY2TAIKBNNF          PIC X(01).
                        09  SPA-GMN-ZENDAY2TAIKBNNMEI        PIC X(38).
+                   07  SPA-GMN-SYOKEI2KBNG-G.
+                       09  SPA-GMN-SYOKEI2KBNG              PIC X(01).
+                       09  SPA-GMN-SYOKEI2KBNGF             PIC X(01).
+                       09  SPA-GMN-SYOKEI2KBNGMEI           PIC X(78).
+                   07  SPA-GMN-SYOKEI2TAIKBNG-G.
+                       09  SPA-GMN-SYOKEI2TAIKBNG           PIC X(01).
+                       09  SPA-GMN-SYOKEI2TAIKBNGF          PIC X(01).
+                       09  SPA-GMN-SYOKEI2TAIKBNGMEI        PIC X(38).
+                   07  SPA-GMN-SYOKEI2KBNN-G.
+                       09  SPA-GMN-SYOKEI2KBNN              PIC X(01).
+                       09  SPA-GMN-SYOKEI2KBNNF             PIC X(01).
+                       09  SPA-GMN-SYOKEI2KBNNMEI           PIC X(78).
+                   07  SPA-GMN-SYOKEI2TAIKBNN-G.
+                       09  SPA-GMN-SYOKEI2TAIKBNN           PIC X(01).
+                       09  SPA-GMN-SYOKEI2TAIKBNNF          PIC X(01).
+                       09  SPA-GMN-SYOKEI2TAIKBNNMEI        PIC X(38).
                05  SPA-GMN-CMB-AREA.
                    07  SPA-GMN-KOHNUMLST-G.
                        09  SPA-GMN-KOHNUM-MAX              PIC 9(03).
@@ -1294,6 +1310,33 @@
                            11  SPA-GMN-ZENDAY2TAIKBNNL       PIC X(01).
                            11  SPA-GMN-ZENDAY2TAIKBNNFL      PIC X(01).
                            11  SPA-GMN-ZENDAY2TAIKBNNMEIL    PIC X(38).
+      *
+                   07  SPA-GMN-SYOKEI2KBNGLST-G.
+                       09  SPA-GMN-SYOKEI2KBNG-MAX           PIC 9(03).
+                       09  SPA-GMN-SYOKEI2KBNGLST            OCCURS 10.
+                           11  SPA-GMN-SYOKEI2KBNGL          PIC X(01).
+                           11  SPA-GMN-SYOKEI2KBNGFL         PIC X(01).
+                           11  SPA-GMN-SYOKEI2KBNGMEIL       PIC X(78).
+      *
+                   07  SPA-GMN-SYOKEI2TAIKBNGLST-G.
+                       09  SPA-GMN-SYOKEI2TAIKBNG-MAX        PIC 9(03).
+                       09  SPA-GMN-SYOKEI2TAIKBNGLST         OCCURS 10.
+                           11  SPA-GMN-SYOKEI2TAIKBNGL       PIC X(01).
+                           11  SPA-GMN-SYOKEI2TAIKBNGFL      PIC X(01).
+                           11  SPA-GMN-SYOKEI2TAIKBNGMEIL    PIC X(38).
+                   07  SPA-GMN-SYOKEI2KBNNLST-G.
+                       09  SPA-GMN-SYOKEI2KBNN-MAX           PIC 9(03).
+                       09  SPA-GMN-SYOKEI2KBNNLST            OCCURS 10.
+                           11  SPA-GMN-SYOKEI2KBNNL          PIC X(01).
+                           11  SPA-GMN-SYOKEI2KBNNFL         PIC X(01).
+                           11  SPA-GMN-SYOKEI2KBNNMEIL       PIC X(78).
+      *
+                   07  SPA-GMN-SYOKEI2TAIKBNNLST-G.
+                       09  SPA-GMN-SYOKEI2TAIKBNN-MAX        PIC 9(03).
+                       09  SPA-GMN-SYOKEI2TAIKBNNLST         OCCURS 10.
+                           11  SPA-GMN-SYOKEI2TAIKBNNL       PIC X(01).
+                           11  SPA-GMN-SYOKEI2TAIKBNNFL      PIC X(01).
+                           11  SPA-GMN-SYOKEI2TAIKBNNMEIL    PIC X(38).
                05  SPA-GMN-KOHLST-AREA.
                    07  SPA-GMN-KOHLST-MAX                  PIC 9(5).
                    07  SPA-GMN-KOHLST-SEL                  PIC 9(5).
@@ -1907,6 +1950,18 @@
       *
       *    全国公費併用時の日の負担金計算２（入院）対象区分コンボ編集処理
            PERFORM 3110-ZENDAY2TAIKBNNLST-SEC
+      *
+      *    初診時の負担金計算（外来）コンボ編集処理
+           PERFORM 3110-SYOKEI2KBNGLST-SEC
+      *
+      *    初診時の負担金計算（外来）対象区分コンボ編集処理
+           PERFORM 3110-SYOKEI2TAIKBNGLST-SEC
+      *
+      *    初診時の負担金計算（入院）コンボ編集処理
+           PERFORM 3110-SYOKEI2KBNNLST-SEC
+      *
+      *    初診時の負担金計算（入院）対象区分コンボ編集処理
+           PERFORM 3110-SYOKEI2TAIKBNNLST-SEC
       *
            .
        311-COMBO-EDIT-EXT.
@@ -3808,6 +3863,88 @@
        3110-ZENKEI2TAIKBNGLST-EXT.
            EXIT.
       *****************************************************************
+      *    初診時の負担金計算（外来）コンボ編集処理
+      *****************************************************************
+       3110-SYOKEI2KBNGLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SYOKEI2KBNGLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-SYOKEI2KBNGL    (1)
+           MOVE  "通常計算"
+                                   TO  SPA-GMN-SYOKEI2KBNGMEIL (1)
+      *
+           MOVE  "1"               TO  SPA-GMN-SYOKEI2KBNGL    (2)
+           STRING  "初診時一部負担金（５８０円）を"
+                                       DELIMITED BY SIZE
+                   "差し引いた金額を一部負担金とする"
+                                       DELIMITED BY SIZE
+           INTO    SPA-GMN-SYOKEI2KBNGMEIL (2)
+           END-STRING
+      *
+      *
+           MOVE    2               TO  SPA-GMN-SYOKEI2KBNG-MAX
+      *
+           .
+       3110-SYOKEI2KBNGLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（外来）対象区分コンボ編集処理
+      *****************************************************************
+       3110-SYOKEI2TAIKBNGLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SYOKEI2TAIKBNGLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-SYOKEI2TAIKBNGL    (1)
+           MOVE  "患者負担のある公費"
+                                   TO  SPA-GMN-SYOKEI2TAIKBNGMEIL (1)
+      *
+           MOVE    1               TO  SPA-GMN-SYOKEI2TAIKBNG-MAX
+      *
+           .
+       3110-SYOKEI2TAIKBNGLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（入院）コンボ編集処理
+      *****************************************************************
+       3110-SYOKEI2KBNNLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SYOKEI2KBNNLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-SYOKEI2KBNNL    (1)
+           MOVE  "通常計算"
+                                   TO  SPA-GMN-SYOKEI2KBNNMEIL (1)
+      *
+           MOVE  "1"               TO  SPA-GMN-SYOKEI2KBNNL    (2)
+           STRING  "初診時一部負担金（５８０円）を"
+                                       DELIMITED BY SIZE
+                   "差し引いた金額を一部負担金とする"
+                                       DELIMITED BY SIZE
+           INTO    SPA-GMN-SYOKEI2KBNNMEIL (2)
+           END-STRING
+      *
+      *
+           MOVE    2               TO  SPA-GMN-SYOKEI2KBNN-MAX
+      *
+           .
+       3110-SYOKEI2KBNNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（入院）対象区分コンボ編集処理
+      *****************************************************************
+       3110-SYOKEI2TAIKBNNLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SYOKEI2TAIKBNNLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-SYOKEI2TAIKBNNL    (1)
+           MOVE  "患者負担のある公費"
+                                   TO  SPA-GMN-SYOKEI2TAIKBNNMEIL (1)
+      *
+           MOVE    1               TO  SPA-GMN-SYOKEI2TAIKBNN-MAX
+      *
+           .
+       3110-SYOKEI2TAIKBNNLST-EXT.
+           EXIT.
+      *****************************************************************
       *    公費の種類コンボ編集処理
       *****************************************************************
        3110-KOHNUMLST-SEC              SECTION.
@@ -4284,6 +4421,10 @@
            MOVE    W65-ZENDAY2TAIKBNN   TO  SPA-GMN-ZENDAY2TAIKBNN-G
            MOVE    W65-ZENKEI2KBNG      TO  SPA-GMN-ZENKEI2KBNG-G
            MOVE    W65-ZENKEI2TAIKBNG   TO  SPA-GMN-ZENKEI2TAIKBNG-G
+           MOVE    W65-SYOKEI2KBNG      TO  SPA-GMN-SYOKEI2KBNG-G
+           MOVE    W65-SYOKEI2TAIKBNG   TO  SPA-GMN-SYOKEI2TAIKBNG-G
+           MOVE    W65-SYOKEI2KBNN      TO  SPA-GMN-SYOKEI2KBNN-G
+           MOVE    W65-SYOKEI2TAIKBNN   TO  SPA-GMN-SYOKEI2TAIKBNN-G
       *
            MOVE    W65-YUKOSTYMD       TO  SPA-GMN-YUKOSTYMD
            MOVE    W65-YUKOEDYMD       TO  SPA-GMN-YUKOEDYMD
@@ -5208,6 +5349,22 @@
                PERFORM 4101-ZENDAY2TAIKBNN-CHK-SEC
            END-IF
       *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-SYOKEI2KBNG-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-SYOKEI2TAIKBNG-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-SYOKEI2KBNN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-SYOKEI2TAIKBNN-CHK-SEC
+           END-IF
+      *
            IF    ( SPA-ERRCD   NOT =   SPACE )
                MOVE    8           TO  SPA-GMN-PAGENO
            END-IF
@@ -5843,6 +6000,10 @@
            MOVE    SPA-GMN-ZENDAYTAIKBNN   TO SYS-2010-ZENDAY-TAIKBN-N
            MOVE    SPA-GMN-ZENDAY2KBNN      TO SYS-2010-ZENDAY2KBN-N
            MOVE    SPA-GMN-ZENDAY2TAIKBNN   TO SYS-2010-ZENDAY2-TAIKBN-N
+           MOVE    SPA-GMN-SYOKEI2KBNG      TO SYS-2010-SYOKEI2KBN-G
+           MOVE    SPA-GMN-SYOKEI2TAIKBNG   TO SYS-2010-SYOKEI2-TAIKBN-G
+           MOVE    SPA-GMN-SYOKEI2KBNN      TO SYS-2010-SYOKEI2KBN-N
+           MOVE    SPA-GMN-SYOKEI2TAIKBNN   TO SYS-2010-SYOKEI2-TAIKBN-N
       ***
            .
        4201-KOHINF-EDIT-EXT.
@@ -7235,6 +7396,27 @@
                                        TO  WRK-CMB-CD
            PERFORM 4200-ZENDAY2TAIKBNNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENDAY2TAIKBNN-G
+      *
+           MOVE    SYS-2010-SYOKEI2KBN-G
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2KBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2KBNG-G
+      *
+           MOVE    SYS-2010-SYOKEI2-TAIKBN-G
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2TAIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2TAIKBNG-G
+      *
+           MOVE    SYS-2010-SYOKEI2KBN-N
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2KBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2KBNN-G
+      *
+           MOVE    SYS-2010-SYOKEI2-TAIKBN-N
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2TAIKBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2TAIKBNN-G
+      *
       **
       *
            MOVE    SYS-2010-STYUKYMD   TO  SEL-STYMD
@@ -9943,6 +10125,66 @@
        4101-ZENKEI2TAIKBNG-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    初診時の負担金計算（外来）チェック処理
+      *****************************************************************
+       4101-SYOKEI2KBNG-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-SYOKEI2KBNG
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2KBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2KBNG-G
+      *
+           IF    ( SPA-GMN-SYOKEI2KBNG  =   "0" )
+               MOVE    "0"             TO  SPA-GMN-SYOKEI2TAIKBNG
+           END-IF
+      *
+           .
+       4101-SYOKEI2KBNG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（外来）対象区分チェック処理
+      *****************************************************************
+       4101-SYOKEI2TAIKBNG-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-SYOKEI2TAIKBNG
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2TAIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2TAIKBNG-G
+      *
+           .
+       4101-SYOKEI2TAIKBNG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（入院）チェック処理
+      *****************************************************************
+       4101-SYOKEI2KBNN-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-SYOKEI2KBNN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2KBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2KBNN-G
+      *
+           IF    ( SPA-GMN-SYOKEI2KBNN  =   "0" )
+               MOVE    "0"             TO  SPA-GMN-SYOKEI2TAIKBNN
+           END-IF
+      *
+           .
+       4101-SYOKEI2KBNN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（入院）対象区分チェック処理
+      *****************************************************************
+       4101-SYOKEI2TAIKBNN-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-SYOKEI2TAIKBNN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2TAIKBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2TAIKBNN-G
+      *
+           .
+       4101-SYOKEI2TAIKBNN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    有効期間開始日
       *****************************************************************
        4101-YUKOSTYMD-CHK-SEC          SECTION.
@@ -10683,8 +10925,28 @@
            PERFORM 4200-ZENKEI2TAIKBNGLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-ZENKEI2TAIKBNG-G
       *
+      *    初診時の負担金計算（外来）
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2KBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2KBNG-G
+      *
+      *    初診時の負担金計算（外来）対象区分
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2TAIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2TAIKBNG-G
+      *
+      *    初診時の負担金計算（入院）
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2KBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2KBNN-G
+      *
+      *    初診時の負担金計算（入院）対象区分
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-SYOKEI2TAIKBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2TAIKBNN-G
+      *
            .
-       42011-COMBO-SET-DEFAULT-ETXT.
+       42011-COMBO-SET-DEFAULT-EXT.
            EXIT.
       *****************************************************************
       *    コンボボックス初期値設定処理（Ver4.7.0追加分）
@@ -11303,6 +11565,16 @@
                    MOVE    "0"         TO  SPA-GMN-JIRITUTAIKBN
                END-EVALUATE
       *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-HOKKAIDO )
+                AND  ( SPA-GMN-KOHNUM  =   "642" OR "643" 
+                                        OR "644" OR "743" )
+                   MOVE    "1"         TO  SPA-GMN-SYOKEI2KBNG
+                   MOVE    "0"         TO  SPA-GMN-SYOKEI2TAIKBNG
+                   MOVE    "1"         TO  SPA-GMN-SYOKEI2KBNN
+                   MOVE    "0"         TO  SPA-GMN-SYOKEI2TAIKBNN
+               END-EVALUATE
+      *
            .
        42012-COMBO-SET-DEFAULT-ETXT.
            EXIT.
@@ -11572,6 +11844,10 @@
            MOVE    SPA-GMN-ZENDAY2TAIKBNN-G    TO  W65-ZENDAY2TAIKBNN
            MOVE    SPA-GMN-ZENKEI2KBNG-G       TO  W65-ZENKEI2KBNG
            MOVE    SPA-GMN-ZENKEI2TAIKBNG-G    TO  W65-ZENKEI2TAIKBNG
+           MOVE    SPA-GMN-SYOKEI2KBNG-G       TO  W65-SYOKEI2KBNG
+           MOVE    SPA-GMN-SYOKEI2TAIKBNG-G    TO  W65-SYOKEI2TAIKBNG
+           MOVE    SPA-GMN-SYOKEI2KBNN-G       TO  W65-SYOKEI2KBNN
+           MOVE    SPA-GMN-SYOKEI2TAIKBNN-G    TO  W65-SYOKEI2TAIKBNN
       *
            MOVE    SPA-GMN-JNISSUKBN-MAX       TO  W65-JNISSUKBN-COUNT
            PERFORM VARYING IDX-CMB FROM    1   BY  1
@@ -12424,6 +12700,42 @@
                                    TO  W65-ZENKEI2TAIKBNG-ITEM (IDX-CMB)
            END-PERFORM
       *
+      *    初診時の負担金計算（外来）
+           MOVE    SPA-GMN-SYOKEI2KBNG-MAX
+                                   TO  W65-SYOKEI2KBNG-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYOKEI2KBNG-MAX )
+               MOVE    SPA-GMN-SYOKEI2KBNGLST (IDX-CMB)
+                                   TO  W65-SYOKEI2KBNG-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    初診時の負担金計算（外来）対象区分
+           MOVE    SPA-GMN-SYOKEI2TAIKBNG-MAX
+                                   TO  W65-SYOKEI2TAIKBNG-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYOKEI2TAIKBNG-MAX )
+               MOVE    SPA-GMN-SYOKEI2TAIKBNGLST (IDX-CMB)
+                                   TO  W65-SYOKEI2TAIKBNG-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    初診時の負担金計算（入院）
+           MOVE    SPA-GMN-SYOKEI2KBNN-MAX
+                                   TO  W65-SYOKEI2KBNN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYOKEI2KBNN-MAX )
+               MOVE    SPA-GMN-SYOKEI2KBNNLST (IDX-CMB)
+                                   TO  W65-SYOKEI2KBNN-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    初診時の負担金計算（入院）対象区分
+           MOVE    SPA-GMN-SYOKEI2TAIKBNN-MAX
+                                   TO  W65-SYOKEI2TAIKBNN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYOKEI2TAIKBNN-MAX )
+               MOVE    SPA-GMN-SYOKEI2TAIKBNNLST (IDX-CMB)
+                                   TO  W65-SYOKEI2TAIKBNN-ITEM (IDX-CMB)
+           END-PERFORM
+      *
       *    公費リスト
            MOVE    SPA-GMN-KOHLST-MAX  TO  W65-KOHLST-COUNT
            PERFORM VARYING IDX-LST    FROM    1   BY  1
@@ -12721,6 +13033,10 @@
                                        W65-TANKITAIKBN-ITEM-STATE
                                        W65-ZENKEI2TAIKBNG-STATE
                                        W65-ZENKEI2TAIKBNG-ITEM-STATE
+                                       W65-SYOKEI2TAIKBNG-STATE
+                                       W65-SYOKEI2TAIKBNG-ITEM-STATE
+                                       W65-SYOKEI2TAIKBNN-STATE
+                                       W65-SYOKEI2TAIKBNN-ITEM-STATE
                                        W65-YUKOSTYMD-STATE
                                        W65-YUKOEDYMD-STATE
                                        W65-SELNUM2-STATE
@@ -13149,6 +13465,16 @@
                                    TO  W65-ZENKEI2TAIKBNG-STATE
                                        W65-ZENKEI2TAIKBNG-ITEM-STATE
            END-IF
+           IF    ( SPA-GMN-SYOKEI2KBNG  =  "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-SYOKEI2TAIKBNG-STATE
+                                       W65-SYOKEI2TAIKBNG-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-SYOKEI2KBNN  =  "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-SYOKEI2TAIKBNN-STATE
+                                       W65-SYOKEI2TAIKBNN-ITEM-STATE
+           END-IF
       *
            IF    ( SPA-GMN-KOHLST-MAX  >=  CONST-KOHLST-MAX )
                MOVE    WIDGET-INSENSITIVE  TO  W65-B06-STATE
@@ -13531,6 +13857,14 @@
               MOVE    "ZENDAY2KBNN"         TO  MCP-WIDGET
            WHEN    910
               MOVE    "ZENDAY2TAIKBNN"      TO  MCP-WIDGET
+           WHEN    911
+              MOVE    "SYOKEI2KBNG"         TO  MCP-WIDGET
+           WHEN    912
+              MOVE    "SYOKEI2TAIKBNG"      TO  MCP-WIDGET
+           WHEN    913
+              MOVE    "SYOKEI2KBNN"         TO  MCP-WIDGET
+           WHEN    914
+              MOVE    "SYOKEI2TAIKBNN"      TO  MCP-WIDGET
            WHEN    003
                MOVE    "SELNUM2"           TO  MCP-WIDGET
            WHEN    004
@@ -13914,6 +14248,14 @@
            WHEN    "ZENDAY2KBNN"
                MOVE    910                 TO  SPA-GMN-CUR
            WHEN    "ZENDAY2TAIKBNN"
+               MOVE    911                 TO  SPA-GMN-CUR
+           WHEN    "SYOKEI2KBNG"
+               MOVE    912                 TO  SPA-GMN-CUR
+           WHEN    "SYOKEI2TAIKBNG"
+               MOVE    913                 TO  SPA-GMN-CUR
+           WHEN    "SYOKEI2KBNN"
+               MOVE    914                 TO  SPA-GMN-CUR
+           WHEN    "SYOKEI2TAIKBNN"
                MOVE    004                 TO  SPA-GMN-CUR
            WHEN    "SELNUM2"
                MOVE    002                 TO  SPA-GMN-CUR
@@ -14517,6 +14859,20 @@
       *
            IF    ( SPA-GMN-CUR     =   910 )
                IF    ( W65-ZENDAY2TAIKBNN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    911         TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   912 )
+               IF    ( W65-SYOKEI2TAIKBNG-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    913         TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   914 )
+               IF    ( W65-SYOKEI2TAIKBNN-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    004         TO  SPA-GMN-CUR
                END-IF
@@ -17048,6 +17404,122 @@
       *
            .
        4200-ZENKEI2TAIKBNGLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（外来）コンボチェック処理
+      *****************************************************************
+       4200-SYOKEI2KBNGLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYOKEI2KBNG-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SYOKEI2KBNGL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-SYOKEI2KBNGLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-SYOKEI2KBNGLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-SYOKEI2KBNGLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（外来）対象区分コンボチェック処理
+      *****************************************************************
+       4200-SYOKEI2TAIKBNGLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYOKEI2TAIKBNG-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SYOKEI2TAIKBNGL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-SYOKEI2TAIKBNGLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-SYOKEI2TAIKBNGLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-SYOKEI2TAIKBNGLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（外来）コンボチェック処理
+      *****************************************************************
+       4200-SYOKEI2KBNNLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYOKEI2KBNN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SYOKEI2KBNNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-SYOKEI2KBNNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-SYOKEI2KBNNLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-SYOKEI2KBNNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診時の負担金計算（外来）対象区分コンボチェック処理
+      *****************************************************************
+       4200-SYOKEI2TAIKBNNLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYOKEI2TAIKBNN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SYOKEI2TAIKBNNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-SYOKEI2TAIKBNNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-SYOKEI2TAIKBNNLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-SYOKEI2TAIKBNNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    公費の種類コンボボックスチェック処理
