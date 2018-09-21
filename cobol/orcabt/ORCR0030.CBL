@@ -802,6 +802,8 @@
       *                                     特記事項記載修正（下船）
       *  04.08.65    NACL-門脇    18/09/14  請求点数０点公費レセ記載に
       *                                     関わる修正
+      *  04.08.66    NACL-門脇    18/09/21  減額時の保険欄−一部負担金
+      *                                     記載に関わる修正（高齢者）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -25607,7 +25609,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF   WK-GENGAKUKBN    =   3 OR 4
                     MOVE    "4"      TO   RECE02-ZAITAKU
                END-IF
-               IF   WK-GENGAKUKBN    =   1 OR 2 OR 5
+               IF  (WK-GENGAKUKBN    =   1 OR 2 OR 5)
+               AND (RECE02-SRYYM    <=  "201807"    )
                     MOVE    "1"      TO   RECE02-ZAITAKU
                END-IF
       *
