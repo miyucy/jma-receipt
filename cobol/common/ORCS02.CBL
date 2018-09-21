@@ -5015,6 +5015,7 @@
              MOVE      57600  TO    WK-KOH-GENDOGAKU
              IF    FLG-TOKUSITU-XXX  = 1
                IF  FLG-TOKUSITU-TASU = 1
+               OR  FLG-KOHYONKAIME   = 1
                  MOVE  44400  TO    WK-KOH-GENDOGAKU
                END-IF
              ELSE
@@ -5062,10 +5063,11 @@
                   MOVE     80100   TO   WK-GEN70-GENDOGAKU
                   IF  FLG-TOKUSITU-XXX  = 1
                     IF  FLG-TOKUSITU-TASU = 1
+                    OR  FLG-KOHYONKAIME   = 1
                       MOVE 44400   TO   WK-GEN70-GENDOGAKU
                     END-IF
                   ELSE
-                    IF  FLG-KOHYONKAIME = 1
+                    IF  FLG-KOHYONKAIME   = 1
                       MOVE 44400   TO   WK-GEN70-GENDOGAKU
                     END-IF
                   END-IF
@@ -5073,10 +5075,11 @@
                   MOVE     35400   TO   WK-GEN70-GENDOGAKU
                   IF  FLG-TOKUSITU-XXX  = 1
                     IF  FLG-TOKUSITU-TASU = 1
+                    OR  FLG-KOHYONKAIME   = 1
                       MOVE 24600   TO   WK-GEN70-GENDOGAKU
                     END-IF
                   ELSE
-                    IF  FLG-KOHYONKAIME = 1
+                    IF  FLG-KOHYONKAIME   = 1
                       MOVE 24600   TO   WK-GEN70-GENDOGAKU
                     END-IF
                   END-IF
@@ -8901,21 +8904,19 @@
                        ( COMB-KOH3HKNNUM        =    SPACE) AND
                        ( COMB-KOH4HKNNUM        =    SPACE))
                           IF  (COMB-HOJOKBN  =  "3" OR "7")
-                          AND (FLG-TOKUSITU-XXX     =   1 )
+                          AND (FLG-TOKUSITU-XXX    =  1   )
+                          AND (FLG-KOHYONKAIME     =  ZERO)
                             IF    LNK-SYU-SRYYMD(1:6)  >=  "201808"
                               EVALUATE   FLG-KOUREI-GENEKIKBN
                                 WHEN         1
-                                  MOVE    252600   TO  MAX-KIN-SYU-M
                                   IF  FLG-TOKUSITU-TASU = 1
                                      MOVE 140100   TO  MAX-KIN-SYU-M
                                   END-IF
                                 WHEN         2
-                                  MOVE    167400   TO  MAX-KIN-SYU-M
                                   IF  FLG-TOKUSITU-TASU = 1
                                      MOVE  93000   TO  MAX-KIN-SYU-M
                                   END-IF
                                 WHEN         3
-                                  MOVE     80100   TO  MAX-KIN-SYU-M
                                   IF  FLG-TOKUSITU-TASU = 1
                                      MOVE  44400   TO  MAX-KIN-SYU-M
                                   END-IF
@@ -8930,24 +8931,28 @@
                                   WHEN       3
                                     MOVE  3        TO  FLG-IRYOHIKG2
                                 END-EVALUATE
+                              ELSE
+                                IF   FLG-TOKU75  =  1 OR 2
+                                  COMPUTE  MAX-KIN-SYU-M  =
+                                           MAX-KIN-SYU-M  /  2
+                                END-IF
                               END-IF
                             ELSE
                               IF  LNK-SYU-SRYYMD(1:6)  >=  "200905"
                                 IF   FLG-TOKUSITU-TASU  =   1
                                   MOVE  44400      TO  MAX-KIN-SYU-M
-                                ELSE
-                                  MOVE  80100      TO  MAX-KIN-SYU-M
                                 END-IF
                                 IF  FLG-TOKUSITU-TASU  =  ZERO
                                   MOVE  WK-ZENGAKU TO  WK-KOUREI-IRYOHI
                                   MOVE  2          TO  FLG-IRYOHI3
                                   MOVE  11         TO  FLG-IRYOHI3X
+                                ELSE
+                                  IF   FLG-TOKU75  =  1 OR 2
+                                    COMPUTE  MAX-KIN-SYU-M  =
+                                             MAX-KIN-SYU-M  /  2
+                                  END-IF
                                 END-IF
                               END-IF
-                            END-IF
-                            IF   FLG-TOKU75  =  1 OR 2
-                              COMPUTE  MAX-KIN-SYU-M  =
-                                       MAX-KIN-SYU-M  /  2
                             END-IF
                           END-IF
                           IF  (COMB-HOJOKBN  =  "3" OR "7")
@@ -8976,18 +8981,13 @@
                                                 "2" OR "6" OR "8"   )
                           AND (FLG-SANSHOU3         =   SPACE       )
                           AND (FLG-TOKUSITU-XXX     =   1           )
+                          AND (FLG-KOHYONKAIME      =   ZERO        )
                           AND (LNK-SYU-SRYYMD(1:6) >=  "201708"     )
                             IF   FLG-TOKUSITU-TASU  =   1
                               IF    FLG-TOKU75  =  1 OR 2
                                 MOVE  22200   TO   MAX-KIN-SYU-M
                               ELSE
                                 MOVE  44400   TO   MAX-KIN-SYU-M
-                              END-IF
-                            ELSE
-                              IF    FLG-TOKU75  =  1 OR 2
-                                MOVE  28800   TO   MAX-KIN-SYU-M
-                              ELSE
-                                MOVE  57600   TO   MAX-KIN-SYU-M
                               END-IF
                             END-IF
                           END-IF
@@ -9039,21 +9039,19 @@
                         OR  (COMB-KOH3HKNNUM(1:1) = "0")
                         OR  (COMB-KOH4HKNNUM(1:1) = "0")
                           IF  (COMB-HOJOKBN  =  "3" OR "7")
-                          AND (FLG-TOKUSITU-XXX     =   1 )
+                          AND (FLG-TOKUSITU-XXX    =  1   )
+                          AND (FLG-KOHYONKAIME     =  ZERO)
                             IF    LNK-SYU-SRYYMD(1:6)  >=  "201808"
                               EVALUATE   FLG-KOUREI-GENEKIKBN
                                 WHEN         1
-                                  MOVE    252600   TO  MAX-KIN-SYU-M
                                   IF  FLG-TOKUSITU-TASU = 1
                                      MOVE 140100   TO  MAX-KIN-SYU-M
                                   END-IF
                                 WHEN         2
-                                  MOVE    167400   TO  MAX-KIN-SYU-M
                                   IF  FLG-TOKUSITU-TASU = 1
                                      MOVE  93000   TO  MAX-KIN-SYU-M
                                   END-IF
                                 WHEN         3
-                                  MOVE     80100   TO  MAX-KIN-SYU-M
                                   IF  FLG-TOKUSITU-TASU = 1
                                      MOVE  44400   TO  MAX-KIN-SYU-M
                                   END-IF
@@ -9068,42 +9066,41 @@
                                   WHEN       3
                                     MOVE  6        TO  FLG-IRYOHIKG2
                                 END-EVALUATE
+                              ELSE
+                                IF   FLG-TOKU75  =  1 OR 2
+                                  COMPUTE  MAX-KIN-SYU-M  =
+                                           MAX-KIN-SYU-M  /  2
+                                END-IF
                               END-IF
                             ELSE
                               IF  LNK-SYU-SRYYMD(1:6)  >=  "200905"
                                 IF   FLG-TOKUSITU-TASU  =   1
                                   MOVE  44400      TO  MAX-KIN-SYU-M
-                                ELSE
-                                  MOVE  80100      TO  MAX-KIN-SYU-M
                                 END-IF
                                 IF  FLG-TOKUSITU-TASU  =  ZERO
                                   MOVE  WK-ZENGAKU TO  WK-KOUREI-IRYOHI
                                   MOVE  3          TO  FLG-IRYOHI3
                                   MOVE  ZERO       TO  FLG-IRYOHI3X
+                                ELSE
+                                  IF   FLG-TOKU75  =  1 OR 2
+                                    COMPUTE  MAX-KIN-SYU-M  =
+                                             MAX-KIN-SYU-M  /  2
+                                  END-IF
                                 END-IF
                               END-IF
-                            END-IF
-                            IF   FLG-TOKU75  =  1 OR 2
-                              COMPUTE  MAX-KIN-SYU-M  =
-                                       MAX-KIN-SYU-M  /  2
                             END-IF
                           END-IF
                           IF  (COMB-HOJOKBN  =  "1" OR "5" OR "9" OR
                                                 "2" OR "6" OR "8"   )
                           AND (FLG-SANSHOU3         =   SPACE       )
                           AND (FLG-TOKUSITU-XXX     =   1           )
+                          AND (FLG-KOHYONKAIME      =   ZERO        )
                           AND (LNK-SYU-SRYYMD(1:6) >=  "201708"     )
                             IF   FLG-TOKUSITU-TASU  =   1
                               IF    FLG-TOKU75  =  1 OR 2
                                 MOVE  22200   TO   MAX-KIN-SYU-M
                               ELSE
                                 MOVE  44400   TO   MAX-KIN-SYU-M
-                              END-IF
-                            ELSE
-                              IF    FLG-TOKU75  =  1 OR 2
-                                MOVE  28800   TO   MAX-KIN-SYU-M
-                              ELSE
-                                MOVE  57600   TO   MAX-KIN-SYU-M
                               END-IF
                             END-IF
                           END-IF
@@ -9264,6 +9261,7 @@
                    END-IF
                    IF  LNK-SYU-SRYYMD(1:6)  >=  "200905"
                    AND FLG-TOKUSITU-XXX      =   1
+                   AND FLG-KOHYONKAIME       =   ZERO
                     IF   LNK-SYU-SRYYMD(1:6) >=  "201501"
                      EVALUATE   FLG-GENBUTU70
                        WHEN        1
@@ -9275,12 +9273,6 @@
                              ELSE
                                MOVE   140100   TO  MAX-KIN-SYU-M
                              END-IF
-                            ELSE
-                             IF    FLG-TOKU75  =  3
-                               MOVE   126300   TO  MAX-KIN-SYU-M
-                             ELSE
-                               MOVE   252600   TO  MAX-KIN-SYU-M
-                             END-IF
                             END-IF
                           WHEN      12
                             IF    FLG-TOKUSITU-TASU  =  1
@@ -9288,12 +9280,6 @@
                                MOVE    46500   TO  MAX-KIN-SYU-M
                              ELSE
                                MOVE    93000   TO  MAX-KIN-SYU-M
-                             END-IF
-                            ELSE
-                             IF    FLG-TOKU75  =  3
-                               MOVE    83700   TO  MAX-KIN-SYU-M
-                             ELSE
-                               MOVE   167400   TO  MAX-KIN-SYU-M
                              END-IF
                             END-IF
                         END-EVALUATE
@@ -9306,12 +9292,6 @@
                              ELSE
                                MOVE    44400   TO  MAX-KIN-SYU-M
                              END-IF
-                            ELSE
-                             IF    FLG-TOKU75  =  3
-                               MOVE    40050   TO  MAX-KIN-SYU-M
-                             ELSE
-                               MOVE    80100   TO  MAX-KIN-SYU-M
-                             END-IF
                             END-IF
                           WHEN      22
                             IF    FLG-TOKUSITU-TASU  =  1
@@ -9319,12 +9299,6 @@
                                MOVE    22200   TO  MAX-KIN-SYU-M
                              ELSE
                                MOVE    44400   TO  MAX-KIN-SYU-M
-                             END-IF
-                            ELSE
-                             IF    FLG-TOKU75  =  3
-                               MOVE    28800   TO  MAX-KIN-SYU-M
-                             ELSE
-                               MOVE    57600   TO  MAX-KIN-SYU-M
                              END-IF
                             END-IF
                         END-EVALUATE
@@ -9336,12 +9310,6 @@
                                MOVE    12300   TO  MAX-KIN-SYU-M
                              ELSE
                                MOVE    24600   TO  MAX-KIN-SYU-M
-                             END-IF
-                            ELSE
-                             IF    FLG-TOKU75  =  3
-                               MOVE    17700   TO  MAX-KIN-SYU-M
-                             ELSE
-                               MOVE    35400   TO  MAX-KIN-SYU-M
                              END-IF
                             END-IF
                         END-EVALUATE
@@ -9355,12 +9323,6 @@
                          ELSE
                            MOVE   83400    TO  MAX-KIN-SYU-M
                          END-IF
-                        ELSE
-                         IF    FLG-TOKU75  =  3
-                           MOVE   75000    TO  MAX-KIN-SYU-M
-                         ELSE
-                           MOVE   150000   TO  MAX-KIN-SYU-M
-                         END-IF
                         END-IF
                        WHEN        2
                         IF    FLG-TOKUSITU-TASU  =  1
@@ -9369,12 +9331,6 @@
                          ELSE
                            MOVE   44400    TO  MAX-KIN-SYU-M
                          END-IF
-                        ELSE
-                         IF    FLG-TOKU75  =  3
-                           MOVE   40050    TO  MAX-KIN-SYU-M
-                         ELSE
-                           MOVE   80100    TO  MAX-KIN-SYU-M
-                         END-IF
                         END-IF
                        WHEN        3
                         IF    FLG-TOKUSITU-TASU  =  1
@@ -9382,12 +9338,6 @@
                            MOVE   12300    TO  MAX-KIN-SYU-M
                          ELSE
                            MOVE   24600    TO  MAX-KIN-SYU-M
-                         END-IF
-                        ELSE
-                         IF    FLG-TOKU75  =  3
-                           MOVE   17700    TO  MAX-KIN-SYU-M
-                         ELSE
-                           MOVE   35400    TO  MAX-KIN-SYU-M
                          END-IF
                         END-IF
                      END-EVALUATE
@@ -9464,6 +9414,7 @@
                    OR  (COMB-KOH4HKNNUM(1:1) = "0")
                       IF  LNK-SYU-SRYYMD(1:6)  >=  "200905"
                       AND FLG-TOKUSITU-XXX      =   1
+                      AND FLG-KOHYONKAIME       =   ZERO
                        IF   LNK-SYU-SRYYMD(1:6) >=  "201501"
                         EVALUATE   FLG-GENBUTU70
                           WHEN        1
@@ -9475,12 +9426,6 @@
                                 ELSE
                                   MOVE   140100   TO  MAX-KIN-SYU-M
                                 END-IF
-                               ELSE
-                                IF    FLG-TOKU75  =  3
-                                  MOVE   126300   TO  MAX-KIN-SYU-M
-                                ELSE
-                                  MOVE   252600   TO  MAX-KIN-SYU-M
-                                END-IF
                                END-IF
                              WHEN      12
                                IF    FLG-TOKUSITU-TASU  =  1
@@ -9488,12 +9433,6 @@
                                   MOVE    46500   TO  MAX-KIN-SYU-M
                                 ELSE
                                   MOVE    93000   TO  MAX-KIN-SYU-M
-                                END-IF
-                               ELSE
-                                IF    FLG-TOKU75  =  3
-                                  MOVE    83700   TO  MAX-KIN-SYU-M
-                                ELSE
-                                  MOVE   167400   TO  MAX-KIN-SYU-M
                                 END-IF
                                END-IF
                            END-EVALUATE
@@ -9506,12 +9445,6 @@
                                 ELSE
                                   MOVE    44400   TO  MAX-KIN-SYU-M
                                 END-IF
-                               ELSE
-                                IF    FLG-TOKU75  =  3
-                                  MOVE    40050   TO  MAX-KIN-SYU-M
-                                ELSE
-                                  MOVE    80100   TO  MAX-KIN-SYU-M
-                                END-IF
                                END-IF
                              WHEN      22
                                IF    FLG-TOKUSITU-TASU  =  1
@@ -9519,12 +9452,6 @@
                                   MOVE    22200   TO  MAX-KIN-SYU-M
                                 ELSE
                                   MOVE    44400   TO  MAX-KIN-SYU-M
-                                END-IF
-                               ELSE
-                                IF    FLG-TOKU75  =  3
-                                  MOVE    28800   TO  MAX-KIN-SYU-M
-                                ELSE
-                                  MOVE    57600   TO  MAX-KIN-SYU-M
                                 END-IF
                                END-IF
                            END-EVALUATE
@@ -9536,12 +9463,6 @@
                                   MOVE    12300   TO  MAX-KIN-SYU-M
                                 ELSE
                                   MOVE    24600   TO  MAX-KIN-SYU-M
-                                END-IF
-                               ELSE
-                                IF    FLG-TOKU75  =  3
-                                  MOVE    17700   TO  MAX-KIN-SYU-M
-                                ELSE
-                                  MOVE    35400   TO  MAX-KIN-SYU-M
                                 END-IF
                                END-IF
                            END-EVALUATE
@@ -9555,12 +9476,6 @@
                             ELSE
                               MOVE   83400    TO  MAX-KIN-SYU-M
                             END-IF
-                           ELSE
-                            IF    FLG-TOKU75  =  3
-                              MOVE   75000    TO  MAX-KIN-SYU-M
-                            ELSE
-                              MOVE   150000   TO  MAX-KIN-SYU-M
-                            END-IF
                            END-IF
                           WHEN        2
                            IF    FLG-TOKUSITU-TASU  =  1
@@ -9569,12 +9484,6 @@
                             ELSE
                               MOVE   44400    TO  MAX-KIN-SYU-M
                             END-IF
-                           ELSE
-                            IF    FLG-TOKU75  =  3
-                              MOVE   40050    TO  MAX-KIN-SYU-M
-                            ELSE
-                              MOVE   80100    TO  MAX-KIN-SYU-M
-                            END-IF
                            END-IF
                           WHEN        3
                            IF    FLG-TOKUSITU-TASU  =  1
@@ -9582,12 +9491,6 @@
                               MOVE   12300    TO  MAX-KIN-SYU-M
                             ELSE
                               MOVE   24600    TO  MAX-KIN-SYU-M
-                            END-IF
-                           ELSE
-                            IF    FLG-TOKU75  =  3
-                              MOVE   17700    TO  MAX-KIN-SYU-M
-                            ELSE
-                              MOVE   35400    TO  MAX-KIN-SYU-M
                             END-IF
                            END-IF
                         END-EVALUATE
@@ -17767,29 +17670,6 @@
              ELSE
                IF WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL
                  IF    FLG-MARUKO  =  ZERO
-                    IF  (FLG-FTNRATE100          =   1            )
-                    AND (LNK-SYU-KOH2HKNNUM  NOT = "972" AND "974")
-                    AND (LNK-SYU-KOH3HKNNUM  NOT = "972" AND "974")
-                    AND (LNK-SYU-KOH4HKNNUM  NOT = "972" AND "974")
-                      IF ((LNK-SYU-KOH1HKNNUM = SYU-KOH1HKNNUM ) AND
-                          (COMB-KOH1ID        = WRK-COMB-KOH1ID))
-                      OR ((LNK-SYU-KOH1HKNNUM = SYU-KOH2HKNNUM ) AND
-                          (COMB-KOH1ID        = WRK-COMB-KOH2ID))
-                      OR ((LNK-SYU-KOH1HKNNUM = SYU-KOH3HKNNUM ) AND
-                          (COMB-KOH1ID        = WRK-COMB-KOH3ID))
-                      OR ((LNK-SYU-KOH1HKNNUM = SYU-KOH4HKNNUM ) AND
-                          (COMB-KOH1ID        = WRK-COMB-KOH4ID))
-                        IF   FLG-IRYOHI70     =  3 OR 4 OR 9 OR 10
-                          COMPUTE  WK-KOUREI-IRYOHI70  =
-                                   WK-KOUREI-IRYOHI70  +
-                                  (SYU-HKNTEN (17) * 10)
-                          MOVE   1   TO  FLG-SYUKEI
-                        END-IF
-                      END-IF
-                      MOVE  SYU-KOH-FTN    TO  WK-SYU-SYUCOMPFTN
-                      COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                      MOVE   ZERO  TO  FLG-TAISYO
-                    ELSE
                       IF  (LNK-SYU-KOH1HKNNUM
                                            = "015" OR "016" OR "021")
                       AND (WK-JIRITU-CYUKANSOU(1)   =  1            )
@@ -17845,7 +17725,6 @@
                          MOVE    ZERO            TO  WK-ENTANI
                          MOVE    1               TO  FLG-TAISYO
                       END-IF
-                    END-IF
                  ELSE
                    IF ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM ) AND
                        (COMB-KOH1ID         =  WRK-COMB-KOH1ID))
@@ -35222,8 +35101,9 @@
            END-IF.
       *
            MOVE        ZERO     TO    FLG-HANTEI-ENTANI.
-           IF   (FLG-KOUGAKUCYO-GEN70  =  1           )
-           AND  (LNK-SYU-SYUCOMPFTN    =  WK-KNJFTNKIN)
+           IF   ((FLG-KOUGAKUCYO-GEN70  =  1           ) OR
+                 (FLG-KOUGAKUCYO3       =  1           ))
+           AND  ( LNK-SYU-SYUCOMPFTN    =  WK-KNJFTNKIN )
               MOVE     1        TO    FLG-HANTEI-ENTANI
            END-IF.
       *
@@ -36168,14 +36048,14 @@
            END-IF.
       *
       *    £´£±Ï·¿ÍÍÑ
-           IF   FLG-KOUGAKUCYO2        NOT =    ZERO
+           IF   FLG-KOUGAKUCYO2         =    1
               IF  (FLG-IRYOHI2 = 1) AND (FLG-HIKAKU = 1)
                   CONTINUE
               ELSE
                   MOVE    ZERO     TO    FLG-KOUGAKUCYO2
               END-IF
            END-IF.
-           IF   FLG-KOUGAKUCYO-JIRITU  NOT =    ZERO
+           IF   FLG-KOUGAKUCYO-JIRITU   =    1
               IF   FLG-HIKAKU     =     1
                   CONTINUE
               ELSE
@@ -36183,7 +36063,8 @@
               END-IF
            END-IF.
       *
-           IF   FLG-KOUGAKUCYO3        NOT =    ZERO
+           IF   FLG-KOUGAKUCYO3         =    1
+           AND  FLG-HANTEI-ENTANI       =   ZERO
               IF ((FLG-IRYOHI3X    =   11         ) AND
                   (FLG-SYOUKAN(1)  =  "1"         ) AND
                   (FLG-HIKAKU      =   1          ))
@@ -36199,7 +36080,7 @@
               END-IF
            END-IF.
       *
-           IF   FLG-KOUGAKUCYO5        NOT =    ZERO
+           IF   FLG-KOUGAKUCYO5         =    1
               IF ((FLG-IRYOHI5 = 11 OR 12 ) AND (FLG-HIKAKU  = 1))
               OR ((FLG-IRYOHI5 = 21       ) AND (FLG-HIKAKU2 = 2))
                   CONTINUE
