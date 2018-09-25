@@ -1643,8 +1643,14 @@
       *
       *    ÉÂ±¡¡¦µö²ÄÉÂ¾²¿ô£µ£°£°°Ê¾å
            IF     (SPA-HOSPSBT         =   1  )
-              AND (SPA-BEDSU           >=  500)
-              AND (SPA-SRYYMD          >=  "20150401")
+      *       AND (SPA-BEDSU           >=  500)
+      *       AND (SPA-SRYYMD          >=  "20150401")
+      *H30.9  H30.10¤«¤é400¾²
+            IF   ((SPA-BEDSU           >=  500   )    AND
+                  (SPA-SRYYMD          >=  "20150401"))
+              OR ((SPA-BEDSU           >=  400   )    AND
+                  (SPA-SRYYMD          >=  "20181001"))
+      *
       *        Äã¾Ò²ðÎ¨
                MOVE    SPACE               TO  SYSKANRI-REC
                INITIALIZE                  SYSKANRI-REC
@@ -1661,6 +1667,7 @@
                        MOVE    1               TO  SPA-TEIRITU-KBN
                    END-IF
                END-IF
+             END-IF
            END-IF
       *
            .
