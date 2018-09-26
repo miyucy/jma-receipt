@@ -4439,15 +4439,17 @@
            END-IF
       *
       *    測定薬剤名コメント自動発生
-           IF     (WRK-COM-INPUTCD (IDX-Z + 1) =   SPACE )  OR
-                  (IDX-S                       >    ZERO  AND
-                   WRK-COM-INPUTCD (IDX-S + 1) =   SPACE )
-               MOVE    "830000014"         TO  WRK-SRYCD
-               IF      IDX-S               =   ZERO
-                   MOVE    IDX-Z           TO  IDX-S
-               END-IF
-               PERFORM 100112-COMMT1-SEC
-           END-IF
+      *H30.9 
+      *    選択式コメント対応により、廃止
+      *    IF     (WRK-COM-INPUTCD (IDX-Z + 1) =   SPACE )  OR
+      *           (IDX-S                       >    ZERO  AND
+      *            WRK-COM-INPUTCD (IDX-S + 1) =   SPACE )
+      *        MOVE    "830000014"         TO  WRK-SRYCD
+      *        IF      IDX-S               =   ZERO
+      *            MOVE    IDX-Z           TO  IDX-S
+      *        END-IF
+      *        PERFORM 100112-COMMT1-SEC
+      *****END-IF
       *    初回算定日をセットする
            IF      FLG-SYOKAI3         =   1
                IF     (WRK-SYOKAI-YMD      =   SPACE )  OR
