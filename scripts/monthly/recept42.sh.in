@@ -58,12 +58,15 @@ fi
     RECEFILE9="DPC_"
 
 #   該当ファイル削除
-    rm  ${13}${20}${RECEFILE1}g*.txt
-    rm  ${13}${20}${RECEFILE1}n*.txt
-    rm  ${13}${20}${RECEFILE2}g*.txt
-    rm  ${13}${20}${RECEFILE2}n*.txt
+    if [ ${21} -eq  '8' ]; then
+      rm  ${13}${20}${RECEFILE1}g*.txt
+      rm  ${13}${20}${RECEFILE1}n*.txt
+      rm  ${13}${20}${RECEFILE2}g*.txt
+      rm  ${13}${20}${RECEFILE2}n*.txt
+    else
+      rm  ${13}${20}FF4*.txt
+    fi
     rm ${MCP_TEMPDIR}/${20}${RECEFILE9}*.txt
-    rm  ${13}${20}FF4*.txt
 
 
 #       様式４作成
