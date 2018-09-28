@@ -6135,6 +6135,11 @@
       *
       *    妊婦加算判定
            PERFORM 7001-NINPU-CHK-SEC
+      *H30.9
+      *    入院は以下処理なし
+           IF      SPA-NYUGAIKBN       =   "1"
+               GO      TO      700-SANTEI-CHK-EXT
+           END-IF
       *
       *    アフターケア対象外
            IF      SPA-RSI-HKNKBN      =   "3"
@@ -8364,6 +8369,7 @@
       *    ドクター名取得処理
       *****************************************************************
        101513-DRCD-SYORI-SEC         SECTION.
+      *
       *    ドクターの有無
            IF      WRK-DRCD2           =   SPACE
       *DDD                             OR  ZERO
