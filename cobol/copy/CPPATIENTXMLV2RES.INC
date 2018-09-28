@@ -29,6 +29,7 @@
       * 04.08.00     NACL-多々納  17/04/XX  職業から入金方法追加等
       *                                     保険組合せ３０件へ
       * 04.08.00     NACL-多々納  17/05/XX  テスト患者・死亡区分追加
+      * 05.00.00     NACL-多々納  18/10/XX  患者個別情報から禁忌薬剤追加
       ************************************************************
         01  XML-PATIENTINFORES.
             02  PTRES-CONTEXT          PIC S9(9)   BINARY.
@@ -321,6 +322,11 @@
                   04  PTRES-PTCONF-INFO.
       *               妊婦設定
                       05  PTRES-NINPUKBN             PIC X(05).
+      *H30.10
+      *               認知症地域包括診療
+                      05  PTRES-NINTIHOKATU          PIC X(05).
+      *               小児かかりつけ診療
+                      05  PTRES-SYOUNIKAKARI         PIC X(05).
       *
       *           患者個人番号情報
                   04  PTRES-PTMYNUMBER-G.
@@ -328,4 +334,23 @@
                           07  PTRES-ID-KEY           PIC X(10).
                           07  PTRES-MY-NUMBER        PIC X(20).
                           07  PTRES-DESCRIPTION      PIC X(100).
+      *H30.10
+      *
+      *           管理料等自動算定
+                  04  PTRES-AUTO-SRYCD-G.
+                      05  PTRES-AUTO-SRYCD-TBL     OCCURS   3.
+                          07  PTRES-AUTO-SRYCD       PIC X(09).
+                          07  PTRES-AUTO-NAME        PIC X(80).
+                          07  PTRES-AUTO-ENDYMD      PIC X(10).
+      *
+      *           患者禁忌薬剤
+                  04  PTRES-KINKI-YKZAI-G.
+                      05  PTRES-KINKI-YKZAI-TBL    OCCURS   100.
+      *                   禁忌薬剤コード
+                          07  PTRES-DRUGCD-CODE       PIC X(09).
+                          07  PTRES-DRUGCD-NAME       PIC X(80).
+      *                   有効終了日（マスタ終了日）
+                          07  PTRES-DRUGCD-END-DATE   PIC X(10).
+      *                   禁忌開始日
+                          07  PTRES-START-DATE        PIC X(10).
       *

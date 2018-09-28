@@ -38,6 +38,7 @@
       *                                     保険組合せ非表示追加
       * 04.08.00     NACL-多々納  17/05/XX  テスト患者・死亡区分追加
       * 04.08.00     NACL-多々納  18/03/XX  妊婦設定追加
+      * 05.00.00     NACL-多々納  18/10/XX  認知症地域包括設定など追加
       *****************************************************************
       *
        ENVIRONMENT           DIVISION.
@@ -144,6 +145,10 @@
       *
       *    年齢・負担割合サブ
            COPY    "CPORCSAGECHK.INC".
+      *
+      *H30.10
+      *    患者地域連携等編集パラメタ
+           COPY    "CPORAPI012RSUB1.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -551,6 +556,12 @@
       *    保険種類変換処理
            PERFORM 200210-HKNCOMBI-HEN-SEC
       *
+      *H30.10
+      *    地域連携編集から禁忌薬剤まで編集
+           PERFORM 2002-KYOUTU-HEN-SEC
+      *
+           GO      TO  2002-PTINF-HENSYU-EXT
+      *
       *    地域連携編集処理
            PERFORM 20022-PTNUMPUBLIC-HEN-SEC
       *
@@ -573,6 +584,128 @@
            .
        2002-PTINF-HENSYU-EXT.
            EXIT.
+      *ver.4.7
+      *****************************************************************
+      *    地域連携から禁忌薬剤まで編集処理
+      *****************************************************************
+        2002-KYOUTU-HEN-SEC       SECTION.
+      *
+      *
+           INITIALIZE                      ORAPI012RSUB1AREA
+           MOVE    PTINF-PTID          TO  API12SUB-PTID
+           CALL    "ORAPI012RSUB1"     USING
+                                       SPA-AREA
+                                       ORAPI012RSUB1AREA
+      *
+      *    地域連携ID
+           MOVE    API12SUB-COMMUNITY-CID
+                                       TO  PTRES-COMMUNITY-CID
+      *    情報提供同意有無
+           MOVE    API12SUB-COMMUNITY-CID-AGREE
+                                       TO  PTRES-COMMUNITY-CID-AGREE
+      *
+      *    初回来院日（受診履歴の１件目）
+           MOVE    API12SUB-FIRST-DATE TO  PTRES-FIRST-DATE
+      *    最終来院日（退院日）
+           MOVE    API12SUB-LAST-DATE  TO  PTRES-LAST-DATE
+      *    入院中区分（１：入院中）
+           MOVE    API12SUB-OUTPATIENT-CLASS
+                                       TO  PTRES-OUTPATIENT-CLASS
+      *    入院日（入院中のみ）
+           MOVE    API12SUB-ADMISSION-DATE
+                                       TO  PTRES-ADMISSION-DATE
+      *    退院日（当日退院時のみ）
+           MOVE    API12SUB-DISCHARGE-DATE
+                                       TO  PTRES-DISCHARGE-DATE
+      *
+      *    患者介護保険情報
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   10
+               MOVE    API12SUB-CARE-INSURANCE-NUMBER (IDX)
+                                       TO  PTRES-CARE-INSURANCE-NUMBER
+                                                              (IDX)
+               MOVE    API12SUB-CARE-POLICYHOLDER     (IDX)
+                                       TO  PTRES-CARE-POLICYHOLDER
+                                                              (IDX)
+               MOVE    API12SUB-CARE-START-DATE       (IDX)
+                                       TO  PTRES-CARE-START-DATE
+                                                              (IDX)
+               MOVE    API12SUB-CARE-END-DATE         (IDX)
+                                       TO  PTRES-CARE-END-DATE
+                                                              (IDX)
+           END-PERFORM
+      *
+      *    要介護認定情報
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   50
+      *        要介護状態区分
+               MOVE    API12SUB-NEED-CARE-STATE-CODE (IDX)
+                                       TO  PTRES-NEED-CARE-STATE-CODE
+                                                               (IDX)
+      *        要介護状態名称
+               MOVE    API12SUB-NEED-CARE-STATE (IDX)
+                                       TO  PTRES-NEED-CARE-STATE(IDX)
+      *        認定日付
+               MOVE    API12SUB-NEED-DATE (IDX)
+                                       TO  PTRES-NEED-DATE     (IDX)
+      *        有効開始日
+               MOVE    API12SUB-NEED-START-DATE (IDX)
+                                       TO  PTRES-NEED-START-DATE(IDX)
+      *        有効終了日
+               MOVE    API12SUB-NEED-END-DATE (IDX)
+                                       TO  PTRES-NEED-END-DATE (IDX)
+           END-PERFORM
+      *
+      *    地域包括診療対象疾病
+           MOVE    API12SUB-COMMUNITY-DISEASE
+                                       TO  PTRES-COMMUNITY-DISEASE
+      *    患者個人番号情報
+           MOVE    API12SUB-PTMYNUMBER-G
+                                       TO  PTRES-PTMYNUMBER-G
+      *
+      *    妊婦加算
+           MOVE    API12SUB-NINPUKBN   TO  PTRES-NINPUKBN
+      *    認知症地域包括診療
+           MOVE    API12SUB-NINTIHOKATU    TO  PTRES-NINTIHOKATU
+      *    小児かかりつけ診療
+           MOVE    API12SUB-SYOUNIKAKARI
+                                       TO  PTRES-SYOUNIKAKARI
+      *
+      *    管理料等自動算定
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   3
+               MOVE    API12SUB-AUTO-SRYCD(IDX)
+                                       TO  PTRES-AUTO-SRYCD (IDX)
+               MOVE    API12SUB-AUTO-NAME(IDX)
+                                       TO  PTRES-AUTO-NAME  (IDX)
+               MOVE    API12SUB-AUTO-ENDYMD(IDX)
+                                       TO  PTRES-AUTO-ENDYMD(IDX)
+           END-PERFORM
+      *
+      *    患者禁忌薬剤
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   100  )
+                           OR (API12SUB-DRUGCD-CODE (IDX)  =   SPACE )
+      *        禁忌薬剤コード
+               MOVE    API12SUB-DRUGCD-CODE (IDX)
+                                       TO  PTRES-DRUGCD-CODE(IDX)
+               MOVE    API12SUB-DRUGCD-NAME (IDX)
+                                       TO  PTRES-DRUGCD-NAME(IDX)
+      *        有効終了日（マスタ終了日）
+               MOVE    API12SUB-DRUGCD-END-DATE (IDX)
+                                       TO  PTRES-DRUGCD-END-DATE
+                                                            (IDX)
+      *        禁忌開始日
+               MOVE    API12SUB-START-DATE (IDX)
+                                       TO  PTRES-START-DATE
+                                                            (IDX)
+           END-PERFORM
+      *
+           .
+        2002-KYOUTU-HEN-EXT.
+           EXIT.
+      *
+      *!!!!!!!!!!!!!! 以下　不使用（H30.10 から）
       *ver.4.7
       *****************************************************************
       *    地域連携編集処理
@@ -943,6 +1076,7 @@
            .
        20023-PTMYNUMBER-HEN-EXT.
            EXIT.
+      *!!!! ここまで　　!!!!
       *
       *
       *****************************************************************

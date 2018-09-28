@@ -28,6 +28,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 05.00.00     NACL-Â¿¡¹Ç¼  18/10/XX  Ç¥ÉØÀßÄê¤«¤é´µ¼Ô¶Ø´÷ÌôºÞÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT           DIVISION.
@@ -50,10 +51,13 @@
            03  FLG-PTRSIINF            PIC 9(01).
            03  FLG-LABOR-SIO           PIC 9(01).
            03  FLG-PTMYNUMBER          PIC 9(01).
+           03  FLG-TENSU               PIC 9(01).
+           03  FLG-PTKINKI             PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
            03  FLG-CONFCHK             PIC 9(01).
+           03  FLG-TENSU-OK            PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -97,6 +101,13 @@
                05  WRK-RATE-EDITZ      PIC ZZZZZZZ.
                05  WRK-RATE-TANI       PIC X(04).
       *
+      *    ÅÀ¿ô¥Þ¥¹¥¿Ì¾¾Î
+           03  WRK-SRYCD               PIC X(09).
+           03  WRK-TNS-NAME            PIC X(80).
+           03  WRK-TNS-YUKOEDYMD       PIC X(08).
+           03  WRK-TNS-ENDDATE         PIC X(10).
+      *
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -131,6 +142,15 @@
       *    ´µ¼Ô¸Ä¿ÍÈÖ¹æ¥Æ¡¼¥Ö¥ë
        01  PTMYNUMBER-REC.
            COPY    "CPPTMYNUMBER.INC".
+      *
+      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+      *01  TENSU-REC.
+           COPY    "CPTENSU.INC".
+      *
+      *H30.10
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Þ¥¹¥¿
+       01  PTKINKI-REC.
+           COPY    "CPPTKINKI.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -202,6 +222,10 @@
       *H26.12
       *    ´µ¼Ô¸Ä¿ÍÈÖ¹æÊÔ½¸
            PERFORM 20023-PTMYNUMBER-HEN-SEC
+      *
+      *H30.10
+      *    ´µ¼Ô¶Ø´÷ÌôºÞÊÔ½¸
+           PERFORM 20024-KINKIYKZ-HEN-SEC
       *
            .
        200-MAIN-EXT.
@@ -379,7 +403,7 @@
                    MOVE    "Í×²ð¸î£´"  TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "25"
                    MOVE    "Í×²ð¸î£µ"  TO  API12SUB-NEED-CARE-STATE(IDX)
-      *H30.7
+      *H30.9
                WHEN    "31"
                    MOVE    "»ö¶ÈÂÐ¾Ý¼Ô"
                                        TO  API12SUB-NEED-CARE-STATE(IDX)
@@ -435,8 +459,142 @@
                END-IF
            END-IF
       *
+      *    ´µ¼Ô¸ÄÊÌ¾ðÊó
+           INITIALIZE                  PTCONF-REC
+           MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
+           MOVE    API12SUB-PTID       TO  PTCONF-PTID
+      *
+           MOVE    PTCONF-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptconf"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptconf"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTCONF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTCONF
+               INITIALIZE                  PTCONF-REC
+           END-IF
+           PERFORM UNTIL       FLG-PTCONF      =   1
+               EVALUATE    PTCONF-CKEY
+               WHEN    "NINTIHOKATU"
+      *            Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ
+                   IF      PTCONF-CDATA(1:1)   =   "1"
+                       MOVE    "True"      TO  API12SUB-NINTIHOKATU
+                   END-IF
+      *
+               WHEN    "SYOUNIKAKARI"
+      *            ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅ
+                   IF      PTCONF-CDATA(1:1)   =   "1"
+                       MOVE    "True"      TO  API12SUB-SYOUNIKAKARI
+                   END-IF
+               WHEN    "NINPUKBN"
+      *            Ç¥ÉØ¶èÊ¬
+                   IF      PTCONF-CDATA(1:1)   =   "1"
+                       MOVE    "True"      TO  API12SUB-NINPUKBN
+                   END-IF
+      *
+      *        »ØÆ³ÎÁÅù¼«Æ°»»Äê
+               WHEN    "JIDOSANTEI-1"
+                   MOVE    PTCONF-CDATA(1:9)
+                                           TO  API12SUB-AUTO-SRYCD(1)
+                   MOVE    1               TO  IDX
+                   PERFORM 200221-JIDOUSANTEI-HEN-SEC
+      *
+               WHEN    "JIDOSANTEI-2"
+                   MOVE    PTCONF-CDATA(1:9)
+                                           TO  API12SUB-AUTO-SRYCD(2)
+                   MOVE    2               TO  IDX
+                   PERFORM 200221-JIDOUSANTEI-HEN-SEC
+               WHEN    "JIDOSANTEI-3"
+                   MOVE    PTCONF-CDATA(1:9)
+                                           TO  API12SUB-AUTO-SRYCD(3)
+                   MOVE    3               TO  IDX
+                   PERFORM 200221-JIDOUSANTEI-HEN-SEC
+               END-EVALUATE
+               MOVE    "tbl_ptconf"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-PTCONF-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptconf"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
            .
        20022-PTCONF-HEN-EXT.
+           EXIT.
+      *
+      *H30.10
+      *****************************************************************
+      *    »ØÆ³ÎÁÅù¼«Æ°»»ÄêÌ¾¾Î¤Ê¤ÉÊÔ½¸½èÍý
+      *****************************************************************
+       200221-JIDOUSANTEI-HEN-SEC               SECTION.
+      *
+           MOVE    API12SUB-AUTO-SRYCD(IDX)    TO  WRK-SRYCD
+           PERFORM 400-TENSU-HENSYU-SEC
+           MOVE    WRK-TNS-NAME        TO  API12SUB-AUTO-NAME(IDX)
+           MOVE    WRK-TNS-ENDDATE     TO  API12SUB-AUTO-ENDYMD(IDX)
+      *
+           .
+       200221-JIDOUSANTEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÅÀ¿ô¥Þ¥¹¥¿Ì¾¾Î¤Ê¤ÉÊÔ½¸½èÍý
+      *****************************************************************
+       400-TENSU-HENSYU-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TNS-NAME
+           MOVE    SPACE               TO  WRK-TNS-YUKOEDYMD
+           MOVE    SPACE               TO  WRK-TNS-ENDDATE
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+      *    ³«»ÏÆü¤Î¹ß½ç¤Ë¸¡º÷
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 910-TENSU-READ-SEC
+           END-IF
+           MOVE    ZERO                TO  FLG-TENSU-OK
+           PERFORM UNTIL  (FLG-TENSU       =   1 ) OR
+                          (FLG-TENSU-OK    =   1 )
+               MOVE    TNS-NAME            TO  WRK-TNS-NAME
+      *        ºÇ½ªÍúÎò¤Î½ªÎ»Æü
+               IF      WRK-TNS-YUKOEDYMD   =   SPACE
+                   MOVE    TNS-YUKOEDYMD       TO  WRK-TNS-YUKOEDYMD
+               END-IF
+               IF     (TNS-YUKOSTYMD       <=  SPA-SYSYMD )
+                   MOVE    1                   TO  FLG-TENSU-OK
+               END-IF
+      *
+               IF      FLG-TENSU-OK        =   ZERO
+                   MOVE    "tbl_tensu"         TO  MCP-TABLE
+                   MOVE    "key24"             TO  MCP-PATHNAME
+                   PERFORM 910-TENSU-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    Í­¸ú½ªÎ»Æü
+           IF      WRK-TNS-YUKOEDYMD   NOT =  SPACE
+               MOVE    WRK-TNS-YUKOEDYMD   TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  WRK-TNS-ENDDATE
+           END-IF
+      *
+           .
+       400-TENSU-HENSYU-EXT.
            EXIT.
       *
       *H26.11
@@ -547,6 +705,74 @@
       *
            .
        20023-PTMYNUMBER-HEN-EXT.
+           EXIT.
+      *
+      *H30.10
+      *****************************************************************
+      *    ´µ¼Ô¶Ø´÷ÌôºÞÊÔ½¸½èÍý
+      *****************************************************************
+       20024-KINKIYKZ-HEN-SEC                SECTION.
+      *
+           INITIALIZE                      PTKINKI-REC
+           MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
+           MOVE    SPA-PTID            TO  PTKINKI-PTID
+           MOVE    PTKINKI-REC         TO  MCPDATA-REC
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PTKINKI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTKINKI
+               INITIALIZE                      PTKINKI-REC
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL  ( FLG-PTKINKI    =   1  )
+                   OR     ( IDX            >   100)
+               ADD    1                    TO  IDX
+               IF     IDX                  <=  100
+                   PERFORM 200131-PTKINKI-HEN-SEC
+               END-IF
+      *
+               MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PTKINKI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       20024-KINKIYKZ-HEN-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    ´µ¼Ô¶Ø´÷ÌôºÞÊÔ½¸½èÍý
+      **************************************************************
+       200131-PTKINKI-HEN-SEC           SECTION.
+      *
+      *    ÌôºÞ¥³¡¼¥É
+           MOVE    PTKINKI-SRYCD       TO  API12SUB-DRUGCD-CODE
+                                                             (IDX)
+      *    ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷
+           MOVE    PTKINKI-SRYCD       TO  WRK-SRYCD
+           PERFORM 400-TENSU-HENSYU-SEC
+           MOVE    WRK-TNS-NAME        TO  API12SUB-DRUGCD-NAME
+                                                             (IDX)
+      *    Í­¸ú½ªÎ»Æü¡Ê¥Þ¥¹¥¿½ªÎ»Æü¡Ë
+           MOVE    WRK-TNS-ENDDATE     TO  API12SUB-DRUGCD-END-DATE
+                                                             (IDX)
+      *    ¶Ø´÷³«»ÏÆü
+           IF      PTKINKI-KINKSTYMD   NOT =   SPACE
+               MOVE    PTKINKI-KINKSTYMD   TO  WRK-SYMD
+               PERFORM 801-DAYHEN01-SEC
+               MOVE    WRK-HEN-DATE        TO  API12SUB-START-DATE
+                                                             (IDX)
+           END-IF
+           .
+       20013-PTCARE-HKNINF-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -718,6 +944,40 @@
       *
            .
        930-PTMYNUMBER-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÅÀ¿ô¥Þ¥¹¥¿ÆÉ¹þ½èÍý
+      *****************************************************************
+       910-TENSU-READ-SEC         SECTION.
+      *
+           PERFORM 910-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+               MOVE    ZERO                TO  FLG-TENSU
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           .
+       910-TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Þ¥¹¥¿¡¼ÆÉ¹þ½èÍý
+      *****************************************************************
+       900-PTKINKI-READ-SEC         SECTION.
+      *
+           PERFORM 910-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTKINKI
+               MOVE    MCPDATA-REC         TO  PTKINKI-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTKINKI
+               INITIALIZE                  PTKINKI-REC
+           END-IF
+      *
+           .
+       900-PTKINKI-READ-EXT.
            EXIT.
       *
       *
