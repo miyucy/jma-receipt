@@ -1,4 +1,4 @@
-      *******************************************************************
+      ******************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -14,7 +14,7 @@
       * this license along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
-      ********************************************************************
+      ******************************************************************
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI052R2V3.
       *****************************************************************
@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/09/05  ＣＳＶ対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -531,6 +532,17 @@
                PERFORM 20011-PERFORM-CHK-SEC
            END-IF
       *
+      *    作成区分チェック
+           IF      WRK-ERRCD           =   SPACE
+               EVALUATE    LSTREQ-CREATE-FORMAT
+                   WHEN    "xml"
+                   WHEN    "csv"
+                       CONTINUE
+                   WHEN    OTHER
+                       MOVE    "E18"           TO  WRK-ERRCD
+               END-EVALUATE
+           END-IF
+      *
            .
        2001-INPUT-CHK-EXT.
            EXIT.
@@ -550,6 +562,8 @@
       *
            MOVE   LSTREQ-REQUEST-NUMBER
                                        TO  LSTRES-REQUEST-NUMBER
+      *
+           MOVE   LSTREQ-CREATE-FORMAT TO  LSTRES-CREATE-FORMAT
       *
            .
        20010-INPUT-HEN-EXT.
@@ -630,6 +644,19 @@
                MOVE    "E80"               TO  WRK-ERRCD
                GO  TO  2002-SYORI-01-EXT
            END-IF
+      *
+      *    Ｄａｔａ＿Ｉｄ取得
+           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "monblob"           TO  MCP-TABLE
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MONBLOB
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "E88"               TO  WRK-ERRCD
+               GO  TO  2002-SYORI-01-EXT
+           END-IF
+           MOVE    MONBLOB-ID          TO  WRK-MONBLOB-ID
       *
       *    マシン日付取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -780,17 +807,12 @@
                                        TO  SHELLTBL-ARG15
            MOVE    WRK-BASE-YMD        TO  SHELLTBL-ARG16
       *
-           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "monblob"           TO  MCP-TABLE
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MONBLOB
-           MOVE    MONBLOB-ID          TO  SHELLTBL-ARG17
-                                           WRK-MONBLOB-ID
+           MOVE    WRK-MONBLOB-ID      TO  SHELLTBL-ARG17
       *
            MOVE    "medicalpoints_master_make"
                                        TO  SHELLTBL-ARG18
+           MOVE    LSTREQ-CREATE-FORMAT
+                                       TO  SHELLTBL-ARG19
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
@@ -1010,6 +1032,9 @@
            WHEN    "E11"
                MOVE    "基準日が暦日ではありません。"
                                                TO  WRK-ERRMSG
+           WHEN    "E18"
+               MOVE    "作成区分の設定に誤りがあります。"
+                                               TO  WRK-ERRMSG
            WHEN    "E20"
                MOVE    "ジョブ管理が削除できませんでした。"
                                                TO  WRK-ERRMSG
@@ -1033,6 +1058,10 @@
            WHEN    "E80"
                MOVE    "一時ディレクトリが取得できません。"
                                                TO  WRK-ERRMSG
+      *
+           WHEN    "E88"
+               MOVE    "Ｄａｔａ＿Ｉｄが取得できません。"
+                                               TO  WRK-ERRMSG 
       *共通エラー
            WHEN    "E89"
       *        ORCSCOMMON のエラー

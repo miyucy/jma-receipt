@@ -27,12 +27,19 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/09/05  ＣＳＶ対応
+      *                                     悪性腫瘍病理組織標本加算の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
+      *    ＣＳＶファイル
+           SELECT  CSV-FILE        ASSIGN  CSVPARA
+                                   ORGANIZATION    IS  LINE
+                                                       SEQUENTIAL
+                                   FILE    STATUS  IS  STS-CSV.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -40,17 +47,25 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
+      *    ＣＳＶファイル
+       FD  CSV-FILE.
+       01  CSV-REC                 PIC X(3000).
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //CSVPARA//.
+      *
       *    一時ファイル対応
            COPY    "CPRECEERR.INC".
       *
       *    スパ領域
        01  STS-AREA.
+           03  STS-CSV             PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
       *    フラグ領域
@@ -69,6 +84,8 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
+           03  IDW2                PIC 9(04).
+      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
@@ -84,13 +101,12 @@
            03  WRK-PARA-HOSPNUM    PIC X(02).
            03  WRK-PARA-TERMID     PIC X(64).
            03  WRK-PARA-BASE-YMD   PIC X(08).
+           03  WRK-PARA-CREATE-FORMAT
+                                   PIC X(03).
            03  WRK-PARA-ERRFILE    PIC X(64).
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-RECEERR         PIC X(200).
-           03  WRK-ERRMSG          PIC X(300).
-      *
            03  WRK-SYMD.
                05  WRK-SYY         PIC X(04).
                05  WRK-SMM         PIC X(02).
@@ -113,9 +129,42 @@
                05  WRK-HEN-T2      PIC X(01).
                05  WRK-HEN-TSS     PIC X(02).
       *
-      *    点数データ(1294 byte)
+      *     右づめ編集用
+           03  WRK-HENKAN              PIC X(20).
+           03  WRK-LENGTH              PIC 9(02).
+           03  WRK-HENSYU              PIC X(20).
+      *    出力データ編集用
+           03  WRK-REC                 PIC X(3000).
+           03  WRK-REC-LENGTH          PIC 9(04).
+           03  WRK-HENSYU-AREA.
+               05  WRK-DATA            PIC X(2400).
+               05  WRK-NAGASA          PIC 9(04).
+               05  WRK-ST              PIC 9(02). 
+               05  WRK-SYOSUU          PIC 9(01).
+               05  WRK-END             PIC 9(01).
+               05  WRK-MOJI-CHK        PIC 9(01).
+      *
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR             PIC X(200).
+           03  WRK-ERRMSG              PIC X(300).
+           03  WRK-MCP-RC              PIC 9(9).
+           03  WRK-ERR-FILE-STS        PIC X(02).
+           03  WRK-ERR-FILE-MSG        PIC X(100).
+           03  WRK-ERR-FILE-MSG1       PIC X(17).
+           03  WRK-ERR-FLG             PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *
+       01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
+      *
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
+      *
+      *    点数データ(1298 byte)
        01  TENSULST-REC.
            03  TENSULST-OCC          OCCURS   1000.
+      *1-20
                05  TENSULST-SRYCD              PIC X(09).
                05  TENSULST-YUKOSTYMD          PIC X(10).
                05  TENSULST-YUKOEDYMD          PIC X(10).
@@ -235,7 +284,7 @@
                05  TENSULST-KOKUJISKBKBN2      PIC 9(01).
                05  TENSULST-NAMECHGKBN         PIC 9(01).
                05  TENSULST-KANANAMECHGKBN     PIC 9(01).
-      *131-90
+      *131-154
                05  TENSULST-IDOKANREN          PIC X(09).
                05  TENSULST-KOUHYOJYUNNUM      PIC 9(09).
                05  TENSULST-YAKKAKJNCD         PIC X(12).
@@ -263,6 +312,485 @@
                05  TENSULST-KUBUNBANGOU        PIC X(30).
                05  TENSULST-ROSAIKBN           PIC 9(01).
                05  TENSULST-SISIKSN            PIC 9(01).
+               05  TENSULST-AKUSEIBYORIKSN     PIC 9(01).
+      *
+       01  TITLE-01.
+      *1-20
+           03  FILLER                 PIC X(14)    VALUE
+               "診療行為コード".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "有効開始年月日".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "有効終了年月日".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "診療行為区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "診療種別区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "漢字有効桁数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "漢字名称".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "カナ有効桁数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "カナ名称".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "正式名称有効桁数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "正式名称".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "点数識別".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(04)    VALUE
+               "点数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "単位コード".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "単位文字数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "単位名称".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "データ区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "保険適用区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "入外適用区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(22)    VALUE
+               "後期高齢者医療適用区分".
+      *21-40
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "病院診療所区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "往診区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "包括対象検査".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "傷病名関連区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(22)    VALUE
+               "指導管理料、医学管理料".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(06)    VALUE
+               "実日数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "日数回数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "医薬品関連区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "きざみ値計算識別".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "きざみ値下限値".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "きざみ値上限値".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "きざみ値".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "きざみ点数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(24)    VALUE
+               "きざみ値上下限エラー処理".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "上限回数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "上限回数１日".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "上限回数１週".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "上限回数他月数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "上限回数他".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "上限回数エラー処理".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+      *41-60
+           03  FILLER                 PIC X(12)    VALUE
+               "注加算コード".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "注加算通番".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "通則年齢".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "上下限年齢下限年齢".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "上下限年齢上限年齢".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "時間加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "基準不適合逓減区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(26)    VALUE
+               "基準不適合逓減対象施設区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "処置乳幼児加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(22)    VALUE
+               "極低出生体重児加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(24)    VALUE
+               "入院基本料等減算対象識別".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "ドナー分集計区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "検査等実施判断区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(26)    VALUE
+               "検査等実施判断グループ区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "逓減対象区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(26)    VALUE
+               "脊髄誘発電位測定等加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(22)    VALUE
+               "頸部郭清術併施加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "自動縫合器加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "外来管理加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(44)    VALUE
+               "通則加算対象外区分、通則加算所定点数対象区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+      *61-91
+           03  FILLER                 PIC X(12)    VALUE
+               "包括逓減区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(20)    VALUE
+               "超音波内視鏡加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "自動吻合器加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "地域加算".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "病床数区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(28)    VALUE
+               "超音波凝固切開装置等加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "短期滞在手術".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "部位区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "算定履歴区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "施設基準コード１".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "施設基準コード２".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "施設基準コード３".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "施設基準コード４".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "施設基準コード５".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "施設基準コード６".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "施設基準コード７".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "施設基準コード８".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "施設基準コード９".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "施設基準コード１０".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "年齢加算下限年齢１".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "年齢加算上限年齢１".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(30)    VALUE
+               "年齢加算注加算診療行為コード１".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "年齢加算下限年齢２".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "年齢加算上限年齢２".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(30)    VALUE
+               "年齢加算注加算診療行為コード２".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "年齢加算下限年齢３".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "年齢加算上限年齢３".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(30)    VALUE
+               "年齢加算注加算診療行為コード３".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "年齢加算下限年齢４".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "年齢加算上限年齢４".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(30)    VALUE
+               "年齢加算注加算診療行為コード４".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+      *92-110
+           03  FILLER                 PIC X(16)    VALUE
+               "検体検査コメント".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "入院基本料区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "入院基本料加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "看護加算".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "旧点数識別".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(06)    VALUE
+               "旧点数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "麻毒区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "神経破壊剤区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "生物学的製剤区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "造影剤区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "注射容量".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "薬剤区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "剤型区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "後発医薬品区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "長期投与区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "名称使用識別".
+      *******         「湿布薬区分」「選択式コメント識別」
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(20)    VALUE
+               "特定器材年齢加算区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "酸素等区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "特定器材種別１".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+      *111-130
+           03  FILLER                 PIC X(24)    VALUE
+               "特定器材種別２、上限価格".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "上限点数".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(24)    VALUE
+               "点数欄集計先識別（外来）".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(24)    VALUE
+               "点数欄集計先識別（入院）".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(20)    VALUE
+               "コード表用区分−区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "コード表用区分−章".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "コード表用区分−部".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(24)    VALUE
+               "コード表用区分−区分番号".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(30)    VALUE
+               "コード表用区分−区分番号−枝番".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(20)    VALUE
+               "コード表用区分−項番".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(24)    VALUE
+               "告知・通知関連番号−区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(22)    VALUE
+               "告知・通知関連番号−章".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(22)    VALUE
+               "告知・通知関連番号−部".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(28)    VALUE
+               "告知・通知関連番号−区分番号".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(34)    VALUE
+               "告知・通知関連番号−区分番号−枝番".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(24)    VALUE
+               "告知・通知関連番号−項番".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(20)    VALUE
+               "告示等識別区分（１）".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(20)    VALUE
+               "告示等識別区分（２）".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "漢字名称変更区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "カナ名称変更区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+      *131-154
+           03  FILLER                 PIC X(08)    VALUE
+               "異動関連".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "公表順序番号".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "薬価基準コード".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "収載方式等識別".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "商品名等関連".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "変更年月日".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "廃止年月日".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "経過措置年月日".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "作成年月日".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(10)    VALUE
+               "更新年月日".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(08)    VALUE
+               "更新時間".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "画像等手術支援加算".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "医療観察法対象区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(12)    VALUE
+               "麻酔識別区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(22)    VALUE
+               "副鼻腔手術用内視鏡加算".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(34)    VALUE
+               "副鼻腔手術用骨軟部組織切除機器加算".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(18)    VALUE
+               "長時間麻酔管理加算".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "ＤＰＣ適用区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(32)    VALUE
+               "非侵襲的血行動態モニタリング加算".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(20)    VALUE
+               "凍結保存同種組織加算".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(14)    VALUE
+               "点数表区分番号".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(16)    VALUE
+               "労災算定不可区分".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(20)    VALUE
+               "四肢加算区分（労災）".
+           03  FILLER                 PIC X(01)    VALUE   ",".
+           03  FILLER                 PIC X(24)    VALUE
+               "悪性腫瘍病理組織標本加算".
+           03  FILLER                 PIC X(01)    VALUE   X"0D".
+      *
+       01  WRK-CONS-AREA.
+      *    区切り文字
+           03  WRK-KUGIRI             PIC X(01)    VALUE   ",".
+      *    改行コード
+           03  WRK-KAIGYO             PIC X(01)    VALUE   X"0D".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -279,6 +807,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    半角チェックサブ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -363,16 +894,24 @@
                                                WRK-PARA-HOSPNUM
                                                RECEERR
                                                WRK-PARA-BASE-YMD
+                                               WRK-PARA-CREATE-FORMAT
            END-UNSTRING
+      *
+           DISPLAY "WRK-PARA-BASE-YMD     =" WRK-PARA-BASE-YMD
+           DISPLAY "WRK-PARA-CREATE-FORMAT=" WRK-PARA-CREATE-FORMAT
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
+           MOVE    "medication_masterlst.csv"
+                                       TO  SGETTEMP-BASENAMES  (2)
            CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
            MOVE    SPACE               TO  RECEERR
            MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  RECEERR
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  CSVPARA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -382,10 +921,15 @@
            MOVE    "ORAPI052BR2V3"     TO  JOB-PGID
            MOVE    "点数マスタ返却"    TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           IF      WRK-PARA-CREATE-FORMAT
+                                       =   "csv"
+               OPEN    OUTPUT      CSV-FILE
+           END-IF
            .
+      *
        100-INIT-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    主処理
@@ -420,11 +964,16 @@
                    PERFORM 2001-TENSULST-HENSYU-SEC
                END-PERFORM
       *
-               ADD     1                   TO  CNT-XMLCOUNT
-               PERFORM 910-XMLEXPORT-SEC
+               IF      WRK-PARA-CREATE-FORMAT
+                                       =   "csv"
+                   PERFORM 2002-TENSULST-CSV-SEC
+               ELSE
+                   ADD     1               TO  CNT-XMLCOUNT
+                   PERFORM 910-XMLEXPORT-SEC
+               END-IF
            END-PERFORM
       *
-           MOVE    "tbl_tensu"        TO  MCP-TABLE
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key35"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
@@ -437,6 +986,13 @@
       *    点数マスタ編集処理
       *****************************************************************
        2001-TENSULST-HENSYU-SEC          SECTION.
+      *
+           IF    ( WRK-PARA-CREATE-FORMAT
+                                       =   "csv" )
+           AND   ( CNT-OUT             =   ZERO  )
+               MOVE    TITLE-01            TO  CSV-REC
+               WRITE   CSV-REC
+           END-IF
       *
            ADD     1                   TO  CNT-OUT1
                                            CNT-OUT
@@ -617,12 +1173,604 @@
            MOVE    TNS-KUBUNBANGOU     TO  TENSULST-KUBUNBANGOU    (IDX)
            MOVE    TNS-ROSAIKBN        TO  TENSULST-ROSAIKBN       (IDX)
            MOVE    TNS-SISIKSN         TO  TENSULST-SISIKSN        (IDX)
+           MOVE    TNS-AKUSEIBYORIKSN  TO  TENSULST-AKUSEIBYORIKSN (IDX)
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key35"             TO  MCP-PATHNAME
            PERFORM 900-TENSU-READ-N-SEC
            .
        2001-TENSULST-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスタＣＳＶ編集処理
+      *****************************************************************
+       2002-TENSULST-CSV-SEC       SECTION.
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       CNT-OUT1
+               MOVE    SPACE               TO  WRK-REC
+               MOVE    ZERO                TO  WRK-REC-LENGTH
+      *
+               MOVE    TENSULST-SRYCD      (IDX)
+                                           TO  WRK-DATA
+               MOVE    9                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-YUKOSTYMD  (IDX)
+                                           TO  WRK-DATA
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-YUKOEDYMD  (IDX)
+                                           TO  WRK-DATA
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SRYKBN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SRYSYUKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-YUKOKETA   (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-NAME       (IDX)
+                                           TO  WRK-DATA
+               MOVE    200                 TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KANAYUKOKETA   (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KANANAME   (IDX)
+                                           TO  WRK-DATA
+               MOVE    200                 TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-FORMALYUKOKETA (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-FORMALNAME (IDX)
+                                           TO  WRK-DATA
+               MOVE    400                 TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TENSIKIBETU    (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TEN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    12                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TANICD     (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TANIMOJISU (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TANINAME   (IDX)
+                                           TO  WRK-DATA
+               MOVE    24                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-DATAKBN    (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-HKNTEKKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-NYUGAITEKKBN   (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-ROUTEKKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *21-40
+               MOVE    TENSULST-HOSPSRYKBN (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-OSINKBN    (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-HOUKNSKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-BYOKANRENKBN   (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SDOKNRYO   (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-JITUDAY    (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-DAYCNT     (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-YKZKNRKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KZMCOMPSIKIBETU     (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KZMKGN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KZMJGN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KZM        (IDX)
+                                           TO  WRK-DATA
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KZMTEN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KZMERR     (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-JGNCNT     (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-JGNCNT1D   (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-JGNCNT1W   (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-JGNCNTETCM (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-JGNCNTETC  (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-JGNCNTERR  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *41-60
+               MOVE    TENSULST-CHUKSNCD   (IDX)
+                                           TO  WRK-DATA
+               MOVE    4                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CHUKSNTUBAN(IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TSUSOKUAGE (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KGNAGE     (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-JGNAGE     (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TIMEKSNKBN (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KIJUNTEIGENKBN      (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KIJUNTEIGENCD       (IDX)
+                                           TO  WRK-DATA
+               MOVE    4                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-LASERKBN   (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CHPMESUKSN (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-MICMESUKSN (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-DONORKBN   (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KNSJISKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KNSJISGRPKBN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TEIGENKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SEKIZUISOKUTEI      (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KEIBUJYUTU (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-AUTOHOUGO  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-GAIKANRIKBN(IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TUSOKUGAIKBN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *61-91
+               MOVE    TENSULST-HOUKATUTEIGENKBN    (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CHPNAISIKSN(IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-AUTOFUNGO  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CHIIKIKSN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-BYOSYOKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CHPGYOKOSOTIKSN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SHORTSTAYOPE        (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-BUIKBN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SANTEIRRKKBN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL    IDY       >   10
+                   MOVE    TENSULST-SSTKIJUNCD     (IDX IDY)
+                                               TO  WRK-DATA
+                   MOVE    4                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+               END-PERFORM
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL    IDY       >   4
+                   MOVE    TENSULST-AGEKSNKGN      (IDX IDY)
+                                               TO  WRK-DATA
+                   MOVE    2                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+                   MOVE    TENSULST-AGEKSNJGN      (IDX IDY)
+                                               TO  WRK-DATA
+                   MOVE    2                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+                   MOVE    TENSULST-AGEKSNSRYCD    (IDX IDY)
+                                               TO  WRK-DATA
+                   MOVE    9                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+               END-PERFORM
+      *92-110
+               MOVE    TENSULST-KENTAICOMMENT   (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-NYUKHNKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-NYUKHNKSNKBN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KANGOKSN   (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-OLDTENSKB  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-OLDTEN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    12                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-MADOKUKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SINKEIHAKAIKBN      (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SEIBUTUGAKUKBN      (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-ZOEIZAIKBN (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CSYYOURYO  (IDX)
+                                           TO  WRK-DATA
+               MOVE    5                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-YKZKBN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-ZAIGATAKBN (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOUHATUKBN (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-LONGTOYOKBN(IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-MEIUSESKB  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TOKUKIZAIAGEKSNKBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SANSOKBN   (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TOKUKIZAISBT1       (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *111-130
+               MOVE    TENSULST-TOKUKIZAISBT2       (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-JGNTEN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    7                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-GAITENTTLKBN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-NYUTENTTLKBN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CDKBN-KBN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CDKBN-SYO  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CDKBN-BU   (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CDKBN-KBNNUM        (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CDKBN-KBNNUM-EDA    (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CDKBN-KOUBAN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOKUCHI-KBN(IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOKUCHI-SYO(IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOKUCHI-BU (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOKUCHI-KBNNUM      (IDX)
+                                           TO  WRK-DATA
+               MOVE    3                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOKUCHI-KBNNUM-EDA  (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOKUCHI-KOUBAN      (IDX)
+                                           TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOKUJISKBKBN1       (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOKUJISKBKBN2       (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-NAMECHGKBN (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KANANAMECHGKBN      (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *131-153
+               MOVE    TENSULST-IDOKANREN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    9                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KOUHYOJYUNNUM       (IDX)
+                                           TO  WRK-DATA
+               MOVE    9                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-YAKKAKJNCD (IDX)
+                                           TO  WRK-DATA
+               MOVE    12                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SYUSAISKB  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SYOMEIKANREN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    9                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CHGYMD     (IDX)
+                                           TO  WRK-DATA
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-HAISIYMD   (IDX)
+                                           TO  WRK-DATA
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KEIKASOCHIYMD       (IDX)
+                                           TO  WRK-DATA
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-CREYMD     (IDX)
+                                           TO  WRK-DATA
+               MOVE    10                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-UPYMD      (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-UPHMS      (IDX)
+                                           TO  WRK-DATA
+               MOVE    8                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-GAZOOPESUP (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-IRYOKANSATUKBN      (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-MASUISKBKBN(IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-FUKUBIKUNAIKBN      (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-FUKUBIKUKOTUKBN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TIMEMASUIKBN        (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-DPCKBN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-HISINSYUMONITORKSN  (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-TOUKETUHOZONKSN     (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-KUBUNBANGOU(IDX)
+                                           TO  WRK-DATA
+               MOVE    30                  TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-ROSAIKBN   (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-SISIKSN    (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    TENSULST-AKUSEIBYORIKSN (IDX)
+                                           TO  WRK-DATA
+               MOVE    1                   TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *
+               STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
+                       WRK-KAIGYO                DELIMITED  BY  SIZE
+                       INTO        WRK-REC
+               END-STRING
+      *
+               MOVE    WRK-REC             TO  CSV-REC
+               WRITE   CSV-REC
+      *
+               IF      STS-CSV             =   "00"
+                   CONTINUE
+               ELSE
+                   CALL "coblog" USING   "file write err " CSVPARA
+                   MOVE    SPACE               TO  WRK-ERR-AREA
+                   INITIALIZE                      WRK-ERR-AREA
+                   MOVE    3                   TO  WRK-ERR-FLG
+                   MOVE    CSVPARA             TO  WRK-ERR-FILE-NM
+                   MOVE    STS-CSV             TO  WRK-ERR-FILE-STS
+                   PERFORM 500-FILE-ERR-ABORT-SEC
+               END-IF
+           END-PERFORM
+           .
+       2002-TENSULST-CSV-EXT.
            EXIT.
       *
       *****************************************************************
@@ -675,7 +1823,6 @@
       *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
-      *
       *
            INITIALIZE                  WRK-HEN-DATE
            MOVE    "-"                 TO  WRK-HEN-H1
@@ -744,6 +1891,10 @@
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
+             IF      WRK-PARA-CREATE-FORMAT
+                                       =   "csv"
+                   CONTINUE
+             ELSE
                INITIALIZE                 ORCSAPIFILEAREA
                MOVE    SGETTEMP-TEMPDIR
                                        TO  SAPIFILE-IN-DIRNAME
@@ -769,6 +1920,12 @@
                    END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
+             END-IF
+           END-IF
+      *
+           IF      WRK-PARA-CREATE-FORMAT
+                                       =   "csv"
+               CLOSE           CSV-FILE
            END-IF
       *
       *    ステップ管理終了処理
@@ -814,6 +1971,115 @@
            .
        500-ERR-HENSYU-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORAPI052BR2V3 "        DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    出力レコード処理（文字）
+      *****************************************************************
+       5004-MOJI-HENSYU-SEC          SECTION.
+      *
+           IF      WRK-DATA        =   SPACE
+               CONTINUE
+           ELSE
+               IF      WRK-MOJI-CHK    =   1
+      *            後ろの全角空白を削除する
+                   INITIALIZE                      ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    "1"                 TO  KANACHK-SYORIKBN
+                   MOVE    WRK-NAGASA          TO  KANACHK-MAX-CNT
+                   MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+                   IF    ( KANACHK-RC          =   ZERO )
+                   AND   ( KANACHK-MAX         >   ZERO )
+                       MOVE    SPACE               TO  WRK-DATA
+                       MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
+                                                   TO  WRK-DATA
+                   END-IF
+               END-IF
+      *
+               PERFORM VARYING IDW2    FROM    WRK-NAGASA  BY  -1
+                       UNTIL   IDW2    <       1
+                   IF      WRK-DATA (IDW2:1)   NOT =   SPACE
+                       IF      WRK-REC-LENGTH      =   ZERO
+                           MOVE    WRK-DATA (1:IDW2)
+                                               TO  WRK-REC
+                       ELSE
+                           STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED
+                                                             BY  SIZE
+                                   WRK-DATA(1:IDW2)          DELIMITED
+                                                             BY  SIZE
+                                   INTO        WRK-REC
+                           END-STRING
+                       END-IF
+                       ADD     IDW2                TO  WRK-REC-LENGTH
+                       MOVE    1                   TO  IDW2
+                   END-IF
+               END-PERFORM
+           END-IF
+      *     
+           IF      WRK-END         =   ZERO
+               STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
+                       WRK-KUGIRI                DELIMITED  BY  SIZE
+                       INTO        WRK-REC
+               END-STRING        
+               ADD     1                   TO  WRK-REC-LENGTH
+           END-IF    
+      *
+           INITIALIZE                      WRK-HENSYU-AREA
+           .
+       5004-MOJI-HENSYU-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ジョブ管理ＤＢ制御処理
