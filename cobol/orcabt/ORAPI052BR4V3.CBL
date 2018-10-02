@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 05.00.00     NACL-Â¿¡¹Ç¼  18/10/XX  Ç§ÃÎ¾ÉÃÏ°èÊñ³çÀßÄê¤Ê¤ÉÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -956,6 +957,52 @@
       *    ´µ¼Ô¸Ä¿ÍÈÖ¹æ¾ðÊó
            MOVE    API12SUB-PTMYNUMBER-G
                                        TO  PTINFLST-PTMYNUMBER-G   (IDZ)
+      *
+      *H30.10
+      *    Ç¥ÉØ²Ã»»
+           MOVE    API12SUB-NINPUKBN   TO  PTINFLST-NINPUKBN(IDZ)
+      *    Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ
+           MOVE    API12SUB-NINTIHOKATU
+                                       TO  PTINFLST-NINTIHOKATU(IDZ)
+      *    ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅ
+           MOVE    API12SUB-SYOUNIKAKARI
+                                       TO  PTINFLST-SYOUNIKAKARI(IDZ)
+      *
+      *    ´ÉÍýÎÁÅù¼«Æ°»»Äê
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   3
+               MOVE    API12SUB-AUTO-SRYCD(IDX)
+                                       TO  PTINFLST-AUTO-SRYCD
+                                                           (IDZ IDX)
+               MOVE    API12SUB-AUTO-NAME(IDX)
+                                       TO  PTINFLST-AUTO-NAME
+                                                           (IDZ IDX)
+               MOVE    API12SUB-AUTO-ENDYMD(IDX)
+                                       TO  PTINFLST-AUTO-ENDYMD
+                                                           (IDZ IDX)
+           END-PERFORM
+      *
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   100  )
+                           OR (API12SUB-DRUGCD-CODE (IDX)  =   SPACE )
+      *        ¶Ø´÷ÌôºÞ¥³¡¼¥É
+               MOVE    API12SUB-DRUGCD-CODE (IDX)
+                                       TO  PTINFLST-DRUGCD-CODE
+                                                           (IDZ IDX)
+               MOVE    API12SUB-DRUGCD-NAME (IDX)
+                                       TO  PTINFLST-DRUGCD-NAME
+                                                           (IDZ IDX)
+      *        Í­¸ú½ªÎ»Æü¡Ê¥Þ¥¹¥¿½ªÎ»Æü¡Ë
+               MOVE    API12SUB-DRUGCD-END-DATE (IDX)
+                                       TO  PTINFLST-DRUGCD-END-DATE
+                                                           (IDZ IDX)
+      *        ¶Ø´÷³«»ÏÆü
+               MOVE    API12SUB-START-DATE (IDX)
+                                       TO  PTINFLST-START-DATE
+                                                           (IDZ IDX)
+           END-PERFORM
+      *
            .
        20013-ETC-HEN-EXT.
            EXIT.

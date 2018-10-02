@@ -308,3 +308,31 @@
       *            È÷¹Í
                    07  PTINFLST-DESCRIPTION      PIC X(100).
       *
+      *H30.10
+      *    ´µ¼Ô¸ÄÊÌ¾ðÊó
+           03  PTINFLST-PTCONF-INFO.
+      *        Ç¥ÉØÀßÄê
+               05  PTINFLST-NINPUKBN             PIC X(05).
+      *        Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ
+               05  PTINFLST-NINTIHOKATU          PIC X(05).
+      *        ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅ
+               05  PTINFLST-SYOUNIKAKARI         PIC X(05).
+      *
+      *    ´ÉÍýÎÁÅù¼«Æ°»»Äê
+           03  PTINFLST-AUTO-SRYCD-G.
+               05  PTINFLST-AUTO-SRYCD-TBL     OCCURS   3.
+                   07  PTINFLST-AUTO-SRYCD       PIC X(09).
+                   07  PTINFLST-AUTO-NAME        PIC X(80).
+                   07  PTINFLST-AUTO-ENDYMD      PIC X(10).
+      *
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ
+           03  PTINFLST-KINKI-YKZAI-G.
+               05  PTINFLST-KINKI-YKZAI-TBL    OCCURS   100.
+      *            ¶Ø´÷ÌôºÞ¥³¡¼¥É
+                   07  PTINFLST-DRUGCD-CODE       PIC X(09).
+                   07  PTINFLST-DRUGCD-NAME       PIC X(80).
+      *            Í­¸ú½ªÎ»Æü¡Ê¥Þ¥¹¥¿½ªÎ»Æü¡Ë
+                   07  PTINFLST-DRUGCD-END-DATE   PIC X(10).
+      *            ¶Ø´÷³«»ÏÆü
+                   07  PTINFLST-START-DATE        PIC X(10).
+      *
