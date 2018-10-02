@@ -144,8 +144,10 @@
                05  WRK-HEN-TSS     PIC X(02).
       *
        01  PTINFLST-REC.
-           02  PTINFLST-OCC        OCCURS  46.
+           02  PTINFLST-OCC        OCCURS  39.
            COPY    "CPORAPI012BR1.INC".
+      *
+       01  PTINFLST-MAX            PIC 9(02)   VALUE   39.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -361,7 +363,7 @@
       *
                PERFORM         UNTIL ( FLG-PTNUM    =   1  )
                                OR    ( FLG-END      =   1  )
-                               OR    ( CNT-OUT1     >=  46 )
+                               OR    ( CNT-OUT1     >=  PTINFLST-MAX )
                    MOVE    ZERO                TO  FLG-SYORI-END
       *
                    IF      WRK-PARA-SYORIKBN   =   "1"

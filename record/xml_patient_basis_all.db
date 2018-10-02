@@ -199,5 +199,32 @@ xml_patient_basis_all {
 			In_Number		varchar(20);
 			In_Description		varchar(100);
 		} [20];
-	} [46];
+#--->   ´µ¼Ô¸ÄÊÌ¾ğÊó
+		Personally_Information	{
+#--->   	Ç¥ÉØÀßÄê
+			Pregnant_Class		varchar(05);
+#--->   	Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ
+			Community_Disease2	varchar(05);
+#--->    	¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅ
+			Community_Disease3	varchar(05);
+    		};
+#-----> ´ÉÍıÎÁ¼«Æ°»»Äê
+		Auto_Management_Information  {
+			Medication_Code		varchar(09);
+			Medication_Name		varchar(80);
+			Medication_EndDate	varchar(10);
+		} [3];
+#---    ´µ¼Ô¶Ø´÷ÌôºŞ¾ğÊó
+		Patient_Contra_Information	{
+			Patient_Contra_Info	{
+#---    		ÌôºŞ¥³¡¼¥É
+				Medication_Code		varchar(09);
+				Medication_Name		varchar(80);
+#---    		ÌôºŞ¥³¡¼¥É½ªÎ»Æü
+				Medication_EndDate	varchar(10);
+#---    		¶Ø´÷³«»ÏÆüÉÕ
+				Contra_StartDate	varchar(10);
+			} [100];
+		};
+	} [39];
 };
