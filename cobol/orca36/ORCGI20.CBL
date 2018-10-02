@@ -624,6 +624,12 @@
                                            INTO  SHELLTBL-ARG15
            END-STRING
       *
+           INITIALIZE                  ORCA-BLOB
+           MOVE    ASGNPARA        TO  ORCA-BLOB-FILE
+           PERFORM 910-BLOBIMPORT-SEC
+           MOVE    ORCA-BLOB-OBJECT
+                                   TO  SHELLTBL-ARG16
+      *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -3651,6 +3657,28 @@
            .
       *
        910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    BLOBIMPORT½èÍý
+      *****************************************************************
+       910-BLOBIMPORT-SEC              SECTION.
+      *
+           MOVE    ORCA-BLOB       TO  MCPDATA-REC
+      *
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           MOVE    MCPDATA-REC     TO  ORCA-BLOB
+      *
+           CALL    "CBL_DELETE_FILE"   USING
+                                       ORCA-BLOB-FILE
+      *
+           .
+       910-BLOBIMPORT-EXT.
            EXIT.
       *****************************************************************
       *    £Ð£Õ£Ô¡¡½èÍý

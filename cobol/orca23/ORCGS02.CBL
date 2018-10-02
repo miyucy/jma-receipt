@@ -774,6 +774,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+           COPY    "ORCA-BLOB".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
@@ -1176,6 +1177,7 @@
            MOVE    "ORC23001"      TO  PRFNAME-FILE-ID
            MOVE    1               TO  PRFNAME-SYOKBN1
            MOVE    SPA-NAI-UID     TO  PRFNAME-TERMID
+           INSPECT PRFNAME-TERMID  REPLACING ALL " " BY "_"
       *
            INITIALIZE                  SGETTEMP-AREA
            MOVE    PRFNAME-BASENAME TO SGETTEMP-BASENAME
@@ -1216,6 +1218,12 @@
                                        TO  SHELLTBL-ARG4
            MOVE    SPA-NAI-FILEMEI-YMD TO  SHELLTBL-ARG5
            MOVE    SPA-NAI-FILEMEI-HMS TO  SHELLTBL-ARG6
+      *
+           INITIALIZE                      ORCA-BLOB
+           MOVE    ASGNPARA            TO  ORCA-BLOB-FILE
+           PERFORM 910-BLOBIMPORT-SEC
+           MOVE    ORCA-BLOB-OBJECT    TO  SHELLTBL-ARG7
+     *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
@@ -9263,6 +9271,28 @@
            .
       *
        910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    BLOBIMPORT処理
+      *****************************************************************
+       910-BLOBIMPORT-SEC              SECTION.
+      *
+           MOVE    ORCA-BLOB       TO  MCPDATA-REC
+      *
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           MOVE    MCPDATA-REC     TO  ORCA-BLOB
+      *
+           CALL    "CBL_DELETE_FILE"   USING
+                                       ORCA-BLOB-FILE
+      *
+           .
+       910-BLOBIMPORT-EXT.
            EXIT.
       *************************************************************
       *    トランザクションキャンセル処理

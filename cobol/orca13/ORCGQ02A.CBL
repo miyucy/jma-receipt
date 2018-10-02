@@ -650,6 +650,12 @@
       *    検索結果パターン
            MOVE    "1"             TO  SHELLTBL-ARG16
       *
+           INITIALIZE                  ORCA-BLOB
+           MOVE    ASGNPARA        TO  ORCA-BLOB-FILE
+           PERFORM 910-BLOBIMPORT-SEC
+           MOVE    ORCA-BLOB-OBJECT
+                                   TO  SHELLTBL-ARG17
+      *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -758,6 +764,12 @@
                MOVE    CONST-BTPARA-SHELLID-LNK01
                                    TO  SHELLTBL-ARG10
            END-IF
+      *
+           INITIALIZE                  ORCA-BLOB
+           MOVE    ASGNPARA        TO  ORCA-BLOB-FILE
+           PERFORM 910-BLOBIMPORT-SEC
+           MOVE    ORCA-BLOB-OBJECT
+                                   TO  SHELLTBL-ARG11
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -871,6 +883,15 @@
                MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG5
                MOVE    SPA-OPID        TO  SHELLTBL-ARG6
                MOVE    SPACE           TO  SHELLTBL-ARG7
+      *
+      **       ARG8は APIで使用
+      *
+               INITIALIZE                  ORCA-BLOB
+               MOVE    ASGNPARA        TO  ORCA-BLOB-FILE
+               PERFORM 910-BLOBIMPORT-SEC
+               MOVE    ORCA-BLOB-OBJECT
+                                       TO  SHELLTBL-ARG9
+      *
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
@@ -2799,6 +2820,28 @@
            .
       *
        910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    BLOBIMPORT処理
+      *****************************************************************
+       910-BLOBIMPORT-SEC              SECTION.
+      *
+           MOVE    ORCA-BLOB       TO  MCPDATA-REC
+      *
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           MOVE    MCPDATA-REC     TO  ORCA-BLOB
+      *
+           CALL    "CBL_DELETE_FILE"   USING
+                                       ORCA-BLOB-FILE
+      *
+           .
+       910-BLOBIMPORT-EXT.
            EXIT.
       *****************************************************************
       *    ジョブ開始セット処理

@@ -227,6 +227,7 @@
       *
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
+           COPY    "ORCA-BLOB".
       *
       *****************************************************************
       *    Ï¢ÍíÎÎ°è
@@ -4892,6 +4893,13 @@
                    MOVE    FINDREQ-KARTE-UID TO  SHELLTBL-ARG7
                    MOVE    PUSHNAME (ASGNPARA-ST:)
                                            TO  SHELLTBL-ARG8
+      *
+                   INITIALIZE                  ORCA-BLOB
+                   MOVE    PRFNAME         TO  ORCA-BLOB-FILE
+                   PERFORM 910-BLOBIMPORT-SEC
+                   MOVE    ORCA-BLOB-OBJECT
+                                           TO  SHELLTBL-ARG9
+      *
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
@@ -5632,4 +5640,26 @@
            .
       *
        910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    BLOBIMPORT½èÍý
+      *****************************************************************
+       910-BLOBIMPORT-SEC              SECTION.
+      *
+           MOVE    ORCA-BLOB       TO  MCPDATA-REC
+      *
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           MOVE    MCPDATA-REC     TO  ORCA-BLOB
+      *
+           CALL    "CBL_DELETE_FILE"   USING
+                                       ORCA-BLOB-FILE
+      *
+           .
+       910-BLOBIMPORT-EXT.
            EXIT.

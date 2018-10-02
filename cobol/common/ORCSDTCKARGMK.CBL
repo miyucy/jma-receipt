@@ -35,15 +35,15 @@
        FILE-CONTROL.
       *
       *    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  ASGNPARA
-                                   FILE    STATUS  IS  STS-RECEERR.
+      *    SELECT  RECEERR-FILE    ASSIGN  ASGNPARA
+      *                            FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    エラーファイル
-       FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200).
+      *FD  RECEERR-FILE.
+      *01  RECEERR-REC             PIC X(200).
        WORKING-STORAGE         SECTION.
       *
       *    エラーファイル 名称領域 
@@ -233,8 +233,8 @@
            MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
            MOVE    SGETTEMP-ST         TO  ASGNPARA-ST
       *
-           OPEN    OUTPUT   RECEERR-FILE
-           CLOSE            RECEERR-FILE
+      *    OPEN    OUTPUT   RECEERR-FILE
+      *    CLOSE            RECEERR-FILE
       *
            MOVE   "dtck_prv.sh"    TO  SHELLTBL-NAME
       *                                     

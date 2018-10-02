@@ -23,6 +23,7 @@ LOG_FILE=/var/log/jma-receipt/"$2"orcb013_3.log
 #        $6  OPID
 #        $7  KARTE_UID (API Only)
 #        $8  Pushファイル名(API Only)
+#        $9  ID(for MONBLOB)
 #-------------------------------------------#
 
 MONPUSHEVENT="/usr/lib/panda/bin/monpushevent"
@@ -36,6 +37,11 @@ echo PUSHREC=${RECFILE}
 
 PARA_FILE_BASE=$3
 PARA_FILE_FULL=${MCP_TEMPDIR}/${PARA_FILE_BASE}
+
+
+${MONBLOB} -dir ${LDDIRECTORY} -export $9 -output ${PARA_FILE_FULL} && ${MONBLOB} -dir ${LDDIRECTORY} -delete $9
+
+
 PUSH_FILE_BASE=$8
 PUSH_FILE_FULL=${MCP_TEMPDIR}/${PUSH_FILE_BASE}
 

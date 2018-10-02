@@ -36,8 +36,16 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
+      *    エラーファイル
+           SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
+                                   FILE    STATUS  IS  STS-DTCHKERR.
       *
        DATA                    DIVISION.
+       FILE                            SECTION.
+      *
+      *    エラーファイル
+       FD  DTCHKERR-FILE.
+       01  DTCHKERR-REC                PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
@@ -45,6 +53,11 @@
       *
       *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC".
+           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+                                   BY         //DTCHKERRPARA//.
+      *
+       01  STS-AREA.
+           03  STS-DTCHKERR                            PIC X(02).
       *
       *    カウント領域
        01  FLG-AREA.
@@ -156,6 +169,9 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *    一時ファイル名編集
+           COPY    "CPORCSGETTEMP.INC".
+      *
       *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *    ＤＢ検索
@@ -243,6 +259,14 @@
            DISPLAY "WRK-PARA-SHORI-KBN[" WRK-PARA-SHORI-KBN "]"
            DISPLAY "WRK-PARA-HKNKBN   [" WRK-PARA-HKNKBN "]"
            DISPLAY "WRK-PARA-PTID     [" WRK-PARA-PTID "]"
+      *
+           INITIALIZE                      SGETTEMP-AREA
+           MOVE    RECEERR             TO  SGETTEMP-BASENAME
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAME   TO  DTCHKERRPARA
+      *
+           OPEN    OUTPUT  DTCHKERR-FILE
+           CLOSE   DTCHKERR-FILE
       *
            PERFORM 20010-PRVDATA-DEL-SEC
       *    前回分削除(存在すれば)
