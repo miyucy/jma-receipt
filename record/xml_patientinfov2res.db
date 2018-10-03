@@ -218,9 +218,9 @@ xml_patientinfov2res {
 #---            	薬剤コード
 			Medication_Code		varchar(09);
 			Medication_Name		varchar(80);
-#---            	薬剤コード終了日
+#---            	有効終了日
 			Medication_EndDate	varchar(10);
-#---            	禁忌開始日付
+#---            	禁忌開始日
 		        Contra_StartDate	varchar(10);
 	        	} [100];
     	    	};
