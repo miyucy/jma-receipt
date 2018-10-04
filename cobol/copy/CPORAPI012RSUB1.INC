@@ -22,6 +22,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 05.00.00     NACL-多々納  18/10/XX  患者個別情報から禁忌薬剤追加
       ************************************************************
        01  ORAPI012RSUB1AREA.
       *
@@ -83,3 +84,32 @@
                    07  API12SUB-MY-NUMBER        PIC X(20).
       *            備考
                    07  API12SUB-DESCRIPTION      PIC X(100).
+      *
+      *H30.10
+      *    患者個別情報
+           03  API12SUB-PTCONF-INFO.
+      *        妊婦設定
+               05  API12SUB-NINPUKBN             PIC X(05).
+      *        認知症地域包括診療
+               05  API12SUB-NINTIHOKATU          PIC X(05).
+      *        小児かかりつけ診療
+               05  API12SUB-SYOUNIKAKARI         PIC X(05).
+      *
+      *    管理料等自動算定
+           03  API12SUB-AUTO-SRYCD-G.
+               05  API12SUB-AUTO-SRYCD-TBL     OCCURS   3.
+                   07  API12SUB-AUTO-SRYCD       PIC X(09).
+                   07  API12SUB-AUTO-NAME        PIC X(80).
+                   07  API12SUB-AUTO-ENDYMD      PIC X(10).
+      *
+      *    患者禁忌薬剤
+           03  API12SUB-KINKI-YKZAI-G.
+               05  API12SUB-KINKI-YKZAI-TBL    OCCURS   100.
+      *            禁忌薬剤コード
+                   07  API12SUB-DRUGCD-CODE       PIC X(09).
+                   07  API12SUB-DRUGCD-NAME       PIC X(80).
+      *            有効終了日（マスタ終了日）
+                   07  API12SUB-DRUGCD-END-DATE   PIC X(10).
+      *            禁忌開始日
+                   07  API12SUB-START-DATE        PIC X(10).
+      *

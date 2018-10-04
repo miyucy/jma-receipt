@@ -134,9 +134,11 @@
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    点数マスタ−
+      *    保存点数マスタ−
       *01  TNSWK-TENSU-REC.
-           COPY    "CPTENSUWK.INC".
+      **** COPY    "CPTENSUWK.INC".
+           COPY    "CPTENSU.INC"      REPLACING
+                                     //TNS-// BY //TNSWK-//.
       *
       *    入力コードマスタ−
        01  INPUTCD-REC.
@@ -2671,11 +2673,13 @@
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
+      *H3.10   開始日の降順に検索
+      ***  MOVE    "key4"               TO  MCP-PATHNAME
+           MOVE    "key24"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
+               MOVE    "key24"             TO  MCP-PATHNAME
                PERFORM 9110-TENSU-READ-SEC
            END-IF
            MOVE    ZERO                TO  FLG-TENSU-OK
@@ -2688,18 +2692,22 @@
                    MOVE    1                   TO  FLG-TENSU
                    MOVE    TNS-NAME            TO  WRK-SRYCD-NAME
                ELSE
-                   MOVE    2                   TO  FLG-TENSU-OK
-                   MOVE    TNS-TENSU-REC       TO  TNSWK-TENSU-REC
+      *H30.10
+                   IF      TNSWK-TENSU-REC     =   SPACE
+      *                最終履歴を編集 
+                       MOVE    2                   TO  FLG-TENSU-OK
+                       MOVE    TNS-TENSU-REC       TO  TNSWK-TENSU-REC
+                   END-IF
                END-IF
                IF      FLG-TENSU           =   ZERO
                    MOVE    "tbl_tensu"         TO  MCP-TABLE
-                   MOVE    "key4"              TO  MCP-PATHNAME
+                   MOVE    "key24"             TO  MCP-PATHNAME
                    PERFORM 9110-TENSU-READ-SEC
                END-IF
            END-PERFORM
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
+           MOVE    "key24"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *    当日期間外
            IF      FLG-TENSU-OK        =   2
@@ -2711,7 +2719,7 @@
                                    INTO    WRK-SRYCD-NAME
                END-STRING
            END-IF
-          .
+           .
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
