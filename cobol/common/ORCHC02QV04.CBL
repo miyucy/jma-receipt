@@ -7001,7 +7001,8 @@
            END-IF
            ADD     1                   TO  IDX-AP2
       *    йт╫╦л╬
-           MOVE    WRK-TNS-NAME        TO  FMSHOHO-YKZNAME
+      *****MOVE    WRK-TNS-NAME        TO  FMSHOHO-YKZNAME
+           MOVE    WRK-QR-NAME         TO  FMSHOHO-YKZNAME
                                                   (IDX-AP1 IDX-AP2)
            MOVE    WRK-SRY-SRYCD(IDXA) TO  FMSHOHO-SRYCD
                                                   (IDX-AP1 IDX-AP2)
