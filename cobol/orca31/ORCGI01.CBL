@@ -8630,6 +8630,10 @@
                                    SPA-GMN-I01-CMB-KSN
                                    SPA-GMN-I01-CMB-TOKHIGAITO
       *
+           MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
+      *
+           PERFORM 310-CMB-SKJKBN-SET-SEC
+      *
            MOVE    "5000"          TO  WRK-KANRICD
            MOVE    "*"             TO  WRK-KBNCD
            MOVE    SPA-SYSYMD      TO  WRK-YUKYMD
@@ -8646,7 +8650,7 @@
                                    TO  SPA-GMN-I01-SEIKYU
            MOVE    SPA-GMN-I01-DISPKBN-ITM (1)
                                    TO  SPA-GMN-I01-DISPKBN
-           PERFORM 310-CMB-SKJKBN-SET-SEC
+      *
            MOVE    SYS-5000-SKJKBN TO  WRK-CMB-CD
            PERFORM 4103-CMB-SKJKBN-CHK-SEC
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
