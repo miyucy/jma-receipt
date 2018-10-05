@@ -44,6 +44,7 @@
       *  04.08.00    NACL-多々納  17/01/17  翌月入院料チェック対応
       *  04.08.00    NACL-多々納  17/04/XX  短術３検体検査管理加算対応
       *  04.08.00    NACL-多々納  17/09/XX  当月受診ありチェック対応
+      *  05.00.00    NACL-多々納  18/10/XX  短術３画像診断等チェック対応
       *****************************************************************
       *
       *
@@ -167,6 +168,9 @@
                05  WRK-N-SRYMM         PIC 9(02).
            03  WRK-TANKI-DAY           PIC 9(02).
            03  WRK-LST-DD              PIC 9(02).
+      *
+      *H30.10
+           03  WRK-CHK-SRYKBN          PIC X(02).
       *
       *    チェック用
        01  WRK-TBL-AREA.
@@ -814,7 +818,8 @@
       *H27.9
       *    短期滞在手術基本料３の外来チェック
            IF     (WRK-TANKI3-IDX  NOT =   ZERO )
-              AND (SPA-NYUGAIKBN       =   2    )
+      *H30.10
+      *****   AND (SPA-NYUGAIKBN       =   2    )
                MOVE    1                   TO  ORCSCHKTCHK-HKTFLG
                PERFORM 20013-TANKI3HKT-SEC
            END-IF
@@ -1089,7 +1094,7 @@
                    ELSE
                        MOVE    1               TO  FLG-CHK
       *H27.8
-      *            小児科外来診療料算定日の労災・自賠責は対象外
+      *            小児科外診療料算定日の労災・自賠責は対象外
                        IF     (TBL-KANRICD (IDX)   =   "202" )
                           AND (SPA-SYONIKA-ARI     =   ZERO  )
                           AND (SPA-HKNKBN          =   1     )
@@ -1779,9 +1784,13 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *            検査判断料のみのチェックとする
                    IF     (SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1" )
                    AND    (FLG-SANTEIOK        =   ZERO )
-                   AND    (SPA-COM-SRYKBN (IDX-Z)  =   "60"     )
+                   AND    (SPA-COM-SRYKBN (IDX-Z)  =   "60"
+      *H30.10            画像診断追加
+                                                   OR  "70"     )
                    AND    (SPA-COM-DATAKBN(IDX-Z)  =   "1"      )
-      *
+      *H30.10
+                       MOVE    SPA-COM-SRYKBN (IDX-Z)
+                                                   TO  WRK-CHK-SRYKBN
                        MOVE    SPA-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
       *                チェック
                        PERFORM 200131-TANKI3HKT-CHEK-SEC
@@ -1836,6 +1845,14 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        200131-TANKI3HKT-CHEK-SEC         SECTION.
       *
+      *H30.1O
+      *    H30.4から他入院料とコンピュータ断層診断等対象
+           IF     (WRK-SRYYMD          <   "20180401")
+             AND ((WRK-CHK-SRYKBN      =   "70" )
+               OR (SPA-NYUGAIKBN       =   "1"  ))
+               GO      TO      200131-TANKI3HKT-CHEK-EXT
+           END-IF
+      *
            INITIALIZE                  ORCSTANKI3HKT-AREA
       *    医療機関番号
            MOVE    SPA-HOSPNUM         TO  LNK-TANKI3HKT-HOSPNUM
@@ -1850,6 +1867,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
               AND (FLG-TANKI3HKT-NO    =   ZERO )
                MOVE    "1"                 TO  LNK-TANKI3HKT-HKTKBN
            END-IF
+      *
       *
            CALL    "ORCSTANKI3HKT"     USING
                                        ORCSTANKI3HKT-AREA
@@ -1892,7 +1910,13 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *                手技料のみチェック
                        IF     (WRK-SRYCD (1:1)     =   "1" )
                          AND  (LNK-ORCSC-SRYKBN (IDX-L1 IDX-L2)
-                                                   =   "60")
+                                                   =   "60"
+      *H30.10            画像診断追加
+                                                   OR  "70")
+      *
+      *H30.10
+                           MOVE    LNK-ORCSC-SRYKBN (IDX-L1 IDX-L2)
+                                                   TO  WRK-CHK-SRYKBN
       *                    チェック
                            PERFORM 200131-TANKI3HKT-CHEK-SEC
                            IF      LNK-TANKI3HKT-KBN   =   "1"

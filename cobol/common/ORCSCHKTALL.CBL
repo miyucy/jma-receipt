@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  05.00.00    NACL-Â¿¡¹Ç¼  18/10/XX  Ã»½Ñ£³²èÁü¿ÇÃÇÅù¥Á¥§¥Ã¥¯ÂÐ±þ
       *****************************************************************
       *
       *
@@ -80,6 +81,10 @@
                05  WRK-SRYDD           PIC X(02).
       *
            03  WRK-IDX-N               PIC 9(04).
+      *H30.10
+           03  WRK-TANKI3-IDX          PIC 9(04).
+           03  WRK-TANKI3-DAY          PIC 9(02).
+           03  FLG-TANKHKT             PIC 9(01).
       *
            03  WRK-K-SRYCD             PIC X(09).
       *    Êñ³ç
@@ -159,6 +164,10 @@
       *
       *    ¿ÇÎÅ¹Ô°ÙÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
            COPY    "K01COMMON-SPA".
+      *
+      *H30.10
+      *    Ã»´üÂÚºß¼ê½Ñ£³¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+           COPY    "CPORCSTANKI3HKT.INC".
       *
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -278,6 +287,12 @@
            MOVE    SYS-1014-SRYKBN-G   TO  TBL-N-SRYKBN-G (IDX-N)
            PERFORM 1001-HKTSRYCD-HEN-SEC
            MOVE    IDX-N               TO  TBL-N-MAX
+      *
+      *H30.10
+      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¡¡¤¢¤ê
+           IF      SYS-1014-KBNCD (1:3)    =   "526"
+               MOVE    IDX-N               TO  WRK-TANKI3-IDX
+           END-IF
            .
        1002-KBNCD-TBLHEN-EXT.
            EXIT.
@@ -430,6 +445,12 @@
                  AND ( LNK-NYUINDAY-TANKI2-KBN (IDX-D)
                                            NOT =   SPACE     )
                    MOVE    1               TO  NACCT-DAY (IDX-D)
+      *H30.10
+      *            Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¡¡¤¢¤ê
+                   IF     (TBL-N-KANRICD (WRK-IDX-N)   =   "526")
+                       MOVE    IDX-D           TO  WRK-TANKI3-DAY
+                   END-IF
+      *
                END-IF
       *
                IF    ( NACCT-DAY (IDX-D)   NOT =   ZERO  )
@@ -513,6 +534,19 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
+      *TEST
+      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¥Á¥§¥Ã¥¯
+           IF     (WRK-SRYYMD      >=  "20180401")
+              AND (WRK-TANKI3-IDX  >   ZERO  )
+              AND (WRK-TANKI3-DAY  >   ZERO  )
+               IF      ORCSCHKTALL-HKTSRYKBN   =   "60"
+                                               OR  "70"
+                    PERFORM 200131-TANKI3HKT-CHEK-SEC
+               END-IF
+           END-IF
+      *TEST
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   31
       *        ½ÐÍè¹â»»ÄêÆü
@@ -786,6 +820,51 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****END-IF
            .
        300222-ETENSU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³½èÍý
+      *****************************************************************
+       200131-TANKI3HKT-CHEK-SEC         SECTION.
+      *
+           MOVE    ZERO                 TO  FLG-TANKHKT
+           PERFORM VARYING     IDX-T    FROM    1   BY  1
+                   UNTIL      (IDX-T    >   10   )
+                         OR   (ORCSCHKTALL-HKTSRYCD(IDX-T) =   SPACE)
+                         OR   (FLG-TANKHKT      =   1   )
+               MOVE    ORCSCHKTALL-HKTSRYCD(IDX-T)  TO  WRK-SRYCD
+      *
+               INITIALIZE                  ORCSTANKI3HKT-AREA
+      *        °åÎÅµ¡´ØÈÖ¹æ
+               MOVE    SPA-HOSPNUM         TO  LNK-TANKI3HKT-HOSPNUM
+      *        ´µ¼Ô£É£Ä
+               MOVE    SPA-PTID            TO  LNK-TANKI3HKT-PTID
+      *        »»ÄêÇ¯·îÆü
+               MOVE    WRK-SRYYMD          TO  LNK-TANKI3HKT-SANTEIYMD
+               MOVE    WRK-TANKI3-DAY      TO  LNK-TANKI3HKT-SANTEIYMD
+                                                         (7:2)
+      *        ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+               MOVE    WRK-SRYCD           TO  LNK-TANKI3HKT-SRYCD
+      *
+               CALL    "ORCSTANKI3HKT"     USING
+                                           ORCSTANKI3HKT-AREA
+                                           SPA-AREA
+               IF      LNK-TANKI3HKT-KBN   =   "1"
+      *             Êñ³ç¤¢¤ê¡¡»»ÄêÆü°Ê¹ß¤Ï¤¹¤Ù¤ÆÊñ³ç
+                    MOVE    1               TO  FLG-TANKHKT
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX     FROM    WRK-TANKI3-DAY   BY  1
+                   UNTIL       IDX     >   31
+      *        »»ÄêÆü°Ê¹ß¤Ï¤¹¤Ù¤ÆÊñ³ç
+               IF     (FLG-TANKHKT         =   1  )
+                   MOVE    1               TO  ORCSCHKTALL-HKTCHKFLG
+                                                                  (IDX)
+               END-IF
+           END-PERFORM
+           .
+       200131-TANKI3HKT-CHEK-EXT.
            EXIT.
       *
       *****************************************************************
