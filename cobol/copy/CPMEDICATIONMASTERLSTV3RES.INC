@@ -49,8 +49,10 @@
                05  LSTRES-RESKEY           PIC X(100).
       *        基準日付
                05  LSTRES-BASE-DATE        PIC X(10).
-      *        作成区分
-               05  LSTRES-CREATE-FORMAT    PIC X(3).
+      *        有効モード
+               05  LSTRES-EFFECTIVE-MODE   PIC X(5).
+      *        データフォーマット
+               05  LSTRES-DATA-FORMAT      PIC X(3).
       *        件数
                05  LSTRES-OUTPUT-COUNT     PIC X(10).
       *

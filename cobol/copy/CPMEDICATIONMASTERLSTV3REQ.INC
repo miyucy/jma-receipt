@@ -37,6 +37,8 @@
                05  LSTREQ-ORCA-UID         PIC X(36).
       *        基準日
                03  LSTREQ-BASE-DATE        PIC X(10).
-      *        作成区分
-               03  LSTREQ-CREATE-FORMAT    PIC X(3).
+      *        有効モード
+               03  LSTREQ-EFFECTIVE-MODE   PIC X(5).
+      *        データフォーマット
+               03  LSTREQ-DATA-FORMAT      PIC X(3).
       *

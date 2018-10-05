@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  05.00.01    NACL-藤原    18/09/05  ＣＳＶ対応
+      *                                     抽出条件の追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -532,14 +533,28 @@
                PERFORM 20011-PERFORM-CHK-SEC
            END-IF
       *
-      *    作成区分チェック
+      *    データフォーマットチェック
            IF      WRK-ERRCD           =   SPACE
-               EVALUATE    LSTREQ-CREATE-FORMAT
+               EVALUATE    LSTREQ-DATA-FORMAT
+                   WHEN    SPACE
+                       MOVE    "xml"           TO  LSTREQ-DATA-FORMAT
                    WHEN    "xml"
                    WHEN    "csv"
                        CONTINUE
                    WHEN    OTHER
                        MOVE    "E18"           TO  WRK-ERRCD
+               END-EVALUATE
+           END-IF
+      *
+      *    有効モードチェック
+           IF      WRK-ERRCD           =   SPACE
+               EVALUATE    LSTREQ-EFFECTIVE-MODE
+                   WHEN    SPACE
+                   WHEN    "True"
+                   WHEN    "False"
+                       CONTINUE
+                   WHEN    OTHER
+                       MOVE    "E19"           TO  WRK-ERRCD
                END-EVALUATE
            END-IF
       *
@@ -563,7 +578,14 @@
            MOVE   LSTREQ-REQUEST-NUMBER
                                        TO  LSTRES-REQUEST-NUMBER
       *
-           MOVE   LSTREQ-CREATE-FORMAT TO  LSTRES-CREATE-FORMAT
+           EVALUATE    LSTREQ-DATA-FORMAT
+               WHEN    SPACE
+                   MOVE    "xml"           TO  LSTREQ-DATA-FORMAT
+           END-EVALUATE
+           MOVE   LSTREQ-DATA-FORMAT   TO  LSTRES-DATA-FORMAT
+      *
+           MOVE   LSTREQ-EFFECTIVE-MODE
+                                       TO  LSTRES-EFFECTIVE-MODE
       *
            .
        20010-INPUT-HEN-EXT.
@@ -811,8 +833,10 @@
       *
            MOVE    "medicalpoints_master_make"
                                        TO  SHELLTBL-ARG18
-           MOVE    LSTREQ-CREATE-FORMAT
+           MOVE    LSTREQ-DATA-FORMAT
                                        TO  SHELLTBL-ARG19
+           MOVE    LSTREQ-EFFECTIVE-MODE
+                                       TO  SHELLTBL-ARG20
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
@@ -1033,7 +1057,10 @@
                MOVE    "基準日が暦日ではありません。"
                                                TO  WRK-ERRMSG
            WHEN    "E18"
-               MOVE    "作成区分の設定に誤りがあります。"
+               MOVE    "データフォーマットの設定に誤りがあります。"
+                                               TO  WRK-ERRMSG
+           WHEN    "E19"
+               MOVE    "有効モードの設定に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "E20"
                MOVE    "ジョブ管理が削除できませんでした。"

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  05.00.01    NACL-Æ£¸¶    18/09/05  £Ã£Ó£ÖÂÐ±þ
       *                                     °­À­¼ðáçÉÂÍýÁÈ¿¥É¸ËÜ²Ã»»¤ÎÄÉ²Ã
+      *                                     Ãê½Ð¾ò·ï¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -101,8 +102,10 @@
            03  WRK-PARA-HOSPNUM    PIC X(02).
            03  WRK-PARA-TERMID     PIC X(64).
            03  WRK-PARA-BASE-YMD   PIC X(08).
-           03  WRK-PARA-CREATE-FORMAT
+           03  WRK-PARA-DATA-FORMAT
                                    PIC X(03).
+           03  WRK-PARA-EFFECTIVE-MODE
+                                   PIC X(05).
            03  WRK-PARA-ERRFILE    PIC X(64).
       *
       *    °ì»þÎÎ°è
@@ -894,11 +897,14 @@
                                                WRK-PARA-HOSPNUM
                                                RECEERR
                                                WRK-PARA-BASE-YMD
-                                               WRK-PARA-CREATE-FORMAT
+                                               WRK-PARA-DATA-FORMAT
+                                               WRK-PARA-EFFECTIVE-MODE
            END-UNSTRING
       *
-           DISPLAY "WRK-PARA-BASE-YMD     =" WRK-PARA-BASE-YMD
-           DISPLAY "WRK-PARA-CREATE-FORMAT=" WRK-PARA-CREATE-FORMAT
+           DISPLAY "PARA-BASE-YMD      =" WRK-PARA-BASE-YMD
+           DISPLAY "PARA-DATA-FORMAT   =" WRK-PARA-DATA-FORMAT
+           DISPLAY "PARA-EFFECTIVE-MODE=" WRK-PARA-EFFECTIVE-MODE
+           DISPLAY "LNK-PRTKANRI-SKYYMD=" LNK-PRTKANRI-SKYYMD
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -922,7 +928,7 @@
            MOVE    "ÅÀ¿ô¥Þ¥¹¥¿ÊÖµÑ"    TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
       *
-           IF      WRK-PARA-CREATE-FORMAT
+           IF      WRK-PARA-DATA-FORMAT
                                        =   "csv"
                OPEN    OUTPUT      CSV-FILE
            END-IF
@@ -964,7 +970,7 @@
                    PERFORM 2001-TENSULST-HENSYU-SEC
                END-PERFORM
       *
-               IF      WRK-PARA-CREATE-FORMAT
+               IF      WRK-PARA-DATA-FORMAT
                                        =   "csv"
                    PERFORM 2002-TENSULST-CSV-SEC
                ELSE
@@ -987,7 +993,7 @@
       *****************************************************************
        2001-TENSULST-HENSYU-SEC          SECTION.
       *
-           IF    ( WRK-PARA-CREATE-FORMAT
+           IF    ( WRK-PARA-DATA-FORMAT
                                        =   "csv" )
            AND   ( CNT-OUT             =   ZERO  )
                MOVE    TITLE-01            TO  CSV-REC
@@ -1891,7 +1897,7 @@
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
-             IF      WRK-PARA-CREATE-FORMAT
+             IF      WRK-PARA-DATA-FORMAT
                                        =   "csv"
                    CONTINUE
              ELSE
@@ -1923,7 +1929,7 @@
              END-IF
            END-IF
       *
-           IF      WRK-PARA-CREATE-FORMAT
+           IF      WRK-PARA-DATA-FORMAT
                                        =   "csv"
                CLOSE           CSV-FILE
            END-IF
@@ -2107,6 +2113,16 @@
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-TENSU
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+               EVALUATE    WRK-PARA-EFFECTIVE-MODE
+                   WHEN    "True"
+                       IF      LNK-PRTKANRI-SKYYMD >   TNS-YUKOEDYMD
+                           GO  TO  900-TENSU-READ-N-SEC
+                       END-IF
+                   WHEN    "False"
+                       IF      LNK-PRTKANRI-SKYYMD <=  TNS-YUKOEDYMD
+                           GO  TO  900-TENSU-READ-N-SEC
+                       END-IF
+               END-EVALUATE
            ELSE
               MOVE    1               TO  FLG-TENSU
            END-IF

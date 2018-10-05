@@ -8,6 +8,7 @@ xml_medication_masterlstv3req {
 		Karte_Uid		varchar(36);
 		Orca_Uid		varchar(36);
 		Base_Date		varchar(10);
-		Create_Format		varchar(3);
+		Effective_Mode		varchar(5);
+		Data_Format		varchar(3);
 	};
 };
