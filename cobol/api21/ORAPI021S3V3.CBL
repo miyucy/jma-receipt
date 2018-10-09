@@ -4044,7 +4044,7 @@
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "58"
-               STRING  "訂正の入金取り扱い区分は「今回請求分のみ入力」"
+               STRING  "訂正の入金取り扱い区分は「今回請求分のみ入金」"
                        "のみ可能です。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
