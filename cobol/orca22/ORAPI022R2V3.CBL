@@ -31,6 +31,8 @@
       *  05.00.01    NACL-藤原    18/05/01  急性フラグの追加
       *                                     傷病名コードを２１に変更
       *  05.00.02    NACL-藤原    18/08/21  病名からの疑いフラグの設定
+      *  05.00.03    NACL-藤原    18/10/05  中止の追加
+      *                                     削除時の条件変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1589,6 +1591,7 @@
                        WHEN    "S"
                        WHEN    "U"
                        WHEN    "W"
+                       WHEN    "P"
                            MOVE    "3"              TO  WRK-TENKI
                        WHEN    OTHER
                            MOVE    "1"              TO  WRK-TENKI
@@ -2172,7 +2175,7 @@
                AND   ( WRK-NYUGAIKBN   =   PTBYO-NYUGAIKBN )
                AND   ( WRK-KOHID       =   PTBYO-KOHID     )
                AND   ( WRK-TENKIYMD    =   PTBYO-TENKIYMD  )
-               AND   ( WRK-UTAGAIFLG   =   PTBYO-UTAGAIFLG )
+      *********AND   ( WRK-UTAGAIFLG   =   PTBYO-UTAGAIFLG )
                    IF      WRK-HKNCOMBI-X  =   "None"
                        INITIALIZE                  HKNCOMBI-REC
                        MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
