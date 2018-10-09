@@ -1696,7 +1696,7 @@
                PERFORM 5004-MOJI-HENSYU-SEC
                MOVE    TENSULST-UPYMD      (IDX)
                                            TO  WRK-DATA
-               MOVE    1                   TO  WRK-NAGASA
+               MOVE    10                  TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
                MOVE    TENSULST-UPHMS      (IDX)
                                            TO  WRK-DATA
