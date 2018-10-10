@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  04.08.00    NACL-Â¿¡¹Ç¼  17/04/XX  ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»Êñ³çÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  17/06/XX  À¸²½¡Ê£²¡ËÈ½ÃÇÎÁÊñ³çÂÐ±þ
+      *  05.00.00    NACL-¾®Æ¦Âô  18/10/10  Ã»´üÂÚºß£³¤Î»»ÄêÆüÈ½Äê½¤Àµ
       *****************************************************************
       *
       *
@@ -264,7 +265,8 @@
              MOVE     ZERO                  TO  FLG-TANKI3
              PERFORM     VARYING    IDX   FROM   1   BY   1
                UNTIL     IDX    >   WRK-GETSUMATSU-DD
-                   IF    LNK-NYUINDAY-TANKI3-KBN(IDX)   =  "1"  OR  "2"
+                   IF  (LNK-NYUINDAY-KBN(IDX)          =  SPACE)  AND
+                       (LNK-NYUINDAY-TANKI3-KBN(IDX)   =  "1"  OR  "2")
                       MOVE    1             TO  FLG-TANKI3
                    END-IF
                    IF    FLG-TANKI3         =   1
@@ -272,11 +274,18 @@
                    END-IF
              END-PERFORM
       *
-      **       PERFORM   VARYING  IDX   FROM  1  BY  1
-      **         UNTIL   IDX   >   31
-      **            DISPLAY  "IDX = " IDX
-      **            DISPLAY  "WRK-TANKI3-DAY(IDX) = " WRK-TANKI3-DAY(IDX)
-      **       END-PERFORM
+      *       PERFORM   VARYING  IDX   FROM  1  BY  1
+      *         UNTIL   IDX   >   31
+      *            DISPLAY  "IDX = " IDX
+      *            DISPLAY  "LNK-NYUINDAY-KBN(IDX)        = "
+      *                      LNK-NYUINDAY-KBN(IDX)
+      *            DISPLAY  "LNK-NYUINDAY-TANKI-KBN(IDX)  = "
+      *                      LNK-NYUINDAY-TANKI-KBN(IDX)
+      *            DISPLAY  "LNK-NYUINDAY-TANKI3-KBN(IDX) = "
+      *                      LNK-NYUINDAY-TANKI3-KBN(IDX)
+      *            DISPLAY  "WRK-TANKI3-DAY(IDX)          = "
+      *                      WRK-TANKI3-DAY(IDX)
+      *       END-PERFORM
       *
              IF    WRK-TANKI3-DAY(WRK-SANTEI-DD)   =   "1"
                 MOVE    "1"                 TO    LNK-TANKI3HKT-KBN
