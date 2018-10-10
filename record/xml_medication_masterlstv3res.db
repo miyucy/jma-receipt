@@ -14,6 +14,8 @@ xml_medication_masterlstv3res {
 		Api_Result_Message	varchar(100);
 		Reskey			varchar(100);
 		Base_Date		varchar(10);
+		Effective_Mode		varchar(5);
+		Data_Format		varchar(3);
 		Output_Count		varchar(10);
 		Data_Id_Information {
 			Data_Id         varchar(37);

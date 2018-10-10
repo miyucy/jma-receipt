@@ -157,6 +157,7 @@ xml_medication_masterlst {
 		Score_table_division_number		varchar(30);
 		Workers_compensation_calculation_Not_classified	varchar(1);
 		Four_limbs_addition			varchar(1);
+		Malignant_tumor_pathology_tissue_sample_addition	varchar(1);
 	} [1000];
 };
 
