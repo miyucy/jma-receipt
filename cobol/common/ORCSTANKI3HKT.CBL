@@ -30,6 +30,7 @@
       *  04.08.00    NACL-Â¿¡¹Ç¼  17/04/XX  ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»Êñ³çÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  17/06/XX  À¸²½¡Ê£²¡ËÈ½ÃÇÎÁÊñ³çÂÐ±þ
       *  05.00.00    NACL-¾®Æ¦Âô  18/10/10  Ã»´üÂÚºß£³¤Î»»ÄêÆüÈ½Äê½¤Àµ
+      *              NACL-¾®Æ¦Âô  18/10/11  Ã»´üÂÚºß£³¤ÎÊñ³çÈ½ÄêÄÉ²Ã
       *****************************************************************
       *
       *
@@ -56,26 +57,40 @@
        01  CONSTANT-AREA.
       *
            03   CONS-TANKI3HKT-AREA.
+      *      Ç¢¡¦ÊµÊØÅù¸¡ººÈ½ÃÇÎÁ
+             05   CONS-HKT1                PIC X(09) VALUE "160061710".
       *      ·ì±Õ³ØÅª¸¡ººÈ½ÃÇÎÁ
-             05   CONS-HKT1                PIC X(09) VALUE "160061810".
+             05   CONS-HKT2                PIC X(09) VALUE "160061810".
       *      À¸²½³ØÅª¸¡ºº¡Ê£±¡ËÈ½ÃÇÎÁ
-             05   CONS-HKT2                PIC X(09) VALUE "160061910".
+             05   CONS-HKT3                PIC X(09) VALUE "160061910".
+      *      À¸²½³ØÅª¸¡ºº¡Ê£²¡ËÈ½ÃÇÎÁ
+             05   CONS-HKT4                PIC X(09) VALUE "160062010".
       *      ÌÈ±Ö³ØÅª¸¡ººÈ½ÃÇÎÁ
-             05   CONS-HKT3                PIC X(09) VALUE "160062110".
+             05   CONS-HKT5                PIC X(09) VALUE "160062110".
+      *      ÈùÀ¸Êª³ØÅª¸¡ººÈ½ÃÇÎÁ
+             05   CONS-HKT6                PIC X(09) VALUE "160062210".
+      *      ¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ
+             05   CONS-HKT7                PIC X(09) VALUE "170015410".
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¼Ì¿¿¿ÇÃÇ¡Ë
+             05   CONS-HKT8                PIC X(09) VALUE "170025210".
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê´ðËÜÅª¥¨¥Ã¥¯¥¹Àþ¿ÇÃÇ¡Ë
+             05   CONS-HKT9                PIC X(09) VALUE "170025310".
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê³Ë°å³Ø¿ÇÃÇ¡Ë
+             05   CONS-HKT10               PIC X(09) VALUE "170025410".
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
+             05   CONS-HKT11               PIC X(09) VALUE "170025510".
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê³Ë°å³Ø¿ÇÃÇ¡Ë
+             05   CONS-HKT12               PIC X(09) VALUE "170025610".
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
+             05   CONS-HKT13               PIC X(09) VALUE "170025710".
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£³¡Ê³Ë°å³Ø¿ÇÃÇ¡Ë
+             05   CONS-HKT14               PIC X(09) VALUE "170035710".
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£³¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
+             05   CONS-HKT15               PIC X(09) VALUE "170035810".
       *
            03  CONS-TANKI3HKT-AREA-R  REDEFINES  CONS-TANKI3HKT-AREA.
-             05   CONS-TANKI3HKT-TBL      OCCURS  3.
+             05   CONS-TANKI3HKT-TBL      OCCURS  15.
                 07   CONS-TANKI3HKT-SRYCD  PIC X(09).
-      *
-      *H29.4
-      *    Êñ³ç³°¸¡ººÈ½ÃÇÎÁ
-           03   CONS-TANKI3HKTNO-AREA.
-      *      Ç¢¡¦ÊµÊØÈ½ÃÇÎÁ
-             05   CONS-HKTNO1              PIC X(09) VALUE "160061710".
-      *      À¸²½³ØÅª¸¡ºº¡Ê£²¡ËÈ½ÃÇÎÁ
-             05   CONS-HKTNO2              PIC X(09) VALUE "160062010".
-      *      ÈùÀ¸Êª³ØÅªÈ½ÃÇÎÁ
-             05   CONS-HKTNO3              PIC X(09) VALUE "160062210".
       *
       *    ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»
            03   CONS-TANKI3KSN-AREA.
@@ -206,17 +221,25 @@
                WHEN    CONS-TANKI3HKT-SRYCD(1)
                WHEN    CONS-TANKI3HKT-SRYCD(2)
                WHEN    CONS-TANKI3HKT-SRYCD(3)
-      *H29.6   À¸²½¡Ê£²¡ËÊñ³çÂÐ¾Ý
-               WHEN    CONS-HKTNO2
+               WHEN    CONS-TANKI3HKT-SRYCD(4)
+               WHEN    CONS-TANKI3HKT-SRYCD(5)
+               WHEN    CONS-TANKI3HKT-SRYCD(6)
+      *        ¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¥Á¥§¥Ã¥¯
+               WHEN    CONS-TANKI3HKT-SRYCD(7)
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
+               WHEN    CONS-TANKI3HKT-SRYCD(8)
+               WHEN    CONS-TANKI3HKT-SRYCD(9)
+               WHEN    CONS-TANKI3HKT-SRYCD(10)
+               WHEN    CONS-TANKI3HKT-SRYCD(11)
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²
+               WHEN    CONS-TANKI3HKT-SRYCD(12)
+               WHEN    CONS-TANKI3HKT-SRYCD(13)
+      *      ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£³
+               WHEN    CONS-TANKI3HKT-SRYCD(14)
+               WHEN    CONS-TANKI3HKT-SRYCD(15)
                    MOVE    SPACE               TO  LNK-TANKI3HKT-KBN2
                    PERFORM 2001-MAIN-CHK-SEC
       *
-      *        ¸¡ººÈ½ÃÇÎÁÊñ³çÂÐ¾Ý³°
-               WHEN    CONS-HKTNO1
-      *****    WHEN    CONS-HKTNO2
-               WHEN    CONS-HKTNO3
-                   MOVE    SPACE               TO  LNK-TANKI3HKT-KBN
-                   MOVE    "1"                 TO  LNK-TANKI3HKT-KBN2
       *        ¸¡ººÈ½ÃÇÎÁÊñ³ç¤Ë¤è¤ëÊñ³çÂÐ¾Ý
                WHEN    CONS-KSN1
                WHEN    CONS-KSN2
