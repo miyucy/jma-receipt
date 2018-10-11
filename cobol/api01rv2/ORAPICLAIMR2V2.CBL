@@ -56,6 +56,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDY2                PIC 9(04).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1039,108 +1040,115 @@
                MOVE    LF02-PPSFLG (IDX)
                                        TO  CLACRES-PPSFLG (IDX)
       *明細テーブル
+      *H30.10
+               MOVE    ZERO            TO  IDY2
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL      (IDY     >   30 )
-                             OR   (LF02-SRYSYUBETSU(IDX IDY)
-                                                   =   SPACE )
+      ***                    OR   (LF02-SRYSYUBETSU(IDX IDY)
+      ***                                          =   SPACE )
+      *H30.10
+                 IF      LF02-SRYSYUBETSU(IDX IDY) NOT =   SPACE
+                   ADD     1                   TO  IDY2
       *
       *診療種別区分コード(0:手技、1:材料,2:薬剤)
                    MOVE    LF02-SRYSYUBETSU (IDX IDY)
                                        TO  CLACRES-SRYSYUBETSU
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       * 診療種別区分コードのテーブル名 (claimA:subclassCodeId)
                    MOVE    LF02-SRYSYUBETSUTBL (IDX IDY)
                                        TO  CLACRES-SRYSYUBETSUTBL
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *医事請求コード(S + 診療行為コード)
                    MOVE    LF02-IJICD (IDX IDY)
                                        TO  CLACRES-IJICD
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *医事請求コード体系名
                    MOVE    LF02-TBLID (IDX IDY)
                                        TO  CLACRES-TBLID
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *医事請求コード
                    MOVE    LF02-ALSCODE (IDX IDY)
                                        TO  CLACRES-ALSCODE
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *医事請求コード体系名
                    MOVE    LF02-ALSTBLID (IDX IDY)
                                        TO  CLACRES-ALSTBLID
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *医事請求コード名称
                    MOVE    LF02-ALSNAME (IDX IDY)
                                        TO  CLACRES-ALSNAME
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *数量(Z編集)
                    MOVE    LF02-SURYO (IDX IDY)
                                        TO  CLACRES-SURYO
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *数量コード
                    MOVE    LF02-SURYOCD (IDX IDY)
                                        TO  CLACRES-SURYOCD
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       * 数量コードのテーブル名 (claimA:numberCodeId)
                    MOVE    LF02-SURYOCDTBL (IDX IDY)
                                        TO  CLACRES-SURYOCDTBL
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *単位
                    MOVE    LF02-TANI (IDX IDY)
                                        TO  CLACRES-TANI
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *請求点数(Z編集)
                    MOVE    LF02-SEIKYUTEN (IDX IDY)
                                        TO  CLACRES-SEIKYUTEN
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *明細単価(Z編集)
                    MOVE    LF02-MEISAITANKA (IDX IDY)
                                        TO  CLACRES-MEISAITANKA
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *所要時間(PTnHnM,5時間23分→PT5H23M)
                    MOVE    LF02-DURATION (IDX IDY)
                                        TO  CLACRES-DURATION
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *部位
                    MOVE    LF02-LOCATION (IDX IDY)
                                        TO  CLACRES-LOCATION
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *フィルム
       *フィルムサイズ
                    MOVE    LF02-FILMSIZE (IDX IDY 1 )
                                        TO  CLACRES-FILMSIZE
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *フィルムサイズコード
                    MOVE    LF02-FILMSIZECD (IDX IDY 1 )
                                        TO  CLACRES-FILMSIZECD
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       * フィルムサイズコードのテーブル名 (claimA:numberCodeId)
                    MOVE    LF02-FILMSIZECDTBL (IDX IDY 1 )
                                        TO  CLACRES-FILMSIZECDTBL
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *フィルム分割
                    MOVE    LF02-FILMDEV (IDX IDY 1 )
                                        TO  CLACRES-FILMDEV
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *フィルム枚数(Z編集)
                    MOVE    LF02-FILMNUM (IDX IDY 1 )
                                        TO  CLACRES-FILMNUM
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *関連手技
                    MOVE    LF02-EVENT (IDX IDY)
                                        TO  CLACRES-EVENT
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *開始日
                    MOVE    LF02-EVENTSTART (IDX IDY)
                                        TO  CLACRES-EVENTSTART
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *終了日
                    MOVE    LF02-EVENTEND (IDX IDY)
                                        TO  CLACRES-EVENTEND
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
       *メモ
                    MOVE    LF02-SRYMEMO (IDX IDY)
                                        TO  CLACRES-SRYMEMO
-                                                       (IDX IDY)
+                                                       (IDX IDY2)
+      *H30.10
+                 END-IF
                END-PERFORM
       *
       *括りメモ
