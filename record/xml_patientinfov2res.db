@@ -195,9 +195,9 @@ xml_patientinfov2res {
 		Personally_Information	{
 #--->           Ç¥ÉØÀßÄê
             		Pregnant_Class			varchar(05);
-#--->           Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ
+#--->           Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ²Ã»»»»Äê
             		Community_Disease2		varchar(05);
-#--->           ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅ
+#--->           ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅÎÁ»»Äê
             		Community_Disease3		varchar(05);
     		};
 #-----> 	¸Ä¿ÍÈÖ¹æ¾ğÊó
@@ -206,7 +206,7 @@ xml_patientinfov2res {
 			In_Number		varchar(20);
 			In_Description		varchar(100);
 	        } [20];
-#-----> 	´ÉÍıÎÁ¼«Æ°»»Äê
+#-----> 	´ÉÍıÎÁÅù¼«Æ°»»Äê
 		Auto_Management_Information  {
 			Medication_Code		varchar(09);
 			Medication_Name		varchar(80);
