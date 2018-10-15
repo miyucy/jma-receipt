@@ -1057,6 +1057,8 @@
        2009-WKSRY-ERRSYORI-SEC             SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
+      *H30.10
+           MOVE    SPACE               TO  WRK-ERRMSG2
            EVALUATE     FLG-SYORI-ERR
                WHEN    2
                    MOVE    "診療科が設定されていません"
