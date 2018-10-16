@@ -31,6 +31,7 @@
       * 01.01.01     MCC-藤原     01/09/26  JOINの修正      
       * 01.00.03     MCC-多々納   02/07/18  インターフェースの変更
       * 01.00.04     NACL-多々納  05/12/12  MONFUNC対応
+      * 05.00.00     NACL-多々納  18/10/XX  登録済みエラ―表示対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -960,9 +961,18 @@
                    MOVE    "入力コードは４桁から６桁で入力してください"
                                                  TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE
-                   "この入力コードは既に別の診療コードで使われています"
-                                                 TO  SPA-ERRMSG
+      *            MOVE
+      *            "この入力コードは既に別の診療コードで使われています"
+      *                                          TO  SPA-ERRMSG
+      *H30.10
+                   STRING  "この入力コードは既に別の診療コード"
+                           "（"
+                           ICD-SRYCD
+                           "）"
+                           "で使われています。"
+                                                DELIMITED  BY  SIZE 
+                                                INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0004"
                    MOVE    "入力時はコードを入力してください"
                                                  TO  SPA-ERRMSG
