@@ -152,7 +152,26 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA102SCRAREA.INC".
+           COPY    "Z01.INC".
+           COPY    "Z02.INC".
+           COPY    "Z03.INC".
+           COPY    "Z04.INC".
+           COPY    "Z05.INC".
+           COPY    "Z06.INC".
+           COPY    "Z07.INC".
+           COPY    "Z08.INC".
+           COPY    "Z90.INC".
+           COPY    "Z91.INC".
+           COPY    "Z97.INC".
+           COPY    "Z98.INC".
+           COPY    "Z99.INC".
+           COPY    "ZERR.INC".
+           COPY    "ZID1.INC".
+           COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
+           COPY    "Z100.INC".
+           COPY    "CPAPIMOD.INC".
+           COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -960,9 +979,18 @@
                    MOVE    "入力コードは４桁から６桁で入力してください"
                                                  TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE
-                   "この入力コードは既に別の診療コードで使われています"
-                                                 TO  SPA-ERRMSG
+      **           MOVE
+      *            "この入力コードは既に別の診療コードで使われています"
+      *                                          TO  SPA-ERRMSG
+      *H30.10
+                   STRING  "この入力コードは既に別の診療コード"
+                           "（"
+                           ICD-SRYCD
+                           "）"
+                           "で使われています。"
+                                                DELIMITED  BY  SIZE 
+                                                INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0004"
                    MOVE    "入力時はコードを入力してください"
                                                  TO  SPA-ERRMSG

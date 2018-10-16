@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  05.00.00    NACL-多々納  18/10/XX  登録済みエラ―表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -59,6 +60,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-INPUTSET        PIC 9(01).
+           03  FLG-TENSU           PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-KANJI           PIC 9(01).
@@ -109,6 +111,17 @@
            03  FLG-IN-INPUTCD      PIC 9(01)   OCCURS   5.
       *
       *
+       01  WRK-HEN-AREA.
+           03  WRK-HENYMDG         PIC X(09).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HMM         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HDD         PIC 9(02).
+      *
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -120,6 +133,9 @@
       *    入力セットコード
        01  INPUTSET-REC.
            COPY    "CPINPUTSET.INC".
+      *    点数マスタ−
+      *01  TENSU-REC.
+           COPY    "CPTENSU.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -201,6 +217,7 @@
            MOVE    SPA-WORK        TO  SPA-K01KYOUTU
       *
            MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    SPACE           TO  SPA-ERRMSG2
            MOVE    ZERO            TO  FLG-END
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
@@ -240,6 +257,7 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
+                                       OR  "KERR2"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -619,6 +637,10 @@
                IF      ICD-SRYCD       NOT =   SPA-GMN-SETCODE
                    MOVE    "0003"              TO  SPA-ERRCD
                    MOVE    IDX                 TO  SPA-K051-CUR
+      *!!
+      *H30.10
+      *            登録済み診療コード
+                   PERFORM 20012-CDERR-MSG-SEC
                    GO      TO      2001-INPUTCD-EXT
                END-IF
            END-IF
@@ -631,6 +653,71 @@
            .
        2001-INPUTCD-EXT.
            EXIT.
+      *
+      *H30.10
+      *****************************************************************
+      *    登録済み診療コード処理
+      *****************************************************************
+       20012-CDERR-MSG-SEC        SECTION.
+      *
+           MOVE    SPACE           TO  SPA-ERRMSG2
+           IF      ICD-SRYCD(1:1)      =   "P"
+                                       OR  "S"
+               STRING  "セットコード："
+                       ICD-SRYCD
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG2
+               END-STRING
+               GO      TO      20012-CDERR-MSG-EXT
+           END-IF
+      *
+           MOVE    "0013"              TO  SPA-ERRCD
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    ICD-SRYCD           TO  TNS-SRYCD
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      *    開始日の降順に検索
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-TENSU           =   ZERO
+               MOVE    SPACE               TO  SPA-ERRMSG2
+               MOVE    TNS-YUKOEDYMD       TO  WRK-SYMD
+               PERFORM 520-SEIWA-HEN-SEC
+               STRING  "診療コード："
+                       TNS-SRYCD
+                       " 終了日："
+                       WRK-HENYMDG     DELIMITED  BY  SIZE
+                       "【"
+                       TNS-NAME (1:36) DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG2
+               END-STRING
+           END-IF
+           .
+       20012-CDERR-MSG-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    空白行削除処理
@@ -770,7 +857,18 @@
                                         DELIMITED  BY  SIZE
                                                  INTO  SPA-ERRMSG
                    END-STRING
+      *H30.10
+               WHEN    "0013"
+                   MOVE    "既に登録済のコードです。"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
+      *
+      *H30.10
+           IF      SPA-ERRMSG2     NOT =   SPACE
+      *        エラー画面２
+               PERFORM 5101-KERR2-SET-SEC
+               GO      TO      510-ERRSET-EXT
+           END-IF
       *
            MOVE    SPACE               TO  KERR
            MOVE    SPA-ERRCD           TO  KERR-ERRCODE
@@ -788,6 +886,56 @@
            MOVE    1                   TO  FLG-END
            .
        510-ERRSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示２処理
+      *****************************************************************
+       5101-KERR2-SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  KERR2
+           INITIALIZE                      KERR2
+           MOVE    SPA-ERRCD           TO  KERR2-ERRCODE
+           MOVE    SPA-ERRMSG2         TO  KERR2-ERRMSG(1:80)
+           MOVE    SPA-ERRMSG          TO  KERR2-ERRMSG2
+      *
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "K051"              TO  SPA-MOTOPG
+           MOVE    "KERR2"             TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KERR2"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       5101-KERR2-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    西暦和暦編集処理
+      *****************************************************************
+       520-SEIWA-HEN-SEC             SECTION.
+      *
+           IF      WRK-SYMD            =   ALL "9"  OR   SPACE
+               MOVE    SPACE               TO  WRK-HGO
+               MOVE    WRK-SYMD(3:2)       TO  WRK-HYY
+               MOVE    WRK-SYMD(5:2)       TO  WRK-HMM
+               MOVE    WRK-SYMD(7:2)       TO  WRK-HDD
+               MOVE    WRK-HENYMD          TO  WRK-HENYMDG
+           ELSE
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"            USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
+           END-IF
+           .
+       520-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************

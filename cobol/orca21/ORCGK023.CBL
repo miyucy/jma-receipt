@@ -30,6 +30,7 @@
       *  01.00.01    NACL-多々納  02/09/20  入力インターフェースの変更
       *  01.00.02    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  05.00.00    NACL-多々納  18/10/XX  登録済みエラ―表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -148,6 +149,23 @@
       *
            03  WRK-SP-FLG          PIC 9(01).
       *
+           03  WRK-SYMD.
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
+      *
+      *
+       01  WRK-HEN-AREA.
+           03  WRK-HENYMDG         PIC X(09).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HMM         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HDD         PIC 9(02).
+      *
+      *
        01  WRK-INPUTCD-TBL.
            03  WRK-INPUTCD-OCC     OCCURS   20.
                05  WRK-K023-INPUTCD    PIC X(20).
@@ -257,6 +275,7 @@
            MOVE    SPA-WORK        TO  SPA-K01KYOUTU
       *
            MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    SPACE           TO  SPA-ERRMSG2
            MOVE    ZERO            TO  FLG-END
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
@@ -296,6 +315,7 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
+                                       OR  "KERR2"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -1048,11 +1068,77 @@
                   (WRK-INPUTCD         =   ICD-INPUTCD )
                IF      ICD-SRYCD       NOT =   SPA-K023-SRYCD (IDX-1)
                    MOVE    "0003"          TO  SPA-ERRCD
+      *!!
+      *H30.10
+      *            登録済み診療コード
+                   PERFORM 410201-CDERR-MSG-SEC
                END-IF
            END-IF
       *
            .
        41020-INPUTCD-CHK-EXT.
+           EXIT.
+      *
+      *H30.10
+      *****************************************************************
+      *    登録済み診療コード処理
+      *****************************************************************
+       410201-CDERR-MSG-SEC        SECTION.
+      *
+           MOVE    SPACE           TO  SPA-ERRMSG2
+           IF      ICD-SRYCD(1:1)      =   "P"
+                                       OR  "S"
+               STRING  "セットコード："
+                       ICD-SRYCD
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG2
+               END-STRING
+               GO      TO      410201-CDERR-MSG-EXT
+           END-IF
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    ICD-SRYCD           TO  TNS-SRYCD
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      *    開始日の降順に検索
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-TENSU           =   ZERO
+               MOVE    SPACE               TO  SPA-ERRMSG2
+               MOVE    TNS-YUKOEDYMD       TO  WRK-SYMD
+               PERFORM 520-SEIWA-HEN-SEC
+               STRING  "診療コード："
+                       TNS-SRYCD
+                       " 終了日："
+                       WRK-HENYMDG     DELIMITED  BY  SIZE
+                       "【"
+                       TNS-NAME (1:36) DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG2
+               END-STRING
+           END-IF
+           .
+       410201-CDERR-MSG-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1546,6 +1632,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -1603,6 +1690,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
            END-EVALUATE
       *
+           IF      SPA-ERRMSG2     NOT =   SPACE
+      *        エラー画面２
+               PERFORM 5101-KERR2-SET-SEC
+               GO      TO      510-ERRSET-EXT
+           END-IF
+      *
       *
            MOVE    SPACE               TO  KERR
            MOVE    SPA-ERRCD           TO  KERR-ERRCODE
@@ -1620,6 +1713,33 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  FLG-END
            .
        510-ERRSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示２処理
+      *****************************************************************
+       5101-KERR2-SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  KERR2
+           INITIALIZE                      KERR2
+           MOVE    SPA-ERRCD           TO  KERR2-ERRCODE
+           MOVE    SPA-ERRMSG2         TO  KERR2-ERRMSG(1:80)
+           MOVE    SPA-ERRMSG          TO  KERR2-ERRMSG2
+      *
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "K023"              TO  SPA-MOTOPG
+           MOVE    "KERR2"             TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KERR2"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       5101-KERR2-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1660,6 +1780,31 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        520-KISSET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    西暦和暦編集処理
+      *****************************************************************
+       520-SEIWA-HEN-SEC             SECTION.
+      *
+           IF      WRK-SYMD            =   ALL "9"  OR   SPACE
+               MOVE    SPACE               TO  WRK-HGO
+               MOVE    WRK-SYMD(3:2)       TO  WRK-HYY
+               MOVE    WRK-SYMD(5:2)       TO  WRK-HMM
+               MOVE    WRK-SYMD(7:2)       TO  WRK-HDD
+               MOVE    WRK-HENYMD          TO  WRK-HENYMDG
+           ELSE
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"            USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
+           END-IF
+           .
+       520-SEIWA-HEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    入力コードマスター読込
