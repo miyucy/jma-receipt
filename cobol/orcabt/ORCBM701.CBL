@@ -41,8 +41,9 @@
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-藤原    15/08/24  レセ電データ作成時の請求区分
       *                                     更新対応
+      *  04.08.03    NACL-藤原    18/05/17  平成３０年４月改正対応
+      *                                     カタカナ（氏名）、患者状態の追加
       *
-      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
       *  05.00.02    NACL-伊藤    17/12/22  診療情報システム対応
       *                                     ORCBM700を複写して作成
       *                                     請求管理なしでデータ作成
@@ -237,32 +238,10 @@
                05  FILLER              PIC X(03).
                05  WRK-9-X             PIC X(01).
       *    日付変換用
-      *    日付変換用
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
                05  WRK-SMM             PIC X(02).
                05  WRK-SDD             PIC X(02).
-      *
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY          PIC X(04).
-               05  WRK-HEN-H1          PIC X(01).
-               05  WRK-HEN-MM          PIC X(02).
-               05  WRK-HEN-H2          PIC X(01).
-               05  WRK-HEN-DD          PIC X(02).
-           03  WRK-THMS.
-               05  WRK-THH             PIC X(02).
-               05  WRK-TMM             PIC X(02).
-               05  WRK-TSS             PIC X(02).
-           03  WRK-HEN-TIME.
-               05  WRK-HEN-THH         PIC X(02).
-               05  WRK-HEN-T1          PIC X(01).
-               05  WRK-HEN-TMM         PIC X(02).
-               05  WRK-HEN-T2          PIC X(01).
-               05  WRK-HEN-TSS         PIC X(02).
-      *
-           03  WRK-CNT                 PIC 9(10).
-           03  WRK-CNT-X   REDEFINES   WRK-CNT
-                                       PIC X(10).
       *
       *    パラメタＤＢ編集用
            03  WRK-BTPARA-INFO-PARA.
@@ -352,9 +331,9 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-           COPY    "CPSK2005.INC".
+      **** COPY    "CPSK2005.INC".
       *
-           COPY    "CPSK200501.INC".
+      **** COPY    "CPSK200501.INC".
       *
       *    医療機関情報（基本）
            COPY    "CPSK1001.INC".
@@ -848,6 +827,29 @@
                    END-STRING
                ELSE
                    DISPLAY "ERROR WRK-KETA1=0!!"
+               END-IF
+      *
+               MOVE    SPACE               TO  WRK-REC
+               MOVE    ZERO             TO  WRK-MOJISU
+                                            WRK-NAGASA
+               INSPECT RECEDEN-RECEDATA   TALLYING    WRK-MOJISU
+                                           FOR ALL "," 
+               IF      WRK-MOJISU          =   35
+                   PERFORM VARYING IDX FROM    2500 BY  -1
+                           UNTIL   IDX <       1
+                       IF      RECEDEN-RECEDATA (IDX:1)
+                                               =   WRK-KAIGYO
+                           COMPUTE WRK-NAGASA  =   IDX     -   1
+                           MOVE    1               TO  IDX
+                       END-IF    
+                   END-PERFORM   
+                   STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                           DELIMITED  BY  SIZE
+                             ",,"          DELIMITED  BY  SIZE
+                             WRK-KAIGYO    DELIMITED  BY  SIZE
+                             INTO          WRK-REC
+                   END-STRING
+                   MOVE    WRK-REC         TO  RECEDEN-RECEDATA
                END-IF
            END-IF
       *
@@ -1754,32 +1756,6 @@
       *
            .
        800-NUM-HANKAKU-HENKAN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    日付編集処理
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           INITIALIZE                  WRK-HEN-DATE
-           MOVE    WRK-SYY             TO  WRK-HEN-YY
-           MOVE    WRK-SMM             TO  WRK-HEN-MM
-           MOVE    WRK-SDD             TO  WRK-HEN-DD
-           MOVE    "-"                 TO  WRK-HEN-H1
-           MOVE    "-"                 TO  WRK-HEN-H2
-           IF      WRK-SYMD            =   "99999999"
-               MOVE    "12"                TO  WRK-HEN-MM
-               MOVE    "31"                TO  WRK-HEN-DD
-           END-IF
-      *
-           INITIALIZE                  WRK-HEN-TIME
-           MOVE    WRK-THH             TO  WRK-HEN-THH
-           MOVE    WRK-TMM             TO  WRK-HEN-TMM
-           MOVE    WRK-TSS             TO  WRK-HEN-TSS
-           MOVE    ":"                 TO  WRK-HEN-T1
-           MOVE    ":"                 TO  WRK-HEN-T2
-           .
-       801-DAYHEN01-EXT.
            EXIT.
       *
       *****************************************************************
