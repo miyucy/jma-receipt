@@ -566,6 +566,7 @@ RECORD_files = \
 	apiversiongetv2.rec \
 	statisticsformv3.rec \
 	receiptdatapatientmakev3.rec \
+	medicalmodv23.rec \
 
 DEF_files = \
 
@@ -1116,6 +1117,8 @@ DB_files = \
 	xml_receiptdata_patient_makev3res.db \
 	tbl_recekisai \
 	tbl_recekisai_master \
+	xml_medicalv2req3.db \
+	xml_medicalv2res3.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
