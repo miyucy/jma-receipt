@@ -150,6 +150,7 @@ shell_sources = \
 	allways/export_monblob.sh.in \
 	tools/run_jmamr_mis.sh.in \
 	daily/online-reprint.sh.in \
+	tools/run_mis_past.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \

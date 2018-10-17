@@ -69,6 +69,8 @@ rm  -f ${MCP_TEMPDIR}/${16}00RECE0*
 rm  -f ${MCP_TEMPDIR}/${16}00RECE11*
 rm  -f ${MCP_TEMPDIR}/${16}00RECE12*
 
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBSETBTPARA -parameter ${16},$5,$6,00,,
+
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0010 -parameter $1$2$3$5$6,B,${16},${4}
 [ -e ${MCP_TEMPDIR}/${4} ] && exit
 
