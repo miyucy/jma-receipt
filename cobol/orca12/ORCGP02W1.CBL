@@ -1208,6 +1208,11 @@
       *    公費ＴＢＬから編集
            PERFORM 3101-KOH-TBL-SPA-SEC
       *
+      *H30.10  初期表示の為
+      *    公費ＴＢＬから公費負担へ編集
+           PERFORM 4504-PTKOHFTN-HEN-SEC
+           MOVE    SPACE               TO  SPA-ERRCD
+      *
       *    保険組合せ表示（現在対象分のみ）
            PERFORM 3103-HKNCOMB-PARA-SEC
       *
@@ -5581,6 +5586,8 @@
            IF     (FLG-TOUROKU2         =   1   )
              AND  (SPA-ERRCD            =   SPACE )
              AND  (SPA-PIDCD            =   SPACE )
+      *H30.10  H30.4までのチェックとする
+             AND  (SPA-SYSYMD           <   "20180401")
       *        老人公費終了チェック
                PERFORM 410333-RJN27-ENDCHK-SEC
            END-IF
