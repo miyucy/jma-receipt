@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  05.00.00    NACL-多々納  18/10/XX  患者番号空白等チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -419,10 +420,13 @@
       *
       *    桁数チェック
            MOVE    ZERO              TO  WRK-END
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL    (IDX           >   20)
-                     OR       (SPA-GMN014-PTNUM1(IDX:1) =   SPACE)
-               MOVE    IDX                 TO  WRK-END
+      *H30.10
+           PERFORM   VARYING   IDX   FROM    20  BY  -1
+                     UNTIL    (IDX           <   1    )
+                         OR   (WRK-END       >   ZERO )
+               IF      (SPA-GMN014-PTNUM1(IDX:1) NOT =   SPACE)
+                   MOVE    IDX                 TO  WRK-END
+               END-IF
            END-PERFORM
       *
       *    拡張構成前桁数チェック
@@ -434,6 +438,24 @@
                    MOVE    "0004"              TO  SPA-ERRCD
                END-IF
            END-IF
+      *H30.10
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   WRK-END )
+                         OR   (SPA-ERRCD   NOT =   SPACE)
+      *        \ はエラー
+               IF      SPA-GMN014-PTNUM1(IDX:1)    =   "\"
+                  MOVE    "1013"           TO  SPA-ERRCD
+               END-IF
+      *        空白エラー
+               IF      SPA-GMN014-PTNUM1(IDX:1)    =   SPACE
+                  MOVE    "0001"           TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4001-PTNUM1-EXT
+           END-IF
+      *
+      *
            IF      SPA-ERRCD           =   SPACE
                EVALUATE    SPA-1009-KKCKSIKBN
       *        拡張構成 <フリー + 連番号 + フリー>
@@ -456,18 +478,37 @@
       *
       *    桁数チェック
            MOVE    ZERO              TO  WRK-END
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL    (IDX           >   20)
-                     OR       (SPA-GMN014-PTNUM2(IDX:1) =   SPACE)
-               MOVE    IDX                 TO  WRK-END
+           PERFORM   VARYING   IDX   FROM    20  BY  -1
+                     UNTIL    (IDX           <   1    )
+                         OR   (WRK-END       >   ZERO )
+               IF      (SPA-GMN014-PTNUM2(IDX:1) NOT =   SPACE)
+                   MOVE    IDX                 TO  WRK-END
+               END-IF
            END-PERFORM
-      *
       *    拡張構成後桁数チェック
            IF      WRK-END         NOT =   SPA-1009-KKCKSIATOKETA
                MOVE    "0001"          TO  SPA-ERRCD
-           ELSE
+      ***  ELSE
+      ***      MOVE    4               TO  SPA-GMN014-CUR
+           END-IF
+      *H30.10
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   WRK-END )
+                         OR   (SPA-ERRCD   NOT =   SPACE)
+      *        \ はエラー
+               IF      SPA-GMN014-PTNUM2(IDX:1)    =   "\"
+                  MOVE    "1013"           TO  SPA-ERRCD
+               END-IF
+      *        空白エラー
+               IF      SPA-GMN014-PTNUM2(IDX:1)    =   SPACE
+                  MOVE    "0001"           TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-ERRCD           =   SPACE
                MOVE    4               TO  SPA-GMN014-CUR
            END-IF
+      *
            .
        4002-PTNUM2-EXT.
            EXIT.
@@ -481,16 +522,36 @@
       *
       *    桁数チェック
            MOVE    ZERO              TO  WRK-END
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL    (IDX           >   20)
-                     OR       (SPA-GMN014-PTNUM3(IDX:1) =   SPACE)
-               MOVE    IDX                 TO  WRK-END
+           PERFORM   VARYING   IDX   FROM    20  BY  -1
+                     UNTIL    (IDX           <   1 )
+                           OR (WRK-END       >   ZERO )
+               IF      (SPA-GMN014-PTNUM3(IDX:1) NOT =   SPACE)
+                   MOVE    IDX                 TO  WRK-END
+               END-IF
            END-PERFORM
       *
       *    拡張構成後桁数チェック
            IF      WRK-END         NOT =   SPA-1009-KKCKSIATOKETA
                MOVE    "0001"          TO  SPA-ERRCD
-           ELSE
+      ***  ELSE
+      ***      MOVE    4               TO  SPA-GMN014-CUR
+           END-IF
+      *
+      *H30.10
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   WRK-END )
+                         OR   (SPA-ERRCD   NOT =   SPACE)
+      *        \ はエラー
+               IF      SPA-GMN014-PTNUM3(IDX:1)    =   "\"
+                  MOVE    "1013"           TO  SPA-ERRCD
+               END-IF
+      *        空白エラー
+               IF      SPA-GMN014-PTNUM3(IDX:1)    =   SPACE
+                  MOVE    "0001"           TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-ERRCD           =   SPACE
                MOVE    4               TO  SPA-GMN014-CUR
            END-IF
            .
@@ -641,6 +702,10 @@
                                            TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "既に登録済の患者番号です"  TO  SPA-ERRMSG
+      *H30.10
+               WHEN    "1013"
+                   MOVE    "患者番号に使用できない文字があります。"
+                                               TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  PERR
