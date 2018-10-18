@@ -88,6 +88,7 @@
       *  04.08.07    NACL-ÌçÏÆ    18/04/17  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.08    NACL-ÌçÏÆ    18/06/21  ¥ê¥Ï¥Ó¥ê³«»ÏÆüµ­ºÜ½¤Àµ
       *  04.08.09    NACL-ÌçÏÆ    18/07/02  ¥ê¥Ï¥Ó¥ê³«»ÏÆüµ­ºÜ½¤Àµ
+      *  04.08.10    NACL-ÌçÏÆ    18/09/27  ÁªÂò¼°¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -236,8 +237,10 @@
            03  FLG-RECE200         PIC 9(01).
            03  FLG-RECE220         PIC 9(01).
            03  FLG-RECE2209        PIC 9(01).
+           03  FLG-RECE2201        PIC 9(01).
            03  FLG-RECE230         PIC 9(01).
            03  FLG-RECE2309        PIC 9(01).
+           03  FLG-RECE2301        PIC 9(01).
            03  FLG-YAKUKAN-COMMENT PIC 9(01).
            03  FLG-HINKAI-COMMENT  PIC 9(01).
            03  FLG-KYUSEI-COMMENT  PIC 9(01).
@@ -271,6 +274,7 @@
            03  FLG-KAISYOKU-COMMENT
                                    PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-OK2             PIC 9(01).
            03  FLG-SINPESUR-COMMENT
                                    PIC 9(01).
            03  FLG-ZAIKYO-COMMENT  PIC 9(01).
@@ -283,6 +287,10 @@
            03  FLG-CYOJKSN-OK      PIC 9(01).
            03  FLG-CYOJKSNCOMARI   PIC 9(01).
            03  FLG-CYOJKSN         PIC 9(01).
+           03  FLG-GET             PIC 9(01).
+           03  FLG-RKISAI          PIC 9(01).
+           03  FLG-ETC             PIC 9(01).
+           03  FLG-SENTAKU-OKIKAE  PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -291,6 +299,8 @@
            03  CNT-RECE230         PIC 9(06).
            03  CNT-RECE2209        PIC 9(06).
            03  CNT-RECE2309        PIC 9(06).
+           03  CNT-RECE220-RE      PIC 9(06).
+           03  CNT-RECE230-RE      PIC 9(06).
            03  CNT-RIHA            PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
@@ -320,10 +330,16 @@
            03  IDX41               PIC 9(02).
            03  IDX42               PIC 9(02).
            03  IDX43               PIC 9(02).
+           03  IDX44               PIC 9(02).
+           03  IDX45               PIC 9(03).
+           03  IDX46               PIC 9(03).
            03  DAY-IDX             PIC 9(04).
            03  DAY-IDX2            PIC 9(02).
            03  IDY                 PIC 9(04).
            03  IDY2                PIC 9(04).
+           03  IDY11               PIC 9(03).
+           03  IDY12               PIC 9(03).
+           03  IDY13               PIC 9(03).
            03  IDZ                 PIC 9(04).
            03  IDX-RECE230         PIC 9(04).
            03  IDV                 PIC 9(04).
@@ -499,6 +515,8 @@
            03  WRK-ZAIHANKO-FSANTEIYMD          PIC X(08).
       *
            03  WRK-CHECK-SRYCD                  PIC X(09).
+           03  WRK-TENSU-SRYCD                  PIC X(09).
+           03  WRK-TENSU-SRYYM                  PIC X(06).
       *
            03  WRK-SJIYMD                       PIC X(08).
       *
@@ -522,6 +540,11 @@
          02 WRK-RECE230XX2-TBL      OCCURS 300.
            COPY    "CPRCF230.INC"  REPLACING   //RECE230//
                                    BY          //WRK-RECE230XX2//.
+      *
+       01  WRK-RECE230ZZ-REC.
+         02 WRK-RECE230ZZ-TBL       OCCURS 100.
+           COPY    "CPRCF230.INC"  REPLACING   //RECE230//
+                                   BY          //WRK-RECE230ZZ//.
       *
        01  WRK-FREE-AREA.
            03  WRK-FREEINF                     OCCURS 49.         
@@ -897,6 +920,10 @@
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
+      *    ¥ì¥»¥×¥Èµ­ºÜ
+       01  RKISAI-REC.
+           COPY    "CPRECEKISAI.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
       *****************************************************************
@@ -1027,13 +1054,19 @@
            OPEN    INPUT               RECE200-FILE
            OPEN    INPUT               RECE220-FILE
            OPEN    INPUT               RECE230-FILE
+      *
            OPEN    OUTPUT              RECE2201-FILE
+           CLOSE                       RECE2201-FILE
            OPEN    OUTPUT              RECE2301-FILE
+           CLOSE                       RECE2301-FILE
       *
            OPEN    OUTPUT              RECE2209-FILE
            CLOSE                       RECE2209-FILE
            OPEN    OUTPUT              RECE2309-FILE
            CLOSE                       RECE2309-FILE
+      *
+           OPEN    I-O                 RECE2201-FILE
+           OPEN    I-O                 RECE2301-FILE
       *
            OPEN    I-O                 RECE2209-FILE
            OPEN    I-O                 RECE2309-FILE
@@ -1391,10 +1424,22 @@
                         PERFORM    2001-KENSA-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-KENKSN-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE220-TENSOU-SEC
                       END-IF
                    WHEN      "70"
-                      PERFORM      2001-CTMRI-HANTEI-SEC
+                      MOVE   ZERO   TO  FLG-COMMENT
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-CTMRI-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-KINGAZ-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE220-TENSOU-SEC
+                      END-IF
                    WHEN      "80"
                       MOVE   ZERO   TO  FLG-COMMENT
                       IF   FLG-COMMENT  =  ZERO
@@ -1423,7 +1468,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE220-TENSOU-SEC
                       END-IF
-                   WHEN      "90"                                       
+                   WHEN      "90"
                    WHEN      "92"
                       EVALUATE    RECE220-ZAISKBKBN
                         WHEN   "2"
@@ -1491,9 +1536,13 @@
                PERFORM   2001-NINPU-COMMENT-SEC
            END-IF
       *
-      *****º¹¹þÊÔ½¸£²********************
+      *****º¹¹þÊÔ½¸£²**********************
            PERFORM     250-SASHIKOMI2-SEC
-      ***********************************
+      *
+      *****ÁªÂò¼°¥³¥á¥ó¥ÈÊÔ½¸**************
+           IF   RECE200-SRYYM  >=  "201810"
+             PERFORM   270-SENTAKUCOM-HENSYU-SEC
+           END-IF
       *
            PERFORM 990-RECE200-READ-SEC
       *
@@ -1679,10 +1728,15 @@
       *    ¥³¥á¥ó¥È¤ÎÁÞÆþ
            MOVE    SPACE            TO  WRK-RECE230XX-REC
            INITIALIZE                   WRK-RECE230XX-REC
-           MOVE    "820100348"      TO  WRK-RECE230XX-SRYCD(1 1)
+      *    ¡ÖÇ¥ÉØ¡×
+           MOVE    "820100348"      TO  WRK-TENSU-SRYCD
+           MOVE    RECE200-SRYYM    TO  WRK-TENSU-SRYYM
+           PERFORM 900-TENSU-TBL-SEC
+      *
+           MOVE    TNS-SRYCD        TO  WRK-RECE230XX-SRYCD(1 1)
            MOVE    ZERO             TO  WRK-RECE230XX-SRYSURYO(1 1)
-           MOVE    2                TO  WRK-RECE230XX-YUKOKETA(1 1)
-           MOVE    "Ç¥ÉØ"           TO  WRK-RECE230XX-NAME(1 1)
+           MOVE    TNS-YUKOKETA     TO  WRK-RECE230XX-YUKOKETA(1 1)
+           MOVE    TNS-NAME         TO  WRK-RECE230XX-NAME(1 1)
                                         WRK-RECE230XX-INPUTCOMENT(1 1)
            MOVE    WRK-RECE230XX-SRYACT-TBL(1 1)
                                     TO  RECE2309-SRYACT-TBL(1)
@@ -2078,6 +2132,8 @@
                            END-IF
                          END-PERFORM
                        ELSE
+                         MOVE  SRY-SRYCD(IDX12) TO  WRK-TENSU-SRYCD
+                         MOVE  SRY-SRYYM        TO  WRK-TENSU-SRYYM
                          PERFORM      900-TENSU-TBL-SEC
                          ADD     1           TO  IDZ
                          MOVE    TNS-NAME    TO  WK-FREE-NAME(IDZ)
@@ -5387,6 +5443,85 @@
            EXIT.
       *
       *****************************************************************
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ¸¡ºº²Ã»»¡¦³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-KENKSN-HANTEI-SEC          SECTION.
+      *
+           IF     RECE220-FLG-KENKSN-COMMENT  =  "1"
+               MOVE    ZERO                 TO  FLG-OK2
+               PERFORM  20011-NYUINRRK-KENSAKU-SEC
+      *
+               IF   FLG-OK2  =  1
+                  MOVE       99      TO     FLG-COMMENT
+      *
+                  PERFORM  200111-RECE230-TAIHI-SEC
+      *
+      *           £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+                  MOVE    ZERO                 TO  IDX-RECE230
+                  MOVE    SPACE                TO  WRK-RECE230XX-REC
+                  INITIALIZE                       WRK-RECE230XX-REC
+      *
+                  MOVE    RECE220-MEISAISU     TO  MAX-MEISAISU
+      *           ¡Ö°ú¤­Â³¤­Æþ±¡¡×
+                  MOVE    "820100129"          TO  WRK-TENSU-SRYCD
+                  MOVE    RECE200-SRYYM        TO  WRK-TENSU-SRYYM
+                  PERFORM 900-TENSU-TBL-SEC
+      *
+                  COMPUTE MAX-MEISAISU = MAX-MEISAISU + 1
+                  MOVE TNS-SRYCD
+                            TO WRK-RECE230XX-SRYCD(MAX-MEISAISU 1)
+                  MOVE ZERO TO WRK-RECE230XX-SRYSURYO(MAX-MEISAISU 1)
+                  MOVE TNS-YUKOKETA
+                            TO WRK-RECE230XX-YUKOKETA(MAX-MEISAISU 1)
+                  MOVE TNS-NAME
+                            TO WRK-RECE230XX-NAME(MAX-MEISAISU 1)
+                               WRK-RECE230XX-INPUTCOMENT(MAX-MEISAISU 1)
+      *
+                  PERFORM 200111-SRYACTINF-HENSYU-SEC
+               END-IF
+           END-IF
+      *
+           .
+       2001-KENKSN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÍúÎò¸¡º÷
+      *****************************************************************
+       20011-NYUINRRK-KENSAKU-SEC          SECTION.
+      *
+           PERFORM  VARYING  IDX44  FROM  1  BY  1
+                     UNTIL  (IDX44    >  31)
+                      OR    (FLG-OK2  =   1)
+             IF   RECE220-KAISU(1 IDX44)  NOT =  ZERO
+               INITIALIZE                      PTNYUINRRK-REC
+               MOVE    RECE200-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+               MOVE    RECE200-PTID        TO  PTNYUINRRK-PTID
+               MOVE    RECE200-SRYYM       TO  PTNYUINRRK-NYUINYMD(1:6)
+               MOVE    IDX44               TO  PTNYUINRRK-NYUINYMD(7:2)
+               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key39"             TO  MCP-PATHNAME
+               PERFORM  900-DBSELECT-SEC
+               IF      MCP-RC   =   ZERO
+                 MOVE    "tbl_ptnyuinrrk"  TO  MCP-TABLE
+                 MOVE    "key39"           TO  MCP-PATHNAME
+                 PERFORM  900-PTNYUINRRK-READ-SEC
+                 IF    FLG-PTNYUINRRK  =  ZERO
+                    MOVE    1              TO  FLG-OK2
+                 END-IF
+               END-IF
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key39"             TO  MCP-PATHNAME
+               PERFORM  900-CLOSE-SEC
+             END-IF
+           END-PERFORM
+      *
+           .
+       20011-NYUINRRK-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    £Ã£Ô¡¦£Í£Ò£É¤¬¤¢¤ë¤«È½Äê
       *****************************************************************
        2001-CTMRI-HANTEI-SEC          SECTION.
@@ -5394,12 +5529,53 @@
            IF      RECE220-FLG-CTMRI-COMMENT   =    "1"
                 MOVE       2       TO     FLG-COMMENT
                 PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
-           ELSE
-                PERFORM    2099-RECE220-TENSOU-SEC
            END-IF
       *
            .
        2001-CTMRI-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-KINGAZ-HANTEI-SEC          SECTION.
+      *
+           IF     RECE220-FLG-KINGAZ-COMMENT  =  "1"
+               MOVE    ZERO                 TO  FLG-OK2
+               PERFORM  20011-NYUINRRK-KENSAKU-SEC
+      *
+               IF   FLG-OK2  =  1
+                  MOVE       99      TO     FLG-COMMENT
+      *
+                  PERFORM  200111-RECE230-TAIHI-SEC
+      *
+      *           £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+                  MOVE    ZERO                 TO  IDX-RECE230
+                  MOVE    SPACE                TO  WRK-RECE230XX-REC
+                  INITIALIZE                       WRK-RECE230XX-REC
+      *
+                  MOVE    RECE220-MEISAISU     TO  MAX-MEISAISU
+      *           ¡Ö°ú¤­Â³¤­Æþ±¡¡×
+                  MOVE    "820100129"          TO  WRK-TENSU-SRYCD
+                  MOVE    RECE200-SRYYM        TO  WRK-TENSU-SRYYM
+                  PERFORM 900-TENSU-TBL-SEC
+      *
+                  COMPUTE MAX-MEISAISU = MAX-MEISAISU + 1
+                  MOVE TNS-SRYCD
+                            TO WRK-RECE230XX-SRYCD(MAX-MEISAISU 1)
+                  MOVE ZERO TO WRK-RECE230XX-SRYSURYO(MAX-MEISAISU 1)
+                  MOVE TNS-YUKOKETA
+                            TO WRK-RECE230XX-YUKOKETA(MAX-MEISAISU 1)
+                  MOVE TNS-NAME
+                            TO WRK-RECE230XX-NAME(MAX-MEISAISU 1)
+                               WRK-RECE230XX-INPUTCOMENT(MAX-MEISAISU 1)
+      *
+                  PERFORM 200111-SRYACTINF-HENSYU-SEC
+               END-IF
+           END-IF
+      *
+           .
+       2001-KINGAZ-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8345,6 +8521,212 @@
            EXIT.
       *
       *****************************************************************
+      *    ÁªÂò¼°¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       270-SENTAKUCOM-HENSYU-SEC     SECTION.
+      *
+      *    ¥Ñ¥é¥á¡¼¥¿£²£²£°£±¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸
+           INITIALIZE                      RECE2201-REC
+           MOVE    RECE200-KEY         TO  RECE2201-KEY1
+           MOVE    ZERO                TO  RECE2201-ZAINUM
+      *
+           START   RECE2201-FILE
+               KEY IS    >=   RECE2201-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE2201
+               NOT INVALID
+                   PERFORM 990-RECE2201-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE2201         =   1             )
+               OR     ( RECE200-KEY      NOT =   RECE2201-KEY1 )
+      *
+               IF     RECE2201-SENTAKUCOMFLG  =  "1"
+                  MOVE    ZERO    TO    FLG-SENTAKU-OKIKAE
+                  PERFORM   2701-SENTAKUCOM-HENSYU2-SEC
+                  IF  FLG-SENTAKU-OKIKAE     =   1
+                    PERFORM 2702-SENTAKUCOM-HENSYU4-SEC
+                  END-IF
+               END-IF
+      *
+               PERFORM 990-RECE2201-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       270-SENTAKUCOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÁªÂò¼°¥³¥á¥ó¥ÈÊÔ½¸£²
+      *****************************************************************
+       2701-SENTAKUCOM-HENSYU2-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  IDX45
+           MOVE    SPACE               TO  WRK-RECE230XX-REC
+           INITIALIZE                      WRK-RECE230XX-REC
+      *
+           INITIALIZE                      RECE2301-REC
+           MOVE    RECE2201-KEY1       TO  RECE2301-KEY1
+           MOVE    RECE2201-ZAINUM     TO  RECE2301-ZAINUM
+           START   RECE2301-FILE
+               KEY IS    >=   RECE2301-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE2301
+               NOT INVALID
+                   PERFORM 990-RECE2301-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE2301          =   1               )
+               OR     ( RECE2201-KEY1     NOT =   RECE2301-KEY1   )
+               OR     ( RECE2201-ZAINUM   NOT =   RECE2301-ZAINUM )
+      *
+               PERFORM  VARYING  IDX  FROM  1  BY  1
+                         UNTIL  (IDX                 >   5  )
+                          OR    (RECE2301-SRYCD(IDX) = SPACE)
+                 ADD    1   TO   IDX45
+                 MOVE   RECE2301-SRYACT-TBL(IDX)
+                            TO   WRK-RECE230XX-SRYACT-TBL(IDX45 1)
+      *
+                 IF   (IDX45                                 >   1   )
+                 AND  (WRK-RECE230XX-SRYCD(IDX45 1)(1:4)     = "8201")
+                 AND  (WRK-RECE230XX-MEISKYFLG(IDX45 1)  NOT = "2"   )
+                   MOVE      ZERO    TO   FLG-GET
+                   MOVE      ZERO    TO   FLG-ETC
+                   COMPUTE   IDY12   =    IDX45  -  1
+                   PERFORM  VARYING  IDY11  FROM  IDY12  BY  -1
+                             UNTIL  (IDY11    <  1)
+                              OR    (FLG-GET  =  1)
+                     IF (WRK-RECE230XX-SRYCD(IDY11 1)(1:1) = "6" OR "7")
+                     OR (WRK-RECE230XX-SRYCD(IDY11 1)(1:3) = "059"     )
+                       MOVE    1     TO   FLG-ETC
+                       MOVE  IDY11   TO   IDY13
+                     ELSE
+                       IF  WRK-RECE230XX-SRYCD(IDY11 1)(1:1) = "1"
+                         PERFORM 27011-SENTAKUCOM-HENSYU3-SEC
+                         IF   FLG-GET = ZERO
+                           MOVE    1     TO   FLG-ETC
+                           MOVE  IDY11   TO   IDY13
+                         END-IF
+                       END-IF
+                     END-IF
+                   END-PERFORM
+                   IF     FLG-GET  =   1
+                     IF   FLG-ETC  =   1
+                       MOVE    1         TO  FLG-SENTAKU-OKIKAE
+                       MOVE    ZERO      TO  IDX46
+                       MOVE    SPACE     TO  WRK-RECE230ZZ-REC
+                       INITIALIZE            WRK-RECE230ZZ-REC
+                       PERFORM  VARYING  IDY11  FROM  1  BY  1
+                                 UNTIL   IDY11    >   IDY12
+                         IF   IDY11 = IDY13
+                           ADD   1   TO   IDX46
+                           MOVE  WRK-RECE230XX-SRYACT-TBL(IDX45 1)
+                                 TO   WRK-RECE230ZZ-SRYACT-TBL(IDX46 1)
+                         END-IF
+                         ADD     1   TO   IDX46
+                         MOVE    WRK-RECE230XX-SRYACT-TBL(IDY11 1)
+                                 TO   WRK-RECE230ZZ-SRYACT-TBL(IDX46 1)
+                       END-PERFORM
+                       PERFORM  VARYING  IDY11  FROM  1  BY  1
+                                 UNTIL   IDY11    >   IDX45
+                         MOVE   WRK-RECE230ZZ-SRYACT-TBL(IDY11 1)
+                                 TO   WRK-RECE230XX-SRYACT-TBL(IDY11 1)
+                       END-PERFORM
+                     END-IF
+                   END-IF
+                 END-IF
+               END-PERFORM
+      *
+               PERFORM 990-RECE2301-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       2701-SENTAKUCOM-HENSYU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÁªÂò¼°¥³¥á¥ó¥ÈÊÔ½¸£³
+      *****************************************************************
+       27011-SENTAKUCOM-HENSYU3-SEC     SECTION.
+      *
+           INITIALIZE                      RKISAI-REC
+           MOVE  WRK-RECE230XX-SRYCD(IDY11 1)
+                                       TO  RKISAI-SRYCD
+           MOVE  RECE200-SRYYM         TO  RKISAI-STYM
+           MOVE  RECE200-SRYYM         TO  RKISAI-EDYM
+           MOVE  RKISAI-REC            TO  MCPDATA-REC
+           MOVE  "tbl_recekisai"       TO  MCP-TABLE
+           MOVE  "key5"                TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC  =  ZERO
+             MOVE  "tbl_recekisai"     TO  MCP-TABLE
+             MOVE  "key5"              TO  MCP-PATHNAME
+             PERFORM  900-RKISAI-READ-SEC
+             PERFORM  UNTIL (FLG-RKISAI  =  1)
+                       OR   (FLG-GET     =  1)
+               IF   RKISAI-C-CD  =  WRK-RECE230XX-SRYCD(IDX45 1)
+                 MOVE    1    TO    FLG-GET
+               END-IF
+               MOVE  "tbl_recekisai"   TO  MCP-TABLE
+               MOVE  "key5"            TO  MCP-PATHNAME
+               PERFORM  900-RKISAI-READ-SEC
+             END-PERFORM
+           END-IF
+           MOVE  "tbl_recekisai"       TO  MCP-TABLE
+           MOVE  "key5"                TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       27011-SENTAKUCOM-HENSYU3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÁªÂò¼°¥³¥á¥ó¥ÈÊÔ½¸£´
+      *****************************************************************
+       2702-SENTAKUCOM-HENSYU4-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  IDX45
+      *
+           INITIALIZE                      RECE2301-REC
+           MOVE    RECE2201-KEY1       TO  RECE2301-KEY1
+           MOVE    RECE2201-ZAINUM     TO  RECE2301-ZAINUM
+           START   RECE2301-FILE
+               KEY IS    >=   RECE2301-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE2301
+               NOT INVALID
+                   PERFORM 990-RECE2301-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE2301          =   1               )
+               OR     ( RECE2201-KEY1     NOT =   RECE2301-KEY1   )
+               OR     ( RECE2201-ZAINUM   NOT =   RECE2301-ZAINUM )
+      *
+               PERFORM  VARYING  IDX  FROM  1  BY  1
+                         UNTIL  (IDX                 >   5  )
+                          OR    (RECE2301-SRYCD(IDX) = SPACE)
+                 ADD    1   TO   IDX45
+                 MOVE   WRK-RECE230XX-SRYACT-TBL(IDX45 1)
+                            TO   RECE2301-SRYACT-TBL(IDX)
+               END-PERFORM
+      *
+               REWRITE   RECE2301-REC
+               ADD       1        TO   CNT-RECE230-RE
+      *
+               PERFORM 990-RECE2301-NEXT-SEC
+      *
+           END-PERFORM
+      *
+      *****REWRITE   RECE2201-REC
+      *****ADD     1      TO   CNT-RECE220-RE
+      *
+           .
+       2702-SENTAKUCOM-HENSYU4-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¥¨¥é¡¼½ÐÎÏ½èÍý
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
@@ -8440,6 +8822,8 @@
            DISPLAY "RECE2309 CNT-WK  :" CNT-RECE2309
            DISPLAY "RECE220  CNT-OUT :" CNT-RECE220 
            DISPLAY "RECE230  CNT-OUT :" CNT-RECE230 
+           DISPLAY "RECE220  REWRITE :" CNT-RECE220-RE
+           DISPLAY "RECE230  REWRITE :" CNT-RECE230-RE
            DISPLAY "*** ORCR1240 END ***"
       *
            .
@@ -8566,6 +8950,38 @@
        990-RECE2309-NEXT-EXT.
            EXIT.
       *
+      ****************************************************************
+      *    ¥ì¥»¥×¥È£°£´£±¥Ç¡¼¥¿ÆÉ¤ß
+      ****************************************************************
+       990-RECE2201-NEXT-SEC           SECTION.
+      *
+           READ    RECE2201-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE2201
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE2201
+           END-READ
+      *
+           .
+       990-RECE2201-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    ¥ì¥»¥×¥È£°£µ£±¥Ç¡¼¥¿ÆÉ¤ß
+      ****************************************************************
+       990-RECE2301-NEXT-SEC           SECTION.
+      *
+           READ    RECE2301-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE2301
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE2301
+           END-READ
+      *
+           .
+       990-RECE2301-NEXT-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ¿ÇÎÅ¹Ô°ÙÆÉ¹þ
       *****************************************************************
@@ -8600,6 +9016,24 @@
       *
            .
        900-SANTEIPLUS-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥Èµ­ºÜ
+      *****************************************************************
+       900-RKISAI-READ-SEC           SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  RKISAI-REC
+               MOVE    ZERO            TO  FLG-RKISAI
+           ELSE
+               INITIALIZE                  RKISAI-REC
+               MOVE    1               TO  FLG-RKISAI
+           END-IF
+      *
+           .
+       900-RKISAI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8708,35 +9142,34 @@
       *****************************************************************
        900-TENSU-TBL-SEC               SECTION.
       *
-           INITIALIZE                       TNS-TENSU-REC
-           MOVE    SRY-SRYCD(IDX12) TO      TNS-SRYCD
-           MOVE    SRY-SRYYM        TO      TNS-YUKOSTYMD(1:6)
-           MOVE    "01"             TO      TNS-YUKOSTYMD(7:2)
-           MOVE    TNS-YUKOSTYMD    TO      TNS-YUKOEDYMD
-           MOVE    SPA-HOSPNUM      TO      TNS-HOSPNUM
-           MOVE    TNS-TENSU-REC    TO      MCPDATA-REC
-           MOVE    "tbl_tensu"      TO      MCP-TABLE
-           MOVE    "key"            TO      MCP-PATHNAME
+           INITIALIZE                           TNS-TENSU-REC
+           MOVE    WRK-TENSU-SRYCD      TO      TNS-SRYCD
+           MOVE    WRK-TENSU-SRYYM      TO      TNS-YUKOSTYMD(1:6)
+           MOVE    "01"                 TO      TNS-YUKOSTYMD(7:2)
+           MOVE    TNS-YUKOSTYMD        TO      TNS-YUKOEDYMD
+           MOVE    SPA-HOSPNUM          TO      TNS-HOSPNUM
+           MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+           MOVE    "tbl_tensu"          TO      MCP-TABLE
+           MOVE    "key"                TO      MCP-PATHNAME
            PERFORM   900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
                MOVE    "tbl_tensu"      TO      MCP-TABLE
                MOVE    "key"            TO      MCP-PATHNAME
                PERFORM   900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
-                   MOVE    ZERO            TO  FLG-TENSU
+               IF      MCP-RC           =       ZERO
+                   MOVE    MCPDATA-REC  TO      TNS-TENSU-REC
+                   MOVE    ZERO         TO      FLG-TENSU
                ELSE
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    1               TO  FLG-TENSU
+                   INITIALIZE                   TNS-TENSU-REC
+                   MOVE    1            TO      FLG-TENSU
                END-IF
            ELSE
-               INITIALIZE                      TNS-TENSU-REC
-               MOVE    1                   TO  FLG-TENSU
+               INITIALIZE                       TNS-TENSU-REC
+               MOVE    1                TO      FLG-TENSU
            END-IF
       *
-           INITIALIZE                     MCPAREA
-           MOVE    "tbl_tensu"      TO      MCP-TABLE
-           MOVE    "key"            TO      MCP-PATHNAME
+           MOVE    "tbl_tensu"          TO      MCP-TABLE
+           MOVE    "key"                TO      MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
            .

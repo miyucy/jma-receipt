@@ -154,6 +154,7 @@
       *  04.08.20    NACL-ÌçÏÆ    18/05/02  »ÄÎÌÇÑ´þ¥³¥á¥ó¥È¤Îµ­ºÜÆâÍÆ½¤Àµ
       *  04.08.21    NACL-ÌçÏÆ    18/05/07  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.22    NACL-ÌçÏÆ    18/06/25  ÅÅ»Ò²èÁü´ÉÍý²Ã»»¤Îµ­ºÜ½ç½¤Àµ
+      *  04.08.23    NACL-ÌçÏÆ    18/09/27  ÁªÂò¼°¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3590,6 +3591,11 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                  MOVE   ZERO        TO  RECE130-TANICD(IDX4)
                  MOVE   ZERO        TO  RECE130-TANIMOJISU(IDX4)
                  MOVE   SPACE       TO  RECE130-TANINAME(IDX4)
+               END-IF
+      *
+               IF   (RECE100-SRYYM           >= "201810")
+               AND  (RECE130-SRYCD(IDX4)(1:4) = "8201"  )
+                 MOVE   "1"         TO  RECE120-SENTAKUCOMFLG
                END-IF
       *
               END-IF

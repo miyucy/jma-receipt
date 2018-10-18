@@ -58,6 +58,7 @@
       *                                     （記録）対応
       *  04.08.04    NACL-門脇    16/08/23  持参薬対応
       *  04.08.05    NACL-門脇    18/04/17  平成３０年４月改正対応
+      *  04.08.06    NACL-門脇    18/09/27  選択式コメント対応
       ************************************************************
       *01  RECE84-REC.
            03  RECE84-KEY.
@@ -136,6 +137,8 @@
                05  RECE84-JIBAISYUKEIKBN      PIC  9(01).
       *関係コメント存在フラグ
                05  RECE84-SETCOMFLG           PIC  X(01).
+      *選択式コメント存在フラグ
+               05  RECE84-SENTAKUCOMFLG       PIC  X(01).
       *剤区分
                05  RECE84-ZAIKBN              PIC  9(03).
       *画像診断（２回目以降減算あり）
@@ -275,6 +278,11 @@
                05  RECE84-FLG-KIATU-COMMENT     PIC  X(01).
       *疾患別等専門プログラム加算
                05  RECE84-FLG-SCPRO-COMMENT     PIC  X(01).
+      *
+      *時間外緊急院内検査加算・外来迅速検体検査加算
+               05  RECE84-FLG-KENKSN-COMMENT    PIC  X(01).
+      *時間外緊急院内画像診断加算
+               05  RECE84-FLG-KINGAZ-COMMENT    PIC  X(01).
       *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE84-ACCTP-SYUGI-TBL-G.

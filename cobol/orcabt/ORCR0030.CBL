@@ -804,6 +804,7 @@
       *                                     ´Ø¤ï¤ë½¤Àµ
       *  04.08.66    NACL-ÌçÏÆ    18/09/21  ¸º³Û»þ¤ÎÊÝ¸±Íó¡Ý°ìÉôÉéÃ´¶â
       *                                     µ­ºÜ¤Ë´Ø¤ï¤ë½¤Àµ¡Ê¹âÎð¼Ô¡Ë
+      *  04.08.67    NACL-ÌçÏÆ    18/09/27  ÁªÂò¼°¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -13250,6 +13251,11 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *
                PERFORM 2104414-SETCOM-HENSYU-SEC
       *
+               IF   (RECE02-SRYYM           >= "201810")
+               AND  (RECE05-SRYCD(IDX4)(1:4) = "8201"  )
+                 MOVE   "1"         TO  RECE04-SENTAKUCOMFLG
+               END-IF
+      *
                IF    (RECE02-SRYYM         >=  "201704")
                AND   (SRY-SRYCD(IDX2)(1:3)  =  "059"   )
                  IF   (RECE02-RECESYUBETU  =
@@ -14946,16 +14952,11 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                         "113023910"
                  MOVE   1             TO  WRK-SETCOM-JIDO
            END-IF
-      *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý²Ã»»¡ÊÂ¡´ï°Ü¿¢·î¤«¤é£³·î¡Ë
-           IF    RECE05-SRYCD(IDX4)   = "113000670"
-                 MOVE   1             TO  WRK-SETCOM-JIDO2
-           END-IF
       *    °­À­¼ðáçÆÃ°ÛÊª¼Á¼£ÎÅ´ÉÍýÎÁ
            IF    RECE05-SRYCD(IDX4)   = "113001210" OR "113001310" OR
                                         "113002110"
                  MOVE   3             TO  WRK-SETCOM-JIDO
            END-IF
-      *
       *    ½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë
            IF    RECE05-SRYCD(IDX4)   = CONS-SYODOU-COMMENT
                                      OR CONS-SYODOU3-COMMENT
@@ -15080,16 +15081,29 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            IF    RECE05-SRYCD(IDX4)   = CONS-ONLINE-COMMENT
                  MOVE   38            TO  WRK-SETCOM-JIDO
            END-IF
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ¸¡ºº²Ã»»
+           IF   (RECE05-SRYCD(IDX4)   = "160000210")
+           AND  (RECE02-SRYYM        >= "201810"   )
+                 MOVE   43            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
+           IF   (RECE05-SRYCD(IDX4)   = "170016010")
+           AND  (RECE02-SRYYM        >= "201810"   )
+                 MOVE   44            TO  WRK-SETCOM-JIDO
+           END-IF
+      *
+      *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý²Ã»»¡ÊÂ¡´ï°Ü¿¢·î¤«¤é£³·î¡Ë
+           IF    RECE05-SRYCD(IDX4)   = "113000670"
+                 MOVE   1             TO  WRK-SETCOM-JIDO2
+           END-IF
       *    ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»
            IF    RECE05-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
                                      OR CONS-SCPRO3-COMMENT
-                 MOVE   107           TO  WRK-SETCOM-JIDO2
+                 MOVE   2             TO  WRK-SETCOM-JIDO2
            END-IF
       *
            IF  ((WRK-SETCOM-JIDO    =  1                        ) AND
                 (RECE05-SRYCD(IDX4) = "830000014" OR "840000038"))
-           OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
-                (RECE05-SRYCD(IDX4) = "840000077"               ))
            OR  ((WRK-SETCOM-JIDO    =  3                        ) AND
                 (RECE05-SRYCD(IDX4) = "830000015"               ))
            OR  ((WRK-SETCOM-JIDO    =  4                        ) AND
@@ -15137,7 +15151,14 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                    OR CONS-ONLINE18-COMMENT
                                    OR CONS-ONLINE19-COMMENT
                                    OR CONS-ONLINE20-COMMENT     ))
-           OR  ((WRK-SETCOM-JIDO2   =  107                      ) AND
+           OR  ((WRK-SETCOM-JIDO    =  43                       ) AND
+                (RECE05-SRYCD(IDX4) = "840000044"               ))
+           OR  ((WRK-SETCOM-JIDO    =  44                       ) AND
+                (RECE05-SRYCD(IDX4) = "840000071"               ))
+      *
+           OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
+                (RECE05-SRYCD(IDX4) = "840000077"               ))
+           OR  ((WRK-SETCOM-JIDO2   =  2                        ) AND
                 (RECE05-SRYCD(IDX4) = CONS-IZONSYO2-COMMENT     ))
       *
                  MOVE  "1"              TO  RECE04-SETCOMFLG
@@ -15147,9 +15168,9 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                  AND (RECE05-SRYCD(IDX4) = "840000077")
                    MOVE    2            TO  RECE05-SETCOMATFLG(IDX4)
                  END-IF
-                 IF  (WRK-SETCOM-JIDO2   =  107                 )
+                 IF  (WRK-SETCOM-JIDO2   =  2                   )
                  AND (RECE05-SRYCD(IDX4) = CONS-IZONSYO2-COMMENT)
-                   MOVE    108          TO  RECE05-SETCOMATFLG(IDX4)
+                   MOVE    40           TO  RECE05-SETCOMATFLG(IDX4)
                  END-IF
       *
            END-IF

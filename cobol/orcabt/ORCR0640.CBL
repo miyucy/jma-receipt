@@ -778,6 +778,7 @@
       *                                     ÆÃµ­»ö¹àµ­ºÜ½¤Àµ¡Ê²¼Á¥¡Ë
       *  04.08.59    NACL-ÌçÏÆ    18/09/14  ÀÁµáÅÀ¿ô£°ÅÀ¸øÈñ¥ì¥»µ­ºÜ¤Ë
       *                                     ´Ø¤ï¤ë½¤Àµ
+      *  04.08.60    NACL-ÌçÏÆ    18/09/27  ÁªÂò¼°¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -911,6 +912,10 @@
            03  FLG-ZAIHANKO-COM                        PIC 9(01).
            03  FLG-KIATU-COM                           PIC 9(01).
            03  FLG-SCPRO-COM                           PIC 9(01).
+           03  FLG-HOUSEI-COM                          PIC 9(01).
+           03  FLG-HOUMON-COM                          PIC 9(01).
+           03  FLG-KENKSN-COM                          PIC 9(01).
+           03  FLG-KINGAZ-COM                          PIC 9(01).
            03  FLG-CYOJKSN-COM                         PIC 9(01).
            03  FLG-CYOJKSN-OK                          PIC 9(01).
            03  FLG-RECESKYKBN                          PIC 9(01).
@@ -951,8 +956,6 @@
            03  FLG-HOKENICHIBU6                        PIC 9(01).
            03  FLG-HOKENICHIBU7                        PIC 9(01).
            03  FLG-HOKENICHIBU-CHK                     PIC 9(01).
-           03  FLG-HOUSEI-COM                          PIC 9(01).
-           03  FLG-HOUMON-COM                          PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU                   PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU2                  PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU3                  PIC 9(01).
@@ -2701,6 +2704,15 @@
            03  CONS-NINPU22-COMMENT  PIC X(09)  VALUE  "112021290".
       *    Ç¥ÉØ
            03  CONS-NINPU23-COMMENT  PIC X(09)  VALUE  "820100348".
+      *
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ¸¡ºº²Ã»»
+           03  CONS-KENKSN-COMMENT   PIC X(09)  VALUE  "160000210".
+      *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
+           03  CONS-KENKSN2-COMMENT  PIC X(09)  VALUE  "160177770".
+      *    °ú¤­Â³¤­Æþ±¡
+           03  CONS-KENKSN3-COMMENT  PIC X(09)  VALUE  "820100129".
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
+           03  CONS-KINGAZ-COMMENT   PIC X(09)  VALUE  "170016010".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -8967,6 +8979,11 @@
       *
                PERFORM  2101214-SETCOM-HENSYU-SEC
       *
+               IF   (RECE62-SRYYM           >= "201810")
+               AND  (RECE65-SRYCD(IDX4)(1:4) = "8201"  )
+                 MOVE   "1"         TO  RECE64-SENTAKUCOMFLG
+               END-IF
+      *
                IF    (RECE62-SRYYM         >=  "201704")
                AND   (SRY-SRYCD(IDX2)(1:3)  =  "059"   )
                  IF   (RECE62-RECESYUBETU  =
@@ -9737,6 +9754,17 @@
                    MOVE   "1"   TO    RECE64-FLG-FILM-COMMENT
                 END-IF
               END-IF
+      *
+              IF   RECE62-SRYYM  >= "201810"
+                IF  (SRY-SRYCD(IDX2)  =     CONS-KINGAZ-COMMENT)
+                AND (FLG-KINGAZ-COM   =     ZERO               )
+                     MOVE   "1"    TO   RECE64-FLG-KINGAZ-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-KENKSN3-COMMENT
+                     MOVE  SPACE   TO   RECE64-FLG-KINGAZ-COMMENT
+                     MOVE    1     TO   FLG-KINGAZ-COM
+                END-IF
+              END-IF
            END-IF
       *
            IF      RECE64-SRYKBN      =     "80"
@@ -9925,6 +9953,18 @@
               END-IF
               IF    SRY-SRYCD(IDX2)   =     CONS-KENSA3-COMMENT
                    MOVE    1    TO    RECE62-KENSA-ANPFLG
+              END-IF
+      *
+              IF   RECE62-SRYYM  >= "201810"
+                IF  (SRY-SRYCD(IDX2)  =     CONS-KENKSN-COMMENT
+                                      OR    CONS-KENKSN2-COMMENT)
+                AND (FLG-KENKSN-COM   =     ZERO                )
+                     MOVE   "1"    TO   RECE64-FLG-KENKSN-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-KENKSN3-COMMENT
+                     MOVE  SPACE   TO   RECE64-FLG-KENKSN-COMMENT
+                     MOVE    1     TO   FLG-KENKSN-COM
+                END-IF
               END-IF
            END-IF
       *
@@ -10166,16 +10206,11 @@
                                         "113023910"
                  MOVE   1             TO  WRK-SETCOM-JIDO
            END-IF
-      *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý²Ã»»¡ÊÂ¡´ï°Ü¿¢·î¤«¤é£³·î¡Ë
-           IF    RECE65-SRYCD(IDX4)   = "113000670"
-                 MOVE   1             TO  WRK-SETCOM-JIDO2
-           END-IF
       *    °­À­¼ðáçÆÃ°ÛÊª¼Á¼£ÎÅ´ÉÍýÎÁ
            IF    RECE65-SRYCD(IDX4)   = "113001210" OR "113001310" OR
                                         "113002110"
                  MOVE   3             TO  WRK-SETCOM-JIDO
            END-IF
-      *
       *    ½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë
            IF    RECE65-SRYCD(IDX4)   = CONS-SYODOU-COMMENT
                                      OR CONS-SYODOU3-COMMENT
@@ -10205,14 +10240,26 @@
                                      OR CONS-ZAIKYO4-COMMENT
                  MOVE   29            TO  WRK-SETCOM-JIDO
            END-IF
-      *    ÇÓÇ¢¼«Î©»ØÆ³ÎÁ
-           IF    RECE65-SRYCD(IDX4)   = CONS-HAIJRT-COMMENT
-                 MOVE   34            TO  WRK-SETCOM-JIDO
-           END-IF
       *    ¹âµ¤°µ»ÀÁÇ¼£ÎÅ
            IF    RECE65-SRYCD(IDX4)   = CONS-KIATU-COMMENT
                                      OR CONS-KIATU2-COMMENT
                  MOVE   35            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ¸¡ºº²Ã»»
+      *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
+           IF   (RECE65-SRYCD(IDX4)   = CONS-KENKSN-COMMENT
+                                     OR CONS-KENKSN2-COMMENT)
+           AND  (RECE62-SRYYM        >= "201810"            )
+                 MOVE   43            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
+           IF   (RECE65-SRYCD(IDX4)   = CONS-KINGAZ-COMMENT )
+           AND  (RECE62-SRYYM        >= "201810"            )
+                 MOVE   44            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    ÇÓÇ¢¼«Î©»ØÆ³ÎÁ
+           IF    RECE65-SRYCD(IDX4)   = CONS-HAIJRT-COMMENT
+                 MOVE   100           TO  WRK-SETCOM-JIDO
            END-IF
       *    Âà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
            IF    RECE65-SRYCD(IDX4)   = CONS-HOUMON-COMMENT1
@@ -10223,15 +10270,18 @@
       ***                           OR  CONS-HOUSEI-COMMENT3
       ***        MOVE   105           TO  WRK-SETCOM-JIDO
       ***  END-IF
+      *
+      *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý²Ã»»¡ÊÂ¡´ï°Ü¿¢·î¤«¤é£³·î¡Ë
+           IF    RECE65-SRYCD(IDX4)   = "113000670"
+                 MOVE   1             TO  WRK-SETCOM-JIDO2
+           END-IF
       *    ¼À´µÊÌÅùÀìÌç¥×¥í¥°¥é¥à²Ã»»
            IF    RECE65-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
-                 MOVE   107           TO  WRK-SETCOM-JIDO2
+                 MOVE   2             TO  WRK-SETCOM-JIDO2
            END-IF
       *
            IF  ((WRK-SETCOM-JIDO    =  1                        ) AND
                 (RECE65-SRYCD(IDX4) = "830000014" OR "840000038"))
-           OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
-                (RECE65-SRYCD(IDX4) = "840000077"               ))
            OR  ((WRK-SETCOM-JIDO    =  3                        ) AND
                 (RECE65-SRYCD(IDX4) = "830000015"               ))
            OR  ((WRK-SETCOM-JIDO    =  4                        ) AND
@@ -10248,18 +10298,27 @@
            OR  ((WRK-SETCOM-JIDO    =  29                       ) AND
                 (RECE65-SRYCD(IDX4) = CONS-ZAIKYO5-COMMENT
                                    OR CONS-ZAIKYO6-COMMENT      ))
-           OR  ((WRK-SETCOM-JIDO    =  34                       ) AND
-                (RECE65-SRYCD(IDX4) = CONS-HAIJRT2-COMMENT
-                                   OR CONS-HAIJRT3-COMMENT      ))
            OR  ((WRK-SETCOM-JIDO    =  35                       ) AND
                 (RECE65-SRYCD(IDX4) = CONS-KIATU3-COMMENT
                                    OR CONS-KIATU4-COMMENT
                                    OR CONS-KIATU5-COMMENT       ))
+           OR  ((WRK-SETCOM-JIDO    =  43                       ) AND
+                (RECE65-SRYCD(IDX4) = CONS-KENKSN3-COMMENT
+                                   OR "840000044"               ))
+           OR  ((WRK-SETCOM-JIDO    =  44                       ) AND
+                (RECE65-SRYCD(IDX4) = CONS-KENKSN3-COMMENT
+                                   OR "840000071"               ))
+           OR  ((WRK-SETCOM-JIDO    =  100                      ) AND
+                (RECE65-SRYCD(IDX4) = CONS-HAIJRT2-COMMENT
+                                   OR CONS-HAIJRT3-COMMENT      ))
            OR  ((WRK-SETCOM-JIDO    =  103                      ) AND
                 (RECE65-SRYCD(IDX4) = CONS-HOUMON-COMMENT3      ))
       ***  OR  ((WRK-SETCOM-JIDO    =  105                      ) AND
       ***       (RECE65-SRYCD(IDX4) = CONS-HOUSEI-COMMENT2      ))
-           OR  ((WRK-SETCOM-JIDO2   =  107                      ) AND
+      *
+           OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
+                (RECE65-SRYCD(IDX4) = "840000077"               ))
+           OR  ((WRK-SETCOM-JIDO2   =  2                        ) AND
                 (RECE65-SRYCD(IDX4) = CONS-SCPRO2-COMMENT       ))
       *
                  MOVE  "1"              TO  RECE64-SETCOMFLG
@@ -10269,9 +10328,9 @@
                  AND (RECE65-SRYCD(IDX4) = "840000077")
                    MOVE    2            TO  RECE65-SETCOMATFLG(IDX4)
                  END-IF
-                 IF  (WRK-SETCOM-JIDO2   =  107               )
+                 IF  (WRK-SETCOM-JIDO2   =  2                 )
                  AND (RECE65-SRYCD(IDX4) = CONS-SCPRO2-COMMENT)
-                   MOVE    108          TO  RECE65-SETCOMATFLG(IDX4)
+                   MOVE    40           TO  RECE65-SETCOMATFLG(IDX4)
                  END-IF
       *
            END-IF
@@ -12605,6 +12664,8 @@
                               FLG-ZAIHANKO-COM
                               FLG-KIATU-COM
                               FLG-SCPRO-COM
+                              FLG-KENKSN-COM
+                              FLG-KINGAZ-COM
       *
            MOVE   ZERO   TO   WRK-FILMTEN
       *

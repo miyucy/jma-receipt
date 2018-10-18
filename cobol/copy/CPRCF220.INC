@@ -41,6 +41,7 @@
       *                                     （記録）対応
       *  04.08.04    NACL-門脇    16/08/23  持参薬対応
       *  04.08.05    NACL-門脇    18/04/17  平成３０年４月改正対応
+      *  04.08.06    NACL-門脇    18/09/27  選択式コメント対応
       ************************************************************
       *01  RECE220-REC.
            03  RECE220-KEY.
@@ -107,6 +108,8 @@
            03  RECE220-TOYAKUFLG           PIC X(01).
       *療養病棟入院料剤点記載明細数
            03  RECE220-RYOTENKISAISU       PIC 9(04).
+      *選択式コメント存在フラグ
+           03  RECE220-SENTAKUCOMFLG       PIC X(01).
       *剤区分
            03  RECE220-ZAIKBN              PIC 9(03).
       *画像診断（２回目以降減算あり）
@@ -239,6 +242,11 @@
            03  RECE220-FLG-KIATU-COMMENT     PIC  X(01).
       *疾患別等専門プログラム加算
            03  RECE220-FLG-SCPRO-COMMENT     PIC  X(01).
+      *
+      *時間外緊急院内検査加算・外来迅速検体検査加算
+           03  RECE220-FLG-KENKSN-COMMENT    PIC  X(01).
+      *時間外緊急院内画像診断加算
+           03  RECE220-FLG-KINGAZ-COMMENT    PIC  X(01).
       *
       *日数回数テーブル
            03  RECE220-DAY-AREA.
