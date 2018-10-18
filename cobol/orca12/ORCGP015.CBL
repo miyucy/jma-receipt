@@ -81,7 +81,8 @@
                05  WRK-SEMM         PIC 9(02).
                05  WRK-SEDD         PIC 9(02).
       *
-           03  WRK-END             PIC 9(04).
+           03  WRK-KETA             PIC 9(04).
+           03  FLG-KETA             PIC 9(01).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -420,20 +421,25 @@
       *
       *H30.10
       *    桁数チェック
-           MOVE    ZERO                TO  WRK-END
+           MOVE    ZERO                TO  WRK-KETA
            PERFORM   VARYING   IDX     FROM    20  BY  -1
                      UNTIL    (IDX         <   1 )
-                           OR (WRK-END     >   ZERO )
+                           OR (WRK-KETA     >   ZERO )
                IF      SPA-GMN015-PTNUM(IDX:1)   NOT =   SPACE
-                   MOVE    IDX               TO  WRK-END
+                   MOVE    IDX               TO  WRK-KETA
                END-IF
            END-PERFORM
+      *    間に空白がある時エラー
+           MOVE    ZERO                TO  FLG-KETA
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   WRK-END  )
+                   UNTIL      (IDX         >   WRK-KETA  )
                          OR   (SPA-ERRCD   NOT =   SPACE)
-      *        空白エラー
-               IF      SPA-GMN015-PTNUM(IDX:1)  =   SPACE
-                  MOVE    "1005"           TO  SPA-ERRCD
+               IF      SPA-GMN015-PTNUM(IDX:1) =   SPACE
+                   IF      FLG-KETA            =   1
+                       MOVE    "1005"          TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-KETA
                END-IF
            END-PERFORM
            IF      SPA-ERRCD       NOT =   SPACE
