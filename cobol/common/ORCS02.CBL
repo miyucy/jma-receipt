@@ -467,6 +467,8 @@
       *  04.08.32    NACL-ÌçÏÆ    18/07/26  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¡Ü¸øÈñ¤Î
       *                                     ÉéÃ´¶â·×»»½¤Àµ
       *  04.08.33    NACL-ÌçÏÆ    18/09/13  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
+      *  04.08.34    NACL-ÌçÏÆ    18/09/26  À¸³èÊÝ¸î¤Î¿©»öÉ¸½àÉéÃ´³Û·×»»
+      *                                     ÂÐ±þ½¤Àµ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1221,6 +1223,8 @@
       *
            03  WK-SKJHKN-TBL.
                05  WK-SKJHKN-SANTEIFLG PIC X(01)  OCCURS  31.
+      *
+           03  WK-ZAN-SEIHO            PIC 9(08).
       *
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¤Î¼ýÇ¼¥Ç¡¼¥¿ÂàÈò¡Ê¸øÈñÊ»ÍÑÊ¬¡Ë
            03  WK-SYUNOU-GENBUTU70-TABLE.
@@ -30514,6 +30518,8 @@
                  END-IF
                END-IF
       *
+               MOVE   ZAN-KOHI-T(KOH-IDX)  TO  WK-ZAN-SEIHO
+      *
                IF  (  FLG-ZENKI-TOKUREI           =   1    )
                AND (( LNK-SYU-KOH-HKNNUM(KOH-IDX) = "051" )
                  OR ((WK-1001-PREFNUM             =  13  ) AND
@@ -30555,17 +30561,40 @@
                             LNK-SYU-KOH-COMPFTN(KOH-IDX)
                END-IF
       *
-               IF   (LNK-SYU-KOH-HKNNUM(KOH-IDX)         =
-                               "011" OR "020" OR "012" OR "025")
-               AND  (WK-TAIHI-JGNGAKEN(KOH-IDX)(7:1) NOT = "0" )
-               AND  (LNK-SYU-KOH-COMPFTN(KOH-IDX)    NOT = ZERO)
+               IF   (LNK-SYU-KOH-COMPFTN(KOH-IDX)    NOT = ZERO)
                AND  (ZAN-KOHI-T(KOH-IDX)                 = ZERO)
-                  MOVE     1    TO    WK-TAIHI-FTNGAKEN(KOH-IDX)
+                 IF  ((LNK-SYU-KOH-HKNNUM(KOH-IDX)         =
+                                 "011" OR "020" OR "012" OR "025") AND
+                      (WK-TAIHI-JGNGAKEN(KOH-IDX)(7:1) NOT = "0" ))
+                 OR  ((LNK-SYU-KOH-HKNNUM(KOH-IDX)         =
+                                                   "012" OR "025") AND
+                      (COMB-HKNNUM              =  SPACE         ) AND
+                      (COMB-KOH1HKNNUM          =  "012" OR "025") AND
+                      (COMB-KOH2HKNNUM          =  SPACE         ) AND
+                      (COMB-KOH3HKNNUM          =  SPACE         ) AND
+                      (COMB-KOH4HKNNUM          =  SPACE         ) AND
+                      (WK-ZAN-SEIHO(8:1)    NOT =  "0"           ))
+                   MOVE     1    TO    WK-TAIHI-FTNGAKEN(KOH-IDX)
+                 END-IF
                END-IF
       *
                COMPUTE   LNK-SYU-KOH-COMPTOTAL(KOH-IDX)   =
                          LNK-SYU-KOH-COMPFTN(KOH-IDX)     
+      *
                IF    ZAN-KOHI-T(KOH-IDX)   NOT =   ZERO
+                 IF  ((LNK-SYU-KOH-HKNNUM(KOH-IDX)         =
+                                 "011" OR "020" OR "012" OR "025") AND
+                      (WK-TAIHI-JGNGAKEN(KOH-IDX)(7:1) NOT = "0" ))
+                 OR  ((LNK-SYU-KOH-HKNNUM(KOH-IDX)         =
+                                                   "012" OR "025") AND
+                      (COMB-HKNNUM              =  SPACE         ) AND
+                      (COMB-KOH1HKNNUM          =  "012" OR "025") AND
+                      (COMB-KOH2HKNNUM          =  SPACE         ) AND
+                      (COMB-KOH3HKNNUM          =  SPACE         ) AND
+                      (COMB-KOH4HKNNUM          =  SPACE         ) AND
+                      (WK-ZAN-SEIHO(8:1)    NOT =  "0"           ))
+                   CONTINUE
+                 ELSE
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
       ***                    ZAN-KOHI-T(KOH-IDX)  +  5
                              ZAN-KOHI-T(KOH-IDX)  +  4
@@ -30573,6 +30602,7 @@
                              ZAN-KOHI-T(KOH-IDX)  /  10
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
                              WK-FTN   *  10
+                 END-IF
                END-IF
       *
       *        ¸øÈñ¤Î¿©»öÊÔ½¸
