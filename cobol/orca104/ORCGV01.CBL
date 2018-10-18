@@ -1232,6 +1232,9 @@
                                        >   SPA-NAI-TEDYUKYMD(IDX))
                      AND ( SPA-NAI-EDYUKYMD
                                        >   SPA-NAI-TEDYUKYMD(IDX) ))
+      *H30.10        ªŸ ß∂Ë ¨»ΩƒÍ
+                     OR  ( SPA-GMN-PAYKBN  NOT =  SPA-GMN-TPAYKBN
+                                                            (IDX ))
                        CONTINUE
                    ELSE
                        MOVE    "0004"      TO  SPA-ERRCD 
