@@ -653,6 +653,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
            END-EVALUATE
       *
+      *H30.10
+      *    \ はエラー
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   WRK-CODSU )
+                         OR   (SPA-ERRCD   NOT =   SPACE)
+      *        \ はエラー
+               IF      ORCSP01-PTNUM(IDX:1)    =   "\"
+                  MOVE    "1013"           TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+      *
       *
       *!   IF      SPA-ERRCD       =   SPACE
       *!       IF      ORCSP01-PTID    =   ZERO

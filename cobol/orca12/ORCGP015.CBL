@@ -81,6 +81,9 @@
                05  WRK-SEMM         PIC 9(02).
                05  WRK-SEDD         PIC 9(02).
       *
+           03  WRK-KETA             PIC 9(04).
+           03  FLG-KETA             PIC 9(01).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
                05  WRK-HGO         PIC X(01).
@@ -416,6 +419,33 @@
       *****************************************************************
        40011-PTNUM-CHK-SEC             SECTION.
       *
+      *H30.10
+      *    桁数チェック
+           MOVE    ZERO                TO  WRK-KETA
+           PERFORM   VARYING   IDX     FROM    20  BY  -1
+                     UNTIL    (IDX         <   1 )
+                           OR (WRK-KETA     >   ZERO )
+               IF      SPA-GMN015-PTNUM(IDX:1)   NOT =   SPACE
+                   MOVE    IDX               TO  WRK-KETA
+               END-IF
+           END-PERFORM
+      *    間に空白がある時エラー
+           MOVE    ZERO                TO  FLG-KETA
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   WRK-KETA  )
+                         OR   (SPA-ERRCD   NOT =   SPACE)
+               IF      SPA-GMN015-PTNUM(IDX:1) =   SPACE
+                   IF      FLG-KETA            =   1
+                       MOVE    "1005"          TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-KETA
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  40011-PTNUM-CHK-EXT
+           END-IF
+      *
       *    患者構成チェック
            INITIALIZE                  ORCSP01AREA
            MOVE    "2"                 TO  ORCSP01-SYORI
@@ -691,6 +721,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0009"
                    MOVE    "マスタが更新できませんでした。"
                                            TO  SPA-ERRMSG
+      *H30.10
+               WHEN    "1013"
+                   MOVE    "患者番号に使用できない文字があります。"
+                                               TO  SPA-ERRMSG
+      *
       *        サブエラー
                WHEN    "1005"
                    MOVE    "患者番号の桁数が違います。"

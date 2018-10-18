@@ -904,6 +904,11 @@
                                                TO  SPA-ERRMSG
                    MOVE    "患者番号の再発行はできません。"
                                                TO  SPA-ERRMSG(25:)
+      *H30.9
+               WHEN    "1013"
+                   MOVE    "患者番号に使用できない文字があります。"
+                                               TO  SPA-ERRMSG
+      *
                WHEN    "1020"
                    MOVE    "患者ＩＤが取得できません。"
                                                TO  SPA-ERRMSG

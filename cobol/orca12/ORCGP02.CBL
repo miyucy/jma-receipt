@@ -1821,10 +1821,6 @@
                END-IF
            END-PERFORM
       *
-           IF      WRK-KETA            =   ZERO
-               MOVE    "1005"              TO  SPA-ERRCD
-           END-IF
-      *
       *    患者構成チェック
            IF      SPA-ERRCD           =   SPACE
                INITIALIZE                  ORCSP01AREA
