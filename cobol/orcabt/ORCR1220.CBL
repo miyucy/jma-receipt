@@ -157,6 +157,7 @@
       *  04.08.19    NACL-ÌçÏÆ    18/06/25  ÅÅ»Ò²èÁü´ÉÍý²Ã»»¤Îµ­ºÜ½ç½¤Àµ
       *  04.08.20    NACL-ÌçÏÆ    18/07/23  Àº¿À²ÊÂà±¡Á°Ë¬Ìä»ØÆ³ÎÁ¤Î»»ÄêÆü
       *                                     ¼«Æ°µ­ºÜ½¤Àµ
+      *  04.08.21    NACL-ÌçÏÆ    18/09/27  ÁªÂò¼°¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -270,14 +271,16 @@
            03  FLG-ZAIHANKO-COM    PIC 9(01).
            03  FLG-KIATU-COM       PIC 9(01).
            03  FLG-SCPRO-COM       PIC 9(01).
+           03  FLG-HOUSEI-COM      PIC 9(01).
+           03  FLG-HOUMON-COM      PIC 9(01).
+           03  FLG-KENKSN-COM      PIC 9(01).
+           03  FLG-KINGAZ-COM      PIC 9(01).
            03  FLG-CYOJKSN-COM     PIC 9(01).
            03  FLG-CYOJKSN-OK      PIC 9(01).
            03  FLG-RINYAK          PIC 9(01).
            03  FLG-TENTEKIMATOME   PIC 9(01).
            03  FLG-TAHOKEN         PIC 9(01).
            03  FLG-KHNRYO-SKJ      PIC 9(01).
-           03  FLG-HOUSEI-COM      PIC 9(01).
-           03  FLG-HOUMON-COM      PIC 9(01).
            03  FLG-SYUNOU-ARI      PIC 9(01).
            03  FLG-FORMALNAME      PIC 9(01).
            03  FLG-DOJITU          PIC 9(01).
@@ -1231,6 +1234,15 @@
            03  CONS-NINPU22-COMMENT  PIC X(09)  VALUE  "112021290".
       *    Ç¥ÉØ
            03  CONS-NINPU23-COMMENT  PIC X(09)  VALUE  "820100348".
+      *
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ¸¡ºº²Ã»»
+           03  CONS-KENKSN-COMMENT   PIC X(09)  VALUE  "160000210".
+      *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
+           03  CONS-KENKSN2-COMMENT  PIC X(09)  VALUE  "160177770".
+      *    °ú¤­Â³¤­Æþ±¡
+           03  CONS-KENKSN3-COMMENT  PIC X(09)  VALUE  "820100129".
+      *    »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
+           03  CONS-KINGAZ-COMMENT   PIC X(09)  VALUE  "170016010".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -3054,6 +3066,11 @@
                  MOVE   SPACE       TO  RECE230-TANINAME(IDX4)
                END-IF
       *
+               IF   (RECE200-SRYYM           >= "201810")
+               AND  (RECE230-SRYCD(IDX4)(1:4) = "8201"  )
+                 MOVE   "1"         TO  RECE220-SENTAKUCOMFLG
+               END-IF
+      *
               END-IF
              END-IF
             END-IF  
@@ -3722,6 +3739,17 @@
               AND (RECE200-SRYYM      >=    "201004"            )
                    MOVE   "1"   TO    RECE220-FLG-CTMRI-COMMENT
               END-IF
+      *
+              IF   RECE200-SRYYM  >= "201810"
+                IF  (SRY-SRYCD(IDX2)  =     CONS-KINGAZ-COMMENT)
+                AND (FLG-KINGAZ-COM   =     ZERO               )
+                     MOVE   "1"    TO   RECE220-FLG-KINGAZ-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-KENKSN3-COMMENT
+                     MOVE  SPACE   TO   RECE220-FLG-KINGAZ-COMMENT
+                     MOVE    1     TO   FLG-KINGAZ-COM
+                END-IF
+              END-IF
            END-IF
       *
            IF      RECE220-SRYKBN      =     "80"
@@ -3904,6 +3932,18 @@
               END-IF
               IF    SRY-SRYCD(IDX2)   =     CONS-KENSA3-COMMENT
                    MOVE    1    TO    RECE200-KENSA-ANPFLG
+              END-IF
+      *
+              IF   RECE200-SRYYM  >= "201810"
+                IF  (SRY-SRYCD(IDX2)  =     CONS-KENKSN-COMMENT
+                                      OR    CONS-KENKSN2-COMMENT)
+                AND (FLG-KENKSN-COM   =     ZERO                )
+                     MOVE   "1"    TO   RECE220-FLG-KENKSN-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2)  =     CONS-KENKSN3-COMMENT
+                     MOVE  SPACE   TO   RECE220-FLG-KENKSN-COMMENT
+                     MOVE    1     TO   FLG-KENKSN-COM
+                END-IF
               END-IF
            END-IF
       *
@@ -4702,6 +4742,8 @@
                               FLG-ZAIHANKO-COM
                               FLG-KIATU-COM
                               FLG-SCPRO-COM
+                              FLG-KENKSN-COM
+                              FLG-KINGAZ-COM
       *
            MOVE   ZERO   TO   WRK-FILMTEN
       *

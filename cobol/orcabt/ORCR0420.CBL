@@ -319,6 +319,7 @@
       *  04.08.23    NACL-門脇    18/05/07  平成３０年４月改正対応
       *  04.08.24    NACL-門脇    18/06/11  逓減点数集計に関する修正
       *  04.08.25    NACL-門脇    18/06/25  電子画像管理加算の記載順修正
+      *  04.08.26    NACL-門脇    18/09/27  選択式コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4749,6 +4750,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                PERFORM  2101216-SETCOM-HENSYU-SEC
       *
+               IF   (RECE41-SRYYM           >= "201810")
+               AND  (RECE45-SRYCD(IDX4)(1:4) = "8201"  )
+                 MOVE   "1"         TO  RECE44-SENTAKUCOMFLG
+               END-IF
+      *
       *        ０９５９３で始まるコードがある場合、労災レセ電の作成対象外
                IF    (RECE41-HKNKBN           =   "1" OR "2")
                AND   (RECE41-SRYYM           >=   "201307"  )
@@ -6554,24 +6560,16 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                         "113023910"
                  MOVE   1             TO  WRK-SETCOM-JIDO
            END-IF
-      *    特定薬剤治療管理加算（臓器移植月から３月）
-           IF    RECE45-SRYCD(IDX4)   = "113000670"
-                 MOVE   1             TO  WRK-SETCOM-JIDO2
-           END-IF
       *    悪性腫瘍特異物質治療管理料
            IF    RECE45-SRYCD(IDX4)   = "113001210" OR "113001310" OR
                                         "113002110"
                  MOVE   3             TO  WRK-SETCOM-JIDO
            END-IF
-      *
       *    初診（同日複数診療科）
            IF    RECE45-SRYCD(IDX4)   = CONS-SYODOU-COMMENT
                                      OR CONS-SYODOU3-COMMENT
                                      OR CONS-SYODOU4-COMMENT
                  MOVE   4             TO  WRK-SETCOM-JIDO
-           END-IF
-           IF    RECE45-SRYCD(IDX4)   = CONS-ROUSAI18
-                 MOVE   204           TO  WRK-SETCOM-JIDO
            END-IF
       *    傷病手当金意見書交付料
            IF    RECE45-SRYCD(IDX4)   = CONS-SYOBYO-COMMENT
@@ -6686,10 +6684,33 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            IF    RECE45-SRYCD(IDX4)   = CONS-ONLINE-COMMENT
                  MOVE   38            TO  WRK-SETCOM-JIDO
            END-IF
+      *    時間外緊急院内検査加算
+           IF   (RECE45-SRYCD(IDX4)   = "160000210")
+           AND  (RECE41-SRYYM        >= "201810"   )
+                 MOVE   43            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    時間外緊急院内画像診断加算
+           IF   (RECE45-SRYCD(IDX4)   = "170016010")
+           AND  (RECE41-SRYYM        >= "201810"   )
+                 MOVE   44            TO  WRK-SETCOM-JIDO
+           END-IF
+      *
+      *    特定薬剤治療管理加算（臓器移植月から３月）
+           IF    RECE45-SRYCD(IDX4)   = "113000670"
+                 MOVE   1             TO  WRK-SETCOM-JIDO2
+           END-IF
       *    疾患別等専門プログラム加算
            IF    RECE45-SRYCD(IDX4)   = CONS-SCPRO-COMMENT
-                 MOVE   107           TO  WRK-SETCOM-JIDO2
+                 MOVE   2             TO  WRK-SETCOM-JIDO2
            END-IF
+      *
+      *    <労災用>
+      *    初診（同日複数診療科）
+           IF    RECE45-SRYCD(IDX4)   = CONS-ROUSAI18
+                 MOVE   204           TO  WRK-SETCOM-JIDO
+           END-IF
+      *    再診料（同一日複数診療科受診）
+      *    電話等再診料（同一日複数診療科受診）
            IF  ((RECE45-SRYCD(IDX4)   = CONS-ROUSAI19) AND
                 (RECE41-SRYYM        <= "201306"     ))
            OR  ((RECE45-SRYCD(IDX4)   = CONS-ROUSAI5
@@ -6700,8 +6721,6 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *
            IF  ((WRK-SETCOM-JIDO    =  1                        ) AND
                 (RECE45-SRYCD(IDX4) = "830000014" OR "840000038"))
-           OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
-                (RECE45-SRYCD(IDX4) = "840000077"               ))
            OR  ((WRK-SETCOM-JIDO    =  3                        ) AND
                 (RECE45-SRYCD(IDX4) = "830000015"               ))
            OR  ((WRK-SETCOM-JIDO    =  4                        ) AND
@@ -6749,8 +6768,19 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                    OR CONS-ONLINE18-COMMENT
                                    OR CONS-ONLINE19-COMMENT
                                    OR CONS-ONLINE20-COMMENT     ))
-           OR  ((WRK-SETCOM-JIDO2   =  107                      ) AND
+           OR  ((WRK-SETCOM-JIDO    =  43                       ) AND
+                (RECE45-SRYCD(IDX4) = "840000044"               ))
+           OR  ((WRK-SETCOM-JIDO    =  44                       ) AND
+                (RECE45-SRYCD(IDX4) = "840000071"               ))
+      *
+           OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
+                (RECE45-SRYCD(IDX4) = "840000077"               ))
+           OR  ((WRK-SETCOM-JIDO2   =  2                        ) AND
                 (RECE45-SRYCD(IDX4) = CONS-IZONSYO2-COMMENT     ))
+      *
+      *    <労災用>
+           OR  ((WRK-SETCOM-JIDO    =  204                      ) AND
+                (RECE45-SRYCD(IDX4) = CONS-SYODOU2-COMMENT      ))
            OR  ((WRK-SETCOM-JIDO    =  225                      ) AND
                 (RECE45-SRYCD(IDX4) = CONS-DOUJITU-COMMENT      ))
       *
@@ -6761,9 +6791,9 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                  AND (RECE45-SRYCD(IDX4) = "840000077")
                    MOVE    2            TO  RECE45-SETCOMATFLG(IDX4)
                  END-IF
-                 IF  (WRK-SETCOM-JIDO2   =  107                 )
+                 IF  (WRK-SETCOM-JIDO2   =  2                   )
                  AND (RECE45-SRYCD(IDX4) = CONS-IZONSYO2-COMMENT)
-                   MOVE    108          TO  RECE45-SETCOMATFLG(IDX4)
+                   MOVE    40           TO  RECE45-SETCOMATFLG(IDX4)
                  END-IF
       *
            END-IF
