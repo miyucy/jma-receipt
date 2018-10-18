@@ -427,6 +427,7 @@
       *  04.08.20    NACL-藤原    18/04/06  平成３０年４月改正対応
       *                                     カタカナ（氏名）、患者状態の追加
       *  04.08.21    NACL-門脇    18/09/07  標準負担額区分の記載条件修正
+      *  04.08.22    NACL-門脇    18/09/27  選択式コメント対応
       *
       *  05.00.02    NACL-小豆沢  17/11/07  レセ電サブ引数に保険組合せ追加
       *  05.00.03    NACL-伊藤    17/12/20  診療情報システム対応
@@ -1310,6 +1311,7 @@
                    07  TBL-KOUI-SRYKBN13-TEKSTYMD    PIC X(08). 
                    07  TBL-KOUI-SRYKBN13-RECEIPT-KBN PIC X(10).                    
                    07  TBL-KOUI-SRYKBN13-ZAINUM      PIC 9(08).
+                   07  TBL-KOUI-SRYKBN13-ZAIREN      PIC 9(02).
                    07  TBL-KOUI-SRYKBN13-RENNUM      PIC 9(02).
                05  TBL-KOUI-SRYKBN13-SHORI-RENNUM    PIC 9(01).
                05  TBL-KOUI-SRYKBN13-SRYACTINF.
@@ -1350,6 +1352,7 @@
                    07  TBL-KOUI-SRYKBN13-CHU-TEKSTYMD    PIC X(08).
                    07  TBL-KOUI-SRYKBN13-CHU-RECEIPT-KBN PIC X(10).
                    07  TBL-KOUI-SRYKBN13-CHU-ZAINUM      PIC 9(08).
+                   07  TBL-KOUI-SRYKBN13-CHU-ZAIREN      PIC 9(02).
                    07  TBL-KOUI-SRYKBN13-CHU-RENNUM      PIC 9(02).
                05  TBL-KOUI-SRYKBN13-CHU-SHORI-RENNUM    PIC 9(01).
                05  TBL-KOUI-SRYKBN13-CHU-SRYACTINF.

@@ -131,3 +131,18 @@ path	key4 	{
 	};
 };
 
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_recekisai_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekisai
+ 			WHERE   SRYCD     = :SRYCD
+ 			AND     STYM     <= :STYM
+			AND     EDYM     >= :EDYM
+			ORDER   BY      ITEMNO,
+				        EDANO,
+				        RENNUM
+		;
+	};
+};
+

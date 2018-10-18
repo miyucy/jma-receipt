@@ -59,6 +59,7 @@
       *                                     （入院時生活療養の見直し）
       *  04.08.10    NACL-藤原    18/05/17  平成３０年４月改正対応
       *                                     カタカナ（氏名）、患者状態の追加
+      *  04.08.11    NACL-門脇    18/09/27  選択式コメント対応
       *
       *  05.00.02    NACL-伊藤    17/12/22  診療情報システム対応
       *****************************************************************
@@ -779,14 +780,8 @@
                    07  TBL-KOUI-SRYKBN12-CHU-NYUGAIKBN   PIC X(01).
                    07  TBL-KOUI-SRYKBN12-CHU-PTID        PIC 9(10).
                    07  TBL-KOUI-SRYKBN12-CHU-RECEKA      PIC X(02).
-                   07  TBL-KOUI-SRYKBN12-CHU-TEISYUTUSAKI
-                                                     PIC 9(01).
-                   07  TBL-KOUI-SRYKBN12-CHU-RECESYUBETU PIC 9(04).
-                   07  TBL-KOUI-SRYKBN12-CHU-HKNJANUM    PIC X(08).
-                   07  TBL-KOUI-SRYKBN12-CHU-HOJOKBN     PIC X(01).
-                   07  TBL-KOUI-SRYKBN12-CHU-KOHID       PIC 9(10).
+                   07  TBL-KOUI-SRYKBN12-CHU-HKNID       PIC 9(10).
                    07  TBL-KOUI-SRYKBN12-CHU-TEKSTYMD    PIC X(08).
-                   07  TBL-KOUI-SRYKBN12-CHU-RECEIPT-KBN PIC X(10).
                    07  TBL-KOUI-SRYKBN12-CHU-ZAINUM      PIC 9(08).
                    07  TBL-KOUI-SRYKBN12-CHU-RENNUM      PIC 9(02).
                05  TBL-KOUI-SRYKBN12-CHU-SHORI-RENNUM    PIC 9(01).
