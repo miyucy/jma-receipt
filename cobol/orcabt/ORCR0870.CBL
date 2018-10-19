@@ -11020,9 +11020,14 @@ grpsys       PERFORM 900-DBSELECT-SEC
                      END-IF
                    END-PERFORM
                    IF     FLG-GET  =   1
-                     MOVE      1    TO   FLG-SENTAKU-OKIKAE
-                     MOVE     "2"   TO   WRK-RECE85XX-MEISKYFLG(IDX45 1)
+                     IF   RECE841-SRYKBN = "90" OR "92" OR "97"
+                       CONTINUE
+                     ELSE
+                       MOVE    1    TO   FLG-SENTAKU-OKIKAE
+                       MOVE   "2"   TO   WRK-RECE85XX-MEISKYFLG(IDX45 1)
+                     END-IF
                      IF   FLG-ETC  =   1
+                       MOVE    1    TO   FLG-SENTAKU-OKIKAE
                        MOVE    ZERO      TO  IDX46
                        MOVE    SPACE     TO  WRK-RECE85ZZ-REC
                        INITIALIZE            WRK-RECE85ZZ-REC
@@ -11133,7 +11138,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            END-PERFORM
       *
-           MOVE   "1"     TO   RECE841-SETCOMFLG
+           IF   RECE841-SRYKBN = "90" OR "92" OR "97"
+             CONTINUE
+           ELSE
+             MOVE "1"     TO   RECE841-SETCOMFLG
+           END-IF
            REWRITE   RECE841-REC
            ADD     1      TO   CNT-RECE84-RE
       *
