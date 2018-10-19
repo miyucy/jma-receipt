@@ -133,6 +133,7 @@
            03  FLG-DIFFER                  PIC 9(01).
            03  FLG-EDIT                    PIC 9(01).
            03  FLG-DESIGNR                 PIC 9(01).
+           03  FLG-SHOW-ZERO               PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -197,6 +198,7 @@
            03  WRK-MULTI-AREA.
                05  WRK-MUL-NUM             PIC X(10)
                                            OCCURS 20.
+               05  WRK-MUL-SYMBOL          PIC X(10).
                05  WRK-MUL-TENSU-X         PIC X(10).
                05  WRK-MUL-STNUM-X         PIC X(10).
                05  WRK-MUL-EDNUM-X         PIC X(10).
@@ -2828,9 +2830,7 @@
                MOVE    SPA-GMN-SELNUM  TO  WRK-SELNUM-MUL
            END-IF
       *
-           DISPLAY "BF SPA-GMN-SELNUM = "  SPA-GMN-SELNUM
            PERFORM 41011-MULTI-SEL-CHK-SEC
-           DISPLAY "AF SPA-GMN-SELNUM = "  SPA-GMN-SELNUM
            IF    ( SPA-ERRCD   NOT =   SPACE )
                MOVE    1           TO  SPA-GMN-CUR
                GO  TO  4101-SELNUM-CHK-EXT
@@ -2953,9 +2953,16 @@
                            GO  TO  4101-GRPINPUT-CHK-EXT
                        END-IF
       *
-                       IF    ( WRK-MUL-TENSU-X     =   SPACE )
+                       EVALUATE    TRUE
+                       WHEN  ( WRK-MUL-TENSU-X     =   SPACE )
                            MOVE    "1"             TO  WRK-MUL-TENSU-X
-                       END-IF
+                                                       WRK-MUL-SYMBOL
+                       WHEN  ( WRK-MUL-TENSU-X     =   "-" )
+                           MOVE    "0"             TO  WRK-MUL-TENSU-X
+                           MOVE    "-"             TO  WRK-MUL-SYMBOL
+                       WHEN    OTHER
+                           MOVE    WRK-MUL-TENSU-X TO  WRK-MUL-SYMBOL
+                       END-EVALUATE
                    END-IF
       *
                    UNSTRING    WRK-MUL-NUM (IDX-MUL) DELIMITED   BY  "-"
@@ -3370,14 +3377,29 @@
                    IF    ( WRK-GRPINPUT-DAY (IDX0 IDX-DAY)  =   1 )
                        MOVE    WRK-GRPINPUT-TENSU (IDX0)
                                        TO  SPA-NAI-DAY (IDX-DAY)
-                       IF    ( SPA-NAI-INPUT-MODE     =   1 )
-                           MOVE    WRK-GRPINPUT-TENSU (IDX0)
-                                           TO  WRK-ZZ
-                           MOVE    WRK-ZZ  TO  SPA-GMN-DAY (IDX-DAY)
-                       ELSE
+      *
+                       MOVE    ZERO    TO  FLG-SHOW-ZERO
+      *
+                       EVALUATE    TRUE
+                       WHEN  ( SPA-NAI-INPUT-MODE  =   2 )
+                       WHEN  ( SPA-GMN-RYOLIST-SEL >   ZERO )
+                         AND ( SPA-NAI-TZAISKBKBN (SPA-GMN-RYOLIST-SEL)
+                                                   =   "A" )
+                           IF    ( WRK-MUL-TENSU       =   ZERO )
+                            AND  ( WRK-MUL-SYMBOL  NOT =   "-" )
+                               MOVE    1           TO  FLG-SHOW-ZERO
+                           END-IF
+                       END-EVALUATE
+      *
+                       IF    ( FLG-SHOW-ZERO       =   1 )
                            MOVE    WRK-GRPINPUT-TENSU (IDX0)
                                            TO  WRK-Z9
                            MOVE    WRK-Z9  TO  SPA-GMN-DAY (IDX-DAY)
+      *
+                       ELSE
+                           MOVE    WRK-GRPINPUT-TENSU (IDX0)
+                                           TO  WRK-ZZ
+                           MOVE    WRK-ZZ  TO  SPA-GMN-DAY (IDX-DAY)
                        END-IF
                    END-IF
       *
