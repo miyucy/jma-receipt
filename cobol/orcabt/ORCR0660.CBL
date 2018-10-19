@@ -13006,9 +13006,14 @@
                      END-IF
                    END-PERFORM
                    IF     FLG-GET  =   1
-                     MOVE      1    TO   FLG-SENTAKU-OKIKAE
-                     MOVE     "2"   TO   WRK-RECE65XX-MEISKYFLG(IDX45 1)
+                     IF   RECE641-SRYKBN = "90" OR "92" OR "97"
+                       CONTINUE
+                     ELSE
+                       MOVE    1    TO   FLG-SENTAKU-OKIKAE
+                       MOVE   "2"   TO   WRK-RECE65XX-MEISKYFLG(IDX45 1)
+                     END-IF
                      IF   FLG-ETC  =   1
+                       MOVE    1    TO   FLG-SENTAKU-OKIKAE
                        MOVE    ZERO      TO  IDX46
                        MOVE    SPACE     TO  WRK-RECE65ZZ-REC
                        INITIALIZE            WRK-RECE65ZZ-REC
@@ -13116,7 +13121,11 @@
       *
            END-PERFORM
       *
-           MOVE   "1"     TO   RECE641-SETCOMFLG
+           IF   RECE641-SRYKBN = "90" OR "92" OR "97"
+             CONTINUE
+           ELSE
+             MOVE "1"     TO   RECE641-SETCOMFLG
+           END-IF
            REWRITE   RECE641-REC
            ADD     1      TO   CNT-RECE64-RE
       *
