@@ -1184,11 +1184,11 @@
            ELSE
                MOVE    SNUM-OUTEDT(12:4)   TO  SPA-GMN-SYOKUCOD
            END-IF
-      *    9999 はエラー
-           IF      SPA-GMN-SYOKUCOD    =   "9999"
-               MOVE    "0015"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-GMN-CUR
-           END-IF
+      **** 9999 はエラー
+      *    IF      SPA-GMN-SYOKUCOD    =   "9999"
+      *        MOVE    "0015"              TO  SPA-ERRCD
+      *        MOVE    2                   TO  SPA-GMN-CUR
+      **** END-IF
       *
            MOVE    ZERO                TO  FLG-OK
       *
@@ -1206,6 +1206,12 @@
            IF     SPA-ERRCD            =   SPACE
       *        職員編集
                PERFORM 20021-SYOKUCOD-CHK-SEC
+           END-IF
+      *H30.10
+      *    9999 はエラー（登録済みの削除を可能）
+           IF      SPA-GMN-SYOKUCOD    =   "9999"
+               MOVE    "0015"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
            END-IF
       *
            MOVE    1                   TO  SPA-GMN-PAGENO
@@ -3938,6 +3944,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  FLG-TOUROKU
       *    入力項目のチェック
            PERFORM 410-INPUT-CHK-SEC
+      *H30.10
+      *    9999 はエラー
+           IF      SPA-GMN-SYOKUCOD    =   "9999"
+               MOVE    "0015"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4900-KANRENCHK-SEC
