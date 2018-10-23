@@ -112,18 +112,9 @@ $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0936 -parameter $1$3$5$6,${17},${16},${
 
 if  [ ${17} -eq  '0' ]; then
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0960 -parameter $9${10}$1$2$3$8$5$6,${14},${15},B,${19},${16},${4}
-    [ -e ${MCP_TEMPDIR}/${4} ] && exit
-
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0961 -parameter $9${10}$1$3$8$5$6,${14},${15},${18},${16},${4}
 else
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0963 -parameter $9${10}$1$2$3$8$5$6,${14},B,${19},${16},${4}
-    [ -e ${MCP_TEMPDIR}/${4} ] && exit
-
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0964 -parameter $9${10}$1$3$8$5$6,${14},${18},${16},${4}   
 fi
-[ -e ${MCP_TEMPDIR}/${4} ] && exit
-
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0962 -parameter $9${10}$1$3$8$5$6,${18},${16},${4}
 [ -e ${MCP_TEMPDIR}/${4} ] && exit
 
 ##
