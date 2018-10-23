@@ -1127,9 +1127,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            CLOSE   RECE30-FILE
       *
       *    パラメタＤＢ更新処理
-           IF      FLG-DATA            =   ZERO    OR  9
-               PERFORM 20081-BTPARA-UPDATE-SEC
-           END-IF
+      **   IF      FLG-DATA            =   ZERO    OR  9
+      **       PERFORM 20081-BTPARA-UPDATE-SEC
+      **   END-IF
       *
            IF      FLG-DATA            =   ZERO 
                MOVE    1                   TO  FLG-DATA
