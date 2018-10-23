@@ -511,6 +511,8 @@
            PERFORM
                UNTIL  ( FLG-JYURRK         =   1    )
                   OR  ( FLG-ERR        NOT =   ZERO )
+      *H30.10
+                  OR  ( CNT-OUT1           >=  68  )
                INITIALIZE                  TBL-SRYACT-AREA
                MOVE    ZERO                TO  IDX-S
                MOVE    JYURRK-DENPNUM      TO  WRK-KEY-DENPNUM
