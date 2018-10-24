@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      * 0500.201809
+      * 0500.201810
       ********************************************************************
        01  APIINF-AREA.
          03  APIINF-DATA.
@@ -158,7 +158,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者病名登録２".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0500.201810".
            05  FILLER                  PIC  X(16)      VALUE
            "orca13".
            05  FILLER                  PIC  X(32)      VALUE
@@ -398,7 +398,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ユーザー管理".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201810".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -498,7 +498,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療確認・請求確認".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201809".
+           "0500.201810".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -558,7 +558,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "点数マスタ一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201806".
+           "0500.201810".
            05  FILLER                  PIC  X(16)      VALUE
            "orca102".
            05  FILLER                  PIC  X(32)      VALUE
@@ -588,7 +588,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者基本情報一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0500.201810".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -608,7 +608,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者基本情報".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201810".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -848,7 +848,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "基本情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201809".
+           "0500.201810".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
