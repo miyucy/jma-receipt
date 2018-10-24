@@ -36,3 +36,8 @@
                 04  MUREQ-NEW-USER-PASSWORD    PIC X(16).
                 04  MUREQ-NEW-FULL-NAME        PIC X(80).
                 04  MUREQ-NEW-KANA-NAME        PIC X(80).
+                04  MUREQ-ADMIN-PRIVILEGE      PIC X(01).
+                04  MUREQ-MI-NUMBER-INFORMATION-G.
+                  05  MUREQ-MI-NUMBER-INFORMATION-OCC OCCURS 50.
+                    06  MUREQ-MI-NUMBER       PIC X(03).
+                    06  MUREQ-MI-PRIVILEGE    PIC X(01).

@@ -27,6 +27,16 @@ xml_manageusersv2res {
 			New_Kana_Name			varchar(80);
 			New_Start_Date			varchar(10);
 			New_Expiry_Date			varchar(10);
+			Administrator_Privilege varchar(1);
+			Menu_Item_Information{
+				Menu_Item_Number     varchar(3);
+				Menu_Item_Name       varchar(30);
+				Menu_Item_Privilege  varchar(1);
+			}[50];
 		}[600];
+		Menu_Item_Name_Information{
+			Menu_Item_Number      varchar(3);
+			Menu_Item_Name        varchar(30);
+		}[50];
 	};
 };

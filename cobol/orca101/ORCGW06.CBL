@@ -107,6 +107,7 @@
            03  FLG-KIKAN3          PIC 9(01).
            03  FLG-KIKAN4          PIC 9(01).
       *----(04.08.05)--ADD-END-----
+           03  FLG-SAME-USERID     PIC 9(01).
       *
       *    カウント領域
       *
@@ -121,6 +122,7 @@
            03  IDK                 PIC 9(04).
            03  IDX-GRP             PIC 9(04).
       *
+           03  IDX0                PIC 9(04).
            03  IDX2                PIC 9(02).
       *
       *    一時領域
@@ -163,6 +165,8 @@
            03  WRK-KEY-FLG         PIC 9(01).
            03  WRK-USERID          PIC X(16).
       *----(04.08.05)--ADD-END-----
+           03  WRK-1010-USERID     PIC X(16).
+           03  WRK-LENGTH          PIC 9(03).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -2498,6 +2502,8 @@
        4100-USERID-CHK-SEC       SECTION.
       *
            IF      SPA-GMN-USERID      =   SPACE
+           MOVE    ZERO                TO  FLG-SAME-USERID
+      *
                IF      WRK-MCP-WIDGET     =   "USERID"
                    MOVE    "0008"              TO  SPA-ERRCD
                    MOVE    6                   TO  SPA-GMN-CUR
@@ -2544,7 +2550,7 @@
                    IF      SYS-1010-USERID         =   SPA-GMN-USERID
                        IF     (SYS-1010-KBNCD(1:1) =   SPA-GMN-SYOKUKBN)
                          AND  (SYS-1010-KBNCD(2:4) =   SPA-GMN-SYOKUCOD)
-                           CONTINUE
+                           MOVE    1               TO  FLG-SAME-USERID
                        ELSE
                            MOVE    "0007"              TO  SPA-ERRCD
                            MOVE    6                   TO  SPA-GMN-CUR
@@ -2557,6 +2563,32 @@
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD               =   SPACE )
+               IF    ( SPA-GMN-USERID  NOT =   SPACE )
+                AND  ( FLG-SAME-USERID     =   ZERO )
+                   MOVE  FUNCTION LENGTH(
+                              FUNCTION TRIM(SPA-GMN-USERID TRAILING))
+                                   TO  WRK-LENGTH
+                   DISPLAY "WRK-LENGTH=" WRK-LENGTH
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   WRK-LENGTH )
+      *
+                       EVALUATE  FUNCTION TRIM(SPA-GMN-USERID  TRAILING)
+                                                              (IDX0 : 1)
+                       WHEN    "A" THRU    "Z"
+                       WHEN    "a" THRU    "z"
+                       WHEN    "0" THRU    "9"
+                       WHEN    "_"
+                           CONTINUE
+                       WHEN    OTHER
+                           MOVE    "0009"  TO  SPA-ERRCD
+                           MOVE    6       TO  SPA-GMN-CUR
+                       END-EVALUATE
+      *
+                   END-PERFORM
+               END-IF
            END-IF
       *
            .
@@ -5420,8 +5452,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "オペレータＩＤを入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "0009"
-                   MOVE    "オペレータＩＤは半角で入力して下さい"
-                                               TO  SPA-ERRMSG
+                   STRING  "オペレータＩＤに使用可能な文字は半角の"
+                                           DELIMITED BY SIZE
+                           "英数字と下線符号（アンダーバー）のみです"
+                                           DELIMITED BY SIZE
+                   INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0025"
                    STRING  "オペレータＩＤがシステム内に存在します。"
                            "オペレータＩＤを変更して下さい。"

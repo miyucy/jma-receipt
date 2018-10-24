@@ -42,6 +42,8 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *
+           COPY    "ENUM-VALUE".
+      *
        01  FLG-AREA.
            03  FLG-SYSBASE             PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
@@ -56,8 +58,13 @@
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX1                    PIC 9(05).
+           03  IDXA                    PIC 9(05).
            03  IDXS                    PIC 9(05).
            03  IDXK                    PIC 9(05).
+           03  IDXL                    PIC 9(05).
+           03  IDXM                    PIC 9(05).
+           03  IDXN                    PIC 9(05).
+           03  IDXP                    PIC 9(05).
       *
        01  CNT-AREA.
            03  CNT-SYSBASE             PIC 9(05).
@@ -102,11 +109,15 @@
            03  WRK-USER-NUMBER         PIC X(04).
            03  WRK-HOSPNUMX.
                05  WRK-HOSPNUM         PIC 9(02).
+           03  WRK-NUMZ01              PIC Z(03).
+           03  WRK-LENGTH              PIC 9(03).
+           03  WRK-MI-NUMBER           PIC 9(03).
       *
-       01  REG-AREA.
-           03  REG-KJNYMD              PIC X(08).
-           03  REG-SYS1010             PIC X(1000).
-           03  REG-UPD1010             PIC X(1000).
+       01  API-AREA.
+           03  API-KJNYMD              PIC X(08).
+           03  API-ADMIN               PIC X(01).
+           03  API-SYS1010             PIC X(1000).
+           03  API-UPD1010             PIC X(1000).
       *
            COPY    "COMMON-SPA"        REPLACING   //SPA-//
                                        BY          //TSPA-//.
@@ -118,6 +129,7 @@
            COPY    "CPMANAGEUSERSV2RES.INC".
       *
        01  CONST-AREA.
+           03  CONST-MI-MAX            PIC 9(05)   VALUE 50.
            03  CONST-USER-MAX          PIC 9(05)   VALUE 600.
            03  CONST-KATAKANA-G.
                05   FILLER             PIC X(08)   VALUE "　ー゛゜".
@@ -181,6 +193,8 @@
       *
       *    パスワード変換
            COPY    "CPORCSAUTH.INC".
+      *    メニュー項目番号
+           COPY    "CPMENUITEM.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -226,15 +240,15 @@
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
-           DISPLAY   "***************"
-           DISPLAY   "* accept start*"
-           DISPLAY   "***************"
+           DISPLAY   "********************"
+           DISPLAY   "* manageusers start*"
+           DISPLAY   "********************"
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  REG-AREA
+           INITIALIZE                  API-AREA
            INITIALIZE                  SPA-AREA
       *
       *    初期処理
@@ -246,9 +260,9 @@
       *    返却領域編集
            PERFORM 300-END-SEC
       *
-           DISPLAY   "***************"
-           DISPLAY   "* accept end  *"
-           DISPLAY   "***************"
+           DISPLAY   "********************"
+           DISPLAY   "* manageusers end  *"
+           DISPLAY   "********************"
            .
        000-MAIN-EXIT.
            EXIT    PROGRAM.
@@ -314,6 +328,18 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "1010"          TO  SYS-KANRICD
+           MOVE    SPA-STAFFCD     TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-1010-REC
+           IF    ( SYS-1010-KANRIAUTHFLG    =    "T" )
+               MOVE    "1"         TO  API-ADMIN
+           END-IF
+      *
            PERFORM 1001-GROUP-CONFIG-CHK-SEC
       *
       *    XML情報取り出し
@@ -363,6 +389,8 @@
       *
            PERFORM 10011-BASE-DATE-CHECK-SEC
       *
+      *    PERFORM 10011-GET-MI-NAME-CHECK-SEC
+      *
            .
        1001-INIT-CHECK-EXT.
            EXIT.
@@ -391,7 +419,7 @@
        10011-BASE-DATE-CHECK-SEC       SECTION.
       *
            IF    ( MUREQ-BASE-DATE     =   SPACE )
-               MOVE    SMCNDATE-YMD    TO  REG-KJNYMD
+               MOVE    SMCNDATE-YMD    TO  API-KJNYMD
            ELSE
                MOVE    MUREQ-BASE-DATE TO  WRK-DATE
                PERFORM 800-SYMD-SEC
@@ -400,13 +428,28 @@
                    MOVE    "0001"      TO  WRK-ERRCD
                    PERFORM 990-EXIT-PROGRAM-SEC
                ELSE
-                   MOVE    WRK-SYMD    TO  REG-KJNYMD
+                   MOVE    WRK-SYMD    TO  API-KJNYMD
                END-IF
            END-IF
       *
            .
        10011-BASE-DATE-CHECK-EXT.
            EXIT.
+      *****************************************************************
+      *    メニュー項目名取得区分
+      *****************************************************************
+     **10011-GET-MI-NAME-CHECK-SEC     SECTION.
+      *
+     **    IF    ( MUREQ-GET-MI-NAME   =   SPACE OR "0" OR "1" )
+     **        CONTINUE
+     **    ELSE
+     **        MOVE    "0017"      TO  WRK-ERRCD
+     **        PERFORM 990-EXIT-PROGRAM-SEC
+     **    END-IF
+      *
+     **    .
+     **10011-GET-MI-NAME-CHECK-EXT.
+     **    EXIT.
       *****************************************************************
       *    主　処理
       *****************************************************************
@@ -436,6 +479,17 @@
        2001-LIST-USERS-SEC             SECTION.
       *
            PERFORM 20011-COMMON-RES-SEC
+      *
+           IF    ( MUREQ-USER-ID   =   SPACE )
+               CONTINUE
+           ELSE
+               MOVE    MUREQ-USER-ID   TO  WRK-KANACHK-INPUT
+               PERFORM 800-HANKAKU-CHK-SEC
+               IF    ( FLG-STRCHK      NOT =   ZERO )
+                   MOVE    "0004"      TO  WRK-ERRCD
+                   PERFORM 990-EXIT-PROGRAM-SEC
+               END-IF
+           END-IF
       *
            PERFORM 900-PASSWD-ALL-USERS-SEL-SEC
       *
@@ -475,6 +529,35 @@
            MOVE    "tbl_passwd"        TO  MCP-TABLE
            MOVE    "all_users"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF    ( MUREQ-USER-ID   NOT  =   SPACE )
+            AND  ( IDX1                 =   ZERO )
+               MOVE    "0012"  TO  WRK-ERRCD
+               PERFORM 990-EXIT-PROGRAM-SEC
+           END-IF
+      *
+      *
+           IF    ( API-ADMIN      =   "1" )
+      *        IF    ( MUREQ-GET-MI-NAME   =   "1" )
+               PERFORM VARYING IDXP    FROM    1   BY  1
+                       UNTIL ( IDXP    >   MENU-ITEM-MAX )
+      *
+                   IF    ( SPA-MW          =   SPA-GINBEE )
+                    AND  ( MENU-ITEM-NUMBER (IDXP)
+                                       =   3 OR 71 OR 82 )
+                       CONTINUE
+                   ELSE
+                       MOVE    MENU-ITEM-NUMBER (IDXP)
+                                       TO  WRK-NUMZ01
+                       MOVE    FUNCTION TRIM(WRK-NUMZ01)
+                                       TO  MURES-MI-HNUMBER (IDXP)
+                       MOVE    MENU-ITEM-NAME (IDXP)
+                                       TO  MURES-MI-HNAME   (IDXP)
+                   END-IF
+      *
+               END-PERFORM
+      *        END-IF
+           END-IF
       *
            .
        2001-LIST-USERS-EXT.
@@ -520,6 +603,12 @@
       *
             END-IF
       *
+            IF    ( API-ADMIN      =   "1" )
+                MOVE    IDX1           TO  IDXL
+                PERFORM 20012-COMMON-RES-SEC
+      *
+            END-IF
+      *
            .
        20011-LIST-USERS-EXT.
            EXIT.
@@ -530,12 +619,103 @@
       *
            MOVE    MUREQ-REQNUM        TO  MURES-REQNUM
       *
-           MOVE    REG-KJNYMD          TO  WRK-SYMD
+           MOVE    API-KJNYMD          TO  WRK-SYMD
            PERFORM 800-DATE-SEC
            MOVE    WRK-DATE            TO  MURES-BASE-DATE
       *
+           MOVE    1                   TO  IDXP
+      *
            .
        20011-COMMON-RES-EXT.
+           EXIT.
+      *****************************************************************
+      *    共通返却項目編集処理２
+      *****************************************************************
+       20012-COMMON-RES-SEC            SECTION.
+      *
+           IF    ( SYS-1010-KANRIAUTHFLG    =    "T" )
+               MOVE    "1"             TO   MURES-ADMIN-PRIVILEGE (IDXL)
+           ELSE
+               MOVE    "0"             TO   MURES-ADMIN-PRIVILEGE (IDXL)
+           END-IF
+      *
+           MOVE    ZERO                TO   IDXP
+      *
+           PERFORM VARYING IDXM    FROM    1   BY  1
+                   UNTIL ( IDXM    >   MENU-ITEM-MAX )
+      *
+               EVALUATE    MENU-ITEM-NUMBER (IDXM)
+               WHEN    1
+               WHEN    91
+               WHEN    101
+                   IF    ( SYS-1010-KANRIAUTHFLG       =   "T" )
+                       PERFORM 200120-COMMON-RES-SEC
+                   ELSE
+                       PERFORM 200121-COMMON-RES-SEC
+                   END-IF
+               WHEN    3
+                   IF    ( SPA-MW      =   SPA-GINBEE )
+                       CONTINUE
+                   ELSE
+                       IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+                           PERFORM 200120-COMMON-RES-SEC
+                       END-IF
+                   END-IF
+               WHEN    71
+               WHEN    82
+                   IF    ( SPA-MW      =   SPA-GINBEE )
+                       CONTINUE
+                   ELSE
+                       PERFORM 200121-COMMON-RES-SEC
+                   END-IF
+               WHEN    92
+                   IF    ( SYS-1010-KANRIAUTHFLG       =   "T" )
+                       PERFORM 200120-COMMON-RES-SEC
+                   END-IF
+               WHEN    OTHER
+                   PERFORM 200121-COMMON-RES-SEC
+               END-EVALUATE
+      *
+           END-PERFORM
+      *
+           .
+       20012-COMMON-RES-EXT.
+           EXIT.
+      *****************************************************************
+      *    共通返却項目編集処理２
+      *****************************************************************
+       200120-COMMON-RES-SEC           SECTION.
+      *
+           COMPUTE IDXP    =   IDXP     +    1
+           MOVE    MENU-ITEM-NUMBER (IDXM)
+                                       TO  WRK-NUMZ01
+           MOVE    FUNCTION TRIM(WRK-NUMZ01)
+                                       TO  MURES-MI-NUMBER   (IDXL IDXP)
+      *
+           IF    ( MUREQ-REQNUM        =   "02" OR "03" )
+               MOVE    MENU-ITEM-NAME (IDXM)
+                                       TO  MURES-MI-NAME     (IDXL IDXP)
+           END-IF
+      *
+           MOVE    "1"                 TO  MURES-MI-PRIVILEGE(IDXL IDXP)
+      *
+           .
+       200120-COMMON-RES-EXT.
+           EXIT.
+      *****************************************************************
+      *    共通返却項目編集処理２
+      *****************************************************************
+       200121-COMMON-RES-SEC           SECTION.
+      *
+           MOVE    MENU-ITEM-GSRAUTH (IDXM)
+                                       TO   IDXN
+           IF    ( SYS-1010-GSRAUTH(IDXN : 1)
+                                       =    "1" )
+               PERFORM 200120-COMMON-RES-SEC
+           END-IF
+      *
+           .
+       200121-COMMON-RES-EXT.
            EXIT.
       *****************************************************************
       *    ユーザ新規登録
@@ -578,6 +758,8 @@
                PERFORM 2100-KANA-NAME-CHK-SEC
            END-IF
       *
+           PERFORM 2100-PRIVILEGE-CHK-SEC
+      *
            .
        20011-CREATE-ACCOUNT-CHK-EXT.
            EXIT.
@@ -591,12 +773,7 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
-           MOVE    MUTMP-USER-ID   TO  WRK-KANACHK-INPUT
-           PERFORM 800-HANKAKU-CHK-SEC
-           IF    ( FLG-STRCHK      NOT =   ZERO )
-               MOVE    "0004"      TO  WRK-ERRCD
-               PERFORM 990-EXIT-PROGRAM-SEC
-           END-IF
+           PERFORM 21001-USER-ID-CHK-SEC
       *
            PERFORM 900-PASSWD-KEY-SEL-SEC
            IF    ( FLG-PASSWD  =   ZERO )
@@ -612,6 +789,39 @@
       *
            .
        2100-USER-ID-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザＩＤチェック処理
+      *****************************************************************
+       21001-USER-ID-CHK-SEC               SECTION.
+      *
+           MOVE    MUTMP-USER-ID   TO  WRK-KANACHK-INPUT
+           PERFORM 800-HANKAKU-CHK-SEC
+           IF    ( FLG-STRCHK      NOT =   ZERO )
+               MOVE    "0018"      TO  WRK-ERRCD
+               PERFORM 990-EXIT-PROGRAM-SEC
+           END-IF
+      *
+           MOVE  FUNCTION LENGTH(FUNCTION TRIM(MUTMP-USER-ID TRAILING))
+                                   TO  WRK-LENGTH
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   WRK-LENGTH )
+      *
+               EVALUATE FUNCTION TRIM(MUTMP-USER-ID TRAILING)(IDX0 : 1)
+               WHEN    "A" THRU    "Z"
+               WHEN    "a" THRU    "z"
+               WHEN    "0" THRU    "9"
+               WHEN    "_"
+                   CONTINUE
+               WHEN    OTHER
+                   MOVE    "0018"  TO  WRK-ERRCD
+                   PERFORM 990-EXIT-PROGRAM-SEC
+               END-EVALUATE
+      *
+           END-PERFORM
+      *
+           .
+       21001-USER-ID-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ユーザパスワードチェック処理
@@ -690,6 +900,88 @@
        2100-KANA-NAME-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    権限チェック処理
+      *****************************************************************
+       2100-PRIVILEGE-CHK-SEC          SECTION.
+      *
+           IF    ( MUTMP-ADMIN-PRIVILEGE   =   SPACE )
+               CONTINUE
+           ELSE
+               IF    ( API-ADMIN           =   "1" )
+                   IF    ( MUTMP-ADMIN-PRIVILEGE   =   "0" OR "1" )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0019"      TO  WRK-ERRCD
+                       PERFORM 990-EXIT-PROGRAM-SEC
+                   END-IF
+               ELSE
+                       MOVE    "0020"      TO  WRK-ERRCD
+                       PERFORM 990-EXIT-PROGRAM-SEC
+               END-IF
+           END-IF
+      *
+           PERFORM VARYING IDXP    FROM    1   BY  1
+                   UNTIL ( IDXP    >   CONST-MI-MAX )
+               IF    ( MUTMP-MI-NUMBER (IDXP)  NOT =   SPACE )
+                   PERFORM 21001-PRIVILEGE-CHK-SEC
+               END-IF
+           END-PERFORM
+      *
+           .
+       2100-PRIVILEGE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    権限チェック処理
+      *****************************************************************
+       21001-PRIVILEGE-CHK-SEC         SECTION.
+      *
+           IF    ( API-ADMIN           =   "1" )
+               MOVE    MUTMP-MI-NUMBER (IDXP)
+                                       TO  WRK-MI-NUMBER
+               PERFORM 210011-PRIVILEGE-CHK-SEC
+               IF    ( IDXA            =   ZERO )
+                   MOVE    "0021"      TO  WRK-ERRCD
+                   PERFORM 990-EXIT-PROGRAM-SEC
+               END-IF
+      *
+               IF    ( MUTMP-MI-PRIVILEGE (IDXP)
+                                       =   "0" OR "1" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0022"      TO  WRK-ERRCD
+                   PERFORM 990-EXIT-PROGRAM-SEC
+               END-IF
+      *
+           ELSE
+               MOVE    "0020"          TO  WRK-ERRCD
+               PERFORM 990-EXIT-PROGRAM-SEC
+           END-IF
+      *
+           .
+       21001-PRIVILEGE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    権限チェック処理
+      *****************************************************************
+       210011-PRIVILEGE-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  IDXA
+      *
+           PERFORM VARYING IDXM    FROM    1   BY  1
+                   UNTIL ( IDXM    >   CONST-MI-MAX )
+                    OR   ( IDXA    >   ZERO )
+      *
+               IF    ( MENU-ITEM-NUMBER (IDXM)
+                                   =   WRK-MI-NUMBER )
+                   MOVE    IDXM    TO  IDXA
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       210011-PRIVILEGE-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ユーザ新規登録処理
       *****************************************************************
        20011-CREATE-ACCOUNT-SEC        SECTION.
@@ -701,6 +993,11 @@
            PERFORM 2200-EDIT-SYSKANRI-SEC
       *
            PERFORM 2200-EDIT-RESPONSE-SEC
+      *
+           IF    ( API-ADMIN      =   "1" )
+               MOVE    1                   TO  IDXL
+               PERFORM 20012-COMMON-RES-SEC
+           END-IF
       *
            .
        20011-CREATE-ACCOUNT-EXT.
@@ -821,7 +1118,48 @@
            MOVE    MUTMP-FULL-NAME
                                    TO  SYS-1010-NAME
            MOVE    CONST-GSRAUTH   TO  SYS-1010-GSRAUTH
-           MOVE    "F"             TO  SYS-1010-KANRIAUTHFLG
+      *
+           PERFORM VARYING IDXP    FROM    1   BY  1
+                   UNTIL ( IDXP    >   CONST-MI-MAX )
+      *
+               MOVE    MUTMP-MI-NUMBER (IDXP)
+                                   TO  WRK-MI-NUMBER
+               PERFORM 210011-PRIVILEGE-CHK-SEC
+               IF    ( IDXA        >   ZERO )
+                   MOVE    MENU-ITEM-GSRAUTH (IDXA)
+                                   TO  IDXN
+                   IF    ( MUTMP-MI-PRIVILEGE (IDXP)
+                                   =   "1" )
+                       MOVE    "1" TO  SYS-1010-GSRAUTH (IDXN : 1)
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( MUTMP-ADMIN-PRIVILEGE   =   "1" )
+               MOVE    "T"         TO  SYS-1010-KANRIAUTHFLG
+           ELSE
+               MOVE    "F"         TO  SYS-1010-KANRIAUTHFLG
+           END-IF
+      *
+           IF    ( SYS-1010-KANRIAUTHFLG       =   "T" )
+               MOVE    "1"         TO  SYS-1010-GSRAUTH
+                                              (MENU-ITEM001-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM003-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM091-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM092-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM101-GSRAUTH : 1)
+           ELSE
+               MOVE    "0"         TO  SYS-1010-GSRAUTH
+                                              (MENU-ITEM003-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM092-GSRAUTH : 1)
+           END-IF
+      *
            IF    ( SPA-BEDFLG      >   ZERO )
                MOVE    "1"         TO  SYS-1010-ORCA21FLG
            ELSE
@@ -878,16 +1216,20 @@
       *****************************************************************
        2201-EDIT-RESPONSE-SEC          SECTION.
       *
-           MOVE    REG-UPD1010         TO  SYS-1010-REC
+           MOVE    API-UPD1010         TO  SYS-1010-REC
            PERFORM 2200-EDIT-RESPONSE-SEC
            MOVE    MURES-USER-INF-OCC2 (1 1)
                                        TO  MURES-USER-INF-OCC2 (1 2)
       *
+           IF    ( API-ADMIN      =   "1" )
+               MOVE    1                   TO  IDXL
+               PERFORM 20012-COMMON-RES-SEC
+           END-IF
+      *
            INITIALIZE                      MURES-USER-INF-OCC2 (1 1)
       *
-           MOVE    REG-SYS1010         TO  SYS-1010-REC
+           MOVE    API-SYS1010         TO  SYS-1010-REC
            PERFORM 2200-EDIT-RESPONSE-SEC
-      *
       *
            .
        2201-EDIT-RESPONSE-EXT.
@@ -939,9 +1281,13 @@
            END-IF
       *
            PERFORM 200111-SYSKANRI-CHK-SEC
-           MOVE    REG-SYS1010     TO  SYS-1010-REC
+           MOVE    API-SYS1010     TO  SYS-1010-REC
            IF    ( SYS-1010-KBNCD  =   "00001" )
-               MOVE    "0016"      TO  WRK-ERRCD
+               IF    ( MUTMP-REQNUM    =   "03" )
+                   MOVE    "0023"      TO  WRK-ERRCD
+               ELSE
+                   MOVE    "0016"      TO  WRK-ERRCD
+               END-IF
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
@@ -957,7 +1303,7 @@
       *
            PERFORM 2200-DELETE-SYSUSER-SEC
       *
-           MOVE    REG-SYS1010 TO  SYS-1010-REC
+           MOVE    API-SYS1010 TO  SYS-1010-REC
            PERFORM 2200-DELETE-SYSKANRI-SEC
       *
            PERFORM 2200-EDIT-RESPONSE-SEC
@@ -1104,6 +1450,11 @@
       *
            MOVE        LOW-VALUE       TO  MUTMP-GROUP-NUMBER
       *
+           MOVE    MUREQ-ADMIN-PRIVILEGE
+                                       TO  MUTMP-ADMIN-PRIVILEGE
+           MOVE    MUREQ-MI-NUMBER-INFORMATION-G
+                                       TO  MUTMP-MI-NUMBER-INFORMATION-G
+      *
            .
        200111-EDIT-UPDATE-DATA-EXT.
            EXIT.
@@ -1113,7 +1464,7 @@
        20011-UPDATE-ACCOUNT-SEC     SECTION.
       *
            INITIALIZE                          XML-MUTMP
-           MOVE    REG-SYS1010                 TO  SYS-1010-REC
+           MOVE    API-SYS1010                 TO  SYS-1010-REC
       *
            IF    ( MUREQ-NEW-USER-PASSWORD     NOT =   SPACE )
                MOVE    MUREQ-USER-ID           TO  MUTMP-USER-ID
@@ -1144,7 +1495,56 @@
                MOVE    MUREQ-NEW-KANA-NAME     TO  SYS-1010-KANANAME
            END-IF
       *
-           MOVE    SYS-1010-REC                TO  REG-UPD1010
+           PERFORM VARYING IDXP    FROM    1   BY  1
+                   UNTIL ( IDXP    >   CONST-MI-MAX )
+      *
+               IF    ( MUREQ-MI-NUMBER (IDXP)  NOT =   SPACE )
+                   MOVE    MUREQ-MI-NUMBER (IDXP)
+                                       TO  WRK-MI-NUMBER
+                   PERFORM 210011-PRIVILEGE-CHK-SEC
+                   IF    ( IDXA        >   ZERO )
+                       MOVE    MENU-ITEM-GSRAUTH (IDXA)
+                                   TO  IDXN
+                       EVALUATE    MUREQ-MI-PRIVILEGE (IDXP)
+                       WHEN    "1"
+                           MOVE    "1" TO  SYS-1010-GSRAUTH (IDXN : 1)
+                       WHEN    "0"
+                           MOVE    "0" TO  SYS-1010-GSRAUTH (IDXN : 1)
+                       END-EVALUATE
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           EVALUATE    MUREQ-ADMIN-PRIVILEGE
+           WHEN    "1"
+               MOVE    "T"         TO  SYS-1010-KANRIAUTHFLG
+           WHEN    "0"
+               MOVE    "F"         TO  SYS-1010-KANRIAUTHFLG
+           END-EVALUATE
+      *
+           IF    ( SYS-1010-KANRIAUTHFLG       =   "T" )
+               MOVE    "1"         TO  SYS-1010-GSRAUTH
+                                              (MENU-ITEM001-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM003-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM091-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM092-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM101-GSRAUTH : 1)
+           ELSE
+               MOVE    "0"         TO  SYS-1010-GSRAUTH
+                                              (MENU-ITEM003-GSRAUTH : 1)
+                                       SYS-1010-GSRAUTH
+                                              (MENU-ITEM092-GSRAUTH : 1)
+           END-IF
+      *
+           MOVE    SMCNDATE-YMD                TO  SYS-1010-UPYMD
+           MOVE    SMCNDATE-HMS                TO  SYS-1010-UPHMS
+      *
+           MOVE    SYS-1010-REC                TO  API-UPD1010
       *
            PERFORM 2200-DELETE-SYSKANRI-SEC
       *
@@ -1176,12 +1576,12 @@
                     OR   ( IDX1               >=  CONST-USER-MAX )
       *
                MOVE    SYSKANRI-REC TO SYS-1010-REC
-                                       REG-SYS1010
+                                       API-SYS1010
       *
                COMPUTE CNT-SYSKANRI =  CNT-SYSKANRI    +   1
       *
-               IF    ( REG-KJNYMD >=   SYS-1010-STYUKYMD )
-                AND  ( REG-KJNYMD <=   SYS-1010-EDYUKYMD )
+               IF    ( API-KJNYMD >=   SYS-1010-STYUKYMD )
+                AND  ( API-KJNYMD <=   SYS-1010-EDYUKYMD )
                    CONTINUE
                ELSE
                    MOVE    1       TO  FLG-OUT
@@ -1529,6 +1929,31 @@
            WHEN    "0016"
                MOVE    "ユーザはオルカマスターです。削除できません"
                                        TO  WRK-ERRMSG
+           WHEN    "0017"
+               MOVE    "メニュー項目名称取得区分の入力に誤りがあります"
+                                       TO  WRK-ERRMSG
+           WHEN    "0018"
+               STRING  "ユーザＩＤに使用可能な文字は半角の英数字と"
+                                           DELIMITED BY SIZE
+                       "下線符号（アンダーバー）のみです"
+                                           DELIMITED BY SIZE
+               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "0019"
+               MOVE    "管理者権限の入力に誤りがあります"
+                                       TO  WRK-ERRMSG
+           WHEN    "0020"
+               MOVE    "権限の設定は管理者のみ可能です"
+                                       TO  WRK-ERRMSG
+           WHEN    "0021"
+               MOVE    "該当する業務が存在しません"
+                                       TO  WRK-ERRMSG
+           WHEN    "0022"
+               MOVE    "業務権限の入力に誤りがあります"
+                                       TO  WRK-ERRMSG
+           WHEN    "0023"
+               MOVE    "ユーザはオルカマスターです。変更できません"
+                                       TO  WRK-ERRMSG
            WHEN    "4000"  THRU    "4010"
                MOVE    "ユーザ情報の更新に失敗しました"
                                        TO  WRK-ERRMSG
@@ -1606,6 +2031,8 @@
                DISPLAY "XMLOPEN failure = " MCP-RC
                MOVE   "8097"                TO  WRK-ERRCD
            END-IF
+      *
+           MOVE    LOW-VALUE                TO  WAPI01-BODY
       *
            .
        900-XML-READ-EXT.
@@ -1740,6 +2167,7 @@
            MOVE    ZERO                TO  FLG-PASSWD
       *
            INITIALIZE                  PASSWD-REC
+           MOVE    MUREQ-USER-ID       TO  PASSWD-USERID
            MOVE    PASSWD-REC          TO  MCPDATA-REC
            MOVE    "tbl_passwd"        TO  MCP-TABLE
            MOVE    "all_users"         TO  MCP-PATHNAME
@@ -1893,6 +2321,31 @@
       *
            .
        900-SYSKANRI-KEY28-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
