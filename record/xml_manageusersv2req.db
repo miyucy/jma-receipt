@@ -16,6 +16,11 @@ xml_manageusersv2req {
 			New_User_Password		varchar(16);
 			New_Full_Name			varchar(80);
 			New_Kana_Name			varchar(80);
+			Administrator_Privilege varchar(1);
+			Menu_Item_Information{
+				Menu_Item_Number    varchar(3);
+				Menu_Item_Privilege  varchar(1);
+			}[50];
 		};
 	};
 };

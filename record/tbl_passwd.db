@@ -23,9 +23,15 @@ path	all_users		{
 		DECLARE tbl_passwd_all_users_csr CURSOR FOR
 		SELECT   USERID
 		FROM tbl_passwd
+		WHERE ( CASE WHEN TRIM(:USERID) <> '' THEN USERID  =   :USERID
+						     ELSE TRUE
+						END)
 		UNION 
 		SELECT   USERID 
 		FROM tbl_sysuser
+		WHERE ( CASE WHEN TRIM(:USERID) <> '' THEN USERID  =   :USERID
+						     ELSE TRUE
+						END)
 		ORDER BY USERID
 		;
 	};

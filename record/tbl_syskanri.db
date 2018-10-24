@@ -489,7 +489,10 @@ path	key28	{
 										AND      KANRICD   = '1010' 
 										AND      KBNCD     LIKE substr(:KBNCD,1,1) || '%'
 										AND      STYUKYMD <=  :STYUKYMD
-										AND      EDYUKYMD >=  :EDYUKYMD )
+										AND      EDYUKYMD >=  :EDYUKYMD 
+                                   UNION
+                                     SELECT '0001' WHERE substr(:KBNCD,1,1) = '0'
+                                    )
 										ORDER BY KBNCD  LIMIT 1;
 	};
 };

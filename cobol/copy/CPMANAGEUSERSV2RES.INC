@@ -41,3 +41,11 @@
                     05  MURES-KANA-NAME            PIC X(80).
                     05  MURES-STYUKYMD             PIC X(10).
                     05  MURES-EDYUKYMD             PIC X(10).
+                04  MURES-ADMIN-PRIVILEGE          PIC X(01).
+                04  MURES-MI-NUMBER-INFORMATION    OCCURS 50.
+                    05  MURES-MI-NUMBER       PIC X(03).
+                    05  MURES-MI-NAME         PIC X(30).
+                    05  MURES-MI-PRIVILEGE    PIC X(01).
+              03  MURES-MI-NAME-INFORMATION   OCCURS 50.
+                04  MURES-MI-HNUMBER          PIC X(03).
+                04  MURES-MI-HNAME            PIC X(30).
