@@ -709,7 +709,7 @@
                        TNS-SRYCD
                        " ½ªÎ»Æü¡§"
                        WRK-HENYMDG     DELIMITED  BY  SIZE
-                       "¡Ú"
+                       "¡¡"
                        TNS-NAME (1:36) DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG2
                END-STRING
