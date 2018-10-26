@@ -901,6 +901,15 @@
       *    受診履歴など情報取得
            PERFORM 20022-SANTEI-HENSYU-SEC
       *
+      *    初診算定日チェック
+           IF      WRK-FIRST-YMD       =   SPACE
+               MOVE    "15"            TO  WRK-ERRCD
+           ELSE
+               IF      WRK-FIRST-YMD   >   SPA-SYSYMD
+                   MOVE    "20"            TO  WRK-ERRCD
+               END-IF
+           END-IF
+      *
       *    診療科
       *    最初の受診履歴診療科
            IF      WRK-F-SRYKA     NOT =   SPACE
@@ -911,21 +920,23 @@
                IF      WRK-RRK-SRYKA   NOT =   SPACE
                    MOVE    WRK-RRK-SRYKA   TO  WRK-SRYKA
                ELSE
-                   MOVE    "15"            TO  WRK-ERRCD
+                   IF      WRK-ERRCD       =   SPACE
+                       MOVE    "16"            TO  WRK-ERRCD
+                   END-IF
                END-IF
            END-IF
       *
       *    初診算定日算定済み
            IF     (WRK-SYOSIN-YMD  NOT =   SPACE )
               AND (WRK-ERRCD           =   SPACE )
-               MOVE    "16"            TO  WRK-ERRCD
+               MOVE    "17"            TO  WRK-ERRCD
            END-IF
       *    初回来院日＜初診算定日エラー
            IF     (WRK-SYOSIN-YMD      =   SPACE )
               AND (WRK-ERRCD           =   SPACE )
                IF     (WRK-F-RRKYMD    NOT =   SPACE )
                  AND  (WRK-FIRST-YMD       >   WRK-F-RRKYMD)
-                  MOVE    "17"            TO  WRK-ERRCD
+                  MOVE    "18"            TO  WRK-ERRCD
                END-IF
            END-IF
       *
@@ -934,7 +945,12 @@
               AND (WRK-LAST-YMD    NOT =   SPACE )
               AND (WRK-ERRCD           =   SPACE )
                IF      WRK-FIRST-YMD       >   WRK-LAST-YMD
-                  MOVE    "18"             TO  WRK-ERRCD
+                  MOVE    "19"             TO  WRK-ERRCD
+               END-IF
+      *
+               IF     (WRK-LAST-YMD        >   SPA-SYSYMD)
+                  AND (WRK-ERRCD           =   SPACE )
+                  MOVE    "21"             TO  WRK-ERRCD
                END-IF
            END-IF
       *
@@ -990,7 +1006,7 @@
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO 
-               MOVE    "19"                TO  WRK-ERRCD
+               MOVE    "22"                TO  WRK-ERRCD
            END-IF
       *
       *    診療科履歴の更新
@@ -1021,7 +1037,8 @@
            MOVE    WRK-FIRST-YMD(1:6)  TO  SKARRK-SRYYM
            MOVE    WRK-SRYKA           TO  SKARRK-SRYKA
       *    最終受診日（退院日）
-           IF      WRK-LAST-YMD    NOT =   SPACE
+           IF     (WRK-RRK-LSTYMD      =   SPACE )
+             AND  (WRK-LAST-YMD    NOT =   SPACE )
                MOVE    WRK-LAST-YMD    TO  SKARRK-LASTYMD
            END-IF
       *
@@ -1030,7 +1047,7 @@
                                        SPA-AREA
       *
            IF      SKARRK-ERRMSG   NOT =   SPACE
-               MOVE    "19"                TO  WRK-ERRCD
+               MOVE    "23"                TO  WRK-ERRCD
            END-IF
       *
            .
@@ -1193,16 +1210,20 @@
                        IF      WRK-SYOSIN-DD   =   ZERO
                            MOVE    IDX2            TO  WRK-SYOSIN-DD
                        ELSE
-                           MOVE    "20"            TO  WRK-ERRCD
+                           MOVE    "31"            TO  WRK-ERRCD
                        END-IF
                    END-IF
                END-PERFORM
                IF      WRK-SYOSIN-DD           =   ZERO
-                   MOVE    "20"                TO  WRK-ERRCD
+                   MOVE    "32"                TO  WRK-ERRCD
                END-IF
            ELSE
-      *        初診算定は１回
-               MOVE    "20"                TO  WRK-ERRCD
+      *        初診算定は回数エラー
+               IF      CNT-SANTEI          =   ZERO
+                   MOVE    "32"                TO  WRK-ERRCD
+               ELSE
+                   MOVE    "31"                TO  WRK-ERRCD
+               END-IF
            END-IF
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      20042-DELETE-CHECK-EXT
@@ -1234,7 +1255,7 @@
       *    初回履歴より前であること
            IF      (WRK-F-RRKYMD   NOT =   SPACE )
               AND  (WRK-F-RRKYMD       <   WRK-SYOSIN-YMD)
-               MOVE    "21"                TO  WRK-ERRCD
+               MOVE    "33"                TO  WRK-ERRCD
                GO      TO      20042-DELETE-CHECK-EXT
            END-IF
       *
@@ -1307,7 +1328,7 @@
            PERFORM 990-DBCLOSE-SEC
       *    診療行為入力あり
            IF      FLG-SRY-OK          =   1
-               MOVE    "21"            TO  WRK-ERRCD
+               MOVE    "33"            TO  WRK-ERRCD
            END-IF
            .
        20042-DELETE-CHECK-EXT.
@@ -1376,7 +1397,7 @@
                                                    SPA-AREA
       *
                IF      MCP-RC              NOT =   ZERO 
-                   MOVE    "23"                    TO  WRK-ERRCD
+                   MOVE    "34"                    TO  WRK-ERRCD
                END-IF
            END-IF
       *
@@ -1389,7 +1410,7 @@
                                        SPA-AREA
       *
            IF      SKARRK-ERRMSG   NOT =   SPACE
-               MOVE    "23"                TO  WRK-ERRCD
+               MOVE    "35"                TO  WRK-ERRCD
            END-IF
       *
            .
@@ -1469,36 +1490,57 @@
                MOVE    "最終来院日が暦日ではありません"
                                                TO  WRK-ERRMSG
            WHEN    "15"
-               MOVE    "診療科が未設定です。"
+               MOVE    "初診算定日が未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "16"
+               MOVE    "診療科が未設定です。"
+                                               TO  WRK-ERRMSG
+           WHEN    "17"
                STRING  "初診料算定済みです。"
                        "初診算定日の登録はできません。"
                                                INTO  WRK-ERRMSG
                END-STRING
-           WHEN    "17"
+           WHEN    "18"
                STRING  "初診算定日≦初回来院日ではありません。"
                                                INTO  WRK-ERRMSG
                END-STRING
-           WHEN    "18"
+           WHEN    "19"
                STRING  "初診算定日≦最終来院日ではありません。"
                                                INTO  WRK-ERRMSG
                END-STRING
-           WHEN    "19"
-               MOVE    "更新エラーです。"
+           WHEN    "20"
+               STRING  "初診算定日≦システム日付ではありません。"
+                                               INTO  WRK-ERRMSG
+               END-STRING
+           WHEN    "21"
+               STRING  "最終来院日≦システム日付ではありません。"
+                                               INTO  WRK-ERRMSG
+               END-STRING
+           WHEN    "22"
+               MOVE    "算定履歴更新エラーです。"
+                                               TO  WRK-ERRMSG
+           WHEN    "23"
+               MOVE    "診療科履歴更新エラーです。"
                                                TO  WRK-ERRMSG
       *
-           WHEN    "20"
+           WHEN    "31"
                STRING  "初診料の登録が１件ではありません。"
                        "削除できません。"
                                                INTO  WRK-ERRMSG
                END-STRING
-           WHEN    "21"
+           WHEN    "32"
+               STRING  "初診料の登録はありません。削除できません。"
+                                               INTO  WRK-ERRMSG
+               END-STRING
+           WHEN    "33"
                STRING  "削除できる初診料ではありません。"
                                                INTO  WRK-ERRMSG
                END-STRING
-           WHEN    "23"
-               MOVE    "削除エラーです。"
+           WHEN    "34"
+               MOVE    "算定履歴削除エラーです。"
+                                               TO  WRK-ERRMSG
+           WHEN    "35"
+               MOVE    "診療科履歴削除エラーです。"
                                                TO  WRK-ERRMSG
       *警告
            WHEN    "K1"
