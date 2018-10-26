@@ -86,6 +86,7 @@
       *  04.08.10    NACL-門脇    18/06/21  リハビリ開始日記載修正
       *  04.08.11    NACL-門脇    18/07/02  リハビリ開始日記載修正
       *  04.08.12    NACL-門脇    18/09/27  選択式コメント対応
+      *  04.08.13    NACL-門脇    18/10/26  薬剤逓減編集修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -392,6 +393,7 @@
            03  WRK-HENSYU-KAISU2   PIC X(04).
       *
            03  WRK-RUIKEITOTAL     PIC 9(13)V9(05).
+           03  WRK-RUIKEITOTAL2    PIC 9(14).
       *
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY   PIC 9(02)   OCCURS  31.
@@ -895,6 +897,7 @@
                07  TBL-YT1-RUIKEITOTAL          PIC 9(13)V9(05).
                07  TBL-YT1-RUIKEITOTAL2         PIC 9(13)V9(05).
                07  TBL-YT1-RUIKEITOTAL3         PIC 9(13)V9(05).
+               07  TBL-YT1-RUIKEITOTAL4         PIC 9(14).
                07  TBL-YT1-MEISAISU             PIC 9(04).
              05  TBL-YT1-RECE120-DAY-AREA.
                07  TBL-YT1-OCC2                 OCCURS  31.
@@ -903,7 +906,8 @@
              05  TBL-YT1-FLG                    PIC 9(01).
       *
       *    並び替え用
-       01  WRK-YAKUTEI-DATA                     PIC X(2933).
+      *01  WRK-YAKUTEI-DATA                     PIC X(2933).
+       01  WRK-YAKUTEI-DATA                     PIC X(2947).
       *
        01  WRK-TAIHI-YT1-KEY                    PIC X(03).
        01  WRK-YAKUTEI-ZAINUM                   PIC 9(08).
@@ -934,6 +938,7 @@
                    09  TBL-YT2Y1-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT2Y1-RUIKEITOTAL2     PIC 9(13)V9(05).
                    09  TBL-YT2Y1-RUIKEITOTAL3     PIC 9(13)V9(05).
+                   09  TBL-YT2Y1-RUIKEITOTAL4     PIC 9(14).
                    09  TBL-YT2Y1-MEISAISU         PIC 9(04).
                06  TBL-YT2Y2-OCC                  OCCURS   4.
                  07  TBL-YT2Y2-HIKAKU.
@@ -943,6 +948,7 @@
                    09  TBL-YT2Y2-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT2Y2-RUIKEITOTAL2     PIC 9(13)V9(05).
                    09  TBL-YT2Y2-RUIKEITOTAL3     PIC 9(13)V9(05).
+                   09  TBL-YT2Y2-RUIKEITOTAL4     PIC 9(14).
                    09  TBL-YT2Y2-MEISAISU         PIC 9(04).
       *
       *    薬剤逓減情報（まとめ用の編集テーブル）
@@ -970,6 +976,7 @@
                    09  TBL-YT3Y1-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT3Y1-RUIKEITOTAL2     PIC 9(13)V9(05).
                    09  TBL-YT3Y1-RUIKEITOTAL3     PIC 9(13)V9(05).
+                   09  TBL-YT3Y1-RUIKEITOTAL4     PIC 9(14).
                    09  TBL-YT3Y1-MEISAISU         PIC 9(04).
                06  TBL-YT3Y2-OCC                  OCCURS   4.
                  07  TBL-YT3Y2-HIKAKU.
@@ -979,6 +986,7 @@
                    09  TBL-YT3Y2-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT3Y2-RUIKEITOTAL2     PIC 9(13)V9(05).
                    09  TBL-YT3Y2-RUIKEITOTAL3     PIC 9(13)V9(05).
+                   09  TBL-YT3Y2-RUIKEITOTAL4     PIC 9(14).
                    09  TBL-YT3Y2-MEISAISU         PIC 9(04).
       *
       *    パス名領域
@@ -7770,6 +7778,8 @@ grpsys     MOVE    RECE100-HOSPNUM      TO  SANTEI-HOSPNUM
                                                                   (IDX6)
              MOVE    ZERO                 TO   TBL-YT1-RUIKEITOTAL3
                                                                   (IDX6)
+             MOVE    ZERO                 TO   TBL-YT1-RUIKEITOTAL4
+                                                                  (IDX6)
              MOVE    RECE120-MEISAISU     TO   TBL-YT1-MEISAISU(IDX6)
       *
              PERFORM   VARYING   IDX7    FROM   2   BY   1
@@ -8271,6 +8281,12 @@ grpsys     MOVE    RECE100-HOSPNUM      TO  SANTEI-HOSPNUM
                              MOVE    WRK-RUIKEITOTAL
                                 TO  TBL-YT2Y1-RUIKEITOTAL3
                                                        (IDX7 IDX8 IDX9)
+                             COMPUTE WRK-RUIKEITOTAL2 =
+                                     TBL-YT1-SRYCDTOTAL(IDX6)      *
+                                     TBL-YT1-KAISU(IDX6 IDX7 IDX8)
+                             MOVE    WRK-RUIKEITOTAL2
+                                TO  TBL-YT2Y1-RUIKEITOTAL4
+                                                       (IDX7 IDX8 IDX9)
       *
                              ADD   TBL-YT1-ZAITEN(IDX6)
                                 TO TBL-YT2Y1-ZAITEN(IDX7 IDX8 26)
@@ -8291,6 +8307,11 @@ grpsys     MOVE    RECE100-HOSPNUM      TO  SANTEI-HOSPNUM
                                      TBL-YT1-SURYOUTOTAL(IDX6)
                              ADD   WRK-RUIKEITOTAL
                                 TO TBL-YT2Y1-RUIKEITOTAL3(IDX7 IDX8 26)
+                             COMPUTE WRK-RUIKEITOTAL2 =
+                                     TBL-YT1-SRYCDTOTAL(IDX6)      *
+                                     TBL-YT1-KAISU(IDX6 IDX7 IDX8)
+                             ADD   WRK-RUIKEITOTAL2
+                                TO TBL-YT2Y1-RUIKEITOTAL4(IDX7 IDX8 26)
                              ADD   TBL-YT1-MEISAISU(IDX6)
                                 TO TBL-YT2Y1-MEISAISU(IDX7 IDX8 26)
       *
@@ -8342,6 +8363,12 @@ grpsys     MOVE    RECE100-HOSPNUM      TO  SANTEI-HOSPNUM
                              MOVE    WRK-RUIKEITOTAL
                                 TO  TBL-YT2Y2-RUIKEITOTAL3
                                                        (IDX7 IDX8 IDX9)
+                             COMPUTE WRK-RUIKEITOTAL2 =
+                                     TBL-YT1-SRYCDTOTAL(IDX6)      *
+                                     TBL-YT1-KAISU(IDX6 IDX7 IDX8)
+                             MOVE    WRK-RUIKEITOTAL2
+                                TO  TBL-YT2Y2-RUIKEITOTAL4
+                                                       (IDX7 IDX8 IDX9)
       *
                              ADD   TBL-YT1-ZAITEN(IDX6)
                                 TO TBL-YT2Y2-ZAITEN(IDX7 IDX8 4)
@@ -8362,6 +8389,11 @@ grpsys     MOVE    RECE100-HOSPNUM      TO  SANTEI-HOSPNUM
                                      TBL-YT1-SURYOUTOTAL(IDX6)
                              ADD   WRK-RUIKEITOTAL
                                 TO TBL-YT2Y2-RUIKEITOTAL3(IDX7 IDX8 4)
+                             COMPUTE WRK-RUIKEITOTAL2 =
+                                     TBL-YT1-SRYCDTOTAL(IDX6)      *
+                                     TBL-YT1-KAISU(IDX6 IDX7 IDX8)
+                             ADD   WRK-RUIKEITOTAL2
+                                TO TBL-YT2Y2-RUIKEITOTAL4(IDX7 IDX8 4)
                              ADD   TBL-YT1-MEISAISU(IDX6)
                                 TO TBL-YT2Y2-MEISAISU(IDX7 IDX8 4)
       *
