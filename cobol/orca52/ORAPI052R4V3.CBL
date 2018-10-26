@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/10/15  ＭＯＮＢＬＯＢエラー対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -676,6 +677,19 @@
                GO  TO  2002-SYORI-01-EXT
            END-IF
       *
+      *    Ｄａｔａ＿Ｉｄ取得
+           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "monblob"           TO  MCP-TABLE
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MONBLOB
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "E88"               TO  WRK-ERRCD
+               GO  TO  2002-SYORI-01-EXT
+           END-IF
+           MOVE    MONBLOB-ID          TO  WRK-MONBLOB-ID
+      *
       *    マシン日付取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -827,16 +841,7 @@
            MOVE    WRK-START-YMD       TO  SHELLTBL-ARG17
            MOVE    WRK-END-YMD         TO  SHELLTBL-ARG18
            MOVE    WRK-BASE-YMD        TO  SHELLTBL-ARG19
-      *
-           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "monblob"           TO  MCP-TABLE
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MONBLOB
-           MOVE    MONBLOB-ID          TO  SHELLTBL-ARG20
-                                           WRK-MONBLOB-ID
-      *
+           MOVE    WRK-MONBLOB-ID      TO  SHELLTBL-ARG20
            MOVE    "patient_basis_all_make"
                                        TO  SHELLTBL-ARG21
       *
@@ -1090,6 +1095,10 @@
            WHEN    "E80"
                MOVE    "一時ディレクトリが取得できません。"
                                                TO  WRK-ERRMSG
+      *
+           WHEN    "E88"
+               MOVE    "Ｄａｔａ＿Ｉｄが取得できません。"
+                                               TO  WRK-ERRMSG 
       *共通エラー
            WHEN    "E89"
       *        ORCSCOMMON のエラー

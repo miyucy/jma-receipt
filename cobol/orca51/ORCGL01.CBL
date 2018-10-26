@@ -55,6 +55,7 @@
       *
       *  05.00.01    NACL-Æ£¸¶    17/12/25  £È£Á£Ï£Ò£ÉÂÐ±þ
       *  05.00.02    NACL-ÂÀÅÄ    18/07/11  ¥¯¥é¥¦¥ÉÂÐ±þ
+      *  05.00.03    NACL-Æ£¸¶    18/10/15  £Í£Ï£Î£Â£Ì£Ï£Â¥¨¥é¡¼ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -1894,6 +1895,23 @@
                GO  TO  490-PRINT-EXT
            END-IF
       *
+      *    monblobapi½èÍý
+           IF      SPA-L01-JOB-PARAM
+                               NOT =   SPACE
+      *        £Ä£á£ô£á¡²£É£ä¼èÆÀ
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "E88"               TO  SPA-ERRCD
+                   GO  TO  490-PRINT-EXT
+               END-IF
+               MOVE    MONBLOB-ID          TO  SPA-L01-MONBLOB-PRINT-ID
+           END-IF
+      *
            ACCEPT  SYS-YMD         FROM    DATE
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
            MOVE    SYS-MM              TO  WRK-SYSMM
@@ -2342,14 +2360,8 @@
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG14
            MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG15
       *
-           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "monblob"           TO  MCP-TABLE
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MONBLOB
-           MOVE    MONBLOB-ID          TO  SPA-L01-MONBLOB-PRINT-ID
-                                           SHELLTBL-ARG16
+           MOVE    SPA-L01-MONBLOB-PRINT-ID
+                                       TO  SHELLTBL-ARG16
            MOVE    SPA-L01-PUSHBA01-EVENT
                                        TO  SHELLTBL-ARG17
            MOVE    SPA-L01-JOB-JOBID   TO  WRK-SHELLTBL-ARG-9
@@ -3481,6 +3493,10 @@
                    MOVE    WRK-RECEERR             TO  SPA-ERRMSG
            WHEN    "4001"
                MOVE    "£Ä£Â¤Î¹¹¿·¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
+                                                   TO  SPA-ERRMSG
+      *
+           WHEN    "E88"
+               MOVE    "£Ä£á£ô£á¡²£É£ä¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¡£"
                                                    TO  SPA-ERRMSG
            END-EVALUATE
       *

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  05.00.01    NACL-藤原    18/01/24  テスト患者区分の追加
+      *  05.00.02    NACL-藤原    18/10/15  ＭＯＮＢＬＯＢエラー対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -640,6 +641,19 @@
                GO  TO  2002-SYORI-01-EXT
            END-IF
       *
+      *    Ｄａｔａ＿Ｉｄ取得
+           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "monblob"           TO  MCP-TABLE
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MONBLOB
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "E88"               TO  WRK-ERRCD
+               GO  TO  2002-SYORI-01-EXT
+           END-IF
+           MOVE    MONBLOB-ID          TO  WRK-MONBLOB-ID
+      *
       *    マシン日付取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -796,16 +810,7 @@
            MOVE    "2"                 TO  SHELLTBL-ARG17
            MOVE    WRK-CONTAIN-TESTPATIENT
                                        TO  SHELLTBL-ARG18
-      *
-           MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "monblob"           TO  MCP-TABLE
-           CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MONBLOB
-           MOVE    MONBLOB-ID          TO  SHELLTBL-ARG19
-                                           WRK-MONBLOB-ID
-      *
+           MOVE    WRK-MONBLOB-ID      TO  SHELLTBL-ARG19
            MOVE    "stock1"            TO  SHELLTBL-ARG20
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
@@ -1036,6 +1041,10 @@
            WHEN    "E80"
                MOVE    "一時ディレクトリが取得できません"
                                                TO  WRK-ERRMSG
+      *
+           WHEN    "E88"
+               MOVE    "Ｄａｔａ＿Ｉｄが取得できません。"
+                                               TO  WRK-ERRMSG 
       *警告
            WHEN    "K01"
                MOVE    "基準日を設定しました"  TO  WRK-ERRMSG

@@ -215,6 +215,7 @@
       *                                     ¤ò¹Ô¤ï¤Ê¤¤
       *  04.09.03    NACL-Æ£¸¶    17/08/01  £È£Á£Ï£Ò£ÉÂÐ±þ
       *  05.00.00    NACL-¿¹ÏÆ    17/11/30  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
+      *  05.00.01    NACL-Æ£¸¶    18/10/15  £Í£Ï£Î£Â£Ì£Ï£Â¥¨¥é¡¼ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5934,9 +5935,37 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO  TO  460-RECEDEN-EXT
            END-IF
       *
-           MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
+      *    £È£Á£Ï£Ò£É¤Î¤È¤­£Í£Ï£Î£Â£Ì£Ï£Â¡Ý£É£Ä¤òÀßÄê
+           IF      SPA-T01-JOB-PARAM
+                                   NOT =   SPACE
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "E88"               TO  SPA-ERRCD
+                   GO  TO  460-RECEDEN-EXT
+               END-IF
+               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-DATA-ID
+      *
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "E88"               TO  SPA-ERRCD
+                   GO  TO  460-RECEDEN-EXT
+               END-IF
+               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-PRINT-ID
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-CONS-JOB-JOBID
                                            WRK-PRTKANRI-RENNUM
-           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
       *     
            MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
            MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
@@ -6158,22 +6187,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
       *    £È£Á£Ï£Ò£É¤Î¤È¤­£Í£Ï£Î£Â£Ì£Ï£Â¡Ý£É£Ä¤òÀßÄê
            IF      SPA-T01-JOB-PARAM
                                    NOT =   SPACE
-               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "monblob"           TO  MCP-TABLE
-               CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MONBLOB
-               MOVE    MONBLOB-ID          TO  SHELLTBL-ARG29
-                                               SPA-T01-MONBLOB-DATA-ID
-      *
-               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "monblob"           TO  MCP-TABLE
-               CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MONBLOB
-               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-PRINT-ID
+               MOVE    SPA-T01-MONBLOB-DATA-ID
+                                       TO  SHELLTBL-ARG29
            END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
@@ -6288,9 +6303,37 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO  TO  470-RECEDEN-EXT
            END-IF
       *
-           MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
+      *    £È£Á£Ï£Ò£É¤Î¤È¤­£Í£Ï£Î£Â£Ì£Ï£Â¡Ý£É£Ä¤òÀßÄê
+           IF      SPA-T01-JOB-PARAM
+                                   NOT =   SPACE
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "E88"               TO  SPA-ERRCD
+                   GO  TO  470-RECEDEN-EXT
+               END-IF
+               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-DATA-ID
+      *
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "E88"               TO  SPA-ERRCD
+                   GO  TO  470-RECEDEN-EXT
+               END-IF
+               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-PRINT-ID
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-CONS-JOB-JOBID
                                            WRK-PRTKANRI-RENNUM
-           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
       *     
            MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
            MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
@@ -6439,22 +6482,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
       *    £È£Á£Ï£Ò£É¤Î¤È¤­£Í£Ï£Î£Â£Ì£Ï£Â¡Ý£É£Ä¤òÀßÄê
            IF      SPA-T01-JOB-PARAM
                                    NOT =   SPACE
-               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "monblob"           TO  MCP-TABLE
-               CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MONBLOB
-               MOVE    MONBLOB-ID          TO  SHELLTBL-ARG29
-                                               SPA-T01-MONBLOB-DATA-ID
-      *
-               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "monblob"           TO  MCP-TABLE
-               CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MONBLOB
-               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-PRINT-ID
+               MOVE    SPA-T01-MONBLOB-DATA-ID
+                                       TO  SHELLTBL-ARG29
            END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
@@ -7962,6 +7991,10 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    WRK-RECEERR                 TO  TERR-ERRMSG
                WHEN    "9999"
                    MOVE    WRK-RECEERR                 TO  TERR-ERRMSG
+      *
+               WHEN    "E88"
+                   MOVE    "£Ä£á£ô£á¡²£É£ä¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¡£"
+                                                       TO  TERR-ERRMSG
            END-EVALUATE
       *
            MOVE    TERR-ERRMSG          TO  SPA-ERRMSG

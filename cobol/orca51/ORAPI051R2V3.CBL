@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/10/15  ＭＯＮＢＬＯＢエラー対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1761,7 +1762,11 @@
            PERFORM 800-ORCGL01-CALL-SEC
       *
            IF      SPA-ERRCD   NOT =   SPACE
-               MOVE    "E62"           TO  WRK-ERRCD
+               IF      SPA-ERRCD       =   "E88"
+                   MOVE    SPA-ERRCD       TO  WRK-ERRCD
+               ELSE
+                  MOVE    "E60"            TO  WRK-ERRCD
+               END-IF
            END-IF
            .
        2002-SYORI-01-EXT.
@@ -2172,6 +2177,7 @@
       *        画面エラー
            WHEN    "E60"
            WHEN    "E61"
+           WHEN    "E88"
                MOVE    SPA-ERRMSG              TO  WRK-ERRMSG
       *
            WHEN    "E80"
