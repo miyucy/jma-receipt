@@ -53,7 +53,10 @@ AC_SUBST(PGVERSION)
 AC_SUBST(PGPATH)
 
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES(png, "libpng12")
+PKG_CHECK_MODULES(png, "libpng12",[],
+[
+ 	PKG_CHECK_MODULES(png, "libpng")
+])
 PKG_CHECK_MODULES(qrencode, "libqrencode")
 PKG_CHECK_MODULES(xml2,
 [
