@@ -18,7 +18,6 @@ SRCS = ORCGZ01.CBL \
        ORCGZS02.CBL \
        ORCGZ08.CBL \
        ORCGZ100.CBL \
-       ORAPI102S1.CBL \
        ORAPI102S1V2.CBL \
        ORCGZ010.CBL \
 

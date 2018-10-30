@@ -4,7 +4,6 @@ SRCS = \
 	ORCGU2ERR.CBL \
 	ORCGU02X.CBL  \
 	ORCGU2ID1.CBL \
-	ORAPI011S1.CBL \
 	ORAPI011S1V2.CBL \
 
 top_builddir = ../..

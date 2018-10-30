@@ -215,7 +215,6 @@
             COPY    "ORCA-SPA".
             COPY    "LINKAREA".
        01  SCRAREA.
-           COPY    "CPAPIMOD.INC".
            COPY    "CPAPILSTV2.INC".
            COPY    "API21V3SCRAREA.INC".
       *

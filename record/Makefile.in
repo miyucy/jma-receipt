@@ -396,8 +396,6 @@ RECORD_files = \
 	KTID2.rec \
 	D04.rec \
 	D05.rec \
-	patientget.rec \
-	appointmod.rec \
 	P02K.rec \
 	W67.rec \
 	G05.rec \
@@ -420,25 +418,14 @@ RECORD_files = \
 	U2ID1.rec \
 	S08.rec \
 	S09.rec \
-	acceptmod.rec \
 	print.rec \
-	appointlst.rec \
-	acceptlst.rec \
 	Q02A.rec \
 	Q02B.rec \
-	patientmod.rec \
-	medicatonmod.rec \
 	W321.rec \
-	patientlst1.rec \
-	patientlst2.rec \
-	patientlst3.rec \
 	P02H.rec \
-	system01lst.rec \
 	CID6.rec \
-	medicalget.rec \
 	P02T.rec \
 	W68.rec \
-	diseaseget.rec \
 	SID4.rec \
 	S10.rec \
 	W122.rec \
@@ -462,7 +449,6 @@ RECORD_files = \
 	G07.rec \
 	L100.rec \
 	G100.rec \
-	medicalmod.rec \
 	medicalmodv2.rec \
 	X07.rec \
 	I411.rec \
@@ -551,7 +537,6 @@ RECORD_files = \
 	patientdiseaseallv3.rec \
     masterlastupdatev3.rec \
 	system01dailyv2.rec \
-    hsconfroomchargev2.rec \
 	patientmedicalallv3.rec \
 	W93.rec \
 	medicalmodav31.rec \
@@ -731,9 +716,6 @@ DB_files = \
 	tbl_bunben.db \
 	tbl_toukeicsv_b.db \
 	tbl_toukeicsv_h.db \
-	xml_appointreq.db \
-	xml_appointres.db \
-	xml_patientinfores.db \
 	tbl_santeiplus.db \
 	system.db \
 	tbl_infection.db \
@@ -741,18 +723,8 @@ DB_files = \
 	tbl_ptsrh.db \
 	tbl_srysrh.db \
 	tbl_rrksrh.db \
-	xml_acceptreq.db \
-	xml_acceptres.db \
-	xml_medicalres.db \
-	xml_medicalreq.db \
 	tbl_synonym.db \
-	xml_appointlstreq.db \
-	xml_appointlstres.db \
-	xml_acceptlstreq.db \
-	xml_acceptlstres.db \
 	tbl_skysrh.db \
-	xml_medicationreq.db \
-	xml_medicationres.db \
 	tbl_etensu_1.db \
 	tbl_etensu_2.db \
 	tbl_etensu_2_jma.db \
@@ -765,25 +737,9 @@ DB_files = \
 	tbl_etensu_4.db \
 	tbl_etensu_5.db \
 	tbl_infection_judgment.db \
-	xml_patientmodreq.db \
-	xml_patientmodres.db \
 	exec_sql.db \
 	tbl_prtctrl.db \
-	xml_patientlst1req.db \
-	xml_patientlst1res.db \
-	xml_patientlst2req.db \
-	xml_patientlst2res.db \
-	xml_patientlst3req.db \
-	xml_system01_managereq.db \
-	xml_departmentres.db \
-	xml_physicianres.db \
-	xml_medicalgetreq.db \
-	xml_medicalget01res.db \
-	xml_medicalget02res.db \
-	xml_medicalget03res.db \
 	tbl_pthknrrk.db \
-	xml_disease_inforeq.db \
-	xml_disease_infores.db \
 	tbl_labor_sio.db \
 	tbl_seikyu_rsi.db \
 	tbl_generic_price.db \
@@ -1086,8 +1042,6 @@ DB_files = \
     xml_masterlastupdatev3res.db \
 	xml_system01_dailyv2req.db \
 	xml_system01_dailyv2res.db \
-    xml_hsconfroomchargev2req.db \
-    xml_hsconfroomchargev2res.db \
 	xml_patient_medical_allv3req.db \
 	xml_patient_medical_allv3res.db \
 	xml_patient_medical_all.db \

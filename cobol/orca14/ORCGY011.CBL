@@ -132,7 +132,6 @@
            COPY    "Y05.INC".
            COPY    "YERR.INC".
            COPY    "YID1.INC".
-           COPY    "APPOINTMOD.INC".
            COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                   DIVISION    USING

@@ -52,7 +52,6 @@ SUBDIRS = \
 	claim \
 	cutils \
 	api21 \
-	api01r \
 	api01rv2 \
 	session 
 

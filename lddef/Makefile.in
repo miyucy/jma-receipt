@@ -38,7 +38,6 @@ LDFILE = \
 	orca107.ld \
 	session.ld \
 	api21.ld \
-	api01r.ld \
 	orca31.ld \
 	orca32.ld \
 	orca33.ld \

@@ -29,7 +29,6 @@ bind	"P02H"		"OpenCOBOL"	"ORCGP02H";
 bind	"P02T"		"OpenCOBOL"	"ORCGP02T";
 bind	"PERR"		"OpenCOBOL"	"ORCGPERR";
 bind	"PID1"		"OpenCOBOL"	"ORCGPID1";
-bindapi "patientmod"    "OpenCOBOL"	"ORAPI012S1"; 
 bindapi "patientmodv2"  "OpenCOBOL"	"ORAPI012S1V2"; 
 bindapi "patientmodv31" "OpenCOBOL"	"ORAPI012S1V3"; 
 bindapi "patientmodv32" "OpenCOBOL"	"ORAPI012S2V3"; 
@@ -71,7 +70,6 @@ data	{
 		P02T;
 		PERR;
 		PID1;
-		patientmod;
 		patientmodv2;
 		patientmodv31;
 		patientmodv32;
@@ -142,11 +140,6 @@ db	{
 	tbl_sryacct_sub;
 };
 */
-
-db "xml" {
- xml_patientmodreq;
- xml_patientmodres;
-};
 
 db "xml2" {
  xml_patientmodv2req;

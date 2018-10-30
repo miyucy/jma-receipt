@@ -39,7 +39,6 @@ bindapi	"prescriptionv2"	"OpenCOBOL"	"ORAPI001R2V2";
 bindapi	"medicinenotebookv2"	"OpenCOBOL"	"ORAPI001R3V2";
 bindapi	"subjectiveslstv2"	"OpenCOBOL"	"ORAPI025R1V2";
 bindapi	"system01dailyv2"	"OpenCOBOL"	"ORAPI101R2V2";
-bindapi	"hsconfroomchargev2"	"OpenCOBOL"	"ORAPI031RC3V2";
 bindapi	"pusheventgetv2"	"OpenCOBOL"	"ORAPI000R3V2";
 bindapi	"apiversiongetv2"	"OpenCOBOL"	"ORAPI000R4V2";
 bindapi	"karteno1v2"	"OpenCOBOL"	"ORAPI001R4V2";
@@ -88,7 +87,6 @@ data	{
 		medicinenotebookv2;
 		subjectiveslstv2;
 		system01dailyv2;
-        hsconfroomchargev2;
         pusheventgetv2;
         apiversiongetv2;
 		karteno1v2;
@@ -173,8 +171,6 @@ db "xml2" {
  xml_subjectiveslstv2res;
  xml_system01_dailyv2req;
  xml_system01_dailyv2res;
- xml_hsconfroomchargev2req;
- xml_hsconfroomchargev2res;
  xml_pusheventgetv2req;
  xml_pusheventgetv2err;
  xml_apiversiongetv2req;

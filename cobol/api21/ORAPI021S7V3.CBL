@@ -284,7 +284,6 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "CPAPIMOD.INC".
            COPY    "CPAPILSTV2.INC".
       *V3  °ìÂÎ²½
            COPY    "API21V3SCRAREA.INC".

@@ -9,7 +9,6 @@ bind	"U02Q"		"OpenCOBOL"	"ORCGU02Q";
 bind	"U02X"		"OpenCOBOL"	"ORCGU02X";
 bind	"U2ERR"		"OpenCOBOL"	"ORCGU2ERR";
 bind	"U2ID1"		"OpenCOBOL"	"ORCGU2ID1";
-bindapi	"acceptmod"	"OpenCOBOL"	"ORAPI011S1";
 bindapi	"acceptmodv2"	"OpenCOBOL"	"ORAPI011S1V2";
 
 multiplex_group	orca11;
@@ -23,14 +22,8 @@ data	{
 		U02X;
 		U2ERR;
 		U2ID1;
-		acceptmod;
 		acceptmodv2;
 	};
-};
-
-db "xml" {
- xml_acceptreq;
- xml_acceptres;
 };
 
 db "xml2" {

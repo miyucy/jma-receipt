@@ -290,7 +290,6 @@
             COPY    "ORCA-SPA".
             COPY    "LINKAREA".
        01  SCRAREA.
-           COPY    "CPAPIMOD.INC".
            COPY    "CPAPILSTV2.INC".
       *
        PROCEDURE                   DIVISION    USING
