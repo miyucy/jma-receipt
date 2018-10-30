@@ -55,6 +55,8 @@ HCM19V01.red            処方せん                                                
 HCM19V02.red            処方せん                                                    VER4.6.0
 HCM19V03.red            処方せん                                                    VER4.8.0
 HCM19V04.red        ＊  処方せん                                                    VER4.8.0
+HC02ZA4.red         ＊  分割指示に係る処方箋（別氏）Ａ４                            VER4.8.0
+HC02ZA5.red         ＊  分割指示に係る処方箋（別氏）Ａ５                            VER4.8.0
 
 HC501.red           ＊  入院処方箋
 HC502.red           ＊  注射処方箋
