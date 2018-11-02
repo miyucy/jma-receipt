@@ -33,6 +33,7 @@
       * 04.07.00     NACL-多々納  14/11/XX  保険確認日付対応
       * 04.08.00     NACL-多々納  15/10/XX  補助区分名称サブ対応
       * 05.00.00     NACL-多々納  17/10/XX  保険組合せ番号対象対応
+      * 05.01.00     NACL-多々納  18/11/02  診療日付追加対応
       *****************************************************************
       *
       *
@@ -288,6 +289,15 @@
            INITIALIZE                  ORCSAPIHKN-HKNCOMBI-AREA
            INITIALIZE                  ORCSAPIHKN-ERRCD
       *
+      *H30.11
+      *    診療日付で検索
+           IF      ORCSAPIHKN-SRYYMD   =   SPACE
+                                       OR  ZERO
+               MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
+           ELSE
+               MOVE    ORCSAPIHKN-SRYYMD   TO  WRK-SYSYMD
+           END-IF
+      *
       *    保険組合せ編集処理
            PERFORM 100-HKNCOMBI-HENSYU-SEC
       *
@@ -345,15 +355,15 @@
                    WHEN    "2"
       *                年月で有効であること
                        IF     (COMB-TEKSTYMD(1:6)
-                                               <=  SPA-SYSYMD(1:6)) AND
+                                               <=  WRK-SYSYMD(1:6)) AND
                               (COMB-TEKEDYMD(1:6)
-                                               >=  SPA-SYSYMD(1:6))
+                                               >=  WRK-SYSYMD(1:6))
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
                    WHEN    OTHER
       *                当日有効であること
-                       IF     (COMB-TEKSTYMD   <=  SPA-SYSYMD )  AND
-                              (COMB-TEKEDYMD   >=  SPA-SYSYMD )
+                       IF     (COMB-TEKSTYMD   <=  WRK-SYSYMD )  AND
+                              (COMB-TEKEDYMD   >=  WRK-SYSYMD )
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
                    END-EVALUATE
@@ -401,15 +411,15 @@
                    WHEN    "2"
       *                年月で有効であること
                        IF     (PTHKN-TEKSTYMD(1:6)
-                                               <=  SPA-SYSYMD(1:6)) AND
+                                               <=  WRK-SYSYMD(1:6)) AND
                               (PTHKN-TEKEDYMD(1:6)
-                                               >=  SPA-SYSYMD(1:6))
+                                               >=  WRK-SYSYMD(1:6))
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
                    WHEN    OTHER
       *                当日有効であること
-                       IF     (PTHKN-TEKSTYMD    <=  SPA-SYSYMD )  AND
-                              (PTHKN-TEKEDYMD    >=  SPA-SYSYMD )
+                       IF     (PTHKN-TEKSTYMD    <=  WRK-SYSYMD )  AND
+                              (PTHKN-TEKEDYMD    >=  WRK-SYSYMD )
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
                    END-EVALUATE
@@ -457,15 +467,15 @@
                    WHEN    "2"
       *                年月で有効であること
                        IF     (PTKOH-TEKSTYMD(1:6)
-                                               <=  SPA-SYSYMD(1:6)) AND
+                                               <=  WRK-SYSYMD(1:6)) AND
                               (PTKOH-TEKEDYMD(1:6)
-                                               >=  SPA-SYSYMD(1:6))
+                                               >=  WRK-SYSYMD(1:6))
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
                    WHEN    OTHER
       *                当日有効であること
-                       IF     (PTKOH-TEKSTYMD    <=  SPA-SYSYMD )  AND
-                              (PTKOH-TEKEDYMD    >=  SPA-SYSYMD )
+                       IF     (PTKOH-TEKSTYMD    <=  WRK-SYSYMD )  AND
+                              (PTKOH-TEKEDYMD    >=  WRK-SYSYMD )
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
                    END-EVALUATE
@@ -547,9 +557,10 @@
            END-IF
       *
       *    新規登録時、保険組合せ対象外の公費
-           IF      ORCSAPIHKN-KBN2     =   "1"
-               PERFORM 299-PTKOHINF-OUTHEN-SEC
-           END-IF
+      *H30.11 (要望があるまで未対応)
+      *    IF      ORCSAPIHKN-KBN2     =   "1"
+      *        PERFORM 299-PTKOHINF-OUTHEN-SEC
+      **   END-IF
       *
       *    最大件数 
            PERFORM VARYING    IDX      FROM    1   BY  1
@@ -977,8 +988,8 @@
                                            =   ORCSAPIHKN-OT-HKNCOMBI
                            MOVE    1               TO  FLG-COMBIOK
                        END-IF
-                       ADD     1                   TO  IDXH
                        MOVE    IDXH                TO  IDX-TBL
+                       ADD     1                   TO  IDXH
                    END-IF
                END-PERFORM
            END-IF
@@ -1162,7 +1173,7 @@
            INITIALIZE                  ORAPI012SUB1AREA
            MOVE    TBL-COMB-HKNNUM (IDX)   TO  API012SUB1-HKNNUM
            MOVE    TBL-COMB-HOJOKBN (IDX)  TO  API012SUB1-HOJOKBN
-           MOVE    SPA-SYSYMD              TO  API012SUB1-SYSYMD
+           MOVE    WRK-SYSYMD              TO  API012SUB1-SYSYMD
            CALL    "ORAPI012SUB1"          USING
                                            ORAPI012SUB1AREA
                                            SPA-AREA
@@ -1329,7 +1340,6 @@
                                                             (IDXH IDY)
       *
       *            負担率・負担額編集
-                   MOVE    SPA-SYSYMD      TO  WRK-SYSYMD
                    PERFORM 400-KOHFTN-HENSYU-SEC
       *
                    MOVE    IDK-MAX             TO  IDH
@@ -1349,10 +1359,11 @@
            MOVE    TBL-PTKOH-KOHNUM (IDH)  TO  HKN-HKNNUM
       *    支払区分
            MOVE    TBL-PTKOH-PAYKBN (IDH)  TO  HKN-PAYKBN
-           MOVE    WRK-SYSYMD          TO  HKN-TEKSTYMD
-           MOVE    WRK-SYSYMD          TO  HKN-TEKEDYMD
-      *    MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
-      *    MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+      *    有効期間
+           MOVE    TBL-PTKOH-TEKSTYMD(IDH) TO  HKN-TEKSTYMD
+           MOVE    TBL-PTKOH-TEKSTYMD(IDH) TO  HKN-TEKEDYMD
+      *    MOVE    WRK-SYSYMD          TO  HKN-TEKSTYMD
+      *    MOVE    WRK-SYSYMD          TO  HKN-TEKEDYMD
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
@@ -1428,8 +1439,11 @@
                                                OR  "979"
                                                OR  "976"  )
                OR     (TBL-PTKOH-KOHNUM(IDH) (1:2)  =   "96"  )
+      *H30.8   高齢者現役など
+               OR     (TBL-PTKOH-KOHNUM(IDH)(1:2)   =   "94"
+                                                    OR  "95"  )
       *        当日登録分のみ
-                 IF     (TBL-PTKOH-CREYMD(IDH)   =   SPA-SYSYMD )
+                 IF     (TBL-PTKOH-CREYMD(IDH)   =   WRK-SYSYMD )
                    ADD     1               TO  IDX
       *            保険組合せ作成なし
                    MOVE    ALL "*"         TO  ORCSAPIHKN-THKNCOMBI(IDX)
@@ -1464,7 +1478,8 @@
                    MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KOH-TEKEDYMD
                                                                (IDX IDY)
       *            負担率・負担額編集
-                   MOVE    SPA-SYSYMD      TO  WRK-SYSYMD
+      ***********  MOVE    TBL-PTKOH-TEKSTYMD (IDH)    TO  WRK-SYSYMD
+                   MOVE    IDX             TO  IDXH
                    PERFORM 400-KOHFTN-HENSYU-SEC
       *            公費の名称
                    MOVE    HKN-TANSEIDONAME
@@ -1546,15 +1561,15 @@
                    WHEN    "2"
       *                年月で有効であること
                        IF     (COMB-TEKSTYMD(1:6)
-                                               <=  SPA-SYSYMD(1:6)) AND
+                                               <=  WRK-SYSYMD(1:6)) AND
                               (COMB-TEKEDYMD(1:6)
-                                               >=  SPA-SYSYMD(1:6))
+                                               >=  WRK-SYSYMD(1:6))
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
                    WHEN    OTHER
       *                当日有効であること
-                       IF     (COMB-TEKSTYMD   <=  SPA-SYSYMD )  AND
-                              (COMB-TEKEDYMD   >=  SPA-SYSYMD )
+                       IF     (COMB-TEKSTYMD   <=  WRK-SYSYMD )  AND
+                              (COMB-TEKEDYMD   >=  WRK-SYSYMD )
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
                END-EVALUATE
@@ -1689,7 +1704,7 @@
       *        負担率・負担額編集
                MOVE    1               TO  IDH
                MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC(IDH)
-               MOVE    PTKOH-TEKSTYMD  TO  WRK-SYSYMD
+      *****    MOVE    PTKOH-TEKSTYMD  TO  WRK-SYSYMD
                PERFORM 400-KOHFTN-HENSYU-SEC
            END-PERFORM
            .
