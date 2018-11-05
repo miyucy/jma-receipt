@@ -27,7 +27,7 @@ tbl_recekisai {
 	UPRENNUM		number(2,0),virtual;
 };
 primary	{
-	ITEMNO,EDANO,STYM,EDYM,SRYCD,RENNUM;
+	SRYCD,ITEMNO,EDANO,STYM,EDYM,RENNUM;
 };
 
 path	key 	{
@@ -35,11 +35,11 @@ path	key 	{
 		DECLARE tbl_recekisai_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_recekisai
- 			WHERE   ITEMNO    = :ITEMNO
+			WHERE   SRYCD     = :SRYCD
+ 			AND     ITEMNO    = :ITEMNO
  			AND     EDANO     = :EDANO
  			AND     STYM     <= :STYM
 			AND     EDYM     >= :EDYM
-			AND     SRYCD     = :SRYCD
 			AND     RENNUM    = :RENNUM
 		;
 	};

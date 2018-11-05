@@ -128,6 +128,14 @@
                                    RECORD  KEY     IS  DTCHK018-KEY
                                    FILE    STATUS  IS  STS-DTCHK018.
       *
+      *    データチェック中間ファイル（コメント関連）
+           SELECT  DTCHK022-FILE
+                                   ASSIGN  DTCHK022PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  DTCHK022-ISAM-KEY
+                                   FILE    STATUS  IS  STS-DTCHK022.
+      *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -203,6 +211,18 @@
            COPY    "CPCHK.INC"      REPLACING  //CHK-//
                                     BY         //DTCHK018-//.
       *
+      *    データチェック中間ファイル（コメント関連）
+       FD  DTCHK022-FILE.
+       01  DTCHK022-REC.
+         02    DTCHK022-ISAM-KEY.
+           03  DTCHK022-ISAM-SRYCD     PIC X(09).
+           03  DTCHK022-ISAM-ITEMNO    PIC 9(04).
+           03  DTCHK022-ISAM-EDANO     PIC 9(02).
+           03  DTCHK022-ISAM-RENNUM    PIC 9(02).
+         02    DTCHK022-RKISAI-AREA.
+           COPY    "CPRECEKISAI.INC"   REPLACING  //RKISAI-//
+                                       BY         //DTCHK022-//.
+      *
       *    エラーファイル
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
@@ -252,6 +272,9 @@
                                    BY         //DTCHK018PARA//.
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
+                                   BY         //DTCHK022PARA//.
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHKSRYPARA//.
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
@@ -272,6 +295,7 @@
            03  STS-DTCHK012                            PIC X(02).
            03  STS-DTCHK013                            PIC X(02).
            03  STS-DTCHK018                            PIC X(02).
+           03  STS-DTCHK022                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
            03  STS-DCACCT                              PIC X(02).
            03  STS-DCSRY                               PIC X(02).
@@ -308,6 +332,7 @@
            03  FLG-DTCHK012                            PIC 9(01).
            03  FLG-DTCHK013                            PIC 9(01).
            03  FLG-DTCHK018                            PIC 9(01).
+           03  FLG-DTCHK022                            PIC 9(01).
            03  FLG-YKZBYO                              PIC 9(01).
            03  FLG-SRYBYO                              PIC 9(01).
            03  FLG-YKZHEI                              PIC 9(01).
@@ -781,6 +806,9 @@
                05  KEY-SRY-PTID                PIC 9(10).
                05  KEY-SRY-ZAINUM              PIC 9(08).
                05  KEY-SRY-ACCTKBN             PIC X(01).
+           03  KEY-SRYCD                       PIC X(09).
+           03  KEY-ITEMNO                      PIC 9(04).
+           03  KEY-EDANO                       PIC 9(02).
       *
       *    剤番号退避
        01  PTZAI-AREA.
@@ -1497,6 +1525,13 @@
            PERFORM 800-ORCSGETTEMP-SEC
            MOVE    ASGNPARA            TO  DTCHK018PARA-FULLNAME
       *
+           MOVE    WRK-PARA-HOSPNUM    TO  DTCHK022PARA-HOSPNUM
+           MOVE    "DTCHK022"          TO  DTCHK022PARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK022PARA-TERMID
+           MOVE    DTCHK022PARA-BASENAME   TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK022PARA-FULLNAME
+      *
            OPEN    INPUT               DCACCT-FILE
                                        DCSRY-FILE
                                        DTCHK003-FILE
@@ -1520,6 +1555,8 @@
            OPEN    INPUT               DTCHK013-FILE
       *
            OPEN    INPUT               DTCHK018-FILE
+      *
+           OPEN    INPUT               DTCHK022-FILE
       *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
@@ -2575,8 +2612,8 @@
       *                データチェック処理（チェックマスタ）
                        PERFORM 20011-DATA-CHK-CHKMST-SEC
       *
-      *                データチェック処理（電子点数表）
-                       PERFORM 20011-DATA-CHK-ETENSU-CHK-SEC
+      *                データチェック処理（チェックマスタ以外のマスタ）
+                       PERFORM 20011-DATA-CHK-MST-OTHERS-SEC
       *
       *                禁忌チェック項目退避処理
                        PERFORM 20012-CHK-KINKI-TAIHI-SEC
@@ -3017,9 +3054,6 @@
                                        =   ZERO )
                        MOVE    DCACCT-DAYCNT2-GROUP (IDXN)
                                    TO  PTZAI-GROUP (IDX-ZAI IDXI)
-           DISPLAY IDX-ZAI ":" IDXI " GROUP = "
-           PTZAI-GROUP (IDX-ZAI IDXI)
-           DISPLAY "DCACCT-DAY = " DCACCT-DAY
                        MOVE    DCACCT-DAY
                                    TO  PTZAI-GROUP-DAY(IDX-ZAI IDXI)
                    END-IF
@@ -11917,15 +11951,20 @@
        200111-NISSU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    電子点数表チェック処理
+      *    データチェック処理（チェックマスタ以外のマスタ）
       *****************************************************************
-       20011-DATA-CHK-ETENSU-CHK-SEC   SECTION.
+       20011-DATA-CHK-MST-OTHERS-SEC   SECTION.
       *
       *    算定回数チェック処理
            PERFORM 200111-ETENSU5-CHK-SEC
       *
+           IF    ( ORCBSD01-CHKKBN (21)    =   "2" )
+      *        選択式コメント登録漏れチェック処理
+               PERFORM 200111-RKISAI-CHK-SEC
+           END-IF
+      *
            .
-       20011-DATA-CHK-ETENSU-CHK-EXT.
+       20011-DATA-CHK-MST-OTHERS-EXT.
            EXIT.
       *****************************************************************
       *    電子点数表チェック処理
@@ -12177,6 +12216,140 @@
       *
            .
        2001112-ETENSU5-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    選択式コメント登録漏れチェック処理
+      *****************************************************************
+       200111-RKISAI-CHK-SEC           SECTION.
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   TSRYCD-MAX )
+      *
+               MOVE    "21"        TO  WRK-REIGAI-CHKNUM
+               MOVE    TSRYCD-SRYCD (IDX6)
+                                   TO  WRK-REIGAI-CD
+               PERFORM 800-REIGAI-CHK-SEC
+               IF    ( FLG-REIGAI  =   ZERO )
+                   PERFORM 200112-RKISAI-CHK-SEC
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200111-RKISAI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    選択式コメント登録漏れチェック処理
+      *****************************************************************
+       200112-RKISAI-CHK-SEC           SECTION.
+      *
+           MOVE    1                   TO  FLG-TARGET
+      *
+           IF    ( TSRYCD-NYUGAIKBN (IDX6) =   ORCBSD01-NYUGAIKBN )
+               CONTINUE
+           ELSE
+               MOVE    ZERO            TO  FLG-TARGET
+           END-IF
+      *
+           IF    ( FLG-TARGET          =   1 )
+      *
+               INITIALIZE                  WRK-NISSU-DAY-G
+               INITIALIZE                  FLG-SRYSNT-G
+      *
+               MOVE    TSRYCD-SRYCD (IDX6)
+                                       TO  KEY-SRYCD
+      *
+               PERFORM 900-DTCHK022-START-SEC
+      *
+               PERFORM UNTIL ( FLG-DTCHK022    NOT =   ZERO )
+                         OR  ( FLG-SRYSNT-MONTHERR =   1 )
+      *
+                   MOVE    1               TO  FLG-SRYSNT-MONTHERR
+      *
+                   MOVE    DTCHK022-ITEMNO TO  KEY-ITEMNO
+                   MOVE    DTCHK022-EDANO  TO  KEY-EDANO
+      *
+                   PERFORM UNTIL ( FLG-DTCHK022    NOT =   ZERO )
+                            OR   ( KEY-ITEMNO  NOT =   DTCHK022-ITEMNO )
+                            OR   ( KEY-EDANO   NOT =   DTCHK022-EDANO )
+                            OR   ( FLG-SRYSNT-MONTHERR
+                                                   =   2 )
+      *
+                       PERFORM VARYING IDX32   FROM   1    BY  1
+                               UNTIL ( IDX32   >   TSRYCD-MAX )
+      *
+                           IF    ( DTCHK022-C-CD
+                                               =   TSRYCD-SRYCD (IDX32))
+                               IF    ( TSRYCD-NYUGAIKBN (IDX32)
+                                           =   ORCBSD01-NYUGAIKBN )
+                                AND  ( TSRYCD-HKNFLG (IDX32)
+                                           =   1 )
+                                   MOVE    2   TO FLG-SRYSNT-MONTHERR
+                               END-IF
+                           END-IF
+                       END-PERFORM
+      *
+                       PERFORM 900-DTCHK022-READ-SEC
+      *
+                   END-PERFORM
+      *
+      *            FLG-SRYSNT-MONTHERR = 2 でBREAKした場合の考慮
+                   PERFORM UNTIL ( FLG-DTCHK022 NOT =  ZERO )
+                            OR   ( KEY-ITEMNO   NOT =  DTCHK022-ITEMNO )
+                            OR   ( KEY-EDANO    NOT =  DTCHK022-EDANO )
+                       PERFORM 900-DTCHK022-READ-SEC
+                   END-PERFORM
+      *
+               END-PERFORM
+      *
+               IF    ( FLG-SRYSNT-MONTHERR =   1 )
+      *
+                   PERFORM VARYING IDX10   FROM    1   BY  1
+                           UNTIL ( IDX10   >   31 )
+                       IF    ( TSRYCD-DAY-HKNFLG (IDX6 IDX10)
+                                           =   1 )
+                           IF  ( TSRYCD-DAY-NYUGAIKBN (IDX6 IDX10)
+                                           =   ORCBSD01-NYUGAIKBN )
+                               MOVE  1     TO  WRK-NISSU-DAY (IDX10)
+                           END-IF
+                       END-IF
+                   END-PERFORM
+      *
+                   IF    ( WRK-NISSU-DAY-G NOT =   ZERO )
+                       MOVE    "210001"    TO  WRK-ERRCD
+                       MOVE    TSRYCD-SRYCD (IDX6)
+                                           TO  WRK-SRYCD
+                       MOVE    WRK-KJNYMD  TO  WRK-TNS-YMD
+                       PERFORM 900-TENSU-KEY-SEL-SEC
+                       IF    ( FLG-TENSU       NOT =   ZERO )
+                           MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                           PERFORM 800-ZENKAKU-HEN-SEC
+                           MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+                       END-IF
+      *
+                       PERFORM 200111-NISSU-HEN-SEC
+                       MOVE    WRK-NISSU-LASTYMD
+                                           TO   WRK-LASTYMD
+      *
+                       MOVE    SPACE       TO   WRK-ERRMES-PLUS
+      *
+                       STRING TNS-NAME         DELIMITED   BY  SPACE
+                              WRK-NISSU-MES    DELIMITED   BY SPACE
+                       INTO   WRK-ERRMES-PLUS
+                       END-STRING
+      *
+                       INITIALIZE              TERRINF-AREA
+                       MOVE    TSRYCD-SRYCD (IDX6)
+                                           TO  TERRINF-SRYCD
+                       MOVE    WRK-LASTYMD TO  TERRINF-LASTYMD
+                       PERFORM 215-ERRMES-HEN-SEC
+                   END-IF
+               END-IF
+      *
+           END-IF
+      *
+           .
+       200112-RKISAI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    禁忌チェック項目情報退避処理
@@ -12858,6 +13031,9 @@
                WHEN  ( WRK-REIGAI-CHKNUM       =   "20" )
                  AND ( WRK-ERRCD               =   "200001" )
                    MOVE    TERRINF-TANICD  TO  WRK-REIGAI-TANICD
+                   MOVE    TERRINF-SRYCD   TO  WRK-REIGAI-CD
+                   PERFORM 800-REIGAI-CHK-SEC
+               WHEN  ( WRK-REIGAI-CHKNUM       =   "21" )
                    MOVE    TERRINF-SRYCD   TO  WRK-REIGAI-CD
                    PERFORM 800-REIGAI-CHK-SEC
                WHEN    OTHER
@@ -13937,6 +14113,7 @@
                                        DTCHK012-FILE
                                        DTCHK013-FILE
                                        DTCHK018-FILE
+                                       DTCHK022-FILE
       *
            INITIALIZE                  CHKSND-REC
            MOVE    CHKSND-REC      TO  MCPDATA-REC
@@ -14039,6 +14216,10 @@
                          AND ( WRK-ERRCD           = "200001" )
                            IF    ( DTCHK011-SRYCD  = WRK-REIGAI-CD )
                             AND  ( DTCHK011-TANICD = WRK-REIGAI-TANICD )
+                               MOVE    1       TO  FLG-REIGAI
+                           END-IF
+                       WHEN  ( WRK-REIGAI-CHKNUM   = "21" )
+                           IF    ( DTCHK011-SRYCD  = WRK-REIGAI-CD )
                                MOVE    1       TO  FLG-REIGAI
                            END-IF
                        WHEN    OTHER
@@ -15467,6 +15648,63 @@
            .
       *
        900-DTCHK018-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタファイルSTART処理
+      *****************************************************************
+       900-DTCHK022-START-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-DTCHK022
+      *
+           INITIALIZE                      DTCHK022-REC
+           MOVE    KEY-SRYCD           TO  DTCHK022-ISAM-SRYCD
+           START   DTCHK022-FILE
+               KEY IS  >=   DTCHK022-ISAM-KEY
+           INVALID
+               MOVE    1               TO  FLG-DTCHK022
+           NOT INVALID
+               PERFORM 900-DTCHK022-READ-SEC
+           END-START
+      *
+           .
+      *
+       900-DTCHK022-START-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタファイルREAD処理
+      *****************************************************************
+       900-DTCHK022-READ-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DTCHK022
+           MOVE    ZERO            TO  FLG-LOOP-END
+      *
+           PERFORM UNTIL ( FLG-DTCHK022    NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               READ    DTCHK022-FILE       NEXT
+               AT  END
+                   MOVE    1       TO  FLG-DTCHK022
+               NOT AT END
+      *
+                   IF    ( KEY-SRYCD   NOT =   DTCHK022-ISAM-SRYCD )
+                       MOVE    1   TO  FLG-DTCHK022
+                   ELSE
+      *
+                       MOVE   1        TO  FLG-LOOP-END
+      *
+                       IF    ( DTCHK022-ISAM-ITEMNO
+                                       =   ZERO  )
+                           MOVE    ZERO    TO  FLG-LOOP-END
+                       END-IF
+      *
+                   END-IF
+               END-READ
+      *
+           END-PERFORM
+      *
+           .
+      *
+       900-DTCHK022-READ-EXT.
            EXIT.
       *****************************************************************
       *    患者病名読込処理

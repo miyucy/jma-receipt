@@ -403,6 +403,16 @@
                            TNS-NAME                DELIMITED BY SPACE
                        INTO    WRK-CHKNAIYO
                        END-STRING
+                   WHEN  ( CHKREIGAI-CHKNUM    =   "21" )
+                       MOVE    CHKREIGAI-SRYCD
+                                           TO  WRK-TNS-SRYCD
+                       PERFORM 900-TENSU-KEY-SEL-SEC
+                       STRING
+                           CHKREIGAI-SRYCD         DELIMITED BY SIZE
+                           " "                     DELIMITED BY SIZE
+                           TNS-NAME                DELIMITED BY SPACE
+                       INTO    WRK-CHKNAIYO
+                       END-STRING
                    WHEN    OTHER
                        PERFORM VARYING IDXE    FROM    1   BY  1
                                UNTIL ( IDXE    >   ERRMES-MAX )

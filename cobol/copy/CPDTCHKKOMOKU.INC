@@ -23,7 +23,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  DTCHKKOMOKU-AREA.
-           03  DTCHKKOMOKU-MAX             PIC 9(03)   VALUE   20.
            03  DTCHKKOMOKU-VAL.
                05                          PIC X(02)   VALUE
                "01".
@@ -105,7 +104,12 @@
                "20".
                05                          PIC X(40)   VALUE
                "診療行為算定回数".
+               05                          PIC X(02)   VALUE
+               "21".
+               05                          PIC X(40)   VALUE
+               "選択式コメント".
            03  DTCHKKOMOKU-R   REDEFINES   DTCHKKOMOKU-VAL.
-               05  DTCHKKOMOKU-CHKKOMOKU-OCC    OCCURS  20.
+               05  DTCHKKOMOKU-CHKKOMOKU-OCC           OCCURS  21.
                    07  DTCHKKOMOKU-CHKNUM       PIC X(02).
                    07  DTCHKKOMOKU-CHKKOMOKU    PIC X(40).
+           03  DTCHKKOMOKU-MAX             PIC 9(03)   VALUE   21.

@@ -99,7 +99,7 @@
                            11  SPA-GMN-D01-USRCHKKBN       PIC X(02).
                            11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-USRCHKKBNMEI    PIC X(30).
-                       09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  20.
+                       09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  21.
                            11  SPA-GMN-D01-CHKKBN-G.
                                13  SPA-GMN-D01-CHKKBN      PIC X(01).
                                13  SPA-GMN-D01-FL1         PIC X(01).
@@ -108,7 +108,7 @@
                            11  SPA-GMN-D01-INGAIPROCKBN    PIC X(01).
                            11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-INGAIPROCKBNMEI PIC X(18).
-                   07  SPA-GMN-D01-CHKMSG-OCC              OCCURS  20.
+                   07  SPA-GMN-D01-CHKMSG-OCC              OCCURS  21.
                        09  SPA-GMN-D01-CHKMSG              PIC X(40).
                    07  SPA-GMN-D01-INGAIPROCMSG            PIC X(40).
                    07  SPA-GMN-D01-NYUGAIKBNLST-G.
@@ -3112,6 +3112,8 @@
                MOVE    "CHKKBN19"      TO  MCP-WIDGET
            WHEN    22
                MOVE    "CHKKBN20"      TO  MCP-WIDGET
+           WHEN    23
+               MOVE    "CHKKBN21"      TO  MCP-WIDGET
            WHEN    51
                MOVE    "INGAIPROCKBN"  TO  MCP-WIDGET
            WHEN    101
@@ -3193,6 +3195,8 @@
            WHEN    "CHKKBN19"
                MOVE    22              TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN20"
+               MOVE    23              TO  SPA-GMN-D01-CUR
+           WHEN    "CHKKBN21"
                MOVE    51              TO  SPA-GMN-D01-CUR
            WHEN    "CHK_SYAHO"
                MOVE    102             TO  SPA-GMN-D01-CUR
