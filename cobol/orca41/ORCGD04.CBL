@@ -3058,6 +3058,9 @@
                                        TO  CHKREIGAI-TANICD
                    MOVE    SPA-GMN-SRYCD
                                        TO  CHKREIGAI-SRYCD
+               WHEN  ( SPA-NAI-CHKNUM  =   "21" )
+                   MOVE    SPA-GMN-SRYCD
+                                       TO  CHKREIGAI-SRYCD
                WHEN    OTHER
                    MOVE    SPA-GMN-ERRCD
                                        TO  CHKREIGAI-ERRCD
@@ -3326,6 +3329,12 @@
                            SPA-GMN-TANINAME DELIMITED BY SPACE
                            "¡Ë¡§"          DELIMITED BY SIZE
                            SPA-GMN-LIMITMEI DELIMITED BY SPACE
+                   INTO    D04-SRYNAME
+                   END-STRING
+               WHEN  ( SPA-NAI-CHKNUM  =   "21" )
+                   STRING  SPA-GMN-SRYCD   DELIMITED BY SIZE
+                           " "             DELIMITED BY SIZE
+                           SPA-GMN-SRYNAME DELIMITED BY SPACE
                    INTO    D04-SRYNAME
                    END-STRING
                WHEN    OTHER

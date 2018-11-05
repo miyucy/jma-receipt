@@ -106,6 +106,14 @@
                                    RECORD  KEY     IS  DTCHK019-KEY
                                    FILE    STATUS  IS  STS-DTCHK019.
       *
+      *    データチェック中間ファイル（コメント関連）
+           SELECT  DTCHK022-FILE
+                                   ASSIGN  DTCHK022PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  DTCHK022-ISAM-KEY
+                                   FILE    STATUS  IS  STS-DTCHK022.
+      *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -169,6 +177,18 @@
            03  DTCHK019-KEY.
                05  DTCHK019-SRYCD      PIC X(09).
       *
+      *    データチェック中間ファイル（コメント関連）
+       FD  DTCHK022-FILE.
+       01  DTCHK022-REC.
+         02    DTCHK022-ISAM-KEY.
+           03  DTCHK022-ISAM-SRYCD     PIC X(09).
+           03  DTCHK022-ISAM-ITEMNO    PIC 9(04).
+           03  DTCHK022-ISAM-EDANO     PIC 9(02).
+           03  DTCHK022-ISAM-RENNUM    PIC 9(02).
+         02    DTCHK022-RKISAI-AREA.
+           COPY    "CPRECEKISAI.INC"   REPLACING  //RKISAI-//
+                                       BY         //DTCHK022-//.
+      *
       *    エラーファイル
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
@@ -219,6 +239,10 @@
                                    REPLACING  //TMPFLPARA//
                                    BY         //DTCHK019PARA//.
       *
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLPARA//
+                                   BY         //DTCHK022PARA//.
+      *
            COPY    "CPASGNPARA.INC".
       *
       *    エラーファイルファイル名称領域 
@@ -237,6 +261,7 @@
            03  STS-DTCHK017                            PIC X(02).
            03  STS-DTCHK018                            PIC X(02).
            03  STS-DTCHK019                            PIC X(02).
+           03  STS-DTCHK022                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
       *
        01  FLG-AREA.
@@ -252,6 +277,7 @@
            03  FLG-DTCHK017                            PIC 9(01).
            03  FLG-DTCHK018                            PIC 9(01).
            03  FLG-DTCHK019                            PIC 9(01).
+           03  FLG-DTCHK022                            PIC 9(01).
            03  FLG-LOOP-END                            PIC 9(01).
            03  FLG-PTNYUINRRK                          PIC 9(01).
            03  FLG-ETENSU1                             PIC 9(01).
@@ -268,6 +294,7 @@
            03  FLG-SYSKANRI                            PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-CHKMST                              PIC 9(01).
+           03  FLG-RKISAI                              PIC 9(01).
       *
        01  CNT-AREA.
            03  CNT-ETENSU5                             PIC 9(05).
@@ -461,6 +488,10 @@
        01  CHK-REC.
            COPY    "CPCHK.INC".
       *
+      *    レセプト記載マスタ
+       01  RKISAI-REC.
+           COPY    "CPRECEKISAI.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -644,6 +675,14 @@
            PERFORM 800-ORCSGETTEMP-SEC
            MOVE    ASGNPARA            TO  DTCHK019PARA-FULLNAME
       *
+           MOVE    WRK-PARA-HOSPNUM    TO  DTCHK022PARA-HOSPNUM
+           MOVE    "DTCHK022"          TO  DTCHK022PARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK022PARA-TERMID
+           MOVE    DTCHK022PARA-BASENAME
+                                       TO  ASGNPARA
+           PERFORM 800-ORCSGETTEMP-SEC
+           MOVE    ASGNPARA            TO  DTCHK022PARA-FULLNAME
+      *
            OPEN    INPUT               DCACCT-FILE
       *
            OPEN    OUTPUT              DTCHK014-FILE
@@ -671,6 +710,9 @@
            OPEN    OUTPUT              DTCHK019-FILE
            CLOSE   DTCHK019-FILE
            OPEN    I-O                 DTCHK019-FILE
+      *
+           OPEN    OUTPUT              DTCHK022-FILE
+           CLOSE   DTCHK022-FILE
       *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
@@ -748,8 +790,8 @@
       *
            END-IF
       *
-      *    併算定チェックマスタ編集処理
-           PERFORM 2001-CHKMST-EDIT-SEC
+      *    参照マスタ編集処理
+           PERFORM 2001-REFMST-EDIT-SEC
       *
            MOVE    1                   TO  FLG-END
            .
@@ -1938,23 +1980,13 @@
        200122-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    併算定チェックマスタ編集処理
+      *    参照マスタ編集処理
       *****************************************************************
-       2001-CHKMST-EDIT-SEC            SECTION.
-      *
-           PERFORM 20011-CHKMST-EDIT-SEC
-      *
-           .
-       2001-CHKMST-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    併算定チェックマスタ編集処理
-      *****************************************************************
-       20011-CHKMST-EDIT-SEC           SECTION.
+       2001-REFMST-EDIT-SEC            SECTION.
       *
            OPEN    INPUT               DTCHK003-FILE
-      *
            OPEN    I-O                 DTCHK018-FILE
+           OPEN    I-O                 DTCHK022-FILE
       *
            MOVE    ZERO            TO  KEY-PTID
       *
@@ -1974,44 +2006,10 @@
                    PERFORM UNTIL ( FLG-DCSRY   NOT =   ZERO )
                             OR   ( FLG-END     NOT =   ZERO )
       *
-                       INITIALIZE                  SEL-CHK-AREA
-                       MOVE    "#"             TO  SEL-CHKKBN
-                       PERFORM 900-DTCHK018-READ-SEC
-                       IF    ( FLG-DTCHK018    =   ZERO )
-                           CONTINUE
-                       ELSE
-                           INITIALIZE                  SEL-CHK-AREA
-                           MOVE    "#"             TO  SEL-CHKKBN
-                           PERFORM 20011211-CHKMST-EDIT-SEC
+                       PERFORM 20011-CHKMST-EDIT-SEC
       *
-                           MOVE    DCSRY-SRYCD TO  SEL-SRYCD
-                           PERFORM 900-TENSU-KEY-SEL-SEC
-                           MOVE    TNS-NYUGAITEKKBN
-                                               TO  WRK-NYUGAITEKKBN
-      *
-                           MOVE    "4"         TO  SEL-CHKKBN
-                           PERFORM 200111-CHKMST-EDIT-SEC
-      *
-                           MOVE    "5"         TO  SEL-CHKKBN
-                           PERFORM 200111-CHKMST-EDIT-SEC
-      *
-                           MOVE    "A"         TO  SEL-CHKKBN
-                           PERFORM 200111-CHKMST-EDIT-SEC
-      *
-                           MOVE    "B"         TO  SEL-CHKKBN
-                           PERFORM 200111-CHKMST-EDIT-SEC
-      *
-                           IF    ( SYS-1101-SRYHEIMSTKBN   =   "1" )
-                               MOVE    "5"         TO  SEL-CHKKBN
-                               PERFORM 200113-CHKMST-EDIT-SEC
-      *
-                               MOVE    "A"         TO  SEL-CHKKBN
-                               PERFORM 200113-CHKMST-EDIT-SEC
-      *
-                               MOVE    "B"         TO  SEL-CHKKBN
-                               PERFORM 200113-CHKMST-EDIT-SEC
-                           END-IF
-      *
+                       IF    ( ORCBSD01-CHKKBN (21)    =   "2" )
+                           PERFORM 20011-RKISAI-EDIT-SEC
                        END-IF
       *
                        PERFORM 901-DCSRY-READ-SEC
@@ -2033,6 +2031,55 @@
       *
            CLOSE   DTCHK003-FILE
                    DTCHK018-FILE
+                   DTCHK022-FILE
+      *
+           .
+       2001-REFMST-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    併算定チェックマスタ編集処理
+      *****************************************************************
+       20011-CHKMST-EDIT-SEC           SECTION.
+      *
+           INITIALIZE                  SEL-CHK-AREA
+           MOVE    "#"             TO  SEL-CHKKBN
+           PERFORM 900-DTCHK018-READ-SEC
+           IF    ( FLG-DTCHK018    =   ZERO )
+               CONTINUE
+           ELSE
+               INITIALIZE                  SEL-CHK-AREA
+               MOVE    "#"             TO  SEL-CHKKBN
+               PERFORM 20011211-CHKMST-EDIT-SEC
+      *
+               MOVE    DCSRY-SRYCD TO  SEL-SRYCD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               MOVE    TNS-NYUGAITEKKBN
+                                   TO  WRK-NYUGAITEKKBN
+      *
+               MOVE    "4"         TO  SEL-CHKKBN
+               PERFORM 200111-CHKMST-EDIT-SEC
+      *
+               MOVE    "5"         TO  SEL-CHKKBN
+               PERFORM 200111-CHKMST-EDIT-SEC
+      *
+               MOVE    "A"         TO  SEL-CHKKBN
+               PERFORM 200111-CHKMST-EDIT-SEC
+      *
+               MOVE    "B"         TO  SEL-CHKKBN
+               PERFORM 200111-CHKMST-EDIT-SEC
+      *
+               IF    ( SYS-1101-SRYHEIMSTKBN   =   "1" )
+                   MOVE    "5"         TO  SEL-CHKKBN
+                   PERFORM 200113-CHKMST-EDIT-SEC
+      *
+                   MOVE    "A"         TO  SEL-CHKKBN
+                   PERFORM 200113-CHKMST-EDIT-SEC
+      *
+                   MOVE    "B"         TO  SEL-CHKKBN
+                   PERFORM 200113-CHKMST-EDIT-SEC
+               END-IF
+      *
+           END-IF
       *
            .
        20011-CHKMST-EDIT-EXT.
@@ -2069,6 +2116,56 @@
       *
            .
        200111-CHKMST-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセ記載マスタ編集処理
+      *****************************************************************
+       20011-RKISAI-EDIT-SEC           SECTION.
+      *
+           PERFORM 900-DTCHK022-READ-SEC
+           IF    ( FLG-DTCHK022    =   ZERO )
+               CONTINUE
+           ELSE
+               PERFORM 200111-RKISAI-EDIT-SEC
+           END-IF
+      *
+           .
+       20011-RKISAI-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセ記載マスタ編集処理
+      *****************************************************************
+       200111-RKISAI-EDIT-SEC          SECTION.
+      *
+           INITIALIZE                  DTCHK022-REC
+           MOVE    DCSRY-SRYCD     TO  DTCHK022-ISAM-SRYCD
+           WRITE   DTCHK022-REC
+      *
+           PERFORM 900-RECEKISAI-KEY5-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-RKISAI  NOT =   ZERO )
+      *
+               INITIALIZE                  DTCHK022-REC
+      *
+               MOVE    RKISAI-SRYCD    TO  DTCHK022-ISAM-SRYCD
+               MOVE    RKISAI-ITEMNO   TO  DTCHK022-ISAM-ITEMNO
+               MOVE    RKISAI-EDANO    TO  DTCHK022-ISAM-EDANO
+               MOVE    RKISAI-RENNUM   TO  DTCHK022-ISAM-RENNUM
+      *
+               MOVE    RKISAI-REC      TO  DTCHK022-RKISAI-AREA
+      *
+               WRITE   DTCHK022-REC
+      *
+               PERFORM 900-RECEKISAI-KEY5-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_recekisai" TO  MCP-TABLE
+           MOVE    "key5"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       200111-RKISAI-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    併算定チェックマスタ編集処理（電子点数表より）
@@ -3584,6 +3681,68 @@
        900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
+      *    レセ記載検索処理
+      *****************************************************************
+       900-RECEKISAI-KEY5-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-RKISAI
+      *
+           INITIALIZE                  RKISAI-REC
+           MOVE    DCSRY-SRYCD     TO  RKISAI-SRYCD
+           MOVE    ORCBSD01-SRYYM  TO  RKISAI-STYM
+                                       RKISAI-EDYM
+           MOVE    RKISAI-REC      TO  MCPDATA-REC
+           MOVE    "tbl_recekisai" TO  MCP-TABLE
+           MOVE    "key5"          TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-RECEKISAI-KEY5-FET-SEC
+           ELSE
+               MOVE    1           TO  FLG-RKISAI
+               INITIALIZE              RKISAI-REC
+           END-IF
+      *
+           .
+       900-NRRKSRH-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院履歴照会FETCH処理
+      *****************************************************************
+       900-RECEKISAI-KEY5-FET-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-RKISAI
+           MOVE    ZERO            TO  FLG-LOOP-END
+      *
+           PERFORM UNTIL ( FLG-RKISAI      NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               MOVE    "tbl_recekisai" TO  MCP-TABLE
+               MOVE    "key5"          TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC TO  RKISAI-REC
+      *
+                   MOVE    1           TO  FLG-LOOP-END
+      *
+                   IF    ( RKISAI-JYOTAICD NOT =   SPACE )
+                       MOVE    ZERO    TO  FLG-LOOP-END
+                   END-IF
+      *
+                   IF    ( RKISAI-JYOKEN   NOT =   1 )
+                       MOVE    ZERO    TO  FLG-LOOP-END
+                   END-IF
+      *
+               ELSE
+                   MOVE    1           TO  FLG-RKISAI
+                   INITIALIZE              RKISAI-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       900-RECEKISAI-KEY5-FET-EXT.
+           EXIT.
+      *****************************************************************
       *    保険組合せ読込処理
       *****************************************************************
        900-DTCHK017-READ-SEC           SECTION.
@@ -3641,6 +3800,23 @@
       *
            .
        900-DTCHK019-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック中間ファイル（コメント関連）
+      *****************************************************************
+       900-DTCHK022-READ-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DTCHK022
+      *
+           INITIALIZE                  DTCHK022-REC
+           MOVE    DCSRY-SRYCD     TO  DTCHK022-ISAM-SRYCD
+           READ    DTCHK022-FILE
+           INVALID
+               MOVE    1           TO  FLG-DTCHK022
+           END-READ
+      *
+           .
+       900-DTCHK022-READ-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

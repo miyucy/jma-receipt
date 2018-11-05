@@ -626,6 +626,12 @@
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
+      *    ** 210xxxx 選択式コメント
+           05 PIC  X(06)   VALUE   "210001".
+           05 PIC  X(30)   VALUE   "選択式コメントが未入力です。確".
+           05 PIC  X(30)   VALUE   "認してください                ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
       *    ** 99xxxx その他必須チェック
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "990000".
@@ -1031,7 +1037,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  161.
+           05 ERRMES-OCC   OCCURS  162.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(120).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   161.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   162.

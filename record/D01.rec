@@ -131,6 +131,9 @@ D01 {
     CHKMSG20 {
       textdata varchar(40);
     };
+    CHKMSG21 {
+      textdata varchar(40);
+    };
     INGAIPROCMSG {
       textdata varchar(40);
     };
@@ -269,6 +272,13 @@ D01 {
     };
     CMB_CHKKBN20 {
       CHKKBN20 {
+        textdata varchar(20);
+      };
+      count int;
+        item varchar(20)[5];
+    };
+    CMB_CHKKBN21 {
+      CHKKBN21 {
         textdata varchar(20);
       };
       count int;
