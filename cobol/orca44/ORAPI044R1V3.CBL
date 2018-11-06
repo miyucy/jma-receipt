@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  05.00.01    NACL-Æ£¸¶    18/10/15  £Í£Ï£Î£Â£Ì£Ï£Â¥¨¥é¡¼ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1239,7 +1240,11 @@
            PERFORM 800-ORCGT01-CALL-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    "E62"               TO  WRK-ERRCD
+               IF      SPA-ERRCD           =   "E88"
+                   MOVE    SPA-ERRCD           TO  WRK-ERRCD
+               ELSE
+                   MOVE    "E62"               TO  WRK-ERRCD
+               END-IF
                GO  TO  2002-RECEIPTDATA-MAKE-EXT
            END-IF
       *
@@ -1924,6 +1929,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "E61"
                WHEN    "E62"
       *            ²èÌÌ¥¨¥é¡¼
+               WHEN    "E88"
+      *            £Í£Ï£Î£Â£Ì£Ï£Â¼èÆÀ¥¨¥é¡¼
                    MOVE    SPA-ERRMSG              TO  WRK-ERRMSG
       *
                WHEN    "E80"

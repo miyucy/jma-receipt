@@ -81,6 +81,7 @@
       *
       *  05.00.00    NACL-¿¹ÏÆ    17/12/21  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *  05.00.01    NACL-Æ£¸¶    17/12/19  £È£Á£Ï£Ò£ÉÂÐ±þ
+      *  05.00.02    NACL-Æ£¸¶    18/10/15  £Í£Ï£Î£Â£Ì£Ï£Â¥¨¥é¡¼ÂÐ±þ
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -4833,6 +4834,34 @@
            INITIALIZE                  SPA-T01-TBL-GROUP
            MOVE    ZERO            TO  SPA-T01-TIMER-FLG
       *
+      *    £È£Á£Ï£Ò£É¤Î¤È¤­£Í£Ï£Î£Â£Ì£Ï£Â¡Ý£É£Ä¤òÀßÄê
+           IF      SPA-T01-JOB-PARAM
+                                   NOT =   SPACE
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "E88"               TO  SPA-ERRCD
+                   GO  TO  460-RECEDEN-EXT
+               END-IF
+               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-DATA-ID
+      *
+               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "monblob"           TO  MCP-TABLE
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MONBLOB
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    "E88"               TO  SPA-ERRCD
+                   GO  TO  460-RECEDEN-EXT
+               END-IF
+               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-PRINT-ID
+           END-IF
+      *
       *    ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸ºï½ü½èÍý             
            INITIALIZE                  ORCSFILESVAREA
            MOVE    "D"             TO  SFILESV-MODE
@@ -5253,22 +5282,8 @@
       *    £È£Á£Ï£Ò£É¤Î¤È¤­£Í£Ï£Î£Â£Ì£Ï£Â¡Ý£É£Ä¤òÀßÄê
            IF      SPA-T01-JOB-PARAM
                                    NOT =   SPACE
-               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "monblob"           TO  MCP-TABLE
-               CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MONBLOB
-               MOVE    MONBLOB-ID          TO  SHELLTBL-ARG32
-                                               SPA-T01-MONBLOB-DATA-ID
-      *
-               MOVE    "MONBLOBNEW"        TO  MCP-FUNC
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "monblob"           TO  MCP-TABLE
-               CALL    "MONFUNC"           USING
-                                               MCPAREA
-                                               MONBLOB
-               MOVE    MONBLOB-ID          TO  SPA-T01-MONBLOB-PRINT-ID
+               MOVE    SPA-T01-MONBLOB-DATA-ID
+                                           TO  SHELLTBL-ARG32
            END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
@@ -6492,6 +6507,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                WHEN    "7777"
                WHEN    "9999"
                    MOVE    WRK-RECEERR                 TO  TERR-ERRMSG
+      *
+               WHEN    "E88"
+                   MOVE    "£Ä£á£ô£á¡²£É£ä¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¡£"
+                                                       TO  TERR-ERRMSG
            END-EVALUATE
       *
            MOVE    TERR-ERRMSG          TO  SPA-ERRMSG

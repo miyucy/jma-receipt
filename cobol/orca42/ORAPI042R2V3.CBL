@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/10/15  ＭＯＮＢＬＯＢエラー対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1221,6 +1222,15 @@
            ELSE
                PERFORM 800-ORCGR04-CALL-SEC
            END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               IF      SPA-ERRCD           =   "E88"
+                   MOVE    SPA-ERRCD           TO  WRK-ERRCD
+               ELSE
+                   MOVE    "E30"               TO  WRK-ERRCD
+               END-IF
+           END-IF
+      *
            .
        2002-RECEIPT-PRINT-EXT.
            EXIT.
@@ -1608,7 +1618,11 @@
       *
                WHEN    "E80"
                    MOVE    "一時ディレクトリが取得できません"
-                                               TO  WRK-ERRMSG
+                                                   TO  WRK-ERRMSG
+               WHEN    "E88"
+      *            ＭＯＮＢＬＯＢ取得エラー
+                   MOVE    "Ｄａｔａ＿Ｉｄが取得できません。"
+                                                   TO  WRK-ERRMSG
       *        共通エラー
                WHEN    "E89"
       *            ORCSCOMMON のエラー

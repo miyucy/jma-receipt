@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  05.00.00    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *  05.00.01    NACL-藤原    18/10/15  ＭＯＮＢＬＯＢエラー対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1387,6 +1388,12 @@
                GO  TO  2001-INPUT-CHK-EXT
            END-IF
       *
+      *    オンラインの変わりに追加処理後のクリア処理を行う
+           INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-BODY-SELNUM
+                                       SPA-T09-AREA
+      *
       *    レセ電データ作成前チェック
            MOVE    SPACE           TO  LINKAREA
                                        SPA-MOTOPG
@@ -1715,7 +1722,11 @@
            PERFORM 800-ORCGT06-CALL-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    "E62"               TO  WRK-ERRCD
+               IF      SPA-ERRCD           =   "E88"
+                   MOVE    SPA-ERRCD           TO  WRK-ERRCD
+               ELSE
+                   MOVE    "E62"               TO  WRK-ERRCD
+               END-IF
                GO  TO  2002-RECEIPTDATA-CHECK-MAKE-EXT
            END-IF
       *
@@ -2450,6 +2461,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "E61"
                WHEN    "E62"
       *            画面エラー
+               WHEN    "E88"
+      *            ＭＯＮＢＬＯＢ取得エラー
                    MOVE    SPA-ERRMSG              TO  WRK-ERRMSG
       *
                WHEN    "E80"
