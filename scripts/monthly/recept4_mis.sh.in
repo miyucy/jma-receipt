@@ -79,12 +79,13 @@ if  [ ${12} -eq '1' ]; then
 else
     SKKBN="K"
 fi
-if  [ ${19} -eq '1' ]; then
-    NGKBN="N"
-else
-    NGKBN="G"
-fi
-RECEFILE1="RECEIPTC${DCKBN}${SKKBN}${NGKBN}"
+#if  [ ${19} -eq '1' ]; then
+#    NGKBN="N"
+#else
+#    NGKBN="G"
+#fi
+#RECEFILE1="RECEIPTC${DCKBN}${SKKBN}${NGKBN}"
+RECEFILE1="RECEIPTC${DCKBN}${SKKBN}"
 RECEFILE2="TENKENT"
 
 #   該当ファイル削除
