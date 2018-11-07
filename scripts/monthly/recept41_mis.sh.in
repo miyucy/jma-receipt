@@ -69,12 +69,13 @@ if  [ ${22} -eq '1' ]; then
 else
     DCKBN="D"
 fi
-if  [ ${19} -eq '1' ]; then
-    NGKBN="N"
-else
-    NGKBN="G"
-fi
-RECEFILE1="RREC${DCKBN}${NGKBN}"
+#if  [ ${19} -eq '1' ]; then
+#    NGKBN="N"
+#else
+#    NGKBN="G"
+#fi
+#RECEFILE1="RREC${DCKBN}${NGKBN}"
+RECEFILE1="RREC${DCKBN}"
 RECEFILE2="TENKENT"
 
 #   該当ファイル削除
