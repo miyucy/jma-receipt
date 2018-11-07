@@ -1796,7 +1796,11 @@
       **   MOVE    WRK-PARA-TEISYUTUSAKI
       **                               TO  RECEDEN-TEISYUTUSAKI
            MOVE    3                   TO  RECEDEN-TEISYUTUSAKI
-           MOVE    WRK-PARA-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
+           IF      WRK-PARA-NYUGAIKBN  =   "0"
+               MOVE    "%"                 TO  RECEDEN-NYUGAIKBN
+           ELSE
+               MOVE    WRK-PARA-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
+           END-IF
       **   MOVE    "1"                 TO  RECEDEN-RECKBN
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
            MOVE    "tbl_receden_tmp"   TO  MCP-TABLE

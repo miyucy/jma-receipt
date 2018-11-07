@@ -204,68 +204,64 @@ fi
 #    を毎日と確定の処理区分として流用する
 #    0:毎日、1:確定
 #-------------------------------------------#
-if [ -e ${MCP_TEMPDIR}/${ARG04} ]; then
-  echo "Skipping because ErrorFile exists"
+if [ ${5} -eq 0 ]; then
+  SYORINO="0001"
 else
-  if [ ${5} -eq 0 ]; then
-    SYORINO="0001"
-  else
-    SYORINO="0002"
-  fi
+  SYORINO="0002"
+fi
 
-  ARG05=${EXYM}
-  ARG06=${EXYMD}
-  ARG13="$4/"
-  ARG18="127.0.0.1"
-  ARG20=${HOSPNUM}
-  ARG16="${ARG20}00OR044ERRAAAABBBBCCCCDDDD.dat"
-  STIME=${EXTIME}
+ARG05=${EXYM}
+ARG06=${EXYMD}
+ARG13="$4/"
+ARG18="127.0.0.1"
+ARG20=${HOSPNUM}
+ARG16="${ARG20}00OR044ERRAAAABBBBCCCCDDDD.dat"
+STIME=${EXTIME}
 
-  # 社保
-  export MON_BATCH_ID=$(uuidgen)
-  export MON_BATCH_NAME="recept4_mis.sh"
-  export MON_BATCH_GROUPNAME="${ARG20}"
-  export MON_BATCH_EXTRA="0000001SOKATU"
-  export MON_DIRECTORY_PATH="${LDDIRECTORY}"
-  export MCP_TENANT=1
+# 社保
+export MON_BATCH_ID=$(uuidgen)
+export MON_BATCH_NAME="recept4_mis.sh"
+export MON_BATCH_GROUPNAME="${ARG20}"
+export MON_BATCH_EXTRA="0000001SOKATU"
+export MON_DIRECTORY_PATH="${LDDIRECTORY}"
+export MCP_TENANT=1
  
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBS0000001SOKATU,${ARG20}"
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBS0000001SOKATU,${ARG20}"
 
-  PARAM="${SYORINO} MISRECE1 \"${ARG06}${STIME}\" 0001 \"${ARG05}\" \"${ARG06}\" \
-         recept4_mis.sh 0000 AAAABBBBCCCCDDDD orcacron prt 1 \
-         \"${ARG13}\" 0000001 SOKATU \"${ARG16}\" 4 cron \
-         0 \"${ARG20}\" 2 ${5} 0 0 99999999 0 999999 999999"
+PARAM="${SYORINO} MISRECE1 \"${ARG06}${STIME}\" 0001 \"${ARG05}\" \"${ARG06}\" \
+       recept4_mis.sh 0000 AAAABBBBCCCCDDDD orcacron prt 1 \
+       \"${ARG13}\" 0000001 SOKATU \"${ARG16}\" 4 cron \
+       0 \"${ARG20}\" 2 ${5} 0 0 99999999 0 999999 999999"
 
-  ${MONBATCH} "recept4_mis.sh ${PARAM}"
-  R4RC=$?
+${MONBATCH} "recept4_mis.sh ${PARAM}"
+R4RC=$?
 
-  if [ ${R4RC} -ne 0 ] ; then
-    delete_pgpass
-    exit ${R4RC}
-  fi
+if [ ${R4RC} -ne 0 ] ; then
+  delete_pgpass
+  exit ${R4RC}
+fi
 
-  # 国保・広域
-  export MON_BATCH_ID=$(uuidgen)
-  export MON_BATCH_NAME="recept4_mis.sh"
-  export MON_BATCH_GROUPNAME="${ARG20}"
-  export MON_BATCH_EXTRA="0000001SOKATU"
-  export MON_DIRECTORY_PATH="${LDDIRECTORY}"
-  export MCP_TENANT=1
+# 国保・広域
+export MON_BATCH_ID=$(uuidgen)
+export MON_BATCH_NAME="recept4_mis.sh"
+export MON_BATCH_GROUPNAME="${ARG20}"
+export MON_BATCH_EXTRA="0000001SOKATU"
+export MON_DIRECTORY_PATH="${LDDIRECTORY}"
+export MCP_TENANT=1
  
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBS0000001SOKATU,${ARG20}"
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBS0000001SOKATU,${ARG20}"
  
-  PARAM="${SYORINO} MISRECE1 \"${ARG06}${STIME}\" 0002 \"${ARG05}\" \"${ARG06}\" \
-         recept4_mis.sh 0000 AAAABBBBCCCCDDDD orcacron prt 4 \
-         \"${ARG13}\" 0000001 SOKATU \"${ARG16}\" 4 cron \
-         0 \"${ARG20}\" 2 ${5} 0 0 99999999 0 999999 999999"
+PARAM="${SYORINO} MISRECE1 \"${ARG06}${STIME}\" 0002 \"${ARG05}\" \"${ARG06}\" \
+       recept4_mis.sh 0000 AAAABBBBCCCCDDDD orcacron prt 4 \
+       \"${ARG13}\" 0000001 SOKATU \"${ARG16}\" 4 cron \
+       0 \"${ARG20}\" 2 ${5} 0 0 99999999 0 999999 999999"
  
-  ${MONBATCH} "recept4_mis.sh ${PARAM}"
-  R4RC=$?
+${MONBATCH} "recept4_mis.sh ${PARAM}"
+R4RC=$?
  
-  if [ ${R4RC} -ne 0 ] ; then
-    delete_pgpass
-    exit ${R4RC}
-  fi
+if [ ${R4RC} -ne 0 ] ; then
+  delete_pgpass
+  exit ${R4RC}
 fi
 
 delete_pgpass
