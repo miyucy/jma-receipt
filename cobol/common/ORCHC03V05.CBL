@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-森脇    18/11/08  リハビリにその他を含める
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1098,7 +1099,8 @@
            MOVE    "麻　　　　　酔"        TO  HCM03V05-MEISAI (8)
            MOVE    "検　　　　　査"        TO  HCM03V05-MEISAI (9)
            MOVE    "画　像　診　断"        TO  HCM03V05-MEISAI (10)
-           MOVE    "リハビリテーション"    TO  HCM03V05-MEISAI (11)
+      *     MOVE    "リハビリテーション"    TO  HCM03V05-MEISAI (11)
+           MOVE    "リハビリ・その他"      TO  HCM03V05-MEISAI (11)
            MOVE    "精神科専門療法"        TO  HCM03V05-MEISAI (12)
            MOVE    "放 射 線 治 療"        TO  HCM03V05-MEISAI (13)
            MOVE    "病　理　診　断"        TO  HCM03V05-MEISAI (14)
@@ -1546,6 +1548,10 @@
                    UNTIL   IDY >   15 
                MOVE    SYU-HKNTEN(IDY)     TO  WRK-HKNTEN(IDY)
            END-PERFORM
+      *
+      *    リハビリにその他を含める
+           COMPUTE WRK-HKNTEN(11)  =   SYU-HKNTEN(11)
+                                   +   SYU-HKNTEN(16)
       *
       *
            IF    ( COMB-HKNNUM             =    "971"
