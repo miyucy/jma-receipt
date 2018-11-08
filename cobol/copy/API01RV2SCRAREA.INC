@@ -147,3 +147,6 @@
       *ORAPI001R7V2
            COPY    "CPAPILSTV2.INC"    REPLACING
                                        //APILST-// BY //APILST42-//.
+      *ORAPI012R7V2
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //APILST43-//.

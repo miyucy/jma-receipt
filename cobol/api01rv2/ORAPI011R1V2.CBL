@@ -30,6 +30,7 @@
       *  04.07.01    NACL-Â¿¡¹Ç¼  13/08/01  ¼õÉÕ£É£ÄÄÉ²ÃÂÐ±þ
       *  04.08.01    NACL-Â¿¡¹Ç¼  16/10/XX  ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æÄÉ²ÃÂÐ±þ
       *  04.08.01    NACL-Â¿¡¹Ç¼  17/04/XX  Í½Ìó£É£ÄÄÉ²ÃÂÐ±þ
+      *  05.00.00    NACL-Â¿¡¹Ç¼  18/11/XX  ¥á¥âÅÐÏ¿Í­ÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -49,6 +50,7 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-UKETUKE             PIC 9(01).
+           03  FLG-PTMEMOINF           PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
@@ -98,6 +100,13 @@
            03  WRK-MCP-WINDOW          PIC X(62).
       *
            03  WRK-HKNCOMBI            PIC X(04).
+      *H30.11
+      *    ´µ¼Ô¥á¥âÅÐÏ¿
+           03  WRK-MEMO-AREA.
+               05  WRK-MEMO1-00            PIC X(01).
+               05  WRK-MEMO2-00            PIC X(01).
+               05  WRK-MEMO1-KA            PIC X(01).
+               05  WRK-MEMO2-KA            PIC X(01).
       *
        01  WRK-XML-AREA.
            03  WRK-ACCEPT-YMD          PIC X(08).
@@ -176,6 +185,10 @@
       *    ¼õÉÕ
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
+      *
+      *    ´µ¼Ô¥á¥â¥¿
+       01  PTMEMOINF-REC.
+           COPY    "CPPTMEMOINF.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -857,8 +870,11 @@
            ELSE
       *        ´µ¼Ô¾ðÊó¸¡º÷
                PERFORM 200212-PTINF-HEN-SEC
-           END-IF
       *
+      *H30.11
+      *        ¥á¥âÅÐÏ¿¸¡º÷
+               PERFORM 200214-PTMEMOINF-SEC
+           END-IF
            .
        20021-UKETUKELST-HEN-EXT.
            EXIT.
@@ -1045,6 +1061,95 @@
            .
        2002101-HKNHENSYU-EXT.
            EXIT.
+      *
+      *H30.11
+      *****************************************************************
+      *    ¥á¥âÅÐÏ¿¸¡º÷ÊÔ½¸½èÍý
+      *****************************************************************
+       200214-PTMEMOINF-SEC     SECTION.
+      *
+           INITIALIZE                  WRK-MEMO-AREA
+      *
+      *    ´µ¼Ô¥á¥â¸¡º÷
+           MOVE    SPACE               TO  PTMEMOINF-REC
+           INITIALIZE                  PTMEMOINF-REC
+           MOVE    UKE-HOSPNUM         TO  PTMEMOINF-HOSPNUM
+           MOVE    UKE-PTID            TO  PTMEMOINF-PTID
+           MOVE    UKE-UKEYMD          TO  PTMEMOINF-SYSYMD
+      *
+           MOVE    PTMEMOINF-REC       TO  MCPDATA-REC
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 910-PTMEMOINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTMEMOINF
+               INITIALIZE                  PTMEMOINF-REC
+           END-IF
+           PERFORM UNTIL       (FLG-PTMEMOINF  =   1 )
+      *
+      *        ¿ÇÎÅ²Ê=00
+               IF      PTMEMOINF-SRYKA         =   "00"
+                   IF      PTMEMOINF-MEMOKBN   =   "1"
+      *                ¥á¥â£±
+                       MOVE    "1"             TO  WRK-MEMO1-00
+                   ELSE
+                       MOVE    "1"             TO  WRK-MEMO2-00
+                   END-IF
+               END-IF
+      *        ¼õÉÕ¿ÇÎÅ²Ê
+               IF     (PTMEMOINF-SRYKA     =   UKE-SRYKA )
+                 AND  (PTMEMOINF-SRYKA NOT =   "00"  )
+                   IF      PTMEMOINF-MEMOKBN   =   "1"
+      *                ¥á¥â£±
+                       MOVE    "1"             TO  WRK-MEMO1-KA
+                   ELSE
+                       MOVE    "1"             TO  WRK-MEMO2-KA
+                   END-IF
+               END-IF
+      *
+               MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 910-PTMEMOINF-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptmemoinf"     TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    ¿ÇÎÅ²Ê¡á£°£°
+           IF     (WRK-MEMO1-00        =   "1"  )
+              AND (WRK-MEMO2-00        =   "1"  )
+               MOVE    "3"             TO  ACPLSTRES-MEMO-00 (IDX)
+           END-IF
+           IF     (WRK-MEMO1-00        =   "1"  )
+              AND (WRK-MEMO2-00        =   SPACE)
+               MOVE    "1"             TO  ACPLSTRES-MEMO-00 (IDX)
+           END-IF
+           IF     (WRK-MEMO1-00        =   SPACE)
+              AND (WRK-MEMO2-00        =   "1"  )
+               MOVE    "2"             TO  ACPLSTRES-MEMO-00 (IDX)
+           END-IF
+      *
+      *    ¿ÇÎÅ²Ê¡â£°£°
+           IF     (WRK-MEMO1-KA        =   "1"  )
+              AND (WRK-MEMO2-KA        =   "1"  )
+               MOVE    "3"             TO  ACPLSTRES-MEMO-KA (IDX)
+           END-IF
+           IF     (WRK-MEMO1-KA        =   "1"  )
+              AND (WRK-MEMO2-KA        =   SPACE)
+               MOVE    "1"             TO  ACPLSTRES-MEMO-KA (IDX)
+           END-IF
+           IF     (WRK-MEMO1-KA        =   SPACE)
+              AND (WRK-MEMO2-KA        =   "1"  )
+               MOVE    "2"             TO  ACPLSTRES-MEMO-KA (IDX)
+           END-IF
+           .
+       200214-PTMEMOINF-EXT.
+           EXIT.
+      *H30.11
       *
       *****************************************************************
       *    ÆþÎÏ¹àÌÜÊÑ´¹ÊÔ½¸½èÍý
@@ -1336,6 +1441,24 @@
            END-IF
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¥á¥âÆÉ¹þ½èÍý
+      *****************************************************************
+       910-PTMEMOINF-READ-SEC         SECTION.
+      *
+           PERFORM 910-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTMEMOINF-REC
+               MOVE    ZERO                TO  FLG-PTMEMOINF
+           ELSE
+               INITIALIZE                      PTMEMOINF-REC
+               MOVE    1                   TO  FLG-PTMEMOINF
+           END-IF
+      *
+           .
+       910-PTMEMOINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

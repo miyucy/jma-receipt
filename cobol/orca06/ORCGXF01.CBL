@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.03.00    NACL-多々納  08/06/10  ＣＬＡＩＭ送信追加
       *  04.04.00    NACL-多々納  08/12/08  確認画面追加
+      *  05.00.00    NACL-多々納  18/11/XX  PUSH通信処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -64,6 +65,8 @@
            03  FLG-CLAIM               PIC 9(01).
            03  FLG-SOUSIN              PIC 9(01).
            03  FLG-UKETUKE-ARI         PIC 9(01).
+      *H30.11
+           03  FLG-SYORIKBN            PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -76,7 +79,11 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SYMD            PIC X(08).
+           03  WRK-SYMD.
+               05  WRK-SYY           PIC X(04).
+               05  WRK-SMM           PIC X(02).
+               05  WRK-SDD           PIC X(02).
+      *
            03  WRK-ZZZ             PIC ZZZ.
       *
            03  WRK-SRYKA-G.
@@ -121,6 +128,26 @@
                05  WRK-UKE-SRYNAIDSP       PIC X(20).
            03  WRK-KBNCD                   PIC 9(02).
            03  WRK-PTID                    PIC X(10).
+      *
+      *H30.11
+      *PUSH通信用
+           03  WRK-HEN-DATE.
+               05  WRK-HEN-YY          PIC X(04).
+               05  WRK-HEN-H1          PIC X(01).
+               05  WRK-HEN-MM          PIC X(02).
+               05  WRK-HEN-H2          PIC X(01).
+               05  WRK-HEN-DD          PIC X(02).
+      *    時間編集
+           03  WRK-THMS.
+               05  WRK-THHH             PIC X(02).
+               05  WRK-THMM             PIC X(02).
+               05  WRK-THSS             PIC X(02).
+           03  WRK-HEN-TIME.
+               05  WRK-HEN-THH         PIC X(02).
+               05  WRK-HEN-T1          PIC X(01).
+               05  WRK-HEN-TMM         PIC X(02).
+               05  WRK-HEN-T2          PIC X(01).
+               05  WRK-HEN-TSS         PIC X(02).
       *
       *    年齢計算
        01  WRK-NENREI-AREA.
@@ -203,6 +230,11 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *H30.11
+      *PUSH通信
+           COPY    "CPPUSHACCEPT02.INC".
+      *
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -639,7 +671,10 @@
            MOVE    PTMEMOINF-SYSYMD    TO  SPA-NAI-TSYSYMD (IDX)
            MOVE    PTMEMOINF-RENNUM    TO  SPA-NAI-TRENNUM (IDX)
            MOVE    PTMEMOINF-SRYKA     TO  SPA-NAI-TSRYKA  (IDX)
-           MOVE    PTMEMOINF-MEMO      TO  SPA-GMN-TMEMO   (IDX)
+      ***  MOVE    PTMEMOINF-MEMO      TO  SPA-GMN-TMEMO   (IDX)
+      *H30.11
+      *    メモ内容チェック編集
+           PERFORM 31011-MEMO-HEN-SEC
       *
            MOVE    PTMEMOINF-SYSYMD    TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
@@ -651,6 +686,30 @@
            .
        3101-PTMEMOINF-SPAHEN-EXT.
            EXIT.
+      *H29.5
+      *****************************************************************
+      *    メモ内容チェック処理
+      *****************************************************************
+       31011-MEMO-HEN-SEC            SECTION.
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    200                 TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    0                   TO  KANACONV-CHAR-TYPE
+           MOVE    PTMEMOINF-MEMO      TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           IF     (KANACONV-RETURN     =   ZERO )
+               MOVE    KANACONV-OUTDATA
+                                       TO  SPA-GMN-TMEMO   (IDX)
+           ELSE
+               MOVE    KANACONV-OUTDATA
+                                       TO  SPA-GMN-TMEMO   (IDX)
+           END-IF
+           .
+       31011-MEMO-HEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    診療科名称編集処理
@@ -1885,6 +1944,11 @@
                MOVE    SPA-GMN-SRYKA02     TO  WRK-SRYKA
                MOVE    SPA-NAI-RENNUM02    TO  WRK-RENNUM
                PERFORM 21121-PTMEMOINF-SYORI-SEC
+      *H30.11
+      *        PUSH通信処理
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 600-PUSH-SYORI-SEC
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1985,6 +2049,9 @@
                MOVE    "0020"              TO  SPA-ERRCD
            END-IF
       *
+      *H30.11
+           MOVE    1                   TO  FLG-SYORIKBN
+      *
            .
        21121-PTMEMOINF-INS-EXT.
            EXIT.
@@ -2012,6 +2079,9 @@
                            ",KEY:"   PTMEMOINF-KEY    "."
                MOVE    "0020"              TO  SPA-ERRCD
            END-IF
+      *
+      *H30.11
+           MOVE    2                   TO  FLG-SYORIKBN
            .
        21121-PTMEMOINF-UPD-EXT.
            EXIT.
@@ -2112,11 +2182,14 @@
                END-IF
            END-IF
       *
+      *H30.11
+           MOVE    3                   TO  FLG-SYORIKBN
+      *
            .
        21201-PTMEMOINF-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    コメント１登録処理
+      *    コメント２登録処理
       *****************************************************************
        21201-MEMO02-ADD-SEC            SECTION.
       *
@@ -2124,12 +2197,18 @@
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
-      *    メモ１
+      *    メモ２
            MOVE    2                   TO  WRK-MEMOKBN
            MOVE    SPA-GMN-MEMO02      TO  WRK-MEMO
            MOVE    SPA-GMN-SRYKA02     TO  WRK-SRYKA
            MOVE    SPA-NAI-RENNUM02    TO  WRK-RENNUM
            PERFORM 21121-PTMEMOINF-SYORI-SEC
+      *H30.11
+      *PUSH通信処理
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 600-PUSH-SYORI-SEC
+           END-IF
+      *
       *    再表示
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NAI-MEMOKBN     =   2
@@ -2143,7 +2222,7 @@
        21201-MEMO02-ADD-EXT.
            EXIT.
       *****************************************************************
-      *    コメント１登録処理
+      *    コメント２登録処理
       *****************************************************************
        21201-MEMO02-DEL-SEC            SECTION.
       *
@@ -2152,6 +2231,14 @@
            MOVE    SPA-GMN-SRYKA02     TO  WRK-SRYKA
            MOVE    SPA-NAI-RENNUM02    TO  WRK-RENNUM
            PERFORM 21201-PTMEMOINF-DEL-SEC
+      *H30.11
+      *PUSH通信処理
+      *    当日メモ２の削除のみ
+           IF     (SPA-ERRCD           =   SPACE     )
+              AND (SPA-NAI-SYSYMD      =   SPA-SYSYMD )
+               PERFORM 600-PUSH-SYORI-SEC
+           END-IF
+      *
       *    再表示
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NAI-MEMOKBN     =   2
@@ -2763,6 +2850,84 @@
            .
        49061-UKETUKE-CHEK-EXT.
            EXIT.
+      *H30.11
+      *****************************************************************
+      *    PUSH処理
+      *****************************************************************
+       600-PUSH-SYORI-SEC         SECTION.
+      *
+      *
+           INITIALIZE                      PUSHAC02-REC
+           MOVE    "patient_memo"      TO  PUSHAC02-EVENT
+           EVALUATE    FLG-SYORIKBN
+           WHEN    1
+      *        追加
+               MOVE    "add"               TO  PUSHAC02-PMODE
+           WHEN    2
+      *        更新
+               MOVE    "modify"            TO  PUSHAC02-PMODE
+           WHEN    3
+      *        削除
+               MOVE    "delete"            TO  PUSHAC02-PMODE
+           END-EVALUATE
+           MOVE    SPA-GMN-PTNUM       TO  PUSHAC02-PTNUM
+           MOVE    SPA-SYSYMD          TO  WRK-SYMD
+      *??
+      *    送信時間
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                            ORCSMCNDATEAREA
+           MOVE    SMCNDATE-HMS        TO  WRK-THMS
+           PERFORM 801-DAYHEN01-SEC
+           MOVE    WRK-HEN-DATE        TO  PUSHAC02-UKEYMD
+           MOVE    WRK-HEN-TIME        TO  PUSHAC02-UKETIME
+      *    MOVE    UKE-UKEID           TO  PUSHAC02-UKEID
+      *    MOVE    UKE-DRCD            TO  PUSHAC02-DRCD
+           MOVE    WRK-SRYKA           TO  PUSHAC02-SRYKA
+      *    MOVE    UKE-HKNCOMBI        TO  PUSHAC02-HKNCOMBI
+      *
+           MOVE    PUSHAC02-REC        TO  MCPDATA-REC
+           MOVE    "PUSHEVENT"         TO  MCP-FUNC
+           MOVE    "push_accept02"     TO  MCP-TABLE
+           MOVE    "push_accept02"     TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       600-PUSH-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日付編集処理
+      *****************************************************************
+       801-DAYHEN01-SEC                SECTION.
+      *
+           IF      WRK-SYMD            =   SPACE
+               MOVE    SPACE           TO  WRK-HEN-DATE
+           ELSE
+               INITIALIZE                  WRK-HEN-DATE
+               MOVE    WRK-SYY             TO  WRK-HEN-YY
+               MOVE    WRK-SMM             TO  WRK-HEN-MM
+               MOVE    WRK-SDD             TO  WRK-HEN-DD
+               MOVE    "-"                 TO  WRK-HEN-H1
+               MOVE    "-"                 TO  WRK-HEN-H2
+               IF      WRK-SYMD            =   "99999999"
+                   MOVE    "12"                TO  WRK-HEN-MM
+                   MOVE    "31"                TO  WRK-HEN-DD
+               END-IF
+           END-IF
+      *
+           INITIALIZE                  WRK-HEN-TIME
+           MOVE    WRK-THHH            TO  WRK-HEN-THH
+           MOVE    WRK-THMM            TO  WRK-HEN-TMM
+           MOVE    WRK-THSS            TO  WRK-HEN-TSS
+           MOVE    ":"                 TO  WRK-HEN-T1
+           MOVE    ":"                 TO  WRK-HEN-T2
+           .
+       801-DAYHEN01-EXT.
+           EXIT.
+      *
+      *
       *****************************************************************
       *    戻る　処理
       *****************************************************************

@@ -127,4 +127,8 @@
       *                    有効終了日
                            11  ACPLSTRES-INSURANCE-END-DATE  PIC X(10).
       *
-      *
+      *H30.11
+      *               メモ登録情報
+                      07  ACPLSTRES-MEMO-INF.
+                          09  ACPLSTRES-MEMO-00   PIC X(01).
+                          09  ACPLSTRES-MEMO-KA   PIC X(01).

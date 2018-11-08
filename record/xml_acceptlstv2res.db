@@ -57,6 +57,11 @@ xml_acceptlstv2res {
 			Certificate_ExpiredDate		varchar(10);
 			} [4];
 			};
+#-----> ƒƒ‚“o˜^‹æ•ª
+		Patient_Memo_Information  {
+			Patient_Memo_Department_00	varchar(1);
+			Patient_Memo_Department		varchar(1);
+			};
 		} [500];
     	};
 };
