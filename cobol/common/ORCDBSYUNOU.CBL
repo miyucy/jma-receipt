@@ -256,6 +256,19 @@
            MOVE    SYU-GRP-SGKMONEY    TO  SYUMAIN-GRP-SGKMONEY
            MOVE    SYU-GRP-HAKHOUFLG   TO  SYUMAIN-GRP-HAKHOUFLG
            MOVE    SYU-SECMONEY        TO  SYUMAIN-SECMONEY
+      *
+           IF      SYU-NYUGAIKBN    =  "2"
+             IF    SYU-ACCT-UPDKBN  =  SPACE
+               IF  SYU-SECMONEY     =   8
+                 MOVE    ZERO          TO  SYUMAIN-SECMONEY
+               END-IF
+             ELSE
+               IF  SYU-SECMONEY     =  ZERO OR 9
+                 MOVE     8            TO  SYUMAIN-SECMONEY
+               END-IF
+             END-IF
+           END-IF
+      *
            MOVE    SYU-HKNTEKMONEY     TO  SYUMAIN-HKNTEKMONEY
            MOVE    SYU-DISCOUNT-KBN    TO  SYUMAIN-DISCOUNT-KBN
            MOVE    SYU-DISCOUNT-BODY   TO  SYUMAIN-DISCOUNT-BODY
@@ -424,6 +437,19 @@
            MOVE    SYUMAIN-GRP-SGKMONEY    TO  SYU-GRP-SGKMONEY
            MOVE    SYUMAIN-GRP-HAKHOUFLG   TO  SYU-GRP-HAKHOUFLG
            MOVE    SYUMAIN-SECMONEY        TO  SYU-SECMONEY
+      *
+           IF      SYUMAIN-NYUGAIKBN    =  "2"
+             IF    SYUMAIN-ACCT-UPDKBN  =  SPACE
+               IF  SYUMAIN-SECMONEY     =   8
+                 MOVE    ZERO              TO  SYU-SECMONEY
+               END-IF
+             ELSE
+               IF  SYUMAIN-SECMONEY     =  ZERO OR 9
+                 MOVE     8                TO  SYU-SECMONEY
+               END-IF
+             END-IF
+           END-IF
+      *
            MOVE    SYUMAIN-HKNTEKMONEY     TO  SYU-HKNTEKMONEY
            MOVE    SYUMAIN-DISCOUNT-KBN    TO  SYU-DISCOUNT-KBN
            MOVE    SYUMAIN-DISCOUNT-BODY   TO  SYU-DISCOUNT-BODY
