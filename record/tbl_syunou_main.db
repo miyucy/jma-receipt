@@ -1707,8 +1707,8 @@ path	key84 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYYMD      LIKE :SRYYMD
 			AND   CREATEKBN   <>  '3'
-			AND ( SECMONEY  NOT IN (0,9)
-			 OR   ACCT_UPDKBN <>  '' )
+			AND   SECMONEY BETWEEN 1 AND 8
+			AND   SECMONEY IN (1,2,3,4,6,7,8)
 			ORDER   BY    PTID
 		;
 	};
@@ -1728,6 +1728,7 @@ path	key85 	{
 	};
 };
 
+# "between" makes using index more efectively
 path	key86 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_main_key86_csr CURSOR FOR
@@ -1737,8 +1738,8 @@ path	key86 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYYMD      LIKE :SRYYMD
 			AND   CREATEKBN   <>  '3'
-			AND ( SECMONEY  NOT IN (0,9)
-			 OR   ACCT_UPDKBN <>  '' )
+			AND   SECMONEY BETWEEN 1 AND 8
+			AND   SECMONEY IN (1,2,3,4,6,7,8)
             LIMIT 1
 		;
 	};
@@ -1965,7 +1966,7 @@ path	key96 	{
 		;
 	};
 };
-
+# "between" makes using index more efectively
 path	key97 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_main_key97_csr CURSOR FOR
@@ -1975,8 +1976,8 @@ path	key97 	{
 			AND   NYUGAIKBN    =   :NYUGAIKBN
 			AND   SRYYMD      LIKE :SRYYMD
 			AND   CREATEKBN   <>  '3'
-			AND ( SECMONEY  NOT IN (0,9)
-			 OR   ACCT_UPDKBN <>  '' )
+			AND   SECMONEY BETWEEN 1 AND 8
+			AND   SECMONEY IN (1,2,3,4,6,7,8)
 			ORDER   BY    PTID,DENPNUM
 		;
 	};
