@@ -9150,6 +9150,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      APIS-PTHKN-KAKUNINYMD (IDX) NOT =   SPACE
                MOVE    APIS-PTHKN-KAKUNINYMD (IDX)
                                            TO  SPA-GMN-HKAKUNINYMD
+               MOVE    APIS-PTHKN-KAKUNINYMD (IDX)
+                                           TO  SPA-NAI-HKAKUNINYMD
+           END-IF
+      *H30.11
+           MOVE    APIS-PTHKN-SKKGETYMD (IDX)
+                                           TO  SPA-NAI-SKKGETYMD
+           MOVE    APIS-PTHKN-TEKSTYMD (IDX)
+                                           TO  SPA-NAI-HTEKSTYMD
+           MOVE    APIS-PTHKN-TEKEDYMD (IDX)
+                                           TO  SPA-NAI-HTEKEDYMD
+      *
+      *H30.11
+      *    開始日変更があれば、補助区分変更
+           IF      APIS-PTHKN-TEKSTYMD (IDX)
+                                   NOT =   SPA-PTHKN-TEKSTYMD(IDX)
+               MOVE    SPA-NAI-HTEKSTYMD   TO  WRK-TEKSTYMD
+      *        本人家族区分等
+               PERFORM 31011-HKN-HEN-SEC
            END-IF
       *
            .

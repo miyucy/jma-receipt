@@ -970,6 +970,16 @@
                END-IF
            END-IF
       *
+      *!!
+      *H30.11
+      *    ³«»ÏÆü¤¬£·£°ºÐÌ¤Ëþ¤Ï°ìÈÌ
+           IF    (FLG-RJN-02               =   1     )
+             AND (SPA-NAI-HTEKSTYMD    NOT =   SPACE )
+               IF    (SPA-NAI-HTEKSTYMD    <   SPA-BYMD-70)
+                   MOVE    ZERO            TO  FLG-RJN-02
+               END-IF
+           END-IF
+      *!
            IF      FLG-RJN-02          =   1
                PERFORM 3101104-HOJOKBN-HEN02-SEC
            ELSE

@@ -697,7 +697,6 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_patientmodv3req2"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            MOVE    "patientmodv3req2"  TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -714,7 +713,6 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_patientmodv3req2"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -2706,6 +2704,7 @@
                    PERFORM 290-ERROR-HEN-SEC
                    MOVE    1               TO  FLG-HKNEND
                END-IF
+      *
                IF     (SPA-PIDCD       NOT =   SPACE )
                    PERFORM 200221-PIDCDMSG-SEC
                    MOVE    "P2"            TO  WRK-ERRCD
@@ -3167,7 +3166,13 @@
            IF      SPA-ERRCD(1:1)      =   "A"
                PERFORM 8901-PTERRCD-SETAPI-SEC
            ELSE
-               PERFORM 8901-PTERRCD-SET-SEC
+      *H30.11
+               IF      WRK-ERRCD       =   "P2"
+                   PERFORM 8902-PTPIDCD-SET-SEC
+               ELSE
+      *
+                   PERFORM 8901-PTERRCD-SET-SEC
+               END-IF
            END-IF
            IF      WRK-ERRCD           =   SPACE
                MOVE    "P1"                TO  WRK-ERRCD
@@ -3876,7 +3881,6 @@
       *    患者登録確認メッセージ編集処理
       *****************************************************************
        8902-PTPIDCD-SET-SEC              SECTION.
-      *
       *
            EVALUATE    SPA-PIDCD
                WHEN    "0104"
