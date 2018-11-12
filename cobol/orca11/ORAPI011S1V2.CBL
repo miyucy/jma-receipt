@@ -510,7 +510,6 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_acceptv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            MOVE    "acceptreq"         TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -527,7 +526,6 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_acceptv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
