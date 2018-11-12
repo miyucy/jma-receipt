@@ -76,10 +76,6 @@
                05  WRK-TIME-FL2        PIC X(01).
                05  WRK-TIME-SS         PIC 9(02).
       *
-           COPY    "CPFINDINFV3REQ.INC"  REPLACING
-                                //XML-//     BY  //TXML-//
-                                //FINDINFREQ-// BY  //TFINDINFREQ-//.
-      *
        01  REQ-AREA.
            03  REQ-BASEYMD             PIC X(10).
       *
@@ -99,6 +95,8 @@
            COPY    "CPFINDINFV3REQ.INC".
       *    API XML書き込み用定義体
            COPY    "CPFINDINFV3RES.INC".
+      *    API XML読み込み共通定義
+           COPY    "CPAPIV2REQ.INC".
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -509,45 +507,22 @@
                DISPLAY "findinfv3 object is not low_value"
            END-IF
       *
-           INITIALIZE                      XML-FINDINFV3REQ
-      * XML情報取り出し
-           MOVE    "xml_findinfv3req"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    QAPI02-BODY         TO  FINDINFREQ-OBJECT
-           MOVE    ZERO                TO  FINDINFREQ-MODE
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-FINDINFV3REQ
-           IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_findinfv3req" TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               MOVE    "findinfv3req"     TO  FINDINFREQ-RECORDNAME
-               MOVE    "XMLREAD"       TO  MCP-FUNC
-               CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       XML-FINDINFV3REQ
-               IF    ( MCP-RC          =   ZERO  OR  1 )
-                   CONTINUE
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "0098"       TO  SPA-ERRCD
-               END-IF
+           INITIALIZE                  XML-APIREQ
+           MOVE    "xml_findinfv3req" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    QAPI02-BODY     TO  APIREQ-OBJECT
+           MOVE    ZERO            TO  APIREQ-MODE
+           MOVE    "findinfv3req"  TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLREAD-SEC
+           IF    ( MCP-RC          =   ZERO  OR  1 )
+               MOVE    APIREQ-PATIENTINFOREQ
+                                   TO  FINDINFREQ-FINDV2REQ
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "0097"           TO  SPA-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "0098"       TO  SPA-ERRCD
            END-IF
       *
-           MOVE    XML-FINDINFV3REQ       TO  TXML-FINDINFV3REQ
-      *
-           MOVE    "xml_findinfv3req"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-FINDINFV3REQ
-      *
-           MOVE    TXML-FINDINFV3REQ      TO  XML-FINDINFV3REQ
+           MOVE    LOW-VALUE       TO  QAPI02-BODY
       *
            .
        900-XML-READ-EXT.
@@ -576,45 +551,20 @@
            END-IF
            MOVE    SPA-Q01-ERRMSG  TO  FINDINFRES-API-RESULT-MSG
       *
-           MOVE    "xml_findinfv3res"     TO  MCP-TABLE
+           INITIALIZE                      XML-APIREQ
+           MOVE    "xml_findinfv3res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    1                   TO  FINDINFRES-MODE
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-FINDINFV3RES
-           IF    ( MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_findinfv3res"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "findinfv3res"         TO  FINDINFRES-RECORDNAME
-           MOVE    "XMLWRITE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-FINDINFV3RES
+           MOVE    FINDINFRES-FINDINFV2RES
+                                       TO  APIREQ-PATIENTINFOREQ
+           MOVE    1                   TO  APIREQ-MODE
+           MOVE    "findinfv3res"      TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLWRITE-SEC
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
+               MOVE    APIREQ-OBJECT  TO  QAPI02-BODY
+               MOVE    "application/xml"
+                                      TO  QAPI02-CONTENT-TYPE
            ELSE
                DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_findinfv3res"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-FINDINFV3RES
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    FINDINFRES-OBJECT  TO  QAPI02-BODY
-               MOVE    "application/xml"
-                                       TO  QAPI02-CONTENT-TYPE
-           ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
            END-IF
       *
            .
@@ -635,4 +585,32 @@
       *
            .
        990-EXIT-PROGRAM-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＸＭＬ読込処理
+      *****************************************************************
+       910-XMLREAD-SEC                 SECTION.
+      *
+           MOVE    "XMLREAD"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       XML-APIREQ
+      *
+           .
+      *
+       910-XMLREAD-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＸＭＬ書込処理
+      *****************************************************************
+       910-XMLWRITE-SEC                SECTION.
+      *
+           MOVE    "XMLWRITE"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       XML-APIREQ
+      *
+           .
+      *
+       910-XMLWRITE-EXT.
            EXIT.

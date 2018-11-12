@@ -74,10 +74,6 @@
                05  WRK-TIME-FL2        PIC X(01).
                05  WRK-TIME-SS         PIC 9(02).
       *
-           COPY    "CPHSFINDV3REQ.INC" REPLACING
-                               //XML-//        BY  //TXML-//
-                               //HSFINDREQ-//  BY  //THSFINDREQ-//.
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -321,44 +317,23 @@
            END-IF
       *
            INITIALIZE                      XML-HSFINDREQ
-      * XML情報取り出し
            MOVE    "xml_hsfindv3req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    I2API01-BODY        TO  HSFINDREQ-OBJECT
            MOVE    ZERO                TO  HSFINDREQ-MODE
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-HSFINDREQ
-           IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_hsfindv3req" TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               MOVE    "hsfindv3req"   TO  HSFINDREQ-RECORDNAME
-               MOVE    "XMLREAD"       TO  MCP-FUNC
-               CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       XML-HSFINDREQ
-               IF    ( MCP-RC          =   ZERO  OR  1 )
-                   CONTINUE
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "0098"       TO  SPA-ERRCD
-               END-IF
+           MOVE    "hsfindv3req"       TO  HSFINDREQ-RECORDNAME
+           MOVE    "XMLREAD"           TO  MCP-FUNC
+           CALL    "MONFUNC"       USING
+                                   MCPAREA
+                                   XML-HSFINDREQ
+           IF    ( MCP-RC          =   ZERO  OR  1 )
+               CONTINUE
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "0097"           TO  SPA-ERRCD
+                DISPLAY "XMLREAD failure = " MCP-RC
+                MOVE   "0098"       TO  SPA-ERRCD
            END-IF
       *
-           MOVE    XML-HSFINDREQ       TO  TXML-HSFINDREQ
-      *
-           MOVE    "xml_hsfindv3req"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-HSFINDREQ
-      *
-           MOVE    TXML-HSFINDREQ      TO  XML-HSFINDREQ
+           MOVE    LOW-VALUE        TO  I2API01-BODY
       *
            .
        900-XML-READ-EXT.
@@ -388,32 +363,8 @@
            MOVE    "xml_hsfindv3res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  HSFINDRES-MODE
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-HSFINDRES
-           IF    ( MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_hsfindv3res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "hsfindv3res"       TO  HSFINDRES-RECORDNAME
            MOVE    "XMLWRITE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-HSFINDRES
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_hsfindv3res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
            CALL    "MONFUNC"               USING
                                            MCPAREA
                                            XML-HSFINDRES
@@ -422,8 +373,7 @@
                MOVE    "application/xml"
                                        TO  I2API01-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .

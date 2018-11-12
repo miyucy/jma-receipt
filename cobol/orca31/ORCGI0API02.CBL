@@ -1190,33 +1190,22 @@
            END-IF
       *
            INITIALIZE                      XML-APIREQ
-      * XML情報取り出し
-           MOVE    "xml_birthdeliveryv2req"   TO  MCP-TABLE
-           MOVE    "key"                TO  MCP-PATHNAME
-           MOVE    I0API02-BODY         TO  APIREQ-OBJECT
-           MOVE    ZERO                    TO  APIREQ-MODE
-           PERFORM 910-XMLOPEN-SEC
+           MOVE    "xml_birthdeliveryv2req"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    I0API02-BODY        TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    "private_objects"   TO  APIREQ-RECORDNAME
+           MOVE    "XMLREAD"       TO  MCP-FUNC
+           PERFORM 910-XMLREAD-SEC
            IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_birthdeliveryv2req"
-                                           TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "private_objects"   TO  APIREQ-RECORDNAME
-               MOVE    "XMLREAD"       TO  MCP-FUNC
-               PERFORM 910-XMLREAD-SEC
-               IF    ( MCP-RC              =   ZERO  OR  1 )
-                   PERFORM 9001-XML-FILTER-SEC
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "8098"           TO  WRK-ERRCD
-               END-IF
+               PERFORM 9001-XML-FILTER-SEC
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "8097"                TO  WRK-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "8098"           TO  WRK-ERRCD
            END-IF
       *
-           MOVE    "xml_birthdeliveryv2req"   TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
+           MOVE    LOW-VALUE           TO  I0API02-BODY
       *
            .
        900-XML-READ-EXT.
@@ -1283,37 +1272,18 @@
            END-IF
       *
            INITIALIZE                      XML-APIREQ
-           MOVE    "xml_birthdeliveryv2res"   TO  MCP-TABLE
+           MOVE    "xml_birthdeliveryv2res" TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
-           MOVE    1                       TO  APIREQ-MODE
-           PERFORM 910-XMLOPEN-SEC
-           IF    ( MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
            MOVE    BDRES-PRIVATE-OBJECTS
                                            TO  APIREQ-PATIENTINFOREQ
-           MOVE    "xml_birthdeliveryv2res" TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
+           MOVE    1                       TO  APIREQ-MODE
            MOVE    "private_objects"       TO  APIREQ-RECORDNAME
            PERFORM 910-XMLWRITE-SEC
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_birthdeliveryv2res" TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
            IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    APIREQ-OBJECT       TO  I0API02-BODY
                MOVE    "application/xml"   TO  I0API02-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .
@@ -1661,20 +1631,6 @@
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ＸＭＬオープン処理
-      *****************************************************************
-       910-XMLOPEN-SEC                 SECTION.
-      *
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-APIREQ
-      *
-           .
-      *
-       910-XMLOPEN-EXT.
-           EXIT.
-      *****************************************************************
       *    ＸＭＬ読込処理
       *****************************************************************
        910-XMLREAD-SEC                 SECTION.
@@ -1702,21 +1658,6 @@
       *
        910-XMLWRITE-EXT.
            EXIT.
-      *****************************************************************
-      *    ＸＭＬクローズ処理
-      *****************************************************************
-       910-XMLCLOSE-SEC                SECTION.
-      *
-           MOVE    "XMLCLOSE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-APIREQ
-      *
-           .
-      *
-       910-XMLCLOSE-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    エラー編集処理
       *****************************************************************

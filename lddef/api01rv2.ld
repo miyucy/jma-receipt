@@ -197,6 +197,6 @@ db "push" {
   push_batch01;
 };
 
-#db "msgarray" {
-#  xml_pusheventgetv2res;
-#};
+db "msgarray" {
+  xml_pusheventgetv2res;
+};

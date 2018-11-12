@@ -498,34 +498,24 @@
                DISPLAY "medicine_notebook object is not low_value"
            END-IF
       *
-           INITIALIZE                      XML-APIREQ
-      * XML情報取り出し
-           MOVE    "xml_medicine_notebookv2req"  TO  MCP-TABLE
+           INITIALIZE                          XML-APIREQ
+           MOVE    "xml_medicine_notebookv2req"
+                                           TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    APILST33-BODY           TO  APIREQ-OBJECT
            MOVE    ZERO                    TO  APIREQ-MODE
-           PERFORM 910-XMLOPEN-SEC
+           MOVE    "medicine_notebookv2req"
+                                           TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLREAD-SEC
            IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_medicine_notebookv2req"
-                                           TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "XMLREAD"           TO  MCP-FUNC
-               PERFORM 910-XMLREAD-SEC
-               IF    ( MCP-RC              =   ZERO  OR  1 )
-                   PERFORM 9001-XML-FILTER-SEC
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "0098"            TO  WRK-ERRCD
-               END-IF
+               PERFORM 9001-XML-FILTER-SEC
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "0097"               TO  WRK-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "0098"            TO  WRK-ERRCD
            END-IF
       *
-           MOVE    "xml_formdatagetv2req" TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
-       *
+           MOVE    LOW-VALUE            TO  APILST33-BODY
+      *
            .
        900-XML-READ-EXT.
            EXIT.
@@ -604,20 +594,6 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    ＸＭＬオープン処理
-      *****************************************************************
-       910-XMLOPEN-SEC                 SECTION.
-      *
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-APIREQ
-      *
-           .
-      *
-       910-XMLOPEN-EXT.
-           EXIT.
-      *****************************************************************
       *    ＸＭＬ読込処理
       *****************************************************************
        910-XMLREAD-SEC                 SECTION.
@@ -630,18 +606,4 @@
            .
       *
        910-XMLREAD-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＸＭＬクローズ処理
-      *****************************************************************
-       910-XMLCLOSE-SEC                SECTION.
-      *
-           MOVE    "XMLCLOSE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-APIREQ
-      *
-           .
-      *
-       910-XMLCLOSE-EXT.
            EXIT.

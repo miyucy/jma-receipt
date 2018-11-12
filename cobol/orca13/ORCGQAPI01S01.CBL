@@ -5341,46 +5341,19 @@
       *
            MOVE    WRK-TIME        TO  FINDRES-INFORMATION-TIME
       *
-           MOVE    "xml_findv3res"         TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           MOVE    1                       TO  FINDRES-MODE
-           MOVE    "XMLOPEN"               TO  MCP-FUNC
+           MOVE    "xml_findv3res"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  FINDRES-MODE
+           MOVE    "findv3res"         TO  FINDRES-RECORDNAME
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        XML-FINDV3RES
-           IF    ( MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_findv3res"      TO  MCP-TABLE
-           MOVE    "key"                TO  MCP-PATHNAME
-           MOVE    "findv3res"          TO  FINDRES-RECORDNAME
-           MOVE    "XMLWRITE"           TO  MCP-FUNC
-           DISPLAY "ST WRITE"
-           CALL    "MONFUNC"                USING
-                                            MCPAREA
-                                            XML-FINDV3RES
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-           DISPLAY "ED WRITE"
-      *
-           MOVE    "xml_findv3res"         TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           MOVE    "XMLCLOSE"              TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-FINDV3RES
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    FINDRES-OBJECT      TO  QAPI01-BODY
+               MOVE    FINDRES-OBJECT  TO  QAPI01-BODY
                MOVE    "application/xml"   TO  QAPI01-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .

@@ -74,10 +74,6 @@
                05  WRK-TIME-FL2        PIC X(01).
                05  WRK-TIME-SS         PIC 9(02).
       *
-           COPY    "CPFINDV3REQ.INC"  REPLACING
-                                      //XML-//     BY  //TXML-//
-                                      //FINDREQ-// BY  //TFINDREQ-//.
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -91,6 +87,8 @@
            COPY    "CPFINDV3REQ.INC".
       *    API XML書き込み用定義体
            COPY    "CPFINDV3RES.INC".
+      *    API XML読み込み共通定義
+           COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -328,45 +326,24 @@
                DISPLAY "findv3 object is not low_value"
            END-IF
       *
-           INITIALIZE                      XML-FINDV3REQ
-      * XML情報取り出し
-           MOVE    "xml_findv3req"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    QAPI01-BODY         TO  FINDREQ-OBJECT
-           MOVE    ZERO                TO  FINDREQ-MODE
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           INITIALIZE                  XML-FINDV3REQ
+           MOVE    "xml_findv3req" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    QAPI01-BODY     TO  FINDREQ-OBJECT
+           MOVE    ZERO            TO  FINDREQ-MODE
+           MOVE    "findv3req"     TO  FINDREQ-RECORDNAME
+           MOVE    "XMLREAD"       TO  MCP-FUNC
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        XML-FINDV3REQ
-           IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_findv3req" TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               MOVE    "findv3req"     TO  FINDREQ-RECORDNAME
-               MOVE    "XMLREAD"       TO  MCP-FUNC
-               CALL    "MONFUNC"       USING
-                                       MCPAREA
-                                       XML-FINDV3REQ
-               IF    ( MCP-RC          =   ZERO  OR  1 )
-                   CONTINUE
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "0098"       TO  SPA-ERRCD
-               END-IF
+           IF    ( MCP-RC          =   ZERO  OR  1 )
+               CONTINUE
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "0097"           TO  SPA-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "0098"       TO  SPA-ERRCD
            END-IF
       *
-           MOVE    XML-FINDV3REQ       TO  TXML-FINDV3REQ
-      *
-           MOVE    "xml_findv3req"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-FINDV3REQ
-      *
-           MOVE    TXML-FINDV3REQ      TO  XML-FINDV3REQ
+           MOVE    LOW-VALUE       TO  QAPI01-BODY
       *
            .
        900-XML-READ-EXT.
@@ -399,42 +376,16 @@
            MOVE    "xml_findv3res"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  FINDRES-MODE
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-FINDV3RES
-           IF    ( MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_findv3res"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "findv3res"         TO  FINDRES-RECORDNAME
            MOVE    "XMLWRITE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-FINDV3RES
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       XML-FINDV3RES
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
+               MOVE    FINDRES-OBJECT      TO  QAPI01-BODY
+               MOVE    "application/xml"   TO  QAPI01-CONTENT-TYPE
            ELSE
                DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_findv3res"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-FINDV3RES
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    FINDRES-OBJECT  TO  QAPI01-BODY
-               MOVE    "application/xml"
-                                       TO  QAPI01-CONTENT-TYPE
-           ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
            END-IF
       *
            .

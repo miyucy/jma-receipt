@@ -684,34 +684,23 @@
                DISPLAY "hsptevalv2 object is not low_value"
            END-IF
       *
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
-           MOVE    "xml_hsptevalv2req"   TO  MCP-TABLE
+           INITIALIZE                      XML-APIREQ
+           MOVE    "xml_hsptevalv2req"
+                                           TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    APILST16-BODY           TO  APIREQ-OBJECT
            MOVE    ZERO                    TO  APIREQ-MODE
-           PERFORM 910-XMLOPEN-SEC
+           MOVE    "private_objects"   TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLREAD-SEC
            IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_hsptevalv2req"
-                                           TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "private_objects"   TO  APIREQ-RECORDNAME
-               MOVE    "XMLREAD"       TO  MCP-FUNC
-               PERFORM 910-XMLREAD-SEC
-               IF    ( MCP-RC              =   ZERO  OR  1 )
-                   PERFORM 9001-XML-FILTER-SEC
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "98"             TO  WRK-ERRCD
-               END-IF
+               PERFORM 9001-XML-FILTER-SEC
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "97"                 TO  WRK-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "98"             TO  WRK-ERRCD
            END-IF
       *
-           MOVE    "xml_hsptevalv2req"   TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
+           MOVE    LOW-VALUE               TO  APILST16-BODY
       *
            .
        900-XML-READ-EXT.
@@ -745,36 +734,18 @@
            END-IF
       *
            INITIALIZE                      XML-APIREQ
-           MOVE    "xml_hsptevalv2res"   TO  MCP-TABLE
+           MOVE    HSPTEVALRES-PRIVATE-OBJECTS
+                                           TO  APIREQ-PATIENTINFOREQ
+           MOVE    "xml_hsptevalv2res"     TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    1                       TO  APIREQ-MODE
-           PERFORM 910-XMLOPEN-SEC
-           IF    ( MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    HSPTEVALRES-PRIVATE-OBJECTS TO  APIREQ-PATIENTINFOREQ
-           MOVE    "xml_hsptevalv2res"   TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    "private_objects"       TO  APIREQ-RECORDNAME
            PERFORM 910-XMLWRITE-SEC
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_hsptevalv2res"       TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
            IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    APIREQ-OBJECT       TO  APILST16-BODY
                MOVE    "application/xml"   TO  APILST16-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .
@@ -945,20 +916,6 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    ＸＭＬオープン処理
-      *****************************************************************
-       910-XMLOPEN-SEC                 SECTION.
-      *
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-APIREQ
-      *
-           .
-      *
-       910-XMLOPEN-EXT.
-           EXIT.
-      *****************************************************************
       *    ＸＭＬ読込処理
       *****************************************************************
        910-XMLREAD-SEC                 SECTION.
@@ -985,20 +942,6 @@
            .
       *
        910-XMLWRITE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＸＭＬクローズ処理
-      *****************************************************************
-       910-XMLCLOSE-SEC                SECTION.
-      *
-           MOVE    "XMLCLOSE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-APIREQ
-      *
-           .
-      *
-       910-XMLCLOSE-EXT.
            EXIT.
       *****************************************************************
       *    プログラム終了処理（エラー時）

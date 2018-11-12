@@ -191,6 +191,9 @@
            03  SUID-UID                PIC X(36).
        01  SUID-ST                     PIC 9(2).
       *
+      *    API XML読み込み共通定義
+           COPY    "CPAPIV2REQ.INC".
+      *
       *    パスワード変換
            COPY    "CPORCSAUTH.INC".
       *    メニュー項目番号
@@ -2006,30 +2009,18 @@
                DISPLAY "xml_manageusersv2 object is not low_value"
            END-IF
       *
-           INITIALIZE                          XML-MUREQ
-      * XML情報取り出し
-           MOVE    WAPI01-BODY             TO  MUREQ-OBJECT
-           MOVE    ZERO                    TO  MUREQ-MODE
+           INITIALIZE                          XML-APIREQ
+           MOVE    WAPI01-BODY             TO  APIREQ-OBJECT
+           MOVE    ZERO                    TO  APIREQ-MODE
+           MOVE    "manageusersreq"        TO  APIREQ-RECORDNAME
            MOVE    "xml_manageusersv2req"  TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
-           MOVE    "XMLOPEN"               TO  MCP-FUNC
-           PERFORM 9001-XML-REQUEST-SEC
+           PERFORM 910-XMLREAD-SEC
            IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "manageusersreq"    TO  MUREQ-RECORDNAME
-               MOVE    "xml_manageusersv2req"
-                                           TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "XMLREAD"           TO  MCP-FUNC
-               PERFORM 9001-XML-REQUEST-SEC
-               IF    ( MCP-RC              =   ZERO  OR  1 )
-                   PERFORM 9001-XML-FILTER-SEC
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE    "8098"           TO  WRK-ERRCD
-               END-IF
+               PERFORM 9001-XML-FILTER-SEC
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "8097"                TO  WRK-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE    "8098"           TO  WRK-ERRCD
            END-IF
       *
            MOVE    LOW-VALUE                TO  WAPI01-BODY
@@ -2038,22 +2029,12 @@
        900-XML-READ-EXT.
            EXIT.
       *****************************************************************
-      *    XML情報から内容を取り出す
-      *****************************************************************
-       9001-XML-REQUEST-SEC               SECTION.
-      *
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-MUREQ
-      *
-           .
-       9001-XML-REQUEST-EXT.
-           EXIT.
-      *****************************************************************
       *    XMLフィルタリング処理
       *****************************************************************
        9001-XML-FILTER-SEC             SECTION.
       *
+           MOVE    APIREQ-PATIENTINFOREQ
+                                       TO  MUREQ-MANAGE-USERSREQ
       *
            .
        9001-XML-FILTER-EXT.
@@ -2067,39 +2048,21 @@
                DISPLAY "manageusersv2 object is not low_value"
            END-IF
       *
+      *
+      *    Response is SO LONG that you can't use XML-APIREQ.
            MOVE    1                       TO  MURES-MODE
-           MOVE    "xml_manageusersv2res" TO   MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           MOVE    "XMLOPEN"               TO  MCP-FUNC
-           PERFORM 9001-XML-RESPONSE-SEC
-           IF    ( MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
            MOVE    "manageusersres"       TO   MURES-RECORDNAME
-           MOVE    MURES-MANAGE-USERSRES  TO   MURES-MANAGE-USERSRES
            MOVE    "xml_manageusersv2res" TO   MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
-           MOVE    "XMLWRITE"              TO  MCP-FUNC
-           PERFORM 9001-XML-RESPONSE-SEC
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_manageusersv2res"  TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           MOVE    "XMLCLOSE"              TO  MCP-FUNC
-           PERFORM 9001-XML-RESPONSE-SEC
+           MOVE    "XMLWRITE"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       XML-MURES
            IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    MURES-OBJECT        TO  WAPI01-BODY
                MOVE    "application/xml"   TO  WAPI01-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .
@@ -2456,6 +2419,34 @@
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
+      *    ＸＭＬ読込処理
+      *****************************************************************
+       910-XMLREAD-SEC                 SECTION.
+      *
+           MOVE    "XMLREAD"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       XML-APIREQ
+      *
+           .
+      *
+       910-XMLREAD-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＸＭＬ書込処理
+      *****************************************************************
+       910-XMLWRITE-SEC                SECTION.
+      *
+           MOVE    "XMLWRITE"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       XML-APIREQ
+      *
+           .
+      *
+       910-XMLWRITE-EXT.
+           EXIT.
+      *****************************************************************
       *    プログラム終了処理（エラー時）
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
@@ -2464,13 +2455,6 @@
                MOVE    404             TO  WAPI01-HTTPSTATUS
            ELSE
                PERFORM 9901-EXIT-PROGRAM-SEC
-           END-IF
-      *
-           IF    ( MUREQ-RECORDNAME    NOT =   SPACE )
-               MOVE    "xml_manageusersv2req"  TO  MCP-TABLE
-               MOVE    "key"                   TO  MCP-PATHNAME
-               MOVE    "XMLCLOSE"              TO  MCP-FUNC
-               PERFORM 9001-XML-REQUEST-SEC
            END-IF
       *
            EXIT PROGRAM

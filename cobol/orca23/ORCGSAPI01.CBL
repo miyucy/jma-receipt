@@ -484,31 +484,18 @@
        900-INCOMEREQ-READ-SEC          SECTION.
       *
            INITIALIZE                  APIREQ-AREA
-      *
            MOVE    "xml_incomev3req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    SAPI01-BODY         TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
-           PERFORM 910-XMLOPEN-SEC
-           IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_incomev3req"   TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "incomev3req"       TO  APIREQ-RECORDNAME
-               PERFORM 910-XMLREAD-SEC
-               IF    ( MCP-RC          =   ZERO  OR  1 )
-                   MOVE    APIREQ-AREA TO  INCOMEREQ-AREA
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "0098"       TO  SPA-ERRCD
-               END-IF
+           MOVE    "incomev3req"       TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLREAD-SEC
+           IF    ( MCP-RC          =   ZERO  OR  1 )
+               MOVE    APIREQ-AREA TO  INCOMEREQ-AREA
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "0097"           TO  SPA-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "0098"       TO  SPA-ERRCD
            END-IF
-      *
-           MOVE    "xml_incomev3req"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
       *
            .
        900-INCOMEREQ-READ-EXT.
@@ -518,32 +505,19 @@
       *****************************************************************
        900-INCOMEREQ01-READ-SEC          SECTION.
       *
-           INITIALIZE                  APIREQ-AREA
-      *
+           INITIALIZE                      APIREQ-AREA
            MOVE    "xml_incomev3req01" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    SAPI01-BODY         TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
-           PERFORM 910-XMLOPEN-SEC
-           IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_incomev3req01" TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "incomev3req"       TO  APIREQ-RECORDNAME
-               PERFORM 910-XMLREAD-SEC
-               IF    ( MCP-RC          =   ZERO  OR  1 )
-                   MOVE    APIREQ-AREA TO  INCOMEREQ01-AREA
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "0098"       TO  SPA-ERRCD
-               END-IF
+           MOVE    "incomev3req"       TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLREAD-SEC
+           IF    ( MCP-RC          =   ZERO  OR  1 )
+               MOVE    APIREQ-AREA TO  INCOMEREQ01-AREA
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "0097"           TO  SPA-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "0098"       TO  SPA-ERRCD
            END-IF
-      *
-               MOVE    "xml_incomev3req01" TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
       *
            .
        900-INCOMEREQ01-READ-EXT.
@@ -554,31 +528,18 @@
        900-INCOMEREQ02-READ-SEC          SECTION.
       *
            INITIALIZE                  APIREQ-AREA
-      *
            MOVE    "xml_incomev3req02" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    SAPI01-BODY         TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
-           PERFORM 910-XMLOPEN-SEC
-           IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_incomev3req02" TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "incomev3req"       TO  APIREQ-RECORDNAME
-               PERFORM 910-XMLREAD-SEC
-               IF    ( MCP-RC          =   ZERO  OR  1 )
-                   MOVE    APIREQ-AREA TO  INCOMEREQ02-AREA
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "0098"       TO  SPA-ERRCD
-               END-IF
+           MOVE    "incomev3req"       TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLREAD-SEC
+           IF    ( MCP-RC          =   ZERO  OR  1 )
+               MOVE    APIREQ-AREA TO  INCOMEREQ02-AREA
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "0097"           TO  SPA-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "0098"           TO  SPA-ERRCD
            END-IF
-      *
-               MOVE    "xml_incomev3req02" TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
       *
            .
        900-INCOMEREQ02-READ-EXT.
@@ -608,53 +569,23 @@
                MOVE    SPA-ERRCD       TO  INCOMERES01-API-RESULT(2:)
            END-IF
            MOVE    SPA-ERRMSG          TO  INCOMERES01-API-RESULT-MSG
-           MOVE    INCOMERES01-AREA      TO  APIREQ-AREA
+      *
+           MOVE    "xml_incomev3res01" TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    INCOMERES01-AREA    TO  APIREQ-AREA
            MOVE    1                   TO  APIREQ-MODE
-      *
-           MOVE    "xml_incomev3res01"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-XMLOPEN-SEC
+           MOVE    "incomev3res"       TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLWRITE-SEC
            IF    ( MCP-RC              =   ZERO  OR  1  )
-               MOVE    "xml_incomev3res01"   TO  MCP-TABLE
-               MOVE    "key"            TO  MCP-PATHNAME
-               MOVE    "incomev3res"    TO  APIREQ-RECORDNAME
-               PERFORM 910-XMLWRITE-SEC
-               IF    ( MCP-RC              =   ZERO  OR  1  )
-                   CONTINUE
-               ELSE
-                   DISPLAY "XMLWRITE failure = " MCP-RC
-               END-IF
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_incomev3res01"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
-           IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    APIREQ-OBJECT   TO  SAPI01-BODY
                MOVE    "application/xml"
                                        TO  SAPI01-CONTENT-TYPE
-           ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "incomev3 xml write failure "
+            ELSE
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .
        900-XML-WRITE-EXT.
-           EXIT.
-      *****************************************************************
-      *    XMLOPEN処理
-      *****************************************************************
-       910-XMLOPEN-SEC                 SECTION.
-      *
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       APIREQ-AREA
-      *
-           .
-       910-XMLOPEN-EXT.
            EXIT.
       *****************************************************************
       *    XMLREAD処理
@@ -681,19 +612,6 @@
       *
            .
        910-XMLWRITE-EXT.
-           EXIT.
-      *****************************************************************
-      *    XMLCLOSE処理
-      *****************************************************************
-       910-XMLCLOSE-SEC                SECTION.
-      *
-           MOVE    "XMLCLOSE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       APIREQ-AREA
-      *
-           .
-       910-XMLCLOSE-EXT.
            EXIT.
       *****************************************************************
       *    BLOBIMPORT処理

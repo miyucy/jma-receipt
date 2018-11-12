@@ -1806,32 +1806,8 @@
            MOVE    "xml_hsfindv3res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  HSFINDRES-MODE
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XML-HSFINDRES
-           IF    ( MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_hsfindv3res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "hsfindv3res"       TO  HSFINDRES-RECORDNAME
            MOVE    "XMLWRITE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XML-HSFINDRES
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_hsfindv3res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
            CALL    "MONFUNC"               USING
                                            MCPAREA
                                            XML-HSFINDRES
@@ -1839,8 +1815,7 @@
                MOVE    HSFINDRES-OBJECT    TO  I2API01-BODY
                MOVE    "application/xml"   TO  I2API01-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .

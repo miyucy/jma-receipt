@@ -3018,36 +3018,18 @@
                END-PERFORM
            END-IF
       *
-           MOVE    INCOMERES01-AREA  TO  APIREQ-AREA
-           MOVE    1               TO  APIREQ-MODE
-      *
-           MOVE    "xml_incomev3res01"   TO  MCP-TABLE
+           MOVE    "xml_incomev3res01" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-XMLOPEN-SEC
+           MOVE    INCOMERES01-AREA    TO  APIREQ-AREA
+           MOVE    1                   TO  APIREQ-MODE
+           MOVE    "incomev3res"       TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLWRITE-SEC
            IF    ( MCP-RC              =   ZERO  OR  1  )
-               MOVE    "xml_incomev3res01"   TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "incomev3res"       TO  APIREQ-RECORDNAME
-               PERFORM 910-XMLWRITE-SEC
-               IF    ( MCP-RC              =   ZERO  OR  1  )
-                   CONTINUE
-               ELSE
-                   DISPLAY "XMLWRITE failure = " MCP-RC
-               END-IF
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_incomev3res01"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
-           IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    APIREQ-OBJECT   TO  SAPI01-BODY
                MOVE    "application/xml"
                                        TO  SAPI01-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .
@@ -3082,36 +3064,19 @@
            END-IF
            MOVE    SPA-ERRMSG      TO  INCOMERES03-API-RESULT-MSG
       *
+           MOVE    "xml_incomev3res03" TO  MCP-TABLE
+           MOVE    "key"             TO  MCP-PATHNAME
+      *
            MOVE    INCOMERES03-AREA  TO  APIREQ-AREA
            MOVE    1                 TO  APIREQ-MODE
-      *
-           MOVE    "xml_incomev3res03"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-XMLOPEN-SEC
-           IF    ( MCP-RC              =   ZERO  OR  1  )
-               MOVE    "xml_incomev3res03"   TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "incomev3res"       TO  APIREQ-RECORDNAME
-               PERFORM 910-XMLWRITE-SEC
-               IF    ( MCP-RC              =   ZERO  OR  1  )
-                   CONTINUE
-               ELSE
-                   DISPLAY "XMLWRITE failure = " MCP-RC
-               END-IF
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "xml_incomev3res03"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    APIREQ-OBJECT   TO  SAPI01-BODY
+           MOVE    "incomev3res"     TO  APIREQ-RECORDNAME
+           PERFORM 910-XMLWRITE-SEC
+           IF    ( MCP-RC            =   ZERO  OR  1  )
+               MOVE    APIREQ-OBJECT TO  SAPI01-BODY
                MOVE    "application/xml"
-                                       TO  SAPI01-CONTENT-TYPE
+                                     TO  SAPI01-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .
@@ -3646,19 +3611,6 @@
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    XMLOPEN処理
-      *****************************************************************
-       910-XMLOPEN-SEC                 SECTION.
-      *
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       APIREQ-AREA
-      *
-           .
-       910-XMLOPEN-EXT.
-           EXIT.
-      *****************************************************************
       *    XMLWRITE処理
       *****************************************************************
        910-XMLWRITE-SEC                 SECTION.
@@ -3670,17 +3622,4 @@
       *
            .
        910-XMLWRITE-EXT.
-           EXIT.
-      *****************************************************************
-      *    XMLCLOSE処理
-      *****************************************************************
-       910-XMLCLOSE-SEC                SECTION.
-      *
-           MOVE    "XMLCLOSE"      TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       APIREQ-AREA
-      *
-           .
-       910-XMLCLOSE-EXT.
            EXIT.

@@ -79,6 +79,7 @@
                05  WRK-SHORI-RENNUM    PIC 9(02).
            03  WRK-DATAID              PIC X(80).
            03  WRK-RC                  PIC S9(8).
+           03  WRK-TABLE               PIC X(64).
       *
        01  SGYOUMU-CODE                PIC 9(03).
       *
@@ -147,7 +148,7 @@
       *****************************************************************
       *    �硡������
       *****************************************************************
-       000-PROC-SEC                 SECTION.
+       000-PROC-SEC                        SECTION.
       *
            INITIALIZE                      STS-AREA
            INITIALIZE                      FLG-AREA
@@ -155,9 +156,13 @@
            INITIALIZE                      IDX-AREA
            INITIALIZE                      WRK-AREA
       *
+           MOVE    MCP-TABLE           TO  WRK-TABLE
+      *
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC
+      *
+           MOVE    WRK-TABLE           TO  MCP-TABLE
       *
            .
       *
@@ -242,15 +247,12 @@
        2001-JSON-EXPORT-SEC            SECTION.
       *
            INITIALIZE                      XMLDATA-REC
-           MOVE    3                   TO  XMLDATA-MODE
+           MOVE    WRK-TABLE           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-XMLOPEN-SEC
-      *
+           MOVE    3                   TO  XMLDATA-MODE
            MOVE    RPMAIN-DATA         TO  XMLDATA-DATA
            MOVE    "data"              TO  XMLDATA-RECORDNAME
            PERFORM 910-XMLWRITE-SEC
-      *
-           PERFORM 910-XMLCLOSE-SEC
       *
            INITIALIZE                      ORCA-BLOB
            MOVE    "key"               TO  MCP-PATHNAME
@@ -622,19 +624,6 @@
        900-PRT2-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �أ̣ͣϣУţν���
-      *****************************************************************
-       910-XMLOPEN-SEC                 SECTION.
-      *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XMLDATA-REC
-      *
-           .
-       900-XMLOPEN-EXT.
-           EXIT.
-      *****************************************************************
       *    �أ̣ͣףңɣԣŽ���
       *****************************************************************
        910-XMLWRITE-SEC                SECTION.
@@ -646,19 +635,6 @@
       *
            .
        900-XMLWRITE-EXT.
-           EXIT.
-      *****************************************************************
-      *    �أ̣ͣạ̃ϣӣŽ���
-      *****************************************************************
-       910-XMLCLOSE-SEC                SECTION.
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           CALL    "MONFUNC"               USING
-                                           MCPAREA
-                                           XMLDATA-REC
-      *
-           .
-       900-XMLCLOSE-EXT.
            EXIT.
       *****************************************************************
       *    �£̣ϣ£ţأУϣңԽ���

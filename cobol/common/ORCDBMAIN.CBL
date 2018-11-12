@@ -141,7 +141,29 @@
            MOVE    MCP-PATHNAME        TO  WRK-PATHNAME
            MOVE    MCP-FUNC            TO  WRK-FUNC
       *
-           PERFORM 100-INIT-SEC
+           EVALUATE    TRUE
+           WHEN  ( MCP-FUNC            =   "XMLOPEN"
+                                    OR     "XMLCLOSE" )
+               CONTINUE
+           WHEN    OTHER
+               PERFORM 100-INIT-SEC
+               PERFORM 200-MAIN-SEC
+           END-EVALUATE
+      *
+           MOVE    WRK-TABLE           TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
+           MOVE    WRK-FUNC            TO  MCP-FUNC
+           MOVE    ZERO                TO  MCP-LOGFLAG
+      *
+           .
+      *
+           EXIT PROGRAM
+           .
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       200-MAIN-SEC                    SECTION.
       *
            IF    ( MCP-TABLE           =   "metadb"
                                         OR "blob" )
@@ -271,15 +293,10 @@
                PERFORM 800-EDIT-ERRMSG-SEC
            END-IF
       *
-           MOVE    WRK-TABLE           TO  MCP-TABLE
-           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
-           MOVE    WRK-FUNC            TO  MCP-FUNC
-           MOVE    ZERO                TO  MCP-LOGFLAG
-      *
            .
       *
-           EXIT PROGRAM
-           .
+       200-MAIN-EXT.
+           EXIT.
       *****************************************************************
       *    初期　処理
       *****************************************************************
