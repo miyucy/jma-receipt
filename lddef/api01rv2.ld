@@ -46,6 +46,7 @@ bindapi	"karteno1v2"	"OpenCOBOL"	"ORAPI001R4V2";
 bindapi	"karteno1hv2"	"OpenCOBOL"	"ORAPI001R5V2";
 bindapi	"karteno3v2"	"OpenCOBOL"	"ORAPI001R6V2";
 bindapi	"karteno3hv2"	"OpenCOBOL"	"ORAPI001R7V2";
+bindapi	"patientlst7v2"	"OpenCOBOL"	"ORAPI012R7V2";
 
 multiplex_group	api01rv2;
 
@@ -95,6 +96,7 @@ data	{
 		karteno1hv2;
 		karteno3v2;
 		karteno3hv2;
+		patientlst7v2;
 	};
 };
 db "xml2" {
@@ -187,6 +189,8 @@ db "xml2" {
  fm_karte_no3;
  xml_karte_no3_hv2req;
  fm_karte_no3_h;
+ xml_patientlst7v2req;
+ xml_patientlst7v2res;
 };
 
 #include "orcadb.inc"

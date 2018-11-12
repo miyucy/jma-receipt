@@ -106,7 +106,9 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-           COPY    "CPORCXKANACONV.INC".
+      *    COPY    "CPORCXKANACONV.INC".
+      *
+           COPY    "CPORCXKANACONV2.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -309,8 +311,9 @@
                        MOVE    IDX             TO  SPA-XF011-BUNREIMAX
                        MOVE    EXAMPLE-RENNUM  TO  SPA-XF011-TRENNUM
                                                                   (IDX)
-                       MOVE    EXAMPLE-COMMENT TO  SPA-XF011-TCOMMENT
-                                                                  (IDX)
+      **              MOVE    EXAMPLE-COMMENT TO  SPA-XF011-TCOMMENT
+      **                                                          (IDX)
+                       PERFORM 31011-COMMENT-HEN-SEC
                    END-IF
                END-IF
       *
@@ -327,6 +330,31 @@
            .
        3101-BUNREI-HEN-EXT.
            EXIT.
+      *H30.11
+      *****************************************************************
+      *    コメントチェック処理
+      *****************************************************************
+       31011-COMMENT-HEN-SEC            SECTION.
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    400                 TO  KANACONV-LEN
+           MOVE    5000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    0                   TO  KANACONV-CHAR-TYPE
+           MOVE    EXAMPLE-COMMENT     TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           IF     (KANACONV-RETURN     =   ZERO )
+               MOVE    KANACONV-OUTDATA
+                                       TO  SPA-XF011-TCOMMENT(IDX)
+           ELSE
+               MOVE    KANACONV-OUTDATA
+                                       TO  SPA-XF011-TCOMMENT(IDX)
+           END-IF
+           .
+      *
+       31011-COMMENT-HEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面編集処理
