@@ -1136,26 +1136,11 @@
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                DISPLAY "XMLWRITE OK      = " MCP-RC
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
       *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientinfov2res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-PATIENTINFORES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               DISPLAY "XMLCLOSE OK   = " MCP-RC
                MOVE    PTRES-OBJECT        TO  APIPTA-BODY 
                MOVE    "application/xml"   TO  APIPTA-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "patient res xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .

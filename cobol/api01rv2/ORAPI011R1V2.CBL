@@ -394,6 +394,8 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_acceptlstv2req"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    APILST-BODY         TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "acceptlstreq"      TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -405,17 +407,6 @@
            ELSE
                MOVE   "98"             TO  WRK-ERRCD
                DISPLAY "XMLREAD failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_acceptlstv2req"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -463,6 +454,8 @@
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_acceptlstv2res"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  ACPLSTRES-MODE
+           MOVE    "acceptlstres"      TO  ACPLSTRES-RECORDNAME
            CALL   "ORCDBMAIN"          USING
                                        MCPAREA
                                        XML-ACCEPTLSTRES
@@ -474,23 +467,6 @@
                MOVE    "application/xml"   TO  APILST-CONTENT-TYPE
            ELSE
                DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_acceptlstv2res"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL   "ORCDBMAIN"          USING
-                                       MCPAREA
-                                       XML-ACCEPTLSTRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               DISPLAY "XMLCLOSE OK     = " MCP-RC
-               MOVE    ACPLSTRES-OBJECT    TO  APILST-BODY 
-               MOVE    "application/xml"   TO  APILST-CONTENT-TYPE
-           ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "ACCEPT xml write failure "
-      * CALL    "coblog"    USING   WRK-ERRMSG
            END-IF
       *
           .
