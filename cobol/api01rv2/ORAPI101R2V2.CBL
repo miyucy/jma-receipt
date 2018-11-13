@@ -319,8 +319,9 @@
            MOVE    "xml_system01_dailyv2req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "system01_dailyreq"    TO  APIREQ-RECORDNAME
+           MOVE    APILST35-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    "system01_dailyreq" TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -331,20 +332,6 @@
            ELSE
                MOVE   "98"             TO  WRK-ERRCD
                DISPLAY "XMLREAD failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_system01_dailyv2req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "system01_dailyreq"    TO  APIREQ-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -1068,6 +1055,7 @@
            MOVE    "xml_system01_dailyv2res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  SYSDAYRES-MODE
            MOVE    "system01_dailyres" TO  SYSDAYRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -1075,26 +1063,10 @@
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                DISPLAY "XMLWRITE OK      = " MCP-RC
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_system01_dailyv2res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-SYSTEMDAILYRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               DISPLAY "XMLCLOSE OK   = " MCP-RC
                MOVE    SYSDAYRES-OBJECT      TO  APILST35-BODY 
                MOVE    "application/xml"   TO  APILST35-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "patient res xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .

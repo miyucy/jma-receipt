@@ -365,7 +365,8 @@
            MOVE    "xml_patientlst6v2req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST31-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "patientlst6req"    TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -377,19 +378,6 @@
            ELSE
                MOVE   "98"             TO  WRK-ERRCD
                DISPLAY "XMLREAD failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientlst6v2req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -964,6 +952,7 @@
            MOVE    "xml_patientlst6v2res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  PTRES-MODE
            MOVE    "patientlst2res"    TO  PTRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -971,28 +960,11 @@
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                DISPLAY "XMLWRITE OK      = " MCP-RC
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientlst6v2res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-PATIENTLST6RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               DISPLAY "XMLCLOSE OK   = " MCP-RC
                MOVE    PTRES-OBJECT    TO  APILST31-BODY 
                MOVE    "application/xml"   TO  APILST31-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "patient res xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
-      *
            .
        300-PTXMLMAKE-EXT.
            EXIT.
