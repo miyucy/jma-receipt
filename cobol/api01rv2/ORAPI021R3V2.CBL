@@ -370,7 +370,8 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_tmedicalgetv2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST13-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "tmedicalgetreq"    TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -382,18 +383,6 @@
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_tmedicalgetv2req"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF (MCP-RC = ZERO OR 1)
-               CONTINUE
            END-IF
       *
            .
@@ -454,20 +443,8 @@
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_tmedicalgetv2res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  TMDCRES-MODE
            MOVE    "tmedicalgetres"    TO  TMDCRES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-TMEDICALGETRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_tmedicalgetv2res"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-TMEDICALGETRES
@@ -476,8 +453,7 @@
                MOVE    TMDCRES-OBJECT      TO  APILST13-BODY 
                MOVE    "application/xml"   TO  APILST13-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "tmedicalget xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .

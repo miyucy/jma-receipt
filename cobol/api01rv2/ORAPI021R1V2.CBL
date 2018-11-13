@@ -563,7 +563,8 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_medicalgetv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST6-BODY        TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "medicalgetreq"     TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -576,19 +577,6 @@
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "98"             TO  WRK-ERRCD
            END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_medicalgetv2req"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF (MCP-RC = ZERO OR 1)
-               CONTINUE
-           END-IF
-      *
            .
        1000-APTXMLREAD-EXT.
            EXIT.
@@ -657,20 +645,8 @@
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_medicalget01v2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  MDC01RES-MODE
            MOVE    "medicalget01res"   TO  MDC01RES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-MEDICALGET01RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_medicalget01v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-MEDICALGET01RES
@@ -679,8 +655,7 @@
                MOVE    MDC01RES-OBJECT     TO  APILST6-BODY 
                MOVE    "application/xml"   TO  APILST6-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "medicalget xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
@@ -724,20 +699,8 @@
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_medicalget02v2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  MDC02RES-MODE
            MOVE    "medicalget02res"   TO  MDC02RES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-MEDICALGET02RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_medicalget02v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-MEDICALGET02RES
@@ -746,8 +709,7 @@
                MOVE    MDC02RES-OBJECT     TO  APILST6-BODY 
                MOVE    "application/xml"   TO  APILST6-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "medicalget xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
@@ -790,20 +752,8 @@
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_medicalget03v2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  MDC03RES-MODE
            MOVE    "medicalget03res"   TO  MDC03RES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-MEDICALGET03RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_medicalget03v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-MEDICALGET03RES
@@ -812,8 +762,7 @@
                MOVE    MDC03RES-OBJECT     TO  APILST6-BODY 
                MOVE    "application/xml"   TO  APILST6-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "medicalget xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
@@ -856,20 +805,8 @@
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_medicalget04v2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  MDC04RES-MODE
            MOVE    "medicalget04res"   TO  MDC04RES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-MEDICALGET04RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_medicalget04v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-MEDICALGET04RES
@@ -878,8 +815,7 @@
                MOVE    MDC04RES-OBJECT     TO  APILST6-BODY 
                MOVE    "application/xml"   TO  APILST6-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "medicalget xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .

@@ -466,7 +466,8 @@
            MOVE    "xml_contraindication_checkv2req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST26-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "contraindication_checkreq"
                                        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
@@ -479,19 +480,6 @@
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_contraindication_checkv2req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF (MCP-RC = ZERO OR 1)
-               CONTINUE
            END-IF
       *
            .
@@ -555,22 +543,9 @@
            MOVE    "xml_contraindication_checkv2res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  CHKRES-MODE
            MOVE    "contraindication_checkres"
                                        TO  CHKRES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-CONTRA-CHECKV2RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_contraindication_checkv2res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-CONTRA-CHECKV2RES
@@ -579,8 +554,7 @@
                MOVE    CHKRES-OBJECT       TO  APILST26-BODY 
                MOVE    "application/xml"   TO  APILST26-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "contraindication_checkreq xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .

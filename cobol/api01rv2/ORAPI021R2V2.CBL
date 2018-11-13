@@ -398,7 +398,8 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_visitptlstv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST10-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "visitptlstreq"     TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -410,18 +411,6 @@
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_visitptlstv2req"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF (MCP-RC = ZERO OR 1)
-               CONTINUE
            END-IF
       *
            .
@@ -489,21 +478,8 @@
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_visitptlst01v2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  VIS01RES-MODE
            MOVE    "visitptlst01res"   TO  VIS01RES-RECORDNAME
-      **** CALL    "ORCDBMAIN"         USING
-           CALL    "ORCDBAPIV3"        USING
-                                       MCPAREA
-                                       XML-VISITPTLST01RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_visitptlst01v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
       **** CALL    "ORCDBMAIN"         USING
            CALL    "ORCDBAPIV3"        USING
                                        MCPAREA
@@ -513,8 +489,7 @@
                MOVE    VIS01RES-OBJECT     TO  APILST10-BODY 
                MOVE    "application/xml"   TO  APILST10-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "visitptlst xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
