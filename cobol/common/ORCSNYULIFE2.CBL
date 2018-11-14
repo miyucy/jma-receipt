@@ -67,6 +67,8 @@
       *  05.00.00    NACL-小豆沢  18/02/27  生活療養食事負担額変更対応
       *                                     居住費負担額変更対応
       *  05.00.00    NACL-小豆沢  18/03/07  生活療養の医療度判定変更
+      *  05.00.00    NACL-小豆沢  18/11/14  難病判定に急性増悪による転棟
+      *                                     のシステム予約コード入力追加
       *****************************************************************
       *
       *
@@ -1154,6 +1156,21 @@
                                   (WRK-SANTEIYOUKENKBN(IDX1) = "1")
                                  MOVE   ZERO       TO   FLG-NANBYO
                                  IF  LNK-SKJKEEP-KBN(IDX1)  =   "1"
+                                     MOVE  1    TO   FLG-NANBYO
+                                 END-IF
+                                 IF  FLG-NANBYO          =   1 
+                                   MOVE   "1"   TO   
+                                             LNK-NYULIFE2-FTNKBN2(IDX1)
+                                 END-IF
+                               END-IF
+      *                        急性増悪により療養病棟入院基本料のＩの算定時
+      *                        は食事負担据え置き（システム予約入力）
+                               IF (IDX-SEI2       =  44 OR 47 OR
+                                                     50 OR 51 OR
+                                                     54)
+                                 MOVE   ZERO       TO   FLG-NANBYO
+                                 IF (LNK-SKJKEEP-KBN(IDX1)  =   "1") AND
+                                    (LNK-SKJKEEP-NANBYOKBN(IDX1) = "2")
                                      MOVE  1    TO   FLG-NANBYO
                                  END-IF
                                  IF  FLG-NANBYO          =   1 
