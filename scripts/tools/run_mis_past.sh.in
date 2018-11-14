@@ -94,13 +94,17 @@ if [ ${EXMISRECE} -eq 1 ]; then
   # 医科・確定分作成
   #-------------------------------------------#
 
-  run_receipt_mis_ika.sh ${HOSPNUM} ${SRYYM} ${RUNDATE} ${DATADIR} "1"
+  if [ ${SRYYM} -ge 200804 ]; then
+    run_receipt_mis_ika.sh ${HOSPNUM} ${SRYYM} ${RUNDATE} ${DATADIR} "1"
+  fi
 
   #-------------------------------------------#
   # 労災・確定分作成
   #-------------------------------------------#
 
-  run_receipt_mis_rou.sh ${HOSPNUM} ${SRYYM} ${RUNDATE} ${DATADIR} "1"
+  if [ ${SRYYM} -ge 201401 ]; then
+    run_receipt_mis_rou.sh ${HOSPNUM} ${SRYYM} ${RUNDATE} ${DATADIR} "1"
+  fi
 fi
 
 #-------------------------------------------#
