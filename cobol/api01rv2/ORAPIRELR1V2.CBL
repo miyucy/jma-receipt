@@ -281,28 +281,12 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       * XML情報取り出し
-           MOVE   "XMLOPEN"            TO  MCP-FUNC
-           MOVE    "xml_okusurigetv2req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST28-BODY       TO  APIREQ-OBJECT
-           MOVE    ZERO                TO  APIREQ-MODE
-           MOVE    "okusurigetv2req"   TO  APIREQ-RECORDNAME
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           XML-APIREQ
-                                           SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1)
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE    "97"                TO  WRK-ERRCD
-           END-IF
-      *
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_okusurigetv2req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    APILST28-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "okusurigetv2req"   TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"     USING   MCPAREA
                                            XML-APIREQ
@@ -314,18 +298,6 @@
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE    "98"                TO  WRK-ERRCD
            END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_okusurigetv2req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST28-BODY       TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           XML-APIREQ
-                                           SPA-AREA
-      *     IF     (MCP-RC              =   ZERO    OR  1)
-      *         CONTINUE
-      *     END-IF
            .
        1000-MNOTEINFREAD-EXT.
            EXIT.
@@ -357,7 +329,7 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_okusurigetv2res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -367,41 +339,15 @@
                                            XML-OKUSURIGETRES
                                            SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1)
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_okusurigetv2res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           XML-OKUSURIGETRES
-                                           SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1)
                DISPLAY "XMLWRITE OK      = " MCP-RC
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_okusurigetv2res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           XML-OKUSURIGETRES
-                                           SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1)
-               DISPLAY "XMLCLOSE OK     = " MCP-RC
                MOVE    OKUSURIGETRES-OBJECT
                                            TO  APILST28-BODY 
                MOVE    "application/xml"   TO  APILST28-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
+               DISPLAY "XMLWRITE failure = " MCP-RC
                DISPLAY "okusuriget xml write failure "
            END-IF
-          .
+           .
        300-MNOTEINFMAKE-EXT.
            EXIT.
       *
