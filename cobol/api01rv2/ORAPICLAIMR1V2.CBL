@@ -355,7 +355,8 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_claim_frontv2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST23-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "claim_frontv2req"  TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -372,7 +373,6 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_claim_frontv2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -439,20 +439,8 @@
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_claim_frontv2res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  CLFRRES-MODE
            MOVE    "claim_frontv2res"  TO  CLFRRES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-CLAIM-FRONTV2RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_claim_frontv2res"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-CLAIM-FRONTV2RES
@@ -461,8 +449,7 @@
                MOVE    CLFRRES-OBJECT      TO  APILST23-BODY 
                MOVE    "application/xml"   TO  APILST23-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "tmedicalget xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
