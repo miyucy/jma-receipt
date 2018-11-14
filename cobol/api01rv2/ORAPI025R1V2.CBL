@@ -434,7 +434,8 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_subjectiveslstv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST34-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "subjectiveslstreq" TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -446,18 +447,6 @@
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_subjectiveslstv2req"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -518,22 +507,9 @@
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_subjectiveslstv2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  SUBJETRES-MODE
            MOVE    "subjectiveslstres" TO  SUBJETRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-SUBJECTLSTRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_subjectiveslstv2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "subjectiveslstres" TO  SUBJETRES-RECORDNAME
-           CALL   "ORCDBMAIN"          USING
                                        MCPAREA
                                        XML-SUBJECTLSTRES
                                        SPA-AREA
@@ -541,8 +517,7 @@
                MOVE    SUBJETRES-OBJECT        TO  APILST34-BODY
                MOVE    "subjectiveslst/xml"    TO  APILST34-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "subjectiveslst xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
