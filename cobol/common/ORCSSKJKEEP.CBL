@@ -41,6 +41,8 @@
       *                                     までとするよう対処
       *              NACL-小豆沢  18/06/06  精神病床長期入院のシステム
       *                                     予約コード入力回数チェック追加
+      *              NACL-小豆沢  18/11/14  難病判定に急性増悪のシステム
+      *                                     予約コード追加
       *****************************************************************
       *
       *
@@ -95,8 +97,12 @@
            03   CONS-SHOUNI                PIC X(03) VALUE "052".
       *    システム予約−精神病床食事負担据え置き対象
            03   CONS-SEISIN-ARI            PIC X(09) VALUE "099999926".
-      *    システム予約−精神病床食事負担据え置き対象外
-           03   CONS-SEISIN-NASI           PIC X(09) VALUE "099999927".
+      *    システム予約−難病食事負担据え置き
+           03   CONS-NANBYO-ARI           PIC X(09) VALUE "099999927".
+      *    システム予約−難病食事負担据え置き対象外
+           03   CONS-NANBYO-NASI          PIC X(09) VALUE "099999928".
+      *    システム予約−難病食事負担据え置き（急性増悪による転棟）
+           03   CONS-NANBYO-ARI2          PIC X(09) VALUE "099999934".
       *    標準負担額経過措置（精神）入院年月日コメント：平成
            03   CONS-SEISIN-COMMENT-H      PIC X(09) VALUE "840000136".
       *    標準負担額経過措置（精神）入院年月日コメント：昭和
@@ -457,6 +463,11 @@
            IF      FLG-SEISIN-SANTEI   =   ZERO
                 MOVE   SPACE           TO  LNK-SKJKEEP-SEI-NYUINYMD
            END-IF
+           PERFORM    VARYING   IDX   FROM  1  BY  1
+             UNTIL    IDX    >   31
+              DISPLAY "IDX = " IDX
+              DISPLAY "LNK-SKJKEEP-KBN(IDX) = " LNK-SKJKEEP-KBN(IDX)
+           END-PERFORM
       *
            IF       LNK-SKJKEEP-TBL   =    SPACE
                MOVE     4              TO   LNK-SKJKEEP-RC
@@ -1194,7 +1205,7 @@
              MOVE    "1"                   TO   SRY-NYUGAIKBN
              MOVE    LNK-SKJKEEP-PTID      TO   SRY-PTID
              MOVE    LNK-SKJKEEP-SANTEIYM  TO   SRY-SRYYM
-             MOVE    "099999927"           TO   SRY-SRYCD(1)
+             MOVE    CONS-NANBYO-ARI       TO   SRY-SRYCD(1)
                                                 SRY-SRYCD(2)
                                                 SRY-SRYCD(3)
                                                 SRY-SRYCD(4)
@@ -1227,6 +1238,75 @@
                                      MOVE    "1"       TO
                                                     WRK-NANBYO-INPUT-OK
                                                              (IDX-ACCT)
+                                     MOVE    "1"       TO
+                                                  LNK-SKJKEEP-NANBYOKBN
+                                                             (IDX-ACCT)
+                                  END-IF
+                              END-PERFORM
+                          END-IF
+                          MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                          MOVE     "key57"            TO  MCP-PATHNAME
+                          PERFORM   910-SRYACCT-READ-SEC
+                      END-PERFORM
+      *               診療会計クローズ
+                      MOVE     "tbl_sryacct"   TO  MCP-TABLE
+                      MOVE     "key57"          TO  MCP-PATHNAME
+                      PERFORM   900-CLOSE-SEC
+                    END-IF
+                    MOVE     "tbl_sryact"     TO   MCP-TABLE
+                    MOVE     "key7"           TO   MCP-PATHNAME
+                    PERFORM   910-SRYACT-READ-SEC
+                 END-PERFORM
+             END-IF
+      *      診療行為クローズ
+             MOVE     "tbl_sryact"     TO  MCP-TABLE
+             MOVE     "key7"           TO  MCP-PATHNAME
+             PERFORM   900-CLOSE-SEC
+      *
+      *      難病等食事負担据え置き（急性増悪による転棟）のシステム予約
+      *      コード入力日を検索据え置き対象
+             MOVE     ZERO                 TO   IDX-YYK
+             INITIALIZE                         SRYACT-REC
+             MOVE    LNK-SKJKEEP-HOSPNUM   TO   SRY-HOSPNUM
+             MOVE    "1"                   TO   SRY-NYUGAIKBN
+             MOVE    LNK-SKJKEEP-PTID      TO   SRY-PTID
+             MOVE    LNK-SKJKEEP-SANTEIYM  TO   SRY-SRYYM
+             MOVE    CONS-NANBYO-ARI2      TO   SRY-SRYCD(1)
+                                                SRY-SRYCD(2)
+                                                SRY-SRYCD(3)
+                                                SRY-SRYCD(4)
+                                                SRY-SRYCD(5)
+             MOVE    "tbl_sryact"          TO   MCP-TABLE
+             MOVE    "key7"                TO   MCP-PATHNAME
+             PERFORM 910-SRYACT-SELECT-SEC
+             IF      FLG-SRYACT            =    ZERO
+                 MOVE     "tbl_sryact"     TO   MCP-TABLE
+                 MOVE     "key7"           TO   MCP-PATHNAME
+                 PERFORM   910-SRYACT-READ-SEC
+                 PERFORM   UNTIL  (FLG-SRYACT   =   1)
+      *
+                    INITIALIZE                          SRYACCT-REC
+                    MOVE    LNK-SKJKEEP-HOSPNUM     TO  ACCT-HOSPNUM
+                    MOVE    LNK-SKJKEEP-PTID        TO  ACCT-PTID
+                    MOVE    SRY-ZAINUM              TO  ACCT-ZAINUM
+                    MOVE    "tbl_sryacct"           TO  MCP-TABLE
+                    MOVE    "key57"                 TO  MCP-PATHNAME
+                    PERFORM 910-SRYACCT-SELECT-SEC
+                    IF      FLG-SRYACCT             =   ZERO
+                       MOVE    "tbl_sryacct"        TO  MCP-TABLE
+                       MOVE    "key57"              TO  MCP-PATHNAME
+                       PERFORM   910-SRYACCT-READ-SEC
+                       PERFORM   UNTIL   FLG-SRYACCT    =   1
+                          IF   ACCT-NYUGAIKBN   =     "1"
+                              PERFORM   VARYING  IDX-ACCT FROM  1  BY  1
+                                UNTIL   IDX-ACCT   >  31
+                                  IF   ACCT-DAY(1 IDX-ACCT)  NOT =  ZERO
+                                     MOVE    "1"       TO
+                                                    WRK-NANBYO-INPUT-OK
+                                                             (IDX-ACCT)
+                                     MOVE    "2"       TO
+                                                  LNK-SKJKEEP-NANBYOKBN
+                                                             (IDX-ACCT)
                                   END-IF
                               END-PERFORM
                           END-IF
@@ -1257,7 +1337,7 @@
              MOVE    "1"                   TO   SRY-NYUGAIKBN
              MOVE    LNK-SKJKEEP-PTID      TO   SRY-PTID
              MOVE    LNK-SKJKEEP-SANTEIYM  TO   SRY-SRYYM
-             MOVE    "099999928"           TO   SRY-SRYCD(1)
+             MOVE    CONS-NANBYO-NASI      TO   SRY-SRYCD(1)
                                                 SRY-SRYCD(2)
                                                 SRY-SRYCD(3)
                                                 SRY-SRYCD(4)

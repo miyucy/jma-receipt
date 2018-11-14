@@ -42,6 +42,9 @@
              05  LNK-SKJKEEP-TBL.
       *  （空白：対象外　１：難病等据え置き　２：精神病床据え置き）
                07  LNK-SKJKEEP-KBN             PIC  X(01)  OCCURS  31.
+      *難病システム予約入力区分
+      *  （空白：対象外　１：難病据え置き　２：急性増悪による転棟）
+               07  LNK-SKJKEEP-NANBYOKBN       PIC  X(01)  OCCURS  31.
       *精神病床入院年月日
              05  LNK-SKJKEEP-SEI-NYUINYMD      PIC  X(08).
       *精神病床入院年月日コメント手入力区分
