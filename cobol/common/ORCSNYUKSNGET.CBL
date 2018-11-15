@@ -35,6 +35,8 @@
       *                                     特別入院基本料の扱いに変更
       *  05.00.00    NACL-小豆沢  18/04/02  療養病棟入院料２（経過措置２）の
       *                                     乳幼児加算、幼児加算を暫定対処
+      *  05.00.00    NACL-小豆沢  18/11/15  特定入院料算定要件外で療養病棟
+      *                                     入院基本料Ｉ算定時の加算算定変更
       *****************************************************************
       *
       *
@@ -2261,6 +2263,7 @@
                              ADD    1                TO  IDX9
                              MOVE   WRK-NYUKHNKSN-SRYCD(IDX8)  TO
                                            LNK-NYUKSNGET-KSNSRYCD(IDX9)
+      *
       *                      褥瘡患者管理加算のフラグセット
                              IF   WRK-NYUKHNKSN-SRYCD(IDX8)  =
                                                          "190116990"
@@ -2505,6 +2508,135 @@
                       MOVE    1     TO    FLG-NYUKSN
                    END-IF
                END-IF
+           END-IF
+      *
+      *    特定入院料算定要件外で療養病棟入院基本料を算定時に算定できない
+      *    入院料加算の判定
+           IF    LNK-NYUKSNGET-GAI-NYUKSNKBN      =   "1"
+      *      重症児（者）受入連携加算（療養病棟入院基本料）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190143270"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      急性期患者支援療養病床初期加算（療養病棟入院基本料）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190201770"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      在宅患者支援療養病床初期加算（療養病棟入院基本料）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190201870"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      地域医療支援病院入院診療加算
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190099870"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      基幹型臨床研修病院入院診療加算
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190117170"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      協力型臨床研修病院入院診療加算
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190119910"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      在宅患者緊急入院診療加算（在支診、在支病、在宅療養後方支援病院）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190145410"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      在宅患者緊急入院診療加算（１、２以外）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190100270"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      在宅患者緊急入院診療加算（連携医療機関（１以外））
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190127010"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      診療録管理体制加算１
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190172170"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      診療録管理体制加算２
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190100370"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      ５０対１補助体制加算（医師事務作業補助体制加算１）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190172710"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      ５０対１補助体制加算（医師事務作業補助体制加算２）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190127210"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      ７５対１補助体制加算（医師事務作業補助体制加算１）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190172810"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      ７５対１補助体制加算（医師事務作業補助体制加算２）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190127310"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      １００対１補助体制加算（医師事務作業補助体制加算１）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190172910"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      １００対１補助体制加算（医師事務作業補助体制加算２）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190127410"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      療養病棟療養環境改善加算１
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190146210"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      療養病棟療養環境改善加算２
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190146310"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      医療安全対策加算１
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190120510"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      医療安全対策加算２
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190136910"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      医療安全対策地域連携加算１
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190206670"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      医療安全対策地域連携加算２
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190206770"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      感染防止対策加算１
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190147210"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      感染防止対策加算２
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190147310"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      感染防止対策地域連携加算
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190147470"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      抗菌薬適正使用支援加算
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190206870"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      患者サポート体制充実加算
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190147510"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      病棟薬剤業務実施加算１
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190192110"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      在宅復帰機能強化加算（療養病棟入院料１）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "190168070"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
+      *      在宅復帰機能強化加算（療養病棟入院料１）（労災用）
+             IF    WRK-NYUKHNKSN-SRYCD(IDX8)   =    "101900140"
+                   MOVE    1     TO    FLG-NYUKSN
+             END-IF
            END-IF
       *
            .

@@ -47,6 +47,9 @@
            03  LNK-NYUKSNGET-BRMNUM                  PIC  X(08).
       *入院料コード
            03  LNK-NYUKSNGET-NYUIN-SRYCD             PIC  X(09).
+      *特定入院料算定要件外で療養病棟入院基本料Ｉを算定時に入院料加算
+      *を特別判定する場合の判定区分
+           03  LNK-NYUKSNGET-GAI-NYUKSNKBN           PIC  X(01).
       *入退院登録画面設定の加算領域
            03  LNK-NYUKSNGET-I01-KSN-SRYCD           PIC  X(09)
                                                      OCCURS  3.
