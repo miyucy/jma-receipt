@@ -427,7 +427,8 @@
            MOVE    "xml_claim_receivev2req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST07-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "claim_receivev2req"
                                        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
@@ -440,19 +441,6 @@
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_claim_receivev2req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF (MCP-RC = ZERO OR 1)
-               CONTINUE
            END-IF
       *
            .
@@ -510,20 +498,9 @@
            MOVE    "xml_claim_receivev2res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-CLAIM-RECEIVEV2RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_claim_receivev2res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  CLRERES-MODE
+           MOVE    "claim_receivev2res"
+                                       TO  CLRERES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-CLAIM-RECEIVEV2RES
@@ -532,9 +509,7 @@
                MOVE  CLRERES-OBJECT     TO  APILST07-BODY 
                MOVE  "application/xml" TO  APILST07-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
-      * CALL    "coblog"    USING   WRK-ERRMSG
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .

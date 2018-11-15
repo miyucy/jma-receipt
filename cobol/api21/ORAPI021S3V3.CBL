@@ -688,7 +688,8 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_medicalv3req3" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST05-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "medicalv3req3"     TO  APIREQ-RECORDNAME
      ***** CALL    "ORCDBMAIN"         USING
            CALL    "ORCDBAPIV3"        USING
@@ -701,19 +702,6 @@
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_medicalv3req3" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-     ***** CALL    "ORCDBMAIN"         USING
-           CALL    "ORCDBAPIV3"        USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF (MCP-RC = ZERO OR 1)
-               CONTINUE
            END-IF
       *
            .
