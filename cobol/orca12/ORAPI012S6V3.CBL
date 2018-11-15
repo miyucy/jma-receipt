@@ -634,7 +634,9 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_patientmodv3req6"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "patientmodv3req6"     TO  APIREQ-RECORDNAME
+           MOVE    APILST08-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    "patientmodv3req6"  TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -645,17 +647,6 @@
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientmodv3req6"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -733,20 +724,8 @@
            MOVE    "XMLWRITE"           TO  MCP-FUNC
            MOVE    "xml_patientmodv3res6"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "patientmodv3res6"     TO  PTMODRES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-PATIENTMODRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientmodv3res6"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  PTMODRES-MODE
+           MOVE    "patientmodv3res6"  TO  PTMODRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-PATIENTMODRES
@@ -755,8 +734,7 @@
                MOVE    PTMODRES-OBJECT     TO  APILST08-BODY
                MOVE    "patientmod/xml"    TO  APILST08-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "accept xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
