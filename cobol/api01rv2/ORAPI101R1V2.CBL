@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 04.07.00     NACL-多々納  14/05/16  リクエスト番号対応
       *                                     医療機関情報取得追加
+      * 05.00.00     NACL-藤原    18/11/07  項目追加
       *****************************************************************
       *
        ENVIRONMENT           DIVISION.
@@ -88,6 +89,9 @@
            03  WRK-CNT                 PIC 9(04).
       *    リクエスト番号
            03  WRK-REQUEST-NUMBER      PIC X(02).
+      *
+           03  WRK-NUM-4-X.
+               05  WRK-NUM-4           PIC 9(04).
       *
        01  WRK-XML-AREA.
            03  WRK-IN-DATE                PIC X(10).
@@ -686,7 +690,611 @@
       *        管理者名
                MOVE    SYS-1001-KANRINAME
                                    TO  SYS101RES-ADMINISTRATOR-WHOLENAME
-      *
+               MOVE    SYS-1001-TANHOSPNAME
+                                           TO  SYS101RES-TANHOSPNAME
+               MOVE    SYS-1001-BEDSU      TO  WRK-NUM-4
+               MOVE    WRK-NUM-4-X         TO  SYS101RES-BEDSU
+               IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
+                      (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
+                   MOVE    ZERO                TO  WRK-NUM-4
+               ELSE
+                   MOVE    SYS-1001-BEDSUIPN   TO  WRK-NUM-4
+               END-IF
+               MOVE    WRK-NUM-4-X         TO  SYS101RES-BEDSUIPN
+               MOVE    SYS-1001-ROUPAYKBN  TO  SYS101RES-ROUPAYKBN
+               EVALUATE    SYS-1001-ROUPAYKBN
+                   WHEN    "1"
+                       MOVE    "定率"      TO  SYS101RES-ROUPAYKBNMEI
+                   WHEN    "2"
+                       MOVE    "定額"      TO  SYS101RES-ROUPAYKBNMEI
+               END-EVALUATE
+               MOVE    SYS-1001-HOSPSBT1   TO  SYS101RES-HOSPSBT1
+               EVALUATE    SYS-1001-HOSPSBT1
+                   WHEN    "0"
+                       MOVE    "旧総合病院でない"
+                                           TO  SYS101RES-HOSPSBT1MEI
+                   WHEN    "1"
+                       MOVE    "旧総合病院である"
+                                           TO  SYS101RES-HOSPSBT1MEI
+               END-EVALUATE
+               MOVE    SYS-1001-HOSPCDN    TO  SYS101RES-HOSPCDN
+               MOVE    SYS-1001-SYOHOKBN   TO  SYS101RES-SYOHOKBN
+               EVALUATE    SYS-1001-SYOHOKBN
+                   WHEN    "0"
+                       MOVE    "院内"      TO  SYS101RES-SYOHOKBNMEI
+                   WHEN    "1"
+                       MOVE    "院外"      TO  SYS101RES-SYOHOKBNMEI
+               END-EVALUATE
+               IF    ( SYS-1001-SANKANUM   IS  NUMERIC  )
+               AND   ( SYS-1001-SANKANUM   NOT =   ZERO )
+                   MOVE    SYS-1001-SANKANUM   TO  SYS101RES-SANKANUM
+               ELSE
+                   MOVE    SPACE               TO  SYS101RES-SANKANUM
+               END-IF
+               MOVE    SYS-1001-SKYPRTFLG  TO  SYS101RES-SKYPRTFLG
+               EVALUATE    SYS-1001-SKYPRTFLG
+                   WHEN    "0"
+                       MOVE    "発行しない"
+                                           TO  SYS101RES-SKYPRTFLGMEI
+                   WHEN    "1"
+                       MOVE    "発行する"  TO  SYS101RES-SKYPRTFLGMEI
+                   WHEN    "2"
+                       MOVE    "発行する（請求あり）"
+                                           TO  SYS101RES-SKYPRTFLGMEI
+                   WHEN    "3"
+                       MOVE    "発行する（訂正時なし）"
+                                           TO  SYS101RES-SKYPRTFLGMEI
+               END-EVALUATE
+               MOVE    SYS-1001-SYOHOPRTFLG
+                                           TO  SYS101RES-SYOHOPRTFLG 
+               EVALUATE    SYS-1001-SYOHOPRTFLG
+                   WHEN    "0"
+                       MOVE    "発行しない"
+                                           TO  SYS101RES-SYOHOPRTFLGMEI
+                   WHEN    "1"
+                       MOVE    "発行する"  TO  SYS101RES-SYOHOPRTFLGMEI
+                   WHEN    "2"
+                       MOVE    "院内処方発行"
+                                           TO  SYS101RES-SYOHOPRTFLGMEI
+                   WHEN    "3"
+                       MOVE    "発行する（訂正時なし）"
+                                           TO  SYS101RES-SYOHOPRTFLGMEI
+                   WHEN    "4"
+                       MOVE    "院内処方発行（訂正時なし）" 
+                                           TO  SYS101RES-SYOHOPRTFLGMEI
+               END-EVALUATE
+               MOVE    SYS-1001-ZENSYOHOFLG
+                                           TO  SYS101RES-ZENSYOHOFLG
+               EVALUATE    SYS-1001-ZENSYOHOFLG
+                   WHEN    "0"
+                       MOVE    "表示する"  TO  SYS101RES-ZENSYOHOFLGMEI
+                   WHEN    "1"
+                       MOVE    "表示しない"
+                                           TO  SYS101RES-ZENSYOHOFLGMEI
+               END-EVALUATE
+      *        薬剤情報発効空白の時、ゼロとする
+               IF      SYS-1001-YAKUJYOPRTFLG
+                                       =   SPACE
+                   MOVE    ZERO            TO  SYS-1001-YAKUJYOPRTFLG
+               END-IF
+               MOVE    SYS-1001-YAKUJYOPRTFLG
+                                           TO  SYS101RES-YAKUJYOPRTFLG
+               EVALUATE    SYS-1001-YAKUJYOPRTFLG
+                   WHEN    "0"
+                       MOVE    "発行しない"
+                                       TO  SYS101RES-YAKUJYOPRTFLGMEI
+                   WHEN    "1"
+                       MOVE    "発行する"
+                                       TO  SYS101RES-YAKUJYOPRTFLGMEI
+                   WHEN    "2"
+                       MOVE    "発行する（訂正時なし）"
+                                       TO  SYS101RES-YAKUJYOPRTFLGMEI
+               END-EVALUATE
+      *        お薬手帳発効空白の時、ゼロとする
+               IF      SYS-1001-OKUSURIPRTFLG  =   SPACE
+                   MOVE    ZERO            TO  SYS-1001-OKUSURIPRTFLG
+               END-IF
+               MOVE    SYS-1001-OKUSURIPRTFLG
+                                          TO  SYS101RES-OKUSURIPRTFLG
+               EVALUATE    SYS-1001-OKUSURIPRTFLG
+                   WHEN    "0"
+                       MOVE    "発行しない"
+                                          TO  SYS101RES-OKUSURIPRTFLGMEI
+                   WHEN    "1"
+                       MOVE    "発行する（後期高齢）"
+                                          TO  SYS101RES-OKUSURIPRTFLGMEI
+                   WHEN    "2"
+                       MOVE    "発行する（後期高齢）（訂正時なし）"
+                                          TO  SYS101RES-OKUSURIPRTFLGMEI
+                   WHEN    "3"
+                       MOVE    "発行する" TO  SYS101RES-OKUSURIPRTFLGMEI
+                   WHEN    "4"
+                       MOVE    "発行する（訂正時なし）"
+                                          TO  SYS101RES-OKUSURIPRTFLGMEI
+               END-EVALUATE
+      *        診療費明細書発行区分空白の時、ゼロとする
+               IF      SYS-1001-MEIPRTFLG  =   SPACE
+                   MOVE    "1"                 TO  SYS-1001-MEIPRTFLG
+               END-IF
+               MOVE    SYS-1001-MEIPRTFLG  TO  SYS101RES-MEIPRTFLG
+               EVALUATE    SYS-1001-MEIPRTFLG
+                   WHEN    "0"
+                       MOVE    "発行しない"
+                                           TO  SYS101RES-MEIPRTFLGMEI
+                   WHEN    "1"
+                       MOVE    "発行する"  TO  SYS101RES-MEIPRTFLGMEI
+                   WHEN    "2"
+                       MOVE    "発行する（請求あり）"
+                                           TO  SYS101RES-MEIPRTFLGMEI
+                   WHEN    "3"
+                       MOVE    "発行する（訂正時なし）"
+                                           TO  SYS101RES-MEIPRTFLGMEI
+               END-EVALUATE
+      *        予約票発行区分空白の時、ゼロとする
+               IF      SYS-1001-YYKHYOPRTFLG   =   SPACE
+                   MOVE    ZERO                TO  SYS-1001-YYKHYOPRTFLG
+               END-IF
+               MOVE    SYS-1001-YYKHYOPRTFLG   TO
+                                               SYS101RES-YYKHYOPRTFLG
+               EVALUATE    SYS-1001-YYKHYOPRTFLG
+                   WHEN    "0"
+                       MOVE    "発行しない"
+                                           TO  SYS101RES-YYKHYOPRTFLGMEI
+                   WHEN    "1"
+                       MOVE    "発行する"  TO  SYS101RES-YYKHYOPRTFLGMEI
+               END-EVALUATE
+      *        地方公費保険番号タブ区分空白の時、ゼロとする
+               IF      SYS-1001-CHIHOUNUMKBN   =   SPACE
+                   MOVE    ZERO                TO  SYS-1001-CHIHOUNUMKBN
+               END-IF
+               MOVE    SYS-1001-CHIHOUNUMKBN
+                                           TO  SYS101RES-CHIHOUNUMKBN
+               EVALUATE    SYS-1001-CHIHOUNUMKBN
+                   WHEN    "0"
+                       MOVE    "無効"      TO  SYS101RES-CHIHOUNUMKBNMEI
+                   WHEN    "1"
+                       MOVE    "有効"      TO  SYS101RES-CHIHOUNUMKBNMEI
+               END-EVALUATE
+      *        請求額端数区分（減免有） 空白の時、"1"とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN  =   SPACE
+                   MOVE    "1"             TO
+                                           SYS-1001-DISCOUNT-HASU-KBN
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBNNM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBNNM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBNNM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBNNM
+               END-EVALUATE
+      *        請求額端数区分医保（減免無保険分） 空白の時、"4"とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN2 =   SPACE
+                   MOVE    "4"             TO
+                                           SYS-1001-DISCOUNT-HASU-KBN2
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN2
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN2
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN2
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN2NM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN2NM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN2NM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN2NM
+               END-EVALUATE
+      *        請求額端数区分医保（減免無自費分） 空白の時、"0"とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN2J   =   SPACE
+                   MOVE    "0"             TO
+                                           SYS-1001-DISCOUNT-HASU-KBN2J
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN2J
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN2J
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN2J
+                   WHEN    "0"
+                       MOVE    "保険分に準ずる"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN2JNM
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN2JNM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN2JNM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN2JNM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN2JNM
+               END-EVALUATE
+      *        請求額端数区分労災（減免無保険分） 空白の時、"4"とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN3   =   SPACE
+                   MOVE    "4"             TO
+                                           SYS-1001-DISCOUNT-HASU-KBN3
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN3
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN3
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN3
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN3NM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN3NM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN3NM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN3NM
+               END-EVALUATE
+      *        請求額端数区分労災（減免無自費分） 空白の時、"0"とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN3J   =   SPACE
+                   MOVE    "0"             TO
+                                           SYS-1001-DISCOUNT-HASU-KBN3J
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN3J
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN3J
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN3J
+                   WHEN    "0"
+                       MOVE    "保険分に準ずる"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN3JNM
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN3JNM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN3JNM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN3JNM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN3JNM
+               END-EVALUATE
+      *        請求額端数区分自賠責（減免無保険分） 空白の時、"4"とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN4   =   SPACE
+                   MOVE    "4"             TO
+                                           SYS-1001-DISCOUNT-HASU-KBN4
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN4
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN4
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN4
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN4NM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN4NM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN4NM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN4NM
+               END-EVALUATE
+      *        請求額端数区分自賠責（減免無自費分） 空白の時、"0"とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN4J   =   SPACE
+                   MOVE    "0"             TO
+                                           SYS-1001-DISCOUNT-HASU-KBN4J
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN4J
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN4J
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN4J
+                   WHEN    "0"
+                       MOVE    "保険分に準ずる"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN4JNM
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN4JNM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN4JNM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN4JNM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN4JNM
+               END-EVALUATE
+      *        請求額端数区分公害（減免無自費分） 空白の時、"4"とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN5J   =   SPACE
+                   MOVE    "4"             TO
+                                           SYS-1001-DISCOUNT-HASU-KBN5J
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN5J
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN5J
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN5J
+                   WHEN    "0"
+                       MOVE    "保険分に準ずる"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN5JNM
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN5JNM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN5JNM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN5JNM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN5JNM
+               END-EVALUATE
+      *        請求額端数区分第三者行為（減免無保険分） 空白の時、自賠責の設定とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN6   =   SPACE
+                    MOVE    SYS-1001-DISCOUNT-HASU-KBN6
+                                           TO
+                                           SYS-1001-DISCOUNT-HASU-KBN6
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN6
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN6
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN6
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN6NM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN6NM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN6NM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN6NM
+               END-EVALUATE
+      *        請求額端数区分自賠責（減免無自費分） 空白の時、自賠責の設定とする
+               IF      SYS-1001-DISCOUNT-HASU-KBN6J   =   SPACE
+                    MOVE    SYS-1001-DISCOUNT-HASU-KBN6J
+                                           TO
+                                           SYS-1001-DISCOUNT-HASU-KBN6J
+               END-IF
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN6J
+                                           TO
+                                           SYS101RES-DISCOUNT-HASU-KBN6J
+               EVALUATE    SYS-1001-DISCOUNT-HASU-KBN6J
+                   WHEN    "0"
+                       MOVE    "保険分に準ずる"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN6JNM
+                   WHEN    "1"
+                       MOVE    "１０円未満四捨五入"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN6JNM
+                   WHEN    "2"
+                       MOVE    "１０円未満切り捨て"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN6JNM
+                   WHEN    "3"
+                       MOVE    "１０円未満切り上げ"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN6JNM
+                   WHEN    "4"
+                       MOVE    "１０円未満端数処理なし"
+                                           TO
+                                       SYS101RES-DISCOUNT-HASU-KBN6JNM
+               END-EVALUATE
+      *        第三者行為（医療費）負担金額計算区分、空白の時"2"とする
+               IF      SYS-1001-DAISANKBN    =   SPACE
+                   MOVE    "2"             TO  SYS-1001-DAISANKBN
+               END-IF
+               MOVE    SYS-1001-DAISANKBN  TO  SYS101RES-DAISANKBN
+               EVALUATE    SYS-1001-DAISANKBN
+                   WHEN    "1"
+                       MOVE    "負担金額１０円未満四捨五入"
+                                           TO  SYS101RES-DAISANKBNMEI
+                   WHEN    "2"
+                       MOVE    "負担金額１０円未満端数処理なし"
+                                           TO  SYS101RES-DAISANKBNMEI
+               END-EVALUATE
+      *        減免計算対象区分、空白の時"1"とする
+               IF      SYS-1001-GENTAIKBN    =   SPACE
+                   MOVE    "1"             TO  SYS-1001-GENTAIKBN
+               END-IF
+               MOVE    SYS-1001-GENTAIKBN  TO  SYS101RES-GENTAIKBN
+               EVALUATE    SYS-1001-GENTAIKBN
+                   WHEN    "1"
+                       MOVE    "自費分を含む"  
+                                           TO  SYS101RES-GENTAIKBNMEI
+                   WHEN    "2"
+                       MOVE    "自費分を除く" 
+                                           TO  SYS101RES-GENTAIKBNMEI
+                   WHEN    "3"
+                       MOVE    "自費分のみ"
+                                           TO  SYS101RES-GENTAIKBNMEI
+               END-EVALUATE
+      *        消費税端数区分 空白の時、"2"とする
+               IF      SYS-1001-TAX-HASU-KBN   =   SPACE
+                   MOVE    "2"             TO  SYS-1001-TAX-HASU-KBN
+               END-IF
+               MOVE    SYS-1001-TAX-HASU-KBN
+                                           TO  SYS101RES-TAX-HASU-KBN
+               EVALUATE    SYS-1001-TAX-HASU-KBN
+                   WHEN    "1"
+                       MOVE    "１円未満四捨五入"  
+                                           TO  SYS101RES-TAX-HASU-KBNMEI
+                   WHEN    "2"
+                       MOVE    "１円未満切り捨て" 
+                                           TO  SYS101RES-TAX-HASU-KBNMEI
+                   WHEN    "3"
+                       MOVE    "１円未満切り上げ" 
+                                           TO  SYS101RES-TAX-HASU-KBNMEI
+               END-EVALUATE
+      *        自費コード端数 空白の時、"2"とする
+               IF      SYS-1001-JIHI-HASU-KBN   =   SPACE
+                   MOVE    "2"             TO  SYS-1001-JIHI-HASU-KBN
+               END-IF
+               MOVE    SYS-1001-JIHI-HASU-KBN
+                                           TO  SYS101RES-JIHI-HASU-KBN
+               EVALUATE    SYS-1001-JIHI-HASU-KBN
+                   WHEN    "1"
+                       MOVE    "１円未満四捨五入"
+                                           TO
+                                           SYS101RES-JIHI-HASU-KBNMEI
+                   WHEN    "2"
+                       MOVE    "１円未満切り捨て"
+                                           TO
+                                           SYS101RES-JIHI-HASU-KBNMEI
+                   WHEN    "3"
+                       MOVE    "１円未満切り上げ"
+                                           TO
+                                           SYS101RES-JIHI-HASU-KBNMEI
+               END-EVALUATE
+      *        更生・育成限度額日割計算区分 空白の時、"1"とする
+               IF      SYS-1001-HIWARIKBN  =   SPACE
+                   MOVE    "1"             TO  SYS-1001-HIWARIKBN
+               END-IF
+               MOVE    SYS-1001-HIWARIKBN  TO  SYS101RES-HIWARIKBN
+               EVALUATE    SYS-1001-HIWARIKBN
+                   WHEN    "1"
+                       MOVE    "日割計算しない"
+                                           TO  SYS101RES-HIWARIKBNMEI
+                   WHEN    "2"
+                       MOVE    "日割計算する"
+                                           TO  SYS101RES-HIWARIKBNMEI
+               END-EVALUATE
+      *        データ作成フラグ 空白の時、"0"とする
+               IF      SYS-1001-DATACREATEFLG  =   SPACE
+                   MOVE    "0"             TO  SYS-1001-DATACREATEFLG
+               END-IF
+               MOVE    SYS-1001-DATACREATEFLG
+                                           TO  SYS101RES-DATACREATEFLG
+               EVALUATE    SYS-1001-DATACREATEFLG
+                   WHEN    "0"
+                       MOVE    "作成しない"
+                                           TO
+                                           SYS101RES-DATACREATEFLGMEI
+                   WHEN    "1"
+                       MOVE    "作成する"  TO
+                                           SYS101RES-DATACREATEFLGMEI
+               END-EVALUATE
+      *        データ提出方法区分 空白の時、"0"とする
+               IF      SYS-1001-DATATEISYUTUKBN  =   SPACE
+                   MOVE    "0"             TO  SYS-1001-DATATEISYUTUKBN
+               END-IF
+               MOVE    SYS-1001-DATATEISYUTUKBN
+                                           TO  SYS101RES-DATATEISYUTUKBN
+               EVALUATE    SYS-1001-DATATEISYUTUKBN
+                   WHEN    "0"
+                       MOVE    "提出しない"
+                                       TO  SYS101RES-DATATEISYUTUKBNMEI
+                   WHEN    "1"
+                       MOVE    "自動で送信"
+                                       TO  SYS101RES-DATATEISYUTUKBNMEI
+                   WHEN    "2"
+                       MOVE    "手動で送信"
+                                       TO  SYS101RES-DATATEISYUTUKBNMEI
+               END-EVALUATE
+      *        データ感染症区分 空白の時、"0"とする
+               IF      SYS-1001-DATAINFECTIONKBN   =   SPACE
+                   IF      SYS-1001-DATACREATEFLG  =   "1"
+                       MOVE    "1"         TO  SYS-1001-DATAINFECTIONKBN
+                   ELSE
+                       MOVE    "0"         TO  SYS-1001-DATAINFECTIONKBN
+                   END-IF
+               END-IF
+               MOVE    SYS-1001-DATAINFECTIONKBN
+                                           TO
+                                           SYS101RES-DATAINFECTIONKBN
+               EVALUATE    SYS-1001-DATAINFECTIONKBN
+                   WHEN    "0"
+                       MOVE    "作成しない"
+                                           TO
+                                           SYS101RES-DATAINFECTIONKBNMEI
+                   WHEN    "1"
+                       MOVE    "作成する"  TO
+                                           SYS101RES-DATAINFECTIONKBNMEI
+                   WHEN    "2"
+                       MOVE    "作成する／日"
+                                           TO
+                                           SYS101RES-DATAINFECTIONKBNMEI
+                   WHEN    "9"
+                       MOVE    "作成しない消"
+                                           TO
+                                           SYS101RES-DATAINFECTIONKBNMEI
+               END-EVALUATE
+      *        データ提出方法区分 空白の時、"0"とする
+               IF      SYS-1001-JIHIPOSITION   =   SPACE
+                   MOVE    "1"             TO  SYS-1001-JIHIPOSITION
+               END-IF
+               MOVE    SYS-1001-JIHIPOSITION
+                                           TO  SYS101RES-JIHIPOSITION
+               EVALUATE    SYS-1001-JIHIPOSITION
+                   WHEN    "1"
+                       MOVE    "保険分欄（負担金額四捨五入）"
+                                           TO
+                                           SYS101RES-JIHIPOSITIONMEI
+                   WHEN    "2"
+                       MOVE    "自費分欄"  TO
+                                           SYS101RES-JIHIPOSITIONMEI
+                   WHEN    "3"
+                       MOVE    "保険分欄（負担金額端数処理なし）"
+                                           TO
+                                           SYS101RES-JIHIPOSITIONMEI
+               END-EVALUATE
            ELSE
       *        対象なし
                MOVE    "11"            TO  WRK-ERRCD
