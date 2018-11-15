@@ -463,11 +463,6 @@
            IF      FLG-SEISIN-SANTEI   =   ZERO
                 MOVE   SPACE           TO  LNK-SKJKEEP-SEI-NYUINYMD
            END-IF
-           PERFORM    VARYING   IDX   FROM  1  BY  1
-             UNTIL    IDX    >   31
-              DISPLAY "IDX = " IDX
-              DISPLAY "LNK-SKJKEEP-KBN(IDX) = " LNK-SKJKEEP-KBN(IDX)
-           END-PERFORM
       *
            IF       LNK-SKJKEEP-TBL   =    SPACE
                MOVE     4              TO   LNK-SKJKEEP-RC
