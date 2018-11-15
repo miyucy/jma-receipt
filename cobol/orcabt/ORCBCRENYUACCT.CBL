@@ -2283,7 +2283,7 @@
       *    特定入院料算定要件外で療養病棟入院基本料Ｉを算定時に、入院料
       *    加算を一般病棟特別入院基本料の例で算定する為、コードの置き換え
            IF      LNK-TOKNYUIN-GAI-NYUKSNKBN   =    "1"
-               MOVE   "190079010"       TO  LNK-NYUKSNGET-NYUIN-SRYCD
+               MOVE   "1"               TO  LNK-NYUKSNGET-GAI-NYUKSNKBN
            END-IF
       *
            CALL    "ORCSNYUKSNGET"      USING  ORCSNYUKSNGET-AREA
