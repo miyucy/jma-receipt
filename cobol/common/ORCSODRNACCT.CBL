@@ -1267,7 +1267,7 @@
            END-IF
       *
       *    特定入院料算定要件外で療養病棟入院基本料Ｉを算定時に、入院料
-      *    加算を一般病棟特別入院基本料の例で算定する為、コードの置き換え
+      *    加算を特別判定する場合の判定区分セット
            IF      LNK-TOKNYUIN-GAI-NYUKSNKBN   =    "1"
                MOVE   "1"               TO  LNK-NYUKSNGET-GAI-NYUKSNKBN
            END-IF
