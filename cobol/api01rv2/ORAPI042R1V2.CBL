@@ -280,8 +280,8 @@
                DISPLAY "ACPLSTRES-OBJECT not low_value"
                 ",APILST22-BODY:"  APILST22-BODY
            END-IF
-      * XML情報取り出し
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+      *
+           MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_receipt_inf1v2req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -293,42 +293,11 @@
                                        XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "97"             TO  WRK-ERRCD
-               GO      TO      1000-APTLSTREAD-EXT
-           END-IF
-      *
-           MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_receipt_inf1v2req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "receipt_infreq"    TO  APIREQ-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    XML-APIREQ          TO  XML-RECEIPT-INFREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                MOVE   "98"             TO  WRK-ERRCD
                DISPLAY "XMLREAD failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_receipt_inf1v2req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -446,26 +415,11 @@
                DISPLAY "ACPLSTRES-OBJECT not low_value"
            END-IF
       *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_receipt_inf1v2res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    1                   TO  RECEIPT-INFS-MODE
-           MOVE    "receipt_infres"   TO  RECEIPT-INFS-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-RECEIPT-INFRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_receipt_inf1v2res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  RECEIPT-INFS-MODE
            MOVE    "receipt_infres"    TO  RECEIPT-INFS-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -473,26 +427,10 @@
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                DISPLAY "XMLWRITE OK      = " MCP-RC
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_receipt_inf1v2res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-RECEIPT-INFRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               DISPLAY "XMLCLOSE OK   = " MCP-RC
                MOVE    RECEIPT-INFS-OBJECT     TO  APILST22-BODY 
                MOVE    "application/xml"   TO  APILST22-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "patient res xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
            .

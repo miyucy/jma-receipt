@@ -650,28 +650,11 @@
            INITIALIZE                      XML-APIREQ
            INITIALIZE                      XML-DISEASEREQ
       *
-      *    XML情報取り出し
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_diseasev2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    APILST-BODY         TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
-           MOVE    "diseasereq"        TO  APIREQ-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "E97"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_diseasev2req"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            MOVE    "diseasereq"        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -683,18 +666,6 @@
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "E98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_diseasev2req"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -720,7 +691,7 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_diseasev2res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  DISEASES-MODE
@@ -730,39 +701,10 @@
                                        XML-DISEASERES
                                        SPA-AREA
            IF    ( MCP-RC              =   ZERO    OR  1 )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_diseasev2res"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "diseaseres"        TO  DISEASES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-DISEASERES
-                                       SPA-AREA
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_diseasev2res"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "diseaseres"        TO  DISEASES-RECORDNAME
-           CALL   "ORCDBMAIN"          USING
-                                       MCPAREA
-                                       XML-DISEASERES
-                                       SPA-AREA
-           IF    ( MCP-RC              =   ZERO    OR  1 )
                MOVE  DISEASES-OBJECT      TO  APILST-BODY
                MOVE  "application/xml"    TO  APILST-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "accept xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
