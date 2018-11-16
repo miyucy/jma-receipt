@@ -1786,16 +1786,10 @@
       *
            INITIALIZE                  XMLDATA-REC
            MOVE   TENSULST-REC     TO  XMLDATA-DATA
-      *
            MOVE    1               TO  XMLDATA-MODE
            MOVE    "xml_medication_masterlst"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XMLDATA-REC
-      *
            MOVE    "medication_masterlst"
                                    TO  XMLDATA-RECORDNAME
            MOVE    "XMLWRITE"      TO  MCP-FUNC

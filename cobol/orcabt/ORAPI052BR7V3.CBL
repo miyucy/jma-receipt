@@ -1172,16 +1172,10 @@
       *
            INITIALIZE                  XMLDATA-REC
            MOVE   MDCRES-OUT-AREA  TO  XMLDATA-DATA
-      *
            MOVE    1               TO  XMLDATA-MODE
            MOVE    "xml_patient_medical_all"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XMLDATA-REC
-      *
            MOVE    "Patient_Medical_All"
                                    TO  XMLDATA-RECORDNAME
            MOVE    "XMLWRITE"      TO  MCP-FUNC

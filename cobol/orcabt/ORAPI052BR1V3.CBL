@@ -396,16 +396,10 @@
       *
            INITIALIZE                  XMLDATA-REC
            MOVE   BYOMEILST-REC    TO  XMLDATA-DATA
-      *
            MOVE    1               TO  XMLDATA-MODE
            MOVE    "xml_disease_masterlst"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XMLDATA-REC
-      *
            MOVE    "disease_masterlst"
                                    TO  XMLDATA-RECORDNAME
            MOVE    "XMLWRITE"      TO  MCP-FUNC

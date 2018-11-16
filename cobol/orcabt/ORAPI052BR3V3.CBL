@@ -900,16 +900,10 @@
        910-XMLEXPORT-SEC          SECTION.
       *
            INITIALIZE                  XMLDATA-REC
-           MOVE   ZAIKOUT-REC      TO  XMLDATA-DATA
-      *
+           MOVE    ZAIKOUT-REC     TO  XMLDATA-DATA
            MOVE    1               TO  XMLDATA-MODE
            MOVE    "xml_stock1"    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XMLDATA-REC
-      *
            MOVE    "stock1"        TO  XMLDATA-RECORDNAME
            MOVE    "XMLWRITE"      TO  MCP-FUNC
            CALL    "MONFUNC"           USING

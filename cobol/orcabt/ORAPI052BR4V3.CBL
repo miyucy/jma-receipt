@@ -1016,16 +1016,10 @@
       *
            INITIALIZE                  XMLDATA-REC
            MOVE   PTINFLST-REC     TO  XMLDATA-DATA
-      *
            MOVE    1               TO  XMLDATA-MODE
            MOVE    "xml_patient_basis_all"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XMLDATA-REC
-      *
            MOVE    "Patient_Basis_All"
                                    TO  XMLDATA-RECORDNAME
            MOVE    "XMLWRITE"      TO  MCP-FUNC

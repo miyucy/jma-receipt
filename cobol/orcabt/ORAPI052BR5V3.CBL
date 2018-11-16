@@ -936,16 +936,10 @@
       *
            INITIALIZE                  XMLDATA-REC
            MOVE   PTBYOMEILST-REC  TO  XMLDATA-DATA
-      *
            MOVE    1               TO  XMLDATA-MODE
            MOVE    "xml_patient_disease_all"
                                    TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           MOVE    "XMLOPEN"       TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       XMLDATA-REC
-      *
            MOVE    "Patient_Disease_All"
                                    TO  XMLDATA-RECORDNAME
            MOVE    "XMLWRITE"      TO  MCP-FUNC

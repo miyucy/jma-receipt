@@ -332,29 +332,12 @@
            END-IF
            INITIALIZE                      XML-APIREQ
            INITIALIZE                      XML-STOCKREQ
-      * XML情報取り出し
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_stock1v2req"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST03-BODY       TO  APIREQ-OBJECT
-           MOVE    ZERO                TO  APIREQ-MODE
-           MOVE    "stock1v2req"       TO  APIREQ-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "E97"            TO  WRK-ERRCD
-               GO     TO   1000-APTXMLREAD-EXT
-           END-IF
       *
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_stock1v2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    APILST03-BODY       TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            MOVE    "stock1v2req"       TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -367,15 +350,6 @@
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "E98"             TO  WRK-ERRCD
            END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_stock1v2req"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
       *
            .
        1000-APTXMLREAD-EXT.
@@ -436,7 +410,7 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_stock1v2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  STOCKRES-MODE
@@ -446,38 +420,10 @@
                                        XML-STOCKRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_stock1v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "stock1v2res"       TO  STOCKRES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-STOCKRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_stock1v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-STOCKRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    STOCKRES-OBJECT     TO  APILST03-BODY 
                MOVE    "application/xml"   TO  APILST03-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "medicalget xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .

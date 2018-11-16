@@ -417,8 +417,8 @@
       *
            INITIALIZE                      XML-APIREQ
            INITIALIZE                      XML-LSTREQ
-      *    XML情報取り出し
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+      *
+           MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_statistics_formv3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -431,40 +431,11 @@
                                        XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE    "E97"               TO  WRK-ERRCD
-               GO  TO  1000-APTXMLREAD-EXT
-           END-IF
-      *
-           MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_statistics_formv3req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "statistics_formv3req"
-                                       TO  APIREQ-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    XML-APIREQ          TO  XML-LSTREQ
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "E98"             TO  WRK-ERRCD
            END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_statistics_formv3req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
            .
        1000-APTXMLREAD-EXT.
            EXIT.
@@ -556,7 +527,7 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_statistics_formv3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -568,41 +539,10 @@
                                        XML-LSTRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_statistics_formv3res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "statistics_formv3res"
-                                       TO  LSTRES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-LSTRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_statistics_formv3res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-LSTRES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    LSTRES-OBJECT       TO  APILST10-BODY 
                MOVE    "application/xml"   TO  APILST10-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "statistics_form xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
