@@ -1648,11 +1648,6 @@
            PERFORM 2001211-P024-SYORI-SEC
       *    見出編集
            MOVE    SPA-GMN24-FTNMSG1   TO  PTMODRES-SEL-KOHFTN-NAME1
-      *H30.11
-           IF      SPA-GMN24-FTNMSG1   =   "　"
-               MOVE    SPACE           TO  PTMODRES-SEL-KOHFTN-NAME1
-           END-IF
-      *
            MOVE    SPA-GMN24-FTNMSG2   TO  PTMODRES-SEL-KOHFTN-NAME2
       *    公費種類
            MOVE    SPA-NAI24-FTNSYORI  TO  PTMODRES-SEL-KOHFTN-CLASS
