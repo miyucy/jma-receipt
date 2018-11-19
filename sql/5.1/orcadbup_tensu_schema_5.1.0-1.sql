@@ -61,37 +61,37 @@ CREATE INDEX idx_tensu_master_name ON master.tbl_tensu_master USING btree (name)
 DROP INDEX master.idx_tensu_yakkakjncd;
 CREATE INDEX idx_tensu_master_yakkakjncd ON master.tbl_tensu_master USING btree (yakkakjncd);
 
-DROP VIEW IF EXISTS
-    public.tbl_tensu
-;
+--DROP VIEW IF EXISTS
+--    public.tbl_tensu
+--;
 
-CREATE VIEW
-    tbl_tensu
-AS
-(
-SELECT
-    tbl_tensu_user.*,
-    '2'::smallint AS master_class
-FROM
-    tbl_tensu_user
-UNION ALL
-SELECT
-    tbl_tensu_master.*,
-    '1'::smallint AS master_class
-FROM
-    master.tbl_tensu_master
-WHERE
-    NOT EXISTS (
-        SELECT
-            1
-        FROM
-            tbl_tensu_user
-        WHERE
-            master.tbl_tensu_master.srycd = tbl_tensu_user.srycd
-        )
-ORDER BY
-    srycd,
-    yukostymd,
-    yukoedymd
-)
-;
+--CREATE VIEW
+--    tbl_tensu
+--AS
+--(
+--SELECT
+--    tbl_tensu_user.*,
+--    '2'::smallint AS master_class
+--FROM
+--    tbl_tensu_user
+--UNION ALL
+--SELECT
+--    tbl_tensu_master.*,
+--    '1'::smallint AS master_class
+--FROM
+--    master.tbl_tensu_master
+--WHERE
+--    NOT EXISTS (
+--        SELECT
+--            1
+--        FROM
+--            tbl_tensu_user
+--        WHERE
+--            master.tbl_tensu_master.srycd = tbl_tensu_user.srycd
+--        )
+--ORDER BY
+--    srycd,
+--    yukostymd,
+--    yukoedymd
+--)
+--;

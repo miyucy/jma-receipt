@@ -135,34 +135,34 @@ FROM
     CROSS JOIN tbl_sysbase b
 ;
 
-CREATE VIEW
-    tbl_chk
-AS
-(
-SELECT
-    *
-FROM
-    tbl_chk_user
-UNION ALL
-SELECT
-    *
-FROM
-    view_chk_master
-WHERE
-    NOT EXISTS (
-        SELECT
-            1
-        FROM
-            tbl_chk_user
-        WHERE
-            ( view_chk_master.hospnum = tbl_chk_user.hospnum ) AND
-            ( view_chk_master.chkkbn = tbl_chk_user.chkkbn ) AND
-            ( view_chk_master.srycd = tbl_chk_user.srycd ) AND
-            ( view_chk_master.grpnum = tbl_chk_user.grpnum ) AND
-            ( view_chk_master.yukostymd = tbl_chk_user.yukostymd ) AND
-            ( view_chk_master.yukoedymd = tbl_chk_user.yukoedymd ) AND
-            ( view_chk_master.cdkbn = tbl_chk_user.cdkbn ) AND
-            ( view_chk_master.cd = tbl_chk_user.cd )
-    )
+--CREATE VIEW
+--    tbl_chk
+--AS
+--(
+--SELECT
+--    *
+--FROM
+--    tbl_chk_user
+--UNION ALL
+--SELECT
+--    *
+--FROM
+--    view_chk_master
+--WHERE
+--    NOT EXISTS (
+--        SELECT
+--            1
+--        FROM
+--            tbl_chk_user
+--        WHERE
+--            ( view_chk_master.hospnum = tbl_chk_user.hospnum ) AND
+--            ( view_chk_master.chkkbn = tbl_chk_user.chkkbn ) AND
+--            ( view_chk_master.srycd = tbl_chk_user.srycd ) AND
+--            ( view_chk_master.grpnum = tbl_chk_user.grpnum ) AND
+--            ( view_chk_master.yukostymd = tbl_chk_user.yukostymd ) AND
+--            ( view_chk_master.yukoedymd = tbl_chk_user.yukoedymd ) AND
+--            ( view_chk_master.cdkbn = tbl_chk_user.cdkbn ) AND
+--            ( view_chk_master.cd = tbl_chk_user.cd )
+--    )
 -- ORDER BY
-);
+--);
