@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.08.00    NACL-多々納  18/01/17  第三者行為分計算優先対応
+      *  05.00.00    NACL-多々納  18/11/20  初診料算定フラグ２対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -381,6 +382,13 @@
                                                    =   "099999931"
                            MOVE    "1"     TO  LNK-S01-DAISANYUSENFLG
                        END-IF
+      *H30.11
+      *                初診料算定フラグ２（地方公費用）
+                       IF      LNK-WKSRY-SRYCD(IDX IDS)
+                                                   =   "099409906"
+                           MOVE    "1"     TO  LNK-S01-SYOSINFLG2
+                       END-IF
+      *
       *                初診料判定
                        PERFORM 1001-SYOSIN-CHK-SEC
                    END-PERFORM
