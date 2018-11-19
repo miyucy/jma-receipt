@@ -82,6 +82,8 @@
       *  04.08.04    NACL-ÌçÏÆ    17/02/21  ½é¿Ç»»Äê¾ò·ïÄÉ²Ã
       *  04.08.05    NACL-ÌçÏÆ    17/12/15  Âè»°¼Ô¹Ô°Ù¸½ÊªµëÉÕ¤Ë´Ø¤ï¤ë
       *                                     ÉéÃ´¶â·×»»ÂÐ±þ
+      *
+      *  05.00.01    NACL-ÌçÏÆ    18/11/16  µÜ¾ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1292,6 +1294,19 @@
       *
            END-IF
       *
+           IF    (LNK-SYU-SYUHKNNUM(IDY)
+                                      NOT =   "971" AND "973"
+                                                    AND "975"   )
+           AND   (ACCT-SRYKBN             =   "99"              )
+           AND   (ACCT-ZAITEN             =    ZERO             )
+           AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
+           AND   (ACCT-JIHOKBN            =    SPACE            )
+           AND   (LNK-S01-SYOSINFLG2      =    SPACE            )
+      *
+              PERFORM  44016-SRYACT-KENSAKU5-SEC
+      *
+           END-IF
+      *
            IF   ((ACCT-ZAITEN       NOT = ZERO                  ) AND
                  (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO) AND
                  (ACCT-JIHOKBN          = SPACE                 ))
@@ -1573,6 +1588,51 @@
        44015-SRYACT-KENSAKU4-EXT.
            EXIT.
       *
+      **************************************************************
+      *    ¿ÇÎÅ¹Ô°Ù¾ðÊó¸¡º÷
+      **************************************************************
+       44016-SRYACT-KENSAKU5-SEC           SECTION.
+      *
+           INITIALIZE                           SRYACT-REC
+           MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
+           MOVE    ACCT-PTID            TO      SRY-PTID
+           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
+           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+           MOVE    "099409906"          TO      SRY-SRYCD(1)
+           MOVE    "099409906"          TO      SRY-SRYCD(2)
+           MOVE    "099409906"          TO      SRY-SRYCD(3)
+           MOVE    "099409906"          TO      SRY-SRYCD(4)
+           MOVE    "099409906"          TO      SRY-SRYCD(5)
+           MOVE    SRYACT-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "tbl_sryact"         TO      MCP-TABLE
+           MOVE    "key8"               TO      MCP-PATHNAME
+           CALL    "ORCDBMAIN"          USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"        TO      MCP-FUNC
+               MOVE    "tbl_sryact"     TO      MCP-TABLE
+               MOVE    "key8"           TO      MCP-PATHNAME
+               CALL    "ORCDBMAIN"      USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
+               IF      MCP-RC          =   ZERO
+                   MOVE   MCPDATA-REC   TO      SRYACT-REC
+                   MOVE   "1"           TO      LNK-S01-SYOSINFLG2
+               END-IF
+           END-IF
+      *
+           MOVE     "tbl_sryact"        TO      MCP-TABLE
+           MOVE     "key8"              TO      MCP-PATHNAME
+           PERFORM   DB-CLOSE-SEC
+      *
+           .
+      *
+       44016-SRYACT-KENSAKU5-EXT.
+           EXIT.
+      *
       ******************************************************************
       *    ¼ýÇ¼¹àÌÜÊÔ½¸
       ******************************************************************
@@ -1740,8 +1800,9 @@
                     PERFORM   DB-CLOSE-SEC
                END-EVALUATE
       *
-               IF    (IDY                 =     1  )
-               AND   (LNK-S01-SYOSINFLG   =   SPACE)
+      ***      IF    (IDY                 =     1  )
+      ***      AND   (LNK-S01-SYOSINFLG   =   SPACE)
+               IF     LNK-S01-SYOSINFLG   =   SPACE
                    IF  LNK-SYU-SYUHKNNUM(IDY)   =   "971"  OR  "973"
                                                            OR  "975"
                       CONTINUE

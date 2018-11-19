@@ -196,6 +196,8 @@
       *  04.08.15    NACL-小豆沢  18/06/14  慢性維持透析管理加算（療養
       *                                     病棟入院料１）について入院料
       *                                     との保険チェック対象外にする
+      *
+      *  05.00.02    NACL-門脇    18/11/16  宮城県地方公費対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -367,6 +369,10 @@
        01  WRK-SYOSIN-DAY-TABLE.
            02  WRK-SYOSIN-DAY-TBL          OCCURS 10.
                03  WRK-SYOSIN-DAY          PIC X(01)  OCCURS  31.
+      *
+       01  WRK-SYOSIN2-TABLE.
+           02  WRK-SYOSIN2-TBL   OCCURS   10.
+              03 WRK-SYOSIN2               PIC X(01).
       *
        01  WRK-KAIKEING-TABLE.
            02  WRK-KAIKEING-TBL  OCCURS   10.
@@ -892,6 +898,7 @@
                          WRK-NYUSANTEI-TABLE
                          WRK-SYOSIN-TABLE
                          WRK-SYOSIN-DAY-TABLE
+                         WRK-SYOSIN2-TABLE
                          WRK-DOJITU-TABLE
                          WRK-DAYTEN-TABLE
                          WRK-NYUINDAY-TAIHI-TABLE
@@ -1218,6 +1225,7 @@
                 MOVE     WRK-SYOSIN(IDX)      TO  LNK-S02-SYOSINFLG
                 MOVE     WRK-SYOSIN-DAY-TBL(IDX)
                                         TO  LNK-S02-SYOSINFLG-DAY-TBL
+                MOVE     WRK-SYOSIN2(IDX)     TO  LNK-S02-SYOSINFLG2
       *
                 MOVE     WRK-JIBAI-SONOTA(IDX)
                                               TO  LNK-S02-SONOTA
@@ -6512,6 +6520,7 @@ grpsys                                        SPA-AREA
                         PERFORM  DAISANSYA-HENSYU-SEC
                      END-IF
       *              初診料算定フラグ（地方公費用）のセット
+      *              初診料算定フラグ２（地方公費用）のセット
                      PERFORM     SYOSINFLG-SET-SEC
                END-EVALUATE
       *
@@ -7614,6 +7623,7 @@ grpsys                              SPA-AREA
       *
       **************************************************************
       *    初診料算定フラグ（地方公費用）のセット
+      *    初診料算定フラグ２（地方公費用）のセット
       **************************************************************
        SYOSINFLG-SET-SEC          SECTION.
       *
@@ -7661,6 +7671,42 @@ grpsys                                    SPA-AREA
                    PERFORM   CSR-CLOSE-SEC
       *
                END-PERFORM
+      *
+           END-IF
+      *
+           IF  ACCT-SRYKBN  =   "99"
+      *
+                   INITIALIZE                        SRYACT-REC
+                   MOVE    ACCT-HOSPNUM         TO   SRY-HOSPNUM
+                   MOVE    ACCT-NYUGAIKBN       TO   SRY-NYUGAIKBN
+                   MOVE    ACCT-PTID            TO   SRY-PTID
+                   MOVE    ACCT-SRYYM           TO   SRY-SRYYM
+                   MOVE    ACCT-ZAINUM          TO   SRY-ZAINUM
+      *
+                   MOVE    "099409906"          TO   SRY-SRYCD (1)
+                   MOVE    "099409906"          TO   SRY-SRYCD (2)
+                   MOVE    "099409906"          TO   SRY-SRYCD (3)
+                   MOVE    "099409906"          TO   SRY-SRYCD (4)
+                   MOVE    "099409906"          TO   SRY-SRYCD (5)
+                   MOVE    SRYACT-REC           TO   MCPDATA-REC
+                   MOVE    "DBSELECT"           TO   MCP-FUNC
+                   MOVE    "tbl_sryact"         TO   MCP-TABLE
+                   MOVE    "key8"               TO   MCP-PATHNAME
+                   CALL "ORCDBMAIN" USING MCPAREA
+                                          MCPDATA-REC
+                                          SPA-AREA
+                   IF      MCP-RC             =       ZERO
+                     MOVE    "tbl_sryact"       TO   MCP-TABLE
+                     MOVE    "key8"             TO   MCP-PATHNAME
+                     PERFORM   SRYACT-READ-SEC
+                     IF     FLG-SRYACT   =    ZERO
+                       MOVE      "1"  TO  WRK-SYOSIN2(IDX)
+                     END-IF
+                   END-IF
+      *
+                   MOVE    "tbl_sryact"       TO   MCP-TABLE
+                   MOVE    "key8"             TO   MCP-PATHNAME
+                   PERFORM   CSR-CLOSE-SEC
       *
            END-IF
       *

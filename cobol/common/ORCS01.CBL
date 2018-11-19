@@ -504,6 +504,8 @@
       *  04.08.31    NACL-ÌçÏÆ    18/07/26  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¡Ü¸øÈñ¤Î
       *                                     ÉéÃ´¶â·×»»½¤Àµ
       *  04.08.32    NACL-ÌçÏÆ    18/09/13  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
+      *
+      *  05.00.01    NACL-ÌçÏÆ    18/11/16  µÜ¾ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -25268,6 +25270,8 @@
                 (LNK-S01-SINSATUFLG            =  SPACE  ))
            OR  ((WK-2010-SINKEIKBN-G(KOH-IDX)  =  "1"    ) AND
                 (LNK-S01-SINSATUFLG2           =  "1"    ))
+           OR  ((WK-2010-SYOKEIKBN-G(KOH-IDX)  =  "1"    ) AND
+                (LNK-S01-SYOSINFLG2            =  "1"    ))
                     MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
                     MOVE    ZERO    TO   WK-GAIKFTNRATE
                     MOVE    "0"     TO   WK-GAIYKZFTNKBN
@@ -25276,7 +25280,8 @@
       *
            MOVE     ZERO            TO   FLG-ICHIBU-JYOSEI.
            IF  (WK-2010-SYOKEI2KBN-G(KOH-IDX) = "1"  )
-           AND (LNK-S01-SYOSINFLG         NOT = SPACE)
+           AND (LNK-S01-SYOSINFLG             = "1"  )
+           AND (LNK-S01-SYOSINFLG2            = SPACE)
                     MOVE     1      TO   FLG-ICHIBU-JYOSEI
       **************MOVE     2      TO   FLG-ICHIBU-JYOSEI
            END-IF.
