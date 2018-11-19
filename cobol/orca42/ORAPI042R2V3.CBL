@@ -194,8 +194,6 @@
        01  SPATMP-REC.
            COPY    "CPSPA-TMP.INC".
       *
-           COPY    "ORCA-BLOB".
-      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -378,8 +376,7 @@
            INITIALIZE                      XML-APIREQ
            INITIALIZE                      XML-RECEIPT-PRINTREQ
       *
-      *    XML情報取り出し
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_receipt_printv3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -391,41 +388,11 @@
                                        XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "E97"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_receipt_printv3req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "receipt_printv3req" TO  APIREQ-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    XML-APIREQ      TO  XML-RECEIPT-PRINTREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "E98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_receipt_printv3req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -478,44 +445,13 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_receipt_printv3res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    1                   TO  RECEPRINTS-MODE
-           MOVE    "receipt_printv3res"
-                                       TO  RECEPRINTS-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-RECEIPT-PRINTRES
-                                       SPA-AREA
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_receipt_printv3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  RECEPRINTS-MODE
            MOVE    "receipt_printv3res" TO  RECEPRINTS-RECORDNAME
            CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-RECEIPT-PRINTRES
-                                       SPA-AREA
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_receipt_printv3res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "receipt_printv3res" TO  RECEPRINTS-RECORDNAME
-           CALL   "ORCDBMAIN"          USING
                                        MCPAREA
                                        XML-RECEIPT-PRINTRES
                                        SPA-AREA
@@ -523,8 +459,7 @@
                MOVE  RECEPRINTS-OBJECT     TO  APILST03-BODY
                MOVE  "application/xml"     TO  APILST03-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "accept xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
@@ -644,12 +579,12 @@
       *    レセプト作成結果取得処理
            PERFORM 20013-RECEIPT-CHK-SEC
       *??
-           DISPLAY "SPA-R01-RECEKBN  =" SPA-R01-RECEKBN "#" 
-           DISPLAY "SPA-R01-FILEKBN  =" SPA-R01-FILEKBN "#" 
-           DISPLAY "SPA-R01-NYUGAIKBN=" SPA-R01-NYUGAIKBN "#" 
-           DISPLAY "SPA-R01-SRYYM    =" SPA-R01-SRYYM "#" 
-           DISPLAY "WRK-ERRCD        =" WRK-ERRCD "#" 
-           DISPLAY "RECEPRINTQ-PRINT-MODE=" RECEPRINTQ-PRINT-MODE "#"
+      *     DISPLAY "SPA-R01-RECEKBN  =" SPA-R01-RECEKBN "#" 
+      *     DISPLAY "SPA-R01-FILEKBN  =" SPA-R01-FILEKBN "#" 
+      *     DISPLAY "SPA-R01-NYUGAIKBN=" SPA-R01-NYUGAIKBN "#" 
+      *     DISPLAY "SPA-R01-SRYYM    =" SPA-R01-SRYYM "#" 
+      *     DISPLAY "WRK-ERRCD        =" WRK-ERRCD "#" 
+      *     DISPLAY "RECEPRINTQ-PRINT-MODE=" RECEPRINTQ-PRINT-MODE "#"
       *??
       *
            IF      WRK-ERRCD   NOT =   SPACE
@@ -1032,8 +967,8 @@
       *
            ADD     1               TO  WRK-ERR-DETAIL-MAX
       *??
-           DISPLAY "MAX=" WRK-ERR-SUBMISSION-MAX "#" 
-                          WRK-ERR-DETAIL-MAX "#"
+      *     DISPLAY "MAX=" WRK-ERR-SUBMISSION-MAX "#" 
+      *                    WRK-ERR-DETAIL-MAX "#"
       *??
            MOVE    RECEPRINTQ-DETAIL-POSITION     (IDYY IDZZ)
                                    TO  RECEPRINTS-DETAIL-POSITION
@@ -1178,9 +1113,6 @@
       *    レセプト印刷処理
       *****************************************************************
        2002-RECEIPT-PRINT-SEC     SECTION.
-      *??
-           DISPLAY "2002-RECEIPT-PRINT-SEC"
-      *??
       *
       *    ジョブ管理チェック処理
            PERFORM 800-JOBKANRI-CHK-SEC
@@ -1251,7 +1183,7 @@
                END-IF
       *
       *??
-               DISPLAY "JOB-UPDCNT=" JOB-UPDCNT "#" JOB-ERRCD
+      *         DISPLAY "JOB-UPDCNT=" JOB-UPDCNT "#" JOB-ERRCD
       *??
                IF      JOB-UPDCNT      >   ZERO
                    MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
@@ -1288,7 +1220,7 @@
       *****************************************************************
        800-ORCGR02-CALL-SEC                SECTION.
       *??
-           DISPLAY "800 R02 IN =" SPA-TERMID "#" 
+      *     DISPLAY "800 R02 IN =" SPA-TERMID "#" 
       *??
       *
            MOVE    SPA-R01KYOUTU   TO  SPA-WORK
@@ -1301,7 +1233,7 @@
                                        LINKAREA
                                        SCRAREA
       *??
-           DISPLAY "800 R02 OUT=" SPA-TERMID "#" 
+      *     DISPLAY "800 R02 OUT=" SPA-TERMID "#" 
       *??
       *    画面ＳＰＡ読込み
            PERFORM 000-R02SPA-SET-SEC
@@ -1347,7 +1279,7 @@
            INITIALIZE                      SPA-SCR-REC
            MOVE    ZERO                TO  FLG-SPASCR
       *??
-           DISPLAY "800 SPA IN =" SPA-TERMID "#" 
+      *     DISPLAY "800 SPA IN =" SPA-TERMID "#" 
       *??
       *
            INITIALIZE                      SPATMP-REC
@@ -1384,7 +1316,7 @@
       *****************************************************************
        000-R02SPA-OUT-SEC             SECTION.
       *??
-           DISPLAY "800 SPA OUT=" SPA-TERMID "#" 
+      *     DISPLAY "800 SPA OUT=" SPA-TERMID "#" 
       *??
       *
            INITIALIZE                      SPATMP-REC

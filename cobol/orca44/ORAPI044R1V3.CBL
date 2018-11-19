@@ -216,8 +216,6 @@
       *
            COPY    "MCPDATA2.INC".
       *
-           COPY    "ORCA-BLOB".
-      *
            COPY    "CPORCSTEMPDIR.INC".
       *
       **** COPY    "MONBLOB".
@@ -424,8 +422,7 @@
            INITIALIZE                      XML-APIREQ
            INITIALIZE                      XML-RECEIPTDATA-MAKEREQ
       *
-      *    XML情報取り出し
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_receiptdata_makev3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -438,42 +435,11 @@
                                        XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "E97"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_receiptdata_makev3req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "receiptdata_makev3req"
-                                       TO  APIREQ-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    XML-APIREQ      TO  XML-RECEIPTDATA-MAKEREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "E98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_receiptdata_makev3req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -573,7 +539,7 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_receiptdata_makev3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -585,43 +551,10 @@
                                        XML-RECEIPTDATA-MAKERES
                                        SPA-AREA
            IF    ( MCP-RC              =   ZERO    OR  1 )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_receiptdata_makev3res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "receiptdata_makev3res"
-                                       TO  RECEDMAKES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-RECEIPTDATA-MAKERES
-                                       SPA-AREA
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_receiptdata_makev3res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "receiptdata_makev3res"
-                                       TO  RECEDMAKES-RECORDNAME
-           CALL   "ORCDBMAIN"          USING
-                                       MCPAREA
-                                       XML-RECEIPTDATA-MAKERES
-                                       SPA-AREA
-           IF    ( MCP-RC              =   ZERO    OR  1 )
                MOVE  RECEDMAKES-OBJECT      TO  APILST-BODY
                MOVE  "application/xml"     TO  APILST-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "accept xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .

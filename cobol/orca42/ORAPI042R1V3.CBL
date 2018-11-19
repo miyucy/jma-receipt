@@ -163,8 +163,6 @@
       *
            COPY    "MCPDATA2.INC".
       *
-           COPY    "ORCA-BLOB".
-      *
       *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
            03  C-RET               PIC X(2).
@@ -376,8 +374,7 @@
            INITIALIZE                      XML-APIREQ
            INITIALIZE                      XML-RECEIPT-MAKEREQ
       *
-      *    XML情報取り出し
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_receipt_makev3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -389,41 +386,11 @@
                                        XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "E97"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_receipt_makev3req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           MOVE    "receipt_makev3req" TO  APIREQ-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
                MOVE    XML-APIREQ      TO  XML-RECEIPT-MAKEREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
                MOVE   "E98"             TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_receipt_makev3req"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-APIREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               CONTINUE
            END-IF
       *
            .
@@ -516,7 +483,7 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
            MOVE    "xml_receipt_makev3res"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -527,41 +494,10 @@
                                        XML-RECEIPT-MAKERES
                                        SPA-AREA
            IF    ( MCP-RC              =   ZERO    OR  1 )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_receipt_makev3res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "receipt_makev3res" TO  RECEMAKES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-RECEIPT-MAKERES
-                                       SPA-AREA
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_receipt_makev3res"
-                                       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "receipt_makev3res" TO  RECEMAKES-RECORDNAME
-           CALL   "ORCDBMAIN"          USING
-                                       MCPAREA
-                                       XML-RECEIPT-MAKERES
-                                       SPA-AREA
-           IF    ( MCP-RC              =   ZERO    OR  1 )
                MOVE  RECEMAKES-OBJECT      TO  APILST-BODY
                MOVE  "application/xml"     TO  APILST-CONTENT-TYPE
            ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "accept xml write failure "
+               DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
           .
@@ -735,11 +671,11 @@
       *
            PERFORM 800-ORCGR03-CALL-SEC
       *??
-           DISPLAY "CHK SPA-ERRCD=" SPA-ERRCD "#" SPA-RIDCD-AREA "#"
-           DISPLAY "CHK SPA-R01-FILEKBN=" SPA-R01-FILEKBN
-           DISPLAY "CHK SPA-R01-RECEKBN=" SPA-R01-RECEKBN
-           DISPLAY "CHK SPA-R01-PRTKBN =" SPA-R01-PRTKBN
-           DISPLAY "CHK SPA-R01-NYUGAIKBN =" SPA-R01-NYUGAIKBN
+      *     DISPLAY "CHK SPA-ERRCD=" SPA-ERRCD "#" SPA-RIDCD-AREA "#"
+      *     DISPLAY "CHK SPA-R01-FILEKBN=" SPA-R01-FILEKBN
+      *     DISPLAY "CHK SPA-R01-RECEKBN=" SPA-R01-RECEKBN
+      *     DISPLAY "CHK SPA-R01-PRTKBN =" SPA-R01-PRTKBN
+      *     DISPLAY "CHK SPA-R01-NYUGAIKBN =" SPA-R01-NYUGAIKBN
       *??
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -840,9 +776,9 @@
       *
                        PERFORM 800-ORCGR01-CALL-SEC
       *??
-           DISPLAY "R01 SPA-ERRCD=" IDZZ "#"
-                       RECEMAKEQ-PATIENT-ID (IDZZ) "#"
-                     SPA-ERRCD "#" SPA-RIDCD "#" SPA-GMN-R01-MAX "#"
+      *     DISPLAY "R01 SPA-ERRCD=" IDZZ "#"
+      *                 RECEMAKEQ-PATIENT-ID (IDZZ) "#"
+      *               SPA-ERRCD "#" SPA-RIDCD "#" SPA-GMN-R01-MAX "#"
       *??
                    END-IF
       *
@@ -1006,10 +942,10 @@
                GO  TO  2002-RECEIPT-MAKE-EXT
            END-IF
       *??
-           DISPLAY "MAKE SPA-ERRCD=" SPA-ERRCD "#" SPA-RIDCD-AREA "#"
-           DISPLAY "MAKE SPA-R01-SYOKBN=" SPA-R01-SYOKBN "#"
-           DISPLAY "MAKE SPA-R01-RECEKBN=" SPA-R01-RECEKBN 
-           DISPLAY "MAKE SPA-R01-FILEKBN=" SPA-R01-FILEKBN
+      *     DISPLAY "MAKE SPA-ERRCD=" SPA-ERRCD "#" SPA-RIDCD-AREA "#"
+      *     DISPLAY "MAKE SPA-R01-SYOKBN=" SPA-R01-SYOKBN "#"
+      *     DISPLAY "MAKE SPA-R01-RECEKBN=" SPA-R01-RECEKBN 
+      *     DISPLAY "MAKE SPA-R01-FILEKBN=" SPA-R01-FILEKBN
       *??
       *
            MOVE    RECEMAKEQ-KARTE-UID
