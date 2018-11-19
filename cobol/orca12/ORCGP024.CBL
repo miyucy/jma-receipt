@@ -706,7 +706,7 @@
                                            =   "092"   )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20181201"  )
-                   MOVE    "　"                 TO  SPA-GMN24-FTNMSG1
+                   MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
       *??          MOVE    1                    TO  SPA-NAI24-FTNSYORI
                END-IF
