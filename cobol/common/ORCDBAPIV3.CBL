@@ -97,6 +97,40 @@
            MOVE    MCP-FUNC            TO  WRK-FUNC
            MOVE    ZERO                TO  MCP-RC
       *
+           EVALUATE    TRUE
+           WHEN  ( MCP-FUNC            =   "XMLOPEN"
+                                    OR     "XMLCLOSE" )
+               CONTINUE
+           WHEN    OTHER
+               PERFORM 100-INIT-SEC
+               PERFORM 200-MAIN-SEC
+           END-EVALUATE
+      *
+           MOVE    WRK-TABLE           TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
+           MOVE    WRK-FUNC            TO  MCP-FUNC
+           MOVE    ZERO                TO  MCP-LOGFLAG
+      *
+           .
+      *
+           EXIT PROGRAM
+           .
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                    SECTION.
+      *
+           .
+      *
+       100-INIT-EXT.
+           EXIT.
+           .
+      *****************************************************************
+      *    主　処理
+      *****************************************************************
+       200-MAIN-SEC                    SECTION.
+      *
+      *
            EVALUATE    MCP-FUNC
                WHEN    "DBOPEN"
                WHEN    "DBDISCONNECT"
@@ -130,17 +164,7 @@
                                        MCPAREA
                                        MCPDATA3-REC
            END-IF
-      *
            .
       *
-           EXIT PROGRAM
-           .
-      *****************************************************************
-      *    初期　処理
-      *****************************************************************
-       100-INIT-SEC                    SECTION.
-      *
-           .
-      *
-       100-INIT-EXT.
+       200-MAIN-EXT.
            EXIT.
