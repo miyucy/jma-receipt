@@ -1988,6 +1988,13 @@
                                                    =   "099999931"
                            MOVE    "1"     TO  LNK-S01-DAISANYUSENFLG
                        END-IF
+      *H30.11
+      *                介壳瘟换年フラグ２∈孟数给锐脱∷
+                       IF      LNK-WKSRY-SRYCD(IDX IDS)
+                                                   =   "099409906"
+                           MOVE    "1"     TO  LNK-S01-SYOSINFLG2
+                       END-IF
+      *
       *                介壳瘟换年冉年
                        PERFORM 450112-SYOSIN-CHK-SEC
                    END-PERFORM

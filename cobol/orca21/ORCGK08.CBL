@@ -4344,14 +4344,6 @@
            MOVE    ZERO                TO  PARA-EDANUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-SYUNOU2-MAX
-      ****     ADD     1                   TO  PARA-EDANUM
-      *        MOVE    "SYUNOU"            TO  PARA-FILEMEI
-      *        MOVE    LNK-SYUNOU2-REC(IDX)
-      *                                    TO  PARA-DATA-REC
-      *        WRITE                       PARA-REC
-      *        IF      STS-PARA        NOT =  ZERO
-      *            MOVE    "0051"             TO  SPA-ERRCD
-      ****     END-IF
       *v4.8    TBL_PARAに保存
                INITIALIZE                      PARA-REC
                MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
@@ -4365,8 +4357,6 @@
                PERFORM 30010-PARA-DBINSERT-SEC
       *
            END-PERFORM
-      *
-      *****CLOSE                       PARA-FILE
       *
            .
        4501-KOUSIN-SYORI-EXT.
@@ -4784,6 +4774,13 @@
                                                    =   "099999931"
                            MOVE    "1"     TO  LNK-S01-DAISANYUSENFLG
                        END-IF
+      *H30.11
+      *                初診料算定フラグ２（地方公費用）
+                       IF      LNK-WKSRY-SRYCD(IDX IDS)
+                                                   =   "099409906"
+                           MOVE    "1"     TO  LNK-S01-SYOSINFLG2
+                       END-IF
+      *
                    END-PERFORM
                END-IF
       *        診察料算定フラグ（地方公費用）
