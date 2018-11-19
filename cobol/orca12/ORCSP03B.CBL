@@ -2115,6 +2115,9 @@
       *H27.1
       *                岂陕
                           OR ( SPA-GMN-KOHNUM(IDX-K)   =   "054" )
+      *H30.11
+      *                次がん迹闻
+                          OR ( SPA-GMN-KOHNUM(IDX-K)   =   "092" )
       *H26.11
       *                井基泼年　Ｈ２６ˉ１２まで
                           OR ((SPA-GMN-KOHNUM(IDX-K)   =   "052" ) AND
@@ -2288,6 +2291,9 @@
                          OR   (SPA-GMN-KOHNUM(IDX-K)   =   "970" )
       *H27.1             岂陕
                           OR ( SPA-GMN-KOHNUM(IDX-K)   =   "054" )
+      *H30.11
+      *                次がん迹闻
+                          OR ( SPA-GMN-KOHNUM(IDX-K)   =   "092" )
       *H28.2
       *                叠旁绍　叠旁灰　H25.9.1から
                           OR ((SPA-GMN-KOHNUM(IDX-K)   =   "745" ) AND

@@ -1648,6 +1648,11 @@
            PERFORM 2001211-P024-SYORI-SEC
       *    見出編集
            MOVE    SPA-GMN24-FTNMSG1   TO  PTMODRES-SEL-KOHFTN-NAME1
+      *H30.11
+           IF      SPA-GMN24-FTNMSG1   =   "　"
+               MOVE    SPACE           TO  PTMODRES-SEL-KOHFTN-NAME1
+           END-IF
+      *
            MOVE    SPA-GMN24-FTNMSG2   TO  PTMODRES-SEL-KOHFTN-NAME2
       *    公費種類
            MOVE    SPA-NAI24-FTNSYORI  TO  PTMODRES-SEL-KOHFTN-CLASS
@@ -2251,6 +2256,11 @@
       *    リクエスト番号
            MOVE    "03"                TO  SPA-MCP-WIDGET
            PERFORM 2001211-P024-SYORI-SEC
+      *H30.11
+      *    肝がん治療対応
+           MOVE    SPA-NAI24-GAIJGNGAK TO  TBL-PTKOHFTN-GAIJGNGAK(IDX)
+           MOVE    SPA-NAI24-NYUJGNGAK TO  TBL-PTKOHFTN-NYUJGNGAK(IDX)
+      *
       *    重複等チェック
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2003112-KOHFTN-CHK-SEC
