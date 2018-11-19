@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCXRMST1.
+       PROGRAM-ID.                 ORCXRMST3MIGV51.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : マスタ更新処理
@@ -24,13 +24,15 @@
       *                    : 
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  02/02/22    MCC-多々納    新規作成
+      *  06/07/14    NACL-伊藤     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-多々納  02/09/18  バージョン判定変更
-      *  01.00.02    NACL-伊藤    05/04/05  マスタ単位に変更
-      *  01.00.03    NACL-伊藤    06/05/26  MONFUNC対応
+      *  05.01.00    NACL-伊藤    17/10/26  V510マスター分離対応特別版
+      *                                     対象マスタ
+      *                                       09:保険者
+      *                                     対象テーブル
+      *                                       tbl_mstkanri_org(臨時)
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -91,8 +93,6 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-DBKANRI             PIC 9(01).
            03  FLG-MSTKANRI            PIC 9(01).
       *
-           03  FLG-SYORI               PIC 9(01).
-      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
@@ -107,6 +107,7 @@ grpsys     COPY    "COMMON-SPA".
       *    一時領域
        01  WRK-AREA.
            03  WRK-DBRVERSION          PIC X(64).
+           03  WRK-DBRVERSION-ORG      PIC X(64).
       *
            03  WRK-DBKANRI-VERSION     PIC X(64).
       *
@@ -116,6 +117,11 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-TBL-MASTER-KBN  PIC X(02).
                05  WRK-TBL-DBRVERSION1 PIC X(64).
                05  WRK-TBL-UPDATE-FLG  PIC X(01).
+      *
+           03  WRK-ORG-DBRVERSION   OCCURS 100   INDEXED ORG-IDX.
+               05  WRK-ORG-MASTER-KBN  PIC X(02).
+               05  WRK-ORG-DBRVERSION1 PIC X(64).
+               05  WRK-ORG-UPDATE-FLG  PIC X(01).
       *
            03  WRK-HOMEDIR             PIC X(128).
       *
@@ -199,20 +205,21 @@ grpsys     COPY    "COMMON-SPA".
            OPEN    INPUT           IN-FILE
            IF      STS-IN          NOT =   ZERO
                MOVE    1           TO  FLG-IN
-               DISPLAY "*(ORCXRMST1)* IN-FILE OPN STS["
+               DISPLAY "*(ORCXRMST3MIGV51)* IN-FILE OPN STS["
                                        STS-IN "]"
            END-IF
       *
       *    出力ファイル　初期処理
            OPEN    OUTPUT          OUT-FILE
            IF      STS-OUT         NOT =   ZERO
-               DISPLAY "*(ORCXRMST1)* OUT-FILE OPN STS["
+               DISPLAY "*(ORCXRMST3MIGV51)* OUT-FILE OPN STS["
                                        STS-OUT "]"
            END-IF
       *
            PERFORM 101-VERSION-GET-SEC
       *    MSTKANRI レコードバージョンのテーブル溜め込み
            PERFORM 101-DBR-TBL-SET-SEC
+           PERFORM 101-ORG-TBL-SET-SEC
       *
            .
        100-INIT-EXT.
@@ -221,7 +228,7 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
-       101-ASSIN-GET-SEC           SECTION.
+       101-ASSIN-GET-SEC                SECTION.
       *
            IF      SGETTEMP-MW         =   SPA-PANDA
                MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
@@ -235,10 +242,7 @@ grpsys     COPY    "COMMON-SPA".
                    PARA-HOSPNUM        DELIMITED  BY  SIZE
                    "/"                 DELIMITED  BY  SIZE
                    PARA-DBFILE         DELIMITED  BY  SPACE
-      ************ "/ORCADBR.DAT"      DELIMITED  BY  SIZE
-      * 2.5.0del * "/ORCADBR-1.DAT"    DELIMITED  BY  SIZE
-      * 4.1.0del * "/ORCADBR-2.DAT"    DELIMITED  BY  SIZE
-                   "/ORCADBR-3.DAT"    DELIMITED  BY  SIZE
+                   "/ORCADBR-LI.DAT"   DELIMITED  BY  SIZE
                                        INTO    ASS-IN
            END-STRING
       *
@@ -344,6 +348,46 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    MSTKANRI レコードバージョンのテーブル溜め込み処理
+      *****************************************************************
+       101-ORG-TBL-SET-SEC             SECTION.
+           INITIALIZE                  MSTKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
+           MOVE    MSTKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_mstkanri_org"  TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_mstkanri_org"  TO  MCP-TABLE
+               MOVE    "all"               TO  MCP-PATHNAME
+               PERFORM 910-MSTKANRI-READ-SEC
+           ELSE
+               INITIALIZE                      MSTKANRI-REC
+               MOVE    1                   TO  FLG-MSTKANRI
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   FLG-MSTKANRI    =   1
+               IF      MSTKANRI-KANRICD(7:2)    NUMERIC
+                   ADD   1             TO  IDX
+                   MOVE MSTKANRI-KANRICD(7:2)
+                                       TO  WRK-ORG-MASTER-KBN (IDX)
+                   MOVE MSTKANRI-DBRVERSION1
+                                       TO  WRK-ORG-DBRVERSION1(IDX)
+                   MOVE SPACE          TO  WRK-ORG-UPDATE-FLG (IDX)
+               END-IF
+               MOVE    "tbl_mstkanri_org"  TO  MCP-TABLE
+               MOVE    "all"               TO  MCP-PATHNAME
+               PERFORM 910-MSTKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_mstkanri_org"  TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 910-CLOSE-SEC
+           .
+       101-ORG-TBL-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
@@ -363,10 +407,24 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                         MOVE  WRK-TBL-DBRVERSION1(DBR-IDX)
                                        TO  WRK-DBRVERSION
                END-SEARCH
+      *****    IF      IN-MASTER-KBN   =   "09"
+      *****        IF  WRK-DBRVERSION  <   "R-020900-1-20060531-1"
+      *****            MOVE    SPACE   TO  WRK-DBRVERSION
+      *****        END-IF
+      *****    END-IF
                IF      WRK-DBRVERSION  NOT =   SPACE
+                SET      ORG-IDX        TO  1
+                SEARCH   WRK-ORG-DBRVERSION   VARYING   ORG-IDX
+                      AT END
+                         MOVE  SPACE    TO  WRK-DBRVERSION-ORG
+                      WHEN     IN-MASTER-KBN
+                                        =   WRK-ORG-MASTER-KBN(ORG-IDX)
+                         MOVE  WRK-ORG-DBRVERSION1(ORG-IDX)
+                                        TO  WRK-DBRVERSION-ORG
+                END-SEARCH
+                IF      WRK-DBRVERSION-ORG     >   WRK-DBRVERSION
       *        ＤＢレコードバージョンまで出力する
                  IF    IN-DBRVERVION       >   WRK-DBRVERSION
-                   MOVE    1               TO  FLG-SYORI
                    IF      IN-DBRVERVION(3:IDY)
                                            >   WRK-DBKANRI-VERSION
                                                        (1:IDY)
@@ -378,6 +436,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                        MOVE    "1"     TO  WRK-TBL-UPDATE-FLG(DBR-IDX)
                    END-IF
                  END-IF
+                END-IF
                END-IF
       *
       *        レコード管理ファイル読込み
@@ -422,7 +481,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  MSTKANRI-HOSPNUM
                    MOVE    "key"       TO  MCP-PATHNAME
 grpsys             PERFORM 900-ORCDBMAIN-SEC
                    IF      MCP-RC      NOT =  ZERO
-                     DISPLAY "ORCXRMST1 MSTKANRI UPD ERR:" MCP-RC
+                     DISPLAY "ORCXRMST3MIGV51 MSTKANRI UPD ERR:" MCP-RC
                    END-IF
                END-IF
                MOVE    "tbl_mstkanri"  TO  MCP-TABLE
@@ -465,9 +524,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            CLOSE                       IN-FILE
            CLOSE                       OUT-FILE
       *
-           DISPLAY "*(ORCXRMST1)* INPUT  /I   CNT[" CNT-IN  "]"
-           DISPLAY "*(ORCXRMST1)* OUTPUT /O   CNT[" CNT-OUT "]"
-      *****ACCEPT  WRK-IN
+           DISPLAY "*(ORCXRMST3MIGV51)* INPUT  /I   CNT[" CNT-IN  "]"
+           DISPLAY "*(ORCXRMST3MIGV51)* OUTPUT /O   CNT[" CNT-OUT "]"
       *
            .
        300-END-EXT.
@@ -478,17 +536,23 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        900-IN-READ-SEC          SECTION.
       *
-          READ    IN-FILE
-              AT  END
-                  MOVE    1               TO  FLG-IN
-              NOT AT  END
-                  MOVE    ZERO            TO  FLG-IN
-                  ADD     1               TO  CNT-IN
-          END-READ
+       900-IN-READ-10.
+           READ    IN-FILE
+               AT  END
+                   MOVE    1                   TO  FLG-IN
+               NOT AT  END
+                   MOVE    ZERO                TO  FLG-IN
+                   ADD     1                   TO  CNT-IN
+                   IF      IN-MASTER-KBN       =   "09"
+                       CONTINUE
+                   ELSE
+                       GO  TO  900-IN-READ-10
+                   END-IF
+           END-READ
       *
-          .
+           .
        900-IN-READ-EXT.
-          EXIT.
+           EXIT.
       *
       *****************************************************************
       *    マスタ管理ファイル読込
