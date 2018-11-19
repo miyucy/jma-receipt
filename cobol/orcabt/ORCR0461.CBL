@@ -59,6 +59,8 @@
       *                                     É½¼¨ÂÐ±þ
       *  04.08.10    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.11    NACL-ÌçÏÆ    18/03/29  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *
+      *  05.00.01    NACL-ÌçÏÆ    18/11/16  µÜ¾ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -679,6 +681,8 @@
            03  FILLER          PIC X(09)   VALUE   "099140003".
       *    ¿Ç»¡ÎÁÌ¤»»Äê°·¤¤
            03  FILLER          PIC X(09)   VALUE   "099409905".
+      *    ½é¿ÇÎÁÌ¤»»Äê°·¤¤
+           03  FILLER          PIC X(09)   VALUE   "099409906".
       *    »þ´Ö³°¼õ¿Ç
            03  FILLER          PIC X(09)   VALUE   "099409907".
       *    ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê»»Äê½ªÎ»
@@ -761,9 +765,9 @@
            03  FILLER          PIC X(09)   VALUE   "112022370".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD    PIC X(09)   OCCURS   95.
+            03  TBL-NOSRYCD    PIC X(09)   OCCURS   96.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(03)   VALUE    95.
+       01  TBL-NOSRYCD-MAX     PIC 9(03)   VALUE    96.
       *
       *   ºÆ¿Ç½¸·×ÍÑ¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
        01  TBL-SAISRYCD-AREA.
