@@ -21,7 +21,8 @@ shell_sources = \
 	passwd_store.sh.in \
 	medphoto_store.sh.in \
 	dasconf_store.sh.in \
-	plugin_check.sh.in
+	plugin_check.sh.in \
+	jma-migrate-v51.sh.in
 
 ruby_sources = \
 	jma-receipt-plugin-db-convert.rb.in \
@@ -35,7 +36,7 @@ ruby_scripts = $(ruby_sources:.rb.in=.rb)
 
 .SUFFIXES: .sh.in .sh .rb.in .rb
 
-all: $(shell_scripts) $(ruby_scripts) jma-plugin jma-setup jma-passwd
+all: $(shell_scripts) $(ruby_scripts) jma-plugin jma-setup jma-passwd jma-migrate
 
 .sh.in.sh:
 	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
@@ -59,6 +60,10 @@ jma-passwd: jma-passwd.in
 	$< > $@
 	chmod +x $@
 
+jma-migrate: jma-migrate.in
+	sed -e 's,\@bindir\@,$(bindir),g' $< > $@
+	chmod +x $@
+
 .rb.in.rb: 
 	sed -e 's,%RUBY%,$(RUBY),' $< > $@
 	chmod +x $@
@@ -71,6 +76,7 @@ clean:
 	-rm -f jma-plugin
 	-rm -f jma-setup
 	-rm -f jma-passwd
+	-rm -f jma-migrate
 
 distclean: clean
 	-rm -f Makefile
@@ -78,5 +84,5 @@ distclean: clean
 install: all
 	$(INSTALL) -d $(bindir)
 	$(INSTALL_SCRIPT) \
-		$(shell_scripts) $(ruby_scripts) jma-plugin jma-setup jma-passwd\
+		$(shell_scripts) $(ruby_scripts) jma-plugin jma-setup jma-passwd jma-migrate\
 		$(bindir)

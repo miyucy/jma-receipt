@@ -99,7 +99,8 @@ path	key2	{
 		SELECT a.*
 		FROM master.tbl_chk_master a
 			LEFT OUTER JOIN tbl_tensu b
-				ON ((a.CD = b.SRYCD)
+				ON ((a.HOSPNUM = b.HOSPNUM)
+				AND (a.CD = b.SRYCD)
 				AND (b.YUKOSTYMD <=   :YUKOSTYMD)
 				AND (b.YUKOEDYMD >=   :YUKOEDYMD))
 			WHERE a.HOSPNUM	= :HOSPNUM

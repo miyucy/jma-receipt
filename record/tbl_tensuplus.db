@@ -166,3 +166,15 @@ path    del1    {
                 ;
         };
 };
+
+path	srycdlist 	{
+	DBSELECT	{
+		DECLARE tbl_tensuplus_srycdlist_csr CURSOR FOR
+		SELECT SRYCD
+		FROM tbl_tensuplus
+			WHERE HOSPNUM    =   :HOSPNUM
+			GROUP	BY  SRYCD
+			ORDER   BY  SRYCD
+		;
+	};
+};

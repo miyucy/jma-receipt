@@ -152,6 +152,12 @@ shell_sources = \
 	allways/export_monblob.sh.in \
 	tools/run_jmamr_mis.sh.in \
 	tools/run_mis_past.sh.in \
+	allways/migrate-v51_master_upgrade_ctrl.sh.in \
+	allways/migrate-v51_master_upgrade.sh.in \
+	allways/migrate-v51_master_standard_upgrade.sh.in \
+	allways/migrate-v51_master_license_upgrade.sh.in \
+	allways/migrate-v51_migrate_ctrl.sh.in \
+	allways/migrate-v51_migrate.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \
