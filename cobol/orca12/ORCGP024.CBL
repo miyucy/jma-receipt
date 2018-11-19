@@ -49,6 +49,7 @@
       *  04.08.00    NACL-¬ø°π«º  16/05/31  ∏∂«˙∞Ï»Ã¬–±˛
       *  04.08.00    NACL-¬ø°π«º  16/11/15  HAORI¬æ¬–±˛
       *  04.08.00    NACL-¬ø°π«º  17/05/XX  ∂≠≥¶¡ÿ≥∫≈ˆ¬–±˛
+      *  05.00.00    NACL-¬ø°π«º  18/11/XX  092 ¥Œ§¨§Ûº£Œ≈¬–±˛
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -664,6 +665,9 @@
       *H27.1         ∆Ò…¬
                  OR   ( SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "054"     )
+      *H30.11        ¥Œ§¨§Ûº£Œ≈
+                 OR   ( SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "092"     )
       *
                    MOVE    "ºıµÎº‘»÷πÊ°ß"      TO  SPA-GMN24-JKYSNUM
                    MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
@@ -724,6 +728,17 @@
       *H28.11      ¬æ∞Ï…Ù…È√¥Õ≠
                    MOVE    1                    TO  SPA-NAI24-FTNSYORI
                END-IF
+      *H30.11
+      *        ¥Œ§¨§Ûº£Œ≈ÃææŒ
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "092"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20181201"  )
+                   MOVE    "°°"                 TO  SPA-GMN24-FTNMSG1
+                   MOVE    "∆˛±°æÂ∏¬≥€"         TO  SPA-GMN24-FTNMSG2
+      *??          MOVE    1                    TO  SPA-NAI24-FTNSYORI
+               END-IF
+      *
       *H26.12
       *        ∆Ò…¬°¶æÆª˘∆√ƒÍ(H27.1§´§È°ÀÃææŒ
                IF    ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
@@ -1114,6 +1129,13 @@
                    MOVE    33          TO  SPA-GMN24-CUR
                WHEN    "P024_FTNTEKEDYMD"
                    MOVE    34          TO  SPA-GMN24-CUR
+      *H30.11
+      *            ¥Œ§¨§Ûº£Œ≈§œ∆˛Œœ§ §∑
+                   IF     (SPA-NAI24-FTNSELNUM >   ZERO  )
+                     AND  (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                               =   "092" )
+                       MOVE    35          TO  SPA-GMN24-CUR
+                   END-IF
                WHEN    "P024_GAIJGNGAK"
                    IF      SPA-NAI24-FTNETCKBN =   SPACE
                                                OR  "0"
@@ -1574,6 +1596,10 @@
       *H28.11
       *        ¬æ∞Ï…Ù…È√¥§¢§Í
                IF      SPA-NAI24-FTNSYORI  =   1
+      *H30.11
+      *            ¥Œ§¨§Ûº£Œ≈
+                 OR   (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "092"   )
                    CONTINUE
                ELSE
                    MOVE    "2440"              TO  SPA-ERRCD
@@ -1704,6 +1730,16 @@
            MOVE    SPA-GMN24-TGAIJGNGAK(IDX-F)
                                        TO  SPA-GMN24-TGAIJGNGAK (IDX)
            MOVE    ZERO                TO  SPA-GMN24-TNYUJGNGAK (IDX)
+      *H30.11
+      *    ¥Œ§¨§Ûº£Œ≈§œŒæ ˝ £ºÃ
+           IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "092"   )
+               MOVE    SPA-GMN24-TGAIJGNGAK(IDX-F)
+                                       TO  SPA-GMN24-TGAIJGNGAK (IDX)
+               MOVE    SPA-GMN24-TNYUJGNGAK(IDX-F)
+                                       TO  SPA-GMN24-TNYUJGNGAK (IDX)
+           END-IF
+      *
            MOVE    WRK-FTNSTYMD        TO  SPA-NAI24-TFTNSTYMD (IDX)
            MOVE    WRK-FTNEDYMD        TO  SPA-NAI24-TFTNEDYMD (IDX)
            MOVE    "0"                 TO  SPA-NAI24-TFTNETCKBN (IDX)
@@ -2393,6 +2429,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                OR  "025" )
       *H28.6
                 OR  (SPA-NAI24-KOHNUM (IDX2)   =   "019" )
+      *H30.11   ¥Œ§¨§Ûº£Œ≈
+                OR  (SPA-NAI24-KOHNUM (IDX2)   =   "092" )
                MOVE    1                   TO  FLG-CHKNO
              END-IF
       *H27.7
@@ -4001,6 +4039,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ∏¯»Ò…È√¥ ≥∞ÕËæÂ∏¬≥€
       *****************************************************************
        41031-GAIJGNGAK-SEC           SECTION.
+      *
+      *H30.11
+      *    ¥Œ§¨§Ûº£Œ≈§œ∆˛Œœ§ §∑
+           IF      SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                       =   "092"
+               MOVE    ZERO             TO  SPA-NAI24-GAIJGNGAK
+               MOVE    ZERO             TO  WRK-Z7
+               MOVE    WRK-Z7           TO  SPA-GMN24-GAIJGNGAK
+               GO      TO      41031-GAIJGNGAK-EXT
+           END-IF
       *
            INITIALIZE                       ORCSNUMAREA
            MOVE    SPA-GMN24-GAIJGNGAK TO  SNUM-INX
