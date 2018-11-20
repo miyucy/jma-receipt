@@ -136,6 +136,8 @@
            03  WRK-KBNCD               PIC X(02).
       *
            03  WRK-Z7                  PIC Z,ZZZ,ZZ9.
+      *H30.11
+           03  WRK-Z72                 PIC Z,ZZZ,ZZZ.
       *
            03  WRK-RATE-AREA.
                05  WRK-RATE-KBN        PIC X(02).
@@ -1552,7 +1554,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-GMN28-CAREJOTAI-LST (8)
            MOVE    "25 Í×²ð¸î£µ"
                                        TO  SPA-GMN28-CAREJOTAI-LST (9)
-      *H30.9
            MOVE    "31 »ö¶ÈÂÐ¾Ý¼Ô"
                                        TO  SPA-GMN28-CAREJOTAI-LST (10)
            MOVE    10                  TO  SPA-GMN28-CAREJOTAI-MAX
@@ -4998,6 +4999,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  WRK-Z7
                    MOVE    WRK-Z7              TO  P02-P024-TGAIJGNGAK
                                                                   (IDY)
+      *H30.11
+      *            ´Î¤¬¤ó¼£ÎÅ¤Ï¥¼¥íÊÔ½¸¤Ê¤·
+                   IF     (SPA-NAI24-FTNSELNUM     >   ZERO )
+                      AND (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                                   =   "092")
+                       MOVE    SPA-GMN24-TGAIJGNGAK (IDX)
+                                               TO  WRK-Z72
+                       MOVE    WRK-Z72         TO  P02-P024-TGAIJGNGAK
+                                                                  (IDY)
+                   END-IF
+      *
                    MOVE    SPA-GMN24-TNYUJGNGAK (IDX)
                                                TO  WRK-Z7
                    MOVE    WRK-Z7              TO  P02-P024-TNYUJGNGAK

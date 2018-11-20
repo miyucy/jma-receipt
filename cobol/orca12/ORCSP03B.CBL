@@ -51,6 +51,7 @@
       * 04.07.00     NACL-多々納  13/11/13  生活保護重複警告対応
       * 04.07.00     NACL-多々納  14/12/XX  難病等対応、公費名称編集修正
       * 04.08.00     NACL-多々納  16/02/XX  京都府　京都子重複可対応
+      * 05.00.00     NACL-多々納  18/11/XX  092 肝がん治療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -594,6 +595,21 @@
                                    PERFORM 10011-HKNNUM-SET-SEC
                                END-IF
                        END-EVALUATE
+      *H30.11
+      *            肝炎治療、肝がん治療
+                   WHEN    "38"
+                       EVALUATE    SPA-GMN-FTNJANUM(IDX-K)(5:3)
+      *                    肝炎治療
+                           WHEN    "601"
+                               MOVE    "038"      TO  WRK-MAE-KOHNUM
+                           WHEN    "602"
+      *                    肝がん治療
+                               MOVE    "092"      TO  WRK-MAE-KOHNUM
+                           WHEN    OTHER
+      *                        法別番号より公費種類を決定する
+                               PERFORM 10011-HKNNUM-SET-SEC
+                       END-EVALUATE
+      *
       *            その他
                    WHEN    OTHER
       *                法別番号より公費種類を決定する
@@ -2099,6 +2115,9 @@
       *H27.1
       *                難病
                           OR ( SPA-GMN-KOHNUM(IDX-K)   =   "054" )
+      *H30.11
+      *                肝がん治療
+                          OR ( SPA-GMN-KOHNUM(IDX-K)   =   "092" )
       *H26.11
       *                小児特定　Ｈ２６．１２まで
                           OR ((SPA-GMN-KOHNUM(IDX-K)   =   "052" ) AND
@@ -2272,6 +2291,9 @@
                          OR   (SPA-GMN-KOHNUM(IDX-K)   =   "970" )
       *H27.1             難病
                           OR ( SPA-GMN-KOHNUM(IDX-K)   =   "054" )
+      *H30.11
+      *                肝がん治療
+                          OR ( SPA-GMN-KOHNUM(IDX-K)   =   "092" )
       *H28.2
       *                京都府　京都子　H25.9.1から
                           OR ((SPA-GMN-KOHNUM(IDX-K)   =   "745" ) AND

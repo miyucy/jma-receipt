@@ -614,6 +614,9 @@
       *H27.1        難病
                    OR      (LNK-COMB-KOHHKNNUM (IDX IDKH)
                                                    =   "054"   )
+      *H30.11      肝がん治療
+                   OR      (LNK-COMB-KOHHKNNUM (IDX IDKH)
+                                                   =   "092"   )
       *
       *H28.2
       *            京都府　京都子　H25.9.1から
