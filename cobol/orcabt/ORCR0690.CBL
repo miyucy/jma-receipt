@@ -215,6 +215,8 @@
       *  04.08.13    NACL-門脇    18/04/02  平成３０年４月改正対応
       *
       *  05.00.01    NACL-門脇    18/11/16  宮城県地方公費対応
+      *  05.00.02    NACL-藤原    18/06/11  ファイルのエラー処理追加
+      *                                     Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -246,12 +248,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE66-KEY
                                    FILE    STATUS  IS  STS-RECE66.
-      *    レセプト０６´データ
-           SELECT  RECE66X-FILE     ASSIGN  RECE66PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE66X-KEY
-                                   FILE    STATUS  IS  STS-RECE66.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -278,12 +274,6 @@
        FD  RECE66-FILE.
        01  RECE66-REC. 
            COPY    "CPRCF066.INC".
-      *
-      *    レセプト０６´データ
-       FD  RECE66X-FILE.
-       01  RECE66X-REC. 
-           COPY    "CPRCF066.INC"  REPLACING  //RECE66//
-                                   BY         //RECE66X//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -415,8 +405,6 @@
            03  WRK-PARA-PRTKBN                 PIC X(01).
            03  WRK-PARA-HOSPNUM                PIC 9(02).
       *
-           03  WRK-RECEERR         PIC X(200).
-      *
            03  WRK-LINENUM         PIC 9(05).
       *
            03  WRK-TENSUGOKEI      PIC 9(07).
@@ -544,7 +532,21 @@
       *
            03  WRK-SET-LINENUM         PIC 9(05).
       *
-      *    剤・診療行為テーブル
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR                         PIC X(200).
+           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-MCP-RC                          PIC 9(9).
+           03  WRK-ERR-FILE-STS                    PIC X(02).
+           03  WRK-ERR-FILE-MSG                    PIC X(100).
+           03  WRK-ERR-FILE-MSG1                   PIC X(17).
+           03  WRK-ERR-FLG                         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
+      *
+       *    剤・診療行為テーブル
        01  TBL-ZAI-AREA.
       ***  03  TBL-ZAI-OCC         OCCURS   100.
            03  TBL-ZAI-OCC         OCCURS   300.
@@ -1033,7 +1035,9 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *****************************************************************
       *    サブプロ用領域
@@ -1092,9 +1096,13 @@
            INITIALIZE                  TBL-ZAI-AREA
            INITIALIZE                  WRK-ZAIW-AREA
       *
-      *    ファイルＯＰＥＮ処理
-      *
-           PERFORM 110-FILE-OPEN-SEC
+           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
+                                       INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
+                                               WRK-PARA-HOSPNUM
+                                               RECEERR
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -1110,6 +1118,9 @@
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
+      *    ファイルＯＰＥＮ処理
+           PERFORM 110-FILE-OPEN-SEC
+      *
            PERFORM 110-SYSKANRI-HENSYU-SEC
       *
            PERFORM 990-RECE62-READ-SEC
@@ -1121,14 +1132,6 @@
       *    ファイルＯＰＥＮ処理
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
-      *
-           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
-                                       INTO    WRK-PARA
-                                               WRK-PARA-PRTKBN
-                                               WRK-PARA-HOSPNUM
-                                               RECEERR
-           END-UNSTRING
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
@@ -1161,14 +1164,46 @@
            MOVE    SGETTEMP-FULLNAMES (5)
                                        TO  RECE66PARA
       *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
            OPEN    I-O                 RECE62-FILE
+           IF      STS-RECE62          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE01PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE62          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
            OPEN    INPUT               RECE64-FILE
+           IF      STS-RECE64          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE64PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE64          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
            OPEN    INPUT               RECE65-FILE
+           IF      STS-RECE65          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE65PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE65          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
-           OPEN    OUTPUT              RECE66X-FILE
-           CLOSE                       RECE66X-FILE
+           OPEN    OUTPUT              RECE66-FILE
+           CLOSE                       RECE66-FILE
       *
            OPEN    I-O                 RECE66-FILE
       *
@@ -1323,20 +1358,19 @@
                MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM 900-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
-                   MOVE    MCPDATA-REC      TO  SYS-200501-REC
+                   MOVE    MCPDATA-REC      TO  SYS-25-REC
                ELSE    
-                   INITIALIZE                   SYS-200501-REC
+                   INITIALIZE                   SYS-25-REC
                END-IF
            ELSE    
-               INITIALIZE                   SYS-200501-REC
+               INITIALIZE                   SYS-25-REC
            END-IF
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       * 
-           IF      SYS-200501-CHKKBN
-                                   =   SPACE
-               MOVE    "0"             TO  SYS-200501-CHKKBN
+           IF      SYS-25-CHKKBN   =   SPACE
+               MOVE    "0"             TO  SYS-25-CHKKBN
            END-IF
      *    
            .
@@ -1454,8 +1488,8 @@
       *        生保・残留法人等の負担者番号、受給者番号の入力がない
       *        時のエラー設定
       *        災害該当のときはチェックしない 
-               IF  (   ( SYS-200501-CHKKBN     =   "1"    )
-                    OR ( SYS-200501-CHKKBN     =   "2" AND
+               IF  (   ( SYS-25-CHKKBN         =   "1"    )
+                    OR ( SYS-25-CHKKBN         =   "2" AND
                          RECE62-RECESYUBETU
                                            NOT =   "8888" ) )
                AND (     RECE62-RJNGAIKOHFTN (1)
@@ -1547,6 +1581,19 @@
                END-EVALUATE
       *
                REWRITE RECE62-REC
+      *
+               IF      STS-RECE62          =   "00"
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE               TO  WRK-ERR-AREA
+                   INITIALIZE                      WRK-ERR-AREA
+      *
+                   MOVE    4                   TO  WRK-ERR-FLG
+                   MOVE    RECE01PARA          TO  WRK-ERR-FILE-NM
+                   MOVE    STS-RECE62          TO  WRK-ERR-FILE-STS
+                   PERFORM 500-FILE-ERR-ABORT-SEC
+               END-IF
+      *
       *                 
                PERFORM 990-RECE62-READ-SEC
            END-IF
@@ -1880,8 +1927,8 @@
                        END-IF
       *
       *                レセ電請求時の受付エラー分チェック
-                       IF    ( SYS-200501-CHKKBN   =   "1"     )
-                       OR    ( SYS-200501-CHKKBN   =   "2" AND
+                       IF    ( SYS-25-CHKKBN       =   "1"     )
+                       OR    ( SYS-25-CHKKBN       =   "2" AND
                                RECE62-RECESYUBETU
                                                NOT =   "8888"  )
                            PERFORM 20021-DATA-CHK-SEC
@@ -3843,15 +3890,23 @@
       *
            WRITE   RECE66-REC
       *
-           IF  STS-RECE66        NOT =   ZERO
+           IF      STS-RECE66          =   "00"
+               ADD     1                   TO  CNT-RECE66
+           ELSE
                DISPLAY "*** ORCR0690 RECE66 WRITE ERR  ***"
                DISPLAY "*** RECE66-SRYKBN ***" RECE66-SRYKBN
                DISPLAY "*** RECE66-ZAINUM ***" RECE66-ZAINUM
                DISPLAY "<SYOSAIMATOME-WRITE1>"
-               MOVE    2             TO  SPA-STS
-           ELSE
-               ADD     1             TO  CNT-RECE66
+      *
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+      *
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE66PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE66          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
            END-IF
+      *
       *
            .
       *
@@ -4654,14 +4709,21 @@
       *
                WRITE   RECE66-REC
       *
-               IF  STS-RECE66        NOT =   ZERO
+               IF      STS-RECE66          =   "00"
+                   ADD     1                   TO  CNT-RECE66
+               ELSE
                    DISPLAY "*** ORCR0690 RECE66 WRITE ERR  ***"
                    DISPLAY "*** RECE66-SRYKBN ***" RECE66-SRYKBN
                    DISPLAY "*** RECE66-ZAINUM ***" RECE66-ZAINUM
-                   MOVE   WRK-TBLMAX     TO  IDY
-                   MOVE    2             TO  SPA-STS
-               ELSE
-                   ADD     1             TO  CNT-RECE66
+                   MOVE    WRK-TBLMAX          TO  IDY
+      *
+                   MOVE    SPACE               TO  WRK-ERR-AREA
+                   INITIALIZE                      WRK-ERR-AREA
+      *
+                   MOVE    3                   TO  WRK-ERR-FLG
+                   MOVE    RECE66PARA          TO  WRK-ERR-FILE-NM
+                   MOVE    STS-RECE66          TO  WRK-ERR-FILE-STS
+                   PERFORM 500-FILE-ERR-ABORT-SEC
                END-IF
            END-PERFORM
       *     
@@ -4701,6 +4763,68 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0690 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
            EXIT.
       *
       *****************************************************************

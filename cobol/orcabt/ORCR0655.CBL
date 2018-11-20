@@ -55,6 +55,8 @@
       *  04.08.04    NACL-門脇    16/08/23  持参薬対応
       *  04.08.05    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
       *                                     （記録）対応修正
+      *
+      *  05.00.01    NACL-藤原    18/06/11  ファイルのエラー処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -81,20 +83,10 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE642-KEY
                                    FILE    STATUS  IS  STS-RECE642.
-           SELECT  RECE642X-FILE   ASSIGN  RECE642PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE642X-KEY
-                                   FILE    STATUS  IS  STS-RECE642.
            SELECT  RECE64W-FILE    ASSIGN  RECE64WPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE64W-KEY
-                                   FILE    STATUS  IS  STS-RECE64W.
-           SELECT  RECE64WX-FILE   ASSIGN  RECE64WPARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE64WX-KEY
                                    FILE    STATUS  IS  STS-RECE64W.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -119,20 +111,10 @@
        01  RECE642-REC. 
            COPY    "CPRCF0642.INC".
       *
-       FD  RECE642X-FILE.
-       01  RECE642X-REC. 
-           COPY    "CPRCF0642.INC" REPLACING  //RECE642//
-                                   BY         //RECE642X//.
-      *
        FD  RECE64W-FILE.
        01  RECE64W-REC. 
            COPY    "CPRCF064.INC"  REPLACING  //RECE64//
                                    BY         //RECE64W//.
-      *
-       FD  RECE64WX-FILE.
-       01  RECE64WX-REC. 
-           COPY    "CPRCF064.INC"  REPLACING  //RECE64//
-                                   BY         //RECE64WX//.
       * 
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -222,7 +204,20 @@
            03  WRK-INDEX-AREA.
                05  WRK-INDEX           PIC 9(003)    OCCURS  10.
       *
-           03  WRK-RECEERR             PIC X(200). 
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR                         PIC X(200).
+           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-MCP-RC                          PIC 9(9).
+           03  WRK-ERR-FILE-STS                    PIC X(02).
+           03  WRK-ERR-FILE-MSG                    PIC X(100).
+           03  WRK-ERR-FILE-MSG1                   PIC X(17).
+           03  WRK-ERR-FLG                         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
+      *
       *
        01  WRK-RECE642-REC.
            COPY    "CPRCF0642.INC" REPLACING  //RECE642//
@@ -333,6 +328,8 @@
            MOVE    SGETTEMP-FULLNAMES (6)
                                        TO  RECE64WPARA
       *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
                PERFORM 100-DBOPEN-SEC
@@ -348,12 +345,6 @@
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
-           OPEN    OUTPUT              RECE642X-FILE
-           CLOSE                       RECE642X-FILE
-      *
-           OPEN    OUTPUT              RECE64WX-FILE
-           CLOSE                       RECE64WX-FILE
-      *
           .
        100-INIT-EXT.
            EXIT.
@@ -365,9 +356,45 @@
       *
       *    同一剤のまとめ処理
            OPEN    INPUT               RECE64-FILE
-                                       RECE65-FILE
+           IF      STS-RECE64          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE64PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE64          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           OPEN    INPUT               RECE65-FILE
+           IF      STS-RECE65          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE65PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE65          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            OPEN    I-O                 RECE62-FILE
-                                       RECE642-FILE
+           IF      STS-RECE62          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE62PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE62          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           OPEN    OUTPUT              RECE642-FILE
+           CLOSE                       RECE642-FILE
+           OPEN    I-O                 RECE642-FILE
+      *
            PERFORM 900-RECE62-READ-SEC
       *
            PERFORM 210-RECE642-WRITE-SEC
@@ -379,7 +406,18 @@
       *
       *    元のレイアウトに出力処理
            OPEN    INPUT   RECE642-FILE
-                   OUTPUT  RECE64W-FILE
+           IF      STS-RECE642         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE642PARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE642         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+            OPEN   OUTPUT  RECE64W-FILE
       *
            PERFORM 900-RECE642-READ-SEC 
            PERFORM 220-RECE64W-WRITE-SEC
@@ -697,6 +735,68 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0655 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
            EXIT.
       *
       *****************************************************************

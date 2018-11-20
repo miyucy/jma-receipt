@@ -137,6 +137,8 @@
       *                                     ２０１０のデフォルト設定修正）
       *  04.08.10    NACL-門脇    18/03/01  平成３０年４月改正対応
       *  04.08.11    NACL-門脇    18/03/27  平成３０年４月改正対応
+      *
+      *  05.00.01    NACL-藤原    18/06/11  ファイルのエラー処理追加
       *****************************************************************
       *
       *
@@ -371,7 +373,19 @@
       *    入院略称読み込みワーク用
            03  WRK-NYURYAKU-CONST-MAX             PIC 9(03) VALUE 200.
       *
-           03  WRK-RECEERR                             PIC X(200). 
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR                         PIC X(200).
+           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-MCP-RC                          PIC 9(9).
+           03  WRK-ERR-FILE-STS                    PIC X(02).
+           03  WRK-ERR-FILE-MSG                    PIC X(100).
+           03  WRK-ERR-FILE-MSG1                   PIC X(17).
+           03  WRK-ERR-FLG                         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
@@ -542,6 +556,8 @@
            CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
            MOVE    SPACE               TO  RECEERR
            MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+      *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -991,6 +1007,16 @@
            MOVE    ZERO                TO  FLG-RECE62
       *
            OPEN    I-O                 RECE62-FILE
+           IF      STS-RECE62          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE62PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE62          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
            PERFORM    900-RECE62-READ-SEC
       *
@@ -4888,6 +4914,18 @@
       *
            REWRITE   RECE62-REC
       *
+           IF      STS-RECE62          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+      *
+               MOVE    4                   TO  WRK-ERR-FLG
+               MOVE    RECE62PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE62          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-MOD (IDZ)
       *
            .
@@ -5139,6 +5177,68 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0630 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
            EXIT.
       *
       *****************************************************************

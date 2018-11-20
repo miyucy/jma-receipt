@@ -65,6 +65,8 @@
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.03    NACL-門脇    16/08/23  持参薬対応
+      *
+      *  05.00.01    NACL-藤原    18/06/11  ファイルのエラー処理修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -81,11 +83,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE661-KEY
                                    FILE    STATUS  IS  STS-RECE661.
-           SELECT  RECE661X-FILE   ASSIGN  RECE661PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE661X-KEY
-                                   FILE    STATUS  IS  STS-RECE661.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -100,11 +97,6 @@
        FD  RECE661-FILE.
        01  RECE661-REC. 
            COPY    "CPRCF0661.INC".
-      *
-       FD  RECE661X-FILE.
-       01  RECE661X-REC. 
-           COPY    "CPRCF0661.INC"  REPLACING  //RECE661//
-                                   BY          //RECE661X//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -152,7 +144,19 @@
                05  WRK-PARA-SHELLID                    PIC  X(08).
            03  WRK-PARA-HOSPNUM                        PIC  9(02).
       *
-           03  WRK-RECEERR             PIC X(200). 
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR         PIC X(200).
+           03  WRK-ERRMSG          PIC X(300).
+           03  WRK-MCP-RC          PIC 9(9).
+           03  WRK-ERR-FILE-STS    PIC X(02).
+           03  WRK-ERR-FILE-MSG    PIC X(100).
+           03  WRK-ERR-FILE-MSG1   PIC X(17).
+           03  WRK-ERR-FLG         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -242,6 +246,8 @@
            MOVE    SGETTEMP-FULLNAMES (3)
                                        TO  RECE661PARA
       *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
                PERFORM 100-DBOPEN-SEC
@@ -256,10 +262,21 @@
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
-           OPEN    OUTPUT              RECE661X-FILE
-           CLOSE                       RECE661X-FILE
+           OPEN    OUTPUT              RECE661-FILE
+           CLOSE                       RECE661-FILE
       *
            OPEN    INPUT               RECE66-FILE
+           IF      STS-RECE66          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE66PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE66          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            OPEN    I-O                 RECE661-FILE
       *
            PERFORM    RECE66-READ-SEC
@@ -390,6 +407,18 @@
       *
            WRITE   RECE661-REC
       *
+           IF      STS-RECE661         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+      *
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE661PARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE661         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-OUT
            .
        RECE661-WRITE-EXT.
@@ -424,6 +453,68 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0700 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
            EXIT.
       *
       *****************************************************************

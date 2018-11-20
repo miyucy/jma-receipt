@@ -180,6 +180,8 @@
       *  04.08.13    NACL-門脇    18/06/21  リハビリ開始日記載修正
       *  04.08.14    NACL-門脇    18/07/02  リハビリ開始日記載修正
       *  04.08.15    NACL-門脇    18/09/27  選択式コメント対応
+      *
+      *  05.00.01    NACL-藤原    18/06/11  ファイルのエラー処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -211,21 +213,11 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE641-KEY
                                    FILE    STATUS  IS  STS-RECE641.
-           SELECT  RECE6441-FILE   ASSIGN  RECE641PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE6441-KEY
-                                   FILE    STATUS  IS  STS-RECE641.
       *
            SELECT  RECE651-FILE    ASSIGN  RECE651PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE651-KEY
-                                   FILE    STATUS  IS  STS-RECE651.
-           SELECT  RECE6551-FILE   ASSIGN  RECE651PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE6551-KEY
                                    FILE    STATUS  IS  STS-RECE651.
       *ワーク
            SELECT  RECE649-FILE    ASSIGN  RECE649PARA
@@ -233,32 +225,17 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE649-KEY
                                    FILE    STATUS  IS  STS-RECE649.
-           SELECT  RECE6449-FILE   ASSIGN  RECE649PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE6449-KEY
-                                   FILE    STATUS  IS  STS-RECE649.
       *
            SELECT  RECE659-FILE    ASSIGN  RECE659PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE659-KEY
                                    FILE    STATUS  IS  STS-RECE659.
-           SELECT  RECE6559-FILE   ASSIGN  RECE659PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE6559-KEY
-                                   FILE    STATUS  IS  STS-RECE659.
       *
            SELECT  RECE655-FILE    ASSIGN  RECE655PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE655-KEY
-                                   FILE    STATUS  IS  STS-RECE655.
-           SELECT  RECE6555-FILE   ASSIGN  RECE655PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE6555-KEY
                                    FILE    STATUS  IS  STS-RECE655.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -291,16 +268,6 @@
        01  RECE651-REC. 
            COPY    "CPRCF065.INC"  REPLACING   //RECE65//
                                    BY          //RECE651//.
-      *
-       FD  RECE6441-FILE.
-       01  RECE6441-REC. 
-           COPY    "CPRCF064.INC"  REPLACING   //RECE64//
-                                   BY          //RECE6441//.
-      *
-       FD  RECE6551-FILE.
-       01  RECE6551-REC. 
-           COPY    "CPRCF065.INC"  REPLACING   //RECE65//
-                                   BY          //RECE6551//.
       *ワーク
        FD  RECE649-FILE.
        01  RECE649-REC. 
@@ -312,24 +279,10 @@
            COPY    "CPRCF065.INC"  REPLACING   //RECE65//
                                    BY          //RECE659//.
       *
-       FD  RECE6449-FILE.
-       01  RECE6449-REC. 
-           COPY    "CPRCF064.INC"  REPLACING   //RECE64//
-                                   BY          //RECE6449//.
-      *
-       FD  RECE6559-FILE.
-       01  RECE6559-REC. 
-           COPY    "CPRCF065.INC"  REPLACING   //RECE65//
-                                   BY          //RECE6559//.
       *
        FD  RECE655-FILE.
        01  RECE655-REC. 
            COPY    "CPRCF0655.INC".
-      *
-       FD  RECE6555-FILE.
-       01  RECE6555-REC. 
-           COPY    "CPRCF0655.INC" REPLACING   //RECE655//
-                                   BY          //RECE6555//.
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -543,7 +496,6 @@
            03  WRK-KOHBUNRI        PIC 9(01).
            03  WRK-KOHBUNRI-JIDO   PIC 9(01).
            03  WRK-HKNCOMBI-JIDO   PIC 9(04).
-           03  WRK-RECEERR         PIC X(200).
       *
            03  WRK-FSANTEIYMD      PIC 9(08).
            03  WRK-AFTER2          PIC 9(08).
@@ -733,6 +685,20 @@
       *
            03  WRK-MCP-TABLE                 PIC X(64).
            03  WRK-MCP-PATHNAME              PIC X(64).
+      *
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR                         PIC X(200).
+           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-MCP-RC                          PIC 9(9).
+           03  WRK-ERR-FILE-STS                    PIC X(02).
+           03  WRK-ERR-FILE-MSG                    PIC X(100).
+           03  WRK-ERR-FILE-MSG1                   PIC X(17).
+           03  WRK-ERR-FLG                         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-RECE64-REC. 
            COPY    "CPRCF064.INC"  REPLACING   //RECE64//
@@ -1322,9 +1288,12 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
       *
-      *    ファイルＯＰＥＮ処理
-      *
-           PERFORM 110-FILE-OPEN-SEC
+           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
+                                       INTO    WRK-PARA
+                                               WRK-PARA-HOSPNUM
+                                               RECEERR
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -1340,6 +1309,9 @@
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
+      *    ファイルＯＰＥＮ処理
+           PERFORM 110-FILE-OPEN-SEC
+      *
            PERFORM 990-RECE62-READ-SEC
            .
        100-INIT-EXT.
@@ -1349,13 +1321,6 @@
       *    ファイルＯＰＥＮ処理
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
-      *
-           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
-                                       INTO    WRK-PARA
-                                               WRK-PARA-HOSPNUM
-                                               RECEERR
-           END-UNSTRING
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
@@ -1412,26 +1377,55 @@
            MOVE    SGETTEMP-FULLNAMES (9)
                                        TO  RECE655PARA
       *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
            OPEN    INPUT               RECE62-FILE
+           IF      STS-RECE62          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE62PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE62          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
            OPEN    INPUT               RECE64-FILE
+           IF      STS-RECE64          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE64PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE64          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
            OPEN    INPUT               RECE65-FILE
+           IF      STS-RECE65          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE65PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE65          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
-           OPEN    OUTPUT              RECE6441-FILE
-           CLOSE                       RECE6441-FILE
+           OPEN    OUTPUT              RECE641-FILE
+           CLOSE                       RECE641-FILE
       *
-           OPEN    OUTPUT              RECE6551-FILE
-           CLOSE                       RECE6551-FILE
+           OPEN    OUTPUT              RECE651-FILE
+           CLOSE                       RECE651-FILE
       *
-           OPEN    OUTPUT              RECE6449-FILE
-           CLOSE                       RECE6449-FILE
+           OPEN    OUTPUT              RECE649-FILE
+           CLOSE                       RECE649-FILE
       *
-           OPEN    OUTPUT              RECE6559-FILE
-           CLOSE                       RECE6559-FILE
-      *
-           OPEN    OUTPUT              RECE6555-FILE
-           CLOSE                       RECE6555-FILE
+           OPEN    OUTPUT              RECE659-FILE
+           CLOSE                       RECE659-FILE
       *
            OPEN    I-O                 RECE641-FILE
            OPEN    I-O                 RECE649-FILE
@@ -13579,6 +13573,68 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0660 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
            EXIT.
       *
       *****************************************************************

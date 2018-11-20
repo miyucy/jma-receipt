@@ -3,7 +3,7 @@
       * 日医標準レセプトソフト（JMA standard RECE63ipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
-      * This program is part of "JMA standard RECE63ipt software".
+      * This program is part of "JMA standard receipt software".
       *
       *     This program is distributed in the hope that it will be useful
       * for further advancement in medical care, according to JMA Open
@@ -69,6 +69,9 @@
       *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *
+      *  05.00.01    NACL-藤原    18/06/11  ファイルのエラー処理追加
+      *                                     Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,13 +169,23 @@
            03  WRK-PTBYO-BYOMEI    PIC X(160).
            03  WRK-PTBYO-BYOMEIMOJI
                                    PIC 9(03).
-      *
-           03  WRK-RECEERR         PIC X(200). 
-           03  WRK-ERRMSG          PIC X(300).
-           03  WRK-MCP-RC          PIC 9(9).
       *                             
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
+      *
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR                         PIC X(200).
+           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-MCP-RC                          PIC 9(9).
+           03  WRK-ERR-FILE-STS                    PIC X(02).
+           03  WRK-ERR-FILE-MSG                    PIC X(100).
+           03  WRK-ERR-FILE-MSG1                   PIC X(17).
+           03  WRK-ERR-FLG                         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+                                   BY         //WRK-ERR-FILE-NM//.
+      *    FULLNAME内のBASENAME開始位置
+       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -192,7 +205,9 @@
            COPY    "CPSYSKANRI.INC".
       *     
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *    患者病名
        01  PTBYOMEI-REC.
@@ -292,6 +307,8 @@
            MOVE    SGETTEMP-FULLNAMES (3)
                                        TO  RECE63PARA
       *
+           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
                PERFORM 100-DBOPEN-SEC
@@ -310,6 +327,17 @@
            CLOSE                       RECE63-FILE
       *
            OPEN    I-O                 RECE62-FILE    
+           IF      STS-RECE62          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE62PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE62          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            OPEN    I-O                 RECE63-FILE
       *     
       *    レセプト編集区分情報
@@ -337,21 +365,20 @@
            MOVE    "01"             TO  SYS-KBNCD
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI     =   ZERO
-               MOVE    MCPDATA-REC      TO  SYS-200501-REC
+               MOVE    MCPDATA-REC      TO  SYS-25-REC
            ELSE    
-               INITIALIZE                   SYS-200501-REC
+               INITIALIZE                   SYS-25-REC
            END-IF
-           IF      SYS-200501-CHKKBN
-                                    =   SPACE
-               MOVE    ZERO             TO  SYS-200501-CHKKBN
+           IF      SYS-25-CHKKBN    =   SPACE
+               MOVE    ZERO             TO  SYS-25-CHKKBN
            END-IF
-           IF      SYS-200501-BYOMEI-PRTJYUN
+           IF      SYS-25-BYOMEI-PRTJYUN
                                     =   SPACE
-               MOVE    ZERO             TO  SYS-200501-BYOMEI-PRTJYUN
+               MOVE    ZERO             TO  SYS-25-BYOMEI-PRTJYUN
            END-IF
-           IF      SYS-200501-TENKIBYOMEI-KBN
+           IF      SYS-25-TENKIBYOMEI-KBN
                                     =   SPACE
-               MOVE    ZERO             TO  SYS-200501-TENKIBYOMEI-KBN
+               MOVE    ZERO             TO  SYS-25-TENKIBYOMEI-KBN
            END-IF
       *
            DISPLAY "SYS-2005-BYOMEIHENKBN1    ="
@@ -359,11 +386,11 @@
            DISPLAY "SYS-2005-SYUBYOHENFLG     ="
                                     SYS-2005-SYUBYOHENFLG
            DISPLAY "SYS-200501-CHKKBN         ="
-                                    SYS-200501-CHKKBN
+                                    SYS-25-CHKKBN
            DISPLAY "SYS-200501-BYOMEI-PRTJYUN ="
-                                    SYS-200501-BYOMEI-PRTJYUN
+                                    SYS-25-BYOMEI-PRTJYUN
            DISPLAY "SYS-200501-TENKIBYOMEI-KBN="
-                                    SYS-200501-TENKIBYOMEI-KBN
+                                    SYS-25-TENKIBYOMEI-KBN
       *
       *        レセプト明細０２読み込み
            PERFORM 900-RECE62-READ-SEC
@@ -390,7 +417,7 @@
            MOVE    RECE62-PTID         TO  PTBYO-PTID
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           IF      SYS-200501-BYOMEI-PRTJYUN
+           IF      SYS-25-BYOMEI-PRTJYUN
                                        =   "2"
                MOVE    "key39"             TO  WRK-MCP-PATHNAME
            ELSE
@@ -415,14 +442,26 @@
            PERFORM 900-CLOSE-SEC
       *
       *    対象病名がなかったとき
-           IF    ( SYS-200501-CHKKBN   =   "1"     )
-           OR    ( SYS-200501-CHKKBN   =   "2" AND
+           IF    ( SYS-25-CHKKBN       =   "1"     )
+           OR    ( SYS-25-CHKKBN       =   "2" AND
                    RECE62-RECESYUBETU
                                    NOT =   "8888"  )
                IF      CNT-RECE-OUT        =   ZERO
                    IF      RECE62-ERR-ERRKBN   =   ZERO 
                        MOVE    10                  TO  RECE62-ERR-ERRKBN
                        REWRITE                         RECE62-REC
+      *
+                       IF      STS-RECE62          =   "00"
+                           CONTINUE
+                       ELSE
+                           MOVE    SPACE           TO  WRK-ERR-AREA
+                           INITIALIZE                  WRK-ERR-AREA
+      *
+                           MOVE    4               TO  WRK-ERR-FLG
+                           MOVE    RECE62PARA      TO  WRK-ERR-FILE-NM
+                           MOVE    STS-RECE62      TO  WRK-ERR-FILE-STS
+                           PERFORM 500-FILE-ERR-ABORT-SEC
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -587,7 +626,7 @@
                    IF      PTBYO-TENKIKBN       =   SPACE
                        CONTINUE
                    ELSE
-                       IF    ( SYS-200501-TENKIBYOMEI-KBN
+                       IF    ( SYS-25-TENKIBYOMEI-KBN
                                                    =   "0"  )
                        OR    ( PTBYO-REZEMM        =   ZERO )
                            IF      PTBYO-TENKIYMD(1:6) >=  RECE62-SRYYM
@@ -612,7 +651,7 @@
                                                        LNK-DAY6-AREA
                    MOVE    LNK-DAY6-KEISAN(1:6)
                                                TO  WRK-YM
-                   IF    ( SYS-200501-TENKIBYOMEI-KBN
+                   IF    ( SYS-25-TENKIBYOMEI-KBN
                                                =   "0"   )
                    OR    ( PTBYO-TENKIKBN      =   SPACE )
                        IF      WRK-YM              >=  RECE62-SRYYM
@@ -628,7 +667,7 @@
                OR    ( PTBYO-REZEMM        =   ZERO  )
                    CONTINUE
                ELSE
-                   IF      SYS-200501-TENKIBYOMEI-KBN
+                   IF      SYS-25-TENKIBYOMEI-KBN
                                                =   "1"
                        IF      WRK-YM              >=  RECE62-SRYYM
                            CONTINUE
@@ -751,6 +790,18 @@
                                        TO  RECE63-HOSOKU-COMMENT
       *
            WRITE   RECE63-REC
+      *
+           IF      STS-RECE63          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE63PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE63          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-OUT   
                                            CNT-RECE-OUT   
            .
@@ -786,6 +837,58 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0670 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
+                                           DELIMITED   BY  SPACE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
            EXIT.
       *
       *****************************************************************
