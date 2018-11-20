@@ -197,6 +197,8 @@
       *                                     ÉÂÅïÆþ±¡ÎÁ£±¡Ë¤Ë¤Ä¤¤¤ÆÆþ±¡ÎÁ
       *                                     ¤È¤ÎÊÝ¸±¥Á¥§¥Ã¥¯ÂÐ¾Ý³°¤Ë¤¹¤ë
       *
+      *  05.00.01    NACL-ÌçÏÆ    18/11/07  ´Î¤¬¤ó¡¦½ÅÅÙ´Î¹ÅÊÑ¼£ÎÅ¸¦µæÂ¥¿Ê
+      *                                     »ö¶È°åÎÅÂÐ±þ
       *  05.00.02    NACL-ÌçÏÆ    18/11/16  µÜ¾ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
@@ -255,6 +257,8 @@
            03  WRK-S3                      PIC 9V99999.
            03  WRK-S4                      PIC 9V99.
            03  WRK-S5                      PIC 9V99.
+           03  WRK-KANGAN-SRYYMD           PIC X(08).
+           03  WRK-KANGAN-SKYEDYMD         PIC X(08).
       *
        01  WRK-ROSAI-AREA.
            03  WRK-SYUTEN                  PIC 9(09).
@@ -502,6 +506,7 @@
            03  FLG-SRYACT                  PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
+           03  FLG-PTKOHINF                PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-GAIHAKU-SET             PIC 9(01).
            03  FLG-SENTEI-SET              PIC 9(01).
@@ -532,6 +537,9 @@
            03  FLG-HKNCOMBINUM999          PIC 9(01).
            03  FLG-SKYCHK-KEISAN           PIC 9(01).
            03  FLG-SKYCHK-KEISAN2          PIC 9(01).
+           03  FLG-KOREI-KANGAN            PIC 9(01).
+           03  FLG-TAISYO-KANGAN           PIC 9(01).
+           03  FLG-KOGAKU-KANGAN           PIC 9(01).
       *
        01  CNT-AREA.
            03  CNT-KENSU                   PIC 9(03).
@@ -782,6 +790,10 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
+      *    ´µ¼Ô¸øÈñ¾ðÊó
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
+      *
       *    ÅÀ¿ô
            COPY    "CPTENSU.INC".
       *
@@ -842,6 +854,9 @@
       *
       *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¼èÆÀ¥µ¥Ö
            COPY    "CPORCSKANGOGEN.INC".
+      *
+      *    ¸øÈñ·î¾å¸Â³Û¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSJGNGET.INC".
       *
       /
       ***
@@ -2137,6 +2152,8 @@
               MOVE COMB-KOH4HKNNUM    TO WRK-HANBETU-KOH4HKNNUM(IDX)
               MOVE COMB-NYU-KFTNRATE  TO WRK-HANBETU-PTFTNRATE(IDX)
       *
+              PERFORM  KANGAN-CHECK-SYORI-SEC
+      *
               IF   COMB-HKNNUM  NOT =  SPACE
                 INITIALIZE                           PTHKNINF-REC
                 MOVE    LNK-S02-HOSPNUM      TO      PTHKN-HOSPNUM
@@ -2237,6 +2254,12 @@
                      MOVE  WRK-HANBETU-KOH1HKNNUM(IDX)
                               TO  WRK-HANBETU-YUSENBAN2(IDX)
                   END-IF
+                  IF   (WRK-HANBETU-KOH1HKNNUM(IDX)  =  "092"   )
+                  AND  (FLG-TAISYO-KANGAN            =   ZERO   )
+                  AND  (WRK-HANBETU-SKYYM(IDX)      >=  "201812")
+                     MOVE  998   TO  WRK-HANBETU-YUSENBAN(IDX)
+                                     WRK-HANBETU-YUSENBAN2(IDX)
+                  END-IF
                 END-IF
               END-IF
       *
@@ -2244,23 +2267,32 @@
                   CONTINUE
               ELSE
                 IF   WRK-HANBETU-KOH2HKNNUM(IDX)(1:1) >= "1" AND <= "8"
-                  IF  WRK-HANBETU-KOH1HKNNUM(IDX)  =  "027"
+                  IF ( WRK-HANBETU-KOH1HKNNUM(IDX)  =  "027"      )
+                  OR ((WRK-HANBETU-KOH1HKNNUM(IDX)  =  "092"     ) AND
+                      (FLG-TAISYO-KANGAN            =   ZERO     ) AND
+                      (WRK-HANBETU-SKYYM(IDX)      >=  "201812"  ))
                      MOVE  990   TO  WRK-HANBETU-YUSENBAN(IDX)
                                      WRK-HANBETU-YUSENBAN2(IDX)
                   END-IF
                 ELSE
-                  IF (WRK-HANBETU-YUSENBAN(IDX)
+                  IF ( WRK-HANBETU-YUSENBAN(IDX)
                                      > WRK-HANBETU-KOH2HKNNUM(IDX))
-                  OR (WRK-HANBETU-KOH1HKNNUM(IDX)  =  "027"       )
+                  OR ( WRK-HANBETU-KOH1HKNNUM(IDX)  =  "027"      )
+                  OR ((WRK-HANBETU-KOH1HKNNUM(IDX)  =  "092"     ) AND
+                      (FLG-TAISYO-KANGAN            =   ZERO     ) AND
+                      (WRK-HANBETU-SKYYM(IDX)      >=  "201812"  ))
                      MOVE  WRK-HANBETU-KOH2HKNNUM(IDX)
                               TO  WRK-HANBETU-YUSENBAN(IDX)
                   END-IF
                   IF     WRK-HANBETU-KOH2HKNNUM(IDX) = "972" OR "974"
                      MOVE  1  TO  WRK-HANBETU-YUSENBAN(IDX)
                   ELSE
-                     IF (WRK-HANBETU-YUSENBAN2(IDX)
-                                     > WRK-HANBETU-KOH2HKNNUM(IDX))
-                     OR (WRK-HANBETU-KOH1HKNNUM(IDX)  =  "027"    )
+                     IF ( WRK-HANBETU-YUSENBAN2(IDX)
+                                     > WRK-HANBETU-KOH2HKNNUM(IDX) )
+                     OR ( WRK-HANBETU-KOH1HKNNUM(IDX)  =  "027"    )
+                     OR ((WRK-HANBETU-KOH1HKNNUM(IDX)  =  "092"   ) AND
+                         (FLG-TAISYO-KANGAN            =   ZERO   ) AND
+                         (WRK-HANBETU-SKYYM(IDX)      >=  "201812"))
                         MOVE  WRK-HANBETU-KOH2HKNNUM(IDX)
                               TO  WRK-HANBETU-YUSENBAN2(IDX)
                      END-IF
@@ -2547,6 +2579,208 @@
            END-PERFORM.
       *
        HKNNUM-SYUTOKU-SYORI-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ´Î¤¬¤ó¥Á¥§¥Ã¥¯                                              *
+      ******************************************************************
+       KANGAN-CHECK-SYORI-SEC        SECTION.
+      *
+           MOVE    SPACE       TO    WRK-KANGAN-SRYYMD
+           MOVE    SPACE       TO    WRK-KANGAN-SKYEDYMD
+           MOVE    ZERO        TO    FLG-TAISYO-KANGAN
+           MOVE    ZERO        TO    FLG-KOREI-KANGAN
+           MOVE    ZERO        TO    FLG-KOGAKU-KANGAN
+      *
+           IF   (COMB-HKNNUM          NOT =  SPACE   )
+           AND  (COMB-KOH1HKNNUM          =  "092"   )
+           AND  (WRK-HANBETU-SKYYM(IDX)  >=  "201812")
+             PERFORM  KANGAN-CHECK-SYORI2-SEC
+           END-IF
+      *
+           .
+      *
+       KANGAN-CHECK-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´Î¤¬¤ó¥Á¥§¥Ã¥¯£²
+      *****************************************************************
+       KANGAN-CHECK-SYORI2-SEC               SECTION.
+      *
+           MOVE WRK-HANBETU-SKYYM(IDX)
+                                   TO  WRK-KANGAN-SRYYMD(1:6)
+           IF   WRK-HANBETU-KAISHI(IDX)  NOT = SPACE
+             MOVE  WRK-HANBETU-KAISHI(IDX)
+                                   TO  WRK-KANGAN-SRYYMD(7:2)
+           ELSE
+             MOVE  WRK-HANBETU-KAISHI2(IDX)
+                                   TO  WRK-KANGAN-SRYYMD(7:2)
+           END-IF
+      *
+           MOVE WRK-HANBETU-SKYYM(IDX)
+                                   TO  WRK-KANGAN-SKYEDYMD(1:6)
+           MOVE WRK-HANBETU-SYURYO(IDX)
+                                   TO  WRK-KANGAN-SKYEDYMD(7:2)
+      *
+      *    ¸øÈñ·î¾å¸Â³Û¼èÆÀ
+           INITIALIZE                       LNK-ORCSJGNGET-REC
+           MOVE  LNK-S02-HOSPNUM        TO  LNK-ORCSJGNGET-HOSPNUM
+           MOVE  LNK-S02-NYUGAIKBN      TO  LNK-ORCSJGNGET-NYUGAIKBN
+           MOVE  LNK-S02-PTID           TO  LNK-ORCSJGNGET-PTID
+           MOVE  COMB-KOH1HKNNUM        TO  LNK-ORCSJGNGET-KOHHKNNUM
+           MOVE  COMB-KOH1ID            TO  LNK-ORCSJGNGET-KOHID
+           MOVE  WRK-HANBETU-SKYYM(IDX) TO  LNK-ORCSJGNGET-SRYYM
+           MOVE  WRK-KANGAN-SKYEDYMD    TO  LNK-ORCSJGNGET-SKYEDYMD
+           CALL    "ORCSJGNGET"         USING
+                                        LNK-ORCSJGNGET-REC
+                                        SPA-AREA
+           IF    LNK-ORCSJGNGET-RC   =   ZERO
+             IF    LNK-ORCSJGNGET-NYUJGNGAK  =  9999999
+               CONTINUE
+             ELSE
+               MOVE    1        TO    FLG-TAISYO-KANGAN
+             END-IF
+           END-IF
+      *
+           IF    FLG-TAISYO-KANGAN  =  1
+      *
+             INITIALIZE                    ORCSAGECHKAREA
+             MOVE    LNK-S02-HOSPNUM   TO  AGECHK-HOSPNUM
+             MOVE    LNK-S02-PTID      TO  AGECHK-PTID
+             MOVE    WRK-KANGAN-SRYYMD TO  AGECHK-SRYYMD
+             CALL    "ORCSAGECHK"          USING
+                                           ORCSAGECHKAREA
+                                           SPA-AREA
+             IF      AGECHK-RC     =   ZERO
+               IF  (AGECHK-NENREI >=   70  )
+               OR  (COMB-HKNNUM    =  "039")
+                 MOVE       1          TO  FLG-KOREI-KANGAN
+               END-IF
+             END-IF
+      *
+      *      ¹âÎðÈó³ºÅö¼Ô
+             IF   (FLG-KOREI-KANGAN  =  1 )
+             AND  (AGECHK-NENREI    >=  70)
+               IF    COMB-HKNNUM = "039"
+                  CONTINUE
+               ELSE
+                IF ( COMB-HKNNUM      = "060" )
+                OR ((COMB-HKNNUM  NOT = "060") AND
+                    (COMB-HOJOKBN     = SPACE))
+                  INITIALIZE                         PTKOHINF-REC
+                  MOVE    LNK-S02-HOSPNUM        TO  PTKOH-HOSPNUM
+                  MOVE    LNK-S02-PTID           TO  PTKOH-PTID
+                  MOVE    "976"                  TO  PTKOH-KOHNUM
+                  MOVE    PTKOHINF-REC           TO  MCPDATA-REC
+                  MOVE    "DBSELECT"             TO  MCP-FUNC
+                  MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
+                  MOVE    "key4"                 TO  MCP-PATHNAME
+                  CALL    "ORCDBMAIN"            USING  MCPAREA
+                                                        MCPDATA-REC
+                                                        SPA-AREA
+                  IF      MCP-RC  =  ZERO
+                    MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+                    MOVE    "key4"             TO  MCP-PATHNAME
+                    PERFORM  PTKOHINF-READ-SEC
+                    PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                      IF  (PTKOH-TEKSTYMD     <=  WRK-KANGAN-SRYYMD)
+                      AND (WRK-KANGAN-SRYYMD  <=  PTKOH-TEKEDYMD   )
+                      AND (PTKOH-SAKJOKBN      =  SPACE            )
+                        MOVE   ZERO  TO  FLG-KOREI-KANGAN
+                        MOVE    1    TO  FLG-PTKOHINF
+                      ELSE
+                        MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
+                        MOVE    "key4"          TO  MCP-PATHNAME
+                        PERFORM  PTKOHINF-READ-SEC
+                      END-IF
+                    END-PERFORM
+                  END-IF
+                  MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+                  MOVE    "key4"             TO  MCP-PATHNAME
+                  PERFORM  CSR-CLOSE-SEC
+                END-IF
+               END-IF
+             END-IF
+      *
+             IF    FLG-KOREI-KANGAN  =  1
+               MOVE    1    TO  FLG-KOGAKU-KANGAN
+             ELSE
+               INITIALIZE                         PTKOHINF-REC
+               MOVE    LNK-S02-HOSPNUM        TO  PTKOH-HOSPNUM
+               MOVE    LNK-S02-PTID           TO  PTKOH-PTID
+               MOVE    "966"                  TO  PTKOH-KOHNUM
+               MOVE    PTKOHINF-REC           TO  MCPDATA-REC
+               MOVE    "DBSELECT"             TO  MCP-FUNC
+               MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
+               MOVE    "key4"                 TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"            USING  MCPAREA
+                                                     MCPDATA-REC
+                                                     SPA-AREA
+               IF      MCP-RC               =       ZERO
+                 MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+                 MOVE    "key4"             TO  MCP-PATHNAME
+                 PERFORM  PTKOHINF-READ-SEC
+                 PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                   IF  (PTKOH-TEKSTYMD     <=  WRK-KANGAN-SRYYMD)
+                   AND (WRK-KANGAN-SRYYMD  <=  PTKOH-TEKEDYMD   )
+                   AND (PTKOH-SAKJOKBN      =  SPACE            )
+                     MOVE    1    TO  FLG-KOGAKU-KANGAN
+                     MOVE    1    TO  FLG-PTKOHINF
+                   ELSE
+                     MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
+                     MOVE    "key4"          TO  MCP-PATHNAME
+                     PERFORM  PTKOHINF-READ-SEC
+                   END-IF
+                 END-PERFORM
+               END-IF
+               MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+               MOVE    "key4"             TO  MCP-PATHNAME
+               PERFORM  CSR-CLOSE-SEC
+      *
+               IF    FLG-KOGAKU-KANGAN  =  ZERO
+                 INITIALIZE                         PTKOHINF-REC
+                 MOVE    LNK-S02-HOSPNUM        TO  PTKOH-HOSPNUM
+                 MOVE    LNK-S02-PTID           TO  PTKOH-PTID
+                 MOVE    "967"                  TO  PTKOH-KOHNUM
+                 MOVE    PTKOHINF-REC           TO  MCPDATA-REC
+                 MOVE    "DBSELECT"             TO  MCP-FUNC
+                 MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
+                 MOVE    "key4"                 TO  MCP-PATHNAME
+                 CALL    "ORCDBMAIN"            USING  MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
+                 IF      MCP-RC               =       ZERO
+                   MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+                   MOVE    "key4"             TO  MCP-PATHNAME
+                   PERFORM  PTKOHINF-READ-SEC
+                   PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                     IF  (PTKOH-TEKSTYMD     <=  WRK-KANGAN-SRYYMD)
+                     AND (WRK-KANGAN-SRYYMD  <=  PTKOH-TEKEDYMD   )
+                     AND (PTKOH-SAKJOKBN      =  SPACE            )
+                       MOVE    1    TO  FLG-KOGAKU-KANGAN
+                       MOVE    1    TO  FLG-PTKOHINF
+                     ELSE
+                       MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
+                       MOVE    "key4"          TO  MCP-PATHNAME
+                       PERFORM  PTKOHINF-READ-SEC
+                     END-IF
+                   END-PERFORM
+                 END-IF
+                 MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+                 MOVE    "key4"             TO  MCP-PATHNAME
+                 PERFORM  CSR-CLOSE-SEC
+               END-IF
+             END-IF
+      *
+             IF    FLG-KOGAKU-KANGAN  =  ZERO
+               MOVE    ZERO       TO    FLG-TAISYO-KANGAN
+             END-IF
+      *
+           END-IF
+      *
+           .
+       KANGAN-CHECK-SYORI2-EXT.
            EXIT.
       *
       ******************************************************************
@@ -9264,6 +9498,27 @@ grpsys                            SPA-AREA
       *
            .
        HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¸øÈñ¾ðÊóÆÉ¹þ
+      *****************************************************************
+       PTKOHINF-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       PTKOHINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
