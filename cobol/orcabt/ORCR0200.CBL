@@ -69,6 +69,8 @@
       *  04.08.02    NACL-藤原    16/04/20  平成２８年４月改正対応
       *  04.08.03    NACL-門脇    16/09/20  １５円以下薬剤の提出用レセプト記載
       *                                     （記録）対応
+      *
+      *  05.00.01    NACL-藤原    18/06/11  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -207,7 +209,9 @@ grpsys     COPY    "COMMON-SPA".
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *****************************************************************
       *    サブプロ用領域
@@ -281,27 +285,27 @@ grpsys     COPY    "COMMON-SPA".
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    レセプト編集区分情報
-           MOVE    SPACE               TO  SYS-200501-REC
-           INITIALIZE                      SYS-200501-REC
-           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-25-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+               MOVE    MCPDATA-REC         TO  SYS-25-REC
            ELSE    
-               MOVE    SPACE           TO  SYS-200501-REC
-               INITIALIZE                  SYS-200501-REC
+               MOVE    SPACE           TO  SYS-25-REC
+               INITIALIZE                  SYS-25-REC
            END-IF
-           IF      SYS-200501-KOUIKIRECEKBN
+           IF      SYS-25-KOUIKIRECEKBN
                                        =   SPACE
-               MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
+               MOVE    ZERO        TO  SYS-25-KOUIKIRECEKBN
            END-IF
-           MOVE    SYS-200501-KOUIKIRECEKBN
+           MOVE    SYS-25-KOUIKIRECEKBN
                                    TO  WRK-PARA-KOUIKIRECEKBN 
            DISPLAY "KOUIKIRECEKBN=" WRK-PARA-KOUIKIRECEKBN
       *

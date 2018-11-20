@@ -81,6 +81,8 @@
       *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *
+      *  05.00.01    NACL-藤原    18/06/11  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -215,7 +217,9 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPSYSKANRI.INC".
       *     
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *    患者病名
        01  PTBYOMEI-REC.
@@ -371,21 +375,20 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "01"             TO  SYS-KBNCD
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI     =   ZERO
-               MOVE    MCPDATA-REC      TO  SYS-200501-REC
+               MOVE    MCPDATA-REC      TO  SYS-25-REC
            ELSE    
-               INITIALIZE                   SYS-200501-REC
+               INITIALIZE                   SYS-25-REC
            END-IF
-           IF      SYS-200501-CHKKBN
-                                    =   SPACE
-               MOVE    ZERO             TO  SYS-200501-CHKKBN
+           IF      SYS-25-CHKKBN    =   SPACE
+               MOVE    ZERO             TO  SYS-25-CHKKBN
            END-IF
-           IF      SYS-200501-BYOMEI-PRTJYUN
+           IF      SYS-25-BYOMEI-PRTJYUN
                                     =   SPACE
-               MOVE    ZERO             TO  SYS-200501-BYOMEI-PRTJYUN
+               MOVE    ZERO             TO  SYS-25-BYOMEI-PRTJYUN
            END-IF
-           IF      SYS-200501-TENKIBYOMEI-KBN
+           IF      SYS-25-TENKIBYOMEI-KBN
                                     =   SPACE
-               MOVE    ZERO             TO  SYS-200501-TENKIBYOMEI-KBN
+               MOVE    ZERO             TO  SYS-25-TENKIBYOMEI-KBN
            END-IF
       *
            DISPLAY "SYS-2005-BYOMEIHENKBN1    ="
@@ -393,11 +396,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "SYS-2005-SYUBYOHENFLG     ="
                                     SYS-2005-SYUBYOHENFLG
            DISPLAY "SYS-200501-CHKKBN         ="
-                                    SYS-200501-CHKKBN
+                                    SYS-25-CHKKBN
            DISPLAY "SYS-200501-BYOMEI-PRTJYUN ="
-                                    SYS-200501-BYOMEI-PRTJYUN
+                                    SYS-25-BYOMEI-PRTJYUN
            DISPLAY "SYS-200501-TENKIBYOMEI-KBN="
-                                    SYS-200501-TENKIBYOMEI-KBN
+                                    SYS-25-TENKIBYOMEI-KBN
       *
       *    レセプト明細０２読み込み
            PERFORM 900-RECE02-READ-SEC
@@ -418,7 +421,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  PTBYO-HOSPNUM
            MOVE    RECE02-PTID         TO  PTBYO-PTID
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           IF      SYS-200501-BYOMEI-PRTJYUN
+           IF      SYS-25-BYOMEI-PRTJYUN
                                        =   "2"
                MOVE    "key39"             TO  WRK-MCP-PATHNAME
            ELSE
@@ -445,8 +448,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
       *
       *    対象病名がなかったとき
-           IF    ( SYS-200501-CHKKBN   =   "1"     )
-           OR    ( SYS-200501-CHKKBN   =   "2" AND
+           IF    ( SYS-25-CHKKBN       =   "1"     )
+           OR    ( SYS-25-CHKKBN       =   "2" AND
                    RECE02-RECESYUBETU
                                    NOT =   "8888"  )
                IF      CNT-RECE-OUT        =   ZERO
@@ -651,7 +654,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF      PTBYO-TENKIKBN       =   SPACE
                        CONTINUE
                    ELSE
-                       IF    ( SYS-200501-TENKIBYOMEI-KBN
+                       IF    ( SYS-25-TENKIBYOMEI-KBN
                                                    =   "0"  )
                        OR    ( PTBYO-REZEMM        =   ZERO )
                            IF      PTBYO-TENKIYMD(1:6) >=  RECE02-SRYYM
@@ -676,7 +679,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        LNK-DAY6-AREA
                    MOVE    LNK-DAY6-KEISAN(1:6)
                                                TO  WRK-YM
-                   IF    ( SYS-200501-TENKIBYOMEI-KBN
+                   IF    ( SYS-25-TENKIBYOMEI-KBN
                                                =   "0"   )
                    OR    ( PTBYO-TENKIKBN      =   SPACE )
                        IF      WRK-YM              >=  RECE02-SRYYM
@@ -692,7 +695,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                OR    ( PTBYO-REZEMM        =   ZERO  )
                    CONTINUE
                ELSE
-                   IF      SYS-200501-TENKIBYOMEI-KBN
+                   IF      SYS-25-TENKIBYOMEI-KBN
                                                =   "1"
                        IF      WRK-YM              >=  RECE02-SRYYM
                            CONTINUE
@@ -879,7 +882,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-STRING
            PERFORM 500-ERR-HENSYU-SEC
       *
-           STRING  "ORCR0055 "             DELIMITED   BY  SIZE
+           STRING  "ORCR0050 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)

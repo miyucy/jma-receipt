@@ -281,6 +281,8 @@
       *  04.08.06    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
       *                                     での食事算定対応
       *  04.08.07    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *
+      *  05.00.01    NACL-藤原    18/06/11  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1100,7 +1102,9 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
            COPY    "CPSK2009.INC".
       *
@@ -1322,19 +1326,19 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "key10"         TO  WRK-MCP-PATHNAME
                PERFORM 960-KANRIMST-READ-SEC
                IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-200501-REC
+                   MOVE    MCPDATA-REC     TO  SYS-25-REC
                ELSE    
-                   INITIALIZE                  SYS-200501-REC
+                   INITIALIZE                  SYS-25-REC
                END-IF
-               IF      SYS-200501-DRCD-PRTKBN
+               IF      SYS-25-DRCD-PRTKBN
                                        =   SPACE
-                   MOVE    "0"         TO  SYS-200501-DRCD-PRTKBN
+                   MOVE    "0"         TO  SYS-25-DRCD-PRTKBN
                END-IF
       *
                DISPLAY "SYS-2005-NYUTAIINREKI-KSIKBN=" 
                                    SYS-2005-NYUTAIINREKI-KSIKBN " "
                DISPLAY "SYS-200501-DRCD-PRTKBN      =" 
-                                   SYS-200501-DRCD-PRTKBN " "
+                                   SYS-25-DRCD-PRTKBN " "
           END-IF
       *
           .
@@ -2322,7 +2326,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *
       *    医師別出力設定（一括作成時リアルタイムプレビュー時のみ）
            IF    ( IDZ             =   1                     )
-           AND   ( SYS-200501-DRCD-PRTKBN
+           AND   ( SYS-25-DRCD-PRTKBN
                                    =   "1"                   )
            AND   ( RECE02-SRYYM    >=  WRK-CONS-SRYYM-200804 )
              IF    ( WRK-PARA-SRYYM  NOT =   "000000"  )

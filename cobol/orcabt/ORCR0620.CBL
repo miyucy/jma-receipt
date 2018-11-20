@@ -244,6 +244,8 @@
       *                                     （入院時生活療養の見直し）
       *  04.08.08    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
       *                                     での食事算定対応
+      *
+      *  05.00.01    NACL-藤原    18/06/11  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -259,11 +261,6 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE62-KEY
-                                   FILE    STATUS  IS  STS-RECE62.
-           SELECT  RECE62X-FILE    ASSIGN  RECE62PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE62X-KEY
                                    FILE    STATUS  IS  STS-RECE62.
            SELECT  RECE68-FILE     ASSIGN  RECE68PARA
                                    ORGANIZATION    IS  INDEXED
@@ -295,11 +292,6 @@
        FD  RECE62-FILE.
        01  RECE62-REC. 
            COPY    "CPRCF062.INC".
-      *
-       FD  RECE62X-FILE.
-       01  RECE62X-REC. 
-           COPY    "CPRCF062.INC"  REPLACING  //RECE62//
-                                   BY         //RECE62X//.
       *
        FD  RECE68-FILE.
        01  RECE68-REC. 
@@ -649,7 +641,9 @@
       *
            COPY    "CPSK2009.INC".
       *
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *    月代わり受給者番号
        01  MONTHLYNUM-REC.
@@ -943,24 +937,24 @@
                MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
                PERFORM 960-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-200501-REC
+                   MOVE    MCPDATA-REC     TO  SYS-25-REC
                ELSE    
-                   INITIALIZE                  SYS-200501-REC
+                   INITIALIZE                  SYS-25-REC
                END-IF
-               IF      SYS-200501-DRCD-PRTKBN
+               IF      SYS-25-DRCD-PRTKBN
                                        =   SPACE
-                   MOVE    "0"         TO  SYS-200501-DRCD-PRTKBN
+                   MOVE    "0"         TO  SYS-25-DRCD-PRTKBN
                END-IF
-               IF      SYS-200501-NYUTAIINREKI-NYU-KSIKBN
+               IF      SYS-25-NYUTAIINREKI-NYU-KSIKBN
                                        =   SPACE
                    MOVE    "0"         TO
-                                   SYS-200501-NYUTAIINREKI-NYU-KSIKBN
+                                   SYS-25-NYUTAIINREKI-NYU-KSIKBN
                END-IF
       *
                DISPLAY "SYS-200501-DRCD-PRTKBN            ="
-                                    SYS-200501-DRCD-PRTKBN
+                                    SYS-25-DRCD-PRTKBN
                DISPLAY "SYS-200501-NYUTAIINREKI-NYU-KSIKBN="
-                                    SYS-200501-NYUTAIINREKI-NYU-KSIKBN
+                                    SYS-25-NYUTAIINREKI-NYU-KSIKBN
            END-IF
       *
           .
@@ -1030,8 +1024,8 @@
            MOVE    ZERO                TO  FLG-RECE61
            MOVE    LOW-VALUE           TO  KEY-AREA1
       *
-           OPEN    OUTPUT              RECE62X-FILE
-           CLOSE                       RECE62X-FILE
+           OPEN    OUTPUT              RECE62-FILE
+           CLOSE                       RECE62-FILE
       *
            IF      IDZ             =   1               
                OPEN    OUTPUT              RECE68-FILE
@@ -1932,7 +1926,7 @@
       *
       *    医師別出力設定（一括作成時リアルタイムプレビュー時のみ）
            IF    ( IDZ             =   1                     )
-           AND   ( SYS-200501-DRCD-PRTKBN
+           AND   ( SYS-25-DRCD-PRTKBN
                                    =   "1"                   )
            AND   ( RECE62-SRYYM    >=  WRK-CONS-SRYYM-200804 )
              IF    ( WRK-PARA-SRYYM  NOT =   "000000"  )
@@ -3836,7 +3830,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                                    MOVE   IDX5                 TO  IDX
                                END-IF
       *                        入院基本料を算定しない入退院歴の記載
-                               IF     SYS-200501-NYUTAIINREKI-NYU-KSIKBN
+                               IF     SYS-25-NYUTAIINREKI-NYU-KSIKBN
                                                =   "1"
                                  IF      RECE61-DAY-1 (IDX)
                                                =   RECE62-HKNCOMBI (IDY)
@@ -3850,7 +3844,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                    END-PERFORM
       *
       ******       自費分の入退院歴の記載
-      ******       IF      SYS-200501-NYUTAIINREKI-NYU-KSIKBN
+      ******       IF      SYS-25-NYUTAIINREKI-NYU-KSIKBN
       ******                             =   "1"
       ******           PERFORM VARYING IDX FROM    IDX4    BY  1
       ******                   UNTIL   IDX >       IDX5
