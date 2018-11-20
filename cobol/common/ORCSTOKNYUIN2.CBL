@@ -31,6 +31,9 @@
       *                                     起算日変更
       *  05.00.01    NACL-小豆沢  18/08/28  改正で算定コードが変更となった
       *                                     特定入院料の通算日数取得変更
+      *  05.00.01    NACL-小豆沢  18/11/20  施設基準変更で緩和ケア病棟入院料
+      *                                     の１と２が混在する場合の特定入院料
+      *                                     の通算日数取得変更
       *****************************************************************
       *
       *
@@ -2764,6 +2767,47 @@
              MOVE    "190213610"             TO  STUSAN-TOKUTEI-SRYCD(1)
              MOVE    "190182310"             TO  STUSAN-TOKUTEI-SRYCD(2)
              MOVE    "190182410"             TO  STUSAN-TOKUTEI-SRYCD(3)
+             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                             SPA-AREA
+             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+      *    施設基準変更により緩和ケア病棟入院料の１と２が混在する場合に
+      *    特定入院料の算定コードが変更になった入院料について
+      *    従前の算定コードの日数も通算する必要がある為、通算日数の取得
+      *    を変更
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A310)緩和ケア病棟入院料１
+              WHEN      "190028910"
+             INITIALIZE                      ORCSTUSANAREA
+             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+             MOVE    "190028910"             TO  STUSAN-TOKUTEI-SRYCD(1)
+             MOVE    "190150510"             TO  STUSAN-TOKUTEI-SRYCD(2)
+             MOVE    "190150610"             TO  STUSAN-TOKUTEI-SRYCD(3)
+             MOVE    "190212710"             TO  STUSAN-TOKUTEI-SRYCD(4)
+             MOVE    "190212810"             TO  STUSAN-TOKUTEI-SRYCD(5)
+             MOVE    "190212910"             TO  STUSAN-TOKUTEI-SRYCD(6)
+             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                             SPA-AREA
+             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A310)緩和ケア病棟入院料２
+              WHEN      "190212710"
+             INITIALIZE                      ORCSTUSANAREA
+             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+             MOVE    "190028910"             TO  STUSAN-TOKUTEI-SRYCD(1)
+             MOVE    "190150510"             TO  STUSAN-TOKUTEI-SRYCD(2)
+             MOVE    "190150610"             TO  STUSAN-TOKUTEI-SRYCD(3)
+             MOVE    "190212710"             TO  STUSAN-TOKUTEI-SRYCD(4)
+             MOVE    "190212810"             TO  STUSAN-TOKUTEI-SRYCD(5)
+             MOVE    "190212910"             TO  STUSAN-TOKUTEI-SRYCD(6)
              CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
                                              SPA-AREA
              MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
