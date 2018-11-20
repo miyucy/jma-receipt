@@ -45,6 +45,9 @@
       *                                     ¡Ê£°£µ£´¡¢£°£µ£²ÂÐ±þ¡Ë
       *  04.07.03    NACL-ÌçÏÆ    15/01/26  Ê¿À®£²£·Ç¯£±·î²þÀµÂÐ±þ
       *                                     ¡ÊÅÔÆ»ÉÜ¸©ÆÈ¼«ÆñÉÂÂÐ±þ¡Ë
+      *
+      *  05.00.01    NACL-ÌçÏÆ    18/11/07  ´Î¤¬¤ó¡¦½ÅÅÙ´Î¹ÅÊÑ¼£ÎÅ¸¦µæÂ¥¿Ê
+      *                                     »ö¶È°åÎÅÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -371,6 +374,20 @@
                                 TO  LNK-ORCSJGNGET-NYUJGNGAK
       *
                      PERFORM 1001-TAFTNRUIKEI-HENSYU-SEC
+               END-EVALUATE
+           END-IF
+      *
+           IF     LNK-ORCSJGNGET-SRYYM   >=   "201812"
+               EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
+                  WHEN     "092"
+                     MOVE   ZERO
+                                TO  LNK-ORCSJGNGET-GAIJGNGAK
+                     IF     LNK-ORCSJGNGET-NYUJGNGAK  =  ZERO
+                                                     OR  999999
+                                                     OR  9999999
+                        MOVE   9999999
+                                TO  LNK-ORCSJGNGET-NYUJGNGAK
+                     END-IF
                END-EVALUATE
            END-IF
       *
