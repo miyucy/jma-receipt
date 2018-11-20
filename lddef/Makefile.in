@@ -47,20 +47,24 @@ LDFILE = \
 	orca901.ld
 
 BDFILE = \
-	orcabt.bd
+	orcabt.bd \
+	migv51.bd
 
 
 DIRECTORYFILE_in = directory.in
 DIRECTORYFILE = directory
 
+DIRMIGV51FILE_in = dirmigv51.in
+DIRMIGV51FILE = dirmigv51
+
 ORCADBFILE= orcadb.inc orcadbh.inc
 
-INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
+INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) $(DIRMIGV51FILE) \
                  $(ORCADBFILE)
 
 .SUFFIXES: .ld.in .bd.in .ld .bd 
 
-all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE) dbgroup.inc kentan.inc orcadbs.inc
+all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE) $(DIRMIGV51FILE) dbgroup.inc kentan.inc orcadbs.inc
 
 filecheck:
 
@@ -76,6 +80,14 @@ directory: directory.in
 	    -e 's,\@siterecorddir\@,$(SITERECORDDIR),g' \
                     $(DIRECTORYFILE_in) > $(DIRECTORYFILE)
 
+dirmigv51: dirmigv51.in
+	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
+	    -e 's,\@lddefdir\@,$(lddefdir),g' \
+	    -e 's,\@recorddir\@,$(recorddir),g' \
+	    -e 's,\@patchlddefdir\@,$(PATCHLDDEFDIR),g' \
+	    -e 's,\@patchrecorddir\@,$(PATCHRECORDDIR),g' \
+                    $(DIRMIGV51FILE_in) > $(DIRMIGV51FILE)
+
 dbgroup.inc: 
 	ln -sf ../etc/dbgroup.inc .
 
@@ -86,7 +98,7 @@ kentan.inc:
 	ln -sf ../etc/kentan.inc .
 
 clean: 
-	-rm -f directory dbgroup.inc kentan.inc orcadbs.inc
+	-rm -f directory dirmigv51 dbgroup.inc kentan.inc orcadbs.inc
 
 distclean: clean
 	-rm -f Makefile
