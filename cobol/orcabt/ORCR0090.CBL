@@ -296,6 +296,8 @@
       *  04.08.14    NACL-門脇    18/03/29  平成３０年４月改正対応
       *
       *  05.00.01    NACL-門脇    18/11/16  宮城県地方公費対応
+      *  05.00.02    NACL-藤原    18/06/11  ファイルのエラー処理修正
+      *                                     Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1371,7 +1373,9 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *****************************************************************
       *    サブプロ用領域
@@ -1431,9 +1435,17 @@
            INITIALIZE                  TBL-ZAI-AREA
            INITIALIZE                  WRK-ZAIW-AREA
       *
-      *    ファイルＯＰＥＮ処理
+           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
+                                       INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
+                                               WRK-PARA-HOSPNUM
+                                               RECEERR
+           END-UNSTRING
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           PERFORM 110-FILE-OPEN-SEC
+           DISPLAY "WRK-PARA-HOSPNUM=" WRK-PARA-HOSPNUM
+           DISPLAY "WRK-PARA-SRYYM  =" WRK-PARA-SRYYM
+           DISPLAY "WRK-PARA-PRTKBN =" WRK-PARA-PRTKBN
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -1450,6 +1462,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
+      *    ファイルＯＰＥＮ処理
+      *
+           PERFORM 110-FILE-OPEN-SEC
+      *
            PERFORM 110-SYSKANRI-HENSYU-SEC
       *
            PERFORM 990-RECE02-READ-SEC
@@ -1461,18 +1477,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *    ファイルＯＰＥＮ処理
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
-      *
-           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
-                                       INTO    WRK-PARA
-                                               WRK-PARA-PRTKBN
-                                               WRK-PARA-HOSPNUM
-                                               RECEERR
-           END-UNSTRING
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           DISPLAY "WRK-PARA-HOSPNUM=" WRK-PARA-HOSPNUM
-           DISPLAY "WRK-PARA-SRYYM  =" WRK-PARA-SRYYM
-           DISPLAY "WRK-PARA-PRTKBN =" WRK-PARA-PRTKBN
       *
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
@@ -1699,20 +1703,19 @@ grpsys         PERFORM 900-DBSELECT-SEC
                MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM 900-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
-                   MOVE    MCPDATA-REC      TO  SYS-200501-REC
+                   MOVE    MCPDATA-REC      TO  SYS-25-REC
                ELSE    
-                   INITIALIZE                   SYS-200501-REC
+                   INITIALIZE                   SYS-25-REC
                END-IF
            ELSE    
-               INITIALIZE                   SYS-200501-REC
+               INITIALIZE                   SYS-25-REC
            END-IF
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       * 
-           IF      SYS-200501-CHKKBN
-                                   =   SPACE
-               MOVE    "0"             TO  SYS-200501-CHKKBN
+           IF      SYS-25-CHKKBN   =   SPACE
+               MOVE    "0"             TO  SYS-25-CHKKBN
            END-IF
      *    
            .
@@ -1834,8 +1837,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *        生保・残留法人等の負担者番号、受給者番号の入力がない
       *        時のエラー設定
       *        災害該当のときはチェックしない 
-               IF  (   ( SYS-200501-CHKKBN     =   "1"    )
-                    OR ( SYS-200501-CHKKBN     =   "2" AND
+               IF  (   ( SYS-25-CHKKBN         =   "1"    )
+                    OR ( SYS-25-CHKKBN         =   "2" AND
                          RECE02-RECESYUBETU
                                            NOT =   "8888" ) )
                AND (     RECE02-RJNGAIKOHFTN (1)
@@ -2266,8 +2269,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        END-IF
       *
       *                レセ電請求時の受付エラー分チェック
-                       IF    ( SYS-200501-CHKKBN   =   "1"     )
-                       OR    ( SYS-200501-CHKKBN   =   "2" AND
+                       IF    ( SYS-25-CHKKBN       =   "1"     )
+                       OR    ( SYS-25-CHKKBN       =   "2" AND
                                RECE02-RECESYUBETU
                                                NOT =   "8888"  )
                            PERFORM 20021-DATA-CHK-SEC

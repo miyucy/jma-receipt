@@ -53,6 +53,8 @@
       *                                     ０８（老健）のレセプト対応
       *
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *
+      *  05.00.01    NACL-藤原    18/06/11  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -200,7 +202,9 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -345,13 +349,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
 grpsys     MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            PERFORM 960-KANRIMST-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC      TO  SYS-200501-REC
+               MOVE    MCPDATA-REC      TO  SYS-25-REC
            ELSE    
-               INITIALIZE                   SYS-200501-REC
+               INITIALIZE                   SYS-25-REC
            END-IF
-           IF      SYS-200501-BYOMEI-PRTJYUN
+           IF      SYS-25-BYOMEI-PRTJYUN
                                     =   SPACE
-               MOVE    ZERO             TO  SYS-200501-BYOMEI-PRTJYUN
+               MOVE    ZERO             TO  SYS-25-BYOMEI-PRTJYUN
            END-IF
       *
       *    レセプト明細０３読み込み
@@ -392,9 +396,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
                                        TO  RECE031-HOSOKU-COMMENT
       *
       *    病名記載順対応
-           IF      SYS-200501-BYOMEI-PRTJYUN
+           IF      SYS-25-BYOMEI-PRTJYUN
                                        =   "0"  OR  "1"
-               IF    ( SYS-200501-BYOMEI-PRTJYUN
+               IF    ( SYS-25-BYOMEI-PRTJYUN
                                            =   "1"   )
                AND   ( RECE031-TENKIKBN    =   SPACE )
                    MOVE    "9"                 TO  RECE031-TENKIKBN-X

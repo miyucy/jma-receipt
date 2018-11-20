@@ -239,6 +239,7 @@
       *
       *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
       *  05.00.02    NACL-伊藤    17/12/20  診療情報システム対応
+      *  05.00.03    NACL-藤原    18/06/11  ファイルのエラー処理修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1470,9 +1471,6 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ファイルＯＰＥＮ処理
-           PERFORM 110-FILE-OPEN-SEC
-      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -1495,6 +1493,9 @@
                    PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            END-IF
+      *
+      *    ファイルＯＰＥＮ処理
+           PERFORM 110-FILE-OPEN-SEC
       *
       *    システム管理マスタ（医療機関情報）
            IF      FLG-STS             =   ZERO
