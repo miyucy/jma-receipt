@@ -241,6 +241,7 @@
       *H30.11
            03  FLG-INSARI          PIC 9(01).
       *
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -915,21 +916,22 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "J02.INC".
-           COPY    "J021.INC".
-           COPY    "J022.INC".
-           COPY    "J025.INC".
-           COPY    "J026.INC".
-           COPY    "J03.INC".
-           COPY    "J04.INC".
-           COPY    "J041.INC".
-           COPY    "J042.INC".
-           COPY    "J98.INC".
-           COPY    "J99.INC".
-           COPY    "JERR.INC".
-           COPY    "JERR2.INC".
-           COPY    "JID1.INC".
-           COPY    "JID2.INC".
+           COPY    "ORCA24SCRAREA.INC".
+      *    COPY    "J02.INC".
+      *    COPY    "J021.INC".
+      *    COPY    "J022.INC".
+      *    COPY    "J025.INC".
+      *    COPY    "J026.INC".
+      *    COPY    "J03.INC".
+      *    COPY    "J04.INC".
+      *    COPY    "J041.INC".
+      *    COPY    "J042.INC".
+      *    COPY    "J98.INC".
+      *    COPY    "J99.INC".
+      *    COPY    "JERR.INC".
+      *    COPY    "JERR2.INC".
+      *    COPY    "JID1.INC".
+      *    COPY    "JID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -4846,14 +4848,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                         MOVE    3          TO  SPA-NAI-NYUIN (IDX-D)
                    END-IF
       *H30.7
-      *            自院歴分
+      *            自院歴分は対象外
                    IF     (PTNYUINRRK-JTIKBN    =   "6")  
                         MOVE    1          TO  SPA-NAI-NYUIN-JR(IDX-D)
                    END-IF
                ELSE
                    MOVE    1           TO  SPA-NAI-NYUIN (IDX-D)
       *H30.7
-      *            自院歴分
+      *            自院歴分は対象外
                    IF     (PTNYUINRRK-JTIKBN    =   "6")  
                         MOVE    1          TO  SPA-NAI-NYUIN-JR(IDX-D)
                    END-IF
@@ -6025,7 +6027,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                      IF     (FLG-K1              =   ZERO  )
                         MOVE    "0065"              TO  SPA-ERRCD
                      ELSE
-      *
                        MOVE    1           TO  FLG-K2
       *                開始日
                        IF      IDW9        >   ZERO
@@ -11542,7 +11543,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *
            IF      FLG-ERR             =   ZERO
                IF     (TBL-MAE-ZAINUM-AREA =   ZERO ) AND
                       (SPA-RRK-UPD (IDX)   =   SPACE)
@@ -11749,12 +11749,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-RRK-HKNKBN(IDX) TO  JYURRK-HKNKBN
            MOVE    ZERO                TO  JYURRK-DENPNUM
       *
-           IF      SPA-NYUGAIKBN       =   "2"
-               PERFORM 49011212-DENPNUM-SET-SEC
-           END-IF
-      *
       *H30.11
            MOVE    ZERO            TO  FLG-INSARI
+           PERFORM VARYING     IDR     FROM    1   BY   1
+                   UNTIL      (IDR         >   135  )
+                          OR  (FLG-INSARI  =   1    )
+               IF      SPA-RRK-ZAINUM (IDX IDR)    NOT =   ZERO
+                   MOVE    1                   TO  FLG-INSARI
+               END-IF
+           END-PERFORM
+      *    剤がない時は処理なし
+           IF      FLG-INSARI          =   ZERO
+               GO      TO      4901121-JYURRK-ADDHEN-EXT
+           END-IF
+      *
+           IF      SPA-NYUGAIKBN       =   "2"
+               PERFORM 49011212-DENPNUM-SET-SEC
+      *        伝票番号の編集
+               MOVE    JYURRK-DENPNUM  TO  SPA-RRK-DENPNUM
+                                                           (IDX)
+           END-IF
+      *
       *    剤番号変更
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDR     FROM    1   BY   1
@@ -11766,8 +11781,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      IDX2            >   15
       *                出力処理
                        PERFORM 490111-JYURRK-INS-SEC
-      *H30.11
-                       MOVE    1               TO  FLG-INSARI
                        MOVE    1               TO  IDX2
                    END-IF
                    MOVE    SPA-RRK-ZAINUM (IDX IDR)
@@ -11782,15 +11795,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (IDX2                >   ZERO  )
             AND   (SPA-ERRCD           =   SPACE )
                PERFORM 490111-JYURRK-INS-SEC
-      *H30.11
-               MOVE    1               TO  FLG-INSARI
            END-IF
+      *
       *    外来の時、収納作成
            IF     (SPA-NYUGAIKBN       =   "2" ) AND
                   (SPA-RRK-HKNCOMBI(IDX)   NOT =   "9999" )
             AND   (SPA-ERRCD           =   SPACE )
-      *H30.11  受診履歴登録あり
-            AND   (FLG-INSARI          =   1     )
                PERFORM 49011212-SYUNOU-INS-SEC
            END-IF
       *
@@ -16030,6 +16040,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        MCPAREA
                                        SPA-AREA
                                        ORCSLOCKAREA
+      *
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "9999"              TO  SPA-ERRCD
            END-IF
