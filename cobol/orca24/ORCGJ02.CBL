@@ -11749,12 +11749,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-RRK-HKNKBN(IDX) TO  JYURRK-HKNKBN
            MOVE    ZERO                TO  JYURRK-DENPNUM
       *
-           IF      SPA-NYUGAIKBN       =   "2"
-               PERFORM 49011212-DENPNUM-SET-SEC
-           END-IF
-      *
       *H30.11
            MOVE    ZERO            TO  FLG-INSARI
+           PERFORM VARYING     IDR     FROM    1   BY   1
+                   UNTIL      (IDR         >   135  )
+                          OR  (FLG-INSARI  =   1    )
+               IF      SPA-RRK-ZAINUM (IDX IDR)    NOT =   ZERO
+                   MOVE    1                   TO  FLG-INSARI
+               END-IF
+           END-PERFORM
+      *    剤がない時は処理なし
+           IF      FLG-INSARI          =   ZERO
+               GO      TO      4901121-JYURRK-ADDHEN-EXT
+           END-IF
+      *
+           IF      SPA-NYUGAIKBN       =   "2"
+               PERFORM 49011212-DENPNUM-SET-SEC
+      *        伝票番号の編集
+               MOVE    JYURRK-DENPNUM  TO  SPA-RRK-DENPNUM
+                                                           (IDX)
+           END-IF
+      *
       *    剤番号変更
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDR     FROM    1   BY   1
@@ -11766,8 +11781,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      IDX2            >   15
       *                出力処理
                        PERFORM 490111-JYURRK-INS-SEC
-      *H30.11
-                       MOVE    1               TO  FLG-INSARI
                        MOVE    1               TO  IDX2
                    END-IF
                    MOVE    SPA-RRK-ZAINUM (IDX IDR)
@@ -11782,15 +11795,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (IDX2                >   ZERO  )
             AND   (SPA-ERRCD           =   SPACE )
                PERFORM 490111-JYURRK-INS-SEC
-      *H30.11
-               MOVE    1               TO  FLG-INSARI
            END-IF
+      *
       *    外来の時、収納作成
            IF     (SPA-NYUGAIKBN       =   "2" ) AND
                   (SPA-RRK-HKNCOMBI(IDX)   NOT =   "9999" )
             AND   (SPA-ERRCD           =   SPACE )
-      *H30.11  受診履歴登録あり
-            AND   (FLG-INSARI          =   1     )
                PERFORM 49011212-SYUNOU-INS-SEC
            END-IF
       *
