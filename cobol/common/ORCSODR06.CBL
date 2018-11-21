@@ -422,7 +422,11 @@
                END-IF
       *
                IF    ( FLG-END  =   ZERO )
-                  PERFORM 2101-ORDER-INSERT-SEC
+                   IF    ( SODR-PROCKBN    =   "2" )
+                       CONTINUE
+                   ELSE
+                       PERFORM 2101-ORDER-INSERT-SEC
+                   END-IF
                END-IF
       *
                IF    ( FLG-END  =   ZERO )
@@ -435,7 +439,7 @@
                END-IF
       *
            ELSE
-               IF    ( SODR-PROCKBN    =   "1" )
+               IF    ( SODR-PROCKBN    =   "1" OR "2" )
                        CONTINUE
                ELSE
                    IF    ( FLG-END  =   ZERO )
