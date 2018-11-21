@@ -8903,21 +8903,37 @@
                        END-EVALUATE
                       ELSE
                        EVALUATE  MAX-KIN-SYU-M
-                         WHEN      150000
                          WHEN       75000
-                         WHEN       80100
-                         WHEN       40050
-                         WHEN      252600
                          WHEN      126300
-                         WHEN      167400
                          WHEN       83700
+                         WHEN       40050
+      *
+                         WHEN      150000
+                         WHEN      252600
+                         WHEN      167400
+                         WHEN       80100
                            IF    FLG-TOKU75  =  3
-                             MOVE   40050   TO   MAX-KIN-SYU-M
+                             MOVE   40050    TO   MAX-KIN-SYU-M
                            ELSE
-                             MOVE   80100   TO   MAX-KIN-SYU-M
+                             MOVE   80100    TO   MAX-KIN-SYU-M
                            END-IF
                            MOVE  WK-ZENGAKU  TO  WK-KOUREI-IRYOHI70
                            MOVE  6           TO  FLG-IRYOHI70
+      *
+                         WHEN       41700
+                         WHEN       70050
+                         WHEN       46500
+                         WHEN       22200
+      *
+                         WHEN       83400
+                         WHEN      140100
+                         WHEN       93000
+                         WHEN       44400
+                           IF    FLG-TOKU75  =  3
+                             MOVE   22200    TO   MAX-KIN-SYU-M
+                           ELSE
+                             MOVE   44400    TO   MAX-KIN-SYU-M
+                           END-IF
                        END-EVALUATE
                       END-IF
                     END-IF
