@@ -7434,14 +7434,15 @@
       *****************************************************************
        4101-SHONUM-CHK-SEC             SECTION.
       *
-           MOVE    SPACE       TO      SPA-GMN-I01-LBL-SHONYUINYMD
-                                       WRK-SHOKAI-NYUINYMD-W
+           MOVE    SPACE       TO      WRK-SHOKAI-NYUINYMD-W
            MOVE    ZERO        TO      FLG-SHONUM
       *
            IF    ( SPA-GMN-I01-SYORIKBN-CD NOT =   "01" )
             OR   ( SPA-GMN-I01-SHONUM          =   ZERO )
                GO  TO  4101-SHONUM-CHK-EXT
            END-IF
+      *
+           MOVE    SPACE       TO      SPA-GMN-I01-LBL-SHONYUINYMD
       *
       D    DISPLAY "SPA-GMN-I01-SHONUM  =" SPA-GMN-I01-SHONUM
       D    DISPLAY "SPA-NAI-I01-PTRRKNUM=" SPA-NAI-I01-PTRRKNUM
