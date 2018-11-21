@@ -1237,7 +1237,8 @@
       *
            INITIALIZE                  SNYUINRYO-AREA
            MOVE    SPA-NAI-KJNYMD  TO  SNYUINRYO-SRYYMD
-           IF    ( SPA-NAI-ORDERID =   NORDERID-NYUINID )
+           IF    ( SPA-NAI-ORDERID =   NORDERID-NYUINID
+                                    OR NORDERID-TEISEIID )
                MOVE    "01"        TO  SNYUINRYO-SYORIKBN
            ELSE
                MOVE    "08"        TO  SNYUINRYO-SYORIKBN
@@ -1847,6 +1848,7 @@
            WHEN    OTHER
                EVALUATE    SPA-NAI-TALLORDERID (SPA-GMN-ALLIDOLST-SEL)
                WHEN    NORDERID-NYUINID
+               WHEN    NORDERID-TEISEIID
                WHEN    NORDERID-TAIINID
                WHEN    NORDERID-HENKOID
                WHEN    NORDERID-GAIHKID
@@ -1939,6 +1941,7 @@
            END-IF
            IF    ( SPA-NAI-DTYPE       NOT =   CONST-DTYPE-API )
             OR   ( WRK-ALLORDERID          =   NORDERID-NYUINID
+                                            OR NORDERID-TEISEIID
                                             OR NORDERID-IDOALLID )
                MOVE    "1"         TO  SPA-NAI-INPUT-COMB-SRYKA
            END-IF
@@ -2003,6 +2006,7 @@
            END-IF
            IF    ( SPA-NAI-DTYPE       NOT =   CONST-DTYPE-API )
             OR   ( WRK-ALLORDERID          =   NORDERID-NYUINID
+                                            OR NORDERID-TEISEIID
                                             OR NORDERID-IDOALLID )
                MOVE    "1"         TO  SPA-NAI-INPUT-COMB-SRYKA
            END-IF
@@ -2017,6 +2021,7 @@
       *
                    EVALUATE    WRK-ALLORDERID
                    WHEN    NORDERID-NYUINID
+                   WHEN    NORDERID-TEISEIID
                        PERFORM 410111-NYUIN-HEN-SEC
                    WHEN    NORDERID-TAIINID
                        PERFORM 410111-TAIIN-HEN-SEC
@@ -2057,6 +2062,7 @@
                        PERFORM 410111-BUNBEN-HEN-SEC
                    WHEN    NORDERID-CRENACCTID
                    WHEN    NORDERID-SAGAKUID
+                   WHEN    NORDERID-TEISEIID
                        PERFORM 410111-OTHERS-HEN-SEC
                    END-EVALUATE
       *
@@ -2115,6 +2121,12 @@
                MOVE    "2"             TO  SPA-GMN-NACCTKBN
                MOVE    "1"             TO  SPA-GMN-TEIKIKBN
                MOVE    "1"             TO  SPA-GMN-DISPKBN
+      *
+           WHEN    NORDERID-TEISEIID
+               MOVE    ORDER-SRYYMD    TO  WRK-YMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-SYMD        TO  SPA-NAI-NYUINYMD
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUINYMD
       *
            WHEN    NORDERID-TAIINID
                MOVE    ORDER-SRYYMD    TO  WRK-YMD
@@ -2509,6 +2521,7 @@
            EVALUATE    WRK-ALLORDERID
       *
            WHEN    NORDERID-NYUINID
+           WHEN    NORDERID-TEISEIID
       *
                PERFORM 4101112-SHOKAI-HEN-SEC
                PERFORM 4101112-BTUNUM-HEN-SEC
@@ -2598,15 +2611,22 @@
            IF    ( FLG-HIZUKE-ERR  =   ZERO )
                MOVE    WRK-SYMD        TO  ITEM-LASTNYINYMD
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    SPA-HOSPNUM      TO  PTNYUINRRK-HOSPNUM
-               MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
-               MOVE    ITEM-LASTNYINYMD
-                                      TO  PTNYUINRRK-NYUINYMD
-               PERFORM 900-PTNYUINRRK-KEY39-SEL-SEC
+               IF    ( WRK-ALLORDERID  =   NORDERID-TEISEIID )
+                   PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
+                   MOVE    ITEM-LASTNYINYMD
+                                           TO  PTNYUINRRK-NYUINYMD
+                   PERFORM 900-PTNYUINRRK-KEY79-SEL-SEC
+               ELSE
+                   MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+                   MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
+                   MOVE    ITEM-LASTNYINYMD
+                                           TO  PTNYUINRRK-NYUINYMD
+                   PERFORM 900-PTNYUINRRK-KEY79-SEL-SEC
+               END-IF
                IF    ( FLG-PTNYUINRRK  =   ZERO )
                    MOVE    PTNYUINRRK-SHONUM
                                        TO  WRK-SHONUM
-                   PERFORM 900-PTNYUINRRK-KEY30-SEL-SEC
+                   PERFORM 900-PTNYUINRRK-KEY80-SEL-SEC
                    IF    ( FLG-PTNYUINRRK  =   ZERO )
                        MOVE    PTNYUINRRK-NYUINYMD     TO   WRK-YMD
                        PERFORM 800-SEIWA-HEN-SEC
@@ -2638,6 +2658,9 @@
        4101111-HKNCOMBI-HEN-SEC        SECTION.
       *
            MOVE    ODRITEM-STATUS      TO  SPA-NAI-STS-HKNCOMBI
+           IF    ( ODRITEM-ITEM        =   "ERR" )
+               MOVE    SPACE           TO  ODRITEM-ITEM
+           END-IF
            MOVE    ODRITEM-ITEM        TO  SPA-GMN-HKNCOMBI-G
                                            SPA-NAI-HKNCOMBI-MOT
       *
@@ -3982,10 +4005,17 @@
            IF    ( SPA-GMN-SHONUM  NOT =   ZERO )
       *
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    SPA-HOSPNUM      TO  PTNYUINRRK-HOSPNUM
-               MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
-               MOVE    SPA-GMN-SHONUM  TO  PTNYUINRRK-SHONUM
-               PERFORM 900-PTNYUINRRK-KEY30-SEL-SEC
+      *
+               IF    ( SPA-NAI-ORDERID =   NORDERID-TEISEIID )
+                   PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
+                   MOVE    SPA-GMN-SHONUM  TO  PTNYUINRRK-SHONUM
+                   PERFORM 900-PTNYUINRRK-KEY80-SEL-SEC
+               ELSE
+                   MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+                   MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
+                   MOVE    SPA-GMN-SHONUM  TO  PTNYUINRRK-SHONUM
+                   PERFORM 900-PTNYUINRRK-KEY80-SEL-SEC
+               END-IF
                IF    ( FLG-PTNYUINRRK  =   ZERO )
                    MOVE    PTNYUINRRK-NYUINYMD     TO   WRK-YMD
                    PERFORM 800-SEIWA-HEN-SEC
@@ -5356,6 +5386,7 @@
       *
            EVALUATE    SPA-NAI-ORDERID
            WHEN    NORDERID-NYUINID
+           WHEN    NORDERID-TEISEIID
                PERFORM 2121-NYUIN-KANREN-CHK-SEC
                IF    ( SPA-ERRCD   =   SPACE )
                 AND  ( SPA-I0IDCD  =   SPACE )
@@ -5406,9 +5437,26 @@
       *****************************************************************
        2121-NYUIN-KANREN-CHK-SEC       SECTION.
       *
+           IF    ( SPA-GMN-SHOKAI-G    =   SPACE )
+               MOVE    "0008"          TO  SPA-ERRCD
+               MOVE    8               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        2121-NYUIN-KANREN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    訂正関連チェック
+      *****************************************************************
+       2121-TEISEI-KANREN-CHK-SEC      SECTION.
+      *
+           IF    ( SPA-GMN-SHOKAI-G    =   SPACE )
+               MOVE    "0008"          TO  SPA-ERRCD
+               MOVE    8               TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       2121-TEISEI-KANREN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院登録処理
@@ -5502,10 +5550,17 @@
       *
            MOVE   IDX-ITM          TO  LNK-ODRITEM-MAX
       *
-           CALL   "ORCSODR01"      USING   SODR-AREA
-                                           LNK-ODRITEM-REC
-                                           MCPAREA
-                                           SPA-AREA
+           IF    ( SPA-NAI-ORDERID =   NORDERID-TEISEIID )
+               CALL   "ORCSODR12"      USING   SODR-AREA
+                                               LNK-ODRITEM-REC
+                                               MCPAREA
+                                               SPA-AREA
+           ELSE
+               CALL   "ORCSODR01"      USING   SODR-AREA
+                                               LNK-ODRITEM-REC
+                                               MCPAREA
+                                               SPA-AREA
+           END-IF
            EVALUATE    TRUE
            WHEN  ( SODR-RC      NOT =   ZERO )
                MOVE    "4002"   TO  SPA-ERRCD
@@ -6026,13 +6081,25 @@
                MOVE    "01"        TO  LNK-ODRITEM-ITEM (IDX-ITM)
       *
                INITIALIZE                  PTNYUINRRK-REC
-               MOVE    SPA-HOSPNUM      TO  PTNYUINRRK-HOSPNUM
-               MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
-               MOVE    ALL "9"         TO  PTNYUINRRK-NYUINYMD
-               MOVE    SPA-GMN-SHONUM  TO  PTNYUINRRK-SHONUM
-               PERFORM 900-PTNYUINRRK-KEY35-SEL-SEC
-               MOVE    PTNYUINRRK-NYUINYMD
-                                       TO  LNK-ODRITEM-MEMO(IDX-ITM)
+      *
+               IF    ( SPA-NAI-ORDERID =   NORDERID-TEISEIID )
+                   PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
+                   MOVE    SPA-NAI-NYUINYMD
+                                           TO  PTNYUINRRK-NYUINYMD
+                   MOVE    SPA-GMN-SHONUM  TO  PTNYUINRRK-SHONUM
+                   PERFORM 900-PTNYUINRRK-KEY78-SEL-SEC
+                   MOVE    PTNYUINRRK-NYUINYMD
+                                           TO  LNK-ODRITEM-MEMO(IDX-ITM)
+               ELSE
+                   MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+                   MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
+                   MOVE    SPA-NAI-NYUINYMD
+                                           TO  PTNYUINRRK-NYUINYMD
+                   MOVE    SPA-GMN-SHONUM  TO  PTNYUINRRK-SHONUM
+                   PERFORM 900-PTNYUINRRK-KEY78-SEL-SEC
+                   MOVE    PTNYUINRRK-NYUINYMD
+                                           TO  LNK-ODRITEM-MEMO(IDX-ITM)
+               END-IF
            END-IF
       *
            .
@@ -6925,6 +6992,7 @@
                  AND ( SPA-NAI-DIRECT-KHNERR   =   ZERO ))
                    EVALUATE    SPA-NAI-ORDERID
                    WHEN    NORDERID-NYUINID
+                   WHEN    NORDERID-TEISEIID
                        MOVE    WIDGET-NORMAL
                                            TO  I06-BRMNUM-STATE
                                                I06-BTUNAME-STATE
@@ -7477,50 +7545,50 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               MOVE    "選択番号入力エラー"
+               MOVE    "選択番号の入力に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "受付日入力エラー"
+               MOVE    "受付日の入力に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "0003"
-               MOVE    "病室番号入力エラー"
+               MOVE    "病室番号の入力に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "0004"
-               MOVE    "病棟名入力エラー" 
+               MOVE    "病棟名の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0005"
-               MOVE    "室料差額入力エラー" 
+               MOVE    "室料差額の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0007"
-               MOVE    "入院科入力エラー" 
+               MOVE    "入院科の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0008"
-               MOVE    "初回入力エラー" 
+               MOVE    "初回の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0009"
-               MOVE    "初歴入力エラー" 
+               MOVE    "初歴の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0011"
-               MOVE    "退院事由入力エラー" 
+               MOVE    "退院事由の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0012"
-               MOVE    "担当医入力エラー" 
+               MOVE    "担当医の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0015"
-               MOVE    "保険組合せ入力エラー" 
+               MOVE    "保険組合せの入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0016"
-               MOVE    "入院区分入力エラー" 
+               MOVE    "入院区分の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0017"
-               MOVE    "特定入院料入力エラー" 
+               MOVE    "特定入院料の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0018"
-               MOVE    "食事時間入力エラー" 
+               MOVE    "食事時間の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0019"
                IF    ( WRK-ERRMSG      =   SPACE )
-                   MOVE    "一括入力欄入力エラー" 
+                   MOVE    "一括入力欄の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
                ELSE
                    MOVE    WRK-ERRMSG  TO  SPA-ERRMSG
@@ -7532,46 +7600,46 @@
                MOVE    "一括入力欄の一文字目は＊を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "0022"
-               MOVE    "状態入力エラー" 
+               MOVE    "状態の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0023"
-               MOVE    "異動日入力エラー" 
+               MOVE    "異動日の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0024"
-               MOVE    "患者番号入力エラー" 
+               MOVE    "患者番号の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0025"
                MOVE    "該当する患者が存在しません" 
                                        TO  SPA-ERRMSG
            WHEN    "0026"
-               MOVE    "並び順入力エラー" 
+               MOVE    "並び順の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0027"
-               MOVE    "選定入院入力エラー" 
+               MOVE    "選定入院の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0028"
-               MOVE    "介護からの異動入力エラー" 
+               MOVE    "介護からの異動の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0029"
-               MOVE    "算定要件非該当区分入力エラー" 
+               MOVE    "算定要件非該当区分の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0030"
-               MOVE    "入院会計入力エラー" 
+               MOVE    "入院会計の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0031"
-               MOVE    "入院料加算入力エラー" 
+               MOVE    "入院料加算の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0034"
-               MOVE    "定期請求入力エラー" 
+               MOVE    "定期請求の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0035"
-               MOVE    "検索時患者表示入力エラー" 
+               MOVE    "検索時患者表示の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0036"
-               MOVE    "分娩区分入力エラー" 
+               MOVE    "分娩区分の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "0037"
-               MOVE    "直接支払制度利用区分入力エラー" 
+               MOVE    "直接支払制度利用区分の入力に誤りがあります" 
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "異動歴を選択してください"
@@ -8369,15 +8437,15 @@
        900-PTNYUINRRK-KEY42-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院履歴検索処理(KEY30)
+      *    入院履歴検索処理
       *****************************************************************
-       900-PTNYUINRRK-KEY30-SEL-SEC    SECTION.
+       900-PTNYUINRRK-KEY79-SEL-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key30"             TO  MCP-PATHNAME
+           MOVE    "key79"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -8387,22 +8455,22 @@
            END-IF
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key30"             TO  MCP-PATHNAME
+           MOVE    "key79"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-PTNYUINRRK-KEY30-SEL-EXT.
+       900-PTNYUINRRK-KEY79-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院履歴検索処理(KEY35)
+      *    入院履歴検索処理
       *****************************************************************
-       900-PTNYUINRRK-KEY35-SEL-SEC    SECTION.
+       900-PTNYUINRRK-KEY80-SEL-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key35"             TO  MCP-PATHNAME
+           MOVE    "key80"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -8412,36 +8480,11 @@
            END-IF
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key35"             TO  MCP-PATHNAME
+           MOVE    "key80"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-PTNYUINRRK-KEY35-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院履歴検索処理(KEY39)
-      *****************************************************************
-       900-PTNYUINRRK-KEY39-SEL-SEC    SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTNYUINRRK
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key39"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-           ELSE
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    1               TO  FLG-PTNYUINRRK
-           END-IF
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key39"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-PTNYUINRRK-KEY39-SEL-EXT.
+       900-PTNYUINRRK-KEY80-SEL-EXT.
            EXIT.
       *****************************************************************
       *    入院履歴検索処理
@@ -8497,6 +8540,32 @@
       *
            .
        900-PTNYUINRRK-KEY64-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院履歴検索処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY78-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key78"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key78"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-PTNYUINRRK-KEY78-SEL-EXT.
            EXIT.
       *****************************************************************
       *    患者番号情報検索処理(KEY)

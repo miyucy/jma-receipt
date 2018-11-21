@@ -107,6 +107,7 @@
            03  CONST-H180701               PIC X(08)   VALUE "20060701".
            03  CONST-NYUIN                 PIC X(02)   VALUE "01".
            03  CONST-IDO                   PIC X(02)   VALUE "08".
+           03  CONST-TEISEI                PIC X(02)   VALUE "12".
            03  CONST-KANSATU               PIC X(02)   VALUE "10".
            03  CONST-TOKNYUIN-MAX          PIC 9(05)   VALUE  100.
       *
@@ -501,6 +502,7 @@
       *
                IF    ( SYS-5001-BTU-TOKTEI-NYUIN   =   "11" )
                 AND  ( SNYUINRYO-SYORIKBN      NOT =   CONST-NYUIN )
+                AND  ( SNYUINRYO-SYORIKBN      NOT =   CONST-TEISEI )
                    MOVE    "2"         TO  WRK-TOKNYUIN-KBN
                    MOVE    "24"        TO  WRK-TOKNYUIN-CD
                    PERFORM 2002-NYUINRYO-EDIT-SEC
@@ -508,6 +510,7 @@
       *
                IF    ( SYS-5001-BTU-TOKTEI-NYUIN   =   "12" )
                 AND  ( SNYUINRYO-SYORIKBN      NOT =   CONST-NYUIN )
+                AND  ( SNYUINRYO-SYORIKBN      NOT =   CONST-TEISEI )
                    MOVE    "2"         TO  WRK-TOKNYUIN-KBN
                    MOVE    "25"        TO  WRK-TOKNYUIN-CD
                    PERFORM 2002-NYUINRYO-EDIT-SEC

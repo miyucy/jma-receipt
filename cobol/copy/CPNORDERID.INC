@@ -150,6 +150,15 @@
                    07  NORDERID-CANIDOMES1   PIC X(30) VALUE "異動取消".
                    07  NORDERID-CANIDOMES2   PIC X(20) VALUE "異動取消".
       *
+               05  NORDERID-TEISEI-G.
+                   07  NORDERID-TEISEICL1    PIC X(02) VALUE "XX".
+                   07  NORDERID-TEISEICL2    PIC X(03) VALUE "XXX".
+                   07  NORDERID-TEISEIID     PIC X(04) VALUE "0117".
+                   07  NORDERID-TEISEIMES1   PIC X(30)
+                                           VALUE "入院（訂正）".
+                   07  NORDERID-TEISEIMES2   PIC X(20)
+                                           VALUE "入院（訂正）".
+      *
                05  NORDERID-GCANCEL-G.
                    07  NORDERID-GCANCELCL1   PIC X(02) VALUE "XX".
                    07  NORDERID-GCANCELCL2   PIC X(03) VALUE "XXX".

@@ -1362,3 +1362,62 @@ path	upd5		{
 	};
 };
 
+path    key77           {
+	DBSELECT        {
+		DECLARE tbl_ptnyuinrrk_key77_csr CURSOR FOR
+		SELECT  MAX(SHONUM) AS SHONUM
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPNUM     =   :HOSPNUM
+			AND     PTID        =   :PTID
+			AND     RRKNUM      <>  :RRKNUM
+			AND     RRKEDANUM   =   1
+		;
+	};
+};
+
+path	key78		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key78_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	    HOSPNUM      =   :HOSPNUM 
+			AND	    PTID        =   :PTID
+			AND     RRKNUM      <>  :RRKNUM
+			AND     RRKEDANUM   =   1
+			AND	    NYUINYMD   <=   :NYUINYMD
+			AND	    SHONUM      =   :SHONUM
+			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
+
+path	key79		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key79_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPNUM      =   :HOSPNUM
+			AND		PTID        =   :PTID
+			AND     RRKNUM      <>  :RRKNUM
+			AND     RRKEDANUM   =   1
+			AND		NYUINYMD	=	:NYUINYMD
+			ORDER BY TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
+
+path	key80		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key80_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPNUM      =   :HOSPNUM 
+			AND		PTID        =   :PTID
+			AND		RRKNUM      <>  :RRKNUM
+			AND		RRKEDANUM   =   1
+			AND		SHOKAIKBN   =   '1'
+			AND		SHONUM      =   :SHONUM
+		;
+	};
+};
+
