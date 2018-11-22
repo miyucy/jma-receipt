@@ -556,8 +556,9 @@
            03  FLG-TOKUSITU-TASU       PIC 9(01).
            03  FLG-TOKUSITU-XXX        PIC 9(01).
            03  FLG-TOKUSITU-KBN        PIC 9(02).
-           03  FLG-TOKUSITU2           PIC 9(01).
-           03  FLG-TOKUSITU-XX2        PIC 9(01).
+           03  FLG-KANGAN              PIC 9(01).
+           03  FLG-KANGAN-XXX          PIC 9(01).
+           03  FLG-KANGAN-TASU         PIC 9(01).
            03  FLG-MARUKO              PIC 9(01).
            03  FLG-RUIKEIYO            PIC 9(01).
            03  FLG-RUIKEIYO2           PIC 9(01).
@@ -1258,6 +1259,8 @@
       *
            03  WK-SYUNOU-GENBUTU70-KEISAN               PIC  9(10).
            03  WK-SYUNOU-GENBUTU70-FTNRATE              PIC  9(03).
+      *
+           03  WK-HANTEI-KOHNUM                         PIC  X(03).
       *
       *    公費の患者負担上限金額の退避用エリア
        01  HOKEN-MAX-AREA.
@@ -5027,8 +5030,9 @@
            IF      LNK-SYU-SRYYMD(1:6)  >=  "201708"
              MOVE      57600  TO    WK-KOH-GENDOGAKU
              IF    FLG-TOKUSITU-XXX  = 1
-             OR    FLG-TOKUSITU-XX2  = 1
+             OR    FLG-KANGAN-XXX    = 1
                IF  FLG-TOKUSITU-TASU = 1
+               OR  FLG-KANGAN-TASU   = 1
                OR  FLG-KOHYONKAIME   = 1
                  MOVE  44400  TO    WK-KOH-GENDOGAKU
                END-IF
@@ -5076,8 +5080,9 @@
                 WHEN        2
                   MOVE     80100   TO   WK-GEN70-GENDOGAKU
                   IF    FLG-TOKUSITU-XXX  = 1
-                  OR    FLG-TOKUSITU-XX2  = 1
+                  OR    FLG-KANGAN-XXX    = 1
                     IF  FLG-TOKUSITU-TASU = 1
+                    OR  FLG-KANGAN-TASU   = 1
                     OR  FLG-KOHYONKAIME   = 1
                       MOVE 44400   TO   WK-GEN70-GENDOGAKU
                     END-IF
@@ -5089,8 +5094,9 @@
                 WHEN        3
                   MOVE     35400   TO   WK-GEN70-GENDOGAKU
                   IF    FLG-TOKUSITU-XXX  = 1
-                  OR    FLG-TOKUSITU-XX2  = 1
+                  OR    FLG-KANGAN-XXX    = 1
                     IF  FLG-TOKUSITU-TASU = 1
+                    OR  FLG-KANGAN-TASU   = 1
                     OR  FLG-KOHYONKAIME   = 1
                       MOVE 24600   TO   WK-GEN70-GENDOGAKU
                     END-IF
@@ -5664,8 +5670,9 @@
            MOVE     ZERO      TO    FLG-TOKUSITU-KBN
            INITIALIZE               WK-TOKUSITU-SKJ-TBL
       *
-           MOVE     ZERO      TO    FLG-TOKUSITU2
-           MOVE     ZERO      TO    FLG-TOKUSITU-XX2
+           MOVE     ZERO      TO    FLG-KANGAN
+           MOVE     ZERO      TO    FLG-KANGAN-XXX
+           MOVE     ZERO      TO    FLG-KANGAN-TASU
       *
            IF   (LNK-SYU-SRYYMD(1:6)       >=  "200905" )
       *****AND  (COMB-HKNNUM            NOT =   SPACE   )
@@ -5769,6 +5776,7 @@
                           MOVE   1       TO   LNK-SYU-SKJ-FTNDAY(3)
                         END-IF
                       END-IF
+                      MOVE     "958"     TO   WK-HANTEI-KOHNUM
                       PERFORM    20022-TOKUSITU-TASU-HANTEI-SEC
                     END-IF
                  END-IF
@@ -5804,23 +5812,24 @@
                    IF     LNK-S02-KOUREI-NYUIN-KBN  =  "1"
                    OR     FLG-KOREI-TANYUIN         =   1
                      IF    COMB-HOJOKBN    =   "3" OR "7"
-                           MOVE    1    TO   FLG-TOKUSITU2
+                           MOVE    1    TO   FLG-KANGAN
                      ELSE
                        IF  FLG-SANSHOU3    =   SPACE
-                          MOVE     2    TO   FLG-TOKUSITU2
+                          MOVE     2    TO   FLG-KANGAN
                        ELSE
-                          MOVE     3    TO   FLG-TOKUSITU2
+                          MOVE     3    TO   FLG-KANGAN
                        END-IF
                      END-IF
                    ELSE
                      PERFORM  20021X-TOKUSITU2-HENSYU-SEC
                    END-IF
-                   IF   FLG-TOKUSITU2  NOT = ZERO
-                     MOVE       1       TO   FLG-TOKUSITU-XX2
+                   IF   FLG-KANGAN  NOT = ZERO
+                     MOVE       1       TO   FLG-KANGAN-XXX
                      IF  WK-KOHJGNGET-CHECK092(1) = ZERO
                        IF   LNK-SYU-TOTAL-HKNTEN  NOT = ZERO
                          MOVE   1       TO   LNK-SYU-SKJ-FTNDAY(3)
                        END-IF
+                       MOVE   "945"     TO   WK-HANTEI-KOHNUM
                        PERFORM    20022-TOKUSITU-TASU-HANTEI-SEC
                      END-IF
                    ELSE
@@ -6058,7 +6067,7 @@
                   IF  (PTKOH-TEKSTYMD  <=  LNK-SYU-SRYYMD)
                   AND (LNK-SYU-SRYYMD  <=  PTKOH-TEKEDYMD)
                   AND (PTKOH-SAKJOKBN   =  SPACE         )
-                     MOVE    1    TO  FLG-TOKUSITU2
+                     MOVE    1    TO  FLG-KANGAN
                      MOVE    1    TO  FLG-PTKOHINF
                   ELSE
                      MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
@@ -6071,7 +6080,7 @@
            MOVE    "key4"             TO  MCP-PATHNAME
            PERFORM  DB-CLOSE-SEC
       *
-           IF    FLG-TOKUSITU2  =  ZERO
+           IF    FLG-KANGAN  =  ZERO
                INITIALIZE                         PTKOHINF-REC
                MOVE    LNK-SYU-HOSPNUM        TO  PTKOH-HOSPNUM
                MOVE    LNK-SYU-PTID           TO  PTKOH-PTID
@@ -6092,9 +6101,9 @@
                       AND (LNK-SYU-SRYYMD  <=  PTKOH-TEKEDYMD)
                       AND (PTKOH-SAKJOKBN   =  SPACE         )
                          IF  FLG-SANSHOU3    =   SPACE
-                            MOVE    2    TO   FLG-TOKUSITU2
+                            MOVE    2    TO   FLG-KANGAN
                          ELSE
-                            MOVE    3    TO   FLG-TOKUSITU2
+                            MOVE    3    TO   FLG-KANGAN
                          END-IF
                          MOVE       1    TO   FLG-PTKOHINF
                       ELSE
@@ -6115,6 +6124,7 @@
       *
       *****************************************************************
       *    特定疾患等の多数該当の判定
+      *    肝がん治療の多数該当の判定
       *****************************************************************
        20022-TOKUSITU-TASU-HANTEI-SEC               SECTION.
       *
@@ -6128,13 +6138,13 @@
                  ( LNK-SYU-SRYYMD(1:6)      >=  "201708"  ))
            OR   (((LNK-S02-KOUREI-NYUIN-KBN  =  "1"      ) OR
                   (FLG-KOREI-TANYUIN         =   1       )) AND
-                 ( FLG-TOKUSITU2             =   3        ))
+                 ( FLG-KANGAN                =   3        ))
              CONTINUE
            ELSE
              INITIALIZE                         PTKOHINF-REC
              MOVE    LNK-SYU-HOSPNUM        TO  PTKOH-HOSPNUM
              MOVE    LNK-SYU-PTID           TO  PTKOH-PTID
-             MOVE    "958"                  TO  PTKOH-KOHNUM
+             MOVE    WK-HANTEI-KOHNUM       TO  PTKOH-KOHNUM
              MOVE    PTKOHINF-REC           TO  MCPDATA-REC
              MOVE    "DBSELECT"             TO  MCP-FUNC
              MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
@@ -6150,7 +6160,12 @@
                     IF  (PTKOH-TEKSTYMD  <=  LNK-SYU-SRYYMD)
                     AND (LNK-SYU-SRYYMD  <=  PTKOH-TEKEDYMD)
                     AND (PTKOH-SAKJOKBN   =  SPACE         )
-                       MOVE    1    TO  FLG-TOKUSITU-TASU
+                       IF   WK-HANTEI-KOHNUM  =  "958"
+                         MOVE  1    TO  FLG-TOKUSITU-TASU
+                       END-IF
+                       IF   WK-HANTEI-KOHNUM  =  "945"
+                         MOVE  1    TO  FLG-KANGAN-TASU
+                       END-IF
                        MOVE    1    TO  FLG-PTKOHINF
                     ELSE
                        MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
@@ -9208,24 +9223,28 @@
                         OR  (COMB-KOH4HKNNUM(1:1) = "0")
                           IF  ( COMB-HOJOKBN  =  "3" OR "7" )
                           AND ((FLG-TOKUSITU-XXX   =  1    ) OR
-                               (FLG-TOKUSITU-XX2   =  1    ))
+                               (FLG-KANGAN-XXX     =  1    ))
                           AND ( FLG-KOHYONKAIME    =  ZERO  )
                             IF    LNK-SYU-SRYYMD(1:6)  >=  "201808"
                               EVALUATE   FLG-KOUREI-GENEKIKBN
                                 WHEN         1
                                   IF  FLG-TOKUSITU-TASU = 1
+                                  OR  FLG-KANGAN-TASU   = 1
                                      MOVE 140100   TO  MAX-KIN-SYU-M
                                   END-IF
                                 WHEN         2
                                   IF  FLG-TOKUSITU-TASU = 1
+                                  OR  FLG-KANGAN-TASU   = 1
                                      MOVE  93000   TO  MAX-KIN-SYU-M
                                   END-IF
                                 WHEN         3
                                   IF  FLG-TOKUSITU-TASU = 1
+                                  OR  FLG-KANGAN-TASU   = 1
                                      MOVE  44400   TO  MAX-KIN-SYU-M
                                   END-IF
                               END-EVALUATE
                               IF  FLG-TOKUSITU-TASU  =  ZERO
+                              AND FLG-KANGAN-TASU    =  ZERO
                                 MOVE  WK-ZENGAKU   TO  WK-KOUREI-IRYOHI
                                 EVALUATE  FLG-KOUREI-GENEKIKBN
                                   WHEN       1
@@ -9263,10 +9282,11 @@
                                                  "2" OR "6" OR "8"   )
                           AND ( FLG-SANSHOU3         =   SPACE       )
                           AND ((FLG-TOKUSITU-XXX     =   1          ) OR
-                               (FLG-TOKUSITU-XX2     =   1          ))
+                               (FLG-KANGAN-XXX       =   1          ))
                           AND ( FLG-KOHYONKAIME      =   ZERO        )
                           AND ( LNK-SYU-SRYYMD(1:6) >=  "201708"     )
                             IF   FLG-TOKUSITU-TASU  =   1
+                            OR   FLG-KANGAN-TASU    =   1
                               IF    FLG-TOKU75  =  1 OR 2
                                 MOVE  22200   TO   MAX-KIN-SYU-M
                               ELSE
@@ -9277,7 +9297,7 @@
       *                   今まで置き換えていなかったのでH30.8から対応
                           IF  (COMB-HOJOKBN  =  "3" OR "7"       )
                           AND (FLG-TOKUSITU-XXX       =   ZERO   )
-                          AND (FLG-TOKUSITU-XX2       =   ZERO   )
+                          AND (FLG-KANGAN-XXX         =   ZERO   )
                           AND (LNK-SYU-SRYYMD(1:6)   >=  "201808")
                             IF  FLG-KOHYONKAIME    =   1
                               IF    FLG-TOKU75  =  1 OR 2
@@ -9593,7 +9613,7 @@
                    OR  (COMB-KOH4HKNNUM(1:1) = "0")
                       IF  ( LNK-SYU-SRYYMD(1:6)  >=  "200905" )
                       AND ((FLG-TOKUSITU-XXX      =   1      ) OR
-                           (FLG-TOKUSITU-XX2      =   1      ))
+                           (FLG-KANGAN-XXX        =   1      ))
                       AND ( FLG-KOHYONKAIME       =   ZERO    )
                        IF   LNK-SYU-SRYYMD(1:6) >=  "201501"
                         EVALUATE   FLG-GENBUTU70
@@ -9601,6 +9621,7 @@
                            EVALUATE  FLG-GENBUTU70-KBN
                              WHEN      11
                                IF    FLG-TOKUSITU-TASU  =  1
+                               OR    FLG-KANGAN-TASU    =  1
                                 IF    FLG-TOKU75  =  3
                                   MOVE    70050   TO  MAX-KIN-SYU-M
                                 ELSE
@@ -9609,6 +9630,7 @@
                                END-IF
                              WHEN      12
                                IF    FLG-TOKUSITU-TASU  =  1
+                               OR    FLG-KANGAN-TASU    =  1
                                 IF    FLG-TOKU75  =  3
                                   MOVE    46500   TO  MAX-KIN-SYU-M
                                 ELSE
@@ -9620,6 +9642,7 @@
                            EVALUATE  FLG-GENBUTU70-KBN
                              WHEN      21
                                IF    FLG-TOKUSITU-TASU  =  1
+                               OR    FLG-KANGAN-TASU    =  1
                                 IF    FLG-TOKU75  =  3
                                   MOVE    22200   TO  MAX-KIN-SYU-M
                                 ELSE
@@ -9628,6 +9651,7 @@
                                END-IF
                              WHEN      22
                                IF    FLG-TOKUSITU-TASU  =  1
+                               OR    FLG-KANGAN-TASU    =  1
                                 IF    FLG-TOKU75  =  3
                                   MOVE    22200   TO  MAX-KIN-SYU-M
                                 ELSE
@@ -9639,6 +9663,7 @@
                            EVALUATE  FLG-GENBUTU70-KBN
                              WHEN      31
                                IF    FLG-TOKUSITU-TASU  =  1
+                               OR    FLG-KANGAN-TASU    =  1
                                 IF    FLG-TOKU75  =  3
                                   MOVE    12300   TO  MAX-KIN-SYU-M
                                 ELSE
