@@ -1014,15 +1014,9 @@
                MOVE    SPACE           TO  QSUB03-PAYKBNL (IDXK)
            END-IF
       *
-           IF    ( HKN-HKNNUM  =   "946" OR "948" OR "949"
-                                OR "950" OR "951" OR "954"
-                                OR "955" OR "956" OR "957"
-                                OR "958" OR "959" OR "960"
-                                OR "961" OR "962" OR "963"
-                                OR "964" OR "965" OR "966"
-                                OR "967" OR "968" OR "969"
-                                OR "976" OR "977" OR "978"
-                                OR "979" OR "953" )
+           IF    ( HKN-HKNNUM (1:2)    =   "94" OR "95" OR "96" )
+            OR   ( HKN-HKNNUM          =   "976" OR "977" OR "978"
+                                        OR "979" )
                MOVE    "1"             TO  QSUB03-KOHNUM-TYPEL (IDXK)
            END-IF
       *
