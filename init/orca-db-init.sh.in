@@ -44,6 +44,8 @@ if [ $RC -ne 0 ] ; then
     err "${INITDIR}/orca_dbkanri_orig.dump が処理出来ませんでした" 99
 fi
 
+echo "true" > /tmp/ORCA_CLEAN_INSTALL
+
 ECHO_RUN "CREATE TABLE (tbl_dbkanri)"
 
 exit 0

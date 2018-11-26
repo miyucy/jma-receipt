@@ -249,6 +249,18 @@ do
 done
 ECHO_RUN "OK"
 
+if [ -e /tmp/ORCA_CLEAN_INSTALL ]; then
+  if [ "`cat /tmp/ORCA_CLEAN_INSTALL`" = "true" ]; then
+    su - ${ORCAUSER} -c "psql ${DBCONNOPTION} ${DBNAME} -Atqc \"
+      drop table if exists tbl_mstkanri_org;
+      drop table if exists tbl_adrs_org;
+      drop table if exists tbl_chk_org;
+      drop table if exists tbl_hknjainf_org;
+      drop table if exists tbl_srycdchg_org;
+      drop table if exists tbl_tensu_org;\""
+  fi
+fi
+
 ECHO_STDERR "全ての処理が完了しました"
 
 rm -r $TMPDIR/$MSTDIR

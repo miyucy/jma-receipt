@@ -109,12 +109,14 @@ if [ x"$NOINST" = x"--noinstall" ] ; then
     exit 0
 fi
 
+echo "false" > /tmp/ORCA_CLEAN_INSTALL
 run "$INITDIR"/orca-db-init.sh
 run "$INITDIR"/orca-db-install.sh
 run "$BINDIR"/jma-receipt-db-check.sh
 if [ -e "$SYSCONFDIR"/database-non-upgrade ] ; then
     rm -f "$SYSCONFDIR"/database-non-upgrade
 fi
+rm -f /tmp/ORCA_CLEAN_INSTALL
 #
 # 処理終了
 #

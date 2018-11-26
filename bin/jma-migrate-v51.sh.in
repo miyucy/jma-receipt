@@ -49,6 +49,9 @@ if ! [ -d ${TDDIR} ]; then
   su - ${ORCAUSER} -c "pg_dump -Fc -t tbl_tensu_org ${DBNAME} > ${TDDIR}/tbl_tensu_org.dump"
 fi
 
+# montsuqi関係テーブルを作成
+su - ${ORCAUSER} -c "/usr/lib/panda/bin/monsetup -dir ${LDDIRECTORY}"
+
 # 標準テーブルのマスタ更新（データ移行対象マスタのみ）
 su - ${ORCAUSER} -c "echo \"標準テーブルのマスタ更新処理を行います。\" | tee -a ${LOG}"
 EXSH=`type -P migrate-v51_master_upgrade_ctrl.sh`
