@@ -4,7 +4,7 @@ xml_patientlst7v2req {
 	mode		int;
 	recordname	varchar(128);
 	patientlst7req {
-		Reqest_Number		varchar(2);
+		Request_Number		varchar(2);
 		Patient_ID		varchar(20);
 #---   		Šî€“ú
 		Base_Date		varchar(10);
