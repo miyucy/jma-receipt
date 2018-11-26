@@ -325,18 +325,6 @@
                            MOVE    "0205"  TO  ERRCD-ORDER
                        END-IF
                    END-IF
-                   IF    ( ERRCD-ORDER =   SPACE )
-                       MOVE    TRRK-NYUINYMD
-                                   TO  WRK-YMD
-                       MOVE    "2" TO  WRK-ZOGENPTN
-                       MOVE     1  TO  WRK-ZOGEN
-                       PERFORM 800-CALENDAR-SEC
-                       IF    ( WRK-KEISANYMD   >   SODR-UKEYMD )
-                           CONTINUE
-                       ELSE
-                           MOVE    "0206"  TO  ERRCD-ORDER
-                       END-IF
-                   END-IF
                ELSE
                    MOVE    "0051"      TO  ERRCD-ORDER
                END-IF
