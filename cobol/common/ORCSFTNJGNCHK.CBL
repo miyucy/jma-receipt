@@ -114,6 +114,8 @@
       *  04.08.07    NACL-ÌçÏÆ    18/01/09  ·§ËÜ¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.08.08    NACL-ÌçÏÆ    18/01/25  £°ÅÀ¸øÈñ¥ì¥»µ­ºÜ½¤Àµ
       *                                     ¡ÊÊñ³çºÞ¤Î¤ß¤Î¾ì¹ç¤âÂÐ¾Ý¤È¤¹¤ë¡Ë
+      *
+      *  05.00.01    NACL-ÌçÏÆ    18/11/27  ÀÁµáÅÀ¿ô¥Á¥§¥Ã¥¯½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -159,6 +161,7 @@
            03  FLG-SKJ-CHECK       PIC 9(01).
            03  FLG-SRYACCT-CHECK   PIC 9(01).
            03  FLG-SRYACCT-CHECK3  PIC 9(01).
+           03  FLG-SRYACCT-CHECK4  PIC 9(01).
            03  FLG-SRYACT-CHECK    PIC 9(01).
            03  FLG-GENMEN-ARI      PIC 9(01).
            03  FLG-GENMEN-NASI     PIC 9(01).
@@ -2241,6 +2244,22 @@
       *
            IF    LNK-FTNJGNCHK-RC  =   ZERO
            AND   FLG-ARI2          =    1
+             IF   (LNK-FTNJGNCHK-NYUGAIKBN  =  "2" )
+             AND  (WRK-SEIKYU               =  ZERO)
+                MOVE     ZERO    TO   FLG-SRYACCT-CHECK4
+                PERFORM  VARYING  IDX2  FROM  1  BY  1
+                          UNTIL  (IDX2               >  50)
+                           OR    (FLG-SRYACCT-CHECK4 =  1 )
+                  IF  WRK-HKNCOMBINUM-HKNID(IDX2)
+                                      = LNK-FTNJGNCHK-HKNID
+                    PERFORM  2004119-SRYACCT-CHECK4-SEC
+                  END-IF
+                END-PERFORM
+                IF    FLG-SRYACCT-CHECK4  =  1
+                  MOVE   99999   TO   WRK-SEIKYU
+                END-IF
+             END-IF
+      *
              IF  WRK-SEIKYU         =  ZERO
                   MOVE        "1"       TO  LNK-FTNJGNCHK-SKYZEROFLG
              END-IF
@@ -2867,7 +2886,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯
+      *    ¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯£³
       *****************************************************************
        2004118-SRYACCT-CHECK3-SEC            SECTION.
       *
@@ -2898,6 +2917,40 @@
       *
            .
        2004118-SRYACCT-CHECK3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯£´
+      *****************************************************************
+       2004119-SRYACCT-CHECK4-SEC            SECTION.
+      *
+           INITIALIZE                          SRYACCT-REC
+           MOVE   LNK-FTNJGNCHK-HOSPNUM    TO  ACCT-HOSPNUM
+           MOVE   LNK-FTNJGNCHK-NYUGAIKBN  TO  ACCT-NYUGAIKBN
+           MOVE   LNK-FTNJGNCHK-PTID       TO  ACCT-PTID
+           MOVE   LNK-FTNJGNCHK-SRYYM      TO  ACCT-SRYYM
+           MOVE   WRK-HKNCOMBINUM(IDX2)    TO  ACCT-HKNCOMBI
+           MOVE   SRYACCT-REC              TO  MCPDATA-REC
+           MOVE   "DBSELECT"               TO  MCP-FUNC
+           MOVE   "tbl_sryacct"            TO  MCP-TABLE
+           MOVE   "key72"                  TO  MCP-PATHNAME
+           CALL   "ORCDBMAIN"              USING  MCPAREA
+                                                  MCPDATA-REC
+                                                  SPA-AREA
+           IF      MCP-RC   =   ZERO
+             MOVE   "tbl_sryacct"          TO  MCP-TABLE
+             MOVE   "key72"                TO  MCP-PATHNAME
+             PERFORM 910-SRYACCT-READ-SEC
+             IF    FLG-SRYACCT  =  ZERO
+               MOVE      1                 TO  FLG-SRYACCT-CHECK4
+             END-IF
+           END-IF
+           MOVE     "tbl_sryacct"          TO  MCP-TABLE
+           MOVE     "key72"                TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           .
+       2004119-SRYACCT-CHECK4-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2998,6 +3051,22 @@
       *
            IF    LNK-FTNJGNCHK-RC  =   ZERO
            AND   FLG-ARI2          =    1
+             IF   (LNK-FTNJGNCHK-NYUGAIKBN  =  "2" )
+             AND  (WRK-SEIKYU               =  ZERO)
+                MOVE     ZERO    TO   FLG-SRYACCT-CHECK4
+                PERFORM  VARYING  IDX2  FROM  1  BY  1
+                          UNTIL  (IDX2               >  50)
+                           OR    (FLG-SRYACCT-CHECK4 =  1 )
+                  IF  WRK-HKNCOMBINUM-HKNID(IDX2)
+                                      = LNK-FTNJGNCHK-HKNID
+                    PERFORM  2004119-SRYACCT-CHECK4-SEC
+                  END-IF
+                END-PERFORM
+                IF    FLG-SRYACCT-CHECK4  =  1
+                  MOVE   99999   TO   WRK-SEIKYU
+                END-IF
+             END-IF
+      *
              IF  WRK-SEIKYU         =  ZERO
                   MOVE        "1"       TO  LNK-FTNJGNCHK-SKYZEROFLG
              END-IF
