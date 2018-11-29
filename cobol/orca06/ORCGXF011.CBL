@@ -594,7 +594,7 @@
       *
                   INITIALIZE                  ORCXKANACONVAREA
                   MOVE    1000                TO  KANACONV-LEN
-                  MOVE    1000                TO  KANACONV-STLEN
+                  MOVE    5000                TO  KANACONV-STLEN
                   MOVE    0                   TO  KANACONV-CONV-FLAG
                   MOVE    0                   TO  KANACONV-CHAR-TYPE
                   MOVE    WRK-COMMENT         TO  KANACONV-INDATA
