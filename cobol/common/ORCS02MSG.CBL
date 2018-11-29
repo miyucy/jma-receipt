@@ -219,6 +219,13 @@
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
+           WHEN    43
+               STRING  "当月請求済分計算時と所得区分が異なります"
+                                           DELIMITED   BY  SIZE
+                       "（要確認）"
+                                           DELIMITED   BY  SIZE
+               INTO    WRK-MSG (1)
+               END-STRING
            WHEN    101
                STRING  "包括入院期間に算定できない入院料加算"
                                            DELIMITED   BY  SIZE
