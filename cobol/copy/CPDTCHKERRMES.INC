@@ -1030,6 +1030,12 @@
            05 PIC  X(30)   VALUE   "コードの診療行為入力を確認して".
            05 PIC  X(30)   VALUE   "ください                      ".
       *
+           05 PIC  X(06)   VALUE   "990543".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。当".
+           05 PIC  X(30)   VALUE   "月請求済分計算時と所得区分が異".
+           05 PIC  X(30)   VALUE   "なります（要確認）            ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
            05 PIC  X(06)   VALUE   "990601".
            05 PIC  X(30)   VALUE   "患者負担額が計算できません。包".
            05 PIC  X(30)   VALUE   "括入院期間に算定できない入院料".
@@ -1037,7 +1043,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  162.
+           05 ERRMES-OCC   OCCURS  163.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(120).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   162.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   163.
