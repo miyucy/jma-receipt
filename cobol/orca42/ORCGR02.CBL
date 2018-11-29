@@ -164,6 +164,8 @@
       *  04.09.01    NACL-Æ£¸¶    16/12/12  £È£Á£Ï£Ò£ÉÂÐ±þ
       *  05.00.00    NACL-¿¹ÏÆ    17/12/08  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *  05.00.01    NACL-Æ£¸¶    18/10/15  £Í£Ï£Î£Â£Ì£Ï£Â¥¨¥é¡¼ÂÐ±þ
+      *  05.00.02    NACL-Æ£¸¶    18/11/21  ¼ÒÊÝÊÔÄÖ½ç¤Î¤È¤­¤ÎÉ½¼¨¤Î½¤Àµ
+      *  05.00.03    NACL-Æ£¸¶    18/11/28  ¥«¥Ê»áÌ¾½ç¤Î¤È¤­¤Î°õºþÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3082,7 +3084,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                MOVE    1               TO  IDX 
                PERFORM 31011-PAGE-HENSYU-07-KENSU-SEC
-               IF      SPA-R01-NYUGAIKBN   =   "2"
+               IF    ( SPA-R01-NYUGAIKBN   =   "2"                   )
+               AND   ( SPA-R01-SRYYM       <   WRK-CONS-SRYYM-201204 )
                    ADD     1               TO  IDX 
                    PERFORM 31011-PAGE-HENSYU-07-KENSU-SEC
                END-IF
@@ -6303,7 +6306,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    WHEN    "11"                ALSO    "1"
                    WHEN    "11"                ALSO    "3"
                    WHEN    "12"                ALSO    "1"
-                       MOVE    "¥õ"    TO  WRK-RECE09-EDDATA (1:2)
+                       IF      SPA-ENCODING        =   2
+                           MOVE    "£ú"    TO  WRK-RECE09-EDDATA (1:2)
+                       ELSE
+                           MOVE    "¥õ"    TO  WRK-RECE09-EDDATA (1:2)
+                       END-IF
                    WHEN    OTHER
                        MOVE    "zzzzzzzzzzzzzzzzzzzz"
                                        TO  WRK-RECE09-EDDATA (1:20)
