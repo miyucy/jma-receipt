@@ -781,6 +781,14 @@
                        09  SPA-GMN-SYOKEI2TAIKBNN           PIC X(01).
                        09  SPA-GMN-SYOKEI2TAIKBNNF          PIC X(01).
                        09  SPA-GMN-SYOKEI2TAIKBNNMEI        PIC X(38).
+                   07  SPA-GMN-NINNASIKBNK-G.
+                       09  SPA-GMN-NINNASIKBNK              PIC X(01).
+                       09  SPA-GMN-NINNASIKBNKF             PIC X(01).
+                       09  SPA-GMN-NINNASIKBNKMEI           PIC X(78).
+                   07  SPA-GMN-NINNASITAIKBNK-G.
+                       09  SPA-GMN-NINNASITAIKBNK           PIC X(01).
+                       09  SPA-GMN-NINNASITAIKBNKF          PIC X(01).
+                       09  SPA-GMN-NINNASITAIKBNKMEI        PIC X(38).
                05  SPA-GMN-CMB-AREA.
                    07  SPA-GMN-KOHNUMLST-G.
                        09  SPA-GMN-KOHNUM-MAX              PIC 9(03).
@@ -1337,6 +1345,19 @@
                            11  SPA-GMN-SYOKEI2TAIKBNNL       PIC X(01).
                            11  SPA-GMN-SYOKEI2TAIKBNNFL      PIC X(01).
                            11  SPA-GMN-SYOKEI2TAIKBNNMEIL    PIC X(38).
+                   07  SPA-GMN-NINNASIKBNKLST-G.
+                       09  SPA-GMN-NINNASIKBNK-MAX           PIC 9(03).
+                       09  SPA-GMN-NINNASIKBNKLST            OCCURS 10.
+                           11  SPA-GMN-NINNASIKBNKL          PIC X(01).
+                           11  SPA-GMN-NINNASIKBNKFL         PIC X(01).
+                           11  SPA-GMN-NINNASIKBNKMEIL       PIC X(78).
+      *
+                   07  SPA-GMN-NINNASITAIKBNKLST-G.
+                       09  SPA-GMN-NINNASITAIKBNK-MAX        PIC 9(03).
+                       09  SPA-GMN-NINNASITAIKBNKLST         OCCURS 10.
+                           11  SPA-GMN-NINNASITAIKBNKL       PIC X(01).
+                           11  SPA-GMN-NINNASITAIKBNKFL      PIC X(01).
+                           11  SPA-GMN-NINNASITAIKBNKMEIL    PIC X(38).
                05  SPA-GMN-KOHLST-AREA.
                    07  SPA-GMN-KOHLST-MAX                  PIC 9(5).
                    07  SPA-GMN-KOHLST-SEL                  PIC 9(5).
@@ -1962,6 +1983,12 @@
       *
       *    初診時の負担金計算（入院）対象区分コンボ編集処理
            PERFORM 3110-SYOKEI2TAIKBNNLST-SEC
+      *
+      *    限度額認定証提示が無い場合の特別計算（高齢者）コンボ編集処理
+           PERFORM 3110-NINNASIKBNKLST-SEC
+      *
+      *    限度額認定証提示が無い場合の特別計算（高齢者）対象区分コンボ編集処理
+           PERFORM 3110-NINNASITAIKBNKLST-SEC
       *
            .
        311-COMBO-EDIT-EXT.
@@ -3945,6 +3972,59 @@
        3110-SYOKEI2TAIKBNNLST-EXT.
            EXIT.
       *****************************************************************
+      *    限度額認定証提示が無い場合の特別計算（高齢者）コンボ編集処理
+      *****************************************************************
+       3110-NINNASIKBNKLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-NINNASIKBNKLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-NINNASIKBNKL    (1)
+           MOVE  "設定なし"
+                                   TO  SPA-GMN-NINNASIKBNKMEIL (1)
+      *
+           MOVE  "1"               TO  SPA-GMN-NINNASIKBNKL    (2)
+           STRING  "現役並み�気侶郛絽続枋兇粒曚魎擬塢蘆瓦�"
+                                       DELIMITED BY SIZE
+                   "加算（高額４回目適用）"
+                                       DELIMITED BY SIZE
+           INTO    SPA-GMN-NINNASIKBNKMEIL (2)
+           END-STRING
+      *
+      *
+           MOVE    2               TO  SPA-GMN-NINNASIKBNK-MAX
+      *
+           .
+       3110-NINNASIKBNKLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    限度額認定証提示が無い場合の特別計算（高齢者）対象区分コンボ編集処理
+      *****************************************************************
+       3110-NINNASITAIKBNKLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-NINNASITAIKBNKLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-NINNASITAIKBNKL    (1)
+           MOVE  "該当公費対象者全員"
+                                   TO  SPA-GMN-NINNASITAIKBNKMEIL (1)
+      *
+           MOVE  "1"               TO  SPA-GMN-NINNASITAIKBNKL    (2)
+           MOVE  "社保・国保組合"
+                                   TO  SPA-GMN-NINNASITAIKBNKMEIL (2)
+      *
+           MOVE  "2"               TO  SPA-GMN-NINNASITAIKBNKL    (3)
+           MOVE  "社保"
+                                   TO  SPA-GMN-NINNASITAIKBNKMEIL (3)
+      *
+           MOVE  "3"               TO  SPA-GMN-NINNASITAIKBNKL    (4)
+           MOVE  "国保組合"
+                                   TO  SPA-GMN-NINNASITAIKBNKMEIL (4)
+      *
+           MOVE    4               TO  SPA-GMN-NINNASITAIKBNK-MAX
+      *
+           .
+       3110-NINNASITAIKBNKLST-EXT.
+           EXIT.
+      *****************************************************************
       *    公費の種類コンボ編集処理
       *****************************************************************
        3110-KOHNUMLST-SEC              SECTION.
@@ -4425,6 +4505,8 @@
            MOVE    W65-SYOKEI2TAIKBNG   TO  SPA-GMN-SYOKEI2TAIKBNG-G
            MOVE    W65-SYOKEI2KBNN      TO  SPA-GMN-SYOKEI2KBNN-G
            MOVE    W65-SYOKEI2TAIKBNN   TO  SPA-GMN-SYOKEI2TAIKBNN-G
+           MOVE    W65-NINNASIKBNK      TO  SPA-GMN-NINNASIKBNK-G
+           MOVE    W65-NINNASITAIKBNK   TO  SPA-GMN-NINNASITAIKBNK-G
       *
            MOVE    W65-YUKOSTYMD       TO  SPA-GMN-YUKOSTYMD
            MOVE    W65-YUKOEDYMD       TO  SPA-GMN-YUKOEDYMD
@@ -5365,6 +5447,14 @@
                PERFORM 4101-SYOKEI2TAIKBNN-CHK-SEC
            END-IF
       *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-NINNASIKBNK-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-NINNASITAIKBNK-CHK-SEC
+           END-IF
+      *
            IF    ( SPA-ERRCD   NOT =   SPACE )
                MOVE    8           TO  SPA-GMN-PAGENO
            END-IF
@@ -6004,6 +6094,8 @@
            MOVE    SPA-GMN-SYOKEI2TAIKBNG   TO SYS-2010-SYOKEI2-TAIKBN-G
            MOVE    SPA-GMN-SYOKEI2KBNN      TO SYS-2010-SYOKEI2KBN-N
            MOVE    SPA-GMN-SYOKEI2TAIKBNN   TO SYS-2010-SYOKEI2-TAIKBN-N
+           MOVE    SPA-GMN-NINNASIKBNK      TO SYS-2010-NINNASIKBN-K
+           MOVE    SPA-GMN-NINNASITAIKBNK   TO SYS-2010-NINNASI-TAIKBN-K
       ***
            .
        4201-KOHINF-EDIT-EXT.
@@ -7416,6 +7508,16 @@
                                        TO  WRK-CMB-CD
            PERFORM 4200-SYOKEI2TAIKBNNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2TAIKBNN-G
+      *
+           MOVE    SYS-2010-NINNASIKBN-K
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-NINNASIKBNKLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NINNASIKBNK-G
+      *
+           MOVE    SYS-2010-NINNASI-TAIKBN-K
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-NINNASITAIKBNKLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NINNASITAIKBNK-G
       *
       **
       *
@@ -10185,6 +10287,36 @@
        4101-SYOKEI2TAIKBNN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    限度額認定証提示が無い場合の特別計算（高齢者）チェック処理
+      *****************************************************************
+       4101-NINNASIKBNK-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-NINNASIKBNK
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-NINNASIKBNKLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NINNASIKBNK-G
+      *
+           IF    ( SPA-GMN-NINNASIKBNK  =   "0" )
+               MOVE    "0"             TO  SPA-GMN-NINNASITAIKBNK
+           END-IF
+      *
+           .
+       4101-NINNASIKBNK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    限度額認定証提示が無い場合の特別計算（高齢者）対象区分チェック処理
+      *****************************************************************
+       4101-NINNASITAIKBNK-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-NINNASITAIKBNK
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-NINNASITAIKBNKLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NINNASITAIKBNK-G
+      *
+           .
+       4101-NINNASITAIKBNK-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    有効期間開始日
       *****************************************************************
        4101-YUKOSTYMD-CHK-SEC          SECTION.
@@ -10944,6 +11076,16 @@
            MOVE    "0"             TO  WRK-CMB-CD
            PERFORM 4200-SYOKEI2TAIKBNNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYOKEI2TAIKBNN-G
+      *
+      *    限度額認定証提示が無い場合の特別計算（高齢者）
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-NINNASIKBNKLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NINNASIKBNK-G
+      *
+      *    限度額認定証提示が無い場合の特別計算（高齢者）対象区分
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-NINNASITAIKBNKLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NINNASITAIKBNK-G
       *
            .
        42011-COMBO-SET-DEFAULT-EXT.
@@ -11848,6 +11990,8 @@
            MOVE    SPA-GMN-SYOKEI2TAIKBNG-G    TO  W65-SYOKEI2TAIKBNG
            MOVE    SPA-GMN-SYOKEI2KBNN-G       TO  W65-SYOKEI2KBNN
            MOVE    SPA-GMN-SYOKEI2TAIKBNN-G    TO  W65-SYOKEI2TAIKBNN
+           MOVE    SPA-GMN-NINNASIKBNK-G       TO  W65-NINNASIKBNK
+           MOVE    SPA-GMN-NINNASITAIKBNK-G    TO  W65-NINNASITAIKBNK
       *
            MOVE    SPA-GMN-JNISSUKBN-MAX       TO  W65-JNISSUKBN-COUNT
            PERFORM VARYING IDX-CMB FROM    1   BY  1
@@ -12736,6 +12880,24 @@
                                    TO  W65-SYOKEI2TAIKBNN-ITEM (IDX-CMB)
            END-PERFORM
       *
+      *    限度額認定証提示が無い場合の特別計算（高齢者）
+           MOVE    SPA-GMN-NINNASIKBNK-MAX
+                                   TO  W65-NINNASIKBNK-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-NINNASIKBNK-MAX )
+               MOVE    SPA-GMN-NINNASIKBNKLST (IDX-CMB)
+                                   TO  W65-NINNASIKBNK-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    限度額認定証提示が無い場合の特別計算（高齢者）対象区分
+           MOVE    SPA-GMN-NINNASITAIKBNK-MAX
+                                   TO  W65-NINNASITAIKBNK-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-NINNASITAIKBNK-MAX )
+               MOVE    SPA-GMN-NINNASITAIKBNKLST (IDX-CMB)
+                                   TO  W65-NINNASITAIKBNK-ITEM (IDX-CMB)
+           END-PERFORM
+      *
       *    公費リスト
            MOVE    SPA-GMN-KOHLST-MAX  TO  W65-KOHLST-COUNT
            PERFORM VARYING IDX-LST    FROM    1   BY  1
@@ -13037,6 +13199,8 @@
                                        W65-SYOKEI2TAIKBNG-ITEM-STATE
                                        W65-SYOKEI2TAIKBNN-STATE
                                        W65-SYOKEI2TAIKBNN-ITEM-STATE
+                                       W65-NINNASITAIKBNK-STATE
+                                       W65-NINNASITAIKBNK-ITEM-STATE
                                        W65-YUKOSTYMD-STATE
                                        W65-YUKOEDYMD-STATE
                                        W65-SELNUM2-STATE
@@ -13475,6 +13639,11 @@
                                    TO  W65-SYOKEI2TAIKBNN-STATE
                                        W65-SYOKEI2TAIKBNN-ITEM-STATE
            END-IF
+           IF    ( SPA-GMN-NINNASIKBNK  =  "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-NINNASITAIKBNK-STATE
+                                       W65-NINNASITAIKBNK-ITEM-STATE
+           END-IF
       *
            IF    ( SPA-GMN-KOHLST-MAX  >=  CONST-KOHLST-MAX )
                MOVE    WIDGET-INSENSITIVE  TO  W65-B06-STATE
@@ -13865,6 +14034,10 @@
               MOVE    "SYOKEI2KBNN"         TO  MCP-WIDGET
            WHEN    914
               MOVE    "SYOKEI2TAIKBNN"      TO  MCP-WIDGET
+           WHEN    915
+              MOVE    "NINNASIKBNK"        TO  MCP-WIDGET
+           WHEN    916
+              MOVE    "NINNASITAIKBNK"     TO  MCP-WIDGET
            WHEN    003
                MOVE    "SELNUM2"           TO  MCP-WIDGET
            WHEN    004
@@ -14256,6 +14429,10 @@
            WHEN    "SYOKEI2KBNN"
                MOVE    914                 TO  SPA-GMN-CUR
            WHEN    "SYOKEI2TAIKBNN"
+               MOVE    915                 TO  SPA-GMN-CUR
+           WHEN    "NINNASIKBNK"
+               MOVE    916                 TO  SPA-GMN-CUR
+           WHEN    "NINNASITAIKBNK"
                MOVE    004                 TO  SPA-GMN-CUR
            WHEN    "SELNUM2"
                MOVE    002                 TO  SPA-GMN-CUR
@@ -14873,6 +15050,13 @@
       *
            IF    ( SPA-GMN-CUR     =   914 )
                IF    ( W65-SYOKEI2TAIKBNN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    915         TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   916 )
+               IF    ( W65-NINNASITAIKBNK-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    004         TO  SPA-GMN-CUR
                END-IF
@@ -17520,6 +17704,64 @@
       *
            .
        4200-SYOKEI2TAIKBNNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    限度額認定証提示が無い場合の特別計算（高齢者）コンボチェック処理
+      *****************************************************************
+       4200-NINNASIKBNKLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-NINNASIKBNK-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-NINNASIKBNKL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-NINNASIKBNKLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-NINNASIKBNKLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-NINNASIKBNKLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    限度額認定証提示が無い場合の特別計算（高齢者）対象区分コンボチェック処理
+      *****************************************************************
+       4200-NINNASITAIKBNKLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-NINNASITAIKBNK-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-NINNASITAIKBNKL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-NINNASITAIKBNKLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-NINNASITAIKBNKLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-NINNASITAIKBNKLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    公費の種類コンボボックスチェック処理
