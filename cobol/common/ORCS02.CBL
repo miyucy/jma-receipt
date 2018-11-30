@@ -475,6 +475,7 @@
       *  05.00.02    NACL-ÌçÏÆ    18/11/16  µÜ¾ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *  05.00.03    NACL-ÌçÏÆ    18/11/20  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¡Ü¸øÈñ¤Î
       *                                     ÉéÃ´¶â·×»»½¤Àµ
+      *  05.00.04    NACL-ÌçÏÆ    18/11/29  ¸½ÊªµëÉÕÅ¬ÍÑ¶èÊ¬¥Á¥§¥Ã¥¯
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -593,6 +594,8 @@
            03  FLG-HANTEI-ENTANI       PIC 9(01).
            03  FLG-SKJ-HANGAKCHK       PIC 9(01).
            03  FLG-KOUREI-GENEKIKBN    PIC 9(01).
+           03  FLG-GENBUTU-CHECK       PIC 9(01).
+           03  FLG-GENBUTU-CHECK-ERR   PIC 9(01).
       *
       *    Åº¤¨»úÎÎ°è
        01  IDX-AREA.
@@ -13079,6 +13082,7 @@
        210C1-SYUNOU-GEN70-CNT-SEC          SECTION.
       *
       *    ¼ýÇ¼ÊÝ¸±¾ðÊóÊÔ½¸
+           MOVE    ZERO   TO   FLG-GENBUTU-CHECK
            PERFORM  22017-SYUNOU-HKN-HENSYU-SEC
            IF   FLG-SYUNOU-HKN-HANTEI  =  1
              GO   TO   210C1-SYUNOU-GEN70-CNT-EXT
@@ -14311,6 +14315,8 @@
        2201-SYUNOU-COUNT-SEC          SECTION.
       *
       *    ¼ýÇ¼ÊÝ¸±¾ðÊóÊÔ½¸
+           MOVE     1     TO   FLG-GENBUTU-CHECK.
+           MOVE     ZERO  TO   FLG-GENBUTU-CHECK-ERR.
            PERFORM  22017-SYUNOU-HKN-HENSYU-SEC.
            IF   FLG-SYUNOU-HKN-HANTEI  =  1
              GO   TO   2201-SYUNOU-COUNT-EXT
@@ -18162,6 +18168,10 @@
            ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
            ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
       *
+           IF   FLG-GENBUTU-CHECK-ERR  =  1
+                 MOVE   43    TO  LNK-S02-RC
+           END-IF
+      *
            .
       *
        22011-GEN70-SYU-HENSYU-EXT.
@@ -18429,6 +18439,11 @@
                END-IF
              END-IF
            END-IF
+      *
+           IF   FLG-GENBUTU-CHECK-ERR  =  1
+                 MOVE   43    TO  LNK-S02-RC
+           END-IF
+      *
            .
       *
        22012-KOUREI-SYU-HENSYU-EXT.
@@ -20644,6 +20659,19 @@
                     MOVE  SPACE  TO   WK-KIGO2
                     MOVE  SPACE  TO   WK-NUM2
                  END-IF
+                 IF    FLG-GENBUTU-CHECK =  1
+                   IF   (COMB-HKNID    NOT =  ZERO              )
+                   AND  (COMB-HKNID        =  WRK-COMB-HKNID    )
+                   AND  (LNK-SYU-SKJ-FTNGAKU(2)
+                                       NOT =  SYU-SKJ-FTNGAKU(2))
+                      MOVE    1    TO   FLG-GENBUTU-CHECK-ERR
+                   END-IF
+                   IF   (SYU-SKJ-FTNGAKU(2)   =  ZERO           )
+                   AND  (WK-GEN70-YMD        <=  SYU-SRYYMD     )
+                   AND  (SYU-SRYYMD          <=  WK-GEN70-YMD-ED)
+                      MOVE    1    TO   FLG-GENBUTU-CHECK-ERR
+                   END-IF
+                 END-IF
                END-IF
            END-IF
            IF  LNK-S02-KOUREI-NYUIN-KBN    =  "1"
@@ -20655,6 +20683,14 @@
                     MOVE   "9"   TO   WK-HONKZKKBN2
                     MOVE  SPACE  TO   WK-KIGO2
                     MOVE  SPACE  TO   WK-NUM2
+                 END-IF
+                 IF    FLG-GENBUTU-CHECK =  1
+                   IF   (COMB-HKNID    NOT =  ZERO              )
+                   AND  (COMB-HKNID        =  WRK-COMB-HKNID    )
+                   AND  (LNK-SYU-SKJ-FTNGAKU(2)
+                                       NOT =  SYU-SKJ-FTNGAKU(2))
+                      MOVE    1    TO   FLG-GENBUTU-CHECK-ERR
+                   END-IF
                  END-IF
                END-IF
            END-IF
