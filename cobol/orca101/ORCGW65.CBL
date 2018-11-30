@@ -3982,7 +3982,7 @@
            MOVE  "設定なし"
                                    TO  SPA-GMN-NINNASIKBNKMEIL (1)
       *
-           MOVE  "1"               TO  SPA-GMN-NINNASIKBNKL    (2)
+           MOVE  "2"               TO  SPA-GMN-NINNASIKBNKL    (2)
            STRING  "現役並み�気侶郛絽続枋兇粒曚魎擬塢蘆瓦�"
                                        DELIMITED BY SIZE
                    "加算（高額４回目適用）"

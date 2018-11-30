@@ -939,6 +939,16 @@
                     06  W65-SYOKEI2TAIKBNN-COUNT  PIC S9(9) BINARY.
                     06  W65-SYOKEI2TAIKBNN-ITEM   PIC X(40) OCCURS 10.
                     06  W65-SYOKEI2TAIKBNN-ITEM-STATE  PIC S9(9) BINARY.
+                  05  W65-CMB-NINNASIKBNK.
+                    06  W65-NINNASIKBNK           PIC X(80).
+                    06  W65-NINNASIKBNK-COUNT     PIC S9(9) BINARY.
+                    06  W65-NINNASIKBNK-ITEM      PIC X(80) OCCURS 10.
+                  05  W65-CMB-NINNASITAIKBNK.
+                    06  W65-NINNASITAIKBNK        PIC X(40).
+                    06  W65-NINNASITAIKBNK-STATE  PIC S9(9) BINARY.
+                    06  W65-NINNASITAIKBNK-COUNT  PIC S9(9) BINARY.
+                    06  W65-NINNASITAIKBNK-ITEM   PIC X(40) OCCURS 10.
+                    06  W65-NINNASITAIKBNK-ITEM-STATE  PIC S9(9) BINARY.
               03  W65-YUKOSTYMD                  PIC X(10).
               03  W65-YUKOSTYMD-STATE            PIC S9(9) BINARY.
               03  W65-YUKOEDYMD                  PIC X(10).
