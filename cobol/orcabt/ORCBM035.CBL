@@ -51,6 +51,8 @@
       *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *
+      *  05.00.01    NACL-藤原    18/11/29  肝がん治療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -168,7 +170,7 @@
            03  WRK-PRTFLG          PIC 9(01).
       *
       *    数字項目編集
-           03  WRK-KOHNUM9         PIC ZZ9.
+           03  WRK-KOHNUM9         PIC X(03).
            03  WRK-NISSUZ          PIC ZZZZZZ.
            03  WRK-KENSUZ          PIC ZZZZZZ.
            03  WRK-TENSUZ          PIC Z,ZZZ,ZZZ,ZZZ.
@@ -314,7 +316,9 @@
            COPY    "CPSK1902.INC".
            COPY    "CPSK1903.INC".
       *
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
            COPY    "CPSK2007.INC".
       *
@@ -634,34 +638,32 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
       *
       *    レセプト・総括編集情報
       *    区分コード０１のデータ読み込み
-           MOVE    SPACE               TO  SYS-200501-REC
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-25-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+               MOVE    MCPDATA-REC         TO  SYS-25-REC
            ELSE
-               INITIALIZE                      SYS-200501-REC
+               INITIALIZE                      SYS-25-REC
            END-IF
-           IF      SYS-200501-KOUIKIPRTKBN
-                                       =   SPACE
-               MOVE    "0"                 TO  SYS-200501-KOUIKIPRTKBN
+           IF      SYS-25-KOUIKIPRTKBN =   SPACE
+               MOVE    "0"                 TO  SYS-25-KOUIKIPRTKBN
            END-IF
       *
-           IF      SYS-200501-KOUIKIPRTKBN
-                                       =   "1"
+           IF      SYS-25-KOUIKIPRTKBN =   "1"
                CONTINUE
            ELSE
                MOVE    "00000000"          TO  WRK-PARA-HKNJANUM
            END-IF
       *
-           DISPLAY "SYS-200501-KOUIKIPRTKBN=" SYS-200501-KOUIKIPRTKBN
+           DISPLAY "SYS-200501-KOUIKIPRTKBN=" SYS-25-KOUIKIPRTKBN
            DISPLAY "WRK-PARA-HKNJANUM      =" WRK-PARA-HKNJANUM
            .
        100-INIT-EXT.
@@ -1364,13 +1366,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
        2002311-HKNNUM-HENSYU-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-KOHKBN
+                                           WRK-KOHNUM9
       *
-           IF      SUM-KOH-KOHNUM (IDY5 IDX3 IDX2) (1:1)
-                                       =   "0"
-               MOVE    SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)
-                                           TO  WRK-KOHNUM9
-           ELSE
-      *        法別番号取得（地方公費のみ） 
+      **** IF      SUM-KOH-KOHNUM (IDY5 IDX3 IDX2) (1:1)
+      ****                             =   "0"
+      ****     MOVE    SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)
+      ****                                 TO  WRK-KOHNUM9
+      **** ELSE
+      *        法別番号取得
                INITIALIZE                      HKNNUM-REC
                MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                MOVE    SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)
@@ -1380,12 +1383,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                MOVE    HKNNUM-REC          TO  MCPDATA-REC
                PERFORM 900-HKNNUM-INV-SEC
                IF      FLG-HKNNUM          =   ZERO
-                   MOVE   HKN-HBTNUM           TO  WRK-KOHNUM9
+                   MOVE   HKN-HBTNUM           TO  WRK-KOHNUM9 (2:2)
                ELSE
                    MOVE    SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)
                                                TO  WRK-KOHNUM9
                END-IF
-           END-IF
+      **** END-IF
            MOVE    WRK-KOHNUM9         TO  HCM3G-KOH-NUM (IDY)
       *
       *    特定疾患のとき 
@@ -1752,7 +1755,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                END-IF   
       *         
                MOVE    RECE10-HKNJANUM-S   TO  KEY-N-HKNJANUM
-               EVALUATE    SYS-200501-KOUIKIPRTKBN
+               EVALUATE    SYS-25-KOUIKIPRTKBN
                    WHEN    "0"
                        MOVE    "0000"          TO  KEY-N-HKNJANUM2
                    WHEN    "2"

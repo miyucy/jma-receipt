@@ -127,6 +127,8 @@
       *  04.08.03    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
       *                                     レセプトの分割対応
       *  04.08.04    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *
+      *  05.00.01    NACL-藤原    18/11/29  肝がん治療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -324,6 +326,7 @@
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
+               05  FILLER              PIC X(03)   VALUE   SPACE.
       *
                05  FILLER              PIC X(03)   VALUE   "013".  
                05  FILLER              PIC X(03)   VALUE   "014".  
@@ -355,6 +358,7 @@
                05  FILLER              PIC X(03)   VALUE   "972".
                05  FILLER              PIC X(03)   VALUE   "974".
                05  FILLER              PIC X(03)   VALUE   SPACE.
+               05  FILLER              PIC X(03)   VALUE   SPACE.
       *
                05  FILLER              PIC X(03)   VALUE   "013".  
                05  FILLER              PIC X(03)   VALUE   "014".  
@@ -379,6 +383,7 @@
                05  FILLER              PIC X(03)   VALUE   "051".  
                05  FILLER              PIC X(03)   VALUE   "091".  
                05  FILLER              PIC X(03)   VALUE   "038".  
+               05  FILLER              PIC X(03)   VALUE   "092".  
                05  FILLER              PIC X(03)   VALUE   "053".  
                05  FILLER              PIC X(03)   VALUE   "066".  
                05  FILLER              PIC X(03)   VALUE   "062".  
@@ -390,9 +395,9 @@
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.
                05  WRK-SRT-OCC         OCCURS  3.
                    07  WRK-SRT-KOHHKNNUM
-                                       PIC X(03)   OCCURS  30.
+                                       PIC X(03)   OCCURS  31.
       *
-           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   30.
+           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   31.
       *     
       *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.

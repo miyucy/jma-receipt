@@ -207,6 +207,7 @@
       *                                     適用開始日、法別番号の順とする
       *
       *  05.00.01    NACL-伊藤    18/01/11  診療情報システム対応
+      *  05.00.02    NACL-藤原    18/11/29  肝がん治療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -523,6 +524,7 @@
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
+               05  FILLER              PIC X(03)   VALUE   SPACE.
       *
                05  FILLER              PIC X(03)   VALUE   "027".  
                05  FILLER              PIC X(03)   VALUE   "013".  
@@ -554,6 +556,7 @@
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
+               05  FILLER              PIC X(03)   VALUE   SPACE.
       *
                05  FILLER              PIC X(03)   VALUE   "013".  
                05  FILLER              PIC X(03)   VALUE   "014".  
@@ -585,6 +588,7 @@
                05  FILLER              PIC X(03)   VALUE   "972".
                05  FILLER              PIC X(03)   VALUE   "974".
                05  FILLER              PIC X(03)   VALUE   SPACE.
+               05  FILLER              PIC X(03)   VALUE   SPACE.
       *
                05  FILLER              PIC X(03)   VALUE   "013".  
                05  FILLER              PIC X(03)   VALUE   "014".  
@@ -609,6 +613,7 @@
                05  FILLER              PIC X(03)   VALUE   "051".  
                05  FILLER              PIC X(03)   VALUE   "091".  
                05  FILLER              PIC X(03)   VALUE   "038".  
+               05  FILLER              PIC X(03)   VALUE   "092".  
                05  FILLER              PIC X(03)   VALUE   "053".  
                05  FILLER              PIC X(03)   VALUE   "066".  
                05  FILLER              PIC X(03)   VALUE   "062".  
@@ -620,9 +625,9 @@
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.
                05  WRK-SRT-OCC         OCCURS  4.
                    07  WRK-SRT-KOHHKNNUM
-                                       PIC X(03)   OCCURS  30.
+                                       PIC X(03)   OCCURS  31.
       *
-           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   30.
+           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   31.
       *     
       *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
