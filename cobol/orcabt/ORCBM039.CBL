@@ -39,6 +39,8 @@
       *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *
+      *  05.00.01    NACL-藤原    18/11/29  肝がん治療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -110,7 +112,7 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
       *
-           03  WRK-KOHNUM9         PIC ZZ9.
+           03  WRK-KOHNUM9         PIC X(03).
            03  WRK-NISSUZ          PIC ZZZZZZ.
            03  WRK-KENSUZ          PIC ZZZZZZ.
            03  WRK-TENSUZ          PIC Z,ZZZ,ZZZ,ZZZ.
@@ -640,13 +642,14 @@
        2002311-HKNNUM-HENSYU-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-KOHKBN
+                                           WRK-KOHNUM9
       *
-           IF      SUM-KOH-KOHNUM (IDX2) (1:1)
-                                       =   "0"
-               MOVE    SUM-KOH-KOHNUM (IDX2)
-                                           TO  WRK-KOHNUM9
-           ELSE
-      *        法別番号取得（地方公費のみ） 
+      **** IF      SUM-KOH-KOHNUM (IDX2) (1:1)
+      ****                             =   "0"
+      ****     MOVE    SUM-KOH-KOHNUM (IDX2)
+      ****                                 TO  WRK-KOHNUM9
+      **** ELSE
+      *        法別番号取得
                INITIALIZE                      HKNNUM-REC
                MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                MOVE    SUM-KOH-KOHNUM (IDX2)
@@ -656,13 +659,13 @@
                MOVE    HKNNUM-REC          TO  MCPDATA-REC
                PERFORM 900-HKNNUM-INV-SEC
                IF      FLG-HKNNUM          =   ZERO
-                   MOVE   HKN-HBTNUM           TO  WRK-KOHNUM9
+                   MOVE   HKN-HBTNUM           TO  WRK-KOHNUM9 (2:2)
                ELSE
                    MOVE    SUM-KOH-KOHNUM (IDX2)
                                                TO  WRK-KOHNUM9
                END-IF
-           END-IF
-           MOVE    WRK-KOHNUM9         TO  HCM3F-KOH-NUM (IDY)
+      **** END-IF
+           MOVE    WRK-KOHNUM9             TO  HCM3F-KOH-NUM (IDY)
       *
       *    特定疾患のとき 
            IF      SUM-KOH-KOHNUM (IDX2)    =   "051"
