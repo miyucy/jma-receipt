@@ -448,6 +448,13 @@ SRCS = ORCBD001.CBL \
        ORCBMIGSRYCDCHG.CBL \
        ORCBMIGTENSU.CBL \
        ORCBMIGTENSUPLUS.CBL \
+       ORCXRMST2MIGV51.CBL \
+       ORCXRMST4MIGV51.CBL \
+       ORCMUP0006MIGV51.CBL \
+       ORCMUP0042MIGV51.CBL \
+       ORCMUP0052MIGV51.CBL \
+       ORCMUP0092MIGV51.CBL \
+       ORCMUP0102MIGV51.CBL \
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global

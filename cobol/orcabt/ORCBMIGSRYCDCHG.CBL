@@ -213,12 +213,8 @@
                    IF      FLG-SYSKANRI        =   ZERO
                        MOVE    SYS-1001-HOSPNAME
                                                TO  PRF-HOSPNAME
-                       MOVE    LOW-VALUE       TO  WRK-MSG
-                       STRING  SYS-1001-HOSPNAME   DELIMITED BY SPACE
-                               LOW-VALUE           DELIMITED BY SIZE
-                           INTO    WRK-MSG
-                       END-STRING
-                       DISPLAY "*(ORCBMIGSRYCDCHG)* [ " WRK-MSG " ]"
+                       DISPLAY "*(ORCBMIGSRYCDCHG)* [ "
+                               FUNCTION TRIM(SYS-1001-HOSPNAME) " ]"
                        DISPLAY " "
                    END-IF
                END-IF

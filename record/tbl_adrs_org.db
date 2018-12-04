@@ -33,6 +33,18 @@ path	key		{
 	};
 };
 
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_adrs_org_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_adrs_org
+			WHERE (HOSPNUM      =   :HOSPNUM)
+			AND ( POST        =   :POST   )   AND
+                  ( LPUBCD      =   :LPUBCD )
+			ORDER   BY  RENNUM  DESC;
+	};
+};
+
 path	all		{ 	
 	DBSELECT	{
 		DECLARE tbl_adrs_org_all_csr CURSOR FOR

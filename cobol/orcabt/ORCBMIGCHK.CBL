@@ -216,12 +216,8 @@
                    IF      FLG-SYSKANRI        =   ZERO
                        MOVE    SYS-1001-HOSPNAME
                                                TO  PRF-HOSPNAME
-                       MOVE    LOW-VALUE       TO  WRK-MSG
-                       STRING  SYS-1001-HOSPNAME   DELIMITED BY SPACE
-                               LOW-VALUE           DELIMITED BY SIZE
-                           INTO    WRK-MSG
-                       END-STRING
-                       DISPLAY "*(ORCBMIGCHK)* [ " WRK-MSG " ]"
+                       DISPLAY "*(ORCBMIGCHK)* [ "
+                               FUNCTION TRIM(SYS-1001-HOSPNAME) " ]"
                        DISPLAY " "
                    END-IF
                END-IF
@@ -247,6 +243,7 @@
                    MOVE    ZERO                TO  WRK-PRFCD
                ELSE
                    MOVE    CHKO-REC            TO  CHKW-REC
+                   MOVE    "2"                 TO  CHKW-DATAKBN
                    PERFORM 210-CHKU-INSERT-SEC
                    IF      WRK-PRFCD           =   1
                        MOVE    2                   TO  WRK-PRFCD
@@ -255,6 +252,7 @@
            ELSE
       *        マスターになし、ユーザーテーブルに追加
                MOVE    CHKO-REC            TO  CHKW-REC
+               MOVE    "2"                 TO  CHKW-DATAKBN
                PERFORM 210-CHKU-INSERT-SEC
            END-IF
            PERFORM 290-PRF-SEC
