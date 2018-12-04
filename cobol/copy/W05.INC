@@ -33,10 +33,10 @@
                 05  W05-VALUE   PIC X(6).
               04  W05-SRYKANAME3.
                 05  W05-VALUE   PIC X(2).
-              04  W05-RECESRYKA.
-                05  W05-VALUE   PIC X(2).
-              04  W05-RECESRYKANAME.
-                05  W05-VALUE   PIC X(40).
+              04  W05-CMB-RECESRYKA.
+                05  W05-RECESRYKA          PIC X(43).
+                05  W05-RECESRYKA-COUNT    PIC S9(9) BINARY.
+                05  W05-RECESRYKA-ITEM     PIC X(43) OCCURS 50.
               04  W05-JIKANKSN1-40.
                 05  W05-VALUE   PIC X.
               04  W05-JIKANKSN1-50.

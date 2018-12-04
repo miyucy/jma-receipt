@@ -24,11 +24,12 @@ W05 {
     SRYKANAME3 {
       textdata varchar(2);
     };
-    RECESRYKA {
-      textdata varchar(2);
-    };
-    RECESRYKANAME {
-      textdata varchar(40);
+    CMB_RECESRYKA {
+      RECESRYKA {
+        textdata varchar(43);
+      };
+      count int;
+      item varchar(43)[50];
     };
     JIKANKSN1_40 {
       isactive bool;
