@@ -37,6 +37,8 @@
       * 03.05.00     NACL-多々納  07/05/02  グループ診療対応
       * 04.07.00     NACL-多々納  13/03/XX  Ｈ２６年４月改正対応
       *                                    （時間外加算等１設定追加）
+      * 05.00.00     NACL-太田    18/12/04  レセ電診療科コード
+      *                                     コンボボックス対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,9 +73,12 @@
                        09  SPA-GMN-SRYKANAME1 PIC X(10).
                        09  SPA-GMN-SRYKANAME2 PIC X(06).
                        09  SPA-GMN-SRYKANAME3 PIC X(02).
-                       09  SPA-GMN-RECESRYKA  PIC X(02). 
-                       09  SPA-GMN-RECESRYKANAME
-                                              PIC X(40).
+                       09  SPA-GMN-RECESRYKA-G.
+                           11  SPA-GMN-RECESRYKA  PIC X(02). 
+                           11  SPA-GMN-RECESRYKAFL
+                                                  PIC X(01). 
+                           11  SPA-GMN-RECESRYKANAME
+                                                  PIC X(40).
       *                処置時間外加算等１
                        09  SPA-GMN-JIKANKSN1-40
                                               PIC X(01).
@@ -460,7 +465,7 @@
            MOVE    W05-SRYKANAME1      TO  SPA-GMN-SRYKANAME1
            MOVE    W05-SRYKANAME2      TO  SPA-GMN-SRYKANAME2
            MOVE    W05-SRYKANAME3      TO  SPA-GMN-SRYKANAME3
-           MOVE    W05-RECESRYKA       TO  SPA-GMN-RECESRYKA
+           MOVE    W05-RECESRYKA       TO  SPA-GMN-RECESRYKA-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -810,6 +815,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           MOVE    SPACE                    TO  W05
+           INITIALIZE                           W05
       *
            MOVE    SPA-GMN-STYUKYMD         TO  W05-YUKOSTYMD
            MOVE    SPA-GMN-EDYUKYMD         TO  W05-YUKOEDYMD
@@ -819,8 +826,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SRYKANAME1       TO  W05-SRYKANAME1
            MOVE    SPA-GMN-SRYKANAME2       TO  W05-SRYKANAME2  
            MOVE    SPA-GMN-SRYKANAME3       TO  W05-SRYKANAME3
-           MOVE    SPA-GMN-RECESRYKA        TO  W05-RECESRYKA
-           MOVE    SPA-GMN-RECESRYKANAME    TO  W05-RECESRYKANAME
+           MOVE    SPA-GMN-RECESRYKA-G      TO  W05-CMB-RECESRYKA
+           MOVE    TBL-RECEDENSRYKACD-MAX   TO  W05-RECESRYKA-COUNT
+           PERFORM VARYING IDX FROM    1 BY 1
+                   UNTIL ( IDX > TBL-RECEDENSRYKACD-MAX )
+               STRING    TBL-RECEDEN-SRYKACD (IDX)   DELIMITED BY SIZE
+                         " "                         DELIMITED BY SIZE
+                         TBL-RECEDEN-SRYKANAME (IDX) DELIMITED BY SPACE
+               INTO      W05-RECESRYKA-ITEM (IDX)
+               END-STRING
+           END-PERFORM
       *H26.4
       *    時間外加算等１設定
            IF      SPA-GMN-JIKANKSN1-40    =   "1"
