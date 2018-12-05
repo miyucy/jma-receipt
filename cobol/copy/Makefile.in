@@ -2338,7 +2338,7 @@ all: MCPAREA $(COPYS_inc)
 	  $< > $@
 
 MCPAREA: $(top_builddir)/lddef/directory
-	$(COPYGEN) -mcp  -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -ddir $(top_builddir)/lddef > $@ || (rm -f $@; false)
+	copygen -mcp  -dir $(top_builddir)/lddef/directory -record $(top_builddir)/record -ddir $(top_builddir)/lddef > $@ || (rm -f $@; false)
 	test -s $@ || (rm -f $@; false)
 
 clean: 
