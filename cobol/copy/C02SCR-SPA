@@ -127,6 +127,7 @@
       *  05.00.01    NACL-藤原    16/02/17  一括入力対応（病名コード除く）
       *  05.00.02    NACL-藤原    17/10/05  開始日の未来日入力の警告表示
       *                                     の修正
+      *  05.00.03    NACL-藤原    18/11/22  Warning 対応
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -474,7 +475,7 @@
                                13  SPA-NAI-C02-HOSOKU-OCC  OCCURS  3.
                                    15  SPA-NAI-C02-HOSOKU-COMMENT
                                                            PIC X(80).
-                                   15  SPA-NAI-C02-HOSOKU-USERBYOMEIFLG
+                                   15  SPA-NAI-C02-HOSOKU-USERBYOFLG
                                                            PIC X(01).
       *
                                13  SPA-NAI-C02-HOSOKUCD-CHK
@@ -724,7 +725,7 @@
                                    15  SPA-NAI-C03-CDSYU
                                                            PIC X(01).
                            11  SPA-NAI-C03-BYOMEIINPUTCD-CHK.
-                               13  SPA-NAI-C03-BYOMEIINPUTCD-CHK-OCC
+                               13  SPA-NAI-C03-BYOMEIINPUTCD-CHK-O
                                                            OCCURS  3.
                                    15  SPA-NAI-C03-BYOMEIINPUTCD-FLG
                                                            PIC X(02).

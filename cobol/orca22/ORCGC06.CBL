@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/11/22  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -658,7 +659,7 @@
                                        SPA-NAI-C06-BYOMEIINPUTSET-OLD
       *
       *    病名セットコード編集処理
-            PERFORM 4100111-BYOMEIINPUTSET-HENSYU-SEC
+            PERFORM 4100111-BYOMEIINPUTSET-HEN-SEC
       *
            .
        410011-SETCD-SELECT-EXT.
@@ -667,7 +668,7 @@
       *****************************************************************
       *    病名セットコード編集処理
       *****************************************************************
-       4100111-BYOMEIINPUTSET-HENSYU-SEC             SECTION.
+       4100111-BYOMEIINPUTSET-HEN-SEC  SECTION.
       *
            INITIALIZE                      BYOMEIINPUTSET-REC
            MOVE    SPA-HOSPNUM         TO  BYOSET-HOSPNUM
@@ -703,7 +704,7 @@
            MOVE    3                   TO  SPA-GMN-C06-CUR
       *
            .
-       4100111-BYOMEIINPUTSET-HENSYU-EXT.
+       4100111-BYOMEIINPUTSET-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -878,7 +879,7 @@
                CONTINUE
            ELSE
       *        病名セットコード編集処理
-               PERFORM 4100111-BYOMEIINPUTSET-HENSYU-SEC
+               PERFORM 4100111-BYOMEIINPUTSET-HEN-SEC
            END-IF
       *
            MOVE    SPA-GMN-C06-BYOMEIINPUTSET
@@ -986,7 +987,7 @@
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
-           PERFORM 41021-BYOMEIINPUTSETNAME-CHK-SEC
+           PERFORM 41021-BYOMEIINPUTSETNM-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1002,7 +1003,7 @@
       *****************************************************************
       *    セット名チェック処理
       *****************************************************************
-       41021-BYOMEIINPUTSETNAME-CHK-SEC     SECTION.
+       41021-BYOMEIINPUTSETNM-CHK-SEC  SECTION.
       *
       *    半角チェック
            IF      SPA-GMN-C06-BYOMEIINPUTSETNAME
@@ -1040,7 +1041,7 @@
                END-IF 
            END-IF
            .
-       41021-BYOMEIINPUTSETNAME-CHK-EXT.
+       41021-BYOMEIINPUTSETNM-CHK-EXT.
            EXIT.
       *
       *****************************************************************

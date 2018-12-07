@@ -81,6 +81,8 @@
       *  04.08.01    NACL-藤原    16/02/10  自院病名への補足コメント追加
       *                                     対応
       *  04.08.02    NACL-藤原    16/03/17  セット入力時のエラー表示修正
+      *
+      *  05.00.01    NACL-藤原    18/11/22  Warning 対応
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -356,7 +358,7 @@
                IF      SPA-C04-BYOSET-INDEX-MAX
                                        >   ZERO
       *            病名入力セットから自院病名編集処理
-                   PERFORM 41002111-BYOMEIINPUTSET-HENSYU-SEC
+                   PERFORM 41002111-BYOMEIINPUTSET-HEN-SEC
                    IF    ( SPA-CIDCD2      NOT =   SPACE )
                    OR    ( SPA-CIDCD6      NOT =   SPACE )
                    OR    ( SPA-ERRCD       NOT =   SPACE )
@@ -490,7 +492,7 @@
                IF      SPA-C04-BYOSET-INDEX-MAX
                                        >   ZERO
       *            病名入力セットから自院病名編集処理
-                   PERFORM 41002111-BYOMEIINPUTSET-HENSYU-SEC
+                   PERFORM 41002111-BYOMEIINPUTSET-HEN-SEC
                    IF    ( SPA-CIDCD2      NOT =   SPACE )
                    OR    ( SPA-CIDCD6      NOT =   SPACE )
                    OR    ( SPA-ERRCD       NOT =   SPACE )
@@ -1302,7 +1304,7 @@
            IF      SPA-C04-BYOSET-INDEX-MAX
                                        >   ZERO
       *        病名入力セットから自院病名編集処理
-               PERFORM 41002111-BYOMEIINPUTSET-HENSYU-SEC
+               PERFORM 41002111-BYOMEIINPUTSET-HEN-SEC
                IF    ( SPA-CIDCD2      NOT =   SPACE )
                OR    ( SPA-CIDCD6      NOT =   SPACE )
                OR    ( SPA-ERRCD       NOT =   SPACE )
@@ -1515,7 +1517,7 @@
                IF      FLG-BYOMEIINPUTSET  =   ZERO
                    IF      SPA-GMN-C02-BANGO   =   ZERO
       *                病名入力セット編集処理
-                       PERFORM 4100211-BYOMEIINPUTSET-CHECK-SEC
+                       PERFORM 4100211-BYOMEIINPUTSET-CHK-SEC
                        IF      SPA-ERRCD       =   "0097"
                            MOVE    "■■■"        TO
                                                SPA-NAI-C04-BYOMEI (IDZ)
@@ -1620,7 +1622,7 @@
       *****************************************************************
       *    病名入力セット編集処理
       *****************************************************************
-       4100211-BYOMEIINPUTSET-CHECK-SEC   SECTION.
+       4100211-BYOMEIINPUTSET-CHK-SEC  SECTION.
       *
       *    コード検索時
            IF      SPA-C01-INDEX       >   ZERO
@@ -1669,7 +1671,7 @@
       *
            IF      WRK-BYOMEI-MAX1 >   WRK-BYOMEI-MAX2
                MOVE    "0097"          TO  SPA-ERRCD
-               GO  TO  4100211-BYOMEIINPUTSET-CHECK-EXT
+               GO  TO  4100211-BYOMEIINPUTSET-CHK-EXT
            END-IF
       *
       *    セットコード退避
@@ -1730,16 +1732,16 @@
            END-IF
       *
       *    病名入力セットから自院病名編集処理
-           PERFORM 41002111-BYOMEIINPUTSET-HENSYU-SEC
+           PERFORM 41002111-BYOMEIINPUTSET-HEN-SEC
       *
            .
-       4100211-BYOMEIINPUTSET-CHECK-EXT.
+       4100211-BYOMEIINPUTSET-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    病名入力セットから自院病名編集処理
       *****************************************************************
-       41002111-BYOMEIINPUTSET-HENSYU-SEC  SECTION.
+       41002111-BYOMEIINPUTSET-HEN-SEC SECTION.
       *
            PERFORM VARYING IDWW    FROM    1   BY  1
                    UNTIL   IDWW    >       6
@@ -1766,7 +1768,7 @@
                                                              (IDWW)
                    IF    ( SPA-CIDCD2      NOT =   SPACE )
                    OR    ( SPA-CIDCD6      NOT =   SPACE )
-                       GO  TO  41002111-BYOMEIINPUTSET-HENSYU-EXT
+                       GO  TO  41002111-BYOMEIINPUTSET-HEN-EXT
                    END-IF
       *
                    IF      SPA-C01-INDEX   =   ZERO
@@ -1776,7 +1778,7 @@
                    END-IF
       *
                    IF      SPA-ERRCD           =   "0075"  OR  "0094"
-                       GO  TO  41002111-BYOMEIINPUTSET-HENSYU-EXT
+                       GO  TO  41002111-BYOMEIINPUTSET-HEN-EXT
                    END-IF
                END-IF
            END-PERFORM
@@ -1791,7 +1793,7 @@
            INITIALIZE                  SPA-C04-BYOMEIINPUTSET-AREA
       *
            .
-       41002111-BYOMEIINPUTSET-HENSYU-EXT.
+       41002111-BYOMEIINPUTSET-HEN-EXT.
            EXIT.
       *
       *****************************************************************
