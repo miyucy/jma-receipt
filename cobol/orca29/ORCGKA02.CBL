@@ -39,7 +39,6 @@
       *  04.08.00    NACL-多々納  16/05/XX  一般名表示対応
       *  04.08.00    NACL-多々納  16/11/XX   用法コード数量追加
       *  05.00.00    NACL-多々納  17/05/XX  API(GINBEE)対応
-      *  04.08.00    NACL-多々納  18/08/XX  分割調剤対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -280,7 +279,7 @@
            03  WRK-CSVKBN              PIC X(01).
            03  WRK-PRTKBN              PIC X(01).
       *
-      *H30.8
+      *H30.12
            03  WRK-INPUT-SURYO         PIC 9(03).
       *
       *   年齢表示
@@ -2899,7 +2898,7 @@
       *!
                PERFORM 400411-SUURYO-HEN-SEC
       *!!
-      *H30.8
+      *H30.XX
       *        分割調剤対応
                IF     (SPA-WKSRY-SRYCD (IDX-W IDX) =   "099208101" )
                  AND  (SPA-WKSRY-SRYSURYO (IDX-W IDX)  >   ZERO    )
@@ -3314,18 +3313,18 @@
                    MOVE    10              TO  SPA-GMN-CUR
                END-IF
            END-IF
-      *H30.8
+      *H30.XX
       *    分割調剤の時、日数変更不可
-           IF     (SPA-NAI-BUNKSUU    >   ZERO )
-              AND (SPA-GMN-NISUU      >   ZERO )
-               IF      SPA-NAI-BUNKSUU    NOT =   SPA-GMN-NISUU
-                   IF      SPA-NAI-KEIFLG2     =   ZERO
-                       MOVE    "K014"          TO  SPA-ERRCD
-                       MOVE    10              TO  SPA-GMN-CUR
-                       MOVE    1               TO  SPA-NAI-KEIFLG2
-                   END-IF
-               END-IF
-           END-IF
+      *    IF     (SPA-NAI-BUNKSUU    >   ZERO )
+      *       AND (SPA-GMN-NISUU      >   ZERO )
+      *        IF      SPA-NAI-BUNKSUU    NOT =   SPA-GMN-NISUU
+      *            IF      SPA-NAI-KEIFLG2     =   ZERO
+      *                MOVE    "K014"          TO  SPA-ERRCD
+      *                MOVE    10              TO  SPA-GMN-CUR
+      *                MOVE    1               TO  SPA-NAI-KEIFLG2
+      *            END-IF
+      *        END-IF
+      **** END-IF
            .
        4103-NISUU-CHK-EXT.
            EXIT.
@@ -4329,7 +4328,7 @@
                            MOVE    SPA-PARA-INPUTCHI-G  (IDX-W IDX-W2)
                                            TO  ORCHC19-INPUTCHI-G
                                                              (IDX1 IDX2)
-      *H30.8
+      *H30.12
       *                    分割調剤対応
                            IF     (SPA-WKSRY-SRYCD(IDX-W IDX-W2)
                                                    =   "099208101" )
@@ -4347,7 +4346,7 @@
            .
        41021-ORCHC19-HENSYU-EXT.
            EXIT.
-      *H30.8
+      *H30.XX
       *****************************************************************
       *    分割調剤　編集チェック処理
       *****************************************************************
@@ -5359,7 +5358,7 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H30.8
+      *H30.XX
                WHEN    "K014"
                    STRING  "警告！"
                            "分割調剤の合計日数と日数が違います。"

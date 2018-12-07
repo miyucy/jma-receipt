@@ -99,7 +99,6 @@
       * 04.08.00     NACL-多々納  17/06/XX  HAORI対応
       * 04.08.00     NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
       * 05.00.00     NACL-多々納  18/08/XX  HAORI印刷のみ対応
-      * 04.08.00     NACL-多々納  18/08/XX  退院処方箋等分割調剤対応
       *****************************************************************
       *
       *
@@ -3474,11 +3473,11 @@
       *        受診履歴なし（見出しのみ）
                IF      FLG-DATA-ARI    =   ZERO
                    PERFORM 200211-SYOHOU-INIT-SEC
+                   MOVE    ZERO                TO  FLG-CHIKHKT
                    MOVE    SPA-DRCD            TO  WRK-DRCD
                    MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
                    MOVE    SPA-SRYKA           TO  WRK-SRYKA
                    MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
-                   MOVE    ZERO                TO  FLG-CHIKHKT
                END-IF
                IF      WRK-PAGE-MAX        =   ZERO
                    MOVE    1                   TO  WRK-PAGE-MAX
@@ -3852,7 +3851,7 @@
                    MOVE    1               TO  FLG-DATA-ARI
                END-IF
       *
-      *****    MOVE    1               TO  FLG-DATA-ARI
+      ****     MOVE    1               TO  FLG-DATA-ARI
            END-EVALUATE
       *
            .
@@ -3916,8 +3915,6 @@
       *    中途終了、確認画面からのみ分割対応
            IF      (ORCHC19-KBN        =   SPACE
                                        OR  "4"
-      *H30.8     前回処方・退院時処方も対応
-                                       OR  "A"
                                        OR  "N"   )
                 CONTINUE
             ELSE
@@ -6059,20 +6056,12 @@
                END-PERFORM
       *
                IF      FLG-HENSYU          =   1
-      *H30.8
       *            前の剤の処方せん処理
-      *            PERFORM 20022-SYOHOU-HENSYU-SEC
-      *H30.8
-      *            保存
-                   PERFORM 2100-SYOHOU-ALLHEN-SEC
+                   PERFORM 20022-SYOHOU-HENSYU-SEC
                END-IF
            END-PERFORM
-      *H30.8
       *    処方せん印刷
-      *    PERFORM 200212-PRINT-CHK-SEC
-      *H30.8
-      *    処方せん印刷
-           PERFORM 2100-SYOHOU-SYORI-SEC
+           PERFORM 200212-PRINT-CHK-SEC
            .
        2004-HENKOU-SYORI-EXT.
            EXIT.
@@ -6118,18 +6107,6 @@
                                    NOT =   SPACE)
                MOVE    ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
                                            TO  WRK-SRY-COM-NAME
-                                                         (WRK-SRY-MAX)
-           END-IF
-      *
-      *H30.8
-      *    分割調剤きざみ値
-           IF     (ORCHC19-SRYCD (IDX-L IDX-L2)
-                                       =    "099208101")
-               MOVE    ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
-                                           TO  WRK-SRY-COM-NAME
-                                                         (WRK-SRY-MAX)
-               MOVE    ORCHC19-INPUTCHI-G (IDX-L IDX-L2)
-                                           TO  WRK-SRY-INPUTCHI-G
                                                          (WRK-SRY-MAX)
            END-IF
       *
@@ -7024,7 +7001,7 @@
            END-IF
            ADD     1                   TO  IDX-AP2
       *    編集名
-      **   MOVE    WRK-TNS-NAME        TO  FMSHOHO-YKZNAME
+      *****MOVE    WRK-TNS-NAME        TO  FMSHOHO-YKZNAME
            MOVE    WRK-QR-NAME         TO  FMSHOHO-YKZNAME
                                                   (IDX-AP1 IDX-AP2)
            MOVE    WRK-SRY-SRYCD(IDXA) TO  FMSHOHO-SRYCD

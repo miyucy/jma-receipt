@@ -42,7 +42,7 @@
       *  04.08.00    NACL-多々納  16/10/XX  薬情に用法コード服用時点対応
       *  04.08.00    NACL-多々納  16/11/21  ＱＲコードver.2.1対応
       *  04.08.00    NACL-多々納  17/03/XX  後発品変更可（処方）対応
-      *  04.08.00    NACL-多々納  18/08/XX  分割調剤対応
+      *  05.01.00    NACL-多々納  18/12/XX  分割調剤仮対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -345,7 +345,7 @@
            03  IDX-STR             PIC 9(04).
       *
            03  IDX-Z               PIC 9(04).
-      *H30.8
+      *H30.12
            03  IDXP                PIC 9(04).
       *
       *    一時領域
@@ -429,7 +429,7 @@
            03  WRK-FUKA-INPUT          PIC X(01).
            03  IDXJ2                   PIC 9(04).
       *
-      *H30.8
+      *H30.12
            03  WRK-INPUT-SURYO         PIC 9(03).
       *
       *
@@ -553,7 +553,6 @@
        01  PTCONF-REC.
            COPY    "CPPTCONF.INC".
       *
-      *TEST
       *    ＳＰＡ一時テーブル
        01  SPATMP-REC.
            COPY    "CPSPA-TMP.INC".
@@ -1831,7 +1830,6 @@
                        PERFORM 410112-GENERIC-HEN-SEC
                    END-IF
       *
-      *TEST
       *            剤毎に処理を行う
                    PERFORM 3101-WKSRYACT-HEN-SEC
                END-IF
@@ -2054,7 +2052,6 @@
        490111-PTCOM-SET-EXT.
            EXIT.
       *
-      *TEST
       *H28.5
       *****************************************************************
       *     一般名編集処理
@@ -2123,7 +2120,7 @@
        410112-GENERIC-HEN-EXT.
            EXIT.
       *
-      *TEST
+      *
       *****************************************************************
       *     診療行為内容編集処理
       *****************************************************************
@@ -3232,7 +3229,7 @@
       *
                PERFORM 400411-SUURYO-HEN-SEC
       *!!
-      *H30.8
+      *H30.12
       *        分割調剤対応
                IF     (SPA-WKSRY-SRYCD (IDX-W IDX) =   "099208101" )
                  AND  (SPA-WKSRY-SRYSURYO (IDX-W IDX)  >   ZERO    )
@@ -3622,18 +3619,18 @@
                    MOVE    5               TO  SPA-GMN-CUR
                END-IF
            END-IF
-      *H30.8
+      *H30.12
       *    分割調剤の時、日数変更不可
-           IF     (SPA-NAI-BUNKSUU    >   ZERO )
-              AND (SPA-GMN-NISUU      >   ZERO )
-               IF      SPA-NAI-BUNKSUU    NOT =   SPA-GMN-NISUU
-                   IF      SPA-NAI-KEIFLG2     =   ZERO
-                       MOVE    "K012"          TO  SPA-ERRCD
-                       MOVE    5               TO  SPA-GMN-CUR
-                       MOVE    1               TO  SPA-NAI-KEIFLG2
-                   END-IF
-               END-IF
-           END-IF
+      *    IF     (SPA-NAI-BUNKSUU    >   ZERO )
+      *       AND (SPA-GMN-NISUU      >   ZERO )
+      *        IF      SPA-NAI-BUNKSUU    NOT =   SPA-GMN-NISUU
+      *            IF      SPA-NAI-KEIFLG2     =   ZERO
+      *                MOVE    "K012"          TO  SPA-ERRCD
+      *                MOVE    5               TO  SPA-GMN-CUR
+      *                MOVE    1               TO  SPA-NAI-KEIFLG2
+      *            END-IF
+      *        END-IF
+      **   END-IF
            .
        4103-NISUU-CHK-EXT.
            EXIT.
@@ -4526,7 +4523,7 @@
                            MOVE    SPA-WKSRY-INPUTCHI-G (IDX-W IDX-W2)
                                            TO  ORCHC19-INPUTCHI-G
                                                              (IDX1 IDX2)
-      *H30.8
+      *H30.12
       *                    分割調剤対応
                            IF     (SPA-WKSRY-SRYCD(IDX-W IDX-W2)
                                                    =   "099208101" )
@@ -4543,7 +4540,7 @@
        41021-ORCHC19-HENSYU-EXT.
            EXIT.
       *
-      *H30.8
+      *H30.12
       *****************************************************************
       *    分割調剤　編集チェック処理
       *****************************************************************
@@ -5772,7 +5769,7 @@
            .
        970-PTCONF-READ-EXT.
            EXIT.
-      *TEST
+      *
       *****************************************************************
       *    一時保存テーブル読み込み
       *****************************************************************
@@ -5830,7 +5827,7 @@
            .
        910-SPATMP-CALL-EXT.
            EXIT.
-      *TEST
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
