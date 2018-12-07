@@ -153,6 +153,7 @@
       *  05.00.01    NACL-ÌçÏÆ    18/11/07  ´Î¤¬¤ó¡¦½ÅÅÙ´Î¹ÅÊÑ¼£ÎÅ¸¦µæÂ¥¿Ê
       *                                     »ö¶È°åÎÅÂÐ±þ
       *  05.00.02    NACL-ÌçÏÆ    18/11/21  ¹­Åç¸©ÃÏÊý¸øÈñÁÈ¤ß¹ç¤ï¤»ºîÀ®
+      *  05.00.03    NACL-ÌçÏÆ    18/12/04  053»ùÆ¸ÊÝ¸î¤Ë´Ø¤¹¤ëÁÈ¤ß¹ç¤ï¤»ºîÀ®
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3959,13 +3960,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    "019" OR "053"
                              IF  WRK-SRT-HJO-KOHNO             =
                                    "010" OR "021" OR "015" OR "016"
-                                                           OR "020"
+                                                  OR "011" OR "020"
                                 PERFORM 5701413-SYUKOH-HJO-SEC
                              END-IF
                              IF  (WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)
-                                                             = "053")
-                             AND (WRK-SRT-HJO-KOHNO          = "052")
-                             AND (WRK-KCOMB-HKNNUM(IDX2) NOT = SPACE)
+                                                            = "053" )
+                             AND (WRK-SRT-HJO-KOHNO         =
+                                   "052" OR "038" OR "024" OR
+                                   "079" OR "051" OR "091" OR
+                                   "054" OR "092"                   )
+      *                      AND (WRK-KCOMB-HKNNUM(IDX2) NOT = SPACE)
                                 PERFORM 5701413-SYUKOH-HJO-SEC
                              END-IF
                           ELSE
@@ -3985,7 +3989,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       ***                                      "51463032"
                                IF  WRK-SRT-HJO-KOHNO  =
                                    "021" OR "015" OR "051" OR "091"
-                                         OR "054"
+                                         OR "054" OR "016"
                                   PERFORM 5701413-SYUKOH-HJO-SEC
                                END-IF
       ***                    END-IF
@@ -4339,21 +4343,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  IF (( WRK-KCOMB-KOH1HKNNUM(IDX2)  = 
                        "010" OR "011" OR "015" OR "016" OR "019" OR
                        "020" OR "021" OR "024" OR "038" OR "051" OR
-                       "052" OR "079" OR "091" OR "054"            ) OR
+                       "052" OR "079" OR "091" OR "054" OR "092"   ) OR
                      ((WRK-KCOMB-KOH1HKNNUM(IDX2) >=  "100")  AND
                       (WRK-KCOMB-KOH1HKNNUM(IDX2) <=  "899")       ) OR
                      ( WRK-KCOMB-KOH1HKNNUM(IDX2)(1:2)  =  "99"    )) OR
                     (( WRK-KCOMB-KOH2HKNNUM(IDX2)  =
                        "010" OR "011" OR "015" OR "016" OR "019" OR
                        "020" OR "021" OR "024" OR "038" OR "051" OR
-                       "052" OR "079" OR "091" OR "054"            ) OR
+                       "052" OR "079" OR "091" OR "054" OR "092"   ) OR
                      ((WRK-KCOMB-KOH2HKNNUM(IDX2) >=  "100")  AND
                       (WRK-KCOMB-KOH2HKNNUM(IDX2) <=  "899")       ) OR
                      ( WRK-KCOMB-KOH2HKNNUM(IDX2)(1:2)  =  "99"    )) OR
                     (( WRK-KCOMB-KOH3HKNNUM(IDX2)  =
                        "010" OR "011" OR "015" OR "016" OR "019" OR
                        "020" OR "021" OR "024" OR "038" OR "051" OR
-                       "052" OR "079" OR "091" OR "054"            ) OR
+                       "052" OR "079" OR "091" OR "054" OR "092"   ) OR
                      ((WRK-KCOMB-KOH3HKNNUM(IDX2) >=  "100")  AND
                       (WRK-KCOMB-KOH3HKNNUM(IDX2) <=  "899")       ) OR
                      ( WRK-KCOMB-KOH3HKNNUM(IDX2)(1:2)  =  "99"    ))   
@@ -4362,19 +4366,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                         "027" AND "010" AND "011" AND "015" AND
                         "016" AND "019" AND "020" AND "021" AND
                         "024" AND "038" AND "051" AND "052" AND
-                        "079" AND "091" AND "054"               ) AND
+                        "079" AND "091" AND "054" AND "092"     ) AND
                        (WRK-KCOMB-KOH1HKNNUM(IDX2)(1:1) =  "0"  ))  OR
                       ((WRK-KCOMB-KOH2HKNNUM(IDX2)  NOT =
                         "027" AND "010" AND "011" AND "015" AND
                         "016" AND "019" AND "020" AND "021" AND
                         "024" AND "038" AND "051" AND "052" AND
-                        "079" AND "091" AND "054"               ) AND
+                        "079" AND "091" AND "054" AND "092"     ) AND
                        (WRK-KCOMB-KOH2HKNNUM(IDX2)(1:1) =  "0"  ))  OR
                       ((WRK-KCOMB-KOH3HKNNUM(IDX2)  NOT =
                         "027" AND "010" AND "011" AND "015" AND
                         "016" AND "019" AND "020" AND "021" AND
                         "024" AND "038" AND "051" AND "052" AND
-                        "079" AND "091" AND "054"               ) AND
+                        "079" AND "091" AND "054" AND "092"     ) AND
                        (WRK-KCOMB-KOH3HKNNUM(IDX2)(1:1) =  "0"  ))
                      CONTINUE
                    ELSE
