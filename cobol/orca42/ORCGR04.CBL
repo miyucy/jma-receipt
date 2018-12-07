@@ -82,6 +82,7 @@
       *
       *  04.09.01    NACL-Æ£¸¶    16/12/12  £È£Á£Ï£Ò£ÉÂÐ±þ
       *  05.00.01    NACL-Æ£¸¶    18/10/15  £Í£Ï£Î£Â£Ì£Ï£Â¥¨¥é¡¼ÂÐ±þ
+      *  05.00.03    NACL-Æ£¸¶    18/11/28  ¥«¥Ê»áÌ¾½ç¤Î¤È¤­¤Î°õºþÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2003,7 +2004,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
            IF      WRK-RECE09-EDDATA       =   SPACE
                IF      SPA-GMN-R04-PRTJYUN     =   "03"
-                   MOVE    "¥õ"            TO  WRK-RECE09-EDDATA (1:2)
+                   IF      SPA-ENCODING        =   2
+                       MOVE    "£ú"    TO  WRK-RECE09-EDDATA (1:2)
+                   ELSE
+                       MOVE    "¥õ"    TO  WRK-RECE09-EDDATA (1:2)
+                   END-IF
                ELSE
                    MOVE    "zzzzzzzzzzzzzzzzzzzz"
                                    TO  WRK-RECE09-EDDATA (1:20)
