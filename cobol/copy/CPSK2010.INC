@@ -301,8 +301,12 @@
            03  SYS-2010-SYOKEI2KBN-N        PIC  X(01).
            03  SYS-2010-SYOKEI2-TAIKBN-N    PIC  X(01).
       *
+      *限度額認定証提示が無い場合の特別計算（高齢者）
+           03  SYS-2010-NINNASIKBN-K        PIC  X(01).
+           03  SYS-2010-NINNASI-TAIKBN-K    PIC  X(01).
+      *
       *予備
-           03  SYS-2010-YOBI                PIC  X(328).
+           03  SYS-2010-YOBI                PIC  X(326).
       *端末ＩＤ
            03  SYS-2010-TERMID              PIC  X(16).
       *オペレータＩＤ
