@@ -779,6 +779,8 @@
       *  04.08.59    NACL-ÌçÏÆ    18/09/14  ÀÁµáÅÀ¿ô£°ÅÀ¸øÈñ¥ì¥»µ­ºÜ¤Ë
       *                                     ´Ø¤ï¤ë½¤Àµ
       *  04.08.60    NACL-ÌçÏÆ    18/09/27  ÁªÂò¼°¥³¥á¥ó¥ÈÂÐ±þ
+      *
+      *  05.00.01    NACL-ÌçÏÆ    18/12/03  ·²ÇÏ¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -27413,6 +27415,39 @@
                WHEN       "1"
                WHEN       "2"
                  EVALUATE   SYS-2010-NINJYO-TAIKBN
+                   WHEN      "0"
+                         MOVE     1     TO    FLG-SKY-TOKKOH
+                   WHEN      "1"
+                       IF ((RECE62-HKNNUM    NOT =  SPACE) AND
+                           (RECE62-HKNNUM    NOT =
+                                "060" AND "067" AND "039"))
+                       OR ((RECE62-HKNNUM    NOT =  SPACE) AND
+                           (RECE62-HKNNUM        =  "060") AND
+                           (RECE62-HKNJANUM(7:2) =  SPACE) AND
+                           (RECE62-HKNJANUM(3:1) =  "3"  ))
+                         MOVE     1     TO    FLG-SKY-TOKKOH
+                       END-IF
+                   WHEN      "2"
+                       IF ((RECE62-HKNNUM    NOT =  SPACE) AND
+                           (RECE62-HKNNUM    NOT =
+                                "060" AND "067" AND "039"))
+                         MOVE     1     TO    FLG-SKY-TOKKOH
+                       END-IF
+                   WHEN      "3"
+                       IF ((RECE62-HKNNUM    NOT =  SPACE) AND
+                           (RECE62-HKNNUM        =  "060") AND
+                           (RECE62-HKNJANUM(7:2) =  SPACE) AND
+                           (RECE62-HKNJANUM(3:1) =  "3"  ))
+                         MOVE     1     TO    FLG-SKY-TOKKOH
+                       END-IF
+                 END-EVALUATE
+             END-EVALUATE
+           END-IF
+      *
+           IF   RECE62-SRYYM  >= "201808"
+             EVALUATE  SYS-2010-NINNASIKBN-K
+               WHEN       "2"
+                 EVALUATE   SYS-2010-NINNASI-TAIKBN-K
                    WHEN      "0"
                          MOVE     1     TO    FLG-SKY-TOKKOH
                    WHEN      "1"
