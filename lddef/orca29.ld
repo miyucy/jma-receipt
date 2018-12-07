@@ -70,6 +70,7 @@ db	{
 	tbl_prtdata;
 	tbl_prtkanri;
 	tbl_api_para;
+        tbl_ptnum_public;
 };
 db "xml2" {
  fm_medicine_notebook;
