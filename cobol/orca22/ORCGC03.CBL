@@ -138,6 +138,9 @@
       *  04.08.03    NACL-藤原    16/02/10  自院病名への補足コメント追加
       *                                     対応
       *  04.08.04    NACL-藤原    17/07/10  移行、置換時の特定疾患の表示
+      *
+      *  05.00.01    NACL-藤原    18/11/22  Warning 対応
+      *  05.00.02    NACL-藤原    18/12/06  入力コードのチェック変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -632,7 +635,7 @@
                                            TO  BYO-BYOMEICD
                        PERFORM 410111-BYOMEI-HENSYU-SEC
                    END-IF              
-                   PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC
+                   PERFORM 4101111-BYOMEI-SELECT-HEN-SEC
                    PERFORM 41021-BYOMEI-HENSYU-SEC
                WHEN    "0103"
                WHEN    "0104"
@@ -978,7 +981,7 @@
                            PERFORM 410111-BYOMEI-HENSYU-SEC
                        END-PERFORM
                    END-IF
-                   PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC
+                   PERFORM 4101111-BYOMEI-SELECT-HEN-SEC
                    PERFORM 41021-BYOMEI-HENSYU-SEC
                WHEN    "0103"
                WHEN    "0104"
@@ -1965,7 +1968,7 @@
                IF    ( SPA-CIDCD2          =   SPACE )
                AND   ( SPA-CIDCD6          =   SPACE ) 
                AND   ( SPA-ERRCD           =   SPACE ) 
-                   PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC              
+                   PERFORM 4101111-BYOMEI-SELECT-HEN-SEC              
                    IF    ( WRK-HAISIYMDH       =   SPACE )
                    OR    ( SPA-C02-1042-MSG3-DSPKBN
                                                =   "1"   )
@@ -1982,7 +1985,7 @@
       *****************************************************************
       *    選択病名編集処理
       *****************************************************************
-       4101111-BYOMEI-SELECT-HENSYU-SEC    SECTION.
+       4101111-BYOMEI-SELECT-HEN-SEC   SECTION.
       *
            MOVE    USBYO-BUNRUICD      TO  SPA-GMN-C03-BUNRUICD
            IF      USBYO-BUNRUICD  NOT =   SPACE
@@ -2043,7 +2046,7 @@
            MOVE    3                   TO  SPA-GMN-C03-CUR 
       *
            .
-       4101111-BYOMEI-SELECT-HENSYU-EXT.
+       4101111-BYOMEI-SELECT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2130,15 +2133,17 @@
            PERFORM VARYING IDYY    FROM    1   BY  1
                    UNTIL   IDYY    >       3
                    OR      SPA-ERRCD   NOT =   SPACE
-               IF      SPA-GMN-C03-BYOMEIINPUTCD (IDYY)
+               IF      SPA-NAI-C03-BYOMEIINPUTCD (IDYY)
                                        NOT =   C03-BYOMEIINPUTCD (IDYY)
+               OR      C03-BYOMEIINPUTCD (IDYY)
+                                           =   SPACE
                    PERFORM 410021-BYOMEIINPUT-CHECK-SEC
                END-IF
            END-PERFORM
       *
            IF      SPA-ERRCD           =   SPACE
       *        病名入力コードエラー表示処理
-               PERFORM 410022-BYOMEIINPUTCD-ERR-HYOUJI-SEC
+               PERFORM 410022-BYOMEIINPUTCD-ERR-SEC
       *        病名入力コード編集処理
                EVALUATE    MCP-WIDGET
                    WHEN    "BYOMEIINPUTCD"
@@ -2157,11 +2162,12 @@
       *****************************************************************
       *    病名入力コードチェック処理
       *****************************************************************
-       410021-BYOMEIINPUT-CHECK-SEC          SECTION.
+       410021-BYOMEIINPUT-CHECK-SEC    SECTION.
       *
            IF      C03-BYOMEIINPUTCD (IDYY)
                                        =   SPACE
                INITIALIZE SPA-NAI-C03-BYOMEIINPUTCD-OCC    (IDYY)
+                          SPA-GMN-C03-BYOMEIINPUTCD        (IDYY)
                MOVE    "-"                 TO
                                    SPA-NAI-C03-BYOMEIINPUTCD-FLG (IDYY)
                MOVE    3                   TO  SPA-GMN-C03-CUR
@@ -2398,7 +2404,7 @@
       *****************************************************************
       *    病名入力コードエラー表示処理
       *****************************************************************
-       410022-BYOMEIINPUTCD-ERR-HYOUJI-SEC  SECTION.
+       410022-BYOMEIINPUTCD-ERR-SEC    SECTION.
       *
       *    エラーなしのとき
            IF    ( SPA-NAI-C03-BYOMEIINPUTCD-ERRCD (1)
@@ -2407,7 +2413,7 @@
                                        =   SPACE )
            AND   ( SPA-NAI-C03-BYOMEIINPUTCD-ERRCD (3)
                                        =   SPACE )
-               GO  TO  410022-BYOMEIINPUTCD-ERR-HYOUJI-EXT
+               GO  TO  410022-BYOMEIINPUTCD-ERR-EXT
            END-IF
       *
       *    エラーコード表示
@@ -2441,7 +2447,7 @@
                END-IF
            END-PERFORM
            .
-       410022-BYOMEIINPUTCD-ERR-HYOUJI-EXT.
+       410022-BYOMEIINPUTCD-ERR-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4790,12 +4796,25 @@ grpsys                                         SPA-AREA
            END-IF
       *
       *    入力コードのチェック
-           IF      SPA-GMN-C03-BYOMEIINPUTCD-G  NOT =   SPACE
-           AND     SPA-NAI-C03-BYOMEIINPUTCD (1)    =   SPACE
-           AND     SPA-NAI-C03-BYOMEIINPUTCD (2)    =   SPACE
-           AND     SPA-NAI-C03-BYOMEIINPUTCD (3)    =   SPACE
+           IF      SPA-GMN-C03-BYOMEIINPUTCD (1)
+                                           NOT =
+                                       SPA-NAI-C03-BYOMEIINPUTCD (1)
                MOVE    "0032"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMN-C03-CUR
+               GO  TO  4501-KEIKOKU-CHK-EXT
+           END-IF
+           IF      SPA-GMN-C03-BYOMEIINPUTCD (2)
+                                           NOT =
+                                       SPA-NAI-C03-BYOMEIINPUTCD (2)
+               MOVE    "0032"              TO  SPA-ERRCD
+               MOVE    18                  TO  SPA-GMN-C03-CUR
+               GO  TO  4501-KEIKOKU-CHK-EXT
+           END-IF
+           IF      SPA-GMN-C03-BYOMEIINPUTCD (3)
+                                           NOT =
+                                       SPA-NAI-C03-BYOMEIINPUTCD (3)
+               MOVE    "0032"              TO  SPA-ERRCD
+               MOVE    19                  TO  SPA-GMN-C03-CUR
                GO  TO  4501-KEIKOKU-CHK-EXT
            END-IF
       *
