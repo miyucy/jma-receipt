@@ -4796,17 +4796,25 @@ grpsys                                         SPA-AREA
            END-IF
       *
       *    入力コードのチェック
-           IF    ( SPA-GMN-C03-BYOMEIINPUTCD (1)
+           IF      SPA-GMN-C03-BYOMEIINPUTCD (1)
                                            NOT =
-                                       SPA-NAI-C03-BYOMEIINPUTCD (1) )
-           OR    ( SPA-GMN-C03-BYOMEIINPUTCD (2)
-                                           NOT =
-                                       SPA-NAI-C03-BYOMEIINPUTCD (2) )
-           OR    ( SPA-GMN-C03-BYOMEIINPUTCD (3)
-                                           NOT =
-                                       SPA-NAI-C03-BYOMEIINPUTCD (3) )
+                                       SPA-NAI-C03-BYOMEIINPUTCD (1)
                MOVE    "0032"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMN-C03-CUR
+               GO  TO  4501-KEIKOKU-CHK-EXT
+           END-IF
+           IF      SPA-GMN-C03-BYOMEIINPUTCD (2)
+                                           NOT =
+                                       SPA-NAI-C03-BYOMEIINPUTCD (2)
+               MOVE    "0032"              TO  SPA-ERRCD
+               MOVE    18                  TO  SPA-GMN-C03-CUR
+               GO  TO  4501-KEIKOKU-CHK-EXT
+           END-IF
+           IF      SPA-GMN-C03-BYOMEIINPUTCD (3)
+                                           NOT =
+                                       SPA-NAI-C03-BYOMEIINPUTCD (3)
+               MOVE    "0032"              TO  SPA-ERRCD
+               MOVE    19                  TO  SPA-GMN-C03-CUR
                GO  TO  4501-KEIKOKU-CHK-EXT
            END-IF
       *
