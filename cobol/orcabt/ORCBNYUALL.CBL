@@ -1575,6 +1575,9 @@
                    IF     (SPA-KIDCD           =   SPACE )
                       AND (SPA-K02N-TAIINYMD   =   "99999999")
                       AND (SPA-NYU-ERR-2       =   1     )
+      *H30.12
+                      AND (SPA-ERRCD           =   SPACE )
+      *
                        PERFORM 51092-NEXTCHOZAI-CHK-SEC
                    END-IF
                END-IF
@@ -1862,6 +1865,9 @@
       *    Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        5109-HKTSANTEI-CHK-SEC              SECTION.
+      *
+      *H30.12
+           MOVE    ZERO                TO  SPA-HKTKEI-FLG
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSCHKTCHKAREA
