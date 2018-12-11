@@ -291,7 +291,7 @@
            03  CONST-TOTAL-IDX             PIC 9(05)   VALUE 52.
            03  CONST-TPTINF-MAX            PIC 9(05)   VALUE 1000.
            03  CONST-TSRYCD-MAX            PIC 9(05)   VALUE 100.
-           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 7.
+           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 5.
            03  CONST-NSRYACT-MAX           PIC 9(05)   VALUE 20.
            03  CONST-PARA-SRYCD-MAX        PIC 9(05)   VALUE 7.
       *
