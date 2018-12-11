@@ -14,6 +14,92 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
+ECHO_STDERR() {
+    echo "$@" >&2
+}
+
+err () {
+  MSG="\e[1;31mERROR:\e[m $1"
+  NUM=$2
+  ECHO_STDERR -e $MSG
+  exit ${NUM}
+}
+
+run() {
+    /bin/bash "$@" 2> >(while read line; do
+	if [[ "$line" =~ "ERROR:" ]]; then
+	    echo -e "${line/ERROR:/\\e[1;31mERROR:\\e[m}"
+	    echo "($@)"
+	    if [ ${JMSG} -eq 1 ] ; then
+		err "マスターデータ移行処理は異常終了しました。" 99
+	    else
+    		err "Master Data migrate process was aborted." 99
+	    fi
+	fi
+    done)
+    result=$?
+    if [ $result -ne 0 ]; then
+	exit $result
+    fi
+    return 0
+}
+
+if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.utf8" ]; then
+    JMSG=1
+else
+    JMSG=0
+fi
+
+FLAG=`id -u`
+
+if [ ${FLAG} -ne 0 ] ; then
+    if [ ${JMSG} -eq 1 ] ; then
+	err "root権限で実行してください。"
+    else
+    	err "must be root permission."
+    fi
+    exit 1
+fi
+
+# Check for echo -n vs echo \c
+if echo '\c' | grep -s c >/dev/null
+then
+    ECHO_N="echo -n"
+    ECHO_C=""
+else
+    ECHO_N="echo"
+    ECHO_C='\c'
+fi
+
+#
+#if [ "$1" != "-y" -a "$1" != "-Y" ] ; then
+    echo
+    echo "マスターデータ移行処理を行います。"
+    if [ ${JMSG} -eq 1 ] ; then
+	$ECHO_N "よろしいですか？ (y/n) "$ECHO_C
+    else
+	$ECHO_N "Are you sure? (y/n) "$ECHO_C
+    fi
+    read REPLY
+
+    if [ "$?" -eq 1 ] ; then
+	if [ ${JMSG} -eq 1 ] ; then
+	    echo "NOTICE: ユーザにより処理をキャンセルされました。"
+	else
+    	    echo "NOTICE: user canceled."
+	fi
+	exit 1
+    fi
+    if [ "$REPLY" != "y" -a "$REPLY" != "Y" ] ; then
+	if [ ${JMSG} -eq 1 ] ; then
+	    echo "NOTICE: ユーザにより処理をキャンセルされました。"
+	else
+    	    echo "NOTICE: user canceled."
+	fi
+	exit 0
+    fi
+#fi
+
 LOG=${LOGDIR}/jma-migrate-v51.log
 TDDIR=/var/tmp/jma-migrate-v51
 
@@ -52,13 +138,13 @@ fi
 # montsuqi関係テーブルを作成
 su - ${ORCAUSER} -c "/usr/lib/panda/bin/monsetup -dir ${LDDIRECTORY}"
 
-# 標準テーブルのマスタ更新（データ移行対象マスタのみ）
-su - ${ORCAUSER} -c "echo \"標準テーブルのマスタ更新処理を行います。\" | tee -a ${LOG}"
+# マスタ更新（データ移行対象マスタのみ）
+su - ${ORCAUSER} -c "echo \"マスタ更新処理を行います。\" | tee -a ${LOG}"
 EXSH=`type -P migrate-v51_master_upgrade_ctrl.sh`
 su - ${ORCAUSER} -c "bash ${EXSH}"
 
-# 各テーブルの移行処理
-su - ${ORCAUSER} -c "echo \"移行対象テーブルの移行処理を行います。\" | tee -a ${LOG}"
+# 対象マスタ移行処理
+su - ${ORCAUSER} -c "echo \"マスタ移行処理を行います。\" | tee -a ${LOG}"
 EXSH=`type -P migrate-v51_migrate_ctrl.sh`
 su - ${ORCAUSER} -c "bash ${EXSH}"
 

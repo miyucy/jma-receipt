@@ -111,6 +111,7 @@
                05  WRK-PRF-INT         PIC X(08).
                05  WRK-PRF-POINT       PIC X(01).
                05  WRK-PRF-DEC         PIC X(05).
+           03  WRK-YUKOSTYMD-COMP      PIC X(08).
       *
        01  MST-TENSU-AREA.
            03  MST-TENSU-OCC           OCCURS  30.
@@ -428,7 +429,15 @@ review*     IF     (ORG-TENSIKIBETU     =   2  OR  4) AND
       *         CONTINUE
       *     ELSE
                IF      ORG-TEN         NOT =   MST-TEN
-                   MOVE    1                   TO  TBL-ERR (13)
+      *            クリーンインストールのダンプデータの誤りを救済
+      *            眼底カメラ検査用インスタントフィルム 50円
+                   IF     (ORG-SRYCD           =   "729780000")  AND
+                          (ORG-TEN             =   50) AND
+                          (MST-TEN             =   0)
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  TBL-ERR (13)
+                   END-IF
                END-IF
       *     END-IF
            IF      ORG-TANICD      NOT =   MST-TANICD
@@ -864,8 +873,10 @@ review*    IF     (ORG-OLDTENSKB       =   2  OR  4) AND
            END-IF
            IF      ORG-KEIKASOCHIYMD
                                    NOT =   MST-KEIKASOCHIYMD
-               IF     (MST-KEIKASOCHIYMD   =   SPACE) AND
-                      (ORG-KEIKASOCHIYMD   =   "00000000")
+               IF    ((MST-KEIKASOCHIYMD   =   SPACE) AND
+                      (ORG-KEIKASOCHIYMD   =   "00000000"))  OR
+                     ((MST-KEIKASOCHIYMD   =   "00000000") AND
+                      (ORG-KEIKASOCHIYMD   =   SPACE))
                    CONTINUE
                ELSE
                    MOVE    1                   TO  TBL-ERR (138)
@@ -1841,6 +1852,10 @@ review*            ELSEを再考する
                        ELSE
                            MOVE    TNS-TENSU-REC       TO
                                                    ORG-TENSU-BODY (IDM)
+                           IF      IDM                 =   1
+                               MOVE    TNS-YUKOSTYMD       TO
+                                                   WRK-YUKOSTYMD-COMP
+                           END-IF
                        END-IF
                    ELSE
                        MOVE    1                   TO  FLG-TENSU
@@ -1876,21 +1891,26 @@ review*            ELSEを再考する
                    PERFORM 900-DBFETCH-SEC
                    IF      MCP-RC              =   ZERO
                        MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                       ADD     1                   TO  IDM
-                       IF      IDM                 >   30
-                           MOVE    "MST-TENSU-BODY"
-                                                   TO  WRK-ARRAYNAME
-                           PERFORM 900-ARRAYABORT-SEC
+      *                移行前に過日期間のレコードを削除されていた対応
+                       IF      WRK-YUKOSTYMD-COMP  >   TNS-YUKOEDYMD
+                           CONTINUE
                        ELSE
-                           MOVE    TNS-TENSU-REC       TO
+                           ADD     1                   TO  IDM
+                           IF      IDM                 >   30
+                               MOVE    "MST-TENSU-BODY"
+                                                       TO  WRK-ARRAYNAME
+                               PERFORM 900-ARRAYABORT-SEC
+                           ELSE
+                               MOVE    TNS-TENSU-REC       TO
                                                    MST-TENSU-BODY (IDM)
-                       END-IF
+                           END-IF
       * 特定器材　金額を点数金額へ登録するマスタであるか判定
-                       IF     (TNS-SRYCD(1:1)      =   "7")  AND
-                             ((TNS-TENSIKIBETU     =   2)    OR
-                              (TNS-SANSOKBN        =   2 OR 3 OR 4 OR
-                                                       5 OR 9))
-                           MOVE    1                   TO  FLG-TEN2PRICE
+                           IF     (TNS-SRYCD(1:1)      =   "7")  AND
+                                 ((TNS-TENSIKIBETU     =   2)    OR
+                                  (TNS-SANSOKBN        =   2 OR 3 OR 4
+                                                        OR 5 OR 9))
+                               MOVE    1               TO  FLG-TEN2PRICE
+                           END-IF
                        END-IF
                    ELSE
                        MOVE    1                   TO  FLG-TENSU
