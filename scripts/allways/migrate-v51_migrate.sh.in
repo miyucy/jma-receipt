@@ -35,7 +35,7 @@ if [ ${RCNT} -gt 0 ]; then
 else
   PROID=ORCBMIGADRS
   LIMITTER=`printf "%05d" 0`
-  PRFFILE="${LOGDIR}/${PROID}-prf.csv"
+  PRFFILE="${LOGDIR}/${HOSPNUM}${PROID}-prf.csv"
   PARAM="${HOSPNUM},${LIMITTER},${PRFFILE},"
   ${DBSTUB} -dir ${LDDIRECTORY} -bd migv51 ${PROID} -parameter "${PARAM}" 2>&1 | nkf -Ewu
   RC=${PIPESTATUS[0]}
@@ -62,7 +62,7 @@ if [ ${RCNT} -gt 0 ]; then
 else
   PROID=ORCBMIGCHK
   LIMITTER=`printf "%05d" 0`
-  PRFFILE="${LOGDIR}/${PROID}-prf.csv"
+  PRFFILE="${LOGDIR}/${HOSPNUM}${PROID}-prf.csv"
   PARAM="${HOSPNUM},${LIMITTER},${PRFFILE},"
   ${DBSTUB} -dir ${LDDIRECTORY} -bd migv51 ${PROID} -parameter "${PARAM}" 2>&1 | nkf -Ewu
   RC=${PIPESTATUS[0]}
@@ -89,7 +89,7 @@ if [ ${RCNT} -gt 0 ]; then
 else
   PROID=ORCBMIGHKNJAINF
   LIMITTER=`printf "%05d" 0`
-  PRFFILE="${LOGDIR}/${PROID}-prf.csv"
+  PRFFILE="${LOGDIR}/${HOSPNUM}${PROID}-prf.csv"
   PARAM="${HOSPNUM},${LIMITTER},${PRFFILE},"
   ${DBSTUB} -dir ${LDDIRECTORY} -bd migv51 ${PROID} -parameter "${PARAM}" 2>&1 | nkf -Ewu
   RC=${PIPESTATUS[0]}
@@ -116,7 +116,7 @@ if [ ${RCNT} -gt 0 ]; then
 else
   PROID=ORCBMIGSRYCDCHG
   LIMITTER=`printf "%05d" 0`
-  PRFFILE="${LOGDIR}/${PROID}-prf.csv"
+  PRFFILE="${LOGDIR}/${HOSPNUM}${PROID}-prf.csv"
   PARAM="${HOSPNUM},${LIMITTER},${PRFFILE},"
   ${DBSTUB} -dir ${LDDIRECTORY} -bd migv51 ${PROID} -parameter "${PARAM}" 2>&1 | nkf -Ewu
   RC=${PIPESTATUS[0]}
@@ -143,7 +143,7 @@ if [ ${RCNT} -gt 0 ]; then
 else
   PROID=ORCBMIGTENSU
   LIMITTER=`printf "%05d" 0`
-  PRFFILE="${LOGDIR}/${PROID}-prf.csv"
+  PRFFILE="${LOGDIR}/${HOSPNUM}${PROID}-prf.csv"
   PARAM="${HOSPNUM},${LIMITTER},${PRFFILE},"
   ${DBSTUB} -dir ${LDDIRECTORY} -bd migv51 ${PROID} -parameter "${PARAM}" 2>&1 | nkf -Ewu
   RC=${PIPESTATUS[0]}
