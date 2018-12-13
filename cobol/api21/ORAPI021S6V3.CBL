@@ -81,6 +81,7 @@
            03  FLG-CANSEL              PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
            03  FLG-ARI                 PIC 9(01).
+           03  FLG-HKNNO               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1755,14 +1756,24 @@
                    UNTIL      (IDX     >   200  )
                          OR   (ORCSAPIHKN-THKNCOMBI (IDX)
                                            =   SPACE  )
+               MOVE    ZERO                TO  FLG-HKNNO
       *        労災・自賠責対象外
                IF     (ORCSAPIHKN-HKNNUM (IDX) =   "971"
                                                OR  "973")
                 OR    (ORCSAPIHKN-KOHNUM (IDX 1)   =   "970")
-      *         外来非表示は対象外
-                OR    (ORCSAPIHKN-HYOJIKBN (IDX)   =   "3"  )
-                   CONTINUE
-               ELSE
+                   MOVE    1               TO  FLG-HKNNO
+               END-IF
+      *        外来非表示は対象外
+               IF     (SPA-NYUGAIKBN       =   "2"  )
+                 AND  (ORCSAPIHKN-HYOJIKBN (IDX)   =   "3"  )
+                   MOVE    1               TO  FLG-HKNNO
+               END-IF
+      *        入院非表示は対象外
+               IF     (SPA-NYUGAIKBN       =   "1"  )
+                 AND  (ORCSAPIHKN-HYOJIKBN (IDX)   =   "2"  )
+                   MOVE    1               TO  FLG-HKNNO
+               END-IF
+               IF      FLG-HKNNO           =   ZERO
       *            変更可保険組合せ編集
                    PERFORM 200141-HKNHEN-TBL-SEC
                END-IF
