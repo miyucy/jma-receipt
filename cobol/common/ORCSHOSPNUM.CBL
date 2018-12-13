@@ -146,6 +146,11 @@
                MOVE    SYSUSER-HOSPNUM     TO  SPA-HOSPNUM
       *        スーパーバイザー
                MOVE    SYSUSER-SUPERVISOR  TO  SPA-SUPERVISOR
+      *ginbee ログインチェック
+               IF     (MCP-MIDDLEWARE-NAME =   "ginbee")
+                 AND  (SPA-HOSPNUM     NOT =   1)
+                   MOVE    "1002"              TO  SPA-ERRCD
+               END-IF
            ELSE
                MOVE    "1002"              TO  SPA-ERRCD
       *

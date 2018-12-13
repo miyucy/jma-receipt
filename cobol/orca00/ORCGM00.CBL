@@ -1092,12 +1092,6 @@
       *    感染症
            PERFORM 810-INFECTION-001-SEC
       *
-      *ginbee group 臨時対応 2018.12 削除
-           IF     (SPA-MW              =   SPA-GINBEE)
-             AND  (SPA-HOSPNUM     NOT =   1)
-               PERFORM 820-GINBEE-CAUTION-001-SEC
-           END-IF
-      *
            MOVE    SPACE           TO  SPA-MID1-FLG
            MOVE    SPACE           TO  SPA-MIDCD
            .
@@ -2512,27 +2506,6 @@
            PERFORM 990-DBCLOSE-SEC
            .
        810-INFECTION-003-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クラウド医療機関識別番号２以上処理
-      *****************************************************************
-       820-GINBEE-CAUTION-001-SEC  SECTION.
-      *
-           IF      SPA-ERRCD           =   SPACE
-               STRING  "【お願い】非推奨使用のためオルカサポート"
-                       "センターまで連絡をお願いします。"
-                                           DELIMITED  BY  SIZE
-                                           INTO    SPA-GMN-LBLMSG2
-               END-STRING
-               STRING  "現在は使用可能ですが、１２月末に使用不可と"
-                       "なります。"
-                                           DELIMITED  BY  SIZE
-                                           INTO    SPA-GMN-LBLMSG
-               END-STRING
-           END-IF
-           .
-       820-GINBEE-CAUTION-001-EXT.
            EXIT.
       *
       *****************************************************************
