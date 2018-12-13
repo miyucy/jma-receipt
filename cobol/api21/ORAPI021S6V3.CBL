@@ -27,7 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  05.00.00    NACL-多々納  18/06/XX  入院対応追加
+      *  05.00.00    NACL-多々納  18/12/XX  入院対応追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -272,7 +272,7 @@
                05  WRK-PARA-SRYYM          PIC X(06).
       *        診療科
                05  WRK-PARA-SRYKA          PIC X(02).
-      *H30.6
+      *H30.12
       *        入外区分
                05  WRK-PARA-NYUGAIKBN      PIC X(01).
       *
@@ -999,7 +999,7 @@
            MOVE    MDCREQ-ORCA-UID       TO  MDCRES-ORCA-UID
       *    外来とする
       **** MOVE    "2"                   TO  SPA-NYUGAIKBN
-      *H30.6
+      *H30.12
       *    入外区分
            IF      MDCREQ-OUTPATIENT-CLASS =   "I"
       *        入院
@@ -1440,7 +1440,7 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key67"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *H30.6
+      *H30.12
       *    入院調剤料のみの保険組合せ判定
            IF      SPA-NYUGAIKBN       =   "1"
                PERFORM 200132-NYUCHOZAI-SEC
@@ -1620,7 +1620,7 @@
       *
            ADD     1                   TO  IDX-J
       *
-      *H30.6
+      *H30.12
            MOVE    JYURRK-SRYYMD       TO  TBL-SRYYMD (IDX-J)
            MOVE    JYURRK-HKNCOMBINUM  TO  TBL-HKNCOMBI (IDX-J)
       *
@@ -1641,7 +1641,7 @@
                                                              (IDX-J)
            END-IF
       *
-      *H30.6
+      *H30.12
       *    保険組合せ編集
            MOVE    JYURRK-SRYYMD   TO  WRK-CHK-YMD
            PERFORM 2001321-HKNCOMBI-MEDHEN-SEC
@@ -1993,7 +1993,7 @@
        2004111-AGECHK-EXT.
            EXIT.
       *
-      *H30.6
+      *H30.12
       *****************************************************************
       *    入院調剤料のみの保険組合せ判定処理
       *****************************************************************
@@ -2112,7 +2112,7 @@
            MOVE    WRK-HKNCOMBI        TO  TBL-HKNCOMBI(IDX-J)
       *
       *    入院調剤料のみ対応
-           MOVE    "ONLY"              TO  MDCRES-CHOZAI-ONLY(IDX-J)
+           MOVE    "Ad_Only"           TO  MDCRES-CHOZAI-ONLY(IDX-J)
       *    算定日付
            MOVE    WRK-CHK-YMD         TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
@@ -2219,7 +2219,7 @@
            IF      WRK-ERRCD           =   SPACE
                IF     (WRK-PARA-SRYYM      =   WRK-PERFORM-YM)
                  AND  (WRK-PARA-SRYKA      =   WRK-SRYKA    )
-      *H30.6
+      *H30.12
                  AND  (WRK-PARA-NYUGAIKBN  =   SPA-NYUGAIKBN)
                    CONTINUE
                ELSE

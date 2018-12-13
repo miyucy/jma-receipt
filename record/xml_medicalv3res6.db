@@ -54,7 +54,7 @@ xml_medicalv3res6 {
 		Insurance_Combination_Mode      varchar(01);
 #---    入院調剤料のみ算定した履歴
             	Ad_Dispensing_Information   {
-			Ad_Dispensing_Mode      varchar(04);
+			Ad_Dispensing_Mode      varchar(10);
         	};
 	}[150];
 #---    保険組合せ情報

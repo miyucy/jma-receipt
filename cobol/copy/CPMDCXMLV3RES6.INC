@@ -101,7 +101,7 @@
       *H30.6
       *                入院調剤料のみ算定
                        09  MDCRES-CHOZAI-AREA.
-                           11  MDCRES-CHOZAI-ONLY      PIC X(04).
+                           11  MDCRES-CHOZAI-ONLY      PIC X(10).
       *!!
       * リクエスト＝０１
       *        保険組合せ一覧返却
