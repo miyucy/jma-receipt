@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      * 0500.201811
+      * 0510.201812
       ********************************************************************
        01  APIINF-AREA.
          03  APIINF-DATA.
@@ -28,7 +28,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "受付一覧取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca11".
            05  FILLER                  PIC  X(32)      VALUE
@@ -38,7 +38,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "受付登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -48,7 +48,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "請求金額取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -58,7 +58,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "住所マスタ取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -68,7 +68,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "日レセＡＰＩバージョン取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201805".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -78,7 +78,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者予約情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -88,7 +88,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "予約一覧取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca14".
            05  FILLER                  PIC  X(32)      VALUE
@@ -98,7 +98,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "予約登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca31".
            05  FILLER                  PIC  X(32)      VALUE
@@ -108,7 +108,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "出産育児一時金情報取得・登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -118,7 +118,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "薬剤併用禁忌チェック".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -128,7 +128,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者病名情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -138,7 +138,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "病名マスタ一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca22".
            05  FILLER                  PIC  X(32)      VALUE
@@ -148,7 +148,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者病名登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca22".
            05  FILLER                  PIC  X(32)      VALUE
@@ -158,7 +158,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者病名登録２".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201810".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca13".
            05  FILLER                  PIC  X(32)      VALUE
@@ -168,7 +168,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "照会検索項目情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca13".
            05  FILLER                  PIC  X(32)      VALUE
@@ -178,7 +178,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "照会".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -188,7 +188,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "帳票データ取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca31".
            05  FILLER                  PIC  X(32)      VALUE
@@ -198,7 +198,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "入院会計照会".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201805".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -208,7 +208,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "仮計算情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -218,7 +218,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "入院基本情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -228,7 +228,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "病棟・病室情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca36".
            05  FILLER                  PIC  X(32)      VALUE
@@ -238,7 +238,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "入院患者照会".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201805".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -248,7 +248,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "入院患者食事等情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca31".
            05  FILLER                  PIC  X(32)      VALUE
@@ -258,7 +258,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "入院会計未作成チェック".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca32".
            05  FILLER                  PIC  X(32)      VALUE
@@ -268,7 +268,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "医療区分・ADL点数登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201809".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -278,7 +278,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "医療区分・ADL点数情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201809".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca31".
            05  FILLER                  PIC  X(32)      VALUE
@@ -288,7 +288,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "入退院登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -298,7 +298,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "入院患者基本情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201806".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -308,7 +308,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "画像データ取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -318,7 +318,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "収納情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca23".
            05  FILLER                  PIC  X(32)      VALUE
@@ -328,7 +328,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "収納登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201809".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -338,7 +338,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "保険者一覧情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -348,7 +348,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "保険・公費一覧取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -358,7 +358,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "カルテ１号紙（入院）".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -368,7 +368,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "カルテ１号紙（外来）".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -378,7 +378,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "カルテ３号紙（入院）".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -388,7 +388,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "カルテ３号紙（外来）".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca101".
            05  FILLER                  PIC  X(32)      VALUE
@@ -398,7 +398,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ユーザー管理".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201810".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -408,7 +408,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "マスタデータ最終更新日取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -418,7 +418,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -428,7 +428,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "入院患者決定".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201806".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -438,7 +438,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療内容基本チェック".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201806".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -448,7 +448,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療確認・請求確認".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201806".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -458,7 +458,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療行為削除".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201809".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -468,7 +468,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "中途終了データ登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -478,7 +478,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "初診算定日登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -488,7 +488,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診察料取得（初回接続）".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -498,7 +498,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療内容基本チェック".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -508,7 +508,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療確認・請求確認".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201810".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -518,7 +518,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療行為削除".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201809".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -528,7 +528,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "リハビリコメント登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -538,7 +538,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "保険履歴情報一括変更".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -548,7 +548,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "排他制御解除".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -558,7 +558,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "セット登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -568,7 +568,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "点数マスタ一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201810".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca102".
            05  FILLER                  PIC  X(32)      VALUE
@@ -578,7 +578,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "点数マスタ情報登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -588,7 +588,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "お薬手帳印刷".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -598,7 +598,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者基本情報一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -608,7 +608,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者病名情報一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -618,7 +618,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者基本情報".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201810".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -628,7 +628,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者番号一覧取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -638,7 +638,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "複数患者情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -648,7 +648,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者情報取得(氏名検索)".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -658,7 +658,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "全保険組合せ一覧取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -668,7 +668,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者メモ情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -678,7 +678,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者診療情報一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca12".
            05  FILLER                  PIC  X(32)      VALUE
@@ -688,7 +688,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca12".
            05  FILLER                  PIC  X(32)      VALUE
@@ -698,7 +698,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者基本情報登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca12".
            05  FILLER                  PIC  X(32)      VALUE
@@ -708,7 +708,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者保険公費情報登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca12".
            05  FILLER                  PIC  X(32)      VALUE
@@ -718,7 +718,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者労災自賠責情報登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca12".
            05  FILLER                  PIC  X(32)      VALUE
@@ -728,7 +728,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者低所得情報登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca12".
            05  FILLER                  PIC  X(32)      VALUE
@@ -738,7 +738,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者公費一部負担金登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca12".
            05  FILLER                  PIC  X(32)      VALUE
@@ -748,7 +748,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "介護情報登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca12".
            05  FILLER                  PIC  X(32)      VALUE
@@ -758,7 +758,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者禁忌薬剤登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -768,7 +768,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "処方せん印刷".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201807".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -778,7 +778,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "PUSH通知一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca44".
            05  FILLER                  PIC  X(32)      VALUE
@@ -788,7 +788,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "チェック用個別レセ電データ取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca44".
            05  FILLER                  PIC  X(32)      VALUE
@@ -798,7 +798,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "レセ電データ一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca44".
            05  FILLER                  PIC  X(32)      VALUE
@@ -808,7 +808,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "個別レセ電データ取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca42".
            05  FILLER                  PIC  X(32)      VALUE
@@ -818,7 +818,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "レセプト作成".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca42".
            05  FILLER                  PIC  X(32)      VALUE
@@ -828,7 +828,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "レセプト印刷".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -838,7 +838,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "日次・月次統計".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -848,7 +848,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "症状詳記情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca25".
            05  FILLER                  PIC  X(32)      VALUE
@@ -858,7 +858,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "症状詳記登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -868,7 +868,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "基本情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201810".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -878,7 +878,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "システム管理情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -888,7 +888,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "システム状態取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -898,7 +898,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "入院診療データ一括登録".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201811".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -908,7 +908,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "中途終了患者情報一覧取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -918,7 +918,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "中途データ管理".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201806".
+           "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -928,7 +928,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "来院患者一覧取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0510.201812".
          03  APIINF-R REDEFINES APIINF-DATA.
            05  APIINF-OCC              OCCURS 91.
              07  APIINF-LD             PIC  X(16).
