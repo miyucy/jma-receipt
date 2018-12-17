@@ -262,10 +262,8 @@
                PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    1               TO  WRK-PRFCD
-                   PERFORM 290-PRF-SEC
                ELSE
                    MOVE    91              TO  WRK-PRFCD
-                   PERFORM 290-PRF-SEC
                END-IF
            END-IF
            .

@@ -45,6 +45,7 @@ path	all	{
 		SELECT *
 		FROM tbl_hknjainf_org
 			WHERE   HOSPNUM      =   :HOSPNUM
+			ORDER BY HKNJANUM
  		;
 	};
 };

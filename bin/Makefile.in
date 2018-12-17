@@ -22,7 +22,8 @@ shell_sources = \
 	medphoto_store.sh.in \
 	dasconf_store.sh.in \
 	plugin_check.sh.in \
-	jma-migrate-v51.sh.in
+	jma-migrate-v51.sh.in \
+	master_convert_check.sh.in
 
 ruby_sources = \
 	jma-receipt-plugin-db-convert.rb.in \

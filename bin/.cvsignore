@@ -20,4 +20,5 @@ dasconf_store.sh
 plugin_check.sh
 jma-migrate
 jma-migrate-v51.sh
+master_convert_check.sh
 *.rb

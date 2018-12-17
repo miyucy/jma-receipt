@@ -127,7 +127,7 @@ fi
 if ! [ -d ${TDDIR} ]; then
   su - ${ORCAUSER} -c "echo \"該当テーブルをバックアップします。[${TDDIR}]\" | tee -a ${LOG}"
   su - ${ORCAUSER} -c "mkdir -p ${TDDIR}"
-  su - ${ORCAUSER} -c "pg_dump -Fc -t tbl_mstkanri_org ${DBNAME} > ${TDDIR}/tbl_mstkanri_org.dump"
+  su - ${ORCAUSER} -c "pg_dump -Fp -t tbl_mstkanri_org ${DBNAME} > ${TDDIR}/tbl_mstkanri_org.dump"
   su - ${ORCAUSER} -c "pg_dump -Fc -t tbl_adrs_org ${DBNAME} > ${TDDIR}/tbl_adrs_org.dump"
   su - ${ORCAUSER} -c "pg_dump -Fc -t tbl_chk_org ${DBNAME} > ${TDDIR}/tbl_chk_org.dump"
   su - ${ORCAUSER} -c "pg_dump -Fc -t tbl_hknjainf_org ${DBNAME} > ${TDDIR}/tbl_hknjainf_org.dump"
@@ -150,7 +150,7 @@ su - ${ORCAUSER} -c "bash ${EXSH}"
 
 # 移行処理完了のためテーブルは削除
 # マスタ管理テーブルは一応別名でバックアップしておく
-su - ${ORCAUSER} -c "pg_dump -Fc -t tbl_mstkanri_org ${DBNAME} > ${TDDIR}/tbl_mstkanri_org_after.dump"
+su - ${ORCAUSER} -c "pg_dump -Fp -t tbl_mstkanri_org ${DBNAME} > ${TDDIR}/tbl_mstkanri_org_after.dump"
 su - ${ORCAUSER} -c "psql ${DBCONNOPTION} ${DBNAME} -Atqc \"
   drop table if exists tbl_mstkanri_org;
   drop table if exists tbl_adrs_org;

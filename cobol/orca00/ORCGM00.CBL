@@ -1084,6 +1084,12 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
+      *        マスタデータ移行処理チェックの結果取得
+      *        正常:SPA-ERRCD=SPACE 異常:SPA-ERRCD="1022"
+               CALL    "ORCSMSTCONVCHECK"  USING   SPA-AREA
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
       *        プラグイン起動時設定チェックの結果取得
       *        正常:SPA-ERRCD=SPACE 異常:SPA-ERRCD="1021"
                CALL    "ORCSPLUGINCHECK"   USING   SPA-AREA
@@ -2207,6 +2213,12 @@
                    END-STRING
                WHEN    "1021"
                    STRING  "プラグイン設定に矛盾があります。"
+                           "管理者まで連絡してください。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "1022"
+                   STRING  "マスタデータ移行処理が未実施です。"
                            "管理者まで連絡してください。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
