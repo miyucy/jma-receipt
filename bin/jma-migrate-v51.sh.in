@@ -61,6 +61,30 @@ if [ ${FLAG} -ne 0 ] ; then
     exit 1
 fi
 
+if [ $# -gt 2 ]; then
+  err "オプションが不正です。"
+fi
+
+NOACCESS="false"
+NOCONVERT="false"
+
+if ! [ -z ${1} ]; then
+  if [ "${1}" = "noaccesskey" ]; then
+    NOACCESS="true"
+  fi
+  if [ "${1}" = "noconv" ]; then
+    NOCONVERT="true"
+  fi
+fi
+if ! [ -z ${2} ]; then
+  if [ "${2}" = "noaccesskey" ]; then
+    NOACCESS="true"
+  fi
+  if [ "${2}" = "noconv" ]; then
+    NOCONVERT="true"
+  fi
+fi
+
 # Check for echo -n vs echo \c
 if echo '\c' | grep -s c >/dev/null
 then
@@ -74,7 +98,11 @@ fi
 #
 #if [ "$1" != "-y" -a "$1" != "-Y" ] ; then
     echo
-    echo "マスターデータ移行処理を行います。"
+    echo "マスタデータ移行処理を行います。"
+    if [ "${NOCONVERT}" = "true" ]; then
+      echo
+      echo "マスタデータ移行は行わず、関係テーブルの削除のみ行います。"
+    fi
     if [ ${JMSG} -eq 1 ] ; then
 	$ECHO_N "よろしいですか？ (y/n) "$ECHO_C
     else
@@ -123,6 +151,22 @@ if ! [ "${TABLE}" = "tbl_mstkanri_org" ]; then
   exit 0
 fi
 
+if [ "${NOACCESS}" = "false" ]; then
+  SQLSTR="select a.hospnum from tbl_sysbase a left outer join tbl_access_key b on a.hospnum=b.hospnum where b.access_key_1 is null;"
+  TABLE=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} ${DBNAME} -Atc \"${SQLSTR}\""`
+
+  if [ -z "${TABLE}" ]; then
+    echo
+  else
+    echo "以下の医療機関識別番号はアクセスキーの設定がありません。"
+    echo "${TABLE}"
+    echo
+    echo "処理を中止します。"
+    delete_pgpass
+    exit 0
+  fi
+fi
+
 # 移行前の該当テーブルをバックアップ（１回のみ）
 if ! [ -d ${TDDIR} ]; then
   su - ${ORCAUSER} -c "echo \"該当テーブルをバックアップします。[${TDDIR}]\" | tee -a ${LOG}"
@@ -138,15 +182,17 @@ fi
 # montsuqi関係テーブルを作成
 su - ${ORCAUSER} -c "/usr/lib/panda/bin/monsetup -dir ${LDDIRECTORY}"
 
-# マスタ更新（データ移行対象マスタのみ）
-su - ${ORCAUSER} -c "echo \"マスタ更新処理を行います。\" | tee -a ${LOG}"
-EXSH=`type -P migrate-v51_master_upgrade_ctrl.sh`
-su - ${ORCAUSER} -c "bash ${EXSH}"
+if [ "${NOCONVERT}" = "false" ]; then
+  # マスタ更新（データ移行対象マスタのみ）
+  su - ${ORCAUSER} -c "echo \"マスタ更新処理を行います。\" | tee -a ${LOG}"
+  EXSH=`type -P migrate-v51_master_upgrade_ctrl.sh`
+  su - ${ORCAUSER} -c "bash ${EXSH}"
 
-# 対象マスタ移行処理
-su - ${ORCAUSER} -c "echo \"マスタ移行処理を行います。\" | tee -a ${LOG}"
-EXSH=`type -P migrate-v51_migrate_ctrl.sh`
-su - ${ORCAUSER} -c "bash ${EXSH}"
+  # 対象マスタ移行処理
+  su - ${ORCAUSER} -c "echo \"マスタ移行処理を行います。\" | tee -a ${LOG}"
+  EXSH=`type -P migrate-v51_migrate_ctrl.sh`
+  su - ${ORCAUSER} -c "bash ${EXSH}"
+fi
 
 # 移行処理完了のためテーブルは削除
 # マスタ管理テーブルは一応別名でバックアップしておく

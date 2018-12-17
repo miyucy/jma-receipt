@@ -35,7 +35,7 @@ run() {
 
 DBSYNC="false"
 
-GETOPT=`getopt -o dnsh -l dbsync,help -- "$@"`
+GETOPT=`getopt -o acsh -l noaccesskey,noconv,dbsync,help -- "$@"`
 if [ "$?" -ne 0 ] ; then
     usage
 fi
@@ -45,6 +45,10 @@ eval set -- "$GETOPT"
 while true
 do
     case $1 in
+	-a|--noaccesskey) SETUPOPT="$SETUPOPT noaccesskey" ; shift
+	    ;;
+	-c|--noconv) SETUPOPT="$SETUPOPT noconv" ; shift
+	    ;;
 	-s|--dbsync) DBSYNC="true" ; shift
 	    ;;
 	-h|--help) usage
@@ -58,7 +62,7 @@ do
     esac
 done
 
-run @bindir@/jma-migrate-v51.sh
+run @bindir@/jma-migrate-v51.sh ${SETUPOPT}
 
 if [ "$DBSYNC" = "true" ] ; then
     run @bindir@/jma-dbsync.sh
