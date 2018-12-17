@@ -5902,12 +5902,20 @@
                    MOVE       1         TO   FLG-TOKUSITU-XXX
                    IF     FLG-KOUREI-KBN   =   "1"
                      IF   LNK-SYU-TOTAL-HKNTEN  NOT = ZERO
-                       MOVE   1         TO   LNK-SYU-SKJ-FTNDAY(3)
+                       IF  (COMB-KOH1HKNNUM =
+                            "051" OR "052" OR "091" OR "054")
+                       OR  (WK-TOKATUKAI(1) =  1            )
+                         MOVE   1   TO   LNK-SYU-SKJ-FTNDAY(3)
+                       END-IF
                      END-IF
                    ELSE
                      IF   LNK-SYU-TOTAL-HKNTEN  NOT = ZERO
                        MOVE  "1"        TO   LNK-S01-TOKUSYU-SAI-KBN
-                       MOVE   1         TO   LNK-SYU-SKJ-FTNDAY(3)
+                       IF  (COMB-KOH1HKNNUM =
+                            "051" OR "052" OR "091" OR "054")
+                       OR  (WK-TOKATUKAI(1) =  1            )
+                         MOVE   1   TO   LNK-SYU-SKJ-FTNDAY(3)
+                       END-IF
                      END-IF
                    END-IF
                  END-IF

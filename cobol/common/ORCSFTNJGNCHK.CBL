@@ -116,6 +116,8 @@
       *                                     ¡ÊÊñ³çºÞ¤Î¤ß¤Î¾ì¹ç¤âÂÐ¾Ý¤È¤¹¤ë¡Ë
       *
       *  05.00.01    NACL-ÌçÏÆ    18/11/27  ÀÁµáÅÀ¿ô¥Á¥§¥Ã¥¯½¤Àµ
+      *  05.00.02    NACL-ÌçÏÆ    18/12/07  ´Î¤¬¤ó¡¦½ÅÅÙ´Î¹ÅÊÑ¼£ÎÅ¸¦µæÂ¥¿Ê
+      *                                     »ö¶È°åÎÅÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -166,6 +168,7 @@
            03  FLG-GENMEN-ARI      PIC 9(01).
            03  FLG-GENMEN-NASI     PIC 9(01).
            03  FLG-CHECK-METHOD    PIC 9(01).
+           03  FLG-KANGAN-CHECK    PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1734,6 +1737,7 @@
            MOVE   ZERO   TO   FLG-SKJ-CHECK
            MOVE   ZERO   TO   FLG-GENMEN-ARI
            MOVE   ZERO   TO   FLG-GENMEN-NASI
+           MOVE   ZERO   TO   FLG-KANGAN-CHECK
       *
            MOVE   ZERO   TO   WRK-KOHFTN
            MOVE   ZERO   TO   WRK-KOHFTN-EN
@@ -2588,7 +2592,7 @@
                IF   WRK-KOHFTN-HKNFTNMONEY   NOT =   ZERO
                        MOVE   01        TO  LNK-FTNJGNCHK-RC
                END-IF
-               IF    LNK-FTNJGNCHK-RC   NOT =   ZERO
+               IF    LNK-FTNJGNCHK-RC       =    1
                AND   FLG-SKJ-CHECK          =    1
                        MOVE   ZERO      TO  LNK-FTNJGNCHK-RC
                END-IF
@@ -2679,7 +2683,7 @@
                         END-IF
                      END-IF
       *
-                     IF    LNK-FTNJGNCHK-RC   NOT =   ZERO
+                     IF    LNK-FTNJGNCHK-RC       =    1
                      AND   FLG-SKJ-CHECK          =    1
                              MOVE   ZERO       TO  LNK-FTNJGNCHK-RC
                      END-IF
@@ -2693,7 +2697,7 @@
                              MOVE   01         TO  LNK-FTNJGNCHK-RC
                      END-IF
       *
-                     IF    LNK-FTNJGNCHK-RC   NOT =   ZERO
+                     IF    LNK-FTNJGNCHK-RC       =    1
                      AND   FLG-SKJ-CHECK          =    1
                              MOVE   ZERO       TO  LNK-FTNJGNCHK-RC
                      END-IF
@@ -2734,7 +2738,7 @@
              END-EVALUATE
            END-IF
       *
-           IF    LNK-FTNJGNCHK-RC   NOT =   ZERO
+           IF    LNK-FTNJGNCHK-RC       =    1
            AND   FLG-SKJ-CHECK          =    1
                    MOVE   ZERO      TO  LNK-FTNJGNCHK-RC
            END-IF
@@ -2975,6 +2979,14 @@
                      AND  SYU-SKJ-FTNKBN(1)        =  "2"
                        ADD  SYU-SKJ-FTN(1)    TO  WRK-KOHFTN-SKJ
                      END-IF
+                     IF  (LNK-FTNJGNCHK-KOHNUM  =  "092"   )
+                     AND (LNK-FTNJGNCHK-SRYYM  >=  "201812")
+                       IF   SYU-NYNSHOKAISU     =   7
+                         MOVE     1           TO  FLG-KANGAN-CHECK
+                       ELSE
+                         MOVE     2           TO  FLG-KANGAN-CHECK
+                       END-IF
+                     END-IF
                     WHEN   SYU-KOH-HKNNUM(2)
                      ADD  SYU-KOH-HKNFTNMONEY(2)
                                        TO  WRK-KOHFTN-HKNFTNMONEY
@@ -3128,8 +3140,20 @@
                        MOVE   01        TO  LNK-FTNJGNCHK-RC
                   END-IF
                 END-IF
+      *
+                EVALUATE    FLG-KANGAN-CHECK
+                  WHEN         2
+                       MOVE   01        TO  LNK-FTNJGNCHK-RC
+                       MOVE   ZERO      TO  FLG-TENKEN
+                END-EVALUATE
              END-IF
            END-IF
+      *
+           EVALUATE    FLG-KANGAN-CHECK
+             WHEN         1
+                       MOVE   01        TO  LNK-FTNJGNCHK-RC
+                       MOVE   ZERO      TO  FLG-TENKEN
+           END-EVALUATE
       *
            COMPUTE LNK-FTNJGNCHK-KOHFTN = WRK-KOHFTN-HKNFTNMONEY
            COMPUTE LNK-FTNJGNCHK-KOHFTNSKJ
