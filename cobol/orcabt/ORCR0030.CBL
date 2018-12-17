@@ -4200,7 +4200,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
                    ELSE
                     IF  ( RECE02-KOHNUM(IDY2) =
                                        "038" OR "015" OR "016" )
-                    OR  ((RECE02-KOHNUM(IDY2) = "052" OR "054") AND
+                    OR  ((RECE02-KOHNUM(IDY2) = "054"         ) AND
                          (RECE02-SRYYM       >= "201501"      ))
                       PERFORM  211Z-CYOFUKU-KOH-HENSYU-SEC
                       IF TBL-HKNFTNDATA-ZAN(IDY2) <= WRK-HKNFTNDATA-RUI
@@ -6278,39 +6278,6 @@ grpsys           PERFORM 900-DBSELECT-SEC
                                           WRK-TOKUSITU-TOKKI2
                      END-IF
                   END-EVALUATE
-                 ELSE
-                  EVALUATE  WRK-TOKUSITU-TOKKI
-                   WHEN      "26"
-                     IF   RECE02-PTTOKKI-CD(TOKKI-IDX) =
-                          "27" OR "28" OR "29" OR "30"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                   WHEN      "27"
-                     IF   RECE02-PTTOKKI-CD(TOKKI-IDX) =
-                          "26" OR "28" OR "29" OR "30"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                   WHEN      "28"
-                     IF   RECE02-PTTOKKI-CD(TOKKI-IDX) =
-                          "26" OR "27" OR "29" OR "30"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                   WHEN      "29"
-                     IF   RECE02-PTTOKKI-CD(TOKKI-IDX) =
-                          "26" OR "27" OR "28" OR "30"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                   WHEN      "30"
-                     IF   RECE02-PTTOKKI-CD(TOKKI-IDX) =
-                          "26" OR "27" OR "28" OR "29"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                  END-EVALUATE
                  END-IF
                END-IF
            END-PERFORM
@@ -6347,39 +6314,6 @@ grpsys           PERFORM 900-DBSELECT-SEC
                    WHEN      "19"
                      IF   RECE02-TOKKI(TOKKI-IDX) =
                           "17" OR "18"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                  END-EVALUATE
-               ELSE
-                  EVALUATE  WRK-TOKUSITU-TOKKI
-                   WHEN      "26"
-                     IF   RECE02-TOKKI(TOKKI-IDX) =
-                          "27" OR "28" OR "29" OR "30"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                   WHEN      "27"
-                     IF   RECE02-TOKKI(TOKKI-IDX) =
-                          "26" OR "28" OR "29" OR "30"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                   WHEN      "28"
-                     IF   RECE02-TOKKI(TOKKI-IDX) =
-                          "26" OR "27" OR "29" OR "30"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                   WHEN      "29"
-                     IF   RECE02-TOKKI(TOKKI-IDX) =
-                          "26" OR "27" OR "28" OR "30"
-                       MOVE   WRK-TOKUSITU-TOKKI  TO
-                                          WRK-TOKUSITU-TOKKI2
-                     END-IF
-                   WHEN      "30"
-                     IF   RECE02-TOKKI(TOKKI-IDX) =
-                          "26" OR "27" OR "28" OR "29"
                        MOVE   WRK-TOKUSITU-TOKKI  TO
                                           WRK-TOKUSITU-TOKKI2
                      END-IF
@@ -19821,11 +19755,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                OR   ( SYU-KOH-HKNNUM(2) =   "972" )
                OR   ( SYU-KOH-HKNNUM(3) =   "972" )
                OR   ( SYU-KOH-HKNNUM(4) =   "972" )
-                 IF  ( SYU-KOH-HKNNUM(1)(1:1)  = "0")
-                 OR  ( SYU-KOH-HKNNUM(2)(1:1)  = "0")
-                 OR  ( SYU-KOH-HKNNUM(3)(1:1)  = "0")
-                 OR  ( SYU-KOH-HKNNUM(4)(1:1)  = "0")
-                 OR  ( TBL-TOKATUKAIFLG2       =  1 )
+                 IF  ((SYU-KOH-HKNNUM(1)(1:1)  = "0"  ) AND
+                      (SYU-KOH-HKNNUM(1)   NOT = "027"))
+                 OR  ( SYU-KOH-HKNNUM(2)(1:1)  = "0"   )
+                 OR  ( SYU-KOH-HKNNUM(3)(1:1)  = "0"   )
+                 OR  ( SYU-KOH-HKNNUM(4)(1:1)  = "0"   )
+                 OR  ( TBL-TOKATUKAIFLG2       =  1    )
                  OR  ((FLG-ZENKOKUKOHI-NISYU   =  4              ) AND
                       (RECE02-KOHNUM(1) = "972"                  ) AND
                       (RECE02-KOHNUM(2) = SYU-KOH-HKNNUM(1)      ) AND
@@ -20002,8 +19937,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     END-IF
                    END-IF
                  ELSE
-                   IF  ((SYU-KOH-HKNNUM(1)     NOT = "027") AND
-                        (SYU-KOH-HKNNUM(1)(1:1)    = "0"  ))
+                   IF  ((SYU-KOH-HKNNUM(1)(1:1)    = "0"  ) AND
+                        (SYU-KOH-HKNNUM(1)     NOT = "027"))
                    OR  ( SYU-KOH-HKNNUM(2)(1:1)    = "0"   )
                    OR  ( SYU-KOH-HKNNUM(3)(1:1)    = "0"   )
                    OR  ( SYU-KOH-HKNNUM(4)(1:1)    = "0"   )
@@ -21881,22 +21816,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 (RECE02-KOHNUM(4)   = RECE02-KOHNUMHC(IDX1 1)) AND
                 (RECE02-KOHID(4)    = RECE02-KOHIDHC(IDX1 1) ) AND
                 (TBL-TOKUSITUFLG(4) =  1                     ))
-           OR  ((RECE02-KOHNUM(1)   = SYU-KOH-HKNNUM(2)      ) AND
-                (RECE02-KOHNUM(1)   = RECE02-KOHNUMHC(IDX1 2)) AND
-                (RECE02-KOHID(1)    = RECE02-KOHIDHC(IDX1 2) ) AND
-                (TBL-TOKUSITUFLG(1) =  1                     ))
-           OR  ((RECE02-KOHNUM(2)   = SYU-KOH-HKNNUM(2)      ) AND
-                (RECE02-KOHNUM(2)   = RECE02-KOHNUMHC(IDX1 2)) AND
-                (RECE02-KOHID(2)    = RECE02-KOHIDHC(IDX1 2) ) AND
-                (TBL-TOKUSITUFLG(2) =  1                     ))
-           OR  ((RECE02-KOHNUM(3)   = SYU-KOH-HKNNUM(2)      ) AND
-                (RECE02-KOHNUM(3)   = RECE02-KOHNUMHC(IDX1 2)) AND
-                (RECE02-KOHID(3)    = RECE02-KOHIDHC(IDX1 2) ) AND
-                (TBL-TOKUSITUFLG(3) =  1                     ))
-           OR  ((RECE02-KOHNUM(4)   = SYU-KOH-HKNNUM(2)      ) AND
-                (RECE02-KOHNUM(4)   = RECE02-KOHNUMHC(IDX1 2)) AND
-                (RECE02-KOHID(4)    = RECE02-KOHIDHC(IDX1 2) ) AND
-                (TBL-TOKUSITUFLG(4) =  1                     ))
+      ***  OR  ((RECE02-KOHNUM(1)   = SYU-KOH-HKNNUM(2)      ) AND
+      ***       (RECE02-KOHNUM(1)   = RECE02-KOHNUMHC(IDX1 2)) AND
+      ***       (RECE02-KOHID(1)    = RECE02-KOHIDHC(IDX1 2) ) AND
+      ***       (TBL-TOKUSITUFLG(1) =  1                     ))
+      ***  OR  ((RECE02-KOHNUM(2)   = SYU-KOH-HKNNUM(2)      ) AND
+      ***       (RECE02-KOHNUM(2)   = RECE02-KOHNUMHC(IDX1 2)) AND
+      ***       (RECE02-KOHID(2)    = RECE02-KOHIDHC(IDX1 2) ) AND
+      ***       (TBL-TOKUSITUFLG(2) =  1                     ))
+      ***  OR  ((RECE02-KOHNUM(3)   = SYU-KOH-HKNNUM(2)      ) AND
+      ***       (RECE02-KOHNUM(3)   = RECE02-KOHNUMHC(IDX1 2)) AND
+      ***       (RECE02-KOHID(3)    = RECE02-KOHIDHC(IDX1 2) ) AND
+      ***       (TBL-TOKUSITUFLG(3) =  1                     ))
+      ***  OR  ((RECE02-KOHNUM(4)   = SYU-KOH-HKNNUM(2)      ) AND
+      ***       (RECE02-KOHNUM(4)   = RECE02-KOHNUMHC(IDX1 2)) AND
+      ***       (RECE02-KOHID(4)    = RECE02-KOHIDHC(IDX1 2) ) AND
+      ***       (TBL-TOKUSITUFLG(4) =  1                     ))
            OR  ((IDZ                =  2                     ) AND
                 (SYU-SKJ-FTNDAY(3)  =  1                     ))
               MOVE           5         TO   FLG-JYOGENKBN2
@@ -22195,22 +22130,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 (RECE02-KOHNUM(4)   = RECE02-KOHNUMHC(IDX1 1)) AND
                 (RECE02-KOHID(4)    = RECE02-KOHIDHC(IDX1 1) ) AND
                 (TBL-TOKUSITUFLG(4) =  1                     ))
-           OR  ((RECE02-KOHNUM(1)   = SYU-KOH-HKNNUM(2)      ) AND
-                (RECE02-KOHNUM(1)   = RECE02-KOHNUMHC(IDX1 2)) AND
-                (RECE02-KOHID(1)    = RECE02-KOHIDHC(IDX1 2) ) AND
-                (TBL-TOKUSITUFLG(1) =  1                     ))
-           OR  ((RECE02-KOHNUM(2)   = SYU-KOH-HKNNUM(2)      ) AND
-                (RECE02-KOHNUM(2)   = RECE02-KOHNUMHC(IDX1 2)) AND
-                (RECE02-KOHID(2)    = RECE02-KOHIDHC(IDX1 2) ) AND
-                (TBL-TOKUSITUFLG(2) =  1                     ))
-           OR  ((RECE02-KOHNUM(3)   = SYU-KOH-HKNNUM(2)      ) AND
-                (RECE02-KOHNUM(3)   = RECE02-KOHNUMHC(IDX1 2)) AND
-                (RECE02-KOHID(3)    = RECE02-KOHIDHC(IDX1 2) ) AND
-                (TBL-TOKUSITUFLG(3) =  1                     ))
-           OR  ((RECE02-KOHNUM(4)   = SYU-KOH-HKNNUM(2)      ) AND
-                (RECE02-KOHNUM(4)   = RECE02-KOHNUMHC(IDX1 2)) AND
-                (RECE02-KOHID(4)    = RECE02-KOHIDHC(IDX1 2) ) AND
-                (TBL-TOKUSITUFLG(4) =  1                     ))
+      ***  OR  ((RECE02-KOHNUM(1)   = SYU-KOH-HKNNUM(2)      ) AND
+      ***       (RECE02-KOHNUM(1)   = RECE02-KOHNUMHC(IDX1 2)) AND
+      ***       (RECE02-KOHID(1)    = RECE02-KOHIDHC(IDX1 2) ) AND
+      ***       (TBL-TOKUSITUFLG(1) =  1                     ))
+      ***  OR  ((RECE02-KOHNUM(2)   = SYU-KOH-HKNNUM(2)      ) AND
+      ***       (RECE02-KOHNUM(2)   = RECE02-KOHNUMHC(IDX1 2)) AND
+      ***       (RECE02-KOHID(2)    = RECE02-KOHIDHC(IDX1 2) ) AND
+      ***       (TBL-TOKUSITUFLG(2) =  1                     ))
+      ***  OR  ((RECE02-KOHNUM(3)   = SYU-KOH-HKNNUM(2)      ) AND
+      ***       (RECE02-KOHNUM(3)   = RECE02-KOHNUMHC(IDX1 2)) AND
+      ***       (RECE02-KOHID(3)    = RECE02-KOHIDHC(IDX1 2) ) AND
+      ***       (TBL-TOKUSITUFLG(3) =  1                     ))
+      ***  OR  ((RECE02-KOHNUM(4)   = SYU-KOH-HKNNUM(2)      ) AND
+      ***       (RECE02-KOHNUM(4)   = RECE02-KOHNUMHC(IDX1 2)) AND
+      ***       (RECE02-KOHID(4)    = RECE02-KOHIDHC(IDX1 2) ) AND
+      ***       (TBL-TOKUSITUFLG(4) =  1                     ))
            OR  ((IDZ                =  2                     ) AND
                 (SYU-SKJ-FTNDAY(3)  =  1                     ))
               MOVE      5      TO   FLG-JYOGENKBN2
