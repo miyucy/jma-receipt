@@ -991,11 +991,13 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           IF      FLG-SYSKANRI        =   ZERO
+           IF    ( MCP-RC              =   ZERO )
       *        システム管理マスタ読込
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
            PERFORM    UNTIL    FLG-SYSKANRI    =   1
@@ -1048,11 +1050,13 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           IF      FLG-SYSKANRI        =   ZERO
+           IF    ( MCP-RC              =   ZERO )
       *        システム管理マスタ読込
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
            PERFORM     UNTIL FLG-SYSKANRI  =   1
@@ -1264,11 +1268,13 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           IF      FLG-SYSKANRI        =   ZERO 
+           IF    ( MCP-RC              =   ZERO )
       *        システム管理マスタ読込
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
            MOVE    ZERO                 TO  IDX3
