@@ -152,7 +152,7 @@ if ! [ "${TABLE}" = "tbl_mstkanri_org" ]; then
 fi
 
 if [ "${NOACCESS}" = "false" ]; then
-  SQLSTR="select a.hospnum from tbl_sysbase a left outer join tbl_access_key b on a.hospnum=b.hospnum where b.access_key_1 is null;"
+  SQLSTR="select a.hospnum from tbl_sysbase a left outer join tbl_access_key b on a.hospnum=b.hospnum left outer join tbl_syskanri c on a.hospnum=c.hospnum and c.kanricd='1001' and kbncd='*' where b.access_key_1 is null and substr(c.kanritbl,1,30) not like '%JPN50%';"
   TABLE=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} ${DBNAME} -Atc \"${SQLSTR}\""`
 
   if [ -z "${TABLE}" ]; then
