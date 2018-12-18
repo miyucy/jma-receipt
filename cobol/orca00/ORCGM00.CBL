@@ -2211,6 +2211,12 @@
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "1023"
+                   STRING  "医療機関識別番号２以上のデータには"
+                           "接続できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K001"
                    STRING  "警告！！"
                            "この端末は使用できません。"
