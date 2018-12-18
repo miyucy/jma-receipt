@@ -13,6 +13,8 @@ fi
 # $3 : エラーファイル名
 # $4 : ジョブＩＤ
 # $5 : シェルＩＤ
+# $6 : マスタグループ（スキーマ別）
+#      P = public, M = master
 #------------------------------------
 
 HOSPNUM=$1
@@ -23,7 +25,7 @@ SHELLID=$(printf "%-8s" $5)
 
 MSTDIR=orca-$(date +%Y%m%d)
 
-UPDKANRIFILE=info/ORCADBR-3.DAT
+UPDKANRIFILE=info/ORCADBR-4.DAT
 
 if [ "${MCP_MIDDLEWARE_NAME}" = "ginbee" ]; then
   MASTERDIR="${MCP_TEMPDIR}"
@@ -32,6 +34,11 @@ UPDFILE=${MASTERDIR}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
 PRFFILE=${MCP_TEMPDIR}/MSTMNT.PRF.$$
 
+MSTGRP="A"
+if ! [ -z ${6} ]; then
+  MSTGRP="${6}"
+fi
+ 
 orcawget () {
 #受信ファイル削除
     if [ -e $1 ] ; then
@@ -202,7 +209,7 @@ else
 fi
 
 #ダウンロードファイル生成
-${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST1 -parameter "${HOSPNUM}$2${MSTDIR}"
+${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST1 -parameter "${HOSPNUM}$2${MSTDIR}${MSTGRP}"
 if [ $? -ne 0 ]	; then
     echo "ダウンロードファイル生成に失敗しました"
     ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0003,${HOSPNUM},${ERR_FILE_BASE},,ダウンロードファイル生成に失敗しました"

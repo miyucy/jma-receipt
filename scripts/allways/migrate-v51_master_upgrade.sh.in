@@ -32,7 +32,7 @@ MNTRET=0
 MLIRET=0
 
 #標準マスタ更新
-migrate-v51_master_standard_upgrade.sh $1 $2 $4 $5 $6 
+migrate-v51_master_standard_upgrade.sh $1 $2 $4 $5 $6 ""
 MNTRET=$?
 if [ ${MNTRET} -ne 1 ]; then
     #ライセンスマスタ更新

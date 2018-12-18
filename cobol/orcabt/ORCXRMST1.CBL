@@ -56,11 +56,13 @@
        FD  IN-FILE.
        01  IN-REC.
            03  IN-MASTER-KBN           PIC X(02).
-           03  IN-MASTER-DELI          PIC X(01).
+           03  IN-MASTER-DELI-1        PIC X(01).
            03  IN-DBRVERVION           PIC X(21).
            03  IN-DBRNAME              PIC X(60).
            03  IN-UPFILE               PIC X(100).
            03  IN-UPPG                 PIC X(10).
+           03  IN-MASTER-DELI-2        PIC X(01).
+           03  IN-SCHEMA               PIC X(01).
       *
       *    更新ファイル
        FD  OUT-FILE.
@@ -149,6 +151,7 @@ grpsys     COPY    "COMMON-SPA".
            03  PARA-HOSPNUM            PIC 9(02).
            03  PARA-SUPERVISOR         PIC X(01).
            03  PARA-DBFILE             PIC X(13).
+           03  PARA-SCHEMA             PIC X(01).
       *
        PROCEDURE                       DIVISION
            USING
@@ -238,7 +241,8 @@ grpsys     COPY    "COMMON-SPA".
       ************ "/ORCADBR.DAT"      DELIMITED  BY  SIZE
       * 2.5.0del * "/ORCADBR-1.DAT"    DELIMITED  BY  SIZE
       * 4.1.0del * "/ORCADBR-2.DAT"    DELIMITED  BY  SIZE
-                   "/ORCADBR-3.DAT"    DELIMITED  BY  SIZE
+      * 5.1.0del * "/ORCADBR-3.DAT"    DELIMITED  BY  SIZE
+                   "/ORCADBR-4.DAT"    DELIMITED  BY  SIZE
                                        INTO    ASS-IN
            END-STRING
       *
@@ -478,12 +482,19 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        900-IN-READ-SEC          SECTION.
       *
+       900-IN-READ-10.
           READ    IN-FILE
               AT  END
                   MOVE    1               TO  FLG-IN
               NOT AT  END
-                  MOVE    ZERO            TO  FLG-IN
                   ADD     1               TO  CNT-IN
+                  IF    ((PARA-SCHEMA     =   "P") AND
+                         (IN-SCHEMA   NOT =   "P"))    OR   
+                        ((PARA-SCHEMA     =   "M") AND
+                         (IN-SCHEMA   NOT =   "M"))
+                      GO  TO  900-IN-READ-10
+                  END-IF   
+                  MOVE    ZERO            TO  FLG-IN
           END-READ
       *
           .
