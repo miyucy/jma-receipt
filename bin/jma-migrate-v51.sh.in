@@ -206,6 +206,7 @@ su - ${ORCAUSER} -c "psql ${DBCONNOPTION} ${DBNAME} -Atqc \"
   drop table if exists tbl_tensu_org;\""
 delete_pgpass
 su - ${ORCAUSER} -c "echo \"移行対象テーブルを削除しました。\" | tee -a ${LOG}"
+su - ${ORCAUSER} -c "${BINDIR}/master_convert_check.sh"
 su - ${ORCAUSER} -c "echo \"処理は終了しました : $(date '+%Y-%m-%d %H:%M:%S')\" | tee -a ${LOG}"
 
 exit 0
