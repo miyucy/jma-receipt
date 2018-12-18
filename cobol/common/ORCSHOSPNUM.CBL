@@ -149,7 +149,7 @@
       *ginbee ログインチェック
                IF     (MCP-MIDDLEWARE-NAME =   "ginbee")
                  AND  (SPA-HOSPNUM     NOT =   1)
-                   MOVE    "1002"              TO  SPA-ERRCD
+                   MOVE    "1023"              TO  SPA-ERRCD
                END-IF
            ELSE
                MOVE    "1002"              TO  SPA-ERRCD
