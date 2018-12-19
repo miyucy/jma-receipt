@@ -236,7 +236,7 @@
            PERFORM 900-SRYCDCHGM-READ-SEC
            IF      FLG-SRYCDCHGM       =   ZERO
       *        標準に有る
-               CONTINUE
+               MOVE    ZERO                TO  WRK-PRFCD
            ELSE
       *        マスターテーブル存在確認(IPNSRYCDのみ)
                MOVE    "key2"              TO  WRK-PATHNAME
@@ -260,7 +260,7 @@
            PERFORM 900-SRYCDCHGU-READ-SEC
            IF      FLG-SRYCDCHGU       =   ZERO
       *        ユーザーテーブルに有る
-               CONTINUE
+               MOVE    ZERO                TO  WRK-PRFCD
            ELSE
       *        更新日は元のままとする
       *        MOVE    LNK-MNTYMD          TO  CHGW-CREYMD
@@ -443,7 +443,7 @@
       *****************************************************************
        900-SRYCDCHGM-READ-SEC      SECTION.
            INITIALIZE  SRYCDCHGM-REC
-           MOVE    1                   TO  CHGM-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  CHGM-HOSPNUM
            MOVE    CHGO-IPNSRYCD       TO  CHGM-IPNSRYCD
            MOVE    CHGO-RJNSRYCD       TO  CHGM-RJNSRYCD
            MOVE    SRYCDCHGM-REC       TO  MCPDATA-REC

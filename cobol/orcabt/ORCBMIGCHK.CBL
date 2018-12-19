@@ -267,7 +267,7 @@
            PERFORM 900-CHKU-READ-SEC
            IF      FLG-CHKU            =   ZERO
       *        ユーザーテーブルに有る
-               CONTINUE
+               MOVE    ZERO                TO  WRK-PRFCD
            ELSE
       *        更新日は元のままとする
       *        MOVE    LNK-MNTYMD          TO  CHGW-CREYMD
@@ -470,7 +470,7 @@
        900-CHKM-READ-SEC           SECTION.
            INITIALIZE  CHKM-REC
            MOVE    CHKO-KEY            TO  CHKM-KEY
-           MOVE    1                   TO  CHKM-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  CHKM-HOSPNUM
            MOVE    CHKM-REC            TO  MCPDATA-REC
            MOVE    "tbl_chk_master"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME

@@ -477,7 +477,7 @@
        900-ADRSM-READ-SEC          SECTION.
            INITIALIZE  ADRSM-REC
            MOVE    ADRSO-KEY           TO  ADRSM-KEY
-           MOVE    1                   TO  ADRSM-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ADRSM-HOSPNUM
            MOVE    ADRSM-REC           TO  MCPDATA-REC
            MOVE    "tbl_adrs_master"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME

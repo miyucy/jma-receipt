@@ -358,6 +358,7 @@ review*            エラーはどの項目が不一致の場合とするかよく考えて見直す
       *D       IF      FLG-TOUSER          =   1
       *            点数ユーザーテーブルに登録（ユーザー管理マスタ）
       *D           DISPLAY "[ " WRK-SRYCD " ] ユーザー管理マスタ決定！"
+      *D                   " FLG-GUID [ " FLG-GUID " ]"
       *D       ELSE
       *D           DISPLAY "[ " WRK-SRYCD " ] 標準マスタ決定！"
       *D       END-IF

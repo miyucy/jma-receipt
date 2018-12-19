@@ -559,7 +559,8 @@ path	srycdlist 	{
 		SELECT SRYCD
 		FROM tbl_tensu_org
 			WHERE HOSPNUM    =   :HOSPNUM
-			AND   SUBSTR(SRYCD,1,1) <> '0'
+			AND  ((SUBSTR(SRYCD,1,3) = '099')
+			OR    (SUBSTR(SRYCD,1,1) <> '0'))
 			GROUP	BY  SRYCD
 			ORDER   BY  SRYCD
 		;

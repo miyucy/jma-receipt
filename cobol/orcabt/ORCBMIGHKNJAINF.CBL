@@ -249,7 +249,7 @@
            PERFORM 900-HKNJAINFU-READ-SEC
            IF      FLG-HKNJAINFU       =   ZERO
       *        ユーザーテーブルに有る
-               CONTINUE
+               MOVE    ZERO                TO  WRK-PRFCD
            ELSE
       *        更新日は元のままとする
       *        MOVE    LNK-MNTYMD          TO  CHGW-CREYMD
@@ -471,7 +471,7 @@
        900-HKNJAINFM-READ-SEC      SECTION.
            INITIALIZE  HKNJAINFM-REC
            MOVE    HKNJAO-HKNJANUM     TO  HKNJAM-HKNJANUM
-           MOVE    1                   TO  HKNJAM-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  HKNJAM-HOSPNUM
            MOVE    HKNJAINFM-REC       TO  MCPDATA-REC
            MOVE    "tbl_hknjainf_master"
                                        TO  MCP-TABLE
