@@ -351,6 +351,8 @@
       *        MOVE    SPA-Z010-RRKMAX      TO  SPA-Z010-SELNUM
       *        PERFORM 3104-SELNUM-SYORI-SEC
                MOVE    1                   TO  SPA-Z010-CUR
+      *        ¿·µ¬
+               MOVE    1                   TO  SPA-Z010-SYORI
            END-IF
            .
         310-SPA-SET-EXT.
