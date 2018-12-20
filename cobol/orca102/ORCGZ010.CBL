@@ -1627,6 +1627,9 @@
                INITIALIZE                  SPA-Z010-KIKAN
                MOVE    SPACE               TO  SPA-Z010-SELNUM
                MOVE    ZERO                TO  SPA-Z010-NAI-SELNUM
+               PERFORM 5021-INIT-HEN-SEC
+      *        ¿·µ¬
+               MOVE    1                   TO  SPA-Z010-SYORI
                MOVE    1                   TO  SPA-Z010-CUR
            END-IF
       *
