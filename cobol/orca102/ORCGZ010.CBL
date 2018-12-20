@@ -1917,6 +1917,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  SPA-Z010-KIKAN
                MOVE    SPACE               TO  SPA-Z010-SELNUM
                MOVE    ZERO                TO  SPA-Z010-NAI-SELNUM
+               PERFORM 5021-INIT-HEN-SEC
+      *        新規
+               MOVE    1                   TO  SPA-Z010-SYORI
                MOVE    1                   TO  SPA-Z010-CUR
            END-IF
            .
@@ -1961,12 +1964,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    1
       *        新規
                    IF      FLG-TENSUPLUS       =   ZERO
-                       MOVE    "9004"          TO  SPA-ERRCD
+                       MOVE    "9003"          TO  SPA-ERRCD
                    END-IF
                WHEN    0
       *        更新
                    IF      FLG-TENSUPLUS       =   1
-                       MOVE    "9004"          TO  SPA-ERRCD
+                       MOVE    "9002"          TO  SPA-ERRCD
                    END-IF
            END-EVALUATE
            IF      SPA-ERRCD       NOT =   SPACE
@@ -1996,7 +1999,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
                IF      MCP-RC              NOT =   ZERO
-                   MOVE    "9004"          TO  SPA-ERRCD
+                   MOVE    "9003"          TO  SPA-ERRCD
                    DISPLAY "Z010 TENSUPLUS INS ERR:" MCP-RC
                           ",KEY:" TNSP-KEY
                END-IF
@@ -2027,7 +2030,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
                IF      MCP-RC          NOT =   ZERO
-                   MOVE    "9004"          TO  SPA-ERRCD
+                   MOVE    "9002"          TO  SPA-ERRCD
                    DISPLAY "Z010 TENSUPLUS UPD ERR:" MCP-RC
                                   ",KEY:" TNSP-KEY
                END-IF
@@ -2608,6 +2611,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                  TO  SPA-ERRMSG
                WHEN    "9003"
                    MOVE    "追加処理が失敗しました"
+                                                 TO  SPA-ERRMSG
+               WHEN    "9004"
+                   MOVE    "更新処理が失敗しました"
                                                  TO  SPA-ERRMSG
            END-EVALUATE.
       *
