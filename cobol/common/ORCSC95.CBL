@@ -2995,6 +2995,11 @@
                    IF      PTCONF-CDATA(1:1)   =   "1"
                        MOVE    1               TO  SPA-NINPUKBN-ARI
                    END-IF
+      *H30.12
+      *            2019.1¤«¤éÇ¥ÉØ²Ã»»¤Ê¤·
+                   IF      SPA-SRYYMD      >=  "20190101"
+                       MOVE    ZERO            TO  SPA-NINPUKBN-ARI
+                   END-IF
                END-EVALUATE
                MOVE    "tbl_ptconf"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
