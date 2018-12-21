@@ -310,6 +310,8 @@
                05  SPA-NAI-CHNGCDU             PIC X(09).
                05  SPA-MAE-CHNGCDU             PIC X(09).
       *
+               05  SPA-NAI-SIPKBN              PIC X(01).
+      *
       *    フラグエリア
        01  FLG-AREA.
            03  FLG-END                           PIC 9(01).
@@ -579,11 +581,19 @@
       *    入力ＣＤより
                WHEN    "Z99"
                   MOVE  1                       TO  SPA-GMN-CUR
+      *           ユーザー点数識別（2：ユーザーマスタ）
+                  IF     (SPA-MASTER-CLASS    =   2 )
+                      OR (SPA-MENTE-OK        =   1 )
+                       CONTINUE
+                   ELSE
+      *                内服算定へ
+                       MOVE  36                      TO  SPA-GMN-CUR
+                   END-IF
       *H29.01
       *        ユーザ設定画面
                WHEN    "Z010"
                    PERFORM 310-SPASET-SEC
-                   MOVE    1                   TO  SPA-GMN-CUR
+      ***             MOVE    1                   TO  SPA-GMN-CUR
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
            END-EVALUATE
@@ -913,6 +923,15 @@
            PERFORM 3103-GENERICNAME-HEN-SEC
       *
            MOVE  1                       TO  SPA-GMN-CUR
+      *H31.1
+      *    ユーザー点数識別（2：ユーザーマスタ）
+           IF     (SPA-MASTER-CLASS    =   2 )
+               OR (SPA-MENTE-OK        =   1 )
+               MOVE  1                       TO  SPA-GMN-CUR
+           ELSE
+      *        内服算定へ
+               MOVE  36                      TO  SPA-GMN-CUR
+           END-IF
            .
        310-SPASET-EXT.
            EXIT.
@@ -1147,6 +1166,13 @@
       *    一般名記載換算値
            MOVE    TNSP-IPN-KANZANCHI  TO  SPA-GMN-IPN-KANZANCHI
       *
+      *    湿布薬関係  付加情報あり
+           IF     (TNSP-SIPPURYO1      =   ZERO )
+              AND (TNSP-SIPPURYO2      =   ZERO )
+               MOVE    "0"             TO  SPA-NAI-SIPKBN
+           ELSE
+               MOVE    "1"             TO  SPA-NAI-SIPKBN
+           END-IF
            .
       *
        3002-SPASET-TENSUPLUS-EXT.
@@ -4727,6 +4753,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    151             TO  SPA-GMN-CUR
                WHEN    "TUKIJGNTOUYORYO"
                    MOVE    31              TO  SPA-GMN-CUR
+      *H31.1
+      *    ユーザー点数識別（2：ユーザーマスタ）
+                   IF     (SPA-MASTER-CLASS    =   2 )
+                       OR (SPA-MENTE-OK        =   1 )
+                       CONTINUE
+                   ELSE
+                       MOVE  48                      TO  SPA-GMN-CUR
+                   END-IF
                WHEN    OTHER
                    IF      WRK-MCP-WIDGET(1:6) =   "KGNAGE"
                        MOVE    WRK-MCP-WIDGET(7:2)  TO  ID1

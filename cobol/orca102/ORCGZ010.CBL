@@ -346,13 +346,15 @@
       *        ¿·µ¬
                MOVE    1                   TO  SPA-Z010-SYORI
            ELSE
-      *        ºÇ½ªÍúÎò¤òÉ½¼¨
-      *        MOVE    SPA-Z010-RRKMAX      TO  SPA-Z010-NAI-SELNUM
-      *        MOVE    SPA-Z010-RRKMAX      TO  SPA-Z010-SELNUM
-      *        PERFORM 3104-SELNUM-SYORI-SEC
                MOVE    1                   TO  SPA-Z010-CUR
       *        ¿·µ¬
                MOVE    1                   TO  SPA-Z010-SYORI
+      *        ºÇ½ªÍúÎò¤òÉ½¼¨
+      ***      MOVE    SPA-Z010-RRKMAX     TO  SPA-Z010-NAI-SELNUM
+      *        MOVE    SPA-Z010-RRKMAX     TO  WRK-ZZZ
+      *        MOVE    WRK-ZZZ             TO  SPA-Z010-SELNUM
+      *        PERFORM 3104-SELNUM-SYORI-SEC
+      ***      MOVE    2                   TO  SPA-Z010-SYORI
            END-IF
            .
         310-SPA-SET-EXT.
@@ -2136,6 +2138,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 3102-LIST-HENSYU-SEC
       *
            MOVE    1                   TO  SPA-Z010-CUR
+      *    ¿·µ¬
+           MOVE    1                   TO  SPA-Z010-SYORI
            .
        402-CLEAR-EXT.
            EXIT.

@@ -1054,6 +1054,14 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC          SECTION.
       *
+           IF     (SPA-MASTER-CLASS    =   2 )
+               OR (SPA-MENTE-OK        =   1 )
+      *        マスタ更新可
+               CONTINUE
+           ELSE
+               GO   TO  4101-GMN-SPA-SET-EXT
+           END-IF
+      *
            MOVE    Z02-YUKOSTYMD       TO  SPA-GMN-YUKOSTYMD
            MOVE    Z02-YUKOEDYMD       TO  SPA-GMN-YUKOEDYMD
            MOVE    Z02-KANANAME        TO  SPA-GMN-KANANAME
