@@ -4469,6 +4469,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-INSENSITIVE      TO  Z04-B03-STATE
            END-IF
       *
+      *H30.12
+           IF      SPA-NAI-SIPKBN      =   "1"
+               MOVE    "ºæ…€ÃÙ¥ÿ∑∏°°¢®"    TO  Z04-LABEL2-DATA
+               MOVE    "black"             TO  Z04-LABEL2-STYLE
+           ELSE
+               MOVE    "ºæ…€ÃÙ¥ÿ∑∏"        TO  Z04-LABEL2-DATA
+               MOVE    "black"             TO  Z04-LABEL2-STYLE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .

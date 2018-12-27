@@ -369,5 +369,9 @@ Z04 {
       style varchar(20);
       textdata varchar(80);
     };
+    LABEL2  { #GtkLabel
+      style varchar(20);
+      textdata varchar(80);
+    };
   };
 };

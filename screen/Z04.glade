@@ -573,9 +573,9 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>KEIKASOCHIYMD</name>
-        <x>872</x>
+        <x>894</x>
         <y>160</y>
-        <width>143</width>
+        <width>120</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -738,7 +738,7 @@
       <widget>
         <class>GtkNumberEntry</class>
         <name>SYUSAISKB</name>
-        <x>900</x>
+        <x>894</x>
         <y>132</y>
         <width>40</width>
         <height>24</height>
@@ -811,7 +811,7 @@
         <class>GtkPandaEntry</class>
         <name>CHNGCD</name>
         <x>202</x>
-        <y>668</y>
+        <y>664</y>
         <width>84</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -837,7 +837,7 @@
         <class>GtkPandaEntry</class>
         <name>CHNGENAME</name>
         <x>292</x>
-        <y>668</y>
+        <y>664</y>
         <width>650</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -2751,13 +2751,13 @@
         <class>GtkVSeparator</class>
         <name>vseparator1</name>
         <x>372</x>
-        <y>332</y>
+        <y>330</y>
         <width>16</width>
-        <height>336</height>
+        <height>330</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
-        <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+        <orientation>GTK_ORIENTATION_VERTICAL</orientation>
       </widget>
       <widget>
         <class>GtkLabel</class>
@@ -3569,7 +3569,7 @@
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
-        <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+        <orientation>GTK_ORIENTATION_VERTICAL</orientation>
       </widget>
       <widget>
         <class>GtkHSeparator</class>
@@ -3634,7 +3634,7 @@
       <widget>
         <class>GtkHSeparator</class>
         <name>hseparator8</name>
-        <x>700</x>
+        <x>702</x>
         <y>604</y>
         <width>320</width>
         <height>16</height>
@@ -3815,11 +3815,11 @@
         <x>692</x>
         <y>224</y>
         <width>16</width>
-        <height>444</height>
+        <height>436</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
-        <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+        <orientation>GTK_ORIENTATION_VERTICAL</orientation>
       </widget>
       <widget>
         <class>GtkLabel</class>
@@ -3951,7 +3951,7 @@
       </widget>
       <widget>
         <class>GtkLabel</class>
-        <name>label2</name>
+        <name>LABEL2</name>
         <x>8</x>
         <y>628</y>
         <width>112</width>
@@ -4158,7 +4158,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>枚] [</label>
+        <label>枚] </label>
         <justify>GTK_JUSTIFY_LEFT</justify>
         <wrap>False</wrap>
       </widget>
@@ -4216,6 +4216,97 @@
         <xpad>0</xpad>
         <ypad>0</ypad>
         <label></label>
+        <justify>GTK_JUSTIFY_LEFT</justify>
+        <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkHSeparator</class>
+        <name>hseparator9</name>
+        <x>382</x>
+        <y>327</y>
+        <width>317</width>
+        <height>16</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+      </widget>
+      <widget>
+        <class>GtkHSeparator</class>
+        <name>hseparator10</name>
+        <x>382</x>
+        <y>361</y>
+        <width>317</width>
+        <height>16</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+      </widget>
+      <widget>
+        <class>GtkHSeparator</class>
+        <name>hseparator11</name>
+        <x>702</x>
+        <y>217</y>
+        <width>320</width>
+        <height>20</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+      </widget>
+      <widget>
+        <class>GtkHSeparator</class>
+        <name>hseparator12</name>
+        <x>702</x>
+        <y>647</y>
+        <width>320</width>
+        <height>20</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+      </widget>
+      <widget>
+        <class>GtkVSeparator</class>
+        <name>vseparator4</name>
+        <x>693</x>
+        <y>226</y>
+        <width>20</width>
+        <height>433</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <orientation>GTK_ORIENTATION_VERTICAL</orientation>
+      </widget>
+      <widget>
+        <class>GtkVSeparator</class>
+        <name>vseparator5</name>
+        <x>373</x>
+        <y>334</y>
+        <width>20</width>
+        <height>34</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <orientation>GTK_ORIENTATION_VERTICAL</orientation>
+      </widget>
+      <widget>
+        <class>GtkLabel</class>
+        <name>label2</name>
+        <x>260</x>
+        <y>628</y>
+        <width>20</width>
+        <height>24</height>
+        <visible>True</visible>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <xpad>0</xpad>
+        <ypad>0</ypad>
+        <label>[</label>
         <justify>GTK_JUSTIFY_LEFT</justify>
         <wrap>False</wrap>
       </widget>

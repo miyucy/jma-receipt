@@ -200,5 +200,7 @@
               04  Z04-MIDASHI.
                 05  Z04-MIDASHI-STYLE  PIC X(20).
                 05  Z04-MIDASHI-DATA   PIC X(80).
-
+              04  Z04-LABEL2.
+                05  Z04-LABEL2-STYLE  PIC X(20).
+                05  Z04-LABEL2-DATA   PIC X(80).
 
