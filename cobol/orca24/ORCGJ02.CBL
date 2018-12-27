@@ -78,6 +78,7 @@
       *  04.08.00    NACL-多々納  16/08/XX  持参薬対応
       *  04.08.00    NACL-多々納  16/10/XX  一括変更項目桁数対応
       *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
+      *  05.00.00    NACL-多々納  18/12/27  HAORI入院調剤料対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5532,6 +5533,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    誕生日以前はエラー
            IF      SPA-BIRTHDAY(1:6)   =   SPA-NAI-SRYYM
                IF      SPA-DAY-IDX        <   SPA-BIRTHDAY(7:2)
+                  AND (SPA-DAY-IDX        >   ZERO   )
                    MOVE    "0015"              TO  SPA-ERRCD
                    GO      TO      41012-DAY-CHK-EXT
                END-IF
@@ -5602,7 +5604,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-GMN-DAY (IDX)   >   ZERO
                    IF      IDX             >   SPA-SRYMATU
                        MOVE    "0062"              TO  SPA-ERRCD
-                   ELSE
+                   END-IF
+      *H30.12      誕生日以前はエラー
+                   IF     (SPA-ERRCD       =   SPACE )
+                      AND (SPA-BIRTHDAY(1:6)   =   SPA-NAI-SRYYM)
+                       MOVE    IDX                 TO  IDD
+                       IF      IDD        <   SPA-BIRTHDAY(7:2)
+                           MOVE    "0015"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+      *
+                   IF     (SPA-ERRCD       =   SPACE )
       *                受診歴有無のチェック
                        PERFORM 410121-RRK-DAYCHK-SEC
                    END-IF
@@ -9495,6 +9507,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4201-SRYACCT-PARA-SEC           SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    パラメタ削除
            INITIALIZE                      PARA-REC
            MOVE    "J02"               TO  PARA-GYOUMUID
@@ -9570,6 +9587,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "SRYACCT"           TO  PARA-FILEMEI
                    MOVE    SPA-SRYACCT-MAX     TO  PARA-EDANUM
                    MOVE    SRYACCT-REC         TO  PARA-DATA-REC
+      *H30.12
+                   MOVE    SMCNDATE-YMD        TO  PARA-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  PARA-UPHMS
       *
                    MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                    MOVE    PARA-REC            TO  MCPDATA-REC
@@ -10310,6 +10330,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      470-KAKUTEI-EXT
            END-IF
       *    剤回数
+           MOVE    ZERO                TO  SPA-DAY-IDX
            PERFORM 41012-DAY-CHK-SEC
       *
            MOVE    ZERO                TO  WRK-CNT-TUKI
@@ -14609,6 +14630,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "UPD"
       *            保険組合せ一括変更処理
                    PERFORM 3001-HORI-UPD-SYORI-SEC
+      *H30.12
+               WHEN    "INIT5"
+      *            初期編集（入院調剤料変更）
+                   PERFORM 3002-HAORI-INIT5-SYORI-SEC
+               WHEN    "CHKZ5"
+      *            剤チェック（入院調剤料変更）
+                   PERFORM 3002-HAORI-ZAICHK5-SYORI-SEC
+               WHEN    "CHKD5"
+      *            算定日チェック（入院調剤料変更）
+                   PERFORM 3002-HAORI-DAYCHK5-SYORI-SEC
            END-EVALUATE
            .
        300-HAORI-SYORI-EXT.
@@ -14676,6 +14707,131 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        3001-HORI-UPD-SYORI-EXT.
            EXIT.
+      *
+      *H30.12
+      *****************************************************************
+      *    （HAORI）初期編集（入院調剤料変更）処理
+      *****************************************************************
+       3002-HAORI-INIT5-SYORI-SEC          SECTION.
+      *
+      *    初期編集
+           PERFORM 3001-HAORI-INIT-SYORI-SEC
+      *    入院期間外
+           IF      SPA-NYUGAIKBN       =   "2"
+               GO      TO  3002-HAORI-INIT5-SYORI-EXT
+           END-IF
+      *
+      *    受診履歴編集
+           PERFORM 3103-JYURRK-HEN-SEC
+      *    保険一覧編集
+           PERFORM 3008-HKNCOMBI-HEN-SEC
+      *
+      *    入院料包括診療チェック処理
+           PERFORM 30091-HKTCD-CHK-SEC
+      *
+      *
+           MOVE    ZERO                TO  SPA-GMN-MAX
+      *
+      *    保存用パラメタ作成
+           PERFORM 4201-SRYACCT-PARA-SEC
+           MOVE    1                   TO  SPA-GMN-PAGE
+           MOVE    1                   TO  SPA-STRNUM
+      *
+      *    診療会計マスターより編集をする
+           PERFORM 410181-SRYACCT-HEN-SEC
+      *    画面ＳＰＡ書込み
+           PERFORM 1003-J02SPA-OUT-SEC
+           .
+       3002-HAORI-INIT5-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    （HAORI）剤チェック編集（入院調剤料変更）処理
+      *****************************************************************
+       3002-HAORI-ZAICHK5-SYORI-SEC          SECTION.
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-BANGO       TO  J02-NUM
+           PERFORM 41011-BANGO-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 5101-ERRMSG-SET-SEC
+               MOVE    WRK-ERRMSG          TO  SPA-ERRMSG
+           END-IF
+      *    画面ＳＰＡ書込み
+           PERFORM 1003-J02SPA-OUT-SEC
+           .
+       3002-HAORI-ZAICHK5-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    （HAORI）算定日チェック（入院調剤料変更）処理
+      *****************************************************************
+       3002-HAORI-DAYCHK5-SYORI-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  J02
+           INITIALIZE                      J02
+      *
+           MOVE    SPACE               TO  SPA-ERRCD
+      *
+           PERFORM   VARYING   IDD     FROM    1   BY  1
+                     UNTIL    (IDD         >   31  )
+               MOVE    SPA-GMN-DAY (IDD)   TO  J02-DAY(IDD)
+           END-PERFORM
+      *    剤回数
+           MOVE    ZERO                TO  SPA-DAY-IDX
+           PERFORM 41012-DAY-CHK-SEC
+      *
+           MOVE    ZERO                TO  WRK-CNT-TUKI
+           MOVE    SPA-NAI-BANGO       TO  IDX-C
+      *    受診歴有無のチェック
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL    (IDX         >   31  )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN-DAY (IDX)   >   ZERO
+      *            受診歴有無のチェック
+                   PERFORM 410121-RRK-DAYCHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    IDX             TO  WRK-IDX
+                       MOVE    WRK-IDX         TO  SPA-DAY-IDX
+                   END-IF
+               END-IF
+      *        上限回数のチェック
+               IF     (SPA-GMN-DAY (IDX)   >   ZERO  )  AND
+                      (SPA-ERRCD           =   SPACE )  AND
+                      (SPA-NAI-SANTEIRRKKBN(IDX-C) NOT =   ZERO)
+                   PERFORM 4702-SANTEIRRK-CHK-SEC
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    WRK-IDX         TO  SPA-DAY-IDX
+           END-IF
+      *    受診履歴への反映
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPACE               TO  WRK-ERRCD
+               PERFORM 4701-RRK-ZAINUM-SEC
+      *
+               MOVE    SPA-NAI-BANGO       TO  IDX
+               MOVE    SPA-GNAI-DAY-G      TO  SPA-NAI-DAY-AREA (IDX)
+      *        合計回数
+               MOVE    ZERO                TO  WRK-ZAIKAISU
+               PERFORM VARYING    IDK      FROM    1   BY  1
+                       UNTIL      IDK      >   31
+                   ADD     SPA-NAI-DAY  (IDX 1 IDK)
+                                           TO  WRK-ZAIKAISU
+               END-PERFORM
+               MOVE    WRK-ZAIKAISU        TO  SPA-NAI-ZAIKAISU (IDX)
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 5101-ERRMSG-SET-SEC
+               MOVE    WRK-ERRMSG          TO  SPA-ERRMSG
+           END-IF
+      *
+      *    画面ＳＰＡ書込み
+           PERFORM 1003-J02SPA-OUT-SEC
+           .
+       3002-HAORI-DAYCHK5-SYORI-EXT.
+           EXIT.
+      *H30.12
       *
       *
       *****************************************************************
@@ -14746,6 +14902,34 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SPA-ERRMSG
+           MOVE    SPACE               TO  WRK-ERRMSG
+      *    エラーメッセージ編集
+           PERFORM 5101-ERRMSG-SET-SEC
+      *
+           MOVE    SPACE               TO  JERR
+           MOVE    SPA-ERRCD           TO  JERR-ERRCODE
+           MOVE    WRK-ERRMSG          TO  JERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "J02"               TO  SPA-MOTOPG
+           MOVE    "JERR"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "JERR"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       510-ERRSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       5101-ERRMSG-SET-SEC              SECTION.
       *
            MOVE    SPACE               TO  SPA-ERRMSG
            MOVE    SPACE               TO  WRK-ERRMSG
@@ -15178,23 +15362,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG
       *
            END-EVALUATE
-      *
-           MOVE    SPACE               TO  JERR
-           MOVE    SPA-ERRCD           TO  JERR-ERRCODE
-           MOVE    WRK-ERRMSG          TO  JERR-ERRMSG
-           MOVE    "B01"               TO  MCP-WIDGET
-      *
-           MOVE    "J02"               TO  SPA-MOTOPG
-           MOVE    "JERR"              TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "JERR"              TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
            .
-       510-ERRSET-EXT.
+       5101-ERRMSG-SET-EXT.
            EXIT.
       *
       *****************************************************************

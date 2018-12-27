@@ -18,6 +18,7 @@ bindapi	"medicalmodav32"	"OpenCOBOL"	"ORAPI021NS2V3";
 bindapi	"medicalmodav33"	"OpenCOBOL"	"ORAPI021NS3V3";
 bindapi	"medicalmodav34"	"OpenCOBOL"	"ORAPI021NS4V3";
 bindapi	"medicalmodv23"	"OpenCOBOL"	"ORAPI021S3V2";
+bindapi	"medicalmodav35"	"OpenCOBOL"	"ORAPI021NS5V3";
 
 multiplex_group	api21;
 
@@ -40,6 +41,7 @@ data	{
 		medicalmodav33;
 		medicalmodav34;
 		medicalmodv23;
+		medicalmodav35;
 	};
 };
 db "xml2" {
@@ -82,6 +84,8 @@ db "xml2" {
  fm_order_direction;
  xml_medicalv2req3;
  xml_medicalv2res3;
+ xml_medicalav3req5;
+ xml_medicalav3res5;
 };
 
 #include "orcadb.inc"
