@@ -369,6 +369,9 @@
            03  WRK-NAME            PIC X(210).
       *    用法コメント名称
            03  WRK-YOH-NAME        PIC X(200).
+      *
+      *    API薬剤名称
+           03  WRK-FM-NAME         PIC X(210).
       *    剤内容
            03  WRK-KAISU           PIC 9(05).
            03  WRK-ZAITENKEI       PIC 9(07).
@@ -4721,6 +4724,8 @@
       *
                MOVE    WRK-TNS-NAME        TO  WRK-QR-NAME
            END-IF
+      *H31.1
+           MOVE    SPACE               TO  WRK-FM-NAME
       *    内容編集
            PERFORM 31031-NAIYOU-HENSYU-SEC
       *
@@ -5164,6 +5169,9 @@
                    END-STRING
                END-IF
            END-PERFORM
+      *
+      *H31.1
+           MOVE    WRK-HEN-NAME        TO  WRK-FM-NAME
       *
       *H24.4
       *    後発品変更不可区分
@@ -7004,6 +7012,18 @@
       *****MOVE    WRK-TNS-NAME        TO  FMSHOHO-YKZNAME
            MOVE    WRK-QR-NAME         TO  FMSHOHO-YKZNAME
                                                   (IDX-AP1 IDX-AP2)
+      *H31.1
+      *    予約コード内容編集
+           IF      WRK-FM-NAME     NOT =   SPACE
+               MOVE    SPACE               TO  FMSHOHO-YKZNAME
+                                                  (IDX-AP1 IDX-AP2)
+               STRING  WRK-QR-NAME         DELIMITED  BY  SPACE
+                       WRK-FM-NAME         DELIMITED  BY  SPACE
+                                           INTO    FMSHOHO-YKZNAME
+                                                  (IDX-AP1 IDX-AP2)
+               END-STRING
+           END-IF
+      *
            MOVE    WRK-SRY-SRYCD(IDXA) TO  FMSHOHO-SRYCD
                                                   (IDX-AP1 IDX-AP2)
       *    数量
