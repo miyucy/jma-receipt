@@ -5432,7 +5432,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
            END-IF
-      * 
+      *
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
                DISPLAY "U02 UKETUKE KEY INS ERR:"  MCP-RC
@@ -6288,6 +6288,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    受付マスタ削除
            MOVE    SPA-GMN-SELNUM          TO  IDX
+      *2019.1
+           IF     (SPA-GMN-TUKEID(IDX) NOT =   SPA-NAI-UKEID )
+              OR  (SPA-NAI-UKEID           =   ZERO          )
+               MOVE    "1010"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+               GO    TO  4910-DELETE-SYORI-EXT
+           END-IF
       *
            INITIALIZE                      UKETUKE-REC
            MOVE    SPA-HOSPNUM             TO  UKE-HOSPNUM
