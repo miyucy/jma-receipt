@@ -12606,18 +12606,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
              OR   (FLG-KINKI           =   1     )
                GO      TO      4100-TOROKU-EXT
            END-IF
-      *TEST
-      *TEST
-      *****MOVE    1               TO  SPA-ETENSU-CHK
-      *    電子点数表のチェック
-      *    IF      SPA-ETENSU-CHK  NOT =   ZERO
-      *        PERFORM 41001-ETENSU-CHK-SEC
-      *        IF     (SPA-ERRCD       NOT =   SPACE )
-      *            GO      TO      4100-TOROKU-EXT
-      *        END-IF
-      *    END-IF
-      *TEST
-      *TEST
       *
       *    特定疾患処方管理・長期投薬加算有無クリア
            MOVE    ZERO                TO  SPA-CHOKITOFLG
@@ -12674,39 +12662,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4100-TOROKU-EXT.
            EXIT.
-      *TEST
-      *****************************************************************
-      *    電子点数表のチェック処理
-      *****************************************************************
-       41001-ETENSU-CHK-SEC          SECTION.
-      *
-      *    電子点数表一括チェック
-           INITIALIZE                  ORCSC92AREA
-           MOVE    "G"                 TO  LNK-SC92-KBN
-           MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
-           MOVE    "K02"               TO  LNK-SC92-PG 
-      *    警告チェックあり
-           MOVE    "1"                 TO  LNK-SC92-KEIFLG
-           MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
-           MOVE    SPA-15MIMAN-ARI     TO  LNK-SC92-15MIMAN-ARI
-           MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
-           MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
-           MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
-           MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
-           CALL    "ORCSC92ECHK"       USING
-                                           MCPAREA
-                                           ORCSC92AREA
-                                           SPA-SCR-REC
-                                           SPA-AREA
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           END-IF
-      *
-           .
-       41001-ETENSU-CHK-EXT.
-           EXIT.
-      *TEST
-      *
       *
       *****************************************************************
       *    確定　処理
