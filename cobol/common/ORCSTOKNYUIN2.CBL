@@ -34,6 +34,13 @@
       *  05.00.01    NACL-æÆ∆¶¬Ù  18/11/20  ª‹¿ﬂ¥Ω‡ —ππ§«¥Àœ¬•±•¢…¬≈Ô∆˛±°Œ¡
       *                                     §Œ£±§»£≤§¨∫Æ∫ﬂ§π§ÎæÏπÁ§Œ∆√ƒÍ∆˛±°Œ¡
       *                                     §ŒƒÃªª∆¸øÙºË∆¿ —ππ
+      *  05.00.01    NACL-æÆ∆¶¬Ù  18/12/06  ª‹¿ﬂ¥Ω‡ —ππ§«√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°Œ¡°¢
+      *                                     √œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡§Œ£±§»£≤§¨
+      *                                     ∫Æ∫ﬂ§π§ÎæÏπÁ§Œ∆√ƒÍ∆˛±°Œ¡§ŒƒÃªª∆¸øÙ
+      *                                     ºË∆¿ —ππ° ∆√ƒÍ√œ∞Ë§œÃ§¬–±˛°À
+      *  05.00.01    NACL-æÆ∆¶¬Ù  18/12/06  √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°Œ¡°¢
+      *                                     √œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡§Œ
+      *                                     ƒÃªª∆¸øÙºË∆¿ —ππ
       *****************************************************************
       *
       *
@@ -87,6 +94,7 @@
       *
            03  WRK-WEIGHT                  PIC 9(04).
            03  WRK-TOKUTEI-ROOM-NISSU      PIC 9(04).
+           03  WRK-CHIIKI-HOUKATSU-NISSU   PIC 9(04).
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -2573,17 +2581,9 @@
               WHEN      "190209110"
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£±° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190209210"
-             INITIALIZE                      ORCSTUSANAREA
-             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
-             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
-             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
-             MOVE    "190209110"             TO  STUSAN-TOKUTEI-SRYCD(1)
-             MOVE    "190209210"             TO  STUSAN-TOKUTEI-SRYCD(2)
-             MOVE    "190175310"             TO  STUSAN-TOKUTEI-SRYCD(3)
-             MOVE    "190175410"             TO  STUSAN-TOKUTEI-SRYCD(4)
-             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                             SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2591,17 +2591,9 @@
               WHEN      "190209310"
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£±° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190209410"
-             INITIALIZE                      ORCSTUSANAREA
-             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
-             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
-             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
-             MOVE    "190209310"             TO  STUSAN-TOKUTEI-SRYCD(1)
-             MOVE    "190209410"             TO  STUSAN-TOKUTEI-SRYCD(2)
-             MOVE    "190175510"             TO  STUSAN-TOKUTEI-SRYCD(3)
-             MOVE    "190175610"             TO  STUSAN-TOKUTEI-SRYCD(4)
-             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                             SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2609,17 +2601,9 @@
               WHEN      "190209510"
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≤° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190209610"
-             INITIALIZE                      ORCSTUSANAREA
-             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
-             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
-             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
-             MOVE    "190209510"             TO  STUSAN-TOKUTEI-SRYCD(1)
-             MOVE    "190209610"             TO  STUSAN-TOKUTEI-SRYCD(2)
-             MOVE    "190175710"             TO  STUSAN-TOKUTEI-SRYCD(3)
-             MOVE    "190175810"             TO  STUSAN-TOKUTEI-SRYCD(4)
-             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                             SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2627,17 +2611,9 @@
               WHEN      "190209710"
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190209810"
-             INITIALIZE                      ORCSTUSANAREA
-             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
-             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
-             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
-             MOVE    "190209710"             TO  STUSAN-TOKUTEI-SRYCD(1)
-             MOVE    "190209810"             TO  STUSAN-TOKUTEI-SRYCD(2)
-             MOVE    "190175910"             TO  STUSAN-TOKUTEI-SRYCD(3)
-             MOVE    "190176010"             TO  STUSAN-TOKUTEI-SRYCD(4)
-             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                             SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2645,17 +2621,9 @@
               WHEN      "190210710"
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£±° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190210810"
-             INITIALIZE                      ORCSTUSANAREA
-             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
-             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
-             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
-             MOVE    "190210710"             TO  STUSAN-TOKUTEI-SRYCD(1)
-             MOVE    "190210810"             TO  STUSAN-TOKUTEI-SRYCD(2)
-             MOVE    "190176110"             TO  STUSAN-TOKUTEI-SRYCD(3)
-             MOVE    "190176210"             TO  STUSAN-TOKUTEI-SRYCD(4)
-             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                             SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2663,17 +2631,9 @@
               WHEN      "190210910"
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£±° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190211010"
-             INITIALIZE                      ORCSTUSANAREA
-             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
-             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
-             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
-             MOVE    "190210910"             TO  STUSAN-TOKUTEI-SRYCD(1)
-             MOVE    "190211010"             TO  STUSAN-TOKUTEI-SRYCD(2)
-             MOVE    "190176310"             TO  STUSAN-TOKUTEI-SRYCD(3)
-             MOVE    "190176410"             TO  STUSAN-TOKUTEI-SRYCD(4)
-             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                             SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2681,17 +2641,9 @@
               WHEN      "190211110"
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≤° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190211210"
-             INITIALIZE                      ORCSTUSANAREA
-             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
-             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
-             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
-             MOVE    "190211110"             TO  STUSAN-TOKUTEI-SRYCD(1)
-             MOVE    "190211210"             TO  STUSAN-TOKUTEI-SRYCD(2)
-             MOVE    "190176510"             TO  STUSAN-TOKUTEI-SRYCD(3)
-             MOVE    "190176610"             TO  STUSAN-TOKUTEI-SRYCD(4)
-             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                             SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2699,17 +2651,89 @@
               WHEN      "190211310"
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190211410"
-             INITIALIZE                      ORCSTUSANAREA
-             MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
-             MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
-             MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
-             MOVE    "190211310"             TO  STUSAN-TOKUTEI-SRYCD(1)
-             MOVE    "190211410"             TO  STUSAN-TOKUTEI-SRYCD(2)
-             MOVE    "190176710"             TO  STUSAN-TOKUTEI-SRYCD(3)
-             MOVE    "190176810"             TO  STUSAN-TOKUTEI-SRYCD(4)
-             CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-                                             SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥
+              WHEN      "190209910"
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥° ¿∏≥ËŒ≈Õ‹°À
+              WHEN      "190210010"
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥
+              WHEN      "190210110"
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥° ¿∏≥ËŒ≈Õ‹°À
+              WHEN      "190210210"
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥
+              WHEN      "190210310"
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥° ¿∏≥ËŒ≈Õ‹°À
+              WHEN      "190210410"
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥
+              WHEN      "190210510"
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥° ¿∏≥ËŒ≈Õ‹°À
+              WHEN      "190210610"
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥° ∆√ƒÍ√œ∞Ë°À
+              WHEN      "190211510"
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+              WHEN      "190211610"
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥° ∆√ƒÍ√œ∞Ë°À
+              WHEN      "190211710"
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+              WHEN      "190211810"
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥° ∆√ƒÍ√œ∞Ë°À
+              WHEN      "190211910"
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+              WHEN      "190212010"
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
+           END-EVALUATE
+      *
+           EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥° ∆√ƒÍ√œ∞Ë°À
+              WHEN      "190212110"
+      *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+              WHEN      "190212210"
+                  PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
+                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                                             TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -3635,6 +3659,169 @@
            END-IF
            .
        201-TOKUTEI-ROOM-NISSU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *  °  ø¿Æ£≥£∞«Ø£¥∑Ó£±∆¸∞ πﬂ°À
+      *    √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°Œ¡°¢√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡§Œ
+      *    ƒÃªª∆¸øÙºË∆¿
+      *    ¢® ø¿Æ£≥£∞«Ø£≥∑Ó£≥£±∆¸§ﬁ§«§ŒªªƒÍ•≥°º•…§‚•´•¶•Û•»§π§Î§≥§»
+      *****************************************************************
+       201-CHIIKI-HOUKATSU-NISSU-SEC                    SECTION.
+      *
+           MOVE   ZERO                  TO  WRK-CHIIKI-HOUKATSU-NISSU
+      *
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£±
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£±° ¿∏≥ËŒ≈Õ‹°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≤
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≤° ¿∏≥ËŒ≈Õ‹°À
+           INITIALIZE                      ORCSTUSANAREA
+           MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+           MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+           MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+      *    √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£±
+           MOVE    "190209110"             TO  STUSAN-TOKUTEI-SRYCD(1)
+           MOVE    "190209210"             TO  STUSAN-TOKUTEI-SRYCD(2)
+           MOVE    "190175310"             TO  STUSAN-TOKUTEI-SRYCD(3)
+           MOVE    "190175410"             TO  STUSAN-TOKUTEI-SRYCD(4)
+      *    √œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≤
+           MOVE    "190209510"             TO  STUSAN-TOKUTEI-SRYCD(5)
+           MOVE    "190209610"             TO  STUSAN-TOKUTEI-SRYCD(6)
+           MOVE    "190175710"             TO  STUSAN-TOKUTEI-SRYCD(7)
+           MOVE    "190175810"             TO  STUSAN-TOKUTEI-SRYCD(8)
+      *
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                           SPA-AREA
+           ADD     STUSAN-NISSU09          TO  WRK-CHIIKI-HOUKATSU-NISSU
+      *
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£±
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£±° ¿∏≥ËŒ≈Õ‹°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≤
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À
+           INITIALIZE                      ORCSTUSANAREA
+           MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+           MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+           MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+      *    √œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£±
+           MOVE    "190209310"             TO  STUSAN-TOKUTEI-SRYCD(1)
+           MOVE    "190209410"             TO  STUSAN-TOKUTEI-SRYCD(2)
+           MOVE    "190175510"             TO  STUSAN-TOKUTEI-SRYCD(3)
+           MOVE    "190175610"             TO  STUSAN-TOKUTEI-SRYCD(4)
+      *    √œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≤
+           MOVE    "190209710"             TO  STUSAN-TOKUTEI-SRYCD(5)
+           MOVE    "190209810"             TO  STUSAN-TOKUTEI-SRYCD(6)
+           MOVE    "190175910"             TO  STUSAN-TOKUTEI-SRYCD(7)
+           MOVE    "190176010"             TO  STUSAN-TOKUTEI-SRYCD(8)
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                           SPA-AREA
+           ADD     STUSAN-NISSU09          TO  WRK-CHIIKI-HOUKATSU-NISSU
+      *
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£±° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£±° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+           INITIALIZE                      ORCSTUSANAREA
+           MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+           MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+           MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+           MOVE    "190210710"             TO  STUSAN-TOKUTEI-SRYCD(1)
+           MOVE    "190210810"             TO  STUSAN-TOKUTEI-SRYCD(2)
+           MOVE    "190176110"             TO  STUSAN-TOKUTEI-SRYCD(3)
+           MOVE    "190176210"             TO  STUSAN-TOKUTEI-SRYCD(4)
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                           SPA-AREA
+           ADD     STUSAN-NISSU09          TO  WRK-CHIIKI-HOUKATSU-NISSU
+      *
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≤° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≤° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+           INITIALIZE                      ORCSTUSANAREA
+           MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+           MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+           MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+           MOVE    "190211110"             TO  STUSAN-TOKUTEI-SRYCD(1)
+           MOVE    "190211210"             TO  STUSAN-TOKUTEI-SRYCD(2)
+           MOVE    "190176510"             TO  STUSAN-TOKUTEI-SRYCD(3)
+           MOVE    "190176610"             TO  STUSAN-TOKUTEI-SRYCD(4)
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                           SPA-AREA
+           ADD     STUSAN-NISSU09          TO  WRK-CHIIKI-HOUKATSU-NISSU
+      *
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£±° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£±° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+           INITIALIZE                      ORCSTUSANAREA
+           MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+           MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+           MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+           MOVE    "190210910"             TO  STUSAN-TOKUTEI-SRYCD(1)
+           MOVE    "190211010"             TO  STUSAN-TOKUTEI-SRYCD(2)
+           MOVE    "190176310"             TO  STUSAN-TOKUTEI-SRYCD(3)
+           MOVE    "190176410"             TO  STUSAN-TOKUTEI-SRYCD(4)
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                           SPA-AREA
+           ADD     STUSAN-NISSU09          TO  WRK-CHIIKI-HOUKATSU-NISSU
+      *
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≤° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+           INITIALIZE                      ORCSTUSANAREA
+           MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+           MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+           MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+           MOVE    "190211310"             TO  STUSAN-TOKUTEI-SRYCD(1)
+           MOVE    "190211410"             TO  STUSAN-TOKUTEI-SRYCD(2)
+           MOVE    "190176710"             TO  STUSAN-TOKUTEI-SRYCD(3)
+           MOVE    "190176810"             TO  STUSAN-TOKUTEI-SRYCD(4)
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                           SPA-AREA
+           ADD     STUSAN-NISSU09          TO  WRK-CHIIKI-HOUKATSU-NISSU
+      *
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥° ¿∏≥ËŒ≈Õ‹°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥° ¿∏≥ËŒ≈Õ‹°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥° ¿∏≥ËŒ≈Õ‹°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥° ¿∏≥ËŒ≈Õ‹°À
+           INITIALIZE                      ORCSTUSANAREA
+           MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+           MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+           MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+           MOVE    "190209910"             TO  STUSAN-TOKUTEI-SRYCD(1)
+           MOVE    "190210010"             TO  STUSAN-TOKUTEI-SRYCD(2)
+           MOVE    "190210110"             TO  STUSAN-TOKUTEI-SRYCD(3)
+           MOVE    "190210210"             TO  STUSAN-TOKUTEI-SRYCD(4)
+           MOVE    "190210310"             TO  STUSAN-TOKUTEI-SRYCD(5)
+           MOVE    "190210410"             TO  STUSAN-TOKUTEI-SRYCD(6)
+           MOVE    "190210510"             TO  STUSAN-TOKUTEI-SRYCD(7)
+           MOVE    "190210610"             TO  STUSAN-TOKUTEI-SRYCD(8)
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                           SPA-AREA
+           ADD     STUSAN-NISSU09          TO  WRK-CHIIKI-HOUKATSU-NISSU
+      *
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥° ∆√ƒÍ√œ∞Ë°À
+      *    (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
+           INITIALIZE                      ORCSTUSANAREA
+           MOVE    LNK-TOKNYUIN2-HOSPNUM   TO  STUSAN-HOSPNUM
+           MOVE    LNK-TOKNYUIN2-PTID      TO  STUSAN-PTID
+           MOVE    LNK-TOKNYUIN2-SANTEIYMD TO  STUSAN-KJNYMD
+           MOVE    "190211510"             TO  STUSAN-TOKUTEI-SRYCD(1)
+           MOVE    "190211610"             TO  STUSAN-TOKUTEI-SRYCD(2)
+           MOVE    "190211710"             TO  STUSAN-TOKUTEI-SRYCD(3)
+           MOVE    "190211810"             TO  STUSAN-TOKUTEI-SRYCD(4)
+           MOVE    "190211910"             TO  STUSAN-TOKUTEI-SRYCD(5)
+           MOVE    "190212010"             TO  STUSAN-TOKUTEI-SRYCD(6)
+           MOVE    "190212110"             TO  STUSAN-TOKUTEI-SRYCD(7)
+           MOVE    "190212210"             TO  STUSAN-TOKUTEI-SRYCD(8)
+           CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                           SPA-AREA
+           ADD     STUSAN-NISSU09          TO  WRK-CHIIKI-HOUKATSU-NISSU
+      *
+           .
+       201-CHIIKI-HOUKATSU-NISSU-EXT.
            EXIT.
       *
       *****************************************************************
