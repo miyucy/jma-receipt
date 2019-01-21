@@ -807,6 +807,7 @@
       *  04.08.67    NACL-門脇    18/09/27  選択式コメント対応
       *
       *  05.00.01    NACL-門脇    18/12/03  群馬県地方公費対応
+      *  05.00.02    NACL-門脇    19/01/11  マル長と生保に関する修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -975,6 +976,7 @@
            03  FLG-ZENKOKUKOHI-NISYU3                  PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU4                  PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU5                  PIC 9(01).
+           03  FLG-ZENKOKUKOHI-NISYU-SC                PIC 9(01).
            03  FLG-TOKU75                              PIC 9(01).
            03  FLG-TOKU75-KIZON                        PIC 9(01).
            03  FLG-SYOGAI75                            PIC 9(01).
@@ -995,6 +997,7 @@
            03  FLG-WRKFILE-KGKTAI                      PIC 9(01).
            03  FLG-SAIGAI-TAISYO                       PIC 9(01).
            03  FLG-CHIIKI                              PIC 9(01).
+           03  FLG-CHIIKI2                             PIC 9(01).
            03  FLG-KGKIPNTAI                           PIC 9(01).
            03  FLG-KGK                                 PIC 9(01).
            03  FLG-SKY-TOKKOH                          PIC 9(01).
@@ -1044,6 +1047,7 @@
            03  FLG-XX3-TUUKA                           PIC 9(01).
            03  FLG-XX6-TUUKA                           PIC 9(01).
            03  FLG-HANTEI                              PIC 9(01).
+           03  FLG-CYOKI-KINGAKU-SET                   PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -1338,6 +1342,7 @@
            03  WRK-KINGAKU-GENBUTU4-XXX                PIC 9(09).
            03  WRK-KINGAKU-GENBUTU5                    PIC 9(09).
            03  FLG-CYOKI                               PIC 9(01).
+           03  FLG-CYOKI2                              PIC 9(01).
            03  FLG-JYOGENKBN                           PIC 9(01).
            03  FLG-JYOGENKBN2                          PIC 9(01).
            03  FLG-JYOGENKBN3                          PIC 9(01).
@@ -1615,6 +1620,7 @@
            03  WRK-KEISAN3                             PIC 9(07).
            03  WRK-KEISAN4                             PIC 9(07).
            03  WRK-KEISAN9                             PIC 9(07).
+           03  WRK-KEISAN10                            PIC 9(09).
            03  WRK-KEISAN-XXX                          PIC 9(07).
            03  WRK-KEISAN-YYY                          PIC 9(07).
            03  WRK-KEISAN-ZZZ                          PIC 9(07).
@@ -1869,12 +1875,12 @@
            03  WRK-SYSCHK-SRYYM                PIC X(06).
            03  WRK-SYSCHK-HOSPCD               PIC 9(07).
       *
-           03  WRK-CYOKI-TOTAL-HKNTEN          PIC 9(07).
            03  WRK-CYOKI-TOTAL-HKNKIN          PIC 9(07).
-           03  WRK-CYOKI-TOTAL-HKNKIN8         PIC 9(07).
-           03  WRK-CYOKI-TOTAL-HKNKIN9         PIC 9(07).
+           03  WRK-CYOKI-TOTAL-HKNKIN2         PIC 9(07).
+           03  WRK-CYOKI-TOTAL-HKNTEN          PIC 9(07).
            03  WRK-CYOKI-TOTAL-HKNTEN2         PIC 9(07).
            03  WRK-CYOKI-TOTAL-HKNTEN3         PIC 9(07).
+           03  WRK-CYOKI-TOTAL-HKNTEN8         PIC 9(07).
       *
            03  WRK-KOHJGNGET-TAISYOKBN-T.
              04  WRK-KOHJGNGET-TAISYOKBN-OCC   OCCURS  4.
@@ -1883,6 +1889,7 @@
       *
            03  WRK-KYURATE                     PIC 9(03).
            03  WRK-KYURATE2                    PIC 9(03).
+           03  WRK-KYURATE3                    PIC 9(03).
       *
            03  WRK-INPUTCOMENT                 PIC X(80).
            03  WRK-INPUTCOMENT2                PIC X(14).
@@ -3844,6 +3851,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
            MOVE      ZERO       TO      FLG-ZENKOKUKOHI-NISYU3
            MOVE      ZERO       TO      FLG-ZENKOKUKOHI-NISYU4
            MOVE      ZERO       TO      FLG-ZENKOKUKOHI-NISYU5
+           MOVE      ZERO       TO      FLG-ZENKOKUKOHI-NISYU-SC
            MOVE      ZERO       TO      FLG-KEISAN-TOK1
                                         FLG-KEISAN-TOK2
            MOVE      ZERO       TO      WRK-KINGAKU-TOK1
@@ -3867,6 +3875,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
            MOVE      ZERO       TO      WRK-GENMEN-NASI-KIN
       *
            MOVE      ZERO       TO      FLG-KOKI-HIGAITO
+           MOVE      ZERO       TO      FLG-CHIIKI2
       *
            MOVE      ZERO       TO      WRK-CYOKI-JGNGAK
       *
@@ -4249,10 +4258,12 @@ grpsys           PERFORM 900-DBSELECT-SEC
                PERFORM    211S-GENBUTU70-GASSAN-CHK-SEC
            END-IF
            MOVE      ZERO       TO   FLG-CYOKI-CHECK
-           MOVE      ZERO       TO   WRK-CYOKI-TOTAL-HKNTEN
            MOVE      ZERO       TO   WRK-CYOKI-TOTAL-HKNKIN
+           MOVE      ZERO       TO   WRK-CYOKI-TOTAL-HKNKIN2
+           MOVE      ZERO       TO   WRK-CYOKI-TOTAL-HKNTEN
            MOVE      ZERO       TO   WRK-CYOKI-TOTAL-HKNTEN2
            MOVE      ZERO       TO   WRK-CYOKI-TOTAL-HKNTEN3
+           MOVE      ZERO       TO   WRK-CYOKI-TOTAL-HKNTEN8
            MOVE      ZERO       TO   CNT-CYOKI-HENSYU1
            MOVE      ZERO       TO   CNT-CYOKI-HENSYU2
            MOVE      ZERO       TO   FLG-CYOKI-HENSYU
@@ -7869,6 +7880,21 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
                           CONTINUE
                       ELSE
                           MOVE     5      TO   FLG-ZENKOKUKOHI-NISYU
+      *
+                          INITIALIZE                    HKNCOMBI-REC
+                          MOVE RECE02-HOSPNUM        TO COMB-HOSPNUM
+                          MOVE RECE02-PTID           TO COMB-PTID
+                          MOVE RECE02-HKNCOMBI(IDY2) TO COMB-HKNCOMBINUM
+                          MOVE HKNCOMBI-REC          TO MCPDATA-REC
+                          PERFORM 900-HKNCOMBI-INV-SEC
+                          IF   FLG-HKNCOMBI  =  ZERO
+                            IF  (COMB-KOH1HKNNUM  =  "972")
+                            OR  (COMB-KOH2HKNNUM  =  "972")
+                            OR  (COMB-KOH3HKNNUM  =  "972")
+                            OR  (COMB-KOH4HKNNUM  =  "972")
+                              MOVE   1    TO   FLG-ZENKOKUKOHI-NISYU-SC
+                            END-IF
+                          END-IF
                       END-IF
                     END-PERFORM
                   END-IF
@@ -18545,6 +18571,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                AND   WRK-TOKKI            NOT =  SPACE
                    MOVE   WRK-TOKKI      TO      WRK-TOKUSITU-TOKKI
                END-IF
+             WHEN       21
+                       MOVE    "02"      TO      WRK-TOKKI
       *
              WHEN       96
                        MOVE    "96"      TO      WRK-TOKKI
@@ -18868,7 +18896,10 @@ grpsys           PERFORM 900-DBSELECT-SEC
                        OR  (SYU-KOH-HKNNUM(2) =  "972")
                        OR  (SYU-KOH-HKNNUM(3) =  "972")
                        OR  (SYU-KOH-HKNNUM(4) =  "972")
+                         MOVE    ZERO   TO   FLG-CYOKI-CHECK2
+                         MOVE    ZERO   TO   FLG-CYOKI-CHECK3
                          PERFORM 211T1-CYOKI-HENSYU-SEC
+                         PERFORM 211T1-CYOKI-HENSYU2-SEC
                        END-IF
                    END-IF
                    MOVE    10           TO   IDX1
@@ -18899,12 +18930,9 @@ grpsys           PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    長期チェック１編集
+      *    長期チェック１編集１
       *****************************************************************
        211T1-CYOKI-HENSYU-SEC              SECTION.
-      *
-           MOVE       ZERO        TO   FLG-CYOKI-CHECK2
-           MOVE       ZERO        TO   FLG-CYOKI-CHECK3
       *
            IF  (SYU-KOH-HKNNUM(1)(1:1)   =  "0")
            OR  (TBL-TOKATUKAIFLG2        =   1 )
@@ -18968,6 +18996,15 @@ grpsys           PERFORM 900-DBSELECT-SEC
                MOVE     1         TO   FLG-CYOKI-CHECK3
            END-IF
       *
+           .
+       211T1-CYOKI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    長期チェック１編集２
+      *****************************************************************
+       211T1-CYOKI-HENSYU2-SEC              SECTION.
+      *
            IF    FLG-CYOKI-CHECK3   =   ZERO
       *        所得区分に準ずる集計分
              IF    SYU-KOH-HKNNUM(1)  =  "972"
@@ -18976,6 +19013,12 @@ grpsys           PERFORM 900-DBSELECT-SEC
              ELSE
                ADD   SYU-TOTAL-HKNTEN
                                   TO   WRK-CYOKI-TOTAL-HKNTEN2
+               IF   (RECE02-KOHNUM(1)  = SYU-KOH-HKNNUM(1)      )
+               AND  (RECE02-KOHNUM(1)  = RECE02-KOHNUMHC(IDX1 1))
+               AND  (RECE02-KOHID(1)   = RECE02-KOHIDHC(IDX1 1) )
+                 ADD   SYU-TOTAL-HKNTEN
+                                  TO   WRK-CYOKI-TOTAL-HKNTEN8
+               END-IF
              END-IF
            ELSE
       *        一律一般集計分
@@ -18991,11 +19034,11 @@ grpsys           PERFORM 900-DBSELECT-SEC
                COMPUTE  WRK-FTNKEI = WRK-FTNKEI
                                    + SYU-GRP-SGKMONEY
                ADD      WRK-FTNKEI
-                                  TO   WRK-CYOKI-TOTAL-HKNKIN
+                                  TO   WRK-CYOKI-TOTAL-HKNKIN2
            END-IF
       *
            .
-       211T1-CYOKI-HENSYU-EXT.
+       211T1-CYOKI-HENSYU2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -19777,92 +19820,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE     1        TO   FLG-KEISAN-TOK2
                    MOVE     4        TO   FLG-KEISAN
                  END-IF
-                 IF    ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
-                        (FLG-WRKFILE-CLEAR      =  ZERO ) AND
-                        (FLG-CYOKI-CHECK        =  ZERO ))
-                 OR    ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
-                        (FLG-WRKFILE-CLEAR      =  ZERO ) AND
-                        (FLG-CYOKI-CHECK        =  2    ) AND
-                        (FLG-TOKU75   NOT =  1 AND 2    ) AND
-                        (WRK-CYOKI-TOTAL-HKNKIN <= 8000 ))
-                 OR    ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
-                        (FLG-WRKFILE-CLEAR      =  ZERO ) AND
-                        (FLG-CYOKI-CHECK        =  2    ) AND
-                        (FLG-TOKU75       =  1 OR  2    ) AND
-                        (WRK-CYOKI-TOTAL-HKNKIN <= 4000 ))
-                    MOVE      2      TO   FLG-JYOGENKBN2
-                    IF  FLG-TOKU75 = 1 OR 2
-                      MOVE    4000   TO   WRK-KINGAKU
-                    ELSE
-                      MOVE    8000   TO   WRK-KINGAKU
-                    END-IF
-                 ELSE
-                  IF   ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
-                        (FLG-WRKFILE-CLEAR      =  ZERO ) AND
-                        (FLG-CYOKI-CHECK        =  2    ) AND
-                        (FLG-TOKU75   NOT =  1 AND 2    ) AND
-                        (WRK-CYOKI-TOTAL-HKNKIN >  8000 ) AND
-                        (SYU-KOH-HKNNUM(1)      =  "972"))
-                  OR   ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
-                        (FLG-WRKFILE-CLEAR      =  ZERO ) AND
-                        (FLG-CYOKI-CHECK        =  2    ) AND
-                        (FLG-TOKU75       =  1 OR  2    ) AND
-                        (WRK-CYOKI-TOTAL-HKNKIN >  4000 ) AND
-                        (SYU-KOH-HKNNUM(1)      =  "972"))
-                    MOVE      2      TO   FLG-JYOGENKBN2
-                    MOVE      ZERO   TO   WRK-KINGAKU
-                  ELSE
-                    IF  (RECE02-TEISYOTOKU  NOT =  SPACE)
-                    AND (FLG-WRKFILE-CLEAR      =  ZERO )
-                    AND (FLG-CYOKI-CHECK        =  2    )
-                      MOVE    2      TO   FLG-JYOGENKBN2
-                      MOVE    1      TO   FLG-CYOKI
-                      IF  FLG-TOKU75 = 1 OR 2
-                        IF  WRK-CYOKI-TOTAL-HKNKIN >= 5000
-                          MOVE  5000   TO   WRK-CYOKI-TOTAL-HKNKIN9
-                        ELSE
-                          MOVE  WRK-CYOKI-TOTAL-HKNKIN
-                                       TO   WRK-CYOKI-TOTAL-HKNKIN9
-                        END-IF
-                        IF   WRK-CYOKI-TOTAL-HKNKIN9 > 4000
-                          COMPUTE  WRK-CYOKI-TOTAL-HKNKIN8 =
-                                   WRK-CYOKI-TOTAL-HKNKIN9 -
-                                   4000
-                        ELSE
-                          MOVE  ZERO   TO   WRK-CYOKI-TOTAL-HKNKIN8
-                        END-IF
-                        COMPUTE  WRK-KINGAKU =
-                                 4000        +
-                                 WRK-CYOKI-TOTAL-HKNKIN8
-                      ELSE
-                        IF  WRK-CYOKI-TOTAL-HKNKIN >= 10000
-                          MOVE  10000  TO   WRK-CYOKI-TOTAL-HKNKIN9
-                        ELSE
-                          MOVE  WRK-CYOKI-TOTAL-HKNKIN
-                                       TO   WRK-CYOKI-TOTAL-HKNKIN9
-                        END-IF
-                        IF   WRK-CYOKI-TOTAL-HKNKIN9 > 8000
-                          COMPUTE  WRK-CYOKI-TOTAL-HKNKIN8 =
-                                   WRK-CYOKI-TOTAL-HKNKIN9 -
-                                   8000
-                        ELSE
-                          MOVE  ZERO   TO   WRK-CYOKI-TOTAL-HKNKIN8
-                        END-IF
-                        COMPUTE  WRK-KINGAKU =
-                                 8000        +
-                                 WRK-CYOKI-TOTAL-HKNKIN8
-                      END-IF
-                    ELSE
-                      MOVE    3      TO   FLG-JYOGENKBN2
-                      MOVE    1      TO   FLG-CYOKI
-                      IF  FLG-TOKU75 = 1 OR 2
-                        MOVE  5000   TO   WRK-KINGAKU
-                      ELSE
-                        MOVE  10000  TO   WRK-KINGAKU
-                      END-IF
-                    END-IF
-                  END-IF
+                 MOVE      ZERO      TO   FLG-CYOKI-CHECK2
+                 MOVE      ZERO      TO   FLG-CYOKI-CHECK3
+                 IF   (RECE02-TEISYOTOKU  NOT =  SPACE)
+                 AND  (FLG-WRKFILE-CLEAR      =  ZERO )
+                 AND  (FLG-CYOKI-CHECK    NOT =  ZERO )
+                   PERFORM  211T1-CYOKI-HENSYU-SEC
                  END-IF
+                 MOVE       1        TO   FLG-CYOKI-KINGAKU-SET
+                 PERFORM    210521B-CYOKI-KINGAKU-SET-SEC
                  MOVE  WRK-KINGAKU   TO   WRK-CYOKI-JGNGAK
                  IF  FLG-ZENKOKUKOHI-NISYU  =  5
                     IF  RECE02-KOHNUM(1) = SYU-KOH-HKNNUM(1)
@@ -20197,7 +20163,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE     4        TO   FLG-KEISAN
                  END-IF
                  MOVE     2          TO   FLG-JYOGENKBN2
-                 MOVE     1          TO   FLG-CYOKI
                  IF  FLG-TOKU75 = 3
                     MOVE  5000       TO   WRK-KINGAKU
                  ELSE
@@ -20682,6 +20647,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
               END-IF
               PERFORM     2105215-ICHIBUFTN-GEN-SEC
               PERFORM     2105211-ICHIBUFTN-KOH-SET-SEC
+              MOVE        1             TO   FLG-CHIIKI2
            ELSE
               IF  ((RECE02-KOHNUM(1)   = SYU-KOH-HKNNUM(1)      ) AND
                    (RECE02-KOHNUM(1)   = RECE02-KOHNUMHC(IDX1 1)) AND
@@ -21120,6 +21086,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
             END-IF
             PERFORM   2105215-ICHIBUFTN-GEN-SEC
             PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+            MOVE      1               TO   FLG-CHIIKI2
            ELSE
              IF  ((RECE02-KOHNUM(1)   = SYU-KOH-HKNNUM(1)      ) AND
                   (RECE02-KOHNUM(1)   = RECE02-KOHNUMHC(IDX1 1)) AND
@@ -21569,6 +21536,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                OR  (SYU-KOH-HKNNUM(3) = "012" OR "025")
                OR  (SYU-KOH-HKNNUM(4) = "012" OR "025")
                  IF   SYU-SYUHKNNUM  NOT = SPACE
+                  IF   (FLG-ZENKOKUKOHI-NISYU    =  5                 )
+                  AND  (RECE02-KOHNUM(1)(1:1)    = "0"                )
+                  AND  (RECE02-KOHNUM(1)     NOT = "012" AND "025"    )
+                  AND  (RECE02-TOTALTEN(1)       =  RECE02-TOTALTEN(2))
+                   IF   FLG-ZENKOKUKOHI-NISYU-SC =  1
+                     IF  FLG-TOKU75 = 3
+                       MOVE  5000       TO   WRK-KINGAKU
+                     ELSE
+                       MOVE  10000      TO   WRK-KINGAKU
+                     END-IF
+                   END-IF
+                  ELSE
       ****         IF  FLG-KOHYONKAIME = 1
       ****           IF  FLG-TOKU75 = 3
       ****             MOVE  12300      TO   WRK-KINGAKU
@@ -21582,6 +21561,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE  35400      TO   WRK-KINGAKU
                      END-IF
       ****         END-IF
+                  END-IF
                  END-IF
                END-IF
                MOVE      WRK-KINGAKU TO   WRK-KINGAKU-GENBUTU2
@@ -21617,6 +21597,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                OR  (SYU-KOH-HKNNUM(3) = "012" OR "025")
                OR  (SYU-KOH-HKNNUM(4) = "012" OR "025")
                  IF   SYU-SYUHKNNUM  NOT = SPACE
+                  IF   (FLG-ZENKOKUKOHI-NISYU    =  5                 )
+                  AND  (RECE02-KOHNUM(1)(1:1)    = "0"                )
+                  AND  (RECE02-KOHNUM(1)     NOT = "012" AND "025"    )
+                  AND  (RECE02-TOTALTEN(1)       =  RECE02-TOTALTEN(2))
+                   IF   FLG-ZENKOKUKOHI-NISYU-SC =  1
+                     IF  FLG-TOKU75 = 3
+                       MOVE  5000       TO   WRK-KINGAKU
+                     ELSE
+                       MOVE  10000      TO   WRK-KINGAKU
+                     END-IF
+                   END-IF
+                  ELSE
       ****         IF  FLG-KOHYONKAIME = 1
       ****           IF  FLG-TOKU75 = 3
       ****             MOVE  12300      TO   WRK-KINGAKU
@@ -21630,6 +21622,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE  35400      TO   WRK-KINGAKU
                      END-IF
       ****         END-IF
+                  END-IF
                  END-IF
                END-IF
                MOVE      WRK-KINGAKU TO   WRK-KINGAKU-GENBUTU4
@@ -22090,11 +22083,21 @@ grpsys     PERFORM 900-DBSELECT-SEC
            OR  (SYU-KOH-HKNNUM(3) = "012" OR "025")
            OR  (SYU-KOH-HKNNUM(4) = "012" OR "025")
              IF   SYU-SYUHKNNUM  NOT = SPACE
-               IF FLG-TOKU75 = 1 OR 2
-                 MOVE    4000     TO   WRK-KINGAKU
-               ELSE
-                 MOVE    8000     TO   WRK-KINGAKU
-               END-IF
+                IF   (FLG-ZENKOKUKOHI-NISYU    =  5                 )
+                AND  (RECE02-KOHNUM(1)(1:1)    = "0"                )
+                AND  (RECE02-KOHNUM(1)     NOT = "012" AND "025"    )
+                AND  (RECE02-TOTALTEN(1)       =  RECE02-TOTALTEN(2))
+                  IF  FLG-ZENKOKUKOHI-NISYU-SC =  1
+                    MOVE       2     TO   FLG-CYOKI-KINGAKU-SET
+                    PERFORM    210521B-CYOKI-KINGAKU-SET-SEC
+                  END-IF
+                ELSE
+                  IF   FLG-TOKU75 = 1 OR 2
+                    MOVE    4000     TO   WRK-KINGAKU
+                  ELSE
+                    MOVE    8000     TO   WRK-KINGAKU
+                  END-IF
+                END-IF
              END-IF
            END-IF
       *
@@ -23062,7 +23065,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                AND RECE02-KOHID(2)  = RECE02-KOHIDHC(IDX1 1)
                   MOVE    2    TO   FLG-KEISAN3
                END-IF
-               PERFORM   2105211A-ICHIBUFTN-KOH-SET2-SEC
+               PERFORM   210521A-ICHIBUFTN-KOH-SET2-SEC
               WHEN       8
                IF  RECE02-KOHNUM(1) = SYU-KOH-HKNNUM(1)
                AND RECE02-KOHNUM(1) = RECE02-KOHNUMHC(IDX1 1)
@@ -23074,7 +23077,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                AND RECE02-KOHID(3)  = RECE02-KOHIDHC(IDX1 1)
                   MOVE    2    TO   FLG-KEISAN3
                END-IF
-               PERFORM   2105211A-ICHIBUFTN-KOH-SET2-SEC
+               PERFORM   210521A-ICHIBUFTN-KOH-SET2-SEC
               WHEN       9
                IF  RECE02-KOHNUM(2) = SYU-KOH-HKNNUM(1)
                AND RECE02-KOHNUM(2) = RECE02-KOHNUMHC(IDX1 1)
@@ -23086,7 +23089,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                AND RECE02-KOHID(3)  = RECE02-KOHIDHC(IDX1 1)
                   MOVE    2    TO   FLG-KEISAN3
                END-IF
-               PERFORM   2105211A-ICHIBUFTN-KOH-SET2-SEC
+               PERFORM   210521A-ICHIBUFTN-KOH-SET2-SEC
            END-EVALUATE
       *
            .
@@ -23096,7 +23099,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    保険欄の一部負担金額セット（長期＋２種）
       *****************************************************************
-       2105211A-ICHIBUFTN-KOH-SET2-SEC               SECTION.
+       210521A-ICHIBUFTN-KOH-SET2-SEC               SECTION.
       *
            EVALUATE   FLG-KEISAN3
              WHEN         1
@@ -23126,7 +23129,88 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-EVALUATE
       *
            .
-       2105211A-ICHIBUFTN-KOH-SET2-EXT.
+       210521A-ICHIBUFTN-KOH-SET2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    長期金額セット
+      *****************************************************************
+       210521B-CYOKI-KINGAKU-SET-SEC               SECTION.
+      *
+           IF   (RECE02-TEISYOTOKU  NOT =  SPACE)
+           AND  (FLG-WRKFILE-CLEAR      =  ZERO )
+           AND  (FLG-CYOKI-CHECK    NOT =  ZERO )
+             IF   (FLG-ZENKOKUKOHI-NISYU    =  5                 )
+             AND  (RECE02-KOHNUM(1)(1:1)    = "0"                )
+             AND  (RECE02-KOHNUM(1)     NOT = "012" AND "025"    )
+             AND  (RECE02-TOTALTEN(1)       =  RECE02-TOTALTEN(2))
+             AND  (FLG-ZENKOKUKOHI-NISYU-SC =  1                 )
+               MOVE     99999     TO  WRK-CYOKI-TOTAL-HKNKIN
+               MOVE     1         TO  FLG-CYOKI-CHECK3
+             ELSE
+               MOVE     WRK-CYOKI-TOTAL-HKNKIN2
+                                  TO  WRK-CYOKI-TOTAL-HKNKIN
+             END-IF
+           END-IF
+      *
+           IF  ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
+                (FLG-WRKFILE-CLEAR      =  ZERO ) AND
+                (FLG-CYOKI-CHECK        =  ZERO ))
+           OR  ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
+                (FLG-WRKFILE-CLEAR      =  ZERO ) AND
+                (FLG-CYOKI-CHECK    NOT =  ZERO ) AND
+                (FLG-TOKU75   NOT =  1 AND 2    ) AND
+                (WRK-CYOKI-TOTAL-HKNKIN <= 8000 ))
+           OR  ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
+                (FLG-WRKFILE-CLEAR      =  ZERO ) AND
+                (FLG-CYOKI-CHECK    NOT =  ZERO ) AND
+                (FLG-TOKU75       =  1 OR  2    ) AND
+                (WRK-CYOKI-TOTAL-HKNKIN <= 4000 ))
+           OR  ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
+                (FLG-WRKFILE-CLEAR      =  ZERO ) AND
+                (FLG-CYOKI-CHECK    NOT =  ZERO ) AND
+                (WRK-CYOKI-TOTAL-HKNTEN8
+                                    NOT =  ZERO ))
+             IF  FLG-CYOKI-KINGAKU-SET  =  1
+               MOVE    2      TO   FLG-JYOGENKBN2
+             END-IF
+             IF  FLG-TOKU75 = 1 OR 2
+               MOVE    4000   TO   WRK-KINGAKU
+             ELSE
+               MOVE    8000   TO   WRK-KINGAKU
+             END-IF
+           ELSE
+             IF  ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
+                  (FLG-WRKFILE-CLEAR      =  ZERO ) AND
+                  (FLG-CYOKI-CHECK    NOT =  ZERO ) AND
+                  (FLG-TOKU75   NOT =  1 AND 2    ) AND
+                  (WRK-CYOKI-TOTAL-HKNKIN >  8000 ) AND
+                  (FLG-CYOKI-CHECK3       =  ZERO ))
+             OR  ((RECE02-TEISYOTOKU  NOT =  SPACE) AND
+                  (FLG-WRKFILE-CLEAR      =  ZERO ) AND
+                  (FLG-CYOKI-CHECK    NOT =  ZERO ) AND
+                  (FLG-TOKU75       =  1 OR  2    ) AND
+                  (WRK-CYOKI-TOTAL-HKNKIN >  4000 ) AND
+                  (FLG-CYOKI-CHECK3       =  ZERO ))
+               IF  FLG-CYOKI-KINGAKU-SET  =  1
+                 MOVE    1    TO   FLG-CYOKI2
+               END-IF
+               MOVE    ZERO   TO   WRK-KINGAKU
+             ELSE
+               IF  FLG-CYOKI-KINGAKU-SET  =  1
+                 MOVE    3    TO   FLG-JYOGENKBN2
+                 MOVE    1    TO   FLG-CYOKI
+               END-IF
+               IF  FLG-TOKU75 = 1 OR 2
+                 MOVE  5000   TO   WRK-KINGAKU
+               ELSE
+                 MOVE  10000  TO   WRK-KINGAKU
+               END-IF
+             END-IF
+           END-IF
+      *
+           .
+       210521B-CYOKI-KINGAKU-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -24483,7 +24567,35 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2109-SAIKEI-KEISAN-SEC               SECTION.
       *
-      *     請求点数から第三者行為の点数を差し引く
+           IF   (FLG-ZENKOKUKOHI-NISYU    =  5                 )
+           AND  (RECE02-KOHNUM(1)(1:1)    = "0"                )
+           AND  (RECE02-KOHNUM(1)     NOT = "012" AND "025"    )
+           AND  (RECE02-TOTALTEN(1)       =  RECE02-TOTALTEN(2))
+           AND  (FLG-ZENKOKUKOHI-NISYU-SC =  1                 )
+           AND  (RECE02-SRYYM            >= "201204"           )
+             IF  FLG-ZENKI-TOKUREI = 1
+               MOVE    20              TO   WRK-KYURATE3
+             ELSE
+               MOVE    RECE02-KYURATE  TO   WRK-KYURATE3
+             END-IF
+             COMPUTE   WRK-KEISAN10  =  RECE02-TOTALTEN(1)
+                                     *  10
+                                     *  WRK-KYURATE3
+                                     /  100
+             IF  FLG-TOKU75 = 1 OR 2 OR 3
+               IF   5000   <  WRK-KEISAN10
+                    MOVE     21      TO   FLG-TOKKI
+                    PERFORM  21045-TOKKI-HENSYU-SEC
+               END-IF
+             ELSE
+               IF   10000  <  WRK-KEISAN10
+                    MOVE     21      TO   FLG-TOKKI
+                    PERFORM  21045-TOKKI-HENSYU-SEC
+               END-IF
+             END-IF
+           END-IF
+      *
+      *    請求点数から第三者行為の点数を差し引く
       *
            MOVE     RECE02-TOTALTEN(1)   TO   WRK-TAIHI-TOTALTEN
            IF   (RECE02-DAISAN-GAITO    =   1 OR 2)
@@ -25255,23 +25367,47 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                  WHEN       ZERO        ALSO     3
                    IF  FLG-TOKU75 = 1 OR 2
+                     IF   FLG-CYOKI2 = 1
+                      MOVE      4000      TO   WRK-CHK-KINGAKU2
+                     ELSE
                       MOVE      5000      TO   WRK-CHK-KINGAKU2
+                     END-IF
                    ELSE
+                     IF   FLG-CYOKI2 = 1
+                      MOVE      8000      TO   WRK-CHK-KINGAKU2
+                     ELSE
                       MOVE      10000     TO   WRK-CHK-KINGAKU2
+                     END-IF
                    END-IF
                  WHEN       1           ALSO     3
                    MOVE    WRK-KINGAKU-GENBUTU3 TO  WRK-CHK-KINGAKU
                    IF  FLG-TOKU75 = 1 OR 2
+                     IF   FLG-CYOKI2 = 1
+                      MOVE      4000      TO   WRK-CHK-KINGAKU2
+                     ELSE
                       MOVE      5000      TO   WRK-CHK-KINGAKU2
+                     END-IF
                    ELSE
+                     IF   FLG-CYOKI2 = 1
+                      MOVE      8000      TO   WRK-CHK-KINGAKU2
+                     ELSE
                       MOVE      10000     TO   WRK-CHK-KINGAKU2
+                     END-IF
                    END-IF
                  WHEN       2           ALSO     3
                    MOVE    WRK-KINGAKU-GENBUTU  TO  WRK-CHK-KINGAKU
                    IF  FLG-TOKU75 = 1 OR 2
+                     IF   FLG-CYOKI2 = 1
+                      MOVE      4000      TO   WRK-CHK-KINGAKU2
+                     ELSE
                       MOVE      5000      TO   WRK-CHK-KINGAKU2
+                     END-IF
                    ELSE
+                     IF   FLG-CYOKI2 = 1
+                      MOVE      8000      TO   WRK-CHK-KINGAKU2
+                     ELSE
                       MOVE      10000     TO   WRK-CHK-KINGAKU2
+                     END-IF
                    END-IF
                  WHEN       ZERO        ALSO     4
                    MOVE    WRK-KINGAKU-GENBUTU  TO  WRK-CHK-KINGAKU2
@@ -26157,9 +26293,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 TO  WRK-CYOKI-KEISAN7
                              MOVE WRK-CYOKI-KEISAN6
                                           TO   RECE02-ZAITAKU-SAIKEI2
-                             IF   WRK-CYOKI-KEISAN6 = ZERO
-                                MOVE   1  TO   RECE02-SAIKEIZEROKSI2
-                             END-IF
                             ELSE
                              MOVE  FTN-KOH-XX7  TO  WRK-CYOKI-KEISAN7
                             END-IF
@@ -26180,10 +26313,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                           ELSE
                             MOVE  WRK-CYOKI-KEISAN3
                                           TO   RECE02-ZAITAKU-SAIKEI2
-                            IF    WRK-CYOKI-KEISAN3  = ZERO
-                               MOVE   1   TO   RECE02-SAIKEIZEROKSI2
-                            END-IF
                           END-IF
+                      END-IF
+                      IF    RECE02-ZAITAKU-SAIKEI2 = ZERO
+                         MOVE     1       TO   RECE02-SAIKEIZEROKSI2
                       END-IF
                     END-IF
       *
@@ -26563,7 +26696,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      WHEN      "1"
                        IF   RECE02-KOHNUM(1) = "972"
                          IF     (RECE02-TEISYOTOKU  NOT =  SPACE)
-                         AND    (FLG-CYOKI-CHECK        =  ZERO )
+      *****              AND    (FLG-CYOKI-CHECK        =  ZERO )
                            IF  FLG-TOKU75 = 1 OR 2
                              MOVE    4000   TO   WRK-KINGAKU3
                            ELSE
@@ -28153,7 +28286,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               - RECE02-TOTALTEN(2)
                END-IF
            END-EVALUATE
-           PERFORM  21094-JYOGENGAKU-HENSYU-SEC
+           IF   FLG-CHIIKI   =   1
+           AND  FLG-CHIIKI2  =   1
+             PERFORM  21094X-JYOGENGAKU-HENSYU2-SEC
+           ELSE
+             PERFORM  21094-JYOGENGAKU-HENSYU-SEC
+           END-IF
            IF   FLG-KOH  =   2
              IF  WRK-FTNMONEY-ATO  NOT = 999999999
                COMPUTE  WRK-CHK-KOKIGAK2 = WRK-FTNMONEY-ATO
