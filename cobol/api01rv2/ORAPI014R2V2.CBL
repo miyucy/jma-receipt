@@ -686,7 +686,7 @@
            MOVE    YYK-SRYNAIYO        TO  YYKCOM-SRYNAIYO
            MOVE    YYK-DRCD            TO  YYKCOM-DRCD
            MOVE    YYK-YYKYMD          TO  YYKCOM-YYKYMD
-           MOVE    YYK-YYKTIME         TO  YYKCOM-KEYYYKTIME
+           MOVE    YYK-KEYYYKTIME      TO  YYKCOM-KEYYYKTIME
       *    Í½Ìó£É£Ä
            MOVE    YYK-YYKID           TO  YYKCOM-YYKID
       *
