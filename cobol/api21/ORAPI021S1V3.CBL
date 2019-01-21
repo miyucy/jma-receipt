@@ -2120,6 +2120,7 @@
                MOVE    WRK-SRYKA           TO  ORCSAPIHKN-SRYKA
                MOVE    WRK-HKNCOMBI        TO  ORCSAPIHKN-IN-HKNCOMBI
            END-IF
+           MOVE    SPA-SRYYMD          TO  ORCSAPIHKN-SRYYMD
            CALL    "ORCSAPIHKN"        USING
                                        SPA-AREA
                                        ORCSAPIHKNAREA
@@ -2873,6 +2874,7 @@
       *    ¿ÇÎÅ²Ê
            MOVE    WRK-SRYKA           TO  ORCSAPIHKN-SRYKA
            MOVE    WRK-HKNCOMBI        TO  ORCSAPIHKN-IN-HKNCOMBI
+           MOVE    SPA-SRYYMD          TO  ORCSAPIHKN-SRYYMD
            CALL    "ORCSAPIHKN"        USING
                                        SPA-AREA
                                        ORCSAPIHKNAREA
@@ -3063,7 +3065,7 @@
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
-      *!
+      *H30.8
            WHEN    "26"
                MOVE    "½èÍý¶èÊ¬¥¨¥é¡¼"        TO  WRK-ERRMSG 
            WHEN    "27"

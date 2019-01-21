@@ -32,6 +32,8 @@
       *  04.08.00    NACL-多々納  17/05/XX  包括検査数、単位コード対応
       *                                     フィルム分画数等対応
       *  05.00.00    NACL-多々納  17/12/XX  入院対応
+      *  05.00.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
+      *  05.00.00    NACL-多々納  19/01/XX  複数保険・科対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -50,6 +52,8 @@
            03  FLG-TENSU               PIC 9(01).
            03  FLG-GENERICNAME         PIC 9(01).
            03  FLG-TENSUPLUS           PIC 9(01).
+      *!!!!!
+           03  FLG-SYSKANRI            PIC 9(01).
       *
            03  FLG-HENCHK              PIC 9(01).
            03  FLG-SP                  PIC 9(01).
@@ -69,6 +73,8 @@
            03  IDXM                PIC 9(04).
            03  IDXR                PIC 9(04).
            03  IDD                 PIC 9(02).
+      *
+           03  IDY2                PIC 9(04).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -99,6 +105,12 @@
            03  WRK-SRYCD               PIC X(09).
       *    包括検査数
            03  WRK-HOUKNS-CNT          PIC 9(02).
+      *
+           03  WRK-HKNCOMBI            PIC X(04).
+           03  WRK-SRYKA               PIC X(02).
+           03  WRK-DRCD-G.
+               05  WRK-DRCD-1          PIC X(01).
+               05  WRK-DRCD            PIC X(04).
       *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
@@ -149,9 +161,23 @@
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
       *
+      *2019.1
+      *    保険組合せセット領域
+           COPY    "CPORCSAPIHKN.INC".
+      *
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *2019.1
+      *    システム管理
+           COPY    "CPSYSKANRI.INC".
+      *    診療科情報
+           COPY    "CPSK1005.INC".
+      *    職員情報
+           COPY    "CPSK1010.INC".
+      *!!!!!
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -261,6 +287,14 @@
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   (IDX            >   LNK-WKSRYACT-MAX)
                        OR  (FLG-HENCHK NOT =   ZERO  )
+      *!!!!
+      *2019.1
+      *      複数科・保険対応
+             IF    LNK-WKSRY-INPUTCD(IDX 1)(1:1)   =   "$"
+                                                   OR  "#"
+               PERFORM 2009-FUKU-KAHKN-SEC
+             ELSE
+      *!!!!
       *
                IF      (IDZ            =   ZERO )
                   OR  ((IDX            >   1    )  AND
@@ -320,6 +354,9 @@
       *!
       *
                END-PERFORM
+      *!!!!
+             END-IF
+      *
            END-PERFORM
       *
       *H28.12
@@ -381,12 +418,12 @@
       *    診療区分
            MOVE    LNK-WKSRY-SRYKBN(IDX)   TO  WRK-SRYKBN
            MOVE    LNK-WKSRY-SRYSYUKBN(IDX)    TO  WRK-SRYSYUKBN
-           MOVE    WRK-SRYKBN          TO  ORAPISUB2-MDC-CLASS-KBN (IDY)
-           MOVE    WRK-SRYSYUKBN       TO  ORAPISUB2-MDC-CLASS     (IDY)
            IF      WRK-SRYSYUKBN       =   SPACE
                MOVE    WRK-SRYKBN          TO  WRK-SRYSYUKBN(1:2)
                MOVE    "0"                 TO  WRK-SRYSYUKBN(3:1)
            END-IF
+           MOVE    WRK-SRYKBN          TO  ORAPISUB2-MDC-CLASS-KBN (IDY)
+           MOVE    WRK-SRYSYUKBN       TO  ORAPISUB2-MDC-CLASS     (IDY)
            PERFORM 510-SRYKBN-MEI-SEC
            MOVE    WRK-SRYSYUKBNMEI    TO  ORAPISUB2-MDC-CLASS-NAME(IDY)
       *
@@ -682,6 +719,112 @@
        2002343-INGAI-CHK-EXT.
            EXIT.
       *
+      *!!!!
+      *2019.1
+      *****************************************************************
+      *     複数科・複数保険編集対応
+      *****************************************************************
+       2009-FUKU-KAHKN-SEC            SECTION.
+      *
+           ADD     1                   TO  IDY
+           IF      IDY                 >   COB-ZAI-OUTMAX
+               MOVE    1               TO  FLG-HENCHK
+               GO  TO  2009-FUKU-KAHKN-EXT
+           END-IF
+           MOVE    ZERO                TO  IDZ
+           MOVE    ZERO                TO  WRK-HOUKNS-CNT
+      *
+           EVALUATE    LNK-WKSRY-INPUTCD(IDX 1)(1:1)
+           WHEN    "$"
+      *    診療科変更
+               MOVE    "DEP"           TO  ORAPISUB2-MDC-DATA-KBN(IDY)
+      *        診療科
+               MOVE    LNK-WKSRY-INPUTCD(IDX 1)(2:2)
+                                       TO  WRK-SRYKA
+               MOVE    WRK-SRYKA       TO  ORAPISUB2-MDC-DEP-CODE(IDY)
+      *        システム管理検索
+               MOVE    SPACE               TO  SYS-1005-REC
+               INITIALIZE                  SYS-1005-REC
+               MOVE    "1005"              TO  SYS-1005-KANRICD
+               MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
+               MOVE    SYS-1005-REC        TO  SYSKANRI-REC
+               PERFORM 900-SYSKANRI-SEL-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    SYSKANRI-REC        TO  SYS-1005-REC
+                   MOVE    SYS-1005-SRYKANAME1
+                                       TO  ORAPISUB2-MDC-DEP-CODE-NAME
+                                                                (IDY)
+               END-IF
+      *        ドクター
+               MOVE    SPACE               TO  WRK-DRCD-G
+               MOVE    LNK-WKSRY-INPUTCD(IDX 1)(5:4)  TO  WRK-DRCD
+               IF      WRK-DRCD        NOT =   SPACE
+                   MOVE    "1"             TO  WRK-DRCD-1
+                   MOVE    WRK-DRCD-G
+                                       TO  ORAPISUB2-MDC-DR-CODE(IDY)
+               END-IF
+      *
+               INITIALIZE                  SYS-1010-REC
+               MOVE    "1010"              TO  SYS-1010-KANRICD
+               MOVE    WRK-DRCD-G          TO  SYS-1010-KBNCD
+               MOVE    SYS-1010-REC        TO  SYSKANRI-REC
+               PERFORM 900-SYSKANRI-SEL-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    SYSKANRI-REC        TO  SYS-1010-REC
+                   MOVE    SYS-1010-NAME
+                                       TO  ORAPISUB2-MDC-DR-CODE-NAME
+                                                                (IDY)
+               END-IF
+      *
+           WHEN    "#"
+      *    保険組合せ変更
+               MOVE    "COM"           TO  ORAPISUB2-MDC-DATA-KBN(IDY)
+      *        保険組合せ番号
+               MOVE    LNK-WKSRY-INPUTCD(IDX 1)(2:4)
+                                       TO  WRK-HKNCOMBI
+               MOVE    WRK-HKNCOMBI    TO  ORAPISUB2-MDC-COMBINATION
+                                                                 (IDY)
+               IF      WRK-HKNCOMBI    =   "9999"
+                   MOVE    "包括分入力"    TO
+                                           ORAPISUB2-MDC-MAIN-INS-NAME
+                                                            (IDY)
+               ELSE
+      *
+      *            保険組合せ編集処理
+                   INITIALIZE                      ORCSAPIHKNAREA
+                   MOVE    "2"                 TO  ORCSAPIHKN-KBN
+                   MOVE    SPACE               TO  ORCSAPIHKN-KBN2
+                   MOVE    WRK-HKNCOMBI        TO
+                                               ORCSAPIHKN-IN-HKNCOMBI
+                   MOVE    SPA-SRYYMD          TO  ORCSAPIHKN-SRYYMD
+                   CALL    "ORCSAPIHKN"        USING
+                                               SPA-AREA
+                                               ORCSAPIHKNAREA
+                   IF     (ORCSAPIHKN-ERRCD    =   ZERO  )
+                      AND (ORCSAPIHKN-THKNCOMBI (1)
+                                                =   WRK-HKNCOMBI )
+      *                保険の名称
+                       MOVE    ORCSAPIHKN-HKNNUM-NAME (01)
+                                           TO
+                                           ORAPISUB2-MDC-MAIN-INS-NAME
+                                                            (IDY)
+      *                公費の名称
+                       PERFORM VARYING     IDY2    FROM    1   BY  1
+                           UNTIL       IDY2    >   4
+      *                    公費の種類名称
+                           MOVE    ORCSAPIHKN-KOHNUM-NAME (01 IDY2)
+                                       TO  ORAPISUB2-INSURANCE-NAME
+                                                         (IDY IDY2)
+                       END-PERFORM
+                   END-IF
+               END-IF
+           END-EVALUATE
+      *
+           .
+       2009-FUKU-KAHKN-EXT.
+           EXIT.
+      *!!!!
+      *
       *****************************************************************
       *     診療種別区分名称、診療行為区分セット
       *****************************************************************
@@ -859,6 +1002,41 @@
            PERFORM 990-DBCLOSE-SEC
            .
        9102-GENERICNAME-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ検索処理
+      *****************************************************************
+       900-SYSKANRI-SEL-SEC         SECTION.
+      *
+           MOVE    SPA-SRYYMD          TO  SYS-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+               ELSE
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       900-SYSKANRI-SEL-EXT.
            EXIT.
       *
       *****************************************************************

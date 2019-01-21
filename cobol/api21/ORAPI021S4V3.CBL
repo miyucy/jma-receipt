@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.00    NACL-多々納  19/01/XX  複数科・保険対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -75,6 +76,8 @@
            03  IDX2                PIC 9(04).
            03  IDX-HKN             PIC 9(04).
            03  IDX-ERR             PIC 9(04).
+      *
+           03  IDXF                PIC 9(04).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -141,6 +144,8 @@
            03  WRK-SRYCD               PIC X(09).
            03  WRK-TIMEFLG             PIC X(01).
       *
+           03  WRK-SELECT-CD           PIC X(04).
+      *
        01  WRK-XML-AREA.
            03  WRK-PERFORM-DATE        PIC X(10).
            03  WRK-PERFORM-TIME8       PIC X(08).
@@ -152,6 +157,9 @@
                05  WRK-PERFORM-TSS     PIC X(02).
            03  WRK-PTNUM               PIC X(20).
            03  WRK-PTID                PIC 9(10).
+      *
+           03  WRK-IN-DENPNUM          PIC 9(07).
+      *
            03  WRK-DENPNUM             PIC 9(07).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-SRYKA-NAME          PIC X(80).
@@ -906,7 +914,7 @@
                                            TO  MDCRES-PERFORM-DATE
            END-IF
       *
-      *!!! 診療日付＝システム日付とする
+      *    診療日をシステム日付・診療日付へ
            MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
       *
            MOVE    WRK-PERFORM-YMD     TO  SPA-SRYYMD
@@ -1027,6 +1035,7 @@
        20011-DENPNUM-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  WRK-DENPNUM
+           MOVE    ZERO                TO  WRK-IN-DENPNUM
       *
            INITIALIZE                      ORCSNUMAREA
            MOVE    MDCREQ-INVOICD-NUMBER   TO  SNUM-INX
@@ -1039,6 +1048,7 @@
                MOVE    "13"                TO  WRK-ERRCD
            ELSE
                MOVE    SNUM-OUTNUM         TO  WRK-DENPNUM
+               MOVE    SNUM-OUTNUM         TO  WRK-IN-DENPNUM
            END-IF
       *
            IF      WRK-DENPNUM         =   ZERO
@@ -1072,18 +1082,65 @@
                IF      JYURRK-SRYYMD   NOT =   SPA-SRYYMD
                    MOVE    "14"                TO  WRK-ERRCD
                END-IF
-               IF      JYURRK-GRP-DENPNUM  NOT =   ZERO
+      *2019.1
+               IF      WRK-ERRCD           =   SPACE
+      *   複数科保険対応
+                   IF      JYURRK-GRP-DENPNUM  NOT =   ZERO
       *            複数科保険は返却できない
-                   MOVE    "15"                TO  WRK-ERRCD
+      *****        MOVE    "15"                TO  WRK-ERRCD
+                       IF      JYURRK-GRP-RENNUM   >   1
+      *                    主たる受診履歴へ変更
+                           PERFORM 20014-GRP-JYURRK-SEC
+                       END-IF
+                   END-IF
                END-IF
                IF      WRK-ERRCD           =   SPACE
                    MOVE    JYURRK-REC          TO  HZN-JYURRK-REC
+                   MOVE    JYURRK-DENPNUM      TO  WRK-DENPNUM
+     ******        MOVE    JYURRK-DENPNUM      TO  MDCRES-INVOICD-NUMBER
                END-IF
            ELSE
                MOVE    "22"                TO  WRK-ERRCD
            END-IF
            .
        20011-DENPNUM-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    主たる受診履歴へ変更
+      *****************************************************************
+       20014-GRP-JYURRK-SEC         SECTION.
+      *
+           MOVE    JYURRK-REC          TO  HZN-JYURRK-REC
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key26"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key26"             TO  MCP-PATHNAME
+               PERFORM 910-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key26"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-JYURRK          =   1
+               MOVE    HZN-JYURRK-REC      TO  JYURRK-REC
+      *        受診履歴不整合
+               ADD     1                   TO  IDK
+               MOVE    "W05"               TO  WRK-KEICD(IDK)
+           ELSE
+      *        主たる受診履歴へ変更
+               ADD     1                   TO  IDK
+               MOVE    "W04"               TO  WRK-KEICD(IDK)
+           END-IF
+           .
+       20014-GRP-JYURRK-EXT.
            EXIT.
       *
       *
@@ -1181,12 +1238,16 @@
            IF      FLG-JYURRK          =   ZERO
                IF      JYURRK-GRP-DENPNUM  NOT =   ZERO
       *            複数科保険は返却できない
-                   MOVE    "15"                TO  WRK-ERRCD
+      *****        MOVE    "15"                TO  WRK-ERRCD
+                   IF      JYURRK-GRP-RENNUM   >   1
+      *                 主たる受診履歴へ変更
+                        PERFORM 20014-GRP-JYURRK-SEC
+                   END-IF
                END-IF
                IF      WRK-ERRCD           =   SPACE
                    MOVE    JYURRK-REC          TO  HZN-JYURRK-REC
                    MOVE    JYURRK-DENPNUM      TO  WRK-DENPNUM
-                   MOVE    JYURRK-DENPNUM      TO  MDCRES-INVOICD-NUMBER
+      ********     MOVE    JYURRK-DENPNUM      TO  MDCRES-INVOICD-NUMBER
                END-IF
            ELSE
                MOVE    "22"                TO  WRK-ERRCD
@@ -1246,15 +1307,22 @@
       *
       *    患者情報内容編集
            PERFORM 20021-MDCRES-HEN-SEC
+      *
       *    診察料登録処理
-           PERFORM 20021-HENSYU-01-SEC
+           IF      WRK-ERRCD           =   SPACE
+               PERFORM 20021-HENSYU-01-SEC
+           END-IF
       *
            IF     (WRK-ERRCD           =   SPACE )
              AND  (WRK-SYORI-MODE      =   "DEL" )
       *        確認メッセージ
-               MOVE    "0001"              TO  MDCRES-SELECT-CODE
-               MOVE    "受診履歴を削除します。よろしいですか？"
-                                           TO  MDCRES-SELECT-MSG
+               MOVE    "0001"              TO  WRK-SELECT-CD
+               IF      SPA-TEI-DENPNUM (1) >   ZERO
+      *            複数科保険あり
+                   MOVE    "0002"              TO  WRK-SELECT-CD
+               END-IF
+               PERFORM 20029-SELECT-MSG-SEC
+      *
                MOVE    "S"                 TO  WRK-ERRKBN
                MOVE    "30"                TO  WRK-ERRCD
       *        確認あり
@@ -1339,6 +1407,8 @@
            MOVE    JYURRK-HKNCOMBINUM  TO  SPA-OLD-HKNCOMBI
       *
            MOVE    JYURRK-DENPNUM      TO  SPA-DENPNUM
+      *    伝票番号
+           MOVE    SPA-DENPNUM         TO  MDCRES-INVOICD-NUMBER
       *
            MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
@@ -1359,8 +1429,7 @@
            MOVE    SPA-SRYYMD          TO  LNK-SC95-RRKYMD
            MOVE    SPA-RENNUM          TO  LNK-SC95-RENNUM
            MOVE    SPA-DOUJI-RENNUM    TO  LNK-SC95I-DOUJI-RENNUM
-     ****  MOVE    JYURRK-GRP-DENPNUM
-           MOVE    ZERO                TO  LNK-SC95-GRP-DENPNUM
+           MOVE    JYURRK-GRP-DENPNUM  TO  LNK-SC95-GRP-DENPNUM
            CALL    "ORCSC95"           USING
                                        MCPAREA
                                        ORCSC95AREA
@@ -1429,6 +1498,12 @@
                ELSE
                    MOVE    "0"         TO  MDCRES-COMBINATION-RATE
                END-IF
+           END-IF
+      *
+      *2019.1
+      *    複数科保険
+           IF      SPA-TEI-DENPNUM (1) >   ZERO
+               PERFORM 200213-GRP-DENPNUM-SEC
            END-IF
       *
            .
@@ -1511,8 +1586,39 @@
            INITIALIZE                  MDCRES-MEDICAL-INF-G
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   (IDX            >   120   )
-                       OR  (ORAPISUB2-MDC-CLASS-KBN (IDX)
-                                           =   SPACE )
+      ****             OR  (ORAPISUB2-MDC-CLASS-KBN (IDX)
+      ****                                 =   SPACE )
+                       OR ((ORAPISUB2-MDC-CLASS-KBN (IDX)
+                                           =   SPACE )   AND
+                           (ORAPISUB2-MDC-DATA-KBN (IDX)
+                                           =   SPACE ))
+      *!!!
+      *2019.1
+      *        複数科・保険項目
+               MOVE    ORAPISUB2-MDC-DATA-KBN (IDX)
+                                           TO  MDCRES-MDC-DATA-KBN(IDX)
+               MOVE    ORAPISUB2-MDC-COMBINATION (IDX)
+                                       TO  MDCRES-MDC-COMBINATION-NUMBER
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-MAIN-INS-NAME (IDX)
+                                       TO  MDCRES-MDC-MAIN-INS-NAME
+                                                               (IDX)
+               MOVE    ORAPISUB2-PUBLIC-INSURANCE-INFO (IDX)
+                                       TO  MDCRES-MDC-PUBLIC-INS-INFO
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-DEP-CODE (IDX)
+                                       TO  MDCRES-MDC-DEP-CODE
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-DEP-CODE-NAME (IDX)
+                                       TO  MDCRES-MDC-DEP-CODE-NAME
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-DR-CODE (IDX)
+                                       TO  MDCRES-MDC-DR-CODE
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-DR-CODE-NAME (IDX)
+                                       TO  MDCRES-MDC-DR-CODE-NAME
+                                                               (IDX)
+      *!!!
                MOVE    ORAPISUB2-MDC-CLASS-KBN (IDX)
                                            TO  MDCRES-MDC-CLASS-KBN(IDX)
                MOVE    ORAPISUB2-MDC-CLASS (IDX)
@@ -1714,6 +1820,61 @@
        2002101-HKNHEN-TBL-EXT.
            EXIT.
       *
+      *!!!
+      *2019.1
+      *****************************************************************
+      *    複数科保険編集処理
+      *****************************************************************
+       200213-GRP-DENPNUM-SEC        SECTION.
+      *
+           PERFORM VARYING     IDXF    FROM    1   BY  1
+                   UNTIL      (IDXF        >   15 )
+                         OR   (SPA-TEI-DENPNUM (IDXF)
+                                           =   ZERO )
+               MOVE    SPA-TEI-DENPNUM (IDXF)
+                                       TO  MDCRES-SUB-INVOICD-NUMBER
+                                                               (IDXF)
+      *        診療科
+               MOVE    SPA-TEI-SRYKA (IDXF)
+                                       TO  MDCRES-SUB-DEP-CODE
+                                                               (IDXF)
+      *        保険組合せ番号
+               MOVE    SPA-TEI-HKNCOMBI (IDXF)
+                                       TO  MDCRES-SUB-COMBINATION-NUMBER
+                                                               (IDXF)
+      *        連番
+               MOVE    SPA-TEI-RENNUM (IDXF)
+                                       TO  MDCRES-SUB-NUMBER (IDXF)
+           END-PERFORM
+           .
+       200213-GRP-DENPNUM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認メッセージ編集処理
+      *****************************************************************
+       20029-SELECT-MSG-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  MDCRES-SELECT-MSG
+           MOVE    WRK-SELECT-CD       TO  MDCRES-SELECT-CODE
+           EVALUATE    MDCRES-SELECT-CODE
+               WHEN    "0001"
+                   MOVE    "受診履歴を削除します。よろしいですか？"
+                                           TO  MDCRES-SELECT-MSG
+               WHEN    "0002"
+                   STRING  "複数科保険組合せの受診履歴です。"
+                           "すべての受診履歴を削除します。"
+                           "よろしいですか？"
+                                           DELIMITED  BY  SPACE
+                                           INTO  MDCRES-SELECT-MSG
+                   END-STRING
+           END-EVALUATE
+      *
+           .
+       20029-SELECT-MSG-EXT.
+           EXIT.
+      *!!!
+      *
       *****************************************************************
       *    削除処理
       *****************************************************************
@@ -1894,6 +2055,17 @@
       *     API処理登録処理
       *****************************************************************
        2008-APIPARAINS-SEC            SECTION.
+      *
+           INITIALIZE                      APIPARA-REC
+           MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
+           MOVE    "AP21"              TO  APIPARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  APIPARA-TERMID
+      *
+           MOVE    APIPARA-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "del2"              TO  MCP-PATHNAME
+           MOVE    "tbl_api_para"      TO  MCP-TABLE
+           PERFORM 900-ORCDBMAIN-SEC
       *
       *    登録
            INITIALIZE                      APIPARA-REC
@@ -2285,7 +2457,6 @@
            WHEN    "90"
                MOVE    "他端末使用中"          TO  WRK-ERRMSG
            WHEN    "91"
-      ******** MOVE    "処理区分未設定"        TO  WRK-ERRMSG
                MOVE    "リクエスト番号不正"    TO  WRK-ERRMSG
            WHEN    "97"
                MOVE   "送信内容に誤りがあります。"
@@ -2316,6 +2487,19 @@
                                                TO  WRK-ERRMSG
            WHEN    "W03"
                STRING  "診療行為内容が存在しません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+      *
+      *2019.1
+           WHEN    "W04"
+               STRING  "複数科保険組合せの受診履歴です。"
+                       "主たる受診履歴の情報に変更します。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "W05"
+               STRING  "複数科保険組合せの受診履歴に不具合があります。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING

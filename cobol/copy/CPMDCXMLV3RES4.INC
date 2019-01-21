@@ -18,6 +18,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 05.00.00     NACL-多々納  19/01/XX  複数科保険対応
       *****************************************************************
       ******************************************************************
       *    ＡＰＩレスポンス診療行為登録情報 (一体化)
@@ -108,12 +109,47 @@
       *               外来−固定額
                       11  MDCRES-MONEY-OUTPATIENT        PIC X(06).
       *
+      *H31.01
+      *        複数科保険対応
+               05  MDCRES-GRP-INF-G.
+                   07  MDCRES-GRP-INF-OCC      OCCURS   15.
+      *                伝票番号
+                       09  MDCRES-SUB-INVOICD-NUMBER    PIC  X(07).
+      *                保険組合せ番号
+                       09  MDCRES-SUB-COMBINATION-NUMBER     PIC X(04).
+      *                診療科
+                       09  MDCRES-SUB-DEP-CODE          PIC X(2).
+      *                連番
+                       09  MDCRES-SUB-NUMBER            PIC X(01).
+      *!!!
+      *
       *        院内院外区分（投薬ありのみ）
                05  MDCRES-OUTSIDE-LASS        PIC X(05).
       *
       *        診療内容返却
                05  MDCRES-MEDICAL-INF-G.
                  07  MDCRES-MDC-INFO          OCCURS   120.
+      *!!!
+      *H31.01
+      *             保険・診療科切替
+                    09  MDCRES-CHENGE-REC.
+      *                 データ区分（DEP：複数診療科、COM:保険組合せ）
+                        11  MDCRES-MDC-DATA-KBN              PIC X(03).
+      *                 保険組合せ番号
+                        11  MDCRES-MDC-COMBINATION-NUMBER    PIC X(04).
+      *                 保険の種類名称
+                        11  MDCRES-MDC-MAIN-INS-NAME    PIC X(20).
+                        11  MDCRES-MDC-PUBLIC-INS-INFO.
+      *                 公費の種類名称
+                            13  MDCRES-MDC-INSURANCE-NAME     PIC X(20)
+                                                     OCCURS  4 TIMES.
+      *                 診療科
+                        11  MDCRES-MDC-DEP-CODE          PIC X(2).
+                        11  MDCRES-MDC-DEP-CODE-NAME     PIC X(20).
+      *                 ドクター
+                        11  MDCRES-MDC-DR-CODE           PIC X(5).
+                        11  MDCRES-MDC-DR-CODE-NAME      PIC X(80).
+      *!!!
       *             診療区分
                     09  MDCRES-MDC-CLASS-KBN         PIC X(2).
       *             診療種別区分

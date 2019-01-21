@@ -18,6 +18,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 05.00.00     NACL-多々納  19/01/XX  複数科保険対応
       *****************************************************************
       ******************************************************************
       *    ＡＰＩ診療内容編集サブパラメタ（一体化）
@@ -34,6 +35,28 @@
       *        診療内容返却
                05  ORAPISUB2-MEDICAL-INF-G.
                  07  ORAPISUB2-MDC-INFO          OCCURS   120.
+      *!!!!
+      *H31.01
+      *             保険・診療科切替
+                    09  ORAPISUB2-CHENGE-REC.
+      *                データ区分（DEP：複数診療科、COM:保険組合せ番号のレコード）
+                        11  ORAPISUB2-MDC-DATA-KBN         PIC X(03).
+      *                 保険組合せ番号
+                        11  ORAPISUB2-MDC-COMBINATION      PIC X(04).
+      *                 保険の種類名称
+                        11  ORAPISUB2-MDC-MAIN-INS-NAME
+                                                       PIC X(20).
+                        11  ORAPISUB2-PUBLIC-INSURANCE-INFO.
+      *                     公費の種類名称
+                            13  ORAPISUB2-INSURANCE-NAME  PIC X(20)
+                                                       OCCURS  4 TIMES.
+      *                 診療科
+                        11  ORAPISUB2-MDC-DEP-CODE         PIC X(02).
+                        11  ORAPISUB2-MDC-DEP-CODE-NAME    PIC X(20).
+      *                 ドクター
+                        11  ORAPISUB2-MDC-DR-CODE          PIC X(05).
+                        11  ORAPISUB2-MDC-DR-CODE-NAME     PIC X(80).
+      *!!!!
       *             診療区分
                     09  ORAPISUB2-MDC-CLASS-KBN         PIC X(2).
       *             診療種別区分

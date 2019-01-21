@@ -53,11 +53,41 @@ xml_medicalv3res4 {
 			Money_Outpatient		varchar(06);
             	} [4];
     	};
+#-!!!!!
+#---  £øÙ≤ °¶ ›∏±¡»πÁ§ª
+	Grp_Information  {
+	    Grp_Info  {
+#---           ≈¡…º»÷πÊ
+	       Invoice_Number			varchar(07);
+#---            ›∏±¡»πÁ§ª
+	       Insurance_Combination_Number	varchar(04);
+#---           ø«Œ≈≤ 
+               Department_Code			varchar(02);
+#---           œ¢»÷
+               Sequential_Number		varchar(1);
+            }[15] ;
+    	};
+#-!!!!!
 #--- ±°∆‚°¶±°≥∞∂Ë ¨
 	Outside_Class		varchar(5);
 #--- ø«Œ≈∆‚Õ∆
 	Medical_Information  {
 		Medical_Info  {
+#-!!!!!
+#-----   £øÙ≤ °¶ ›∏±¡»πÁ§ª¿⁄¬ÿ
+			Medication_Change_Info   {
+			    Change_Mode			varchar(03);
+			    Change_Insurance_Combination_Number	varchar(04);
+		            Change_InsuranceProvider_WholeName	varchar(20);
+                            Change_PublicInsurance_Information   {
+                		Change_PublicInsurance_Name	varchar(20);
+		            	} [4];
+			    Change_Department_Code	varchar(02);
+			    Change_Department_Code_Name	varchar(20);
+			    Change_Physician_Code	varchar(5);
+			    Change_Physician_Code_Name	varchar(80);
+			};
+#-!!!!!
 			Medical_Class_Group		varchar(02);
 			Medical_Class			varchar(03);
 			Medical_Class_Name		varchar(40);

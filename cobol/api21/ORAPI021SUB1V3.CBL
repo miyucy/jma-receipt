@@ -32,6 +32,8 @@
       *                                     フィルム分画数等対応
       *  05.01.00    NACL-多々納  19/09/XX  改行コードエラー
       *  05.00.00    NACL-多々納  17/11/XX  入院対応追加
+      *  05.00.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
+      *  05.00.00    NACL-多々納  19/01/XX  複数保険・科対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -50,6 +52,7 @@
            03  FLG-TENSU               PIC 9(01).
            03  FLG-PARA                PIC 9(01).
            03  FLG-INPUTSET            PIC 9(01).
+           03  FLG-SYSKANRI            PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
            03  FLG-SURYO               PIC 9(01).
@@ -152,6 +155,15 @@
                05  WRK-INPUTCD         PIC X(54)
                                            OCCURS   5.
       *
+      *!!!!
+      *    複数科・保険組合せ対応
+           03  WRK-FUK-HKNCOMBI        PIC 9(04).
+           03  WRK-FUK-DRCD-G.
+               05  WRK-FUK-DRCD-1      PIC X(01).
+               05  WRK-FUK-DRCD        PIC X(04).
+           03  FLG-CHK-OK              PIC 9(01).
+           03  IDH                     PIC 9(04).
+      *
       *    入力コード項目桁数
        01  CONS-INPUT              PIC 9(02)   VALUE   54.
       *
@@ -250,6 +262,10 @@
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
       *
+           COPY    "CPSYSKANRI.INC".
+      *    職員情報
+           COPY  "CPSK1010.INC".
+      *
       *     パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
@@ -269,10 +285,16 @@
       *    ワーク診療行為データ編集領域
            COPY    "CPORAPI021SUB1V3.INC".
       *
+      *2019.1
+      *    複数保険対応（画面スパ領域）
+           COPY    "K02SCR-SPA".
+      *
        PROCEDURE                   DIVISION    USING
            MCPAREA
            SPA-AREA
            ORAPI021SUB1V3AREA
+      *2019.1
+           SPA-K02
            .
       *
       *****************************************************************
@@ -397,19 +419,208 @@
       *    診療情報設定
            PERFORM VARYING   IDY   FROM    1   BY  1
                    UNTIL    (IDY           >   110  )
-                       OR   (ORAPISUB01-MDC-CLASS (IDY) =   SPACE )
+      ***              OR   (ORAPISUB01-MDC-CLASS (IDY) =   SPACE )
+                       OR  ((ORAPISUB01-MDC-CLASS (IDY) =   SPACE )
+                        AND (ORAPISUB01-MDC-DATA-KBN (IDY)
+                                                        =   SPACE ))
                        OR   (ORAPISUB01-ERRCD  NOT =   SPACE )
-      *        剤毎の編集
-               PERFORM 200211-ZAI-HENSYU-SEC
-               IF      TBL-MAX             >   ZERO
-      *            中間データ出力
-                   PERFORM 200212-WKSRYACT-OUT-SEC
-               END-IF
+      *
+      *2019.1
+               MOVE    SPACE               TO  WRK-ERRCD
+               EVALUATE    ORAPISUB01-MDC-DATA-KBN (IDY)
+               WHEN    "COM"
+      *            複数　保険組合せ
+                   PERFORM 200213-FUKU-HKNCOMBI-HEN-SEC
+               WHEN    "DEP"
+      *            複数　診療科
+                   PERFORM 200214-FUKU-SRYKA-HEN-SEC
+      *
+               WHEN    SPACE
+      *            剤毎の編集
+                   PERFORM 200211-ZAI-HENSYU-SEC
+                   IF      TBL-MAX             >   ZERO
+      *                中間データ出力
+                       PERFORM 200212-WKSRYACT-OUT-SEC
+                   END-IF
+               WHEN    OTHER
+                   MOVE    "021"               TO  WRK-ERRCD
+                   MOVE    ZERO                TO  IDZ
+                   MOVE    SPACE               TO  WRK-SRYCD
+                   PERFORM 200210-ERRCD-HENSYU-SEC
+      *
+               END-EVALUATE
+      *!!!!
            END-PERFORM
       *
            .
        2002-WKSRYACT-SYORI-EXT.
            EXIT.
+      *
+      *!!!!
+      *2019.1
+      *****************************************************************
+      *    複数科・保険組合せ編集処理
+      *****************************************************************
+       200213-FUKU-HKNCOMBI-HEN-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  TBL-MAX
+           MOVE    SPACE               TO  TBL-WKSRYACT-AREA
+           INITIALIZE                      TBL-WKSRYACT-AREA
+      *
+           MOVE    SPACE               TO  WRK-SRYKBN
+           MOVE    SPACE               TO  WRK-SRYSYUKBN
+           MOVE    ZERO                TO  WRK-KAISU
+           MOVE    1                   TO  WRK-ZAITENKEI
+      *
+      *    複数　保険組合せ
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    ORAPISUB01-MDC-COMBINATION (IDY)
+                                       TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN         =   "1"   )   OR
+                  (SNUM-SEISUU         >   4     )   OR
+                  (SNUM-SYOSUU         >   0     )
+      *        整数４桁
+               MOVE    "015"               TO  WRK-ERRCD
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  WRK-FUK-HKNCOMBI
+      *
+               MOVE    ZERO                TO  FLG-CHK-OK
+               PERFORM VARYING    IDH      FROM    1   BY  1
+                       UNTIL     (IDH      >   SPA-HKN-MAX )
+                             OR  (FLG-CHK-OK   =   1   )
+                   IF      WRK-FUK-HKNCOMBI    =   SPA-GMN-THKNCOMBINUM
+                                                               (IDH)
+      *                労災・自賠責はエラー
+                       IF      ((SPA-NAI-RSI-HKNKBN (IDH)
+                                                     NOT =  SPACE )
+                            OR  (SPA-NAI-HKNNUM (IDH)    =   "975"))
+                           MOVE    "016"           TO  WRK-ERRCD
+                       END-IF
+                       MOVE    1               TO  FLG-CHK-OK
+                   END-IF
+               END-PERFORM
+               IF      FLG-CHK-OK          =   ZERO
+                   MOVE    "015"               TO  WRK-ERRCD
+               END-IF
+           END-IF
+      *    労災・自賠責・公害はエラー
+           IF     (SPA-HKNCOMBINUM     =   "9999")
+             OR   (SPA-HKNKBN          =   1     )
+             OR   (SPA-HKNKBN          =   2     )
+               MOVE    "018"               TO  WRK-ERRCD
+           END-IF
+      *
+           IF      WRK-ERRCD           =   SPACE
+               MOVE    1                   TO  TBL-MAX
+               MOVE    SPACE               TO  TBL-WKSRY-INPUTCD
+                                                      (TBL-MAX 1)
+               MOVE    "#"                 TO  TBL-WKSRY-INPUTCD
+                                                      (TBL-MAX 1)(1:1)
+               MOVE    WRK-FUK-HKNCOMBI    TO  TBL-WKSRY-INPUTCD
+                                                      (TBL-MAX 1)(2:4)
+      *        中間データ出力
+               PERFORM 200212-WKSRYACT-OUT-SEC
+           ELSE
+               MOVE    ZERO                TO  IDZ
+               MOVE    SPACE               TO  WRK-SRYCD
+               PERFORM 200210-ERRCD-HENSYU-SEC
+           END-IF
+      *
+           .
+       200213-FUKU-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    複数科・保険組合せ編集処理
+      *****************************************************************
+       200214-FUKU-SRYKA-HEN-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  TBL-MAX
+           MOVE    SPACE               TO  TBL-WKSRYACT-AREA
+           INITIALIZE                      TBL-WKSRYACT-AREA
+      *
+           MOVE    SPACE               TO  WRK-SRYKBN
+           MOVE    SPACE               TO  WRK-SRYSYUKBN
+           MOVE    ZERO                TO  WRK-KAISU
+           MOVE    1                   TO  WRK-ZAITENKEI
+      *
+      *    診療科チェック
+           MOVE    ZERO                TO  FLG-CHK-OK
+           PERFORM VARYING    IDH      FROM    1   BY  1
+                   UNTIL     (IDH      >   SPA-SRYKA-MAX )
+                         OR  (FLG-CHK-OK   =   1   )
+               IF      ORAPISUB01-MDC-DEP-CODE (IDY)
+                                       =   SPA-GMN-SRYKAL(IDH)
+                   MOVE    1               TO  FLG-CHK-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK-OK          =   ZERO
+               MOVE    "019"               TO  WRK-ERRCD
+               MOVE    ZERO                TO  IDZ
+               MOVE    SPACE               TO  WRK-SRYCD
+               PERFORM 200210-ERRCD-HENSYU-SEC
+           END-IF
+      *
+      *    ドクターＣＤ
+           MOVE    SPACE               TO  WRK-FUK-DRCD-G
+           IF      ORAPISUB01-MDC-DR-CODE (IDY)    NOT =   SPACE
+      *        システム管理チェック
+               MOVE    ORAPISUB01-MDC-DR-CODE (IDY)
+                                           TO  WRK-FUK-DRCD-G
+               PERFORM 2002141-DRCD-SYSKANRI-SEC
+      *
+               IF      FLG-SYSKANRI    NOT =   ZERO
+                   MOVE    "020"               TO  WRK-ERRCD
+                   MOVE    ZERO                TO  IDZ
+                   MOVE    SPACE               TO  WRK-SRYCD
+                   PERFORM 200210-ERRCD-HENSYU-SEC
+               END-IF
+           END-IF
+      *
+           IF      WRK-ERRCD           =   SPACE
+               MOVE    1                   TO  TBL-MAX
+               MOVE    SPACE               TO  TBL-WKSRY-INPUTCD
+                                                      (TBL-MAX 1)
+               MOVE    "$"                 TO  TBL-WKSRY-INPUTCD
+                                                      (TBL-MAX 1)(1:1)
+               MOVE    ORAPISUB01-MDC-DEP-CODE (IDY)
+                                           TO  TBL-WKSRY-INPUTCD
+                                                      (TBL-MAX 1)(2:2)
+      *        ドクターコード　４桁
+               MOVE    WRK-FUK-DRCD        TO  TBL-WKSRY-INPUTCD
+                                                      (TBL-MAX 1)(5:4)
+      *        中間データ出力
+               PERFORM 200212-WKSRYACT-OUT-SEC
+           END-IF
+           .
+       200214-FUKU-SRYKA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ドクターＣＤチェック処理
+      *****************************************************************
+       2002141-DRCD-SYSKANRI-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    WRK-FUK-DRCD-G      TO  SYS-1010-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1010-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-SEL-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
+           ELSE
+                INITIALIZE                  SYS-1010-REC
+           END-IF
+           .
+       2002141-DRCD-SYSKANRI-EXT.
+           EXIT.
+      *!!!!
       *
       *****************************************************************
       *    剤毎の編集処理
@@ -1188,6 +1399,45 @@
                    MOVE    "入院算定日区分は０、１で設定して下さい。"
                                                TO  ORAPISUB01-IN-ERRMSG
                                                                (IDX-E)
+      *
+      *2019.1
+               WHEN    "015"
+                   MOVE    "保険組合せ番号がありません。"
+                                               TO  ORAPISUB01-IN-ERRMSG
+                                                               (IDX-E)
+               WHEN    "016"
+                   STRING  "労災・自賠責分・公害の複数保険設定は"
+                           "できません。"
+                                           DELIMITED  BY  SIZE
+                                           INTO    ORAPISUB01-IN-ERRMSG
+                                                               (IDX-E)
+                   END-STRING
+               WHEN    "018"
+                   STRING  "労災・自賠責分・公害、包括分入力で"
+                           "複数保険設定はできません。"
+                                           DELIMITED  BY  SIZE
+                                           INTO    ORAPISUB01-IN-ERRMSG
+                                                               (IDX-E)
+                   END-STRING
+               WHEN    "019"
+                   STRING  "診療科が存在しません"
+                                           DELIMITED  BY  SIZE
+                                           INTO    ORAPISUB01-IN-ERRMSG
+                                                               (IDX-E)
+                   END-STRING
+               WHEN    "020"
+                   STRING  "ドクターが存在しません。"
+                                           DELIMITED  BY  SIZE
+                                           INTO    ORAPISUB01-IN-ERRMSG
+                                                               (IDX-E)
+                   END-STRING
+               WHEN    "021"
+                   STRING  "複数科・複数保険指示区分がエラーです。"
+                                           DELIMITED  BY  SIZE
+                                           INTO    ORAPISUB01-IN-ERRMSG
+                                                               (IDX-E)
+                   END-STRING
+      *!!!
            END-EVALUATE
       *
            .
@@ -1530,6 +1780,38 @@
       *
            .
        910-INPUTSET-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ検索処理
+      *****************************************************************
+       900-SYSKANRI-SEL-SEC         SECTION.
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+               ELSE
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       900-SYSKANRI-SEL-EXT.
            EXIT.
       *
       *****************************************************************

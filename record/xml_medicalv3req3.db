@@ -27,11 +27,29 @@ xml_medicalv3req3 {
 		Ic_All_Code		varchar(1);
 #--- 収納内容
 		Cd_Information    {
-		Ad_Money1		varchar(10);
-		Ad_Money2		varchar(10);
+#-!!!!!
+#-----  複数科・保険組合せ情報
+		  Cd_Change_Information   {
+#-----              複数科・保険組合せ情報
+		    Insurance_Combination_Number	varchar(04);
+		    Department_Code	varchar(02);
+		    Cd_Ic_Money		varchar(10);
+	            Cd_Ad_Money1	varchar(10);
+	            Cd_Ad_Money2	varchar(10);
+	            } [15];
+#-!!!!!
+#--             単独の調整金
+	        Ad_Money1		varchar(10);
+	        Ad_Money2		varchar(10);
+#-!!!!!
 		Ic_Money		varchar(10);
 		Re_Money		varchar(10);
-		}; 
+     	        };
+#--- 発行区分
+		Print_Issue_Information    {
+#---            請求書明細書発行区分
+			Print_Issue_Class	varchar(1);
+		};
 #--- 印刷区分
 		Print_Information    {
 		Print_Prescription_Class	varchar(1);

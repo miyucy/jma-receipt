@@ -18,6 +18,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 05.00.00     NACL-多々納  19/01/XX  複数科保険対応
       *****************************************************************
       ******************************************************************
       *    ＡＰＩリクエスト診療行為登録情報 (一体化)
@@ -68,14 +69,35 @@
       *
       *       収納内容
               05  MDCREQ-SYUNOU-AREA.
-      *           調整金額１
+      *!!!!
+      *2019.1
+      *複数保険・科対応
+                  07  MDCREQ-SYUNOU-OCCURS       OCCURS   15.
+      *               保険組合せ番号
+                      09  MDCREQ-CD-COMBINATION-NUMBER    PIC X(04).
+      *               診療科
+                      09  MDCREQ-CD-DEP-CODE      PIC X(02).
+      *               入金額（訂正）
+                      09  MDCREQ-CD-IC-MONEY      PIC X(10).
+      *               調整金額１
+                      09  MDCREQ-CD-AD-MONEY1     PIC X(10).
+      *               調整金額２
+                      09  MDCREQ-CD-AD-MONEY2     PIC X(10).
+      *!!!!
+      *           調整金額１（単独のみ）
                   07  MDCREQ-AD-MONEY1         PIC X(10).
-      *           調整金額２
+      *           調整金額２（単独のみ）
                   07  MDCREQ-AD-MONEY2         PIC X(10).
       *           入金額（合計と違う時のみ）
                   07  MDCREQ-IC-MONEY          PIC X(10).
       *           返金額（訂正のみ、充当の返金はゼロ）
                   07  MDCREQ-RE-MONEY          PIC X(10).
+      *!!!!
+      *H30.XX
+              05  MDCREQ-PRINT-INIT-AREA.
+      *           請求書兼領収書・診療費明細書　発行区分
+                  07  MDCREQ-HAKKOU-KBN        PIC X(01).
+      *!!!!
       *H29.6
       *   帳票印刷指示区分
               05  MDCREQ-PRINT-AREA.

@@ -78,6 +78,7 @@
       *  04.08.00    NACL-多々納  15/08/05  領収・明細　請求書不要対応
       *  05.00.00    NACL-多々納  17/07/XX  HAORI対応
       *  05.00.00    NACL-多々納  17/07/XX  PUSH通信対応
+      *  05.00.00    NACL-多々納  19/01/XX  HAORI複数科保険対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1626,6 +1627,7 @@
       *
       *    合計請求額計算処理
            PERFORM 3101-SEIKYU-KEI-SEC
+      *
       *    返金額
            IF      (SPA-NAI-HENFLG     =   1 )  AND
                    (SPA-SYORIFLG       =   ZERO)
@@ -2266,6 +2268,16 @@
                ADD     SPA-SYU-HENKIN (IDX)
                                            TO  SPA-NAI-HENKIN
            END-IF
+      *    訂正で新規の収納
+           IF    (SPA-SYORIFLG         =   1    )
+             AND (WRK-SYU-DENPNUM      =   ZERO )
+      *        請求金額
+               ADD     WRK-SYU-SKYMONEY
+                                           TO  SPA-NAI-SEIKYU
+      *        請求金額−消費税（再掲）
+               ADD     WRK-SYU-SKYMONEY-TAX-SAI
+                                           TO  SPA-NAI-SKYMONEY-TAX-SAI
+           END-IF
       *
       *!
       *    減免区分
@@ -2870,6 +2882,7 @@
            END-IF
       *    入金額上限
            PERFORM 31031-JYOGENKIN-KEI-SEC
+      *
       *
       *    合計入金額
            IF     (SPA-SYUNOU-MAX      >   1    )  OR
@@ -4433,6 +4446,7 @@
            MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
       *    収納へ編集
            PERFORM 40011-NYUKIN-SET-SEC
+      *
       *    合計請求額算処理
            PERFORM 310511-GOK-SKYMONEY-SEC
       *
@@ -4605,6 +4619,14 @@
                MOVE    SPA-GOK-NYUKIN      TO  WRK-NYUKIN
                MOVE    SPA-GOK-HENKIN      TO  WRK-HENKIN-GAKU
            END-IF
+      *TEST
+      *    DISPLAY "310512-NYUKIN-JYUTOU-SEC "
+      *          ",SPA-GOK-NYUKIN:" SPA-GOK-NYUKIN
+      *          ",SPA-GOK-HENKIN:" SPA-GOK-HENKIN
+      *          ",SPA-GMN-ZENMISYU:" SPA-GMN-ZENMISYU
+      *          ",WRK-SEIKYUN:" WRK-SEIKYU
+      *          ",WRK-NYUKIN:" WRK-NYUKIN
+      *TEST
       *
       *    まとめなし
            IF     ((SPA-GMN-ZENMISYU   =   ZERO )  AND
@@ -4681,6 +4703,11 @@
                COMPUTE SPA-NYU-ZENMISYU    =   WRK-NYUKIN
                                            -   LNK-SCNYUKIN-FURIWAKEZAN
            END-IF
+      *TEST
+      *    DISPLAY "K03 A WRK-NYUKIN: "  WRK-NYUKIN
+      *          ",FURIWAKEZAN:" LNK-SCNYUKIN-FURIWAKEZAN
+      *          ",SPA-NYU-ZENMISYU:" SPA-NYU-ZENMISYU
+      *TEST
       *
       *    返金振り分け残額
            MOVE    LNK-SCNYUKIN-HENKINZAN  TO  SPA-NYU-ZENHENKIN
@@ -7392,6 +7419,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4908-JMAMR-EXT.
            EXIT.
+      *
       *HAORI
       *****************************************************************
       *    HAPRI　処理
@@ -7413,6 +7441,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    2
       *        入金額等チェック処理
                PERFORM 3002-HAORI-CHK-SEC
+      *2019.1
+           WHEN    4
+      *        複数科調整金チェック処理
+               PERFORM 3004-HAORI-CHK04-SEC
            WHEN    3
       *        更新処理
                PERFORM 3003-HAORI-UPD-SEC
@@ -7430,6 +7462,53 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        3001-HAORI-INI-EXT.
+           EXIT.
+      *
+      *2019.1
+      *****************************************************************
+      *    調整金入力チェック処理（複数科・保険対応）
+      *****************************************************************
+       3004-HAORI-CHK04-SEC         SECTION.
+      *
+           INITIALIZE                  WRK-HAORI-AREA
+      *    入金金額
+           IF      SPA-GMN-NYUKIN-X        =   "HAORI"
+               MOVE    SPA-GMN-NYUKIN      TO  WRK-HR-NYUKIN
+               MOVE    1                   TO  FLG-HAORI-NYU
+           END-IF
+      *
+           MOVE    SPA-GMN-CHOSEI1-X   TO  WRK-CHOSEI1-X
+           MOVE    SPA-GMN-CHOSEI2-X   TO  WRK-CHOSEI2-X
+           MOVE    SPA-GMN-CHOSEI1     TO  WRK-CHOSEI1
+           MOVE    SPA-GMN-CHOSEI2     TO  WRK-CHOSEI2
+      *
+           PERFORM 3102-SYUNOU-HEN-SEC
+      *
+      *    調整金
+           MOVE    WRK-CHOSEI1-X       TO  SPA-GMN-CHOSEI1-X
+           MOVE    WRK-CHOSEI2-X       TO  SPA-GMN-CHOSEI2-X
+      *    入金
+           IF      FLG-HAORI-NYU       =   1
+               MOVE    WRK-HR-NYUKIN       TO  WRK-Z99
+               MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
+               MOVE    WRK-HR-NYUKIN       TO  SPA-GMN-NYUKIN
+           END-IF
+           MOVE    1                   TO  FLG-TOUROKU
+      *    調整金処理
+           PERFORM 410-CHOSEI-CHK-SEC
+      *    入金
+           IF      SPA-ERRCD           =   SPACE
+               IF      FLG-HAORI-NYU       =   1
+                   PERFORM 450-NYUKIN-CHK-SEC
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+      *        入金額計算計算処理
+               PERFORM 31051-NYUKIN-KEISAN-SEC
+           END-IF
+      *
+           .
+       3004-HAORI-CHK04-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7453,29 +7532,38 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1                   TO  FLG-HAORI-HEN
                END-IF
            END-IF
-           MOVE    SPA-GMN-CHOSEI1-X   TO  WRK-CHOSEI1-X
-           MOVE    SPA-GMN-CHOSEI2-X   TO  WRK-CHOSEI2-X
-           MOVE    SPA-GMN-CHOSEI1     TO  WRK-CHOSEI1
-           MOVE    SPA-GMN-CHOSEI2     TO  WRK-CHOSEI2
+      *
+           MOVE    SPA-GOK-SRYKA       TO  SPA-GMN-SRYKA
+           MOVE    SPA-GOK-HKNCOMBI    TO  SPA-GMN-HKNCOMBI
+      *
       *    収納から画面編集
            PERFORM 3102-SYUNOU-HEN-SEC
-      *    調整金
-           MOVE    WRK-CHOSEI1-X       TO  SPA-GMN-CHOSEI1-X
-           MOVE    WRK-CHOSEI2-X       TO  SPA-GMN-CHOSEI2-X
+      *
+      *    入力値へ編集
+           MOVE    SPA-GMN-HENKIN      TO  SPA-GMN-HENKIN-X
+           MOVE    SPA-GMN-NYUKIN      TO  SPA-GMN-NYUKIN-X
+      *
+      *    入金額
            IF      FLG-HAORI-NYU       =   1
                MOVE    WRK-HR-NYUKIN       TO  WRK-Z99
                MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
                MOVE    WRK-HR-NYUKIN       TO  SPA-GMN-NYUKIN
            END-IF
-           IF      FLG-HAORI-HEN       =   1
+           IF     (FLG-HAORI-HEN       =   1 )
+      *       訂正は一括返金のみ
+             AND  (SPA-SYORIFLG        =   0 )
                MOVE    WRK-HR-HENKIN       TO  WRK-Z99
                MOVE    WRK-Z99             TO  SPA-GMN-HENKIN-X
                MOVE    WRK-HR-HENKIN       TO  SPA-GMN-HENKIN
            END-IF
       *
            MOVE    1                   TO  FLG-TOUROKU
-      *    基本チェックと別画面処理
-           PERFORM 4102-KIHON-CHK-SEC
+           IF     (FLG-HAORI-NYU       =   1 )
+              OR ((FLG-HAORI-HEN       =   1 )  AND
+                  (SPA-SYORIFLG        =   0 ))
+      *        基本チェックと別画面処理
+               PERFORM 4102-HAORI-KIHON-CHK-SEC
+           END-IF
       *
       *    一括入金・返金処理
            MOVE    SPACE               TO  SPA-IKKATUKBN
@@ -7489,12 +7577,22 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *        一括入金
                PERFORM 408-NYUKIN-SYORI-SEC
+      *
+           ELSE
+      *        訂正は一括返金のみ
+               IF     (FLG-HAORI-HEN       =   1 )
+                 AND  (SPA-SYORIFLG        =   1 )
+                 AND  (WRK-HR-HENKIN   NOT =   ZERO)
+      *            一括返金
+                   PERFORM 409-HENKIN-SYORI-SEC
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
       *        エラーメッセージ編集
                PERFORM 510-ERRSET-SEC
            END-IF
+      *
            .
        3002-HAORI-CHK-EXT.
            EXIT.
@@ -7507,18 +7605,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    発行日（警告チェックなのでなし）
       **** PERFORM 410-HAKYMD-CHK-SEC
       *
+      *入金額は全件再設定
       *    調整金
-           IF     (SPA-GMN-HKNCOMBI    =   ZERO )  OR
-                  (SPA-GMN-SRYKA       =   ZERO )
-               CONTINUE
-           ELSE
-               PERFORM 410-CHOSEI-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      4102-HAORI-KIHON-CHK-EXT
-               END-IF
-           END-IF
+      *    IF     (SPA-GMN-HKNCOMBI    =   ZERO )  OR
+      *           (SPA-GMN-SRYKA       =   ZERO )
+      *        CONTINUE
+      *    ELSE
+      *        PERFORM 410-CHOSEI-CHK-SEC
+      *        IF      SPA-ERRCD       NOT =   SPACE
+      *            GO      TO      4102-HAORI-KIHON-CHK-EXT
+      *        END-IF
+      **   END-IF
       *    返金
-           IF     (SPA-NAI-HENFLG       =   1    )
+           IF     (SPA-NAI-HENFLG       =   1   )
+             OR   (FLG-HAORI-HEN        =   1   )
                IF      SPA-ERRCD        =   SPACE
                    PERFORM 450-HENKIN-CHK-SEC
                END-IF
@@ -7531,9 +7631,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-HR-NYUKIN       TO  SPA-GMN-NYUKIN
            END-IF
       *
-           IF    ((SPA-GMN-HKNCOMBI    NOT =   ZERO )  AND
-                  (SPA-GMN-SRYKA       NOT =   ZERO ))  OR
-                  (SPA-NAI-NYUKINFLG       =   1    )
+      *    MOVE    SPA-GMN-NYUKIN      TO  WRK-Z99
+      *    MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
+      *
+      *    IF    ((SPA-GMN-HKNCOMBI    NOT =   ZERO )  AND
+      *           (SPA-GMN-SRYKA       NOT =   ZERO ))  OR
+           IF     (SPA-NAI-NYUKINFLG       =   1    )
+             OR  ((SPA-GMN-SRYKA       =   SPA-GOK-SRYKA ) AND
+                  (SPA-GMN-HKNCOMBI    =   SPA-GOK-HKNCOMBI))
                IF      SPA-ERRCD           =   SPACE
                    PERFORM 450-NYUKIN-CHK-SEC
                END-IF
@@ -7577,6 +7682,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        4102-HAORI-KIHON-CHK-EXT.
            EXIT.
       *
+      *2019.1 変更
       *****************************************************************
       *    HAORI 調整金から入金額等を再編集処理
       *****************************************************************
@@ -7676,6 +7782,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 450011-NYUKIN-KEISAN-SEC
                END-IF
            END-IF
+      *TEST
+      *    DISPLAY "K03 3003-HAORI-UPD-SEC"
+      *         ".SPA-GMN-SRYKA:"  SPA-GMN-SRYKA
+      *        ".SPA-GMN-HKNCOMBI:"  SPA-GMN-HKNCOMBI
+      *        ".SPA-GOK-NYUKIN:"  SPA-GOK-NYUKIN
+      ***      ".WRK-NYUKIN:"  WRK-NYUKIN
+      *
            IF      SPA-ERRCD           =   SPACE
       *        外来更新処理
                IF     (SPA-HKNCOMBINUM     =   "9999" )

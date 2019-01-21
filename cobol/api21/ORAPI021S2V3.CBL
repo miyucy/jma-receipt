@@ -29,7 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.08.00    NACL-多々納  17/05/XX  包括検査数、単位コード対応
       *                                     フィルム分画数等対応
-      *  05.00.00    NACL-多々納  18/08/XX  処方箋印刷独立機能対応
+      *  05.00.00    NACL-多々納  18/08/XX  印刷のみ処理対応
+      *  05.00.00    NACL-多々納  19/01/XX  複数保険・科対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -50,8 +51,6 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-WKSRYACT            PIC 9(01).
-      **** 03  FLG-PTNYUINRRK          PIC 9(01).
-      *****03  FLG-HKNNUM              PIC 9(01).
            03  FLG-SPATMP              PIC 9(01).
            03  FLG-PARA                PIC 9(01).
            03  FLG-APIPARA             PIC 9(01).
@@ -99,6 +98,12 @@
            03  IDX-A               PIC 9(04).
            03  IDX-Y2              PIC 9(02).
            03  IDX-Y3              PIC 9(02).
+      *
+      *!!!
+           03  IDX1                PIC 9(04).
+           03  IDH1                PIC 9(04).
+           03  IDH2                PIC 9(04).
+           03  IDX-MAX             PIC 9(04).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -222,6 +227,24 @@
            03  WRK-IPN-KISAIKBN        PIC X(01).
       *    包括検査数
            03  WRK-HOUKNS-CNT          PIC 9(02).
+      *!!!!
+      *2019.1
+      *    複数科・保険組合せ対応
+           03  WRK-FUK-HKNCOMBI        PIC 9(04).
+           03  WRK-FUK-DRCD-G.
+               05  WRK-FUK-DRCD-1          PIC X(01).
+               05  WRK-FUK-DRCD            PIC X(04).
+           03  WRK-FUK-DRCD-NAME       PIC X(80).
+           03  WRK-FUK-SRYKA           PIC X(02).
+           03  WRK-FUK-SRYKA-NAME      PIC X(20).
+           03  WRK-IDX-MAX             PIC 9(04).
+           03  WRK-HEN-HKNCOMBI        PIC X(04).
+           03  WRK-HEN-SRYKA           PIC X(02).
+           03  WRK-HEN-DRCD-G.
+               05  WRK-HEN-DRCD-1          PIC X(01).
+               05  WRK-HEN-DRCD            PIC X(04).
+           03  WRK-SPA-INITAUTO-FLG        PIC X(01).
+      *
       *
        01  WRK-XML-AREA.
            03  WRK-PERFORM-DATE        PIC X(10).
@@ -300,6 +323,24 @@
       *
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
+      *!!!!
+      *2019.1
+      *    ワーク診療行為マスタ−
+       01  HZN-WKSRYACT-AREA.
+           02  HZN-WKSRYACT-REC          OCCURS   400.
+           COPY    "CPWKSRYACT.INC"  REPLACING
+                                     //WKSRY-// BY //HZN-WKSRY-//.
+      *    附加情報を追加
+           03  HZN-WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC"  REPLACING
+                                     //WKSRYP-// BY //HZN-WKSRYP-//.
+      *    API用剤削除連番
+           03  HZN-WKSRYAPI-RENNUM         PIC 9(02).
+      *    剤削除区分
+           03  HZN-WKSRYAPI-DELKBN         PIC 9(01).
+      *
+       01  HZN-WKSRYACT-MAX           PIC 9(04).
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -355,6 +396,9 @@
       *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
+      *    診療行為用共通パラメタ保存
+           COPY    "K01COMMON-SPA"  REPLACING
+                                     //SPA-// BY //HZN-SPA-//.
       *
       *    画面スパ領域
            COPY    "K02SCR-SPA".
@@ -387,15 +431,13 @@
       *
       *ver.4.7
       *    API XML読み込み共通定義
-      **** COPY    "CPAPIV2REQ.INC".
            COPY    "CPAPI21V3REQ.INC".
       **01  XML-APIREQ.
       *     03  APIREQ-CONTEXT          PIC S9(9)   BINARY.
-      *     03  APIREQ-OBJECT           PIC X(36).
+      *     03  APIREQ-OBJECT           PIC X(8).
       *     03  APIREQ-MODE             PIC S9(9)   BINARY.
       *     03  APIREQ-RECORDNAME       PIC X(128).
-      ***   03  APIREQ-PATIENTINFOREQ   PIC X(1000000).
-      *
+      **    03  APIREQ-PATIENTINFOREQ   PIC X(1000000).
       *
       *
       *H30.8
@@ -408,6 +450,7 @@
       *
       *    処方箋印刷パラメタ（Ａ５）
            COPY    "CPORCHC19.INC".
+      *
       *
       *
       *****************************************************************
@@ -795,7 +838,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  MDCRES-MODE
            MOVE    "medicalv3res2"     TO  MDCRES-RECORDNAME
-     ***** CALL    "ORCDBMAIN"         USING
+      **** CALL    "ORCDBMAIN"         USING
            CALL    "ORCDBAPIV3"        USING
                                        MCPAREA
                                        XML-MEDICALV3RES2
@@ -987,6 +1030,7 @@
                END-IF
            END-IF
       *
+      *!!!!
       *H30.8
       *    印刷処理中判定
            IF      WRK-ERRCD           =   SPACE
@@ -1333,7 +1377,25 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY    1
                    UNTIL      (IDX     >   COB-ZAI-INMAX )
-                       OR     (MDCREQ-MDC-CLASS (IDX) =   SPACE )
+      ******           OR     (MDCREQ-MDC-CLASS (IDX) =   SPACE )
+                       OR    ((MDCREQ-MDC-CLASS (IDX) =   SPACE )
+                         AND  (MDCREQ-MDC-DATA-KBN (IDX) =   SPACE ))
+      *!!!
+      *2019.1
+      *        複数科・保険組合せ
+               MOVE    MDCREQ-MDC-DATA-KBN(IDX)
+                                       TO  MDCRES-REQ-DATA-KBN
+                                                                 (IDX)
+               MOVE    MDCREQ-MDC-COMBINATION-NUMBER(IDX)
+                                     TO  MDCRES-REQ-COMBINATION-NUMBER
+                                                                 (IDX)
+               MOVE    MDCREQ-MDC-DEP-CODE (IDX)
+                                       TO  MDCRES-REQ-DEP-CODE 
+                                                                 (IDX)
+               MOVE    MDCREQ-MDC-DR-CODE (IDX)
+                                       TO  MDCRES-REQ-DR-CODE 
+                                                                 (IDX)
+      *
                MOVE    MDCREQ-MDC-CLASS (IDX)
                                        TO  MDCRES-REQ-CLASS     (IDX)
                MOVE    MDCREQ-MDC-CLASS-NAME (IDX)
@@ -1653,10 +1715,11 @@
                IF      JYURRK-SRYYMD   NOT =   SPA-SRYYMD
                    MOVE    "25"                TO  WRK-ERRCD
                END-IF
-               IF      JYURRK-GRP-DENPNUM  NOT =   ZERO
+      *2019.1
+      ***      IF      JYURRK-GRP-DENPNUM  NOT =   ZERO
       *            複数科保険は返却できない
-                   MOVE    "26"                TO  WRK-ERRCD
-               END-IF
+      *            MOVE    "26"                TO  WRK-ERRCD
+      ****     END-IF
            ELSE
                MOVE    "25"                TO  WRK-ERRCD
            END-IF
@@ -1678,6 +1741,10 @@
                                        TO  SPA-K02-TEISEI-AREA
            MOVE    HZN-SPA-YAKUZAI-AREA
                                        TO  SPA-YAKUZAI-AREA
+      *
+      *外来訂正時対象伝票番号
+           MOVE    HZN-SPA-TEI-AREA    TO  SPA-TEI-AREA
+      *
            .
        200213-UPDATESYORI-EXT.
            EXIT.
@@ -2037,9 +2104,22 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY    1
                    UNTIL       IDX     >   COB-ZAI-INMAX
-      ***      MOVE    MDCREQ-MDC-CLASS-KBN (IDX)
-      *                                TO  ORAPISUB01-MDC-CLASS-KBN
-      ***                                                       (IDX)
+      *!!!!!
+      *2019.1
+      *        複数科・保険組合せ
+               MOVE    MDCREQ-MDC-DATA-KBN(IDX)
+                                       TO  ORAPISUB01-MDC-DATA-KBN
+                                                                 (IDX)
+               MOVE    MDCREQ-MDC-COMBINATION-NUMBER(IDX)
+                                       TO  ORAPISUB01-MDC-COMBINATION
+                                                                 (IDX)
+               MOVE    MDCREQ-MDC-DEP-CODE (IDX)
+                                       TO  ORAPISUB01-MDC-DEP-CODE 
+                                                                 (IDX)
+               MOVE    MDCREQ-MDC-DR-CODE (IDX)
+                                       TO  ORAPISUB01-MDC-DR-CODE 
+                                                                 (IDX)
+      *
                MOVE    MDCREQ-MDC-CLASS (IDX)
                                        TO  ORAPISUB01-MDC-CLASS
                                                                 (IDX)
@@ -2090,10 +2170,13 @@
       *
            MOVE    SPACE               TO  ORAPISUB01-SYORIKBN
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-           CALL    "ORAPI021SUB1V3"   USING
+           CALL    "ORAPI021SUB1V3"    USING
                                        MCPAREA
                                        SPA-AREA
                                        ORAPI021SUB1V3AREA
+      *2019.1
+      *    複数保険対応
+                                       SPA-K02
       *
       *    エラー処理
            IF      ORAPISUB01-ERRCD    NOT =   SPACE
@@ -2165,6 +2248,7 @@
                EVALUATE    SPA-GMN-INPUTCD (IDX)(1:1)
                    WHEN    "."
                    WHEN    "*"
+                       CONTINUE
                    WHEN    "#"
                    WHEN    "$"
                        CONTINUE
@@ -2187,6 +2271,14 @@
                        IF      SPA-COM-INPUTCD (IDX)   =   "099209911"
                            MOVE    "2"             TO  WRK-GENECHG-KBN
                        END-IF
+      *H30.9
+      *                選択式コメントの自動表示なし
+                       IF      (SPA-COM-INPUTCD(IDX)(1:1)  =   "1"  )
+                          AND  (SPA-COM-RECEKISAI (IDX)    =   "1"  )
+                           MOVE    "1"         TO   SPA-COM-RECEAUTO
+                                                              (IDX)
+                       END-IF
+      *
                END-EVALUATE
            END-PERFORM
       *
@@ -2264,6 +2356,18 @@
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
+      *    診察料自動発生区分
+           MOVE    SPA-INITAUTO-FLG    TO  WRK-SPA-INITAUTO-FLG
+      *    複数科保険のコメント自動算定なし
+           IF     (MDCREQ-CHENGE-AUTO  =   "1" )
+             AND  (SPA-INITAUTO-FLG    =   "1" )
+      *        診察料自動発生区分あり
+               MOVE    "1"                 TO  SPA-INITAUTO-FLG
+           ELSE
+      *        診察料自動発生区分なし
+               MOVE    ZERO                TO  SPA-INITAUTO-FLG
+           END-IF
+      *
            INITIALIZE                  ORCSCWKSRYAREA
            MOVE    "1"                 TO  ORCSCWKSRY-KBN
            MOVE    "K02"               TO  ORCSCWKSRY-PG
@@ -2278,6 +2382,8 @@
                                        SPA-K02
                                        SPA-SCR-REC
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *    診察料自動発生区分もとへ
+           MOVE    WRK-SPA-INITAUTO-FLG    TO  SPA-INITAUTO-FLG
       *
            IF      ORCSCWKSRY-ERRCD    NOT =   SPACE
                MOVE    ORCSCWKSRY-ERRCD    TO  SPA-ERRCD
@@ -2388,6 +2494,7 @@
       *H30.9
       *    選択式コメント一覧展開しないとする
            MOVE    ZERO                TO  SPA-RECEKISAIFLG
+      *
       *    診療行為、計計算処理、編集
            MOVE    ZERO                TO  FLG-END-SYORI
            MOVE    SPACE               TO  SPA-ERRMSG2
@@ -2631,6 +2738,12 @@
            END-PERFORM
       *
            MOVE    WRK-ERR-SRYCD       TO  WRK-MD-SRYCD
+      *2019.1
+      *    複数科保険行
+           IF      WRK-ERR-SRYCD(1:1)  =   "#"
+                                       OR  "$"
+               MOVE    SPACE               TO  WRK-MD-SRYCD
+           END-IF
       *
            IF      WRK-ERRCD           =   SPACE
                MOVE    "30"                TO  WRK-ERRCD
@@ -2658,7 +2771,18 @@
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
                        OR  (FLG-HENCHK NOT =   ZERO    )
       *
-               IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
+               EVALUATE    SPA-GMN-INPUTCD (IDX)(1:1)
+      *!!!
+      *2019.1
+      *        複数保険
+               WHEN    "#"
+                   PERFORM 2002223-FUKU-HKNCOMBI-SEC
+      *        複数科
+               WHEN    "$"
+                   PERFORM 2002224-FUKU-SRYKA-SEC
+      *
+      *        診療種別
+               WHEN    "."
                    MOVE    SPA-COM-SRYKBN (IDX)    TO  WRK-SRYKBN
                    MOVE    SPA-COM-SRYSYUKBN(IDX)  TO  WRK-SRYSYUKBN
                    MOVE    ZERO                    TO  WRK-KINGAK
@@ -2668,8 +2792,8 @@
                      OR   (SPA-COM-GYOU(IDX)   >   ZERO )
                        PERFORM 2002222-LINE-HEN-SEC
                    END-IF
-               ELSE
       *
+               WHEN    OTHER
                    IF      IDZ                 =   ZERO
                        ADD     1                   TO  IDY
                        IF      IDY                 >   COB-ZAI-OUTMAX
@@ -2696,7 +2820,7 @@
                    IF      FLG-HENCHK          =   ZERO
                        PERFORM 2002221-MEISAI-HEN-SEC
                    END-IF
-               END-IF
+               END-EVALUATE
            END-PERFORM
       *
            IF     (FLG-HENCHK          =   1     )
@@ -2743,8 +2867,6 @@
                END-IF
            ELSE
       *        点数マスタの名称
-      ***      MOVE    SPA-COM-NAME (IDX)  TO  MDCRES-PRSCRPT-NAME
-      ***                                                    (IDY IDZ)
                MOVE    SPACE               TO  TNS-TENSU-REC
                INITIALIZE                      TNS-TENSU-REC
                MOVE    SPA-COM-INPUTCD (IDX)
@@ -3137,6 +3259,162 @@
            .
        2002221-ZAIHENSYU-EXT.
            EXIT.
+      *!!!
+      *2019.1
+      *****************************************************************
+      *    複数保険編集処理
+      *****************************************************************
+       2002223-FUKU-HKNCOMBI-SEC          SECTION.
+      *
+           ADD     1                   TO  IDY
+      *    テーブルオーバー
+           IF      IDY                 >   COB-ZAI-OUTMAX
+               MOVE    1               TO  FLG-HENCHK
+               GO      TO     2002223-FUKU-HKNCOMBI-EXT
+           END-IF
+           MOVE    ZERO                TO  IDZ
+           MOVE    "CMD"               TO  MDCRES-MDC-DATA-KBN
+                                                            (IDY)
+           MOVE    SPA-GMN-INPUTCD (IDX)(2:4)
+                                   TO  MDCRES-MDC-COMBINATION-NUMBER
+                                                            (IDY)
+      *
+           IF      SPA-GMN-INPUTCD (IDX)(2:4)
+                                       =   "9999"
+                MOVE    "包括分入力"   TO
+                                       MDCRES-MDC-MAIN-INS-NAME
+                                                            (IDY)
+           ELSE
+      *
+      *    保険組合せ編集処理
+           INITIALIZE                      ORCSAPIHKNAREA
+           MOVE    "2"                 TO  ORCSAPIHKN-KBN
+           MOVE    SPACE               TO  ORCSAPIHKN-KBN2
+           MOVE    SPA-GMN-INPUTCD (IDX)(2:4)
+                                       TO  ORCSAPIHKN-IN-HKNCOMBI
+           CALL    "ORCSAPIHKN"        USING
+                                       SPA-AREA
+                                       ORCSAPIHKNAREA
+           IF     (ORCSAPIHKN-ERRCD    NOT =   ZERO  )
+              OR  (ORCSAPIHKN-THKNCOMBI (1)
+                                  NOT  =   SPA-GMN-INPUTCD (IDX)(2:4))
+               MOVE    "17"                    TO  WRK-ERRCD
+           ELSE
+      *        保険の名称
+               MOVE    ORCSAPIHKN-HKNNUM-NAME (01)
+                                       TO
+                                       MDCRES-MDC-MAIN-INS-NAME
+                                                            (IDY)
+      *        公費の名称
+               PERFORM VARYING     IDY2    FROM    1   BY  1
+                       UNTIL       IDY2    >   4
+      *            公費の種類名称
+                   MOVE    ORCSAPIHKN-KOHNUM-NAME (01 IDY2)
+                                       TO  MDCRES-MDC-INSURANCE-NAME
+                                                         (IDY IDY2)
+               END-PERFORM
+           END-IF
+      *
+           END-IF
+      *
+           IF     (SPA-COM-CUR (IDX)   =   "1"  )
+             OR   (SPA-COM-GYOU(IDX)   >   ZERO )
+               PERFORM 2002222-LINE-HEN-SEC
+           END-IF
+           .
+       2002223-FUKU-HKNCOMBI-EXT.
+           EXIT.
+      *****************************************************************
+      *    複数科編集処理
+      *****************************************************************
+       2002224-FUKU-SRYKA-SEC          SECTION.
+      *
+           ADD     1                   TO  IDY
+      *    テーブルオーバー
+           IF      IDY                 >   COB-ZAI-OUTMAX
+               MOVE    1               TO  FLG-HENCHK
+               GO      TO     2002224-FUKU-SRYKA-EXT
+           END-IF
+           MOVE    ZERO                TO  IDZ
+           MOVE    "DEP"               TO  MDCRES-MDC-DATA-KBN
+                                                            (IDY)
+           MOVE    SPA-COM-SRYKA (IDX)
+                                       TO  MDCRES-MDC-DEP-CODE
+                                                            (IDY)
+           MOVE    SPA-COM-SRYKA (IDX) TO  WRK-FUK-SRYKA
+           PERFORM 220224-SRYKA-HEN-SEC
+           MOVE    WRK-FUK-SRYKA-NAME  TO  MDCRES-MDC-DEP-CODE-NAME
+                                                            (IDY)
+      *
+           IF      SPA-COM-DRCD (IDX)  NOT =   SPACE
+               MOVE    SPA-COM-DRCD (IDX)  TO  WRK-FUK-DRCD
+               MOVE    "1"                 TO  WRK-FUK-DRCD-1
+               MOVE    WRK-FUK-DRCD-G      TO  MDCRES-MDC-DR-CODE
+                                                            (IDY)
+               PERFORM 220224-DRCD-HEN-SEC
+               MOVE    WRK-FUK-DRCD-NAME   TO  MDCRES-MDC-DR-CODE-NAME
+                                                            (IDY)
+           END-IF
+      *
+           IF     (SPA-COM-CUR (IDX)   =   "1"  )
+             OR   (SPA-COM-GYOU(IDX)   >   ZERO )
+               PERFORM 2002222-LINE-HEN-SEC
+           END-IF
+           .
+       2002224-FUKU-SRYKA-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療科名称編集処理
+      *****************************************************************
+       220224-SRYKA-HEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                  SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    WRK-FUK-SRYKA       TO  SYS-1005-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+      *    システム管理検索
+           MOVE    SYS-1005-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-SEL-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1005-REC
+               MOVE    SYS-1005-SRYKANAME1 TO  WRK-FUK-SRYKA-NAME
+           ELSE
+      ****     MOVE    "13"                TO  WRK-ERRCD
+               MOVE    SPACE               TO  WRK-FUK-SRYKA-NAME
+           END-IF
+           .
+       220224-SRYKA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ドクター名称編集処理
+      *****************************************************************
+       220224-DRCD-HEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    WRK-FUK-DRCD-G      TO  SYS-1010-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1010-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-SEL-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
+               MOVE    SYS-1010-NAME       TO  WRK-FUK-DRCD-NAME
+           ELSE
+      ******   MOVE    "14"                TO  WRK-ERRCD
+               MOVE    SPACE               TO  WRK-FUK-DRCD-NAME
+           END-IF
+           .
+       220224-DRCD-HEN-EXT.
+           EXIT.
+      *!!!!
+      *
       *****************************************************************
       *    エラー・警告行位置編集処理
       *****************************************************************
@@ -3374,6 +3652,10 @@
       *    テーブル最大行
            MOVE    MAX-LINE-VALUE      TO  SPA-MAX-LINE
       *
+      *    診察料自動発生区分なし
+           MOVE    SPA-INITAUTO-FLG    TO  WRK-SPA-INITAUTO-FLG
+           MOVE    ZERO                TO  SPA-INITAUTO-FLG
+      *
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE                  SPA-SCR-REC
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -3408,6 +3690,9 @@
                EVALUATE    SPA-GMN-INPUTCD (IDX)(1:1)
                    WHEN    "."
                    WHEN    "*"
+                       CONTINUE
+                   WHEN    "$"
+                   WHEN    "#"
                        CONTINUE
                    WHEN    OTHER
       *                点数マスタチェック（再表示編集時にエラー）
@@ -3446,6 +3731,9 @@
                MOVE    SPACE               TO  WRK-MAE-KIDCD
                MOVE    SPACE               TO  SPA-KIDCD
            END-IF
+      *
+      *    診察料自動発生区分もとへ
+           MOVE    WRK-SPA-INITAUTO-FLG    TO  SPA-INITAUTO-FLG
       *
       *    診療行為、計計算処理、編集
            PERFORM 510-TBLHEN-SYORI-SEC
@@ -3807,6 +4095,11 @@
            IF      LNK-WKSRYACT-MAX    =   ZERO
                GO      TO      200234-MEDICAL-OUTHEN-EXT
            END-IF
+      *!!!!
+      *2019.1
+      *    ワーク診療行為並び替え(保険組合せ・診療科毎）
+           PERFORM 200234-WKSRYACT-SORT-SEC
+      *!!!!
       *
       *    剤削除の連番編集
            MOVE    ZERO                TO  WRK-DELRENNUM
@@ -3856,8 +4149,39 @@
            INITIALIZE                  MDCRES-MEDICAL-INF-G
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   (IDX            >   COB-ZAI-OUTMAX )
-                       OR  (ORAPISUB2-MDC-CLASS-KBN (IDX)
-                                           =   SPACE )
+      ***              OR  (ORAPISUB2-MDC-CLASS-KBN (IDX)
+      ***                                  =   SPACE )
+                       OR ((ORAPISUB2-MDC-CLASS-KBN (IDX)
+                                           =   SPACE )   AND
+                           (ORAPISUB2-MDC-DATA-KBN (IDX)
+                                           =   SPACE ))
+      *!!!
+      *2019.1
+      *        複数科・保険項目
+               MOVE    ORAPISUB2-MDC-DATA-KBN (IDX)
+                                           TO  MDCRES-MDC-DATA-KBN(IDX)
+               MOVE    ORAPISUB2-MDC-COMBINATION (IDX)
+                                       TO  MDCRES-MDC-COMBINATION-NUMBER
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-MAIN-INS-NAME (IDX)
+                                       TO  MDCRES-MDC-MAIN-INS-NAME
+                                                               (IDX)
+               MOVE    ORAPISUB2-PUBLIC-INSURANCE-INFO (IDX)
+                                       TO  MDCRES-MDC-PUBLIC-INS-INFO
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-DEP-CODE (IDX)
+                                       TO  MDCRES-MDC-DEP-CODE
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-DEP-CODE-NAME (IDX)
+                                       TO  MDCRES-MDC-DEP-CODE-NAME
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-DR-CODE (IDX)
+                                       TO  MDCRES-MDC-DR-CODE
+                                                               (IDX)
+               MOVE    ORAPISUB2-MDC-DR-CODE-NAME (IDX)
+                                       TO  MDCRES-MDC-DR-CODE-NAME
+                                                               (IDX)
+      *!!!
                MOVE    ORAPISUB2-MDC-CLASS-KBN (IDX)
                                            TO  MDCRES-MDC-CLASS-KBN(IDX)
                MOVE    ORAPISUB2-MDC-CLASS (IDX)
@@ -4002,6 +4326,157 @@
        200234-WKSRYACT-INIT-EXT.
            EXIT.
       *
+      *!!!!
+      *2019.1
+      *****************************************************************
+      *     ワーク診療行為並び替え(保険組合せ・診療科毎）処理
+      *****************************************************************
+       200234-WKSRYACT-SORT-SEC          SECTION.
+      *
+      *    保険毎にＳＯＲＴする
+           MOVE    SPACE               TO  HZN-WKSRYACT-AREA
+           INITIALIZE                  HZN-WKSRYACT-AREA
+           MOVE    LNK-WKSRYACT-AREA   TO  HZN-WKSRYACT-AREA
+           MOVE    LNK-WKSRYACT-MAX    TO  WRK-IDX-MAX
+      *
+           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+           INITIALIZE                  LNK-WKSRYACT-AREA
+           MOVE    ZERO                TO  IDX-MAX
+      *    剤番号採番
+           MOVE    ZERO                TO  WRK-ZAINUM
+      *
+           PERFORM VARYING   IDH1      FROM    1   BY  1
+                   UNTIL    (IDH1      >   15  )   OR
+                            (SPA-TBL-HKNCOMBI(IDH1)    =   SPACE)
+               MOVE    SPA-TBL-HKNCOMBI(IDH1)     TO  WRK-HEN-HKNCOMBI
+               PERFORM VARYING   IDH2      FROM   1   BY  1
+                       UNTIL    (IDH2      >   10  )  OR
+                                (SPA-TBL-SRYKA (IDH1 IDH2) =   SPACE )
+                   MOVE    SPA-TBL-SRYKA (IDH1 IDH2)
+                                               TO  WRK-HEN-SRYKA
+                   MOVE    SPA-TBL-DRCD  (IDH1 IDH2)
+                                               TO  WRK-HEN-DRCD-G
+                   PERFORM 31012-WKSRYACT-SORT2-SEC
+               END-PERFORM
+           END-PERFORM
+           MOVE    IDX-MAX             TO  LNK-WKSRYACT-MAX
+      *
+           .
+       200234-WKSRYACT-SORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     診療行為編集処理
+      *****************************************************************
+       31012-WKSRYACT-SORT2-SEC              SECTION.
+      *
+      *   保険切替
+          IF      (IDH2                =   1  )
+             AND  (SPA-TBL-HKNCOMBI(2) NOT =   SPACE )
+             AND  (IDH1                >   1  )
+             AND  (IDX-MAX             >   ZERO )
+               PERFORM 310121-HKNCOMBI-HEN-SEC
+           END-IF
+      *    診療科切替
+           IF    ((IDH1                >   1  )
+              OR  (IDH2                >   1  ))
+             AND  (IDX-MAX             >   ZERO )
+               IF     (SPA-TBL-HKNCOMBI(2) NOT =   SPACE )
+                 OR   (SPA-TBL-SRYKA   (IDH1 2)    NOT =   SPACE )
+                   PERFORM 310122-SRYKA-HEN-SEC
+               END-IF
+           END-IF
+      *
+           PERFORM VARYING   IDX1      FROM   1   BY  1
+                   UNTIL    (IDX1      >   WRK-IDX-MAX )
+               IF     (HZN-WKSRY-INPUTCD (IDX1 1)(1:1)     =   "#"
+                                                           OR  "$")
+                   CONTINUE
+               ELSE
+      *
+               IF     (HZN-WKSRY-HKNCOMBI(IDX1)   =   WRK-HEN-HKNCOMBI)
+                AND   (HZN-WKSRY-SRYKA   (IDX1)   =   WRK-HEN-SRYKA   )
+                   ADD     1                  TO  IDX-MAX
+                   MOVE    HZN-WKSRYACT-REC(IDX1)
+                                              TO  LNK-WKSRYACT-REC
+                                                              (IDX-MAX)
+      *            ドクター変更
+                   MOVE    WRK-HEN-DRCD-G      TO  LNK-WKSRY-DRCD
+                                                              (IDX-MAX)
+      *            剤番号
+                   IF      LNK-WKSRY-RENNUM (IDX-MAX)  =   1
+                       ADD    1               TO  WRK-ZAINUM
+                   END-IF
+                   MOVE    WRK-ZAINUM         TO  LNK-WKSRY-ZAINUM
+                                                              (IDX-MAX)
+      *
+                   MOVE    SPACE              TO  HZN-WKSRYACT-REC
+                                                               (IDX1)
+                   INITIALIZE                 HZN-WKSRYACT-REC(IDX1)
+               END-IF
+               END-IF
+           END-PERFORM
+      *
+            .
+       31012-WKSRYACT-SORT2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     保険切替編集処理
+      *****************************************************************
+       310121-HKNCOMBI-HEN-SEC              SECTION.
+      *
+           ADD     1                   TO  IDX-MAX
+           ADD     1                   TO  WRK-ZAINUM
+      *
+           MOVE    LNK-WKSRYACT-REC (1)
+                                       TO  LNK-WKSRYACT-REC  (IDX-MAX)
+           MOVE    WRK-HEN-HKNCOMBI    TO  LNK-WKSRY-HKNCOMBI (IDX-MAX)
+           MOVE    WRK-HEN-SRYKA       TO  LNK-WKSRY-SRYKA   (IDX-MAX)
+           MOVE    WRK-HEN-DRCD-G      TO  LNK-WKSRY-DRCD   (IDX-MAX)
+           MOVE    WRK-ZAINUM          TO  LNK-WKSRY-ZAINUM  (IDX-MAX)
+           MOVE    1                   TO  LNK-WKSRY-RENNUM  (IDX-MAX)
+      *
+           INITIALIZE                  LNK-WKSRY-SINRYO-TBL-G
+                                                         (IDX-MAX)
+           MOVE    "#"                 TO  LNK-WKSRY-INPUTCD
+                                                      (IDX-MAX 1)(1:1)
+           MOVE    WRK-HEN-HKNCOMBI    TO  LNK-WKSRY-INPUTCD
+                                                      (IDX-MAX 1)(2:4)
+            .
+       310121-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     保険切替編集処理
+      *****************************************************************
+       310122-SRYKA-HEN-SEC              SECTION.
+      *
+           ADD     1                   TO  IDX-MAX
+           ADD     1                   TO  WRK-ZAINUM
+      *
+           MOVE    LNK-WKSRYACT-REC (1)
+                                       TO  LNK-WKSRYACT-REC  (IDX-MAX)
+           MOVE    WRK-HEN-HKNCOMBI    TO  LNK-WKSRY-HKNCOMBI (IDX-MAX)
+           MOVE    WRK-HEN-SRYKA       TO  LNK-WKSRY-SRYKA   (IDX-MAX)
+           MOVE    WRK-HEN-DRCD-G      TO  LNK-WKSRY-DRCD   (IDX-MAX)
+           MOVE    WRK-ZAINUM          TO  LNK-WKSRY-ZAINUM  (IDX-MAX)
+           MOVE    1                   TO  LNK-WKSRY-RENNUM  (IDX-MAX)
+      *
+           INITIALIZE                  LNK-WKSRY-SINRYO-TBL-G
+                                                         (IDX-MAX)
+           MOVE    "$"                 TO  LNK-WKSRY-INPUTCD
+                                                      (IDX-MAX 1)(1:1)
+           MOVE    WRK-HEN-SRYKA       TO  LNK-WKSRY-INPUTCD
+                                                      (IDX-MAX 1)(2:2)
+           MOVE    WRK-HEN-DRCD        TO  LNK-WKSRY-INPUTCD
+                                                      (IDX-MAX 1)(5:4)
+            .
+       310122-SRYKA-HEN-EXT.
+           EXIT.
+      *!!!!
+      *
+      *
       *****************************************************************
       *     パラメタファイル更新処理
       *****************************************************************
@@ -4031,7 +4506,7 @@
                MOVE    LNK-WKSRYACT-REC(IDX)
                                            TO  PARA-DATA-REC
       *
-               PERFORM 30010-PARA-DBINSERT-SEC
+                PERFORM 30010-PARA-DBINSERT-SEC
       *
            END-PERFORM
            .
@@ -4496,6 +4971,7 @@
            IF      FLG-SPATMP          =   ZERO
                MOVE    SPATMP-DATA-REC     TO  SPA-AREA
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+               MOVE    SPA-WORK            TO  HZN-SPA-K01KYOUTU
            ELSE
                MOVE    "08"                TO  WRK-ERRCD
            END-IF
@@ -4974,6 +5450,12 @@
                END-STRING
            WHEN    "28"
                STRING  "訂正処理の順番が違います。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+      *
+           WHEN    "29"
+               STRING  "印刷処理の順番が違います。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING

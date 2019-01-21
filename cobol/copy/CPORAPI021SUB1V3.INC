@@ -20,6 +20,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 04.08.00     NACL-多々納  15/11/XX  エラー診療コード追加
       * 05.00.00     NACL-多々納  17/11/XX  入院対応追加
+      * 05.00.00     NACL-多々納  19/01/XX  複数科保険対応
       *****************************************************************
       ******************************************************************
       *    ＡＰＩ中途終了データ編集サブパラメタ（一体化）
@@ -38,6 +39,17 @@
       *    診療内容
            03  ORAPISUB01-SRYACT-AREA.
                05  ORAPISUB01-MDC-INFO         OCCURS  110 TIMES.
+      *!!
+      *H31.01
+      *            データ区分（DEP：複数診療科、COM:保険組合せ番号のレコード）
+                   07  ORAPISUB01-MDC-DATA-KBN         PIC X(03).
+      *            保険組合せ番号
+                   07  ORAPISUB01-MDC-COMBINATION      PIC X(04).
+      *            診療科
+                   07  ORAPISUB01-MDC-DEP-CODE         PIC X(02).
+      *            ドクター
+                   07  ORAPISUB01-MDC-DR-CODE          PIC X(05).
+      *!!
       *            診療種別区分
                    07  ORAPISUB01-MDC-CLASS-KBN    PIC X(2).
       *            診療種別区分

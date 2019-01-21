@@ -18,6 +18,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 05.00.00     NACL-多々納  19/01/XX  複数科保険対応
       *****************************************************************
       ******************************************************************
       *    ＡＰＩレスポンス診療行為登録情報 (一体化)
@@ -108,6 +109,27 @@
       *        診療内容返却
                05  MDCRES-MEDICAL-INF-G.
                  07  MDCRES-MDC-INFO          OCCURS   120.
+      *!!!
+      *2019.1
+      *             保険・診療科切替
+                    09  MDCRES-CHENGE-REC.
+      *                 データ区分（DEP：複数診療科、COM:保険組合せ）
+                        11  MDCRES-MDC-DATA-KBN            PIC X(03).
+      *                 保険組合せ番号
+                        11  MDCRES-MDC-COMBINATION-NUMBER  PIC X(04).
+      *                 保険の種類名称
+                        11  MDCRES-MDC-MAIN-INS-NAME       PIC X(20).
+                        11  MDCRES-MDC-PUBLIC-INS-INFO.
+      *                 公費の種類名称
+                            13  MDCRES-MDC-INSURANCE-NAME  PIC X(20)
+                                                     OCCURS  4 TIMES.
+      *                 診療科
+                        11  MDCRES-MDC-DEP-CODE            PIC X(2).
+                        11  MDCRES-MDC-DEP-CODE-NAME       PIC X(20).
+      *                 ドクター
+                        11  MDCRES-MDC-DR-CODE             PIC X(5).
+                        11  MDCRES-MDC-DR-CODE-NAME        PIC X(80).
+      *!!!
       *             診療区分
                     09  MDCRES-MDC-CLASS-KBN         PIC X(2).
       *             診療種別区分
@@ -172,8 +194,32 @@
       *           エラーメッセージ
                   07  MDCRES-MEDI-RESULT-MSG     PIC X(100).
       *
-      *        伝票番号
+      *        伝票番号（主たる）
                05  MDCRES-INVOICD-NUMBER     PIC  X(07).
+      *
+      *2019.1
+      *        送信収納情報返却
+               05  MDCRES-IN-CD-INF.
+                   07  MDCRES-IN-CD-CHNGE-INF      OCCURS   15.
+      *                保険組合せ番号
+                       09  MDCRES-IN-CD-COMB-NUMBER    PIC X(04).
+      *                診療科
+                       09  MDCRES-IN-CD-DEP-CODE       PIC X(02).
+      *
+      *                収納入金額
+                       09  MDCRES-IN-CD-IC-MONEY       PIC  X(10).
+      *                調整金額１
+                       09  MDCRES-IN-CD-AD-MONEY1      PIC  X(10).
+      *                調整金額２
+                       09  MDCRES-IN-CD-AD-MONEY2      PIC  X(10).
+      *            調整金額１（単独）
+                   07  MDCRES-IN-AD-MONEY1         PIC  X(10).
+      *            調整金額２（単独）
+                   07  MDCRES-IN-AD-MONEY2         PIC  X(10).
+      *            入金額
+                   07  MDCRES-IN-IC-MONEY          PIC  X(10).
+      *            返金額
+                   07  MDCRES-IN-RE-MONEY          PIC  X(10).
       *
                05  MDCRES-IC-INF.
       *            入金方法区分
@@ -196,8 +242,19 @@
       *            今回入金額上限額・今回返金額（新規のみ）
                    07  MDCRES-MAX-IC-MONEY        PIC X(10).
       *
+      *
       *        収納情報返却
                05  MDCRES-CD-INF.
+      *!!!
+      *2019.1
+                   07  MDCRES-CD-CHNGE-INF.
+      *                保険組合せ番号
+                       09  MDCRES-CD-COMBINATION-NUMBER    PIC X(04).
+                       09  MDCRES-CD-COMBINATION-NAME      PIC X(40).
+      *                診療科
+                       09  MDCRES-CD-DEP-CODE              PIC X(02).
+                       09  MDCRES-CD-DEP-CODE-NAME         PIC X(20).
+      *!!!
       *            今回入金金額
                    07  MDCRES-IC-MONEY          PIC  X(10).
       *
@@ -259,6 +316,7 @@
                        09  MDCRES-OLD-AD-MONEY1        PIC  X(10).
       *                前回調整金額２
                        09  MDCRES-OLD-AD-MONEY2        PIC  X(10).
+      *
       *H29.6
       *        減免情報
                05  MDCRES-DISCOUNT-INF.
@@ -268,6 +326,94 @@
                    07  MDCRES-MAE-MISYU             PIC X(10).
       *            前回までの超過額
                    07  MDCRES-MAE-CHOUKA            PIC X(10).
+      *
+      *2019.1
+      * 複数科保険
+      *        収納情報返却（明細）
+               05  MDCRES-SUB-CD-INF.
+                 06  MDCRES-SUB-CD-INF-OCC          OCCURS   15.
+                   07  MDCRES-SUB-CHNGE-INF.
+      *                保険組合せ番号
+                       09  MDCRES-SUB-COMBINATION-NUMBER    PIC X(04).
+      *                診療科
+                       09  MDCRES-SUB-DEP-CODE         PIC X(02).
+                       09  MDCRES-SUB-DEP-CODE-NAME    PIC X(20).
+      *                ドクター
+                       09  MDCRES-SUB-DR-CODE          PIC X(5).
+      *                伝票番号
+                       09  MDCRES-SUB-INVOICD-NUMBER   PIC  X(07).
+      *            今回入金金額
+                   07  MDCRES-SUB-IC-MONEY          PIC  X(10).
+      *
+      *            調整金額１
+                   07  MDCRES-SUB-AD-MONEY1         PIC  X(10).
+      *            調整金額２
+                   07  MDCRES-SUB-AD-MONEY2         PIC  X(10).
+      *            請求金額（調整金を含まない）
+                   07  MDCRES-SUB-AC-MONEY          PIC  X(10).
+      *
+      *            今回返金額（訂正時以外は充当）
+                   07  MDCRES-SUB-RE-MONEY          PIC  X(10).
+      *
+      *            収納情報返却（請求額内訳）
+                   07  MDCRES-SUB-SYUNOU-AREA.
+      *            保険適用金額
+                       09  MDCRES-SUB-AI-MONEY         PIC  X(10).
+      *             自費金額
+                       09  MDCRES-SUB-OE-MONEY         PIC  X(10).
+      *             薬剤一部負担金
+                       09  MDCRES-SUB-DG-SMONEY        PIC  X(10).
+      *             老人一部負担金
+                       09  MDCRES-SUB-OM-SMONEY        PIC  X(10).
+      *             公費一部負担金
+                       09  MDCRES-SUB-PI-SMONEY        PIC  X(10).
+      *             労災金額合計
+                       09  MDCRES-SUB-LSI-TOTALMONEY   PIC  X(10).
+      *
+      *         請求点数情報
+                    07  MDCRES-SUB-AC-POINT-INF.
+      *             保険合計点数
+                        09  MDCRES-SUB-AC-TOTAL-POINT      PIC  X(10).
+      *             保険点数
+                        09  MDCRES-SUB-AC-POINT-G.
+                            11  MDCRES-SUB-AC-POINT-TBL    OCCURS   16.
+                                13  MDCRES-SUB-AC-POINT-NAME
+                                                           PIC  X(30).
+      *                         保険点数
+                                13  MDCRES-SUB-AC-POINT    PIC  X(10).
+      *                         適用外金額
+                                13  MDCRES-SUB-AC-TGMONEY  PIC  X(10).
+      *              自費明細
+                     07  MDCRES-SUB-JIHI-G.
+                         09  MDCRES-SUB-JIHI-TBL      OCCURS   10.
+                             11  MDCRES-SUB-JIHI-NAME       PIC  X(20).
+      *                      自費金額
+                             11  MDCRES-SUB-JIHI-MONEY      PIC  X(10).
+      *                      自費金額（消費税あり）
+                             11  MDCRES-SUB-JIHI-MONEY-TAX  PIC  X(10).
+      *                  自費消費税（再掲）
+                         09  MDCRES-SUB-JIHI-TAX    PIC X(10).
+      *
+      *            訂正前収納情報返却
+                   07  MDCRES-SUB-OLD-CD-INF.
+      *                前回入金金額
+                       09  MDCRES-SUB-OLD-IC-MONEY         PIC  X(10).
+      *                前回請求金額
+                       09  MDCRES-SUB-OLD-AC-MONEY         PIC  X(10).
+      *                前回調整金額１
+                       09  MDCRES-SUB-OLD-AD-MONEY1        PIC  X(10).
+      *                前回調整金額２
+                       09  MDCRES-SUB-OLD-AD-MONEY2        PIC  X(10).
+      *
+      *            まとめ入力差額 （診療科＝００以外）
+                   07  MDCRES-SUB-GRP-SGKMONEY-INF.
+                       09  MDCRES-SUB-GRP-SGKMONEY         PIC X(10).
+      *!!!!
+      *2019.1
+              05  MDCRES-PRINT-INIT-AREA.
+      *           請求書兼領収書・診療費明細書　発行区分
+                  07  MDCRES-HAKKOU-KBN        PIC X(01).
+                  07  MDCRES-HAKKOU-KBN-MEI    PIC X(30).
       *H29.6
       *   帳票印刷指示区分
               05  MDCRES-PRINT-AREA.

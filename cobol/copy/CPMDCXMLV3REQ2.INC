@@ -18,6 +18,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 05.00.00     NACL-多々納  19/01/XX  複数科保険対応
       *****************************************************************
       ******************************************************************
       *    ＡＰＩリクエスト診療行為チェック情報 (一体化)
@@ -105,16 +106,31 @@
                 07  MDCREQ-OUTSIDE-LASS        PIC X(05).
       *         時間外区分
                 07  MDCREQ-OFFTIME             PIC X(01).
+      *H31.01
+      *         複数科保険診察料算定なし
+                07  MDCREQ-CHENGE-AUTO         PIC X(01).
+      *
       *         診療情報
                 07  MDCREQ-MDC-INFO-G.
                   09  MDCREQ-MDC-INFO          OCCURS   110.
+      *H31.01
+      *             保険・診療科切替
+                    11  MDCREQ-MDC-CHENGE-REC.
+      *                 データ区分（DEP：複数診療科、COM:保険組合せ番号のレコード）
+                       13  MDCREQ-MDC-DATA-KBN             PIC X(03).
+      *                保険組合せ番号
+                       13  MDCREQ-MDC-COMBINATION-NUMBER   PIC X(04).
+      *                診療科
+                       13  MDCREQ-MDC-DEP-CODE             PIC X(2).
+      *                ドクター
+                       13  MDCREQ-MDC-DR-CODE              PIC X(5).
+      *
       *             診療種別区分
                     11  MDCREQ-MDC-CLASS             PIC X(3).
       *             診療種別名称
                     11  MDCREQ-MDC-CLASS-NAME        PIC X(40).
       *             回数
                     11  MDCREQ-MDC-CLASS-NUMBER      PIC X(03).
-      *
                     11  MDCREQ-PRESCRIPTION-INFO    OCCURS   50.
       *                 診療コード
                         13  MDCREQ-PRSCRPT-CODE          PIC X(9).
