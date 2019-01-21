@@ -52,9 +52,7 @@
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
       *
-      *  05.00.01    NACL-藤原    19/01/17  ＦＤ及びＭＯによる請求の終了
-      *                                     に伴う対応
-      *                                     Warning 対応
+      *  05.00.01    NACL-藤原    19/01/17  Warning 対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -240,14 +238,13 @@
                    MOVE    "システム管理設定場所（フロッピィ用）"
                                            TO
                                            SPA-GMN-T98-DATAKBNMEIL  (1)
-                   MOVE    "4"             TO  SPA-GMN-T98-DATAKBNL (2)
-                   MOVE    "システム管理設定場所（ＭＯ用）"
-                                           TO
-                                           SPA-GMN-T98-DATAKBNMEIL  (2)
-                   MOVE    2               TO  IDX
-      *
-                   MOVE    IDX             TO  SPA-GMN-T98-DATAKBN-MAX
+                   MOVE    1               TO  IDX
                END-IF
+               ADD     1               TO  IDX
+               MOVE    "4"             TO  SPA-GMN-T98-DATAKBNL    (IDX)
+               MOVE    "システム管理設定場所（ＭＯ用）"
+                                       TO  SPA-GMN-T98-DATAKBNMEIL (IDX)
+               MOVE    IDX             TO  SPA-GMN-T98-DATAKBN-MAX
            END-IF
            IF      SCLIENTSV-CLIENT-SAVE
                                    =   "1"

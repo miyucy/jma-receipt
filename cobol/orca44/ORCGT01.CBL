@@ -216,9 +216,7 @@
       *  04.09.03    NACL-Æ£¸¶    17/08/01  £È£Á£Ï£Ò£ÉÂÐ±þ
       *  05.00.00    NACL-¿¹ÏÆ    17/11/30  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *  05.00.01    NACL-Æ£¸¶    18/10/15  £Í£Ï£Î£Â£Ì£Ï£Â¥¨¥é¡¼ÂÐ±þ
-      *  05.00.02    NACL-Æ£¸¶    19/01/17  £Æ£ÄµÚ¤Ó£Í£Ï¤Ë¤è¤ëÀÁµá¤Î½ªÎ»
-      *                                     ¤ËÈ¼¤¦ÂÐ±þ
-      *                                     Warning ÂÐ±þ
+      *  05.00.02    NACL-Æ£¸¶    19/01/17  Warning ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3863,7 +3861,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                                            NOT =   SPACE
                        CONTINUE
                    ELSE
-                       IF      SPA-GMN-DATAKBN =   "3" OR  "4"
+                       IF      SPA-GMN-DATAKBN =   "3"
                            MOVE    "0013"          TO  SPA-ERRCD
                            MOVE    4               TO  SPA-GMN-CUR
                        END-IF
