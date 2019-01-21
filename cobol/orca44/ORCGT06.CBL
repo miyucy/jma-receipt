@@ -82,6 +82,7 @@
       *  05.00.00    NACL-¿¹ÏÆ    17/12/21  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *  05.00.01    NACL-Æ£¸¶    17/12/19  £È£Á£Ï£Ò£ÉÂÐ±þ
       *  05.00.02    NACL-Æ£¸¶    18/10/15  £Í£Ï£Î£Â£Ì£Ï£Â¥¨¥é¡¼ÂÐ±þ
+      *  05.00.03    NACL-Æ£¸¶    19/01/17  Warning ÂÐ±þ
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -339,7 +340,9 @@
            COPY    "CPSK3003.INC".
       *
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
            COPY    "CPSK2009.INC".
       *
@@ -693,41 +696,41 @@
            END-IF
       *
       *    ¾É¾õ¾Üµ­ºîÀ®¶èÊ¬
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    SPA-NAI-T06-SRYYM-H TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    SPA-NAI-T06-SRYYM-H TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE   MCPDATA-REC          TO  SYS-200501-REC
+               MOVE   MCPDATA-REC          TO  SYS-25-REC
            ELSE
-               INITIALIZE                  SYS-200501-REC
+               INITIALIZE                  SYS-25-REC
            END-IF
-           IF      SYS-200501-RECEDEN-LST1KBN
+           IF      SYS-25-RECEDEN-LST1KBN
                                        =   SPACE
                MOVE    "1"                 TO
-                                           SYS-200501-RECEDEN-LST1KBN
+                                           SYS-25-RECEDEN-LST1KBN
            END-IF 
-           IF      SYS-200501-RECEDEN-RIREKIKBN
+           IF      SYS-25-RECEDEN-RIREKIKBN
                                        =   SPACE
                MOVE    "0"                 TO
-                                           SYS-200501-RECEDEN-RIREKIKBN
+                                           SYS-25-RECEDEN-RIREKIKBN
            END-IF 
-           IF     SYS-200501-RECEDEN-DISASTER
+           IF     SYS-25-RECEDEN-DISASTER
                                        =   SPACE
-               MOVE    "1"             TO  SYS-200501-RECEDEN-DISASTER
+               MOVE    "1"             TO  SYS-25-RECEDEN-DISASTER
            END-IF
-           MOVE    SYS-200501-RECEDEN-LST1KBN
+           MOVE    SYS-25-RECEDEN-LST1KBN
                                        TO
                                    SPA-T06-2005-RECEDEN-LST1KBN
-           MOVE    SYS-200501-RECEDEN-RIREKIKBN
+           MOVE    SYS-25-RECEDEN-RIREKIKBN
                                        TO
                                    SPA-T06-2005-RECEDEN-RIREKIKBN
-           MOVE    SYS-200501-RECEDEN-DISASTER
+           MOVE    SYS-25-RECEDEN-DISASTER
                                        TO
                                    SPA-T06-2005-RECEDEN-DISASTER
       *

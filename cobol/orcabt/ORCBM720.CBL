@@ -35,6 +35,10 @@
       *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *  04.08.02    NACL-藤原    17/04/12  平成２９年３月診療分からの
       *                                     様式変更対応
+      *
+      *  05.00.01    NACL-藤原    19/01/18  ＦＤ及びＭＯによる請求の終了
+      *                                     に伴う様式変更対応
+      *                                     Warning 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -57,7 +61,9 @@
       *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC".
       *
-           COPY    "HCM78.INC".
+      **** COPY    "HCM78.INC".
+           COPY    "HCM78V02.INC"  REPLACING  //HCM78V02//
+                                   BY         //HCM78//.
       *
       *    スパ領域
        01  STS-AREA.
@@ -153,7 +159,9 @@
            COPY    "CPSK1902.INC".
            COPY    "CPSK1903.INC".
       *
-           COPY  "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *    労災医療機関情報
            COPY    "CPSK4001.INC".
@@ -378,27 +386,27 @@
            END-IF
       *
       *    レセプト・総括編集情報
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+               MOVE    MCPDATA-REC         TO  SYS-25-REC
            ELSE
-               INITIALIZE                      SYS-200501-REC
+               INITIALIZE                      SYS-25-REC
            END-IF
       *    光ディスク等送付書（媒体種類）
-           IF      SYS-200501-RECEDEN-LST2-MEDIA
+           IF      SYS-25-RECEDEN-LST2-MEDIA
                                        =   SPACE
-               MOVE    "0"             TO  SYS-200501-RECEDEN-LST2-MEDIA
+               MOVE    "0"             TO  SYS-25-RECEDEN-LST2-MEDIA
            END-IF
            DISPLAY "SYS-200501-RECEDEN-LST2-MEDIA="
-                                       SYS-200501-RECEDEN-LST2-MEDIA
+                                       SYS-25-RECEDEN-LST2-MEDIA
            DISPLAY "WRK-PARA-DATAKBN             ="
                                        WRK-PARA-DATAKBN
       *
@@ -473,16 +481,16 @@
            MOVE    WRK-HENYMD-D        TO  HCM78-SKYYMD
       *
       *    媒体種類
-           EVALUATE    SYS-200501-RECEDEN-LST2-MEDIA
+           EVALUATE    SYS-25-RECEDEN-LST2-MEDIA
                                        ALSO    WRK-PARA-DATAKBN
-               WHEN    "0"             ALSO    "1"
-               WHEN    "0"             ALSO    "3"
-               WHEN    "1"             ALSO    ANY
-                   MOVE    "○"                TO  HCM78-BAITAI (2)
-               WHEN    "0"             ALSO    "2"
-               WHEN    "0"             ALSO    "4"
-               WHEN    "2"             ALSO    ANY
-                   MOVE    "○"                TO  HCM78-BAITAI (3)
+      ****     WHEN    "0"             ALSO    "1"
+      ****     WHEN    "0"             ALSO    "3"
+      ****     WHEN    "1"             ALSO    ANY
+      ****         MOVE    "○"                TO  HCM78-BAITAI (2)
+      ****     WHEN    "0"             ALSO    "2"
+      ****     WHEN    "0"             ALSO    "4"
+      ****     WHEN    "2"             ALSO    ANY
+      ****         MOVE    "○"                TO  HCM78-BAITAI (3)
                WHEN    "0"             ALSO    "6"
                WHEN    "3"             ALSO    ANY
                    MOVE    "○"                TO  HCM78-BAITAI (1)
@@ -518,11 +526,12 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           IF      LNK-PRTKANRI-SRYYM  <   "201702"
-               MOVE    "HCM78.red"         TO  SPRT-PRTID
-           ELSE
-               MOVE    "HCM78V01.red"      TO  SPRT-PRTID
-           END-IF
+      **** IF      LNK-PRTKANRI-SRYYM  <   "201702"
+      ****     MOVE    "HCM78.red"         TO  SPRT-PRTID
+      **** ELSE
+      ****     MOVE    "HCM78V01.red"      TO  SPRT-PRTID
+      **** END-IF
+           MOVE    "HCM78V02.red"      TO  SPRT-PRTID
            MOVE    "光ディスク等送付書（労災）"
                                        TO  SPRT-TITLE
            MOVE    HCM78               TO  SPRT-PRTDATA
