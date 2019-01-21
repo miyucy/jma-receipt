@@ -92,6 +92,7 @@
       *                                     期間コード変更月のときの対応
       *
       *  04.09.01    NACL-藤原    16/11/18  ＤＯＣＥＲ対応
+      *  05.00.01    NACL-藤原    19/01/17  Warning 対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -300,9 +301,9 @@
                05  SPA-NAI-200501-RECEDEN-DISASTER PIC X(01).
                05  SPA-NAI-200501-RECEDEN-CHK-KBN  PIC X(01).
                05  SPA-NAI-200501-ROUSAIPRTKBN     PIC X(01).
-               05  SPA-NAI-200501-FRAME-ROUSAIPRTKBN
+               05  SPA-NAI-200501-FRAME-ROUSAIPRTK
                                                    PIC X(01).
-               05  SPA-NAI-200501-DISASTER-SYAPRTKBN
+               05  SPA-NAI-200501-DISASTER-SYAPRTK
                                                    PIC X(01).
                05  SPA-NAI-200501-JIBAI-PDF        PIC X(01).
       *
