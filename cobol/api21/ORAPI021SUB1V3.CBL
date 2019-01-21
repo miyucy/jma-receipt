@@ -428,10 +428,10 @@
       *2019.1
                MOVE    SPACE               TO  WRK-ERRCD
                EVALUATE    ORAPISUB01-MDC-DATA-KBN (IDY)
-               WHEN    "COM"
+               WHEN    "Com"
       *            複数　保険組合せ
                    PERFORM 200213-FUKU-HKNCOMBI-HEN-SEC
-               WHEN    "DEP"
+               WHEN    "Dep"
       *            複数　診療科
                    PERFORM 200214-FUKU-SRYKA-HEN-SEC
       *

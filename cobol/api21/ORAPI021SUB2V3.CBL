@@ -737,7 +737,7 @@
            EVALUATE    LNK-WKSRY-INPUTCD(IDX 1)(1:1)
            WHEN    "$"
       *    ø«Œ≈≤  —ππ
-               MOVE    "DEP"           TO  ORAPISUB2-MDC-DATA-KBN(IDY)
+               MOVE    "Dep"           TO  ORAPISUB2-MDC-DATA-KBN(IDY)
       *        ø«Œ≈≤ 
                MOVE    LNK-WKSRY-INPUTCD(IDX 1)(2:2)
                                        TO  WRK-SRYKA
@@ -778,7 +778,7 @@
       *
            WHEN    "#"
       *     ›∏±¡»πÁ§ª —ππ
-               MOVE    "COM"           TO  ORAPISUB2-MDC-DATA-KBN(IDY)
+               MOVE    "Com"           TO  ORAPISUB2-MDC-DATA-KBN(IDY)
       *         ›∏±¡»πÁ§ª»÷πÊ
                MOVE    LNK-WKSRY-INPUTCD(IDX 1)(2:4)
                                        TO  WRK-HKNCOMBI

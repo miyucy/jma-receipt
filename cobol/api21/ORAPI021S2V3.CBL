@@ -3273,7 +3273,7 @@
                GO      TO     2002223-FUKU-HKNCOMBI-EXT
            END-IF
            MOVE    ZERO                TO  IDZ
-           MOVE    "CMD"               TO  MDCRES-MDC-DATA-KBN
+           MOVE    "Com"               TO  MDCRES-MDC-DATA-KBN
                                                             (IDY)
            MOVE    SPA-GMN-INPUTCD (IDX)(2:4)
                                    TO  MDCRES-MDC-COMBINATION-NUMBER
@@ -3336,7 +3336,7 @@
                GO      TO     2002224-FUKU-SRYKA-EXT
            END-IF
            MOVE    ZERO                TO  IDZ
-           MOVE    "DEP"               TO  MDCRES-MDC-DATA-KBN
+           MOVE    "Dep"               TO  MDCRES-MDC-DATA-KBN
                                                             (IDY)
            MOVE    SPA-COM-SRYKA (IDX)
                                        TO  MDCRES-MDC-DEP-CODE
