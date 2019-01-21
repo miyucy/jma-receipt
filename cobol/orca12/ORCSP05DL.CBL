@@ -1214,7 +1214,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    YYK-SRYNAIYO        TO  YYKCOM-SRYNAIYO
                MOVE    YYK-DRCD            TO  YYKCOM-DRCD
                MOVE    YYK-YYKYMD          TO  YYKCOM-YYKYMD
-               MOVE    YYK-YYKTIME         TO  YYKCOM-KEYYYKTIME
+               MOVE    YYK-KEYYYKTIME      TO  YYKCOM-KEYYYKTIME
                MOVE    YYK-YYKID           TO  YYKCOM-YYKID
       *
                MOVE    YYKCOM-REC          TO  MCPDATA-REC
