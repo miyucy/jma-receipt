@@ -2994,13 +2994,22 @@
       *****************************************************************
        200213-SYUNOU-GOKHEN-SEC        SECTION.
       *
+           MOVE    ZERO                TO  WRK-DENPNUM
+      *
       *    画面初期表示内容
            IF      SPA-SYUNOU-IDX      =   ZERO
+      *        主たる伝票番号
+               IF      SPA-SYUNOU-MAX      >=  1
+                   MOVE    SPA-SYUNOU-REC(1)   TO  SYUNOU-REC
+                   MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
+               END-IF
+      *
       *        保険合計を集計する
                PERFORM 2002131-SYUNOU-ADD-SEC
       *        画面を収納へ
                MOVE    SPA-GMN-SRYKA       TO  SYU-SRYKA
                MOVE    SPA-GMN-HKNCOMBI    TO  SYU-HKNCOMBINUM
+               MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
                MOVE    ZERO                TO  IDX
            ELSE
                MOVE    SPA-SYUNOU-REC (SPA-SYUNOU-IDX)
@@ -3024,6 +3033,7 @@
            IF     SYU-DENPNUM      NOT =   ZERO
                MOVE    SYU-DENPNUM         TO  MDCRES-INVOICD-NUMBER
            END-IF
+      *
       *    減免区分
            IF      SYU-DISCOUNT-TEIRITU    NOT =   SPACE
                EVALUATE    SYU-DISCOUNT-TEIRITU
@@ -4384,17 +4394,11 @@
                                            OR  SPACE )
                GO      TO      20034-PRINT-SYORI-EXT
            END-IF
-      *TEST
-            DISPLAY "20034-PRINT-SYORI-SEC START"
-      *TEST
       *
       *    一時ディレクトリ作成
            INITIALIZE                  STEMPDIR-AREA
            CALL    "ORCSTEMPDIR"       USING
                                        STEMPDIR-AREA
-      *TEST
-            DISPLAY "CALL ORCSTEMPDIR"
-      *TEST
       *
       *    SPA-API-FLGに1を設定
            MOVE    1              TO  SPA-API-FLG
@@ -4438,9 +4442,6 @@
                CALL    "ORCHC02Q"          USING   SPA-AREA
                                                    ORCHC19AREA
            END-IF
-      *TEST
-            DISPLAY "ORCHC02Q EDN"
-      *TEST
       *
       *    請求書印刷
            IF      MDCRES-PRINT-SEIKYU =   "1"  OR  "2" 
@@ -4515,9 +4516,6 @@
            MOVE    "DEL"           TO  STEMPDIR-MODE
            CALL    "ORCSTEMPDIR"       USING
                                        STEMPDIR-AREA
-      *TEST
-            DISPLAY "CALL ORCSTEMPDIR  DEL"
-      *TEST
       *
            .
        20034-PRINT-SYORI-EXT.
