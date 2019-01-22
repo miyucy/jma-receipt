@@ -216,6 +216,7 @@
       *  04.09.03    NACL-Æ£¸¶    17/08/01  £È£Á£Ï£Ò£ÉÂÐ±þ
       *  05.00.00    NACL-¿¹ÏÆ    17/11/30  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *  05.00.01    NACL-Æ£¸¶    18/10/15  £Í£Ï£Î£Â£Ì£Ï£Â¥¨¥é¡¼ÂÐ±þ
+      *  05.00.02    NACL-Æ£¸¶    19/01/17  Warning ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -522,7 +523,9 @@
            COPY    "CPSK2003.INC".
       *
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
            COPY    "CPSK200505.INC".
       *
            COPY    "CPSK2009.INC".
@@ -946,119 +949,119 @@ grpsys                                         SPA-AREA
            MOVE    SYS-2005-SYARECEKBN TO  SPA-NAI-2005-SYARECEKBN
            MOVE    SYS-2005-KKHRECEKBN TO  SPA-NAI-2005-KKHRECEKBN
       *
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    SPA-NAI-SKYYM       TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE   MCPDATA-REC          TO  SYS-200501-REC
+               MOVE   MCPDATA-REC          TO  SYS-25-REC
            ELSE
-               INITIALIZE                  SYS-200501-REC
+               INITIALIZE                  SYS-25-REC
            END-IF
-           IF      SYS-200501-KOUIKIKBN
+           IF      SYS-25-KOUIKIKBN
                                        =   SPACE
-               MOVE    "0"                 TO  SYS-200501-KOUIKIKBN
+               MOVE    "0"                 TO  SYS-25-KOUIKIKBN
            END-IF 
-           IF      SYS-200501-KOUIKIRECEKBN
+           IF      SYS-25-KOUIKIRECEKBN
                                        =   SPACE
-               MOVE    "0"                 TO  SYS-200501-KOUIKIRECEKBN
+               MOVE    "0"                 TO  SYS-25-KOUIKIRECEKBN
            END-IF 
-           IF      SYS-200501-RECEDEN-CDRKBN
+           IF      SYS-25-RECEDEN-CDRKBN
                                        =   SPACE
-               MOVE    "0"                 TO  SYS-200501-RECEDEN-CDRKBN
+               MOVE    "0"                 TO  SYS-25-RECEDEN-CDRKBN
            END-IF 
-           IF      SYS-200501-RECEDEN-CDRKBN
+           IF      SYS-25-RECEDEN-CDRKBN
                                        =   SPACE
-               MOVE    "0"                 TO  SYS-200501-RECEDEN-CDRKBN
+               MOVE    "0"                 TO  SYS-25-RECEDEN-CDRKBN
            END-IF 
-           IF      SYS-200501-RECEDEN-LST1KBN
+           IF      SYS-25-RECEDEN-LST1KBN
                                        =   SPACE
                MOVE    "1"                 TO
-                                           SYS-200501-RECEDEN-LST1KBN
+                                           SYS-25-RECEDEN-LST1KBN
            END-IF 
-           IF      SYS-200501-RECEDEN-LST2KBN
+           IF      SYS-25-RECEDEN-LST2KBN
                                        =   SPACE
                MOVE    "0"                 TO
-                                           SYS-200501-RECEDEN-LST2KBN
+                                           SYS-25-RECEDEN-LST2KBN
            END-IF 
-           IF      SYS-200501-RECEDEN-RIREKIKBN
+           IF      SYS-25-RECEDEN-RIREKIKBN
                                        =   SPACE
                MOVE    "0"                 TO
-                                           SYS-200501-RECEDEN-RIREKIKBN
+                                           SYS-25-RECEDEN-RIREKIKBN
            END-IF 
-           IF      SYS-200501-RECEDEN-DATAKBN
+           IF      SYS-25-RECEDEN-DATAKBN
                                        =   SPACE
                MOVE    "4"                 TO
-                                           SYS-200501-RECEDEN-DATAKBN
+                                           SYS-25-RECEDEN-DATAKBN
            END-IF 
-           IF     SYS-200501-RECEDEN-DISASTER
+           IF     SYS-25-RECEDEN-DISASTER
                                        =   SPACE
-               MOVE    "1"             TO  SYS-200501-RECEDEN-DISASTER
+               MOVE    "1"             TO  SYS-25-RECEDEN-DISASTER
            END-IF
-           IF     SYS-200501-RECEDEN-CHK-KBN
+           IF     SYS-25-RECEDEN-CHK-KBN
                                        =   SPACE
-               MOVE    "0"             TO  SYS-200501-RECEDEN-CHK-KBN
+               MOVE    "0"             TO  SYS-25-RECEDEN-CHK-KBN
            END-IF
-           IF     SYS-200501-ROURECEKBN
+           IF     SYS-25-ROURECEKBN
                                        =   SPACE
-               MOVE    "0"             TO  SYS-200501-ROURECEKBN
+               MOVE    "0"             TO  SYS-25-ROURECEKBN
            END-IF
-           IF     SYS-200501-ROUSAIPRTKBN
+           IF     SYS-25-ROUSAIPRTKBN
                                        =   SPACE
-               MOVE    "1"             TO  SYS-200501-ROUSAIPRTKBN
-               MOVE    "1"             TO  SYS-200501-FRAME-ROUSAIPRTKBN
+               MOVE    "1"             TO  SYS-25-ROUSAIPRTKBN
+               MOVE    "1"             TO  SYS-25-FRAME-ROUSAIPRTKBN
            END-IF
-           IF     SYS-200501-FRAME-ROUSAIPRTKBN
+           IF     SYS-25-FRAME-ROUSAIPRTKBN
                                        =   SPACE
-               MOVE    "0"             TO  SYS-200501-FRAME-ROUSAIPRTKBN
+               MOVE    "0"             TO  SYS-25-FRAME-ROUSAIPRTKBN
            END-IF
-           IF     SYS-200501-DISASTER-SYAPRTKBN
+           IF     SYS-25-DISASTER-SYAPRTKBN
                                        =   SPACE
-               MOVE    "0"             TO  SYS-200501-DISASTER-SYAPRTKBN
+               MOVE    "0"             TO  SYS-25-DISASTER-SYAPRTKBN
            END-IF
-           IF      SYS-200501-JIBAI-PDF
+           IF      SYS-25-JIBAI-PDF
                                    =   SPACE
-               MOVE    "0"             TO  SYS-200501-JIBAI-PDF
+               MOVE    "0"             TO  SYS-25-JIBAI-PDF
            END-IF
       *
-           MOVE    SYS-200501-KOUIKIKBN
+           MOVE    SYS-25-KOUIKIKBN
                                        TO  SPA-NAI-200501-KOUIKIKBN
-           MOVE    SYS-200501-KOUIKIRECEKBN
+           MOVE    SYS-25-KOUIKIRECEKBN
                                        TO  SPA-NAI-200501-KOUIKIRECEKBN
-           MOVE    SYS-200501-RECEDEN-LST1KBN
+           MOVE    SYS-25-RECEDEN-LST1KBN
                                        TO
                                        SPA-NAI-200501-RECEDEN-LST1KBN
-           MOVE    SYS-200501-RECEDEN-LST2KBN
+           MOVE    SYS-25-RECEDEN-LST2KBN
                                        TO
                                        SPA-NAI-200501-RECEDEN-LST2KBN
-           MOVE    SYS-200501-RECEDEN-RIREKIKBN
+           MOVE    SYS-25-RECEDEN-RIREKIKBN
                                        TO
                                        SPA-NAI-200501-RECEDEN-RIREKIKB
-           MOVE    SYS-200501-RECEDEN-DATAKBN
+           MOVE    SYS-25-RECEDEN-DATAKBN
                                        TO
                                        SPA-NAI-200501-RECEDEN-DATAKBN
-           MOVE    SYS-200501-RECEDEN-DISASTER
+           MOVE    SYS-25-RECEDEN-DISASTER
                                        TO
                                        SPA-NAI-200501-RECEDEN-DISASTER
-           MOVE    SYS-200501-RECEDEN-CHK-KBN
+           MOVE    SYS-25-RECEDEN-CHK-KBN
                                        TO
                                        SPA-NAI-200501-RECEDEN-CHK-KBN
-           MOVE    SYS-200501-ROURECEKBN
+           MOVE    SYS-25-ROURECEKBN
                                        TO  SPA-NAI-200501-ROURECEKBN
-           MOVE    SYS-200501-ROUSAIPRTKBN
+           MOVE    SYS-25-ROUSAIPRTKBN
                                        TO  SPA-NAI-200501-ROUSAIPRTKBN
-           MOVE    SYS-200501-FRAME-ROUSAIPRTKBN
+           MOVE    SYS-25-FRAME-ROUSAIPRTKBN
                                        TO
-                                       SPA-NAI-200501-FRAME-ROUSAIPRTKBN
-           MOVE    SYS-200501-DISASTER-SYAPRTKBN
+                                       SPA-NAI-200501-FRAME-ROUSAIPRTK
+           MOVE    SYS-25-DISASTER-SYAPRTKBN
                                        TO
-                                       SPA-NAI-200501-DISASTER-SYAPRTKBN
-           MOVE    SYS-200501-JIBAI-PDF
+                                       SPA-NAI-200501-DISASTER-SYAPRTK
+           MOVE    SYS-25-JIBAI-PDF
                                        TO  SPA-NAI-200501-JIBAI-PDF
      *
            IF      SPA-MW              =   SPA-GINBEE
@@ -1434,7 +1437,7 @@ grpsys                                         SPA-AREA
                                        TO  SPA-GMN-DATAKBNMEIL    (IDX)
                MOVE    IDX             TO  SPA-GMN-DATAKBN-MAX
       *
-               IF      SYS-200501-RECEDEN-CDRKBN   =   "1"
+               IF      SYS-25-RECEDEN-CDRKBN   =   "1"
                    ADD     1               TO  IDX
                    MOVE    "6"             TO  SPA-GMN-DATAKBNL   (IDX)
                    MOVE    "¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸¡Ê£Ã£Ä¡Ý£ÒÍÑ¡Ë"
@@ -2067,7 +2070,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    °åÊÝÊ¬¤Î¥ì¥»ÅÅ¥Ç¡¼¥¿¤òºîÀ®¤·¤Ê¤¤¤È¤­
            IF    ( SYS-2005-SYARECEKBN =   "1" OR  "2" OR  "3" )
            OR    ( SYS-2005-KKHRECEKBN =   "1" OR  "2" OR  "3" )
-           OR    ( SYS-200501-KOUIKIRECEKBN
+           OR    ( SYS-25-KOUIKIRECEKBN
                                        =   "1" OR  "2" OR  "3" )
                CONTINUE
            ELSE
@@ -4377,7 +4380,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                              OR      WRK-HKNJANUM-S (IDYY)
                                                =   SPACE
                        MOVE    "1"                 TO  WRK-SHELL-RECEKBN
-                       IF      SPA-NAI-200501-DISASTER-SYAPRTKBN
+                       IF      SPA-NAI-200501-DISASTER-SYAPRTK
                                                =   "1"
                            MOVE    "9"             TO  WRK-SHELL-SYOKBN
                            PERFORM 45013-SOKATU-SYORI-SEC
@@ -5070,7 +5073,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-T01-JOB-ORCA-UID
                                    TO  WRK-PARAM-ORCA-UID
            MOVE    WRK-PARAM       TO  JOB-PARAM
-      *
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
@@ -5444,7 +5446,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                                    TO  SHELLTBL-ARG15
            MOVE    SPA-NAI-200501-ROUSAIPRTKBN
                                    TO  SHELLTBL-ARG16
-           MOVE    SPA-NAI-200501-FRAME-ROUSAIPRTKBN
+           MOVE    SPA-NAI-200501-FRAME-ROUSAIPRTK
                                    TO  SHELLTBL-ARG17
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

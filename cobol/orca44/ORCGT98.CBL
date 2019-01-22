@@ -51,6 +51,8 @@
       *  04.08.04    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *
+      *  05.00.01    NACL-藤原    19/01/17  Warning 対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -93,7 +95,9 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *****************************************************************
       *    サブプロ用領域
@@ -198,28 +202,27 @@
            INITIALIZE                  SPA-T98-AREA
       *
       *    レセ電ＣＤ−Ｒ出力区分情報取得
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    SPA-NAI-T06-SRYYM   TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    SPA-NAI-T06-SRYYM   TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE   MCPDATA-REC          TO  SYS-200501-REC
+               MOVE   MCPDATA-REC          TO  SYS-25-REC
            ELSE
-               INITIALIZE                  SYS-200501-REC
+               INITIALIZE                  SYS-25-REC
            END-IF
-           IF      SYS-200501-RECEDEN-CDRKBN
+           IF      SYS-25-RECEDEN-CDRKBN
                                        =   SPACE
-               MOVE    "0"                 TO  SYS-200501-RECEDEN-CDRKBN
+               MOVE    "0"                 TO  SYS-25-RECEDEN-CDRKBN
            END-IF 
-           IF      SYS-200501-RECEDEN-DATAKBN
+           IF      SYS-25-RECEDEN-DATAKBN
                                        =   SPACE
-               MOVE    "4"                 TO
-                                           SYS-200501-RECEDEN-DATAKBN
+               MOVE    "4"                 TO  SYS-25-RECEDEN-DATAKBN
            END-IF 
       *
       *    クライアント保存可否情報取得サブ
@@ -233,7 +236,8 @@
                                    =   "F"
                    MOVE    "3"             TO  SPA-GMN-T98-DATAKBNL (1)
                    MOVE    "システム管理設定場所（フロッピィ用）"
-                                       TO  SPA-GMN-T98-DATAKBNMEIL  (1)
+                                           TO
+                                           SPA-GMN-T98-DATAKBNMEIL  (1)
                    MOVE    1               TO  IDX
                END-IF
                ADD     1               TO  IDX
@@ -250,7 +254,7 @@
                                        TO  SPA-GMN-T98-DATAKBNMEIL (IDX)
                MOVE    IDX             TO  SPA-GMN-T98-DATAKBN-MAX
       *
-               IF      SYS-200501-RECEDEN-CDRKBN   =   "1"
+               IF      SYS-25-RECEDEN-CDRKBN   =   "1"
                    ADD     1           TO  IDX
                    MOVE    "6"         TO  SPA-GMN-T98-DATAKBNL    (IDX)
                    MOVE    "クライアント保存（ＣＤ−Ｒ用）"
@@ -287,10 +291,10 @@
            MOVE    SPA-GMN-T98-PRTKBNLST (1)
                                        TO  SPA-GMN-T98-PRTKBN-G
       *
-           MOVE    SYS-200501-RECEDEN-DATAKBN
+           MOVE    SYS-25-RECEDEN-DATAKBN
                                        TO  SPA-GMN-T98-DATAKBN
-           PERFORM 41021-DATAKBN-CHK-SEC                                 
-           IF    ( SYS-200501-RECEDEN-DATAKBN
+           PERFORM 41021-DATAKBN-CHK-SEC
+           IF    ( SYS-25-RECEDEN-DATAKBN
                                        =   "1" OR  "2" )
                MOVE    SPACE           TO  SPA-GMN-T98-DATAKBN-G
            END-IF
