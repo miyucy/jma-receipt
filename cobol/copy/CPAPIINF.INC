@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      * 0500.201811
+      * 0500.201901
       ********************************************************************
        01  APIINF-AREA.
          03  APIINF-DATA.
@@ -78,7 +78,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "患者予約情報取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201804".
+           "0500.201901".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -119,6 +119,16 @@
            "薬剤併用禁忌チェック".
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
+           05  FILLER                  PIC  X(16)      VALUE
+           "orca41".
+           05  FILLER                  PIC  X(32)      VALUE
+           "datacheckv3".
+           05  FILLER                  PIC  X(64)      VALUE
+           SPACE.
+           05  FILLER                  PIC  X(64)      VALUE
+           "データチェック".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201901".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
@@ -930,10 +940,10 @@
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
          03  APIINF-R REDEFINES APIINF-DATA.
-           05  APIINF-OCC              OCCURS 91.
+           05  APIINF-OCC              OCCURS 92.
              07  APIINF-LD             PIC  X(16).
              07  APIINF-ID             PIC  X(32).
              07  APIINF-HAORI-NAME     PIC  X(64).
              07  APIINF-NAME           PIC  X(64).
              07  APIINF-VERSION        PIC  X(16).
-         03  APIINF-MAX                PIC  9(05)      VALUE 91.
+         03  APIINF-MAX                PIC  9(05)      VALUE 92.
