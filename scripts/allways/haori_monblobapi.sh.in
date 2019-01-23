@@ -55,7 +55,7 @@ trap cleanup EXIT
     FILENM="${2}${3}.pdf"
 
     if [ "$2" =  "ORCBSD1" ]; then
-       KARTE_UID=$(echo "${MON_BATCH_GROUPNAME:2}" | xargs )
+       KARTE_UID=$(echo "${MON_BATCH_COMMENT}" | xargs )
        PDF_FILE="${17}_${KARTE_UID}.pdf"
        DATA_FILE="${17}_${KARTE_UID}.zip"
        if  [ -e "${MCP_TEMPDIR}/${FILENM}" ]; then
