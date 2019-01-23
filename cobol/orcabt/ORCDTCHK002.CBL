@@ -46,14 +46,14 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCACCT-KEY
-                                   FILE    STATUS  IS  STS-DCACCT.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック診療行為
            SELECT  DCSRY-FILE      ASSIGN  DTCHKSRYPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSRY-KEY
-                                   FILE    STATUS  IS  STS-DCSRY.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック算定履歴
            SELECT  DCSANTEI-FILE
@@ -61,13 +61,13 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSANTEI-KEY
-                                   FILE    STATUS  IS  STS-DCSANTEI.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *
       *    データチェック中間ファイル（対象患者）
            SELECT  DTCHK003-FILE   ASSIGN  DTCHK003PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-DTCHK003.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（チェック結果）
            SELECT  DTCHK004-FILE
@@ -75,42 +75,42 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK004-KEY
-                                   FILE    STATUS  IS  STS-DTCHK004.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（チェックマスタに存在しない診療行為）
            SELECT  DTCHK008-FILE   ASSIGN  DTCHK008PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK008-KEY
-                                   FILE    STATUS  IS  STS-DTCHK008.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（複数病名登録チェック）
            SELECT  DTCHK009-FILE   ASSIGN  DTCHK009PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK009-KEY
-                                   FILE    STATUS  IS  STS-DTCHK009.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（チェックマスタ２）
            SELECT  DTCHK010-FILE   ASSIGN  DTCHK010PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK010-KEY
-                                   FILE    STATUS  IS  STS-DTCHK010.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（チェック例外マスタ）
            SELECT  DTCHK011-FILE   ASSIGN  DTCHK011PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK011-KEY
-                                   FILE    STATUS  IS  STS-DTCHK011.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（病名）
            SELECT  DTCHK012-FILE   ASSIGN  DTCHK012PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK012-KEY
-                                   FILE    STATUS  IS  STS-DTCHK012.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（算定回数）
            SELECT  DTCHK013-FILE
@@ -118,7 +118,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK013-KEY
-                                   FILE    STATUS  IS  STS-DTCHK013.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（チェックマスタ）
            SELECT  DTCHK018-FILE
@@ -126,7 +126,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK018-KEY
-                                   FILE    STATUS  IS  STS-DTCHK018.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（コメント関連）
            SELECT  DTCHK022-FILE
@@ -134,7 +134,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK022-ISAM-KEY
-                                   FILE    STATUS  IS  STS-DTCHK022.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
@@ -286,20 +286,8 @@
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-DTCHK003                            PIC X(02).
-           03  STS-DTCHK004                            PIC X(02).
-           03  STS-DTCHK008                            PIC X(02).
-           03  STS-DTCHK009                            PIC X(02).
-           03  STS-DTCHK010                            PIC X(02).
-           03  STS-DTCHK011                            PIC X(02).
-           03  STS-DTCHK012                            PIC X(02).
-           03  STS-DTCHK013                            PIC X(02).
-           03  STS-DTCHK018                            PIC X(02).
-           03  STS-DTCHK022                            PIC X(02).
+           03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
-           03  STS-DCACCT                              PIC X(02).
-           03  STS-DCSRY                               PIC X(02).
-           03  STS-DCSANTEI                            PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -2584,6 +2572,7 @@
                     OR   ( FLG-END         NOT =   ZERO )
       *
                MOVE    ZERO        TO  FLG-DATACHECK
+               MOVE    ZERO        TO  FLG-CHKSKIP
       *
       *        患者情報取得処理
                PERFORM 900-PTINF-KEY-SEL-SEC
@@ -8541,6 +8530,8 @@
                    UNTIL ( IDX6    >   TSRYCD-MAX )
                     OR   ( FLG-CHKEND (10)     =   1 )
       *
+               DISPLAY PTNUM-PTNUM ":SRYCD[" TSRYCD-SRYCD (IDX6) "]"
+      *
                IF    ( TSRYCD-SRYCD (IDX6)(1:1)    =   "6" )
       *
       *            相互作用テーブルよりチェック
@@ -13113,9 +13104,11 @@
       *
            MOVE    DTCHK003-PTID       TO  DTCHK004-PTID
            MOVE    ERRPTINF-NAME       TO  DTCHK004-NAME
+           MOVE    ERRPTINF-KANANAME   TO  DTCHK004-KANANAME
            MOVE    DTCHK003-MULHKNKBN  TO  DTCHK004-MULHKNKBN
            MOVE    DTCHK003-HKNKBN     TO  DTCHK004-HKNKBN
            MOVE    ERRPTINF-BIRTHDAY   TO  DTCHK004-BIRTHDAY
+           MOVE    ERRPTINF-SEX        TO  DTCHK004-SEX
            MOVE    TERRINF-CHKKBN      TO  DTCHK004-CHKKBN
            MOVE    TERRINF-SRYCD       TO  DTCHK004-SRYCD
            MOVE    TERRINF-SRYKA       TO  DTCHK004-SRYKA
@@ -14129,6 +14122,7 @@
                MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
                MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+               MOVE    CNT-DTCHK004    TO  JOB-UPDCNT1
                PERFORM 800-ORCSJOB-SEC
       *
                PERFORM 900-DBCOMMIT-SEC
@@ -14736,6 +14730,9 @@
            AT  END
                MOVE    1               TO  FLG-DTCHK003
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1               TO  FLG-DTCHK003
+           END-IF
       *
            IF    ( FLG-DTCHK003        =   ZERO )
                COMPUTE CNT-DTCHK003    =   CNT-DTCHK003    +   1
@@ -15055,6 +15052,9 @@
            AT  END
                MOVE    1               TO  FLG-DTCHK008
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1               TO  FLG-DTCHK008
+           END-IF
       *
            .
        901-DTCHK008-READ-EXT.
@@ -15150,6 +15150,9 @@
                        END-IF
                    END-IF
                END-READ
+               IF    ( STS-COMMON  >   10 )
+                       MOVE    1           TO  FLG-DCACCT
+               END-IF
       *
            END-PERFORM
       *
@@ -15230,6 +15233,9 @@
                        END-IF
                    END-IF
                END-READ
+               IF    ( STS-COMMON  >   10 )
+                   MOVE    1               TO  FLG-DCACCT
+               END-IF
       *
            END-PERFORM
       *
@@ -15284,6 +15290,9 @@
                    END-IF
       *
                END-READ
+               IF    ( STS-COMMON  >   10 )
+                   MOVE    1               TO  FLG-DCSRY
+               END-IF
       *
            END-PERFORM
       *
@@ -15341,6 +15350,9 @@
                    END-IF
       *
                END-READ
+               IF    ( STS-COMMON  >   10 )
+                   MOVE    1               TO  FLG-DCSRY
+               END-IF
       *
            END-PERFORM
       *
@@ -15387,6 +15399,9 @@
                    MOVE    1       TO  FLG-DCSANTEI
                END-IF
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1           TO  FLG-DCSANTEI
+           END-IF
       *
            .
       *
@@ -15435,6 +15450,9 @@
                    MOVE    1       TO  FLG-DTCHK010
                END-IF
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1           TO  FLG-DTCHK010
+           END-IF
       *
            .
        900-DTCHK010-READ-EXT.
@@ -15482,6 +15500,9 @@
                    MOVE    1       TO  FLG-DTCHK010
                END-IF
            END-READ
+           IF    ( STS-COMMON  >   10 )
+                   MOVE    1       TO  FLG-DTCHK010
+           END-IF
       *
            .
        901-DTCHK010-READ-EXT.
@@ -15524,6 +15545,9 @@
                    MOVE    1       TO  FLG-DTCHK011
                END-IF
            END-READ
+           IF    ( STS-COMMON  >   10 )
+                   MOVE    1       TO  FLG-DTCHK011
+           END-IF
       *
            .
        900-DTCHK011-READ-EXT.
@@ -15580,6 +15604,9 @@
                    MOVE    1       TO  FLG-DTCHK013
                END-IF
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1           TO  FLG-DTCHK013
+           END-IF
       *
            .
       *
@@ -15642,6 +15669,9 @@
                    END-IF
       *
                END-READ
+               IF    ( STS-COMMON  >   10 )
+                   MOVE    1           TO  FLG-CHKMST
+               END-IF
       *
            END-PERFORM
       *
@@ -15699,6 +15729,9 @@
       *
                    END-IF
                END-READ
+               IF    ( STS-COMMON  >   10 )
+                   MOVE    1       TO  FLG-DTCHK022
+               END-IF
       *
            END-PERFORM
       *

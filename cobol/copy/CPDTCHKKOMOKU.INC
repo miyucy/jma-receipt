@@ -28,88 +28,163 @@
                "01".
                05                          PIC X(40)   VALUE
                "ÊÝ¸±¼ÔÈÖ¹æ".
+               05                          PIC X(50)   VALUE
+               "InsuranceProvider_Number".
                05                          PIC X(02)   VALUE
                "02".
                05                          PIC X(40)   VALUE
                "ÈïÊÝ¸±¼Ôµ­¹æ¡¦ÈÖ¹æ".
+               05                          PIC X(50)   VALUE
+               "HealthInsuredPerson_Symbol_And_Number".
                05                          PIC X(02)   VALUE
                "03".
                05                          PIC X(40)   VALUE
                "¸øÈñÉéÃ´¼ÔÈÖ¹æ¡¦¼õµë¼ÔÈÖ¹æ".
+               05                          PIC X(50)   VALUE
+               "PublicInsurance".
                05                          PIC X(02)   VALUE
                "04".
                05                          PIC X(40)   VALUE
                "ÊÝ¸±Å¬±þÇ¯Îð".
+               05                          PIC X(50)   VALUE
+               "Age".
                05                          PIC X(02)   VALUE
                "05".
                05                          PIC X(40)   VALUE
                "´µ¼ÔÉÂÌ¾".
+               05                          PIC X(50)   VALUE
+               "Disease".
                05                          PIC X(02)   VALUE
                "06".
                05                          PIC X(40)   VALUE
                "¿ÇÎÅ³«»ÏÆü".
+               05                          PIC X(50)   VALUE
+               "Disease_StartDate".
                05                          PIC X(02)   VALUE
                "07".
                05                          PIC X(40)   VALUE
                "µ¿¤¤ÉÂÌ¾¡¦µÞÀ­ÉÂÌ¾".
+               05                          PIC X(50)   VALUE
+               "Disease_Suspected_And_Disease_Acute".
                05                          PIC X(02)   VALUE
                "08".
                05                          PIC X(40)   VALUE
                "ÌôºÞ¤ÈÉÂÌ¾".
+               05                          PIC X(50)   VALUE
+               "Medicine_With_Disease".
                05                          PIC X(02)   VALUE
                "09".
                05                          PIC X(40)   VALUE
                "¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾".
+               05                          PIC X(50)   VALUE
+               "Medication_With_Disease".
                05                          PIC X(02)   VALUE
                "10".
                05                          PIC X(40)   VALUE
                "ÌôºÞ¤ÈÊ»ÍÑ¶Ø´÷".
+               05                          PIC X(50)   VALUE
+               "Medicine_Interact".
                05                          PIC X(02)   VALUE
                "11".
                05                          PIC X(40)   VALUE
                "¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê".
+               05                          PIC X(50)   VALUE
+               "Medication_Combination".
                05                          PIC X(02)   VALUE
                "12".
                05                          PIC X(40)   VALUE
                "¼ÂÆü¿ô".
+               05                          PIC X(50)   VALUE
+               "Actual_Days".
                05                          PIC X(02)   VALUE
                "13".
                05                          PIC X(40)   VALUE
                "´µ¼Ô»áÌ¾".
+               05                          PIC X(50)   VALUE
+               "WholeName".
                05                          PIC X(02)   VALUE
                "14".
                05                          PIC X(40)   VALUE
                "ÊÝ¸±ÁÈ¹ç¤»Í­¸ú´ü´Ö".
+               05                          PIC X(50)   VALUE
+               "Insurance_ExpiredDate".
                05                          PIC X(02)   VALUE
                "15".
                05                          PIC X(40)   VALUE
                "ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾".
+               05                          PIC X(50)   VALUE
+               "Medicine_Disease_Interact".
                05                          PIC X(02)   VALUE
                "16".
                05                          PIC X(40)   VALUE
                "¿ÇÎÅ¹Ô°Ù¤É¤¦¤·¤Î»»ÄêÏ³¤ì".
+               05                          PIC X(50)   VALUE
+               "Medication_Combination_Leak".
                05                          PIC X(02)   VALUE
                "17".
                05                          PIC X(40)   VALUE
                "ÉÂÌ¾¤ÈÌôºÞ".
+               05                          PIC X(50)   VALUE
+               "Disease_With_Medicine".
                05                          PIC X(02)   VALUE
                "18".
                05                          PIC X(40)   VALUE
                "ÉÂÌ¾¤È¿ÇÎÅ¹Ô°Ù".
+               05                          PIC X(50)   VALUE
+               "Disease_With_Medication".
                05                          PIC X(02)   VALUE
                "19".
                05                          PIC X(40)   VALUE
                "ÌôºÞ¤Î·î¾å¸Â²ó¿ô¡¦ÁíÅêÍ¿ÎÌ".
+               05                          PIC X(50)   VALUE
+               "Medicine_Dosage".
                05                          PIC X(02)   VALUE
                "20".
                05                          PIC X(40)   VALUE
                "¿ÇÎÅ¹Ô°Ù»»Äê²ó¿ô".
+               05                          PIC X(50)   VALUE
+               "Medication_Count".
                05                          PIC X(02)   VALUE
                "21".
                05                          PIC X(40)   VALUE
                "ÁªÂò¼°¥³¥á¥ó¥È".
+               05                          PIC X(50)   VALUE
+               "Selective_Comment".
            03  DTCHKKOMOKU-R   REDEFINES   DTCHKKOMOKU-VAL.
                05  DTCHKKOMOKU-CHKKOMOKU-OCC           OCCURS  21.
-                   07  DTCHKKOMOKU-CHKNUM       PIC X(02).
-                   07  DTCHKKOMOKU-CHKKOMOKU    PIC X(40).
+                   07  DTCHKKOMOKU-CHKNUM      PIC X(02).
+                   07  DTCHKKOMOKU-CHKKOMOKU   PIC X(40).
+                   07  DTCHKKOMOKU-CHKKOMOKUID PIC X(50).
            03  DTCHKKOMOKU-MAX             PIC 9(03)   VALUE   21.
+      *
+       01  DTCHKHOKEN-AREA.
+           03  DTCHKHOKEN-VAL.
+               05  DTCHKHOKEN-SHAHO            PIC X(40)   VALUE
+               "¼ÒÊÝ".
+               05  DTCHKHOKEN-SHAHOID          PIC X(50)   VALUE
+               "Employees_Health_Insurance".
+               05  DTCHKHOKEN-KOKUHO           PIC X(40)   VALUE
+               "¹ñÊÝ".
+               05  DTCHKHOKEN-KOKUHOID         PIC X(50)   VALUE
+               "National_Health_Insurance".
+               05  DTCHKHOKEN-KOKI             PIC X(40)   VALUE
+               "¸å´ü¹âÎð¼Ô".
+               05  DTCHKHOKEN-KOKIID           PIC X(50)   VALUE
+               "Late_Elderly_Health_Insurance".
+               05  DTCHKHOKEN-RSIJBI           PIC X(40)   VALUE
+               "Ï«ºÒ¡¦¼«ÇåÀÕ¡¦Âè»°¼Ô¹Ô°Ù".
+               05  DTCHKHOKEN-RSIJBIID         PIC X(50)   VALUE
+               "Accident_Insurance".
+               05  DTCHKHOKEN-KOGAI            PIC X(40)   VALUE
+               "¸ø³²".
+               05  DTCHKHOKEN-KOGAIID          PIC X(50)   VALUE
+               "Pollution_Insurance".
+               05  DTCHKHOKEN-JIHI             PIC X(40)   VALUE
+               "¼«Èñ".
+               05  DTCHKHOKEN-JIHIID           PIC X(50)   VALUE
+               "Own_Expense".
+           03  DTCHKHOKEN-R    REDEFINES   DTCHKHOKEN-VAL.
+               05  DTCHKHOKEN-CHKHOKEN-OCC             OCCURS  6.
+                   07  DTCHKHOKEN-CHKHOKEN     PIC X(40).
+                   07  DTCHKHOKEN-CHKHOKENID   PIC X(50).
+           03  DTCHKHOKEN-MAX              PIC 9(03)   VALUE   6.

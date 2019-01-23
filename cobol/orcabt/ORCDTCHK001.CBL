@@ -40,11 +40,11 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCACCT-KEY
-                                   FILE    STATUS  IS  STS-DCACCT.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（対象患者情報）
            SELECT  DTCHK003-FILE   ASSIGN  DTCHK003PARA
-                                   FILE    STATUS  IS  STS-DTCHK003
+                                   FILE    STATUS  IS  STS-COMMON
                                    ORGANIZATION    IS  LINE SEQUENTIAL.
       *
       *    エラーファイル
@@ -83,9 +83,8 @@
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-DTCHK003                            PIC X(02).
+           03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
-           03  STS-DCACCT                              PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -628,6 +627,10 @@
                    END-IF
       *
                END-READ
+               IF    ( STS-COMMON  >   10 )
+                   MOVE    1       TO  FLG-DCACCT
+               END-IF
+      *
            END-PERFORM
       *
            .

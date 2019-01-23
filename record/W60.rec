@@ -258,6 +258,13 @@ W60 {
         KGI_INGAITEN {
           numdata number(4);
         };
+        CMB_INGAIPROCKBN {
+          INGAIPROCKBN {
+            textdata varchar(20);
+          };
+          count int;
+            item varchar(20)[5];
+        };
       };
     };
   };

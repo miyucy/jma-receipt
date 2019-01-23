@@ -47,3 +47,8 @@
            03  ORCBSD01-KOUKIPROCKBN   PIC  X(01).
            03  ORCBSD01-CHIKENPROCKBN  PIC  X(01).
            03  ORCBSD01-DAISANPROCKBN  PIC  X(01).
+           03  ORCBSD01-FROM-API       PIC  X(01).
+           03  ORCBSD01-KARTE-UID      PIC  X(36).
+           03  ORCBSD01-ORCA-UID       PIC  X(36).
+           03  ORCBSD01-DATA-ID        PIC  X(36).
+           03  ORCBSD01-PRINT-ID       PIC  X(36).

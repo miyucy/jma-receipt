@@ -36,12 +36,21 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
+      *    パラメータファイル
+           SELECT  DTCHKPRM-FILE   ASSIGN          ASS-DTCHKPRM
+                                   ORGANIZATION    IS  SEQUENTIAL.
+      *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
       *
        DATA                    DIVISION.
        FILE                            SECTION.
+      *    パラメータファイル
+       FD  DTCHKPRM-FILE.
+           COPY    "CPORCBSD01PARA.INC"
+                       REPLACING  //ORCBSD01PARA// BY //DTCHKPRM-REC//
+                                  //ORCBSD01-//    BY //DTCHKPRM-//.
       *
       *    エラーファイル
        FD  DTCHKERR-FILE.
@@ -50,6 +59,11 @@
        WORKING-STORAGE             SECTION.
       *
        01  LNK-TIMEOFDAY       PIC X(100).
+      *
+      *    パラメータファイル名
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLPARA//
+                                   BY         //ASS-DTCHKPRM//.
       *
       *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC".
@@ -260,10 +274,19 @@
            DISPLAY "WRK-PARA-HKNKBN   [" WRK-PARA-HKNKBN "]"
            DISPLAY "WRK-PARA-PTID     [" WRK-PARA-PTID "]"
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  DTCHKERRPARA
+           MOVE       SPACE            TO  ASS-DTCHKPRM
+           INITIALIZE                      ASS-DTCHKPRM
+      *
+           MOVE    SPA-HOSPNUM         TO  ASS-DTCHKPRM-HOSPNUM
+           MOVE    "DTCHKPRM"          TO  ASS-DTCHKPRM-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  ASS-DTCHKPRM-TERMID
+      *
+           INITIALIZE                          SGETTEMP-AREA
+           MOVE    ASS-DTCHKPRM            TO  SGETTEMP-BASENAMES(1)
+           MOVE    RECEERR                 TO  SGETTEMP-BASENAMES(2)
+           CALL    "ORCSGETTEMP"   USING       SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES(1)   TO  ASS-DTCHKPRM
+           MOVE    SGETTEMP-FULLNAMES(2)   TO  DTCHKERRPARA
       *
            OPEN    OUTPUT  DTCHKERR-FILE
            CLOSE   DTCHKERR-FILE
@@ -310,6 +333,11 @@
       *****************************************************************
        2001-DTCHK-PARA-SEC                 SECTION.
       *
+           OPEN    OUTPUT                  DTCHKPRM-FILE
+           MOVE    ORCBSD01PARA        TO  DTCHKPRM-REC
+           WRITE   DTCHKPRM-REC
+           CLOSE   DTCHKPRM-FILE
+      *
            MOVE     SPACE              TO  WRK-ARG
       *
            STRING  LNK-PRTKANRI-RENNUM         DELIMITED   BY  SIZE
@@ -342,44 +370,8 @@
                    ","                         DELIMITED   BY  SIZE
                    RECEERR                     DELIMITED   BY  SIZE
                    ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-IKTKBT             DELIMITED   BY  SIZE
                    ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-SRYYM              DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-NYUGAIKBN          DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-CHKKBN-G           DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-SYAHOPROCKBN       DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-KOKUHOPROCKBN      DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-RSIPROCKBN         DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-JBIPROCKBN         DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-JIHIPROCKBN        DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-INGAIPROCKBN       DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-PRTSRTKBN          DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-PRTPTLSTKBN        DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-SRYYMDKBN          DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-STSRYYMD           DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-EDSRYYMD           DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-KGIPROCKBN         DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-KOUKIPROCKBN       DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-CHIKENPROCKBN      DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
-                   ORCBSD01-DAISANPROCKBN      DELIMITED   BY  SIZE
-                   ","                         DELIMITED   BY  SIZE
+                   "DTCHKPRM"                  DELIMITED   BY  SIZE
            INTO    WRK-ARG
            END-STRING
       *

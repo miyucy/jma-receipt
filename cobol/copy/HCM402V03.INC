@@ -13,3 +13,7 @@
             02  HCM402V03-BIKO  PIC X(20).
             02  HCM402V03-CHKKOMOKU
                     PIC X(200)  OCCURS  2 TIMES.
+            02  HCM402V03-INGAIMSG
+                        PIC X(40).
+            02  HCM402V03-KIKANMSG
+                        PIC X(40).

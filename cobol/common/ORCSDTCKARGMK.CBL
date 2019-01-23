@@ -63,7 +63,8 @@
       *
        01  WRK-AREA.
            03  WRK-SHELLID             PIC X(08).
-           03  WRK-TERMID              PIC 9(16).
+           03  WRK-TERMID.
+               05  WRK-TERMID-NUM      PIC 9(16).
       *
       *    プレビュー用ワーク追加
            03  WRK-SHELL-ARG1.
@@ -115,6 +116,11 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+       01  UIDIO-AREA.
+           03  C-RET                   PIC X(2).
+           03  C-UID                   PIC X(36).
+       01  UIDIO-ST                    PIC 9(2).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -221,7 +227,7 @@
        200-MAIN-SEC                SECTION.
       *
       *    using ptid as termid
-           MOVE    LINK-PTID       TO  WRK-TERMID
+           MOVE    LINK-PTID       TO  WRK-TERMID-NUM
       *
            MOVE    "ORPRVERR"      TO  RECEERR-FILE-ID
            MOVE    WRK-TERMID      TO  RECEERR-TERMID
@@ -255,8 +261,11 @@
            ELSE
                MOVE    2           TO  LNK-PRTKANRI-PRIORITY
            END-IF
-           MOVE    WRK-TERMID      TO  LNK-PRTKANRI-TERMID
-           MOVE    ALL "Z"         TO  LNK-PRTKANRI-TERMID(17:)
+           MOVE    ALL "Z"         TO  LNK-PRTKANRI-TERMID
+           STRING  WRK-TERMID      DELIMITED   BY  SPACE
+                   C-UID           DELIMITED   BY  SPACE
+           INTO    LNK-PRTKANRI-TERMID
+           END-STRING
            MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
            MOVE    SYS-1031-PRTNM (11)
                                    TO  LNK-PRTKANRI-PRTNM
@@ -369,6 +378,19 @@
            EXIT.
            .
       *
+      *****************************************************************
+      *    UID取得処理
+      *****************************************************************
+       800-ORCUIDSET-SEC               SECTION.
+      *
+           INITIALIZE                  UIDIO-AREA
+           CALL    "orcuidset"         USING
+                                       UIDIO-ST
+                                       UIDIO-AREA
+      *
+           .
+       800-ORCUIDSET-EXT.
+           EXIT.
       *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************

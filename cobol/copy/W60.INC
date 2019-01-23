@@ -137,3 +137,8 @@
                 04  W60-ERRA10001KBN-COUNT PIC S9(9)   BINARY.
                 04  W60-ERRA10001KBN-ITEM  PIC X(22)   OCCURS  5.
               03  W60-INGAITEN             PIC S9(4)   OCCURS  7.
+              03  W60-CMB-INGAIPROCKBN.
+                04  W60-INGAIPROCKBN       PIC X(20).
+                04  W60-INGAIPROCKBN-COUNT PIC S9(9)   BINARY.
+                04  W60-INGAIPROCKBN-ITEM  PIC X(20)   OCCURS  5.
+

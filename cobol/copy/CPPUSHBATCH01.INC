@@ -36,3 +36,7 @@
                05  PUSHBA01-END-DATE           PIC X(10).
       *        処理件数
                05  PUSHBA01-OUTPUT-COUNT       PIC X(10).
+      *        処理件数（データ）
+               05  PUSHBA01-NUMBER-OF-RECORDS  PIC X(10).
+      *        処理件数（帳票）
+               05  PUSHBA01-NUMBER-OF-SHEETS   PIC X(10).
