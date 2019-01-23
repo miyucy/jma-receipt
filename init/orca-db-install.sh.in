@@ -7,7 +7,7 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
-TMPDIR=/var/tmp
+TMPDIR=`mktemp -d -p /var/tmp`
 MSTDIR=orca-$(date +%Y%m%d)
 VERSIONFL=${DOCDIR}/version
 
@@ -263,5 +263,5 @@ fi
 
 ECHO_STDERR "全ての処理が完了しました"
 
-rm -r $TMPDIR/$MSTDIR
+trap "rm -r $TMPDIR" EXIT
 exit 0
