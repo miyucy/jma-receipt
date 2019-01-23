@@ -35,12 +35,27 @@
        INPUT-OUTPUT                    SECTION.
        FILE-CONTROL.
       *
-       DATA                            DIVISION.
-       FILE                            SECTION.
+      *    パラメータファイル
+           SELECT  DTCHKPRM-FILE   ASSIGN          ASS-DTCHKPRM
+                                   ORGANIZATION    IS  SEQUENTIAL.
       *
-       WORKING-STORAGE                 SECTION.
+       DATA                        DIVISION.
+       FILE                        SECTION.
+      *
+      *    パラメータファイル
+       FD  DTCHKPRM-FILE.
+           COPY    "CPORCBSD01PARA.INC"
+                       REPLACING  //ORCBSD01PARA// BY //DTCHKPRM-REC//
+                                  //ORCBSD01-//    BY //DTCHKPRM-//.
+      *
+       WORKING-STORAGE             SECTION.
       *
        01  DTCHK-RC                    PIC S9(09).
+      *
+      *    パラメータファイル名
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLPARA//
+                                   BY         //ASS-DTCHKPRM//.
       *
       *    エラーファイルファイル名称領域 
            COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
@@ -52,6 +67,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
+           03  WRK-PARA-BLOBID     PIC X(36).
       *
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
@@ -115,6 +131,10 @@
        100-INIT-SEC                    SECTION.
       *
            INITIALIZE                  SPA-AREA
+                                       ORCBSD01PARA
+      *
+           MOVE       SPACE        TO  ASS-DTCHKPRM
+           INITIALIZE                  ASS-DTCHKPRM
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    LNK-PRTKANRI-RENNUM
@@ -132,91 +152,77 @@
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPNUM
                                                DTCHKERRPARA
-                                               ORCBSD01-IKTKBT
-                                               ORCBSD01-SRYYM
-                                               ORCBSD01-NYUGAIKBN
-                                               ORCBSD01-CHKKBN-G
-                                               ORCBSD01-SYAHOPROCKBN
-                                               ORCBSD01-KOKUHOPROCKBN
-                                               ORCBSD01-RSIPROCKBN
-                                               ORCBSD01-JBIPROCKBN
-                                               ORCBSD01-JIHIPROCKBN
-                                               ORCBSD01-INGAIPROCKBN
-                                               ORCBSD01-PRTSRTKBN
-                                               ORCBSD01-PRTPTLSTKBN
-                                               ORCBSD01-SRYYMDKBN
-                                               ORCBSD01-STSRYYMD
-                                               ORCBSD01-EDSRYYMD
-                                               ORCBSD01-KGIPROCKBN
-                                               ORCBSD01-KOUKIPROCKBN
-                                               ORCBSD01-CHIKENPROCKBN
-                                               ORCBSD01-DAISANPROCKBN
+                                               WRK-PARA-BLOBID
+                                               ASS-DTCHKPRM-FILE-ID
            END-UNSTRING
       *
-           DISPLAY "ORCBSD01-IKTKBT = " ORCBSD01-IKTKBT
-           DISPLAY "ORCBSD01-SRYYM  = " ORCBSD01-SRYYM
-           DISPLAY "ORCBSD01-NYUGAIKBN = " ORCBSD01-NYUGAIKBN
-           DISPLAY "ORCBSD01-CHKKBN-G  = " ORCBSD01-CHKKBN-G
-           DISPLAY "ORCBSD01-SYAHOPROCKBN = " ORCBSD01-SYAHOPROCKBN
-           DISPLAY "ORCBSD01-KOKUHOPROCKBN = " 
-                                           ORCBSD01-KOKUHOPROCKBN
-           DISPLAY "ORCBSD01-RSIPROCKBN = " ORCBSD01-RSIPROCKBN
-           DISPLAY "ORCBSD01-JBIPROCKBN = " ORCBSD01-JBIPROCKBN
-           DISPLAY "ORCBSD01-INGAIPROCKBN = "  ORCBSD01-INGAIPROCKBN
-           DISPLAY "ORCBSD01-PRTSRTKBN = " ORCBSD01-PRTSRTKBN
-           DISPLAY "ORCBSD01-PRTPTLSTKBN = " ORCBSD01-PRTPTLSTKBN 
-           DISPLAY "ORCBSD01-SRYYMDKBN = " ORCBSD01-SRYYMDKBN
-           DISPLAY "ORCBSD01-STSRYYMD = " ORCBSD01-STSRYYMD
-           DISPLAY "ORCBSD01-EDSRYYMD = " ORCBSD01-EDSRYYMD
-           DISPLAY "ORCBSD01-KGIPROCKBN = " ORCBSD01-KGIPROCKBN
-           DISPLAY "ORCBSD01-CHIKENPROCKBN = " ORCBSD01-CHIKENPROCKBN
-           DISPLAY "ORCBSD01-DAISANPROCKBN = " ORCBSD01-DAISANPROCKBN
-           DISPLAY " " 
-           DISPLAY " " 
-      *
-           DISPLAY "WRK-PARA-HOSPNUM = " WRK-PARA-HOSPNUM
-           DISPLAY "WRK-PARA-JOBID   = " WRK-PARA-JOBID
-           DISPLAY "WRK-PARA-SHELLID = " WRK-PARA-SHELLID
-      *    IF      LNK-PRTKANRI-TBL-KEY  =  "RECEPTX"
-      *    MOVE    "RECEPTX"           TO  WRK-PARA-SHELLID
-      *    END-IF
-           DISPLAY "LNK-PRTKANRI-RENNUM       = " LNK-PRTKANRI-RENNUM
-           DISPLAY "LNK-PRTKANRI-TBL-KEY      = " LNK-PRTKANRI-TBL-KEY
-           DISPLAY "LNK-PRTKANRI-TBL-GROUP    = " LNK-PRTKANRI-TBL-GROUP
-           DISPLAY "LNK-PRTKANRI-SHORI-RENNUM = " 
-                                              LNK-PRTKANRI-SHORI-RENNUM
-           DISPLAY "LNK-PRTKANRI-SRYYM        = " LNK-PRTKANRI-SRYYM
-           DISPLAY "LNK-PRTKANRI-SKYYMD       = " LNK-PRTKANRI-SKYYMD
-           DISPLAY "LNK-PRTKANRI-SHELLID      = " LNK-PRTKANRI-SHELLID
-           DISPLAY "LNK-PRTKANRI-PRIORITY     = " LNK-PRTKANRI-PRIORITY
-           DISPLAY "LNK-PRTKANRI-TERMID       = " LNK-PRTKANRI-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      * take for debug start
-      *    MOVE    01                  TO  SPA-HOSPNUM
-      *    MOVE    "01"                TO  WRK-PARA-HOSPNUM
-      *    MOVE    "2"                 TO  ORCBSD01-IKTKBT
-      *    MOVE    "200903"            TO  ORCBSD01-SRYYM
-      *    MOVE    "2"                 TO  ORCBSD01-NYUGAIKBN
-      *    MOVE    "222222222222222222"
-      *                                TO  ORCBSD01-CHKKBN-G
-      *    MOVE    "1"                 TO  ORCBSD01-SYAHOPROCKBN
-      *    MOVE    "1"                 TO  ORCBSD01-KOKUHOPROCKBN
-      *    MOVE    "1"                 TO  ORCBSD01-RSIPROCKBN
-      *    MOVE    "0"                 TO  ORCBSD01-JBIPROCKBN
-      *    MOVE    "2"                 TO  ORCBSD01-PRTSRTKBN
-      *    MOVE    "2"                 TO  ORCBSD01-PRTPTLSTKBN
-      *    MOVE    "1"                 TO  ORCBSD01-KGIPROCKBN
-      *    MOVE    "1"                 TO  ORCBSD01-KOUKIPROCKBN
-      * take for debug end
       *
            IF      LNK-PRTKANRI-TBL-KEY  NOT = "RECEPTX"
                    PERFORM 100-DBOPEN-SEC
            END-IF
       *
+           MOVE    SPA-HOSPNUM         TO  ASS-DTCHKPRM-HOSPNUM
+           MOVE    LNK-PRTKANRI-TERMID TO  ASS-DTCHKPRM-TERMID
+      *
            INITIALIZE                      SGETTEMP-AREA
-           MOVE    DTCHKERRPARA        TO  SGETTEMP-BASENAME
+           MOVE    ASS-DTCHKPRM        TO  SGETTEMP-BASENAMES (1)
+           MOVE    DTCHKERRPARA        TO  SGETTEMP-BASENAMES (2)
            CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  DTCHKERRPARA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                       TO  ASS-DTCHKPRM
+           MOVE    SGETTEMP-FULLNAMES (2)
+                                       TO  DTCHKERRPARA
+      *
+           OPEN    INPUT                   DTCHKPRM-FILE
+           READ    DTCHKPRM-FILE
+           END-READ
+           MOVE    DTCHKPRM-REC        TO  ORCBSD01PARA
+           CLOSE   DTCHKPRM-FILE
+      *
+      D    DISPLAY "LNK-PRTKANRI-RENNUM[" LNK-PRTKANRI-RENNUM "]"
+      D    DISPLAY "LNK-PRTKANRI-TBL-KEY[" LNK-PRTKANRI-TBL-KEY "]"
+      D    DISPLAY "LNK-PRTKANRI-TBL-GROUP[" 
+      D                                 LNK-PRTKANRI-TBL-GROUP "]"
+      D    DISPLAY "LNK-PRTKANRI-SHORI-RENNUM["
+      D                                 LNK-PRTKANRI-SHORI-RENNUM "]"
+      D    DISPLAY "LNK-PRTKANRI-SRYYM[" LNK-PRTKANRI-SRYYM "]"
+      D    DISPLAY "LNK-PRTKANRI-SKYYMD[" LNK-PRTKANRI-SKYYMD "]"
+      D    DISPLAY "LNK-PRTKANRI-SHELLID[" LNK-PRTKANRI-SHELLID "]"
+      D    DISPLAY "LNK-PRTKANRI-PRIORITY[" LNK-PRTKANRI-PRIORITY "]"
+      D    DISPLAY "LNK-PRTKANRI-TERMID[" LNK-PRTKANRI-TERMID "]"
+      D    DISPLAY "LNK-PRTKANRI-OPID[" LNK-PRTKANRI-OPID "]"
+      D    DISPLAY "LNK-PRTKANRI-PRTNM[" LNK-PRTKANRI-PRTNM "]"
+      D    DISPLAY "WRK-PARA-JOBID[" WRK-PARA-JOBID "]"
+      D    DISPLAY "WRK-PARA-SHELLID[" WRK-PARA-SHELLID "]"
+      D    DISPLAY "WRK-PARA-HOSPNUM[" WRK-PARA-HOSPNUM "]"
+      D    DISPLAY "DTCHKERRPARA[" DTCHKERRPARA "]"
+      D    DISPLAY "WRK-PARA-BLOBID[" WRK-PARA-BLOBID "]"
+      D    DISPLAY "ASS-DTCHKPRM-FILE-ID[" ASS-DTCHKPRM-FILE-ID "]"
+      D    DISPLAY "ORCBSD01-IKTKBT[" ORCBSD01-IKTKBT "]"
+      D    DISPLAY "ORCBSD01-SRYYM[" ORCBSD01-SRYYM "]"
+      D    DISPLAY "ORCBSD01-NYUGAIKBN[" ORCBSD01-NYUGAIKBN "]"
+      D    DISPLAY "ORCBSD01-CHKKBN-G[" ORCBSD01-CHKKBN-G "]"
+      D    DISPLAY "ORCBSD01-SYAHOPROCKBN[" ORCBSD01-SYAHOPROCKBN "]"
+      D    DISPLAY "ORCBSD01-KOKUHOPROCKBN[" ORCBSD01-KOKUHOPROCKBN "]"
+      D    DISPLAY "ORCBSD01-RSIPROCKBN[" ORCBSD01-RSIPROCKBN "]"
+      D    DISPLAY "ORCBSD01-JBIPROCKBN[" ORCBSD01-JBIPROCKBN "]"
+      D    DISPLAY "ORCBSD01-JIHIPROCKBN[" ORCBSD01-JIHIPROCKBN "]"
+      D    DISPLAY "ORCBSD01-INGAIPROCKBN[" ORCBSD01-INGAIPROCKBN "]"
+      D    DISPLAY "ORCBSD01-PRTSRTKBN[" ORCBSD01-PRTSRTKBN "]"
+      D    DISPLAY "ORCBSD01-PRTPTLSTKBN[" ORCBSD01-PRTPTLSTKBN "]"
+      D    DISPLAY "ORCBSD01-SRYYMDKBN[" ORCBSD01-SRYYMDKBN "]"
+      D    DISPLAY "ORCBSD01-STSRYYMD[" ORCBSD01-STSRYYMD "]"
+      D    DISPLAY "ORCBSD01-EDSRYYMD[" ORCBSD01-EDSRYYMD "]"
+      D    DISPLAY "ORCBSD01-KGIPROCKBN[" ORCBSD01-KGIPROCKBN "]"
+      D    DISPLAY "ORCBSD01-KOUKIPROCKBN[" ORCBSD01-KOUKIPROCKBN "]"
+      D    DISPLAY "ORCBSD01-CHIKENPROCKBN[" ORCBSD01-CHIKENPROCKBN "]"
+      D    DISPLAY "ORCBSD01-DAISANPROCKBN[" ORCBSD01-DAISANPROCKBN "]"
+      D    DISPLAY "ORCBSD01-FROM-API[" ORCBSD01-FROM-API "]"
+      D    DISPLAY "ORCBSD01-KARTE-UID[" ORCBSD01-KARTE-UID "]"
+      D    DISPLAY "ORCBSD01-ORCA-UID[" ORCBSD01-ORCA-UID "]"
+      D    DISPLAY "ORCBSD01-DATA-ID[" ORCBSD01-DATA-ID "]"
+      D    DISPLAY "ORCBSD01-PRINT-ID[" ORCBSD01-PRINT-ID "]"
       *
            .
        100-INIT-EXT.
@@ -320,6 +326,10 @@
            END-IF
       *
            IF    ( DTCHK-RC            =   ZERO )
+               IF    ( LNK-PRTKANRI-TBL-KEY    =  "RECEPTX" )
+                OR   ( ORCBSD01-FROM-API       =  "1" )
+                   CONTINUE
+               ELSE
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK010"
                    CALL    "ORCDTCHK010"       USING
@@ -329,6 +339,7 @@
                                                ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK001"
+               END-IF
            END-IF
       *
            IF    ( DTCHK-RC            =   ZERO )

@@ -141,6 +141,10 @@
                    07  SPA-GMN-SRYKAISUWRNKBN    PIC X(01).
                    07  SPA-GMN-SRYKAISUWRNKBNFL  PIC X(01).
                    07  SPA-GMN-SRYKAISUWRNKBNMEI PIC X(20).
+               05  SPA-GMN-INGAIPROCKBN-G.
+                   07  SPA-GMN-INGAIPROCKBN      PIC X(01).
+                   07  SPA-GMN-INGAIPROCKBNFL    PIC X(01).
+                   07  SPA-GMN-INGAIPROCKBNMEI   PIC X(20).
                05  SPA-GMN-REIGAICHKKBN-G.
                    07  SPA-GMN-REIGAICHKKBN    PIC X(01).
                    07  SPA-GMN-REIGAICHKKBNFL  PIC X(01).
@@ -299,6 +303,12 @@
                        09  SPA-GMN-SRYKAISUWRNKBNL   PIC X(01).
                        09  SPA-GMN-SRYKAISUWRNKBNFLL PIC X(01).
                        09  SPA-GMN-SRYKAISUWRNKBNMEIL PIC X(20).
+               05  SPA-GMN-INGAIPROCKBNLST-G.
+                   07  SPA-GMN-INGAIPROCKBN-MAX     PIC 9(03).
+                   07  SPA-GMN-INGAIPROCKBNLST      OCCURS   3.
+                       09  SPA-GMN-INGAIPROCKBNL    PIC X(01).
+                       09  SPA-GMN-INGAIPROCKBNFLL  PIC X(01).
+                       09  SPA-GMN-INGAIPROCKBNMEIL PIC X(18).
                05  SPA-GMN-REIGAICHKKBNLST-G.
                    07  SPA-GMN-REIGAICHKKBN-MAX    PIC 9(03).
                    07  SPA-GMN-REIGAICHKKBNLST     OCCURS   2.
@@ -720,6 +730,15 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRYKAISUWRNKBN-G
            END-IF
       *
+           MOVE    SPA-GMN-INGAIPROCKBN TO  WRK-CMB-CD
+           PERFORM 4200-INGAIPROCKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-INGAIPROCKBNLST (2)
+                                       TO  SPA-GMN-INGAIPROCKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-INGAIPROCKBN-G
+           END-IF
+      *
            MOVE    SPA-GMN-ERR990009KBN TO  WRK-CMB-CD
            PERFORM 4200-ERR990009KBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
@@ -870,6 +889,9 @@
       *
                MOVE    SYS-1101-SRYKAISUWRNKBN
                                        TO  SPA-GMN-SRYKAISUWRNKBN
+      *
+               MOVE    SYS-1101-INGAIPROCKBN
+                                       TO  SPA-GMN-INGAIPROCKBN
       *
                MOVE    SYS-1101-REIGAICHKKBN
                                        TO  SPA-GMN-REIGAICHKKBN
@@ -1028,6 +1050,9 @@
       *
       *    点数マスタ警告エラーコンボ設定処理
            PERFORM 3101-SRYKAISUWRNKBNLST-SEC
+      *
+      *    院外処方の処理コンボ設定処理
+           PERFORM 3101-INGAIPROCKBNLST-SEC
       *
       *    その他のチェックエラーコンボ設定処理
            PERFORM 3101-ERR990009KBNLST-SEC
@@ -1536,6 +1561,28 @@
        3101-SRYKAISUWRNKBNLST-EXT.
            EXIT.
       *****************************************************************
+      *    院外処方の処理項目コンボ編集処理
+      *****************************************************************
+       3101-INGAIPROCKBNLST-SEC    SECTION.
+      *
+           INITIALIZE                  SPA-GMN-INGAIPROCKBNLST-G
+           MOVE    3               TO  SPA-GMN-INGAIPROCKBN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-INGAIPROCKBNL    (1)
+           MOVE    "含まない"      TO  SPA-GMN-INGAIPROCKBNMEIL (1)
+           MOVE    "1"             TO  SPA-GMN-INGAIPROCKBNL    (2)
+           MOVE    "院外処方を含む"
+                                   TO  SPA-GMN-INGAIPROCKBNMEIL (2)
+           MOVE    "2"             TO  SPA-GMN-INGAIPROCKBNL    (3)
+           MOVE    "院外処方のみ"  TO  SPA-GMN-INGAIPROCKBNMEIL (3)
+      *
+           MOVE    SPA-GMN-INGAIPROCKBNLST  (2)
+                                   TO  SPA-GMN-INGAIPROCKBN-G
+      *
+           .
+       3101-INGAIPROCKBNLST-EXT.
+           EXIT.
+      *****************************************************************
       *    その他エラーコンボ設定処理
       *****************************************************************
        3101-ERR990009KBNLST-SEC           SECTION.
@@ -1835,6 +1882,7 @@
            MOVE    W60-SRYMATERKKBN    TO  SPA-GMN-SRYMATERKKBN-G
            MOVE    W60-SRYKAISUMSTKBN  TO  SPA-GMN-SRYKAISUMSTKBN-G
            MOVE    W60-SRYKAISUWRNKBN  TO  SPA-GMN-SRYKAISUWRNKBN-G
+           MOVE    W60-INGAIPROCKBN    TO  SPA-GMN-INGAIPROCKBN-G
            MOVE    W60-ERR990009KBN    TO  SPA-GMN-ERR990009KBN-G
            MOVE    W60-ERRA10001KBN    TO  SPA-GMN-ERRA10001KBN-G
            PERFORM VARYING IDX0    FROM    1   BY  1
@@ -1951,6 +1999,10 @@
       *
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-SRYKAISUWRNKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-INGAIPROCKBN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
@@ -2371,6 +2423,24 @@
            .
       *
        4101-SRYKAISUWRNKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    院外処方の処理チェック処理
+      *****************************************************************
+       4101-INGAIPROCKBN-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-INGAIPROCKBN TO  WRK-CMB-CD
+           PERFORM 4200-INGAIPROCKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-INGAIPROCKBNLST (2)
+                                   TO  SPA-GMN-INGAIPROCKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-INGAIPROCKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-INGAIPROCKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    その他エラー区分チェック処理
@@ -2967,6 +3037,30 @@
        4200-SRYKAISUWRNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    院外処方の処理コンボチェック処理
+      *****************************************************************
+       4200-INGAIPROCKBNLST-CHK-SEC  SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-INGAIPROCKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-INGAIPROCKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-INGAIPROCKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-INGAIPROCKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    その他エラー区分コンボチェック処理
       *****************************************************************
        4200-ERR990009KBNLST-CHK-SEC     SECTION.
@@ -3409,6 +3503,8 @@
            MOVE    SPA-GMN-SRYKAISUMSTKBN TO SYS-1101-SRYKAISUMSTKBN
       *
            MOVE    SPA-GMN-SRYKAISUWRNKBN TO SYS-1101-SRYKAISUWRNKBN
+      *
+           MOVE    SPA-GMN-INGAIPROCKBN TO SYS-1101-INGAIPROCKBN
       *
            MOVE    SPA-GMN-SYA-INGAITEN
                                        TO  SYS-1101-SYA-INGAITEN
@@ -3857,6 +3953,18 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-INGAIPROCKBN-G   TO  W60-INGAIPROCKBN
+      *
+           MOVE    SPA-GMN-INGAIPROCKBN-MAX
+                                   TO  W60-INGAIPROCKBN-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-INGAIPROCKBN-MAX )
+      *
+               MOVE    SPA-GMN-INGAIPROCKBNLST (IDX0)
+                                   TO  W60-INGAIPROCKBN-ITEM (IDX0)
+      *
+           END-PERFORM
+      *
            MOVE    SPA-GMN-ERR990009KBN-G   TO  W60-ERR990009KBN
       *
            MOVE    SPA-GMN-ERR990009KBN-MAX
@@ -4060,6 +4168,9 @@
                MOVE    "SRYHEIWRNKBN"   TO  MCP-WIDGET
            WHEN    218
                MOVE    "SRYMATERKKBN"   TO  MCP-WIDGET
+           WHEN    219
+               MOVE    "INGAIPROCKBN"
+                                       TO  MCP-WIDGET
            WHEN    908
                MOVE    "B08"           TO  MCP-WIDGET
            WHEN    912
@@ -4129,6 +4240,8 @@
            WHEN    "SRYKAISUMSTKBN"
                MOVE    214         TO  SPA-GMN-CUR
            WHEN    "SRYKAISUWRNKBN"
+               MOVE    219         TO  SPA-GMN-CUR
+           WHEN    "INGAIPROCKBN"
                MOVE    201         TO  SPA-GMN-CUR
            WHEN    "ERR990009KBN"
                MOVE    202         TO  SPA-GMN-CUR

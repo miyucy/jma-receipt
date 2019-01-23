@@ -65,6 +65,8 @@
            03  DTCHK004-PTID          PIC 9(10).
       *氏名
            03  DTCHK004-NAME          PIC X(100).
+      *カナ氏名
+           03  DTCHK004-KANANAME      PIC X(100).
       *
       *複数保険区分
            03  DTCHK004-MULHKNKBN     PIC  X(01).
@@ -77,6 +79,9 @@
       *
       *生年月日
            03  DTCHK004-BIRTHDAY      PIC  X(08).
+      *
+      *性別
+           03  DTCHK004-SEX           PIC  X(01).
       *
       *エラーコード
            03  DTCHK004-ERRCD         PIC  X(06).

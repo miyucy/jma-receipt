@@ -38,7 +38,7 @@
       *    データチェック中間ファイル（受診患者）
            SELECT  DTCHK002-FILE   ASSIGN  DTCHK002PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-DTCHK002.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック診療会計
            SELECT  DCACCT-FILE
@@ -46,7 +46,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCACCT-KEY
-                                   FILE    STATUS  IS  STS-DCACCT.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック診療行為
            SELECT  DCSRY-FILE
@@ -54,7 +54,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSRY-KEY
-                                   FILE    STATUS  IS  STS-DCSRY.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
@@ -99,10 +99,8 @@
       *
       *    フラグ領域
        01  STS-AREA.
+           03  STS-COMMON                  PIC X(02).
            03  STS-DTCHKERR                PIC X(02).
-           03  STS-DTCHK002                PIC X(02).
-           03  STS-DCACCT                  PIC X(02).
-           03  STS-DCSRY                   PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
@@ -1350,6 +1348,9 @@
            AT  END
                MOVE    1           TO  FLG-DTCHK002
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1           TO  FLG-DTCHK002
+           END-IF
       *
            .
        900-DTCHK002-READ-EXT.

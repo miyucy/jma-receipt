@@ -14,6 +14,10 @@ push_batch01 {
 		End_Date	varchar(10);
 #---> 処理件数
 		Output_Count	varchar(10);
+#---> 処理件数（データ）
+		All_Number_Of_Records  varchar(10);
+#---> 処理件数（帳票）
+		All_Number_Of_Sheets   varchar(10);
 	};
 };
 

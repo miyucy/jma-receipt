@@ -42,7 +42,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK004-KEY
-                                   FILE    STATUS  IS  STS-DTCHK004.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
@@ -76,7 +76,7 @@
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-DTCHK004                            PIC X(02).
+           03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
       *
        01  FLG-AREA.
@@ -163,6 +163,8 @@
            03  WRK-IDX-MESG                            PIC 9(05).
            03  WRK-SHO                                 PIC 9(05).
            03  WRK-AMARI                               PIC 9(05).
+           03  WRK-STDD-Z9                             PIC Z9.
+           03  WRK-EDDD-Z9                             PIC Z9.
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -320,7 +322,7 @@
            PERFORM 1001-INIT-VAL-SET-SEC
       *
            OPEN    INPUT               DTCHK004-FILE
-           DISPLAY "007 file open st = " STS-DTCHK004
+           DISPLAY "007 file open st = " STS-COMMON
       *
            .
        100-INIT-EXT.
@@ -600,6 +602,10 @@
                MOVE    "その他"            TO  HCM402-NAME
            END-IF
       *
+           PERFORM 2101-KIKANMSG-HEN-SEC
+      *
+           PERFORM 2101-INGAIMSG-HEN-SEC
+      *
            PERFORM 2101-CHKKOMOKU-HEN-SEC
       *
            IF    ( DTCHK004-ERRSBT     =   "0" )
@@ -609,6 +615,57 @@
       *
            .
        210-HEAD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療日指定編集処理
+      *****************************************************************
+       2101-KIKANMSG-HEN-SEC           SECTION.
+      *
+           IF    ( ORCBSD01-SRYYMDKBN  =   "1" )
+               MOVE    SPACE               TO  WRK-MAE-INPUT
+               MOVE    ORCBSD01-STSRYYMD   TO  WRK-STDD-Z9
+               MOVE    ORCBSD01-EDSRYYMD   TO  WRK-EDDD-Z9
+               IF    ( ORCBSD01-STSRYYMD   =   ORCBSD01-EDSRYYMD )
+                   STRING  "診療日指定："      DELIMITED BY SIZE
+                           WRK-STDD-Z9         DELIMITED BY SIZE
+                           "日"                DELIMITED BY SIZE
+                   INTO    WRK-MAE-INPUT
+                   END-STRING
+               ELSE
+                   STRING  "診療日指定："      DELIMITED BY SIZE
+                           WRK-STDD-Z9         DELIMITED BY SIZE
+                           "日〜"              DELIMITED BY SIZE
+                           WRK-EDDD-Z9         DELIMITED BY SIZE
+                           "日"                DELIMITED BY SIZE
+                   INTO    WRK-MAE-INPUT
+                   END-STRING
+               END-IF
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT       TO  HCM402-KIKANMSG
+           END-IF
+      *
+           .
+       2101-KIKANMSG-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    院外処方の処理編集処理
+      *****************************************************************
+       2101-INGAIMSG-HEN-SEC           SECTION.
+      *
+           EVALUATE    ORCBSD01-INGAIPROCKBN
+           WHEN    "0"
+               MOVE    "院外処方の処理：含まない"
+                                       TO  HCM402-INGAIMSG
+           WHEN    "1"
+               MOVE    "院外処方の処理：院外処方を含む"
+                                       TO  HCM402-INGAIMSG
+           WHEN    "2"
+               MOVE    "院外処方の処理：院外処方のみ"
+                                       TO  HCM402-INGAIMSG
+           END-EVALUATE
+      *
+           .
+       2101-INGAIMSG-HEN-EXT.
            EXIT.
       *****************************************************************
       *    確認項目編集処理
@@ -1131,6 +1188,9 @@
            AT  END
                MOVE    1               TO  FLG-DTCHK004
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1               TO  FLG-DTCHK004
+           END-IF
       *
            IF    ( FLG-DTCHK004        =   ZERO )
                MOVE    DTCHK004-PTID   TO  KEY-N-PTID

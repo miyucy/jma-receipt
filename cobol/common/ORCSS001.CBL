@@ -553,11 +553,16 @@ grpsys     COPY  "COMMON-SPA".
                    MOVE    1               TO  SS001-KOUKI-FLG
                                                             (IDX-NYUGAI)
                WHEN    OTHER
-                   IF    ( COMB-HKNNUM (1:2)   =   "98" )
+                   EVALUATE    COMB-HKNNUM (1:2)
+                   WHEN    "90"
+                   WHEN    "91"
+                       MOVE    1           TO  SS001-CHIKEN-FLG
+                                                            (IDX-NYUGAI)
+                   WHEN    "98"
                        MOVE    1           TO  SS001-JHI-FLG(IDX-NYUGAI)
-                   ELSE
+                   WHEN    OTHER
                        MOVE    1           TO  SS001-SYA-FLG(IDX-NYUGAI)
-                   END-IF
+                   END-EVALUATE
                END-EVALUATE
            END-IF
       *
@@ -647,13 +652,18 @@ grpsys     COPY  "COMMON-SPA".
                        MOVE    1       TO  SS001-SRYKA-KOUKI-FLG
                                                   (IDX-SRYKA IDX-NYUGAI)
                    WHEN    OTHER
-                       IF    ( COMB-HKNNUM (1:2)   =   "98" )
+                       EVALUATE    COMB-HKNNUM (1:2)
+                       WHEN    "90"
+                       WHEN    "91"
+                           MOVE    1   TO  SS001-SRYKA-CHIKEN-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                       WHEN    "98"
                            MOVE    1   TO  SS001-SRYKA-JHI-FLG
                                                   (IDX-SRYKA IDX-NYUGAI)
-                       ELSE
+                       WHEN    OTHER
                            MOVE    1   TO  SS001-SRYKA-SYA-FLG
                                                   (IDX-SRYKA IDX-NYUGAI)
-                       END-IF
+                       END-EVALUATE
                    END-EVALUATE
                END-IF
            END-IF

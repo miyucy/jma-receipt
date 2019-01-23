@@ -59,4 +59,7 @@
            03  SPA-DID1-AREA. 
                05  SPA-DID1-FLG            PIC  X(02).
                05  SPA-D99-FLG             PIC  X(02).
+           03  SPA-D01-UPYMD               PIC  X(08).
+           03  SPA-D01-UPHMS               PIC  X(08).
+           03  SPA-D01-ERRMSG              PIC  X(100).
       *
