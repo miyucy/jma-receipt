@@ -39,9 +39,9 @@ db "xml2" {
  xml_data_checkv3res;
 };
 
-#@monblob@db "monblob" {
-#@monblob@ monblob;
-#@monblob@};
+db "monblob" {
+ monblob;
+};
 
 db	{
 	tbl_sryacct_main;
