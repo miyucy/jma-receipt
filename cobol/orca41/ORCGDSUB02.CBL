@@ -297,7 +297,7 @@
            MOVE    "orcbsd01.sh"       TO  SHELLTBL-NAME
       *
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
-           MOVE    ORCBSD01-KARTE-UID  TO  SHELLTBL-GROUPNAME-FILLER
+           MOVE    ORCBSD01-KARTE-UID  TO  SHELLTBL-COMMENT
            MOVE    CONST-JOBID         TO  SHELLTBL-JOBID
            MOVE    CONST-SHELLID       TO  SHELLTBL-SHELLID
       *
@@ -373,7 +373,7 @@
       *        ファイルデイレクトリ位置指定
                MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
-               MOVE    ORCBSD01-KARTE-UID  TO  SHELLTBL-GROUPNAME-FILLER
+               MOVE    ORCBSD01-KARTE-UID  TO  SHELLTBL-COMMENT
                MOVE    CONST-JOBID         TO  SHELLTBL-JOBID
                MOVE    CONST-SHELLID       TO  SHELLTBL-SHELLID
                MOVE    SPACE               TO  LNK-PRTKANRI-AREA
@@ -522,7 +522,7 @@
            MOVE    "haori_monblobapi.sh"
                                        TO  SHELLTBL-NAME
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
-           MOVE    ORCBSD01-KARTE-UID  TO  SHELLTBL-GROUPNAME-FILLER
+           MOVE    ORCBSD01-KARTE-UID  TO  SHELLTBL-COMMENT
            MOVE    CONST-JOBID         TO  SHELLTBL-JOBID
            MOVE    CONST-SHELLID       TO  SHELLTBL-SHELLID
       *

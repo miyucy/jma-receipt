@@ -286,11 +286,13 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 2001-KIKAN-CHK-SEC
+               PERFORM 2001-NYUGAIKBN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 2001-NYUGAIKBN-CHK-SEC
+               IF    ( ORCBSD01-NYUGAIKBN  =   "2" )
+                   PERFORM 2001-KIKAN-CHK-SEC
+               END-IF
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -393,6 +395,8 @@
                        STRING  "処理中です【"  DELIMITED  BY  SIZE
                                JOB-SHELLMSG    DELIMITED  BY  SPACE
                                "】"            DELIMITED  BY  SIZE
+                               FUNCTION TRIM (JOB-YOBI)
+                                               DELIMITED  BY  SIZE
                        INTO    SPA-D01-ERRMSG
                        END-STRING
                    END-IF
