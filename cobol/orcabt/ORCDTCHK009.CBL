@@ -309,7 +309,11 @@
       *
            INITIALIZE                  CHK004-REC
            MOVE    "2001"          TO  CHK004-KANRICD
-           MOVE    "1%"            TO  CHK004-KBNCD
+           IF    ( ORCBSD01-FROM-API   =   "1" )
+               MOVE    "A%"        TO  CHK004-KBNCD
+           ELSE
+               MOVE    "1%"        TO  CHK004-KBNCD
+           END-IF
            MOVE    WRK-SYMD        TO  CHK004-STYUKYMD
                                        CHK004-EDYUKYMD
            PERFORM 900-CHK004-KEY7-SEL-SEC

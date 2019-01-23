@@ -232,6 +232,7 @@
            INITIALIZE                  JOBKANRI-REC
            EVALUATE    WRK-PARA-EVENT
                WHEN    "temp_medical_add"
+               WHEN    "data_check"
                    MOVE    2               TO  JOB-JOBID
                WHEN    "statistics_form(Daily)"
                WHEN    "statistics_form(Monthly)"
@@ -329,6 +330,36 @@
                        END-IF
                        MOVE    JOB-UPDCNT  TO  WRK-CNT
                        MOVE    WRK-CNT-X   TO  PUSHBA01-OUTPUT-COUNT
+                   WHEN    "data_check"
+                       MOVE    LNK-PRTKANRI-SRYYM
+                                           TO  WRK-SYMD
+                       PERFORM 801-DAYHEN01-SEC
+                       MOVE    WRK-HEN-DATE (1:7)
+                                           TO  PUSHBA01-PERFORM-MONTH
+                       MOVE    JOB-UPDCNT  TO  WRK-CNT
+                       MOVE    WRK-CNT-X   TO  PUSHBA01-NUMBER-OF-SHEETS
+      *
+                       MOVE    "CHK"       TO  SJOBKANRI-MODE
+                       INITIALIZE              JOBKANRI-REC
+                       MOVE    1           TO  JOB-JOBID
+                       MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                       MOVE    SPA-HOSPNUM TO  JOB-HOSPNUM
+                       CALL    "ORCSJOB"       USING
+                                               ORCSJOBKANRIAREA
+                                               JOBKANRI-REC
+                                               SPA-AREA
+                       MOVE    JOB-PARAM   TO  WRK-PARAM
+                       IF    ( SJOBKANRI-RETURN
+                                            =   ZERO  )
+                       AND   ( WRK-PARAM-KARTE-UID
+                                        NOT =   SPACE )
+                           MOVE    JOB-UPDCNT1
+                                        TO  WRK-CNT
+                           MOVE    WRK-CNT-X
+                                        TO  PUSHBA01-NUMBER-OF-RECORDS
+                       END-IF
+      *
                END-EVALUATE
       *??
              display "push=" PUSHBA01-REC "#"

@@ -333,6 +333,7 @@ db "xml2" {
  xml_patient_disease_all;
  xml_patient_medical_all;
  xml_address_masterlst;
+ xml_data_check;
 };
 
 #include "orcadb.inc"

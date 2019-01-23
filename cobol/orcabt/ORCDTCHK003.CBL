@@ -42,7 +42,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK004-KEY
-                                   FILE    STATUS  IS  STS-DTCHK004.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
@@ -61,6 +61,8 @@
       *
        WORKING-STORAGE                 SECTION.
       *
+           COPY    "CPDC.INC".
+      *
            COPY    "HCM401V05.INC"
                                    REPLACING  //HCM401V05//
                                    BY         //HCM401//.
@@ -76,7 +78,7 @@
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-DTCHK004                            PIC X(02).
+           03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
       *
        01  FLG-AREA.
@@ -96,15 +98,27 @@
            03  CNT-RENBAN                              PIC 9(06).
            03  CNT-HKNINFEDIT                          PIC 9(06).
            03  CNT-ETC                                 PIC 9(06).
+           03  CNT-XMLCOUNT                            PIC 9(06).
       *
        01  IDX-AREA.
            03  IDX0                                    PIC 9(05). 
            03  IDX1                                    PIC 9(05). 
+           03  IDXA                                    PIC 9(05). 
+           03  IDXB                                    PIC 9(05). 
            03  IDX-HKN                                 PIC 9(05).
            03  IDX-MESG                                PIC 9(05).
       *
        01  WRK-AREA.
-           03  WRK-SYMD                                PIC X(08).
+           03  WRK-SYMD.
+               05  WRK-SYY                             PIC 9(04).
+               05  WRK-SMM                             PIC 9(02).
+               05  WRK-SDD                             PIC 9(02).
+           03  WRK-DATE.
+               05  WRK-DATE-YY                         PIC 9(04).
+               05  WRK-DATE-FL1                        PIC X(01).
+               05  WRK-DATE-MM                         PIC 9(02).
+               05  WRK-DATE-FL2                        PIC X(01).
+               05  WRK-DATE-DD                         PIC 9(02).
            03  WRK-EDTYMD1                             PIC X(10).
            03  WRK-EDTYMD3                             PIC X(22).
            03  WRK-MAE-INPUT                           PIC X(300).
@@ -158,6 +172,12 @@
            03  WRK-MESG                                PIC X(1000).
            03  WRK-FIL                                 PIC X(02).
            03  WRK-CHKKOMOKU-LEN-MAX                   PIC 9(05).
+           03  WRK-RENBAN-X.
+               05  WRK-RENBAN                          PIC 9(05).
+           03  WRK-PTID-X.
+               05  WRK-PTID                            PIC 9(10).
+           03  WRK-STDD-Z9                             PIC Z9.
+           03  WRK-EDDD-Z9                             PIC Z9.
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -173,6 +193,8 @@
        01  CONST-AREA.
            03  CONST-LINE-MAX                          PIC 9(05)
                                                        VALUE   20.
+           03  CONST-DC-MAX                            PIC 9(05)
+                                                       VALUE   1000.
       *
            COPY    "COMMON-SPA".
       *
@@ -215,6 +237,8 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
+           COPY    "ORCA-BLOB".
+           COPY    "XMLDATA.INC".
       *
       ****************************************************************
        LINKAGE                         SECTION.
@@ -268,6 +292,7 @@
                                        WRK-AREA
                                        KEY-AREA
                                        SPA-AREA
+                                       DC-REC
       *
            MOVE    LNKDTCHKERRPARA     TO  DTCHKERRPARA
       *
@@ -441,6 +466,10 @@
                        PERFORM 221-BODY-HEN-SEC
                    END-IF
       *
+                   IF    ( ORCBSD01-FROM-API   =   "1" )
+                       PERFORM 2201-API-DATA-EDIT-SEC
+                   END-IF
+      *
       *            チェック結果ファイル読込
                    PERFORM 900-DTCHK004-READ-SEC
       *
@@ -471,6 +500,12 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( ORCBSD01-FROM-API   =   "1" )
+               IF    ( IDXB            >   ZERO )
+                   PERFORM 22011-API-DATA-EXPORT-SEC
+               END-IF
+           END-IF
       *
            MOVE    1               TO  FLG-END
       *
@@ -545,10 +580,65 @@
            INTO    HCM401-SAKYMD
            END-STRING
       *
+           PERFORM 2101-KIKANMSG-HEN-SEC
+      *
+           PERFORM 2101-INGAIMSG-HEN-SEC
+      *
            PERFORM 2101-CHKKOMOKU-HEN-SEC
       *
            .
        210-HEAD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療日指定編集処理
+      *****************************************************************
+       2101-KIKANMSG-HEN-SEC           SECTION.
+      *
+           IF    ( ORCBSD01-SRYYMDKBN  =   "1" )
+               MOVE    SPACE               TO  WRK-MAE-INPUT
+               MOVE    ORCBSD01-STSRYYMD   TO  WRK-STDD-Z9
+               MOVE    ORCBSD01-EDSRYYMD   TO  WRK-EDDD-Z9
+               IF    ( ORCBSD01-STSRYYMD   =   ORCBSD01-EDSRYYMD )
+                   STRING  "診療日指定："      DELIMITED BY SIZE
+                           WRK-STDD-Z9         DELIMITED BY SIZE
+                           "日"                DELIMITED BY SIZE
+                   INTO    WRK-MAE-INPUT
+                   END-STRING
+               ELSE
+                   STRING  "診療日指定："      DELIMITED BY SIZE
+                           WRK-STDD-Z9         DELIMITED BY SIZE
+                           "日〜"              DELIMITED BY SIZE
+                           WRK-EDDD-Z9         DELIMITED BY SIZE
+                           "日"                DELIMITED BY SIZE
+                   INTO    WRK-MAE-INPUT
+                   END-STRING
+               END-IF
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT       TO  HCM401-KIKANMSG
+           END-IF
+      *
+           .
+       2101-KIKANMSG-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    院外処方の処理編集処理
+      *****************************************************************
+       2101-INGAIMSG-HEN-SEC           SECTION.
+      *
+           EVALUATE    ORCBSD01-INGAIPROCKBN
+           WHEN    "0"
+               MOVE    "院外処方の処理：含まない"
+                                       TO  HCM401-INGAIMSG
+           WHEN    "1"
+               MOVE    "院外処方の処理：院外処方を含む"
+                                       TO  HCM401-INGAIMSG
+           WHEN    "2"
+               MOVE    "院外処方の処理：院外処方のみ"
+                                       TO  HCM401-INGAIMSG
+           END-EVALUATE
+      *
+           .
+       2101-INGAIMSG-HEN-EXT.
            EXIT.
       *****************************************************************
       *    確認項目編集処理
@@ -920,6 +1010,85 @@
        2201-HKNNAME-GET-EXT.
            EXIT.
       *****************************************************************
+      *    API用データ編集処理
+      *****************************************************************
+       2201-API-DATA-EDIT-SEC          SECTION.
+      *
+           COMPUTE IDXA = IDXA +   1
+           COMPUTE IDXB = IDXB +   1
+      *
+           MOVE    CNT-DTCHK004            TO  WRK-RENBAN
+           MOVE    WRK-RENBAN-X            TO  DC-RENBAN (IDXA)
+      *
+           IF    ( DTCHK004-ERRSBT         =   "0" )
+      *
+               IF    ( DTCHK004-PTNUM      =   SPACE )
+                   MOVE    "@"             TO  DC-PTNUM (IDXA)
+                   MOVE    DTCHK004-PTID   TO  WRK-PTID
+                   MOVE    WRK-PTID-X      TO  DC-PTNUM (IDXA)(2:)
+               ELSE
+                   MOVE    DTCHK004-PTNUM  TO  DC-PTNUM (IDXA)
+               END-IF
+               MOVE    DTCHK004-NAME       TO  DC-NAME (IDXA)
+               MOVE    DTCHK004-KANANAME   TO  DC-KANANAME (IDXA)
+               MOVE    DTCHK004-BIRTHDAY   TO  WRK-SYMD
+               PERFORM 800-DATE-SEC
+               MOVE    WRK-DATE            TO  DC-BIRTHDAY (IDXA)
+               MOVE    DTCHK004-SEX        TO  DC-SEX (IDXA)
+      *
+           END-IF
+      *
+           MOVE    DTCHK004-HKNKBN         TO  WRK-HKNKBN
+           PERFORM 2201-HKNNAME-GET-SEC
+           MOVE    WRK-HKNMES              TO  DC-HOKEN-NAME (IDXA)
+           MOVE    DTCHK004-ERRCD          TO  DC-ERRCD (IDXA)
+           MOVE    DTCHK004-ERRMSG         TO  DC-ERRMSG (IDXA)
+      *
+           IF    ( IDXB                   >=   CONST-DC-MAX )
+               PERFORM 22011-API-DATA-EXPORT-SEC
+           END-IF
+      *
+           .
+       2201-API-DATA-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    API用データ編集処理
+      *****************************************************************
+       22011-API-DATA-EXPORT-SEC       SECTION.
+      *
+           COMPUTE CNT-XMLCOUNT  = CNT-XMLCOUNT  +   1
+      *
+           INITIALIZE                  XMLDATA-REC
+           MOVE    DC-REC          TO  XMLDATA-DATA
+           MOVE    2               TO  XMLDATA-MODE
+           MOVE    "xml_data_check" TO MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "Data_Check"    TO  XMLDATA-RECORDNAME
+           PERFORM 910-XMLWRITE-SEC
+      *
+           INITIALIZE                  ORCA-BLOB
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    XMLDATA-OBJECT  TO  ORCA-BLOB-OBJECT
+           INITIALIZE                  SGETTEMP-AREA
+           STRING  LNK-PRTKANRI-TBL-KEY    DELIMITED   BY  SPACE
+                   LNK-PRTKANRI-TBL-GROUP  DELIMITED   BY  SPACE
+                   "."                 DELIMITED   BY  SIZE
+                   CNT-XMLCOUNT        DELIMITED   BY  SIZE
+                   ".xml"              DELIMITED   BY  SIZE
+           INTO    SGETTEMP-BASENAMES  (1)
+           END-STRING
+           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
+           MOVE    SGETTEMP-FULLNAMES (1)
+                                   TO  ORCA-BLOB-FILE
+           PERFORM 910-BLOBEXPORT-SEC
+      *
+           MOVE    ZERO            TO  IDXB
+      *
+           .
+       22011-API-DATA-EXPORT-EXT.
+           EXIT.
+      *****************************************************************
       *    注釈編集処理
       *****************************************************************
        230-BIKOMARK-HEN-SEC            SECTION.
@@ -944,7 +1113,6 @@
            END-IF
       *
            INITIALIZE                  ORCSPRTAREA
-           DISPLAY "prtdata ins start"
            MOVE    "INS"               TO  SPRT-MODE
            MOVE    1                   TO  SPRT-RENNUM
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -1113,6 +1281,35 @@
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    日付編集処理
+      *****************************************************************
+       800-DATE-SEC                    SECTION.
+      *
+           MOVE    SPACE               TO  WRK-DATE
+      *
+           IF    ( WRK-SYMD        NOT  =   SPACE )
+               INITIALIZE                  WRK-DATE
+               MOVE    WRK-SYY             TO  WRK-DATE-YY
+               MOVE    WRK-SMM             TO  WRK-DATE-MM
+               MOVE    WRK-SDD             TO  WRK-DATE-DD
+               MOVE    "-"                 TO  WRK-DATE-FL1
+               MOVE    "-"                 TO  WRK-DATE-FL2
+      *
+               EVALUATE    WRK-SYMD
+               WHEN    "00000000"
+                   MOVE    01              TO  WRK-DATE-MM
+                   MOVE    01              TO  WRK-DATE-DD
+               WHEN    "99999999"
+                   MOVE    12              TO  WRK-DATE-MM
+                   MOVE    31              TO  WRK-DATE-DD
+               END-EVALUATE
+      *
+           END-IF
+      *
+           .
+       800-DATE-EXT.
+           EXIT.
+      *****************************************************************
       *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
@@ -1147,6 +1344,9 @@
            AT  END
                MOVE    1               TO  FLG-DTCHK004
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1               TO  FLG-DTCHK004
+           END-IF
       *
            IF    ( FLG-DTCHK004        =   ZERO )
                IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
@@ -1255,4 +1455,30 @@
                                        SPA-AREA
            .
        900-DBCOMMIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    XMLWRITE処理
+      *****************************************************************
+       910-XMLWRITE-SEC                 SECTION.
+      *
+           MOVE    "XMLWRITE"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       XMLDATA-REC
+      *
+           .
+       910-XMLWRITE-EXT.
+           EXIT.
+      *****************************************************************
+      *    BLOBEXPORT処理
+      *****************************************************************
+       910-BLOBEXPORT-SEC              SECTION.
+      *
+           MOVE    "BLOBEXPORT"    TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       ORCA-BLOB
+      *
+           .
+       910-BLOBEXPORT-EXT.
            EXIT.

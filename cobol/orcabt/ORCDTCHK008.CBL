@@ -42,7 +42,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK004-KEY
-                                   FILE    STATUS  IS  STS-DTCHK004.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（複数保険エラー患者）
            SELECT  DTCHK007-FILE
@@ -50,7 +50,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK007-KEY
-                                   FILE    STATUS  IS  STS-DTCHK007.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
@@ -89,8 +89,7 @@
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-DTCHK004                            PIC X(02).
-           03  STS-DTCHK007                            PIC X(02).
+           03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
       *
        01  FLG-AREA.
@@ -563,6 +562,9 @@
                    END-IF
       *
                END-READ
+               IF    ( STS-COMMON  >   10 )
+                   MOVE    1           TO  FLG-DTCHK004
+               END-IF
       *
            END-PERFORM
       *

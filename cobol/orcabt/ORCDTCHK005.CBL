@@ -39,7 +39,7 @@
       *    データチェック中間ファイル（受診患者）
            SELECT  DTCHK002-FILE   ASSIGN  DTCHK002PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-DTCHK002.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（診療行為:入院）
            SELECT  DTCHK006N-FILE
@@ -47,7 +47,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK006N-KEY
-                                   FILE    STATUS  IS  STS-DTCHK006.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（診療行為:外来）
            SELECT  DTCHK006G-FILE
@@ -55,7 +55,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK006G-KEY
-                                   FILE    STATUS  IS  STS-DTCHK006.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック診療行為
            SELECT  DCSRY-FILE
@@ -63,7 +63,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSRY-KEY
-                                   FILE    STATUS  IS  STS-DCSRY.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック算定履歴
            SELECT  DCSANTEI-FILE
@@ -71,7 +71,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSANTEI-KEY
-                                   FILE    STATUS  IS  STS-DCSANTEI.
+                                   FILE    STATUS  IS  STS-COMMON.
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -135,11 +135,8 @@
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-DTCHK002                            PIC X(02).
-           03  STS-DTCHK006                            PIC X(02).
+           03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
-           03  STS-DCSRY                               PIC X(02).
-           03  STS-DCSANTEI                            PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -728,6 +725,9 @@
            AT  END
                MOVE    HIGH-VALUE  TO  DTCHK006N-KEY
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    HIGH-VALUE  TO  DTCHK006N-KEY
+           END-IF
       *
            .
        900-DTCHK006N-READ-EXT.
@@ -741,6 +741,9 @@
            AT  END
                MOVE    HIGH-VALUE  TO  DTCHK006G-KEY
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    HIGH-VALUE  TO  DTCHK006G-KEY
+           END-IF
       *
            .
        900-DTCHK006G-READ-EXT.
@@ -756,6 +759,9 @@
            AT  END
                MOVE    1           TO  FLG-DTCHK002
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1           TO  FLG-DTCHK002
+           END-IF
       *
            .
        900-DTCHK002-READ-EXT.

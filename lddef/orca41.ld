@@ -12,6 +12,7 @@ bind	"D99"		"OpenCOBOL"	"ORCGD99";
 bind	"DERR"		"OpenCOBOL"	"ORCGDERR";
 bind	"DID1"		"OpenCOBOL"	"ORCGDID1";
 bind	"DID2"		"OpenCOBOL"	"ORCGDID2";
+bindapi "datacheckv3" "OpenCOBOL"	"ORCGDAPI01"; 
 
 multiplex_group	orca41;
 
@@ -29,8 +30,18 @@ data	{
 		DERR;
 		DID1;
 		DID2;
+        datacheckv3;
 	};
 };
+
+db "xml2" {
+ xml_data_checkv3req;
+ xml_data_checkv3res;
+};
+
+#@monblob@db "monblob" {
+#@monblob@ monblob;
+#@monblob@};
 
 db	{
 	tbl_sryacct_main;
@@ -84,6 +95,9 @@ db	{
 	tbl_tekiou_disease;
     tbl_material_s;
     tbl_material_k;
+	tbl_dbcatalog;
+	tbl_sysuser;
+	tbl_sysbase;
 };
 
 /* #include "orcadb.inc" */

@@ -39,7 +39,7 @@
       *    データチェック中間ファイル（受診患者）
            SELECT  DTCHK002-FILE   ASSIGN  DTCHK002PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-DTCHK002.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（診療会計:入院）
            SELECT  DTCHK005N-FILE
@@ -47,7 +47,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK005N-KEY
-                                   FILE    STATUS  IS  STS-DTCHK005.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック中間ファイル（診療会計:外来）
            SELECT  DTCHK005G-FILE
@@ -55,7 +55,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK005G-KEY
-                                   FILE    STATUS  IS  STS-DTCHK005.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック診療会計
            SELECT  DCACCT-FILE
@@ -63,7 +63,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCACCT-KEY
-                                   FILE    STATUS  IS  STS-DCACCT.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    診療会計付加情報
            SELECT  DTCHKTMP01-FILE
@@ -71,7 +71,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHKTMP01-KEY
-                                   FILE    STATUS  IS  STS-DTCHKTMP01.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック受診履歴
            SELECT  DTCHK020-FILE
@@ -79,7 +79,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK020-KEY
-                                   FILE    STATUS  IS  STS-DTCHK020.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    データチェック伝票番号
            SELECT  DTCHK021-FILE
@@ -87,7 +87,7 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK021-KEY
-                                   FILE    STATUS  IS  STS-DTCHK021.
+                                   FILE    STATUS  IS  STS-COMMON.
       *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
@@ -178,13 +178,8 @@
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-DTCHK002                            PIC X(02).
-           03  STS-DTCHK005                            PIC X(02).
+           03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
-           03  STS-DCACCT                              PIC X(02).
-           03  STS-DTCHKTMP01                          PIC X(02).
-           03  STS-DTCHK020                            PIC X(02).
-           03  STS-DTCHK021                            PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -980,6 +975,9 @@
            AT END
                MOVE    1               TO  FLG-DCACCT
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1               TO  FLG-DCACCT
+           END-IF
       *
            .
       *
@@ -1168,6 +1166,9 @@
            AT  END
                MOVE    HIGH-VALUE  TO  DTCHK005N-KEY
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    HIGH-VALUE  TO  DTCHK005N-KEY
+           END-IF
       *
            .
        900-DTCHK005N-READ-EXT.
@@ -1181,6 +1182,9 @@
            AT  END
                MOVE    HIGH-VALUE  TO  DTCHK005G-KEY
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    HIGH-VALUE  TO  DTCHK005G-KEY
+           END-IF
       *
            .
        900-DTCHK005G-READ-EXT.
@@ -1196,6 +1200,9 @@
            AT  END
                MOVE    1           TO  FLG-DTCHK002
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1           TO  FLG-DTCHK002
+           END-IF
       *
            .
        900-DTCHK002-READ-EXT.
@@ -1504,6 +1511,9 @@
            AT END
                MOVE    1               TO  FLG-DTCHK020
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1               TO  FLG-DTCHK020
+           END-IF
       *
            .
        900-DTCHK020-READ-EXT.
@@ -1567,6 +1577,9 @@
                    MOVE    1           TO  FLG-DCACCT
                END-IF
            END-READ
+           IF    ( STS-COMMON  >   10 )
+               MOVE    1               TO  FLG-DCACCT
+           END-IF
       *
            .
       *
