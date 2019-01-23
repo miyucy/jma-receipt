@@ -312,6 +312,8 @@
                    STRING  "処理中です【"  DELIMITED  BY  SIZE
                            JOB-SHELLMSG    DELIMITED  BY  SPACE
                            "】"            DELIMITED  BY  SIZE
+                           FUNCTION TRIM (JOB-YOBI)
+                                           DELIMITED  BY  SIZE
                    INTO  SPA-D01-ERRMSG
                    END-STRING
                ELSE
