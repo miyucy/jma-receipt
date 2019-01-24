@@ -843,10 +843,6 @@
       *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "0206".
                05                      PIC X(80)   VALUE
-                   "異動日の前月の入院会計が存在しません".
-      *-----------------------------------------------------------
-               05                      PIC X(04)   VALUE   "0207".
-               05                      PIC X(80)   VALUE
                    "異動日を含む診療年月の入院会計が存在しません".
       *  7000番台は負担金計算のエラーとする。
       *  エラー番号返却時は7001に変換する。(ORCSODRS03)
@@ -1102,7 +1098,7 @@
                    "処理終了".
       *
            03  NCLAIMERRCD-R   REDEFINES   NCLAIMERRCD-VAL.
-               05  NCLAIMERRCD-OCC     OCCURS  267.
+               05  NCLAIMERRCD-OCC     OCCURS  266.
                    07  NCLAIMERRCDL    PIC X(04).
                    07  NCLAIMERRCDLMEI PIC X(80).
-           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   267.
+           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   266.
