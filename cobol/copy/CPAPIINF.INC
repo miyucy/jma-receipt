@@ -298,7 +298,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ÆþÂà±¡ÅÐÏ¿".
            05  FILLER                  PIC  X(16)      VALUE
-           "0510.201812".
+           "0510.201901".
            05  FILLER                  PIC  X(16)      VALUE
            "api01rv2".
            05  FILLER                  PIC  X(32)      VALUE
