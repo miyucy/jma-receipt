@@ -1368,8 +1368,9 @@
                    MOVE    -1              TO  WRK-ZOGEN
                    PERFORM 800-CALENDAR-SEC
                    MOVE    WRK-KEISANYMD   TO  WRK-NACCT-SRYYM
+                   PERFORM 900-NYUINACCT-KEY17-SEL-SEC
                    IF    ( FLG-NYUINACCT   NOT =   ZERO )
-                       MOVE    "0056"      TO  ERRCD-ORDER
+                       MOVE    "0206"      TO  ERRCD-ORDER
                    END-IF
                END-IF
            END-IF
@@ -1380,7 +1381,7 @@
                                        TO  WRK-NACCT-SRYYM
                    PERFORM 900-NYUINACCT-KEY17-SEL-SEC
                    IF    ( FLG-NYUINACCT   NOT =   ZERO )
-                       MOVE    "0056"      TO  ERRCD-ORDER
+                       MOVE    "0207"      TO  ERRCD-ORDER
                    END-IF
                END-IF
            END-IF
