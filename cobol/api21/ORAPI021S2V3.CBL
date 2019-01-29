@@ -2200,10 +2200,9 @@
                   (SPA-ERRCD           =   SPACE )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
       *            慫董動陸
-             AND  (SPA-CHIKENKBN   NOT =   "1"   )
+      *****  AND  (SPA-CHIKENKBN   NOT =   "1"   )
                IF     (SPA-HKTSANTEI-FLG   =   1     )  OR
-                      (SPA-HKTSANTEI-08    =   1     )  OR
-                      (SPA-NYUHKTCHK       =   1     )
+                      (SPA-HKTSANTEI-08    =   1     )
                    PERFORM 5109-HKTSANTEI-CHK-SEC
                END-IF
            END-IF
@@ -3241,11 +3240,7 @@
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSCHKTCHKAREA
-           MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK
-           MOVE    SPA-NYUHKTCD        TO  ORCSCHKTCHK-NYUHKTCD
-           MOVE    SPA-NYUHKTSRYCD     TO  ORCSCHKTCHK-NYUSRYCD
-           MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
-           MOVE    "6"                 TO  ORCSCHKTCHK-SYORI
+           MOVE    "1"                 TO  ORCSCHKTCHK-SYORI
            MOVE    "K02"               TO  ORCSCHKTCHK-PG
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-ORCSC-TEISEI-AREA
            CALL    "ORCSCHKTCHK"       USING
@@ -3274,10 +3269,10 @@
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSCHKTCHKAREA
-           MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK
-           MOVE    SPA-NYUHKTCD        TO  ORCSCHKTCHK-NYUHKTCD
-           MOVE    SPA-NYUHKTSRYCD     TO  ORCSCHKTCHK-NYUSRYCD
-           MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
+      ***  MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK
+      *    MOVE    SPA-NYUHKTCD        TO  ORCSCHKTCHK-NYUHKTCD
+      *    MOVE    SPA-NYUHKTSRYCD     TO  ORCSCHKTCHK-NYUSRYCD
+      ***  MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
            MOVE    "3"                 TO  ORCSCHKTCHK-SYORI
            MOVE    "K02"               TO  ORCSCHKTCHK-PG
            CALL    "ORCSCHKTCHK"       USING
@@ -3455,10 +3450,9 @@
                   (SPA-ERRCD           =   SPACE )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
       *            慫董動陸
-             AND  (SPA-CHIKENKBN   NOT =   "1"   )
+      *****  AND  (SPA-CHIKENKBN   NOT =   "1"   )
                IF     (SPA-HKTSANTEI-FLG   =   1     )  OR
-                      (SPA-HKTSANTEI-08    =   1     )  OR
-                      (SPA-NYUHKTCHK       =   1     )
+                      (SPA-HKTSANTEI-08    =   1     )
                    PERFORM 5109-HKTSANTEI-CHK-SEC
                END-IF
            END-IF
