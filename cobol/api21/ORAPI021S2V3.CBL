@@ -2291,8 +2291,8 @@
            IF     (WRK-ERRCD           =   SPACE )  AND
                   (SPA-ERRCD           =   SPACE )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
-      *            慫董動陸
-             AND  (SPA-CHIKENKBN   NOT =   "1"   )
+      *****        慫董動陸
+      ****** AND  (SPA-CHIKENKBN   NOT =   "1"   )
                IF     (SPA-HKTSANTEI-FLG   =   1     )  OR
                       (SPA-HKTSANTEI-08    =   1     )
       ***********  OR (SPA-NYUHKTCHK       =   1     )
@@ -3739,10 +3739,9 @@
                   (SPA-ERRCD           =   SPACE )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
       *            慫董動陸
-             AND  (SPA-CHIKENKBN   NOT =   "1"   )
+      ****** AND  (SPA-CHIKENKBN   NOT =   "1"   )
                IF     (SPA-HKTSANTEI-FLG   =   1     )  OR
-                      (SPA-HKTSANTEI-08    =   1     )  OR
-                      (SPA-NYUHKTCHK       =   1     )
+                      (SPA-HKTSANTEI-08    =   1     )
                    PERFORM 5109-HKTSANTEI-CHK-SEC
                END-IF
            END-IF
