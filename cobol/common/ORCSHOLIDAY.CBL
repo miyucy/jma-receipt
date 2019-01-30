@@ -321,6 +321,18 @@
                    07  CONST-NH-0429-STYY  PIC X(04)   VALUE   "0000".
                    07  CONST-NH-0429-EDYY  PIC X(04)   VALUE   "9999".
                    07  CONST-NH-0429-MMDD  PIC X(04)   VALUE   "0429".
+               05  CONST-NH-0430-G.
+                   07  CONST-NH-0430-STYY  PIC X(04)   VALUE   "2019".
+                   07  CONST-NH-0430-EDYY  PIC X(04)   VALUE   "2019".
+                   07  CONST-NH-0430-MMDD  PIC X(04)   VALUE   "0430".
+               05  CONST-NH-0501-G.
+                   07  CONST-NH-0501-STYY  PIC X(04)   VALUE   "2019".
+                   07  CONST-NH-0501-EDYY  PIC X(04)   VALUE   "2019".
+                   07  CONST-NH-0501-MMDD  PIC X(04)   VALUE   "0501".
+               05  CONST-NH-0502-G.
+                   07  CONST-NH-0502-STYY  PIC X(04)   VALUE   "2019".
+                   07  CONST-NH-0502-EDYY  PIC X(04)   VALUE   "2019".
+                   07  CONST-NH-0502-MMDD  PIC X(04)   VALUE   "0502".
                05  CONST-NH-0503-G.
                    07  CONST-NH-0503-STYY  PIC X(04)   VALUE   "0000".
                    07  CONST-NH-0503-EDYY  PIC X(04)   VALUE   "9999".
@@ -337,6 +349,10 @@
                    07  CONST-NH-0505-STYY  PIC X(04)   VALUE   "2016".
                    07  CONST-NH-0505-EDYY  PIC X(04)   VALUE   "9999".
                    07  CONST-NH-0505-MMDD  PIC X(04)   VALUE   "0811".
+               05  CONST-NH-1022-G.
+                   07  CONST-NH-1022-STYY  PIC X(04)   VALUE   "2019".
+                   07  CONST-NH-1022-EDYY  PIC X(04)   VALUE   "2019".
+                   07  CONST-NH-1022-MMDD  PIC X(04)   VALUE   "1022".
                05  CONST-NH-1103-G.
                    07  CONST-NH-1103-STYY  PIC X(04)   VALUE   "0000".
                    07  CONST-NH-1103-EDYY  PIC X(04)   VALUE   "9999".
@@ -347,15 +363,15 @@
                    07  CONST-NH-1123-MMDD  PIC X(04)   VALUE   "1123".
                05  CONST-NH-1223-G.
                    07  CONST-NH-1223-STYY  PIC X(04)   VALUE   "0000".
-                   07  CONST-NH-1223-EDYY  PIC X(04)   VALUE   "9999".
+                   07  CONST-NH-1223-EDYY  PIC X(04)   VALUE   "2018".
                    07  CONST-NH-1223-MMDD  PIC X(04)   VALUE   "1223".
            03  CONST-NATIONAL-HOLIDAY-R    REDEFINES
                                            CONST-NATIONAL-HOLIDAY-G.
-               05  CONST-NATIONAL-HOLIDAY              OCCURS  10.
+               05  CONST-NATIONAL-HOLIDAY              OCCURS  14.
                    07  CONST-NH-STYY       PIC X(04).
                    07  CONST-NH-EDYY       PIC X(04).
                    07  CONST-NH-MMDD       PIC X(04).
-           03  CONST-NATIONAL-HOLIDAY-MAX  PIC 9(05)   VALUE   10.
+           03  CONST-NATIONAL-HOLIDAY-MAX  PIC 9(05)   VALUE   14.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -424,6 +440,13 @@
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   TYEAR-MAX )
+      *
+      D       IF    ( TYEAR-NATIONAL-HOLIDAY(IDX-DAY)
+      D                                   =   1 )
+      D        OR   ( TYEAR-CHK-FURIKAE(IDX-DAY)
+      D                                   =   1 )
+      D           DISPLAY TYEAR-DATE(IDX-DAY)
+      D       END-IF
       *
                IF    ( SHOLIDAY-DATE
                                    =   TYEAR-DATE (IDX-DAY))
