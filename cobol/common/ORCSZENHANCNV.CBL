@@ -155,6 +155,12 @@
            IF      LNK-ZENHANCNV-IN-DATA (1:4) 
                                        =   "平成"  OR  "昭和"  OR
                                            "大正"  OR  "明治"
+      *!!!!
+      *TEST
+      *2019.5.1からの新元号仮対応（元号）G とする
+                                       OR  "元号"
+      *TEST
+      *
                PERFORM 2001-YMD-WAREKI-HENSYU-SEC
            ELSE
                IF      LNK-ZENHANCNV-IN-DATA (1:2) 
@@ -188,6 +194,13 @@
                    MOVE    "2"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
                WHEN    "明治"
                    MOVE    "1"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
+      *!!!!
+      *TEST
+      *2019.5.1からの新元号仮対応（元号）G とする
+               WHEN    "元号"
+                   MOVE    "5"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
+      *TEST
+      *!!!!
            END-EVALUATE
            MOVE    LNK-ZENHANCNV-IN-DATA (5:4)
                                        TO  WRK-MOJI-IN

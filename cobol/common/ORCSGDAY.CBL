@@ -497,6 +497,15 @@
                            WHEN    "h"
                            WHEN    "4"
                                MOVE    "4"                 TO  WRK-WGO
+      *TEST
+      *TEST
+      *2019.5.1からの新元号仮対応（元号）G とする
+                           WHEN    "G"
+                           WHEN    "g"
+                           WHEN    "5"
+                               MOVE    "5"                 TO  WRK-WGO
+      *TEST
+      *TEST
                        END-EVALUATE
                        IF      WRK-WYMD        NOT NUMERIC
                            MOVE    "99"        TO  WRK-ERRCD
@@ -590,6 +599,20 @@
                        PERFORM 1001-SUUJI-CHK-SEC
                        MOVE    WRK-OTSUJI          TO  WRK-WYY
                        MOVE    1                   TO  FLG-SEKI
+      *TEST
+      *TEST
+      *2019.5.1からの新元号仮対応（元号）G とする
+                       MOVE    1                   TO  FLG-SEKI
+                   WHEN    "G"
+                   WHEN    "g"
+                   WHEN    "5"
+                       MOVE    "5"                 TO  WRK-WGO
+                       MOVE    WRK-YY(2:2)         TO  WRK-INSUJI
+                       PERFORM 1001-SUUJI-CHK-SEC
+                       MOVE    WRK-OTSUJI          TO  WRK-WYY
+                       MOVE    1                   TO  FLG-SEKI
+      *TEST
+      *TEST
                    WHEN    OTHER
                        MOVE    WRK-YY              TO  WRK-INSUJI
                        PERFORM 1001-SUUJI-CHK-SEC
